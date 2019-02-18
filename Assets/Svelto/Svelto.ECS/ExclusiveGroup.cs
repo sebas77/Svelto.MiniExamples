@@ -1,7 +1,5 @@
 ﻿﻿using System;
- using System.Collections.Generic;
- using DBC.ECS;
-
+using System.Collections.Generic;
 #pragma warning disable 660,661
 
 namespace Svelto.ECS
@@ -24,6 +22,13 @@ namespace Svelto.ECS
         public ExclusiveGroup()
         {
             _group = ExclusiveGroupStruct.Generate();
+        }
+        
+        public ExclusiveGroup(string recognizeAs)
+        {
+            _group = ExclusiveGroupStruct.Generate();
+            
+            _serialisedGroups.Add(recognizeAs, _group);
         }
         
         public ExclusiveGroup(ushort range)
@@ -87,7 +92,7 @@ namespace Svelto.ECS
                 ExclusiveGroupStruct groupStruct;
 
                 groupStruct._id = (int) _globalId;
-                Check.Require(_globalId + 1 < ushort.MaxValue, "too many exclusive groups created");
+                DBC.ECS.Check.Require(_globalId + 1 < ushort.MaxValue, "too many exclusive groups created");
                 _globalId++;
 
                 return groupStruct;
@@ -99,7 +104,7 @@ namespace Svelto.ECS
             internal ExclusiveGroupStruct(ushort range)
             {
                 _id = (int) _globalId;
-                Check.Require(_globalId + range < ushort.MaxValue, "too many exclusive groups created");
+                DBC.ECS.Check.Require(_globalId + range < ushort.MaxValue, "too many exclusive groups created");
                 _globalId += range;
             }
             
@@ -125,5 +130,16 @@ namespace Svelto.ECS
             int         _id;
             static uint _globalId;
         }
+
+        public static ExclusiveGroupStruct Search(string holderGroupName)
+        {
+            if (_serialisedGroups.ContainsKey(holderGroupName) == false)
+                throw new Exception("Serialized Group Not Found ".FastConcat(holderGroupName));
+            
+            return _serialisedGroups[holderGroupName];
+        }
+
+        static readonly Dictionary<string, ExclusiveGroupStruct> _serialisedGroups = new Dictionary<string, 
+            ExclusiveGroupStruct>(); 
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using DBC.ECS;
 using Svelto.DataStructures;
 using Svelto.ECS.Hybrid;
 using Svelto.ECS.Internal;
@@ -16,7 +15,7 @@ namespace Svelto.ECS
 
             CheckFields(ENTITY_VIEW_TYPE, NEEDS_REFLECTION, true);
 
-            if (NEEDS_REFLECTION)
+            if (NEEDS_REFLECTION == true)
                 EntityView<T>.InitCache();
         }
 
@@ -27,11 +26,11 @@ namespace Svelto.ECS
 
             var castedDic = dictionary as TypeSafeDictionary<T>;
 
-            if (NEEDS_REFLECTION)
+            if (NEEDS_REFLECTION == true)
             {
-                Check.Require(implementors != null, "Implementors not found while building an EntityView");
-                Check.Require(castedDic.ContainsKey(entityID.entityID) == false,
-                                      "building an entity with already used entity id! id".FastConcat((long)entityID).FastConcat(" ", ENTITY_VIEW_NAME));
+                DBC.ECS.Check.Require(implementors != null, "Implementors not found while building an EntityView");
+                DBC.ECS.Check.Require(castedDic.ContainsKey(entityID.entityID) == false,
+                                      "building an entity with already used entity id! id: ".FastConcat((long)entityID).FastConcat(" ", ENTITY_VIEW_NAME));
 
                 T entityView;
                 EntityView<T>.BuildEntityView(entityID, out entityView);
@@ -84,7 +83,7 @@ namespace Svelto.ECS
         }
         
         static readonly Type   ENTITY_VIEW_TYPE = typeof(T);
-        static readonly T      DEFAULT_IT       = default;
+        static readonly T      DEFAULT_IT       = default(T);
         static readonly Type   ENTITYINFOVIEW_TYPE = typeof(EntityInfoView);
         static readonly bool   NEEDS_REFLECTION = typeof(IEntityViewStruct).IsAssignableFrom(typeof(T));
         static readonly string ENTITY_VIEW_NAME = ENTITY_VIEW_TYPE.ToString();

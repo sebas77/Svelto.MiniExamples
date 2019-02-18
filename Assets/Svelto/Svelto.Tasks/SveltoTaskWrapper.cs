@@ -2,7 +2,8 @@ using System.Collections.Generic;
 
 namespace Svelto.Tasks.Internal
 {
-    struct SveltoTaskWrapper<TTask, TRunner> where TTask : IEnumerator<TaskContract> where TRunner:class, IInternalRunner<LeanSveltoTask<TTask>>
+    struct SveltoTaskWrapper<TTask, TRunner> where TTask : IEnumerator<TaskContract>
+                                             where TRunner : class, IInternalRunner<LeanSveltoTask<TTask>> 
     {
         public SveltoTaskWrapper(ref TTask task, TRunner runner):this()
         {
@@ -18,9 +19,14 @@ namespace Svelto.Tasks.Internal
         public bool MoveNext()
         {
             var continuationWrapper = Current.ContinuationEnumerator;
-            if (continuationWrapper != null && continuationWrapper.MoveNext() == true)
+            if (continuationWrapper != null)
+            {
+                if (continuationWrapper.MoveNext() == true) 
                     return true;
-       
+                if (_continuingTask.Current.breakit == Break.AndStop) 
+                    return false;
+            }
+
             if (_task.MoveNext() == false) 
                 return false;
     
@@ -29,17 +35,26 @@ namespace Svelto.Tasks.Internal
             if (Current.yieldIt == true) 
                return true;
     
-            if (Current.breakit == Break.It || Current.breakit == Break.AndStop)
+            if (Current.breakit == Break.It || Current.breakit == Break.AndStop || Current.hasValue == true)
                 return false;
 
             if (Current.enumerator != null && _runner != null)
-               Current = ((TTask) Current.enumerator).RunImmediate(_runner);
+            {
+                //Current.enumerator is a "continued" enumerator and can be only a class at the moment
+                _continuingTask = (TTask) Current.enumerator;
+
+                //a new TaskContract is created, holding the continuationEnumerator
+                Current = _continuingTask.RunImmediate(_runner);
+            }
 
             return true;
         }
 
-        TTask    _task;
-        readonly TRunner _runner;
+        TTask             _task;
+        readonly TRunner  _runner;
+        TTask             _continuingTask;
+        
+        //must stay internal?
         internal TaskContract Current;
     }
 }

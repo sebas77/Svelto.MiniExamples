@@ -11,7 +11,7 @@ namespace Svelto.ECS.MiniExamples.Example1
         public RenderingDataSyncronizationEngine(ThreadSynchronizationSignal synchronizationSignal)
         {
             _synchronizationSignal = synchronizationSignal;
-            _runner = new UnityJobRunner("test");
+            _runner = new MultiThreadRunner("test");
         }
         
         public void Ready()
@@ -59,7 +59,7 @@ namespace Svelto.ECS.MiniExamples.Example1
         }
 
         readonly ThreadSynchronizationSignal _synchronizationSignal;
-        UnityJobRunner _runner;
+        MultiThreadRunner _runner;
     }
 }
 

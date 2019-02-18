@@ -5,6 +5,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Svelto.Tasks.Enumerators;
 
 namespace Svelto.Tasks.Internal
 {
@@ -19,7 +20,7 @@ namespace Svelto.Tasks.Internal
         {
             _sveltoTask = new SveltoTask();
             _runner     = runner;
-            _continuationEnumerator = ContinuationWrapperPool.RetrieveFromPool();
+            _continuationEnumerator = new ContinuationEnumerator();
         }
 
         public bool MoveNext()
@@ -28,7 +29,7 @@ namespace Svelto.Tasks.Internal
             {
                 if (_sveltoTask._threadSafeSveltoTaskStates.pendingTask == true)
                 {
-                    _previousContinuationEnumerator.Completed();
+                    _previousContinuationEnumerator.ReturnToPool();
 
                     //start new coroutine using this task this will put _started to true (it was already though)
                     //it uses the current runner to start the pending task
@@ -36,10 +37,10 @@ namespace Svelto.Tasks.Internal
 
                     _sveltoTask._stackingTask = new SveltoTaskWrapper<TTask, IInternalRunner<LeanSveltoTask<TTask>>>(ref _pendingTask);
                     _sveltoTask._threadSafeSveltoTaskStates = new SveltoTaskState();
-                    _continuationEnumerator.Reset();
+                    _continuationEnumerator.InternalReset();
                 }
                 else
-                    _continuationEnumerator.Completed();
+                    _continuationEnumerator.ReturnToPool();
                 
                 _pendingTask                 = default(TTask);
                 _previousContinuationEnumerator = null;

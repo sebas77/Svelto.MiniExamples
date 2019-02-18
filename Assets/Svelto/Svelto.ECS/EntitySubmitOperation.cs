@@ -41,6 +41,6 @@ namespace Svelto.ECS
     {
         Swap,
         Remove,
-        RemoveGroup
+        RemoveGroup,
     }
 }

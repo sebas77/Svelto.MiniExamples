@@ -42,7 +42,8 @@ namespace Svelto.ECS
 
             //efficient way to collect the fields of every EntityViewType
             var setters =
-                FasterList<KeyValuePair<Type, ActionCast<T>>>.NoVirt.ToArrayFast(entityViewBlazingFastReflection, out count);
+                FasterList<KeyValuePair<Type, ActionCast<T>>>
+                   .NoVirt.ToArrayFast(entityViewBlazingFastReflection, out count);
 
             for (var index = 0; index < implementors.Length; index++)
             {
@@ -77,7 +78,7 @@ namespace Svelto.ECS
 #if DEBUG && !PROFILER
                 else
                 {
-                    Console.Log(NULL_IMPLEMENTOR_ERROR.FastConcat(" entityView ",
+                    Svelto.Console.Log(NULL_IMPLEMENTOR_ERROR.FastConcat(" entityView ",
                                                                          entityBuilder.GetEntityType().ToString()));
                 }
 #endif

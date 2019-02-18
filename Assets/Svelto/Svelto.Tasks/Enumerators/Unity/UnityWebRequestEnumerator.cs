@@ -7,10 +7,10 @@ namespace Svelto.Tasks.Enumerators
 {
     public class UnityWebRequestEnumerator : IEnumerator<TaskContract>
     {
-        public UnityWebRequestEnumerator(UnityWebRequest www, int timeOut = -1)
+        public UnityWebRequestEnumerator(UnityWebRequest www, int timeOutInSeconds = -1)
         {
             _www         = www;
-            _www.timeout = timeOut;
+            _www.timeout = timeOutInSeconds;
 #if UNITY_2017_2_OR_NEWER
             _www.SendWebRequest();
 #else

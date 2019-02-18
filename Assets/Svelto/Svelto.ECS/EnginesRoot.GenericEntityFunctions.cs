@@ -1,5 +1,4 @@
 ﻿using System;
-using Svelto.DataStructures.Experimental;
 using Svelto.ECS.Internal;
 
 namespace Svelto.ECS
@@ -100,7 +99,7 @@ namespace Svelto.ECS
 #if DEBUG && !PROFILER          
             entitySubmitOperation.trace = Environment.StackTrace;
             var egid = new EGID(entitySubmitOperation.ID, entitySubmitOperation.fromGroupID);
-            if (_entitiesOperationsDebug.ContainsKey((long)egid))
+            if (_entitiesOperationsDebug.ContainsKey((long)egid) == true)
                 Console.LogError("Only one entity operation per submission is allowed. id: "
                                           .FastConcat(entitySubmitOperation.ID)
                                           .FastConcat(" groupid: ")
@@ -115,7 +114,7 @@ namespace Svelto.ECS
             _entitiesOperations.AddRef(ref entitySubmitOperation);
         }
 #if DEBUG && !PROFILER        
-        readonly FasterDictionary<long, EntitySubmitOperationType> _entitiesOperationsDebug;
+        readonly Svelto.DataStructures.Experimental.FasterDictionary<long, EntitySubmitOperationType> _entitiesOperationsDebug;
 #endif        
     }
 }

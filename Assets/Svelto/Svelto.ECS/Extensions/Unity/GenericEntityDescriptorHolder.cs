@@ -11,6 +11,11 @@ namespace Svelto.ECS.Unity
         {
             return EntityDescriptorTemplate<T>.descriptor;
         }
+
+        public string groupName => _groupName;
+
+        [SerializeField]
+        string _groupName;
     }
 }
 #endif

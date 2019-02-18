@@ -1,5 +1,4 @@
 using System;
-using DBC.ECS;
 
 namespace Svelto.ECS
 {
@@ -7,7 +6,7 @@ namespace Svelto.ECS
     {
         public DynamicEntityDescriptorInfo(IEntityBuilder[] extraEntities)
         {
-            Check.Require(extraEntities.Length > 0,
+            DBC.ECS.Check.Require(extraEntities.Length > 0,
                                   "don't use a DynamicEntityDescriptorInfo if you don't need to use extra EntityViews");
 
             var defaultEntities = EntityDescriptorTemplate<TType>.descriptor.entitiesToBuild;

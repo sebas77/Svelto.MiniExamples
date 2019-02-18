@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using DBC.ECS;
 using Svelto.Common;
 using Svelto.DataStructures.Experimental;
 using Svelto.ECS.Internal;
@@ -251,7 +250,7 @@ namespace Svelto.ECS
 
         void SwapEntityGroup(IEntityBuilder[] builders, Type originalEntityDescriptor, EGID fromEntityID, EGID toEntityID)
         {
-            Check.Require(fromEntityID != toEntityID, "the entity destionation EGID is equal to the source EGID");
+            DBC.ECS.Check.Require(fromEntityID != toEntityID, "the entity destionation EGID is equal to the source EGID");
 
             Dictionary<Type, ITypeSafeDictionary> toGroup;
 
@@ -261,7 +260,7 @@ namespace Svelto.ECS
             MoveEntity(builders, fromEntityID, originalEntityDescriptor, toEntityID, toGroup);
         }
 
-        EntityStreams _entityStreams;
+        readonly EntityStreams _entityStreams;
         
         readonly Type  _entityInfoView = typeof(EntityInfoView);
         const string INVALID_DYNAMIC_DESCRIPTOR_ERROR = "Found an entity requesting an invalid dynamic descriptor, this "   +

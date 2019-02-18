@@ -12,7 +12,7 @@ namespace Svelto.ECS.Internal
                  IEntityBuilder[] entitiesToBuild,
                  object[] implementors)
         {
-            var group = FetchEntityGroup(egid.groupID, groupEntityViewsByType);
+            var @group = FetchEntityGroup(egid.groupID, groupEntityViewsByType);
 
             BuildEntitiesAndAddToGroup(egid, group, entitiesToBuild, implementors);
 
@@ -24,17 +24,17 @@ namespace Svelto.ECS.Internal
         {
             Dictionary<Type, ITypeSafeDictionary> group;
 
-            if (groupEntityViewsByType.TryGetValue(groupID, out group) == false)
+            if (groupEntityViewsByType.TryGetValue(groupID, out @group) == false)
             {
-                group = new Dictionary<Type, ITypeSafeDictionary>();
-                groupEntityViewsByType.Add(groupID, group);
+                @group = new Dictionary<Type, ITypeSafeDictionary>();
+                groupEntityViewsByType.Add(groupID, @group);
             }
 
-            return group;
+            return @group;
         }
 
         static void BuildEntitiesAndAddToGroup(EGID entityID,
-            Dictionary<Type, ITypeSafeDictionary> group,
+            Dictionary<Type, ITypeSafeDictionary> @group,
             IEntityBuilder[] entitiesToBuild,
             object[] implementors)
         {
@@ -59,16 +59,16 @@ namespace Svelto.ECS.Internal
                 var entityViewBuilder = entitiesToBuild[index];
                 var entityViewType    = entityViewBuilder.GetEntityType();
 
-                BuildEntity(entityID, group, entityViewType, entityViewBuilder, implementors);
+                BuildEntity(entityID, @group, entityViewType, entityViewBuilder, implementors);
             }
         }
 
-        static void BuildEntity(EGID  entityID, Dictionary<Type, ITypeSafeDictionary> group,
+        static void BuildEntity(EGID  entityID, Dictionary<Type, ITypeSafeDictionary> @group,
                                     Type entityViewType, IEntityBuilder entityBuilder, object[] implementors)
         {
             ITypeSafeDictionary safeDictionary;
 
-            var entityViewsPoolWillBeCreated = group.TryGetValue(entityViewType, out safeDictionary) == false;
+            var entityViewsPoolWillBeCreated = @group.TryGetValue(entityViewType, out safeDictionary) == false;
 
             //passing the undefined entityViewsByType inside the entityViewBuilder will allow
             //it to be created with the correct type and casted back to the undefined list.
@@ -76,7 +76,7 @@ namespace Svelto.ECS.Internal
             entityBuilder.BuildEntityAndAddToList(ref safeDictionary, entityID, implementors);
 
             if (entityViewsPoolWillBeCreated)
-                group.Add(entityViewType, safeDictionary);
+                @group.Add(entityViewType, safeDictionary);
         }
     }
 }

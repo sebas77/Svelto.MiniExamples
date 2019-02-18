@@ -29,6 +29,10 @@ namespace Svelto.ECS
         T[] QueryEntities<T>(int group, out int count) where T : IEntityStruct;
 
         T[] QueryEntities<T>(ExclusiveGroup.ExclusiveGroupStruct groupStruct, out int count) where T : IEntityStruct;
+        (T1[], T2[]) QueryEntities<T1, T2>(int group, out int count) where T1 : IEntityStruct where T2 : IEntityStruct;
+
+        (T1[], T2[]) QueryEntities<T1, T2>(ExclusiveGroup.ExclusiveGroupStruct groupStruct, out int count) 
+            where T1 : IEntityStruct where T2 : IEntityStruct;
         /// <summary>
         /// this version returns a mapped version of the entity array so that is possible to find the
         /// index of the entity inside the returned buffer through it's EGID
@@ -104,13 +108,13 @@ namespace Svelto.ECS
 
     public struct EntityActionData
     {
-        public readonly IEntitiesDB entitiesDb;
+        public readonly IEntitiesDB entitiesDB;
         public readonly int entityIndex;
 
-        public EntityActionData(IEntitiesDB entitiesDb1, int i)
+        public EntityActionData(IEntitiesDB entitiesDb, int index)
         {
-            entitiesDb = entitiesDb1;
-            entityIndex = i;
+            this.entitiesDB = entitiesDb;
+            entityIndex = index;
         }
     }
 }

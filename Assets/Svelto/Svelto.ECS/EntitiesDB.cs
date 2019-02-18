@@ -21,9 +21,8 @@ namespace Svelto.ECS.Internal
 
         public ReadOnlyCollectionStruct<T> QueryEntityViews<T>(int group) where T:class, IEntityStruct
         {
-            TypeSafeDictionary<T> typeSafeDictionary;
-            if (QueryEntitySafeDictionary(group, out typeSafeDictionary) == false) return 
-                new ReadOnlyCollectionStruct<T>(RetrieveEmptyEntityViewArray<T>(), 0);
+            if (QueryEntitySafeDictionary(group, out TypeSafeDictionary<T> typeSafeDictionary) == false) 
+                return new ReadOnlyCollectionStruct<T>(RetrieveEmptyEntityViewArray<T>(), 0);
 
             return typeSafeDictionary.Values;
         }
@@ -37,17 +36,31 @@ namespace Svelto.ECS.Internal
         {
             return QueryEntityView<T>(new EGID(id, (int) group));
         }
+        
+        public ref T QueryEntity<T>(EGID entityGID) where T : IEntityStruct
+        {
+            T[]  array;
+            if ((array = QueryEntitiesAndIndexInternal<T>(entityGID, out var index)) != null)
+                return ref array[index];
+            
+            throw new EntityNotFoundException(entityGID.entityID, entityGID.groupID, typeof(T));
+        }
+        
+        public ref T QueryEntity<T>(int id, ExclusiveGroup.ExclusiveGroupStruct group) where T : IEntityStruct
+        {
+            return ref QueryEntity<T>(new EGID(id, group));
+        }
 
         public ref T QueryEntity<T>(int id, int group) where T : IEntityStruct
         {
-            throw new NotImplementedException();
+            return ref QueryEntity<T>(new EGID(id, group));
         }
 
         public T[] QueryEntities<T>(int group, out int count) where T : IEntityStruct
         {
-            TypeSafeDictionary<T> typeSafeDictionary;
             count = 0;
-            if (QueryEntitySafeDictionary(group, out typeSafeDictionary) == false) return RetrieveEmptyEntityViewArray<T>();
+            if (QueryEntitySafeDictionary(group, out TypeSafeDictionary<T> typeSafeDictionary) == false) 
+                return RetrieveEmptyEntityViewArray<T>();
 
             return typeSafeDictionary.GetValuesArray(out count);
         }
@@ -55,6 +68,25 @@ namespace Svelto.ECS.Internal
         public T[] QueryEntities<T>(ExclusiveGroup.ExclusiveGroupStruct groupStruct, out int count) where T : IEntityStruct
         {
             return QueryEntities<T>((int) groupStruct, out count);
+        }
+
+        public (T1[], T2[]) QueryEntities<T1, T2>(int @group, out int count) where T1 : IEntityStruct where T2 : IEntityStruct
+        {
+            var T1entities = QueryEntities<T1>(group, out var countCheck);
+            var T2entities = QueryEntities<T2>(group, out count);
+            
+            if (count != countCheck) 
+                throw new ECSException("Entity views count do not match in group. Entity 1: ".
+                                       FastConcat(typeof(T1).ToString()).FastConcat(
+                                       "Entity 2: ".FastConcat(typeof(T2).ToString())));
+
+            
+            return (T1entities, T2entities);
+        }
+
+        public (T1[], T2[]) QueryEntities<T1, T2>(ExclusiveGroup.ExclusiveGroupStruct groupStruct, out int count) where T1 : IEntityStruct where T2 : IEntityStruct
+        {
+            return QueryEntities<T1, T2>((int) groupStruct, out count);
         }
 
         public EGIDMapper<T> QueryMappedEntities<T>(int groupID) where T : IEntityStruct
@@ -103,21 +135,6 @@ namespace Svelto.ECS.Internal
         public bool TryQueryEntitiesAndIndex<T>(int id, ExclusiveGroup.ExclusiveGroupStruct group, out uint index, out T[] array) where T : IEntityStruct
         {
             return TryQueryEntitiesAndIndex(new EGID(id, group), out index, out array);
-        }
-
-        public ref T QueryEntity<T>(EGID entityGID) where T : IEntityStruct
-        {
-            T[] array;
-            uint index;
-            if ((array = QueryEntitiesAndIndexInternal<T>(entityGID, out index)) != null)
-                return ref array[index];
-            
-            throw new EntityNotFoundException(entityGID.entityID, entityGID.groupID, typeof(T));
-        }
-
-        public ref T QueryEntity<T>(int id, ExclusiveGroup.ExclusiveGroupStruct group) where T : IEntityStruct
-        {
-            return ref QueryEntity<T>(new EGID(id, group));
         }
 
         public T[] QueryEntitiesAndIndex<T>(int id, int group, out uint index) where T : IEntityStruct

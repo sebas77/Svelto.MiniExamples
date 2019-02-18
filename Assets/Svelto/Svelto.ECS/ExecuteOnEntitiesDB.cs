@@ -58,11 +58,9 @@ namespace Svelto.ECS.Internal
 
         public void ExecuteOnEntities<T>(int groupID, EntitiesAction<T> action) where T : IEntityStruct
         {
-            int                   count;
-            TypeSafeDictionary<T> typeSafeDictionary;
-            if (QueryEntitySafeDictionary(groupID, out typeSafeDictionary) == false) return;
+            if (QueryEntitySafeDictionary(groupID, out TypeSafeDictionary<T> typeSafeDictionary) == false) return;
 
-            var entities = typeSafeDictionary.GetValuesArray(out count);
+            var entities = typeSafeDictionary.GetValuesArray(out var count);
 
             for (var i = 0; i < count; i++)
                 action(ref entities[i], new EntityActionData(this, i));
@@ -78,11 +76,9 @@ namespace Svelto.ECS.Internal
 
         public void ExecuteOnEntities<T, W>(int groupID, ref W value, EntitiesAction<T, W> action) where T:IEntityStruct
         {
-            int                   count;
-            TypeSafeDictionary<T> typeSafeDictionary;
-            if (QueryEntitySafeDictionary(groupID, out typeSafeDictionary) == false) return;
+            if (QueryEntitySafeDictionary(groupID, out TypeSafeDictionary<T> typeSafeDictionary) == false) return;
 
-            var entities = typeSafeDictionary.GetValuesArray(out count);
+            var entities = typeSafeDictionary.GetValuesArray(out var count);
 
             for (var i = 0; i < count; i++)
                 action(ref entities[i], ref value, new EntityActionData(this, i));

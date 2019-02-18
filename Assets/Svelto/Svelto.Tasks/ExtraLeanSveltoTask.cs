@@ -11,13 +11,12 @@ namespace Svelto.Tasks
 {
     public struct ExtraLeanSveltoTask<TTask> : ISveltoTask where TTask : IEnumerator
     {
-        internal ContinuationEnumerator Run<TRunner>(TRunner runner, ref TTask task, bool immediate)
+        internal void Run<TRunner>(TRunner runner, ref TTask task, bool immediate)
             where TRunner : class, IInternalRunner<ExtraLeanSveltoTask<TTask>>
         {
 #if DEBUG && !PROFILER
-            Check.Require(IS_TASK_STRUCT || task != null,
-                          "A valid enumerator is required to enable an ExtraLeanSveltTask "
-                             .FastConcat(ToString()));
+            DBC.Tasks.Check.Require(IS_TASK_STRUCT == true || task != null, 
+                "A valid enumerator is required to enable an ExtraLeanSveltTask ".FastConcat(ToString()));
 #endif
 
             Check.Require(runner != null, "The runner cannot be null ".FastConcat(ToString()));
@@ -29,8 +28,6 @@ namespace Svelto.Tasks
             _runningTask                        = task;
 
             runner.StartCoroutine(ref this, immediate);
-
-            return null;
         }
 
         public override string ToString()

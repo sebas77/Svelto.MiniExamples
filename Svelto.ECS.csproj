@@ -91,7 +91,7 @@
     <Compile Include="Assets\Svelto\Svelto.ECS\EntitySubmitOperation.cs" />
     <Compile Include="Assets\Svelto\Svelto.ECS\EntityView.cs" />
     <Compile Include="Assets\Svelto\Svelto.ECS\EntityViewUtility.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\ExclusiveGroups.cs" />
+    <Compile Include="Assets\Svelto\Svelto.ECS\ExclusiveGroup.cs" />
     <Compile Include="Assets\Svelto\Svelto.ECS\ExecuteOnEntitiesDB.cs" />
     <Compile Include="Assets\Svelto\Svelto.ECS\ExtendibleEntityDescriptor.cs" />
     <Compile Include="Assets\Svelto\Svelto.ECS\Extensions\Unity\GenericEntityDescriptorHolder.cs" />

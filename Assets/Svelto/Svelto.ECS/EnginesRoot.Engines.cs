@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using DBC.ECS;
 using Svelto.DataStructures;
 using Svelto.DataStructures.Experimental;
 using Svelto.ECS.Internal;
@@ -43,7 +42,7 @@ namespace Svelto.ECS
 
         public void AddEngine(IEngine engine)
         {
-            Check.Require(_enginesSet.Contains(engine) == false,
+            DBC.ECS.Check.Require(_enginesSet.Contains(engine) == false,
                                  "The same engine has been added more than once "
                                     .FastConcat(engine.ToString()));
 

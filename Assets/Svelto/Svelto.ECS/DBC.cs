@@ -332,7 +332,7 @@ namespace DBC.ECS
 
 		// Are trace assertion statements being used? 
 		// Default is to use exception handling.
-		private static bool useAssertions;
+		private static bool useAssertions = false;
 
 		#endregion // Implementation
 

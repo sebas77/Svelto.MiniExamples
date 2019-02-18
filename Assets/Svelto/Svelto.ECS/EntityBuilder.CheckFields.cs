@@ -1,7 +1,7 @@
 ﻿#if !DEBUG || PROFILER
 #define DISABLE_CHECKS
 using System.Diagnostics;
-#endif
+#endif    
 using System;
 using System.Reflection;
 
@@ -76,7 +76,7 @@ namespace Svelto.ECS
 
                     for (int j = properties.Length - 1; j >= 0; --j)
                     {
-                        if (properties[j].PropertyType.IsGenericType)
+                        if (properties[j].PropertyType.IsGenericType == true)
                         {
                             var genericTypeDefinition = properties[j].PropertyType.GetGenericTypeDefinition();
                             if (genericTypeDefinition == DISPATCHONSETTYPE ||
@@ -93,9 +93,9 @@ namespace Svelto.ECS
 
         static void SubCheckFields(Type fieldFieldType)
         {
-            if (fieldFieldType.IsPrimitive || fieldFieldType.IsValueType)
+            if (fieldFieldType.IsPrimitive == true || fieldFieldType.IsValueType == true)
             {
-                if (fieldFieldType.IsValueType && !fieldFieldType.IsEnum && fieldFieldType.IsPrimitive == false)
+                if (fieldFieldType.IsValueType == true && !fieldFieldType.IsEnum && fieldFieldType.IsPrimitive == false)
                 {
                     CheckFields(fieldFieldType, false, false);
                 }

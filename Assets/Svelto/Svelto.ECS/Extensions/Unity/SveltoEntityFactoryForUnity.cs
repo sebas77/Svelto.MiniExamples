@@ -6,7 +6,7 @@ namespace Svelto.ECS.Unity
     public static class SveltoEntityFactoryForUnity
     {
         public static T Create<T>(EGID ID, Transform contextHolder,
-                                     IEntityFactory factory) where T : MonoBehaviour, IEntityDescriptorHolder
+            IEntityFactory factory) where T : MonoBehaviour, IEntityDescriptorHolder
         {
             var holder = contextHolder.GetComponentInChildren<T>(true);
             var implementors = holder.GetComponents<IImplementor>();
@@ -17,7 +17,7 @@ namespace Svelto.ECS.Unity
         }
         
         public static void CreateAll<T>(ExclusiveGroup group, Transform contextHolder,
-                                     IEntityFactory factory) where T : MonoBehaviour, IEntityDescriptorHolder
+            IEntityFactory factory) where T : MonoBehaviour, IEntityDescriptorHolder
         {
             var holders       = contextHolder.GetComponentsInChildren<T>(true);
 
@@ -25,7 +25,12 @@ namespace Svelto.ECS.Unity
             {
                 var implementors = holder.GetComponents<IImplementor>();
 
-                factory.BuildEntity(holder.GetInstanceID(), group, holder.GetDescriptor(), implementors);
+                ExclusiveGroup.ExclusiveGroupStruct realGroup = group;
+
+                if (string.IsNullOrEmpty( holder.groupName) == false)
+                    realGroup = ExclusiveGroup.Search(holder.groupName);
+
+                factory.BuildEntity(holder.GetInstanceID(), realGroup, holder.GetDescriptor(), implementors);
             }
         }
     }

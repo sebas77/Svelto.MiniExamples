@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
@@ -13,17 +14,34 @@ using System.Threading.Tasks;
 
 namespace Svelto.Tasks
 {
-    public sealed class MultiThreadRunner:MultiThreadRunner<LeanSveltoTask<IEnumerator<TaskContract>>>
+    namespace Lean
     {
-        public MultiThreadRunner(string name, bool relaxed = false, bool tightTasks = false) : base(name, relaxed, tightTasks)
+        public sealed class MultiThreadRunner<T>:Svelto.Tasks.MultiThreadRunner<LeanSveltoTask<T>> where T : IEnumerator<TaskContract>
         {
-        }
+            public MultiThreadRunner(string name, bool relaxed = false, bool tightTasks = false) : base(name, relaxed, tightTasks)
+            {
+            }
 
-        public MultiThreadRunner(string name, float intervalInMs) : base(name, intervalInMs)
-        {
-        }
+            public MultiThreadRunner(string name, float intervalInMs) : base(name, intervalInMs)
+            {
+            }
+        }   
     }
+    
+    namespace ExtraLean
+    {
+        public sealed class MultiThreadRunner<T>:Svelto.Tasks.MultiThreadRunner<ExtraLeanSveltoTask<T>> where T : IEnumerator
+        {
+            public MultiThreadRunner(string name, bool relaxed = false, bool tightTasks = false) : base(name, relaxed, tightTasks)
+            {
+            }
 
+            public MultiThreadRunner(string name, float intervalInMs) : base(name, intervalInMs)
+            {
+            }
+        }   
+    }
+    
     public class MultiThreadRunner<TTask> : MultiThreadRunner<TTask, StandardRunningTasksInfo> where TTask : ISveltoTask
     {
         public MultiThreadRunner(string name, bool relaxed = false, bool tightTasks = false) : 

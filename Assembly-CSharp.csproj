@@ -689,10 +689,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="Assembly-CSharp-firstpass.csproj">
-      <Project>{DAEC57B3-8C07-CAF7-2F62-3F155DDA1296}</Project>
-      <Name>Assembly-CSharp-firstpass</Name>
-    </ProjectReference>
     <ProjectReference Include="Svelto.Pool.Debugger.csproj">
       <Project>{1FE34B06-A79D-9562-0A04-A22926D03BB0}</Project>
       <Name>Svelto.Pool.Debugger</Name>

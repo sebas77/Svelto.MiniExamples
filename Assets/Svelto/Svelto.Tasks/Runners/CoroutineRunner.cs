@@ -83,13 +83,14 @@ namespace Svelto.Tasks.Internal
                         if (result == false)
                         {
                             _coroutines.UnorderedRemoveAt(index);
+                            
                             coroutinesCount--;
                         }
                         else
                             index++;
 
                         mustExit = (coroutinesCount == 0 ||
-                                    _info.CanMoveNext(ref index, coroutines[previousIndex].Current, coroutinesCount) == false || index >= coroutinesCount);
+                            _info.CanMoveNext(ref index, coroutines[previousIndex].Current, coroutinesCount) == false || index >= coroutinesCount);
                     } 
                     while (!mustExit);
                 }

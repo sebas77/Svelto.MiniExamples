@@ -11,7 +11,7 @@ namespace Svelto.Tasks
         /// <returns>
         /// New reusable TaskRoutine
         /// </returns>
-        public static TaskRoutine<T> AllocateNewTaskRoutine<T, W>(W runner) where T: IEnumerator<TaskContract> where W:IInternalRunner<TaskRoutine<T>>
+        public static TaskRoutine<T> AllocateNewTaskRoutine<T, W>(W runner) where T: IEnumerator<TaskContract> where W:class, IInternalRunner<TaskRoutine<T>>
         {
             return new TaskRoutine<T>(runner);
         }

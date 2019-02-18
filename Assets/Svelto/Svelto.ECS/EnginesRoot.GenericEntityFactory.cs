@@ -1,14 +1,12 @@
-﻿using Svelto.DataStructures;
-
-namespace Svelto.ECS
+﻿namespace Svelto.ECS
 {
     public partial class EnginesRoot
     {
         class GenericEntityFactory : IEntityFactory
         {
-            readonly WeakReference<EnginesRoot> _weakEngine;
+            readonly DataStructures.WeakReference<EnginesRoot> _weakEngine;
 
-            public GenericEntityFactory(WeakReference<EnginesRoot> weakReference)
+            public GenericEntityFactory(DataStructures.WeakReference<EnginesRoot> weakReference)
             {
                 _weakEngine = weakReference;
             }
