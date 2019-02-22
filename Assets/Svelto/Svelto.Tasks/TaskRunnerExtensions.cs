@@ -3,24 +3,16 @@ using Svelto.Tasks;
 using System.Collections;
 using System.Collections.Generic;
 using Svelto.Tasks.Enumerators;
-using Svelto.Tasks.Internal;
 using Svelto.Utilities;
 
 namespace Svelto.Tasks.ExtraLean
 {
     public static class TaskRunnerExtensions
     {
-        public static void Run(this IEnumerator enumerator)
-        {
-            new ExtraLeanSveltoTask<IEnumerator>()
-               .Run((IInternalRunner<ExtraLeanSveltoTask<IEnumerator>>) StandardSchedulers.standardScheduler,
-                      ref enumerator, true);
-        }
-        
         public static void RunOn<TTask, TRunner>(this TTask enumerator, TRunner runner)
-            where TTask : IEnumerator where TRunner : class, IInternalRunner<ExtraLeanSveltoTask<TTask>>
+            where TTask : IEnumerator where TRunner : class, IRunner<SveltoTask<TTask>>
         {
-            new ExtraLeanSveltoTask<TTask>().Run(runner, ref enumerator, false);
+            new SveltoTask<TTask>().Run(runner, ref enumerator/*, false*/);
         }
     }
 }
@@ -29,17 +21,10 @@ namespace Svelto.Tasks.Lean
 {
     public static class TaskRunnerExtensions
     {
-        public static ContinuationEnumerator Run(this IEnumerator<TaskContract> enumerator)
-        {
-            return new LeanSveltoTask<IEnumerator<TaskContract>>()
-               .Start((IInternalRunner<LeanSveltoTask<IEnumerator<TaskContract>>>) StandardSchedulers.standardScheduler,
-                      ref enumerator, true);
-        }
-
         public static ContinuationEnumerator RunOn<TTask, TRunner>(this TTask enumerator, TRunner runner)
-            where TTask : IEnumerator<TaskContract> where TRunner : class, IInternalRunner<LeanSveltoTask<TTask>>
+            where TTask : IEnumerator<TaskContract> where TRunner : class, IRunner<SveltoTask<TTask>>
         {
-            return new LeanSveltoTask<TTask>().Start(runner, ref enumerator, false);
+            return new SveltoTask<TTask>().Start(runner, ref enumerator/*, false*/);
         }
     }
 }
@@ -49,14 +34,6 @@ public static class TaskRunnerExtensions
     public static TaskContract Continue<T>(this T enumerator) where T:class,IEnumerator<TaskContract> 
     {
         return new TaskContract(enumerator);
-    }
-
-    public static TaskRoutine<TTask> ToTaskRoutine<TTask, TRunner>(this TTask enumerator, TRunner runner)
-        where TTask : IEnumerator<TaskContract> where TRunner : class, IInternalRunner<TaskRoutine<TTask>>
-    {
-        var taskroutine = TaskRunner.AllocateNewTaskRoutine<TTask, TRunner>(runner);
-        taskroutine.SetEnumerator(enumerator);
-        return taskroutine;
     }
 
     public static void Complete<T>(this T enumerator, int _timeout = 0) where T : IEnumerator
@@ -80,8 +57,7 @@ public static class TaskRunnerExtensions
                 while (enumerator.MoveNext())
                     ThreadUtility.Wait(ref quickIterations);
             else
-                while (enumerator.MoveNext())
-                    ;
+                while (enumerator.MoveNext());
         }
     }
 
@@ -108,10 +84,19 @@ public static class TaskRunnerExtensions
         }
     }
 
+        /// <summary>
+        /// Keeping this until I prove I can actually work without RunImmediate. The last parameter is false,
+        /// instead of true, because I don't want to have the side effects of the run immediate atm
+        /// </summary>
+        /// <param name="enumerator"></param>
+        /// <param name="runner"></param>
+        /// <typeparam name="TTask"></typeparam>
+        /// <typeparam name="TRunner"></typeparam>
+        /// <returns></returns>
     internal static ContinuationEnumerator RunImmediate<TTask, TRunner>(this TTask enumerator, TRunner runner)
-        where TTask : IEnumerator<TaskContract> where TRunner : class, IInternalRunner<LeanSveltoTask<TTask>>
+        where TTask : IEnumerator<TaskContract> where TRunner : class, IRunner<Svelto.Tasks.Lean.SveltoTask<TTask>>
     {
-        return new LeanSveltoTask<TTask>().Start(runner, ref enumerator, true);
+        return new Svelto.Tasks.Lean.SveltoTask<TTask>().Start(runner, ref enumerator/*, false*/);
     }
 }
 

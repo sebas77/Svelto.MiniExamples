@@ -20,7 +20,7 @@ namespace Svelto.Tasks.ExtraLean
                                           >("StandardMultiThreadRunner", false));
 
 #if UNITY_5 || UNITY_5_3_OR_NEWER        
-        internal static IRunner standardScheduler => coroutineScheduler;
+        internal static IRunner standardScheduler => updateScheduler;
 
         public static Unity.CoroutineMonoRunner<IEnumerator> coroutineScheduler =>
             _coroutineScheduler ?? (_coroutineScheduler = new Unity.CoroutineMonoRunner<IEnumerator>("StandardCoroutineRunner"));

@@ -72,6 +72,14 @@ namespace Svelto.DataStructures
             obj = Dequeue();
             return true;
         }
+        
+        /// <summary>
+        /// The number of items in the buffer
+        /// </summary>
+        /// <remarks>for indicative purposes only, may contain stale data</remarks>
+        public int Count { get { return (int)(_producerCursor.ReadFullFence() - _consumerCursor.ReadFullFence()); } }
+
+        public void Reset() { _consumerCursor.WriteReleaseFence(_producerCursor.ReadFullFence());}
 
         /// <summary>
         /// Add an item to the buffer
@@ -111,12 +119,6 @@ namespace Svelto.DataStructures
             _producerCursor.WriteReleaseFence(next); // makes sure we write the data in _entries before we update the producer cursor
         }
 
-        /// <summary>
-        /// The number of items in the buffer
-        /// </summary>
-        /// <remarks>for indicative purposes only, may contain stale data</remarks>
-        public int Count { get { return (int)(_producerCursor.ReadFullFence() - _consumerCursor.ReadFullFence()); } }
-
         static int NextPowerOfTwo(int x)
         {
             var result = 2;
@@ -126,8 +128,6 @@ namespace Svelto.DataStructures
             }
             return result;
         }
-
-
     }
     public static class Volatile
     {

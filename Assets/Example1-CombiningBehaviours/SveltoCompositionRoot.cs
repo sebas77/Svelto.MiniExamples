@@ -2,7 +2,7 @@ using System;
 using Svelto.Context;
 using Svelto.ECS.Schedulers.Unity;
 using Svelto.Tasks;
-using Unity.Entities;
+using Unity.Entities;    
 
 
 namespace Svelto.ECS.MiniExamples.Example1
@@ -15,15 +15,15 @@ namespace Svelto.ECS.MiniExamples.Example1
 
             var context = contextHolder as SveltoContext;
             
-            ThreadSynchronizationSignal _signal = new ThreadSynchronizationSignal("name");
-            
             //add the engines we are going to use
             var renderingDataSyncronizationEngine = new RenderingDataSyncronizationEngine();
-            _enginesRoot.AddEngine(renderingDataSyncronizationEngine);
             
             _enginesRoot.AddEngine(new SpawningDoofusEngine
                                        (context.mesh, context.material, _enginesRoot.GenerateEntityFactory()));
+            _enginesRoot.AddEngine(new MovingDoofusesEngine());
+            _enginesRoot.AddEngine(renderingDataSyncronizationEngine);
 
+            //one engine two ECS implementations :P
             World.Active.AddManager(renderingDataSyncronizationEngine);
         }
 

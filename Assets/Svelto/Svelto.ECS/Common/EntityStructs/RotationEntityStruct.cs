@@ -4,7 +4,7 @@ namespace Svelto.ECS.EntityStructs
 {
     public struct RotationEntityStruct : IEntityStruct
     {
-        public ECSVector4 rotation;
+        public EcsVector4 rotation;
         
         public EGID ID { get; set; }
     }

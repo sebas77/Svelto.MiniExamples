@@ -59,11 +59,13 @@
   <ItemGroup>
     <Compile Include="Assets\Example1-CombiningBehaviours\DoofusEntityDescriptor.cs" />
     <Compile Include="Assets\Example1-CombiningBehaviours\GameGroups.cs" />
+    <Compile Include="Assets\Example1-CombiningBehaviours\MovingDoofusesEngine.cs" />
     <Compile Include="Assets\Example1-CombiningBehaviours\RenderingDataSyncronizationEngine.cs" />
     <Compile Include="Assets\Example1-CombiningBehaviours\SpawningDoofusEngine.cs" />
     <Compile Include="Assets\Example1-CombiningBehaviours\SveltoCompositionRoot.cs" />
     <Compile Include="Assets\Example1-CombiningBehaviours\SveltoContext.cs" />
     <Compile Include="Assets\Example1-CombiningBehaviours\ThreadSynchronizationSignal.cs" />
+    <Compile Include="Assets\UnityFreeCamera.cs" />
     <Reference Include="Unity.Entities.Properties">
       <HintPath>D:/Robocraft/Svelto/Svelto.ECS.Examples/Svelto.ECS.Example.MiniExamples/Library/ScriptAssemblies/Unity.Entities.Properties.dll</HintPath>
     </Reference>

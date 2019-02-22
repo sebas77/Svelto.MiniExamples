@@ -17,7 +17,14 @@ namespace Svelto.Tasks
     /// </summary>
     namespace Lean.Unity
     {
-        public class CoroutineMonoRunner<T> : Svelto.Tasks.Unity.UpdateMonoRunner<LeanSveltoTask<T>> where T : IEnumerator<TaskContract>
+        public class CoroutineMonoRunner : Svelto.Tasks.Unity.UpdateMonoRunner<SveltoTask<IEnumerator<TaskContract>>>
+        {
+            public CoroutineMonoRunner(string name) : base(name)
+            {
+            }
+        }
+        
+        public class CoroutineMonoRunner<T> : Svelto.Tasks.Unity.UpdateMonoRunner<SveltoTask<T>> where T : IEnumerator<TaskContract>
         {
             public CoroutineMonoRunner(string name) : base(name)
             {
@@ -27,7 +34,14 @@ namespace Svelto.Tasks
     
     namespace ExtraLean.Unity
     {
-        public class CoroutineMonoRunner<T> : Svelto.Tasks.Unity.UpdateMonoRunner<ExtraLeanSveltoTask<T>> where T : IEnumerator
+        public class CoroutineMonoRunner : Svelto.Tasks.Unity.UpdateMonoRunner<SveltoTask<IEnumerator>>
+        {
+            public CoroutineMonoRunner(string name) : base(name)
+            {
+            }
+        }
+        
+        public class CoroutineMonoRunner<T> : Svelto.Tasks.Unity.UpdateMonoRunner<SveltoTask<T>> where T : IEnumerator
         {
             public CoroutineMonoRunner(string name) : base(name)
             {

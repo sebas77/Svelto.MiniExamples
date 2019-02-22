@@ -5,7 +5,6 @@ using Svelto.DataStructures;
 using Svelto.DataStructures.Experimental;
 using Svelto.ECS.Internal;
 using Svelto.ECS.Schedulers;
-using UnityEngine;
 
 namespace Svelto.ECS
 {
@@ -26,7 +25,7 @@ namespace Svelto.ECS
                         _transientEntitiesOperations.FastClear();
                         _transientEntitiesOperations.AddRange(_entitiesOperations);
                         _entitiesOperations.FastClear();
-                        
+
                         var entitiesOperations = _transientEntitiesOperations.ToArrayFast();
                         for (var i = 0; i < _transientEntitiesOperations.Count; i++)
                         {
@@ -40,7 +39,7 @@ namespace Svelto.ECS
                                                         new EGID(entitiesOperations[i].ID,
                                                                  entitiesOperations[i].fromGroupID),
                                                         new EGID(entitiesOperations[i].toID,
-                                                        entitiesOperations[i].toGroupID));
+                                                                 entitiesOperations[i].toGroupID));
                                         break;
                                     case EntitySubmitOperationType.Remove:
                                         MoveEntity(entitiesOperations[i].builders,
@@ -49,7 +48,12 @@ namespace Svelto.ECS
                                                    entitiesOperations[i].entityDescriptor, new EGID());
                                         break;
                                     case EntitySubmitOperationType.RemoveGroup:
-                                        RemoveGroupAndEntitiesFromDB(entitiesOperations[i].fromGroupID);
+                                        if (entitiesOperations[i].entityDescriptor == null)
+                                            RemoveGroupAndEntitiesFromDB(entitiesOperations[i].fromGroupID);
+                                        else
+                                            RemoveGroupAndEntitiesFromDB(entitiesOperations[i].fromGroupID,
+                                                                         entitiesOperations[i].entityDescriptor);
+
                                         break;
                                 }
                             }
@@ -57,20 +61,16 @@ namespace Svelto.ECS
                             {
 #if DEBUG && !PROFILER
                                 var str = "Crash while executing Entity Operation"
-                                                                .FastConcat(entitiesOperations[i].type.ToString())
-                                                                .FastConcat(" id: ")
-                                                                .FastConcat(entitiesOperations[i].ID)
-                                                                .FastConcat(" to id: ")
-                                                                .FastConcat(entitiesOperations[i].toID)
-                                                                .FastConcat(" from groupid: ")
-                                                                .FastConcat(entitiesOperations[i].fromGroupID)
-                                                                .FastConcat(" to groupid: ")
-                                                                .FastConcat(entitiesOperations[i].toGroupID);
+                                   .FastConcat(entitiesOperations[i].type.ToString()).FastConcat(" id: ")
+                                   .FastConcat(entitiesOperations[i].ID).FastConcat(" to id: ")
+                                   .FastConcat(entitiesOperations[i].toID).FastConcat(" from groupid: ")
+                                   .FastConcat(entitiesOperations[i].fromGroupID).FastConcat(" to groupid: ")
+                                   .FastConcat(entitiesOperations[i].toGroupID);
 #if RELAXED_ECS
                                 Console.LogException(str.FastConcat(" ", entitiesOperations[i].trace), e);
-#else       
+#else
                                 throw new ECSException(str.FastConcat(" ").FastConcat(entitiesOperations[i].trace), e);
-#endif    
+#endif
 #else
                                 var str = "Entity Operation is ".FastConcat(entitiesOperations[i].type.ToString())
                                                                 .FastConcat(" id: ")
@@ -88,7 +88,7 @@ namespace Svelto.ECS
                         }
                     }
                 }
-                
+
                 if (_groupedEntityToAdd.current.Count > 0)
                 {
                     using (profiler.Sample("Add operations"))
@@ -113,51 +113,55 @@ namespace Svelto.ECS
                         finally
                         {
                             //other can be cleared now, but let's avoid deleting the dictionary every time
-                            _groupedEntityToAdd.ClearOther();                    
+                            _groupedEntityToAdd.ClearOther();
                         }
                     }
                 }
             }
         }
-        
-         void AddEntityViewsToTheDBAndSuitableEngines(
-             FasterDictionary<int, Dictionary<Type, ITypeSafeDictionary>> groupsOfEntitiesToSubmit, PlatformProfiler profiler)
+
+        void AddEntityViewsToTheDBAndSuitableEngines(
+            FasterDictionary<int, Dictionary<Type, ITypeSafeDictionary>> groupsOfEntitiesToSubmit,
+            PlatformProfiler profiler)
         {
-            //then submit everything in the engines, so that the DB is up to date
-            //with all the entity views and struct created by the entity built
-            foreach (var groupToSubmit in groupsOfEntitiesToSubmit)
-            {    
-                foreach (var entityViewsPerType in groupToSubmit.Value)
-                {
-                    using (profiler.Sample("Add entities to engines"))
-                    {
-                        entityViewsPerType.Value.AddEntitiesToEngines(_entityEngines, ref profiler);
-                    }
-                }
-            }
-            
             //each group is indexed by entity view type. for each type there is a dictionary indexed by entityID
             foreach (var groupOfEntitiesToSubmit in groupsOfEntitiesToSubmit)
             {
+                Dictionary<Type, ITypeSafeDictionary> groupDB;
                 int groupID = groupOfEntitiesToSubmit.Key;
 
                 //if the group doesn't exist in the current DB let's create it first
-                if (_groupEntityDB.TryGetValue(groupID, out var groupDB) == false)
+                if (_groupEntityDB.TryGetValue(groupID, out groupDB) == false)
                     groupDB = _groupEntityDB[groupID] = new Dictionary<Type, ITypeSafeDictionary>();
 
                 //add the entityViews in the group
                 foreach (var entityViewTypeSafeDictionary in groupOfEntitiesToSubmit.Value)
                 {
-                    if (groupDB.TryGetValue(entityViewTypeSafeDictionary.Key, out var dbDic) == false)
+                    ITypeSafeDictionary dbDic;
+                    FasterDictionary<int, ITypeSafeDictionary> groupedGroup = null;
+                    if (groupDB.TryGetValue(entityViewTypeSafeDictionary.Key, out dbDic) == false)
                         dbDic = groupDB[entityViewTypeSafeDictionary.Key] = entityViewTypeSafeDictionary.Value.Create();
-                    
-                    if (_groupsPerEntity.TryGetValue(entityViewTypeSafeDictionary.Key, out var groupedGroup) == false)
+
+                    if (_groupsPerEntity.TryGetValue(entityViewTypeSafeDictionary.Key, out groupedGroup) == false)
                         groupedGroup = _groupsPerEntity[entityViewTypeSafeDictionary.Key] =
                             new FasterDictionary<int, ITypeSafeDictionary>();
 
                     //Fill the DB with the entity views generate this frame.
                     dbDic.FillWithIndexedEntities(entityViewTypeSafeDictionary.Value);
                     groupedGroup[groupID] = dbDic;
+                }
+            }
+
+            //then submit everything in the engines, so that the DB is up to date
+            //with all the entity views and struct created by the entity built
+            foreach (var groupToSubmit in groupsOfEntitiesToSubmit)
+            {
+                foreach (var entityViewsPerType in groupToSubmit.Value)
+                {
+                    using (profiler.Sample("Add entities to engines"))
+                    {
+                        entityViewsPerType.Value.AddEntitiesToEngines(_entityEngines, ref profiler);
+                    }
                 }
             }
         }

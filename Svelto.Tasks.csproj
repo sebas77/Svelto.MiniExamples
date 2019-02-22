@@ -110,6 +110,7 @@
     <Compile Include="Assets\Svelto\Svelto.Tasks\Runners\Unity\TimeBoundMonoRunner.cs" />
     <Compile Include="Assets\Svelto\Svelto.Tasks\Runners\Unity\TimeSlicedMonoRunner.cs" />
     <Compile Include="Assets\Svelto\Svelto.Tasks\Runners\Unity\UnityCoroutineRunner.cs" />
+    <Compile Include="Assets\Svelto\Svelto.Tasks\Runners\Unity\UnityJobRunner.cs" />
     <Compile Include="Assets\Svelto\Svelto.Tasks\Runners\Unity\UpdateMonoRunner.cs" />
     <Compile Include="Assets\Svelto\Svelto.Tasks\ServiceTasks\IServiceTask.cs" />
     <Compile Include="Assets\Svelto\Svelto.Tasks\StandardExtraLeanSchedulers.cs" />

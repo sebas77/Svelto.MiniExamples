@@ -1,4 +1,4 @@
-#if UNITY_5 || UNITY_5_3_OR_NEWER
+#if UNITY_2017_2_OR_NEWER
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.Networking;
@@ -11,11 +11,8 @@ namespace Svelto.Tasks.Enumerators
         {
             _www         = www;
             _www.timeout = timeOutInSeconds;
-#if UNITY_2017_2_OR_NEWER
+
             _www.SendWebRequest();
-#else
-            _www.Send();
-#endif
         }
 
         public bool MoveNext()

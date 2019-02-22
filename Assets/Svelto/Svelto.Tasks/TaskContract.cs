@@ -7,48 +7,42 @@ namespace Svelto.Tasks
 {
     public struct TaskContract
     {
-        TaskContract(int number) : this()
+        internal TaskContract(int number) : this()
         {
             _currentState      = states.value;
             _returnValue.int32 = number;
         }
 
-        TaskContract(ContinuationEnumerator continuation) : this()
+        internal TaskContract(ContinuationEnumerator continuation) : this()
         {
-            _currentState               = states.continuation;
-            _returnObjects.continuation = continuation;
+            _currentState = states.continuation;
+            _continuation = continuation;
         }
 
-        public TaskContract(IEnumerator enumerator) : this()
+        internal TaskContract(IEnumerator enumerator) : this()
         {
             _currentState            = states.enumerator;
             _returnObjects.reference = enumerator;
         }
 
-        public TaskContract(Break breakit) : this()
+        internal TaskContract(Break breakit) : this()
         {
             _currentState          = states.breakit;
             _returnObjects.breakIt = breakit;
         }
         
-        public TaskContract(Yield yieldIt) : this()
+        internal TaskContract(Yield yieldIt) : this()
         {
             _currentState = states.yieldit;
         }
 
-        public TaskContract(float val) : this()
+        internal TaskContract(float val) : this()
         {
             _currentState       = states.value;
             _returnValue.single = val;
         }
 
-        public TaskContract(object val) : this()
-        {
-            _currentState            = states.value;
-            _returnObjects.reference = val;
-        }
-
-        public TaskContract(string val) : this()
+        internal TaskContract(string val) : this()
         {
             _currentState            = states.value;
             _returnObjects.reference = val;
@@ -64,9 +58,8 @@ namespace Svelto.Tasks
         [StructLayout(LayoutKind.Explicit)]
         struct fieldObjects
         {
-            [FieldOffset(0)] internal object              reference;
-            [FieldOffset(0)] internal Break               breakIt;
-            [FieldOffset(0)] internal ContinuationEnumerator continuation;
+            [FieldOffset(0)] internal object reference;
+            [FieldOffset(0)] internal Break  breakIt;
         }
 
         public static implicit operator TaskContract(int number)
@@ -98,7 +91,12 @@ namespace Svelto.Tasks
         {
             return new TaskContract(yieldit);
         }
-
+        
+        public static implicit operator TaskContract(string payload)
+        {
+            return new TaskContract(payload);
+        }
+        
         public int ToInt()
         {
             return _returnValue.int32;
@@ -119,9 +117,15 @@ namespace Svelto.Tasks
             get { return _currentState == states.enumerator ? (IEnumerator<TaskContract>) _returnObjects.reference : null; }
         }
 
-        public ContinuationEnumerator ContinuationEnumerator
+        internal ContinuationEnumerator? Continuation
         {
-            get { return _currentState == states.continuation ? _returnObjects.continuation : null; }
+            get
+            {
+                if (_currentState != states.continuation)
+                    return null;
+
+                return _continuation;
+            }
         }
 
         public object reference
@@ -138,10 +142,12 @@ namespace Svelto.Tasks
         {
             get { return _currentState == states.yieldit; }
         }
-        
-        fieldValues  _returnValue;
-        readonly fieldObjects _returnObjects;
-        readonly states       _currentState;
+
+        readonly fieldValues            _returnValue;
+        readonly fieldObjects           _returnObjects;
+        readonly states                 _currentState;
+        readonly ContinuationEnumerator _continuation;
+
 
         enum states
         {

@@ -60,7 +60,10 @@
     <Compile Include="Assets\Svelto\Svelto.ECS\CheckEntityUtilities.cs" />
     <Compile Include="Assets\Svelto\Svelto.ECS\Common\Components\ECSRect.cs" />
     <Compile Include="Assets\Svelto\Svelto.ECS\Common\Components\ECSVector2.cs" />
+    <Compile Include="Assets\Svelto\Svelto.ECS\Common\Components\ECSVector3.cs" />
+    <Compile Include="Assets\Svelto\Svelto.ECS\Common\Components\EcsVector4.cs" />
     <Compile Include="Assets\Svelto\Svelto.ECS\Common\Components\ExtensionMethods.cs" />
+    <Compile Include="Assets\Svelto\Svelto.ECS\Common\EntityStructs\InterpolateVector3EntityStruct.cs" />
     <Compile Include="Assets\Svelto\Svelto.ECS\Common\EntityStructs\PositionEntityStruct.cs" />
     <Compile Include="Assets\Svelto\Svelto.ECS\Common\EntityStructs\RotationEntityStruct.cs" />
     <Compile Include="Assets\Svelto\Svelto.ECS\DataStructures\TypeSafeDictionary.cs" />
@@ -75,6 +78,7 @@
     <Compile Include="Assets\Svelto\Svelto.ECS\EnginesRoot.DoubleBufferedEntityViews.cs" />
     <Compile Include="Assets\Svelto\Svelto.ECS\EnginesRoot.Engines.cs" />
     <Compile Include="Assets\Svelto\Svelto.ECS\EnginesRoot.Entities.cs" />
+    <Compile Include="Assets\Svelto\Svelto.ECS\EnginesRoot.GenerateEntitiesStream.cs" />
     <Compile Include="Assets\Svelto\Svelto.ECS\EnginesRoot.GenericEntityFactory.cs" />
     <Compile Include="Assets\Svelto\Svelto.ECS\EnginesRoot.GenericEntityFunctions.cs" />
     <Compile Include="Assets\Svelto\Svelto.ECS\EnginesRoot.Submission.cs" />

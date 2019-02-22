@@ -1,56 +1,62 @@
 using System;
-using System.Collections;
 using Svelto.Tasks.Internal;
-using Svelto.Utilities;
 
 namespace Svelto.Tasks.Enumerators
 {
+    public struct ContinuationEnumerator
+    {
+        internal readonly ContinuationEnumeratorInternal ce;
+        
+        internal ContinuationEnumerator(ContinuationEnumeratorInternal continuator)
+        {
+            _signature = continuator.signature;
+            ce = continuator;
+        }
+
+        public bool isRunning => ce.MoveNext(ref _signature);
+
+        DateTime _signature;
+    }
+    
     /// <summary>
     /// The Continuation Wrapper contains a valid value until the task is not stopped. After that it should be released. 
     /// </summary>
-    public class ContinuationEnumerator : IEnumerator
+    class ContinuationEnumeratorInternal
     {
-        internal ContinuationEnumerator()
-        {}
-        
-        public bool MoveNext()
+        internal ContinuationEnumeratorInternal()
         {
-            if (ThreadUtility.VolatileRead(ref _completed) == true)
-            {
-                _completed = false;
-                
-                return false;
-            }
-
-            return true;
+            signature = DateTime.Now;
+        }
+        
+        public bool MoveNext(ref DateTime signature)
+        {
+            return signature == this.signature;
         }
 
         internal void ReturnToPool()
         {
-            ContinuationPool.PushBack(this);
+            Reset();
+            //careful, this reasoning is convoluted:
+            //I need to be sure that the ContinuatorEnumerator is invalid in the moment is back to the pool
+            //(it would be the same to shift the reasoning when it's take from the pool, but this is even safer)
+            //At this point in time, Svelto.Tasks may still holding the continuation enumerator to check if the
+            //task is done. But how can I know how long a runner is going to hold the continuation enumerator for?
+            //therefore the "signature" will invalidate stale holders and therefore it's safe here to set
+            //_completed to false
             
-            ThreadUtility.VolatileWrite(ref _completed, true);
+            ContinuationPool.PushBack(this); //and return to the pool
         }
 
         public void Reset()
         {
-            throw new NotImplementedException();
+            signature = DateTime.Now; //invalidate ContinuationEnumerator holding this object            
         }
         
-        ~ContinuationEnumerator()
+        ~ContinuationEnumeratorInternal()
         {
-            _completed = false;
-
-            ContinuationPool.PushBack(this);
+            ReturnToPool();
         }
 
-        public object Current => throw new NotImplementedException();
-        
-        internal void InternalReset()
-        {
-            _completed = false;
-        }
-
-        bool _completed;
+        public DateTime signature { get; private set; }
     }
 }

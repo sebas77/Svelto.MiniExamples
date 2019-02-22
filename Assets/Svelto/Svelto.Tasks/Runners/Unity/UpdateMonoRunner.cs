@@ -9,7 +9,7 @@ namespace Svelto.Tasks
 {
     namespace Lean.Unity
     {
-        public class UpdateMonoRunner<T> : Svelto.Tasks.Unity.UpdateMonoRunner<LeanSveltoTask<T>> where T : IEnumerator<TaskContract>
+        public class UpdateMonoRunner<T> : Svelto.Tasks.Unity.UpdateMonoRunner<SveltoTask<T>> where T : IEnumerator<TaskContract>
         {
             public UpdateMonoRunner(string name) : base(name)
             {
@@ -26,7 +26,7 @@ namespace Svelto.Tasks
             }
         }
         
-        public class UpdateMonoRunner<T> : Svelto.Tasks.Unity.UpdateMonoRunner<ExtraLeanSveltoTask<T>> where T : IEnumerator
+        public class UpdateMonoRunner<T> : Svelto.Tasks.Unity.UpdateMonoRunner<SveltoTask<T>> where T : IEnumerator
         {
             public UpdateMonoRunner(string name) : base(name)
             {

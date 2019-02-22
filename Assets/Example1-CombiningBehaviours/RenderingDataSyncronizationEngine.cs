@@ -16,7 +16,7 @@ namespace Svelto.ECS.MiniExamples.Example1
         
         public RenderingDataSyncronizationEngine()
         {
-            _runner = new UpdateMonoRunner("test");
+            _runner = new CoroutineMonoRunner("test");
         }
         
         public void Ready()
@@ -77,49 +77,7 @@ namespace Svelto.ECS.MiniExamples.Example1
         protected override void OnUpdate()
         {}
 
-        UpdateMonoRunner _runner;
+        readonly CoroutineMonoRunner _runner;
         ComponentGroup m_Group;
     }
 }
-
-
-#if ignore
- public class RenderingDataSyncronizationEngine:ComponentSystem, IQueryingEntitiesEngine
-    {
-        public IEntitiesDB entitiesDB { get; set; }
-        
-        public RenderingDataSyncronizationEngine(ThreadSynchronizationSignal synchronizationSignal)
-        {
-            _synchronizationSignal = synchronizationSignal;
-        }
-
-        public void Ready()
-        {
-            _ready = true;
-        }
-        
-        protected override void OnUpdate()
-        {
-            if (_ready == false || _synchronizationSignal.Wait().MoveNext() == true) return;
-
-            int count;
-            var entities = entitiesDB.QueryEntities<BoidEntityStruct>
-                (GAME_GROUPS.BOIDS_GROUP, out count);
-
-            int index = 0;
-            
-            ForEach( (ref Position position, ref Rotation rotation) =>
-            {
-                position = new Position {Value = new float3(entities[index].position.x, entities[index].position.y, 
-                                                            entities[index].position.z)};
-                rotation = new Rotation { Value = new quaternion(entities[index].rotation.x, entities[index].rotation.y, 
-                                                            entities[index].rotation.z, entities[index].rotation.w)};
-            }, GetComponentGroup(typeof(Position), typeof(Rotation)));
-            
-            _synchronizationSignal.SignalBack();
-        }
-
-        readonly ThreadSynchronizationSignal _synchronizationSignal;
-        bool _ready;
-    }
-#endif
