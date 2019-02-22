@@ -5,6 +5,7 @@ using Svelto.DataStructures;
 using Svelto.DataStructures.Experimental;
 using Svelto.ECS.Internal;
 using Svelto.ECS.Schedulers;
+using UnityEngine;
 
 namespace Svelto.ECS
 {
@@ -122,34 +123,6 @@ namespace Svelto.ECS
          void AddEntityViewsToTheDBAndSuitableEngines(
              FasterDictionary<int, Dictionary<Type, ITypeSafeDictionary>> groupsOfEntitiesToSubmit, PlatformProfiler profiler)
         {
-            //each group is indexed by entity view type. for each type there is a dictionary indexed by entityID
-            foreach (var groupOfEntitiesToSubmit in groupsOfEntitiesToSubmit)
-            {
-                Dictionary<Type, ITypeSafeDictionary> groupDB;
-                int groupID = groupOfEntitiesToSubmit.Key;
-
-                //if the group doesn't exist in the current DB let's create it first
-                if (_groupEntityDB.TryGetValue(groupID, out groupDB) == false)
-                    groupDB = _groupEntityDB[groupID] = new Dictionary<Type, ITypeSafeDictionary>();
-
-                //add the entityViews in the group
-                foreach (var entityViewTypeSafeDictionary in groupOfEntitiesToSubmit.Value)
-                {
-                    ITypeSafeDictionary dbDic;
-                    FasterDictionary<int, ITypeSafeDictionary> groupedGroup = null;
-                    if (groupDB.TryGetValue(entityViewTypeSafeDictionary.Key, out dbDic) == false)
-                        dbDic = groupDB[entityViewTypeSafeDictionary.Key] = entityViewTypeSafeDictionary.Value.Create();
-                    
-                    if (_groupsPerEntity.TryGetValue(entityViewTypeSafeDictionary.Key, out groupedGroup) == false)
-                        groupedGroup = _groupsPerEntity[entityViewTypeSafeDictionary.Key] =
-                                           new FasterDictionary<int, ITypeSafeDictionary>();
-
-                    //Fill the DB with the entity views generate this frame.
-                    dbDic.FillWithIndexedEntities(entityViewTypeSafeDictionary.Value);
-                    groupedGroup[groupID] = dbDic;
-                }
-            }
-
             //then submit everything in the engines, so that the DB is up to date
             //with all the entity views and struct created by the entity built
             foreach (var groupToSubmit in groupsOfEntitiesToSubmit)
@@ -160,6 +133,31 @@ namespace Svelto.ECS
                     {
                         entityViewsPerType.Value.AddEntitiesToEngines(_entityEngines, ref profiler);
                     }
+                }
+            }
+            
+            //each group is indexed by entity view type. for each type there is a dictionary indexed by entityID
+            foreach (var groupOfEntitiesToSubmit in groupsOfEntitiesToSubmit)
+            {
+                int groupID = groupOfEntitiesToSubmit.Key;
+
+                //if the group doesn't exist in the current DB let's create it first
+                if (_groupEntityDB.TryGetValue(groupID, out var groupDB) == false)
+                    groupDB = _groupEntityDB[groupID] = new Dictionary<Type, ITypeSafeDictionary>();
+
+                //add the entityViews in the group
+                foreach (var entityViewTypeSafeDictionary in groupOfEntitiesToSubmit.Value)
+                {
+                    if (groupDB.TryGetValue(entityViewTypeSafeDictionary.Key, out var dbDic) == false)
+                        dbDic = groupDB[entityViewTypeSafeDictionary.Key] = entityViewTypeSafeDictionary.Value.Create();
+                    
+                    if (_groupsPerEntity.TryGetValue(entityViewTypeSafeDictionary.Key, out var groupedGroup) == false)
+                        groupedGroup = _groupsPerEntity[entityViewTypeSafeDictionary.Key] =
+                            new FasterDictionary<int, ITypeSafeDictionary>();
+
+                    //Fill the DB with the entity views generate this frame.
+                    dbDic.FillWithIndexedEntities(entityViewTypeSafeDictionary.Value);
+                    groupedGroup[groupID] = dbDic;
                 }
             }
         }

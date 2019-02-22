@@ -2,6 +2,7 @@ using System;
 using Svelto.Context;
 using Svelto.ECS.Schedulers.Unity;
 using Svelto.Tasks;
+using Unity.Entities;
 
 
 namespace Svelto.ECS.MiniExamples.Example1
@@ -17,10 +18,13 @@ namespace Svelto.ECS.MiniExamples.Example1
             ThreadSynchronizationSignal _signal = new ThreadSynchronizationSignal("name");
             
             //add the engines we are going to use
-            _enginesRoot.AddEngine(new RenderingDataSyncronizationEngine(_signal));
+            var renderingDataSyncronizationEngine = new RenderingDataSyncronizationEngine();
+            _enginesRoot.AddEngine(renderingDataSyncronizationEngine);
             
             _enginesRoot.AddEngine(new SpawningDoofusEngine
-                                       (context.mesh, context.material, _enginesRoot.GenerateEntityFactory())); 
+                                       (context.mesh, context.material, _enginesRoot.GenerateEntityFactory()));
+
+            World.Active.AddManager(renderingDataSyncronizationEngine);
         }
 
         public void OnContextDestroyed()

@@ -7,6 +7,7 @@ using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.Tasks.Internal;
 using Svelto.Utilities;
+using Unity.Jobs;
 
 #if NETFX_CORE
 using System.Threading.Tasks;
@@ -30,7 +31,18 @@ namespace Svelto.Tasks
     
     namespace ExtraLean
     {
-        public sealed class MultiThreadRunner<T>:Svelto.Tasks.MultiThreadRunner<ExtraLeanSveltoTask<T>> where T : IEnumerator
+        public class MultiThreadRunner : MultiThreadRunner<IEnumerator>
+        {
+            public MultiThreadRunner(string name, bool relaxed = false, bool tightTasks = false) : base(name, relaxed, tightTasks)
+            {
+            }
+
+            public MultiThreadRunner(string name, float intervalInMs) : base(name, intervalInMs)
+            {
+            }
+        }
+        
+        public class MultiThreadRunner<T>:Svelto.Tasks.MultiThreadRunner<ExtraLeanSveltoTask<T>> where T : IEnumerator
         {
             public MultiThreadRunner(string name, bool relaxed = false, bool tightTasks = false) : base(name, relaxed, tightTasks)
             {
@@ -161,7 +173,9 @@ namespace Svelto.Tasks
             _runnerData = runnerData;
 #if !NETFX_CORE
             //threadpool doesn't work well with Unity apparently it seems to choke when too meany threads are started
-            new Thread(() => runnerData.RunCoroutineFiber()) {IsBackground = true}.Start();
+            //new Thread(runnerData.RunCoroutineFiber) {IsBackground = true}.Start();
+
+            new UnityJob(runnerData.RunCoroutineFiber).Schedule();
 #else
             Task.Factory.StartNew(() => runnerData.RunCoroutineFiber(), TaskCreationOptions.LongRunning);
 #endif
@@ -271,12 +285,15 @@ namespace Svelto.Tasks
                 var quickIterations = 0;
                 _watch.Start();
 
-                while (_watch.ElapsedTicks < _interval)
-                {
-                    ThreadUtility.Wait(ref quickIterations);
+                    while (_watch.ElapsedTicks < _interval)
+                    {
+                        if ((_interval - _watch.ElapsedTicks) < 16000)
+                            ThreadUtility.Wait(ref quickIterations);
+                        else
+                            ThreadUtility.TakeItEasy();
 
-                    if (ThreadUtility.VolatileRead(ref _flushingOperation.kill) == true) return;
-                }
+                        if (ThreadUtility.VolatileRead(ref _flushingOperation.kill) == true) return;
+                    }
 
                 _watch.Reset();
             }
@@ -386,6 +403,15 @@ namespace Svelto.Tasks
             readonly CoroutineRunner<TTask>.FlushingOperation                          _flushingOperation;
             readonly CoroutineRunner<TTask>.Process<TFlowModifier, PlatformProfilerMT> _process;
         }
+    }
+    
+    struct UnityJob:IJob
+    {
+        public UnityJob(Action runCoroutineFiber) { _runCoroutineFiber = runCoroutineFiber; }
+
+        public void Execute() { _runCoroutineFiber(); }
+
+        readonly Action _runCoroutineFiber;
     }
 
     public class MultiThreadRunnerException : Exception

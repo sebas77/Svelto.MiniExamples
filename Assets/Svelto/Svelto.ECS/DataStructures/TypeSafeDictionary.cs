@@ -68,9 +68,7 @@ namespace Svelto.ECS.Internal
 
             for (int i = 0; i < count; i++)
             {
-                TValue entity = values[i];
-
-                AddEntityViewToEngines(entityViewEnginesDB, ref entity, ref profiler);
+                AddEntityViewToEngines(entityViewEnginesDB, ref values[i], ref profiler);
             }
         }
 

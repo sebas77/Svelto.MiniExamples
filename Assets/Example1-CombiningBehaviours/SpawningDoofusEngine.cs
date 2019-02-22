@@ -1,4 +1,5 @@
 using System.Collections;
+using Svelto.ECS.EntityStructs;
 using Svelto.Tasks;
 using Svelto.Tasks.Enumerators;
 using Svelto.Tasks.ExtraLean;
@@ -10,13 +11,19 @@ using UnityEngine.Rendering;
 
 namespace Svelto.ECS.MiniExamples.Example1
 {
-    public class SpawningDoofusEngine : IQueryingEntitiesEngine
+    public class SpawningDoofusEngine : SingleEntityEngine<PositionEntityStruct>, IQueryingEntitiesEngine
     {
         public IEntitiesDB entitiesDB { get; set; }
 
         public void Ready()
         {
             SpawningDoofuses().Run();
+        }
+        
+        protected override void Add(ref PositionEntityStruct entityView)
+        {
+            entityView.position.x = Random.value * 10;
+            entityView.position.z = Random.value * 10;
         }
 
         IEnumerator SpawningDoofuses()
@@ -27,10 +34,11 @@ namespace Svelto.ECS.MiniExamples.Example1
             {
                 SpawnUnityECSEntity();
 
-                _factory.BuildEntity<DoofusEntityDescriptor>
-                    (_numberOfDoofuses, GameGroups.Doofuses);
+                var init = _factory.BuildEntity<DoofusEntityDescriptor>(_numberOfDoofuses, GameGroups.DOOFUSES);
                 
-                _numberOfDoofuses++;
+            //    init.Init(new Position());
+                
+                _numberOfDoofuses++;    
 
                 while (wait.MoveNext()) yield return Yield.It;
             }
@@ -43,9 +51,7 @@ namespace Svelto.ECS.MiniExamples.Example1
                                                     typeof(Rotation),
                                                     typeof(RenderMesh));
 
-//                _unityECSGroup = manager.CreateComponentGroup(archetype.ComponentTypes);
-
-            var renderer = new RenderMesh()
+            var renderer = new RenderMesh
             {
                 castShadows    = ShadowCastingMode.On,
                 receiveShadows = true,
@@ -67,6 +73,11 @@ namespace Svelto.ECS.MiniExamples.Example1
             _material = material;
             _factory = factory;
             _mesh     = mesh;
+        }
+
+        protected override void Remove(ref PositionEntityStruct entityView)
+        {
+            
         }
     }
 }

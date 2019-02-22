@@ -1,17 +1,22 @@
 using System;
 using System.Collections;
+using Svelto.ECS.EntityStructs;
 using Svelto.Tasks.ExtraLean;
+using Svelto.Tasks.ExtraLean.Unity;
+using Unity.Entities;
+using Unity.Mathematics;
+using Unity.Transforms;
 
 namespace Svelto.ECS.MiniExamples.Example1
 {
-    public class RenderingDataSyncronizationEngine: IQueryingEntitiesEngine, IDisposable
+    [DisableAutoCreation]
+    public class RenderingDataSyncronizationEngine: ComponentSystem, IDisposable, IQueryingEntitiesEngine
     {
         public IEntitiesDB entitiesDB { get; set; }
         
-        public RenderingDataSyncronizationEngine(ThreadSynchronizationSignal synchronizationSignal)
+        public RenderingDataSyncronizationEngine()
         {
-            _synchronizationSignal = synchronizationSignal;
-            _runner = new MultiThreadRunner("test");
+            _runner = new UpdateMonoRunner("test");
         }
         
         public void Ready()
@@ -19,36 +24,47 @@ namespace Svelto.ECS.MiniExamples.Example1
             SynchronizeUnityECSEntitiesWithSveltoECSEntities().RunOn(_runner);
         }
 
+        protected override void OnCreateManager()
+        {
+            base.OnCreateManager();
+            
+            m_Group = GetComponentGroup(typeof(Position), typeof(Rotation));
+        }
+
         IEnumerator SynchronizeUnityECSEntitiesWithSveltoECSEntities()
         {
+            while (m_Group == null) yield return null;
+            
             while (true)
             {
-                //this is the normal not blocking operation. The frame rate will be as fast as the unity main thread
-                //can be, but the boids will still update at the real execution rate
-                yield return _synchronizationSignal;
-                
-                int count;
-                //fetch the Svelto.ECS entities
-                var entities = entitiesDB.QueryEntities<BoidEntityStruct>
-                               (GAME_GROUPS.BOIDS_GROUP, out count);
-                //fetch the Unity ECS components
-           //     var position = _unityECSgroup.GetComponentDataArray<Position>();
-             //   var rotation = _unityECSgroup.GetComponentDataArray<Rotation>();
-                
-                //synchronize!
-                for (int i = 0; i < count; ++i)
+                var entities =
+                    entitiesDB.QueryEntities<RotationEntityStruct, PositionEntityStruct>(GameGroups.DOOFUSES,
+                                                                                         out var count);
+                    
+                var positions = m_Group.GetComponentDataArray<Position>();
+                var rotations = m_Group.GetComponentDataArray<Rotation>();
+
+                if (count != positions.Length)
                 {
-           //         position[i] = new Position()
-             //           {Value = new float3(entities[i].position.x, entities[i].position.y, entities[i].position.z)};
-               //     rotation[i] = new Rotation() 
-                 //   { Value = new quaternion(entities[i].rotation.x, entities[i].rotation.y, entities[i].rotation.z, 
-                   //                          entities[i].rotation.w)};
+                    yield return null;
+                    
+                    continue;
                 }
 
-                //tell to the Svelto.Tasks threads that they can carry on with the next iteration
-                _synchronizationSignal.SignalBack();
+                for (int index = 0; index != positions.Length; index++)
+                {
+                    positions[index] = new Position
+                    {
+                        Value = new float3(entities.Item2[index].position.x, entities.Item2[index].position.y,
+                                           entities.Item2[index].position.z)
+                    };
+                    rotations[index] = new Rotation
+                    {
+                        Value = new quaternion(entities.Item1[index].rotation.x, entities.Item1[index].rotation.y,
+                                               entities.Item1[index].rotation.z, entities.Item1[index].rotation.w)
+                    };
+                }
 
-                //yield one frame so the while (true) will not enter in an infinite loop
                 yield return null;
             }
         }
@@ -57,9 +73,12 @@ namespace Svelto.ECS.MiniExamples.Example1
         {
             _runner?.Dispose();
         }
+        
+        protected override void OnUpdate()
+        {}
 
-        readonly ThreadSynchronizationSignal _synchronizationSignal;
-        MultiThreadRunner _runner;
+        UpdateMonoRunner _runner;
+        ComponentGroup m_Group;
     }
 }
 
