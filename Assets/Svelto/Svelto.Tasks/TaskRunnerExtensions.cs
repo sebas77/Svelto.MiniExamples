@@ -14,6 +14,12 @@ namespace Svelto.Tasks.ExtraLean
         {
             new SveltoTask<TTask>().Run(runner, ref enumerator/*, false*/);
         }
+        
+        public static void RunOn<TRunner>(this IEnumerator enumerator, TRunner runner)
+            where TRunner : class, IRunner<SveltoTask<IEnumerator>>
+        {
+            new SveltoTask<IEnumerator>().Run(runner, ref enumerator/*, false*/);
+        }
     }
 }
 
@@ -22,9 +28,15 @@ namespace Svelto.Tasks.Lean
     public static class TaskRunnerExtensions
     {
         public static ContinuationEnumerator RunOn<TTask, TRunner>(this TTask enumerator, TRunner runner)
-            where TTask : IEnumerator<TaskContract> where TRunner : class, IRunner<SveltoTask<TTask>>
+            where TTask : struct, IEnumerator<TaskContract> where TRunner : class, IRunner<SveltoTask<TTask>>
         {
-            return new SveltoTask<TTask>().Start(runner, ref enumerator/*, false*/);
+            return new SveltoTask<TTask>().Run(runner, ref enumerator/*, false*/);
+        }
+        
+        public static ContinuationEnumerator RunOn<TRunner>(this IEnumerator<TaskContract> enumerator, TRunner runner)
+            where TRunner : class, IRunner<SveltoTask<IEnumerator<TaskContract>>>
+        {
+            return new SveltoTask<IEnumerator<TaskContract>>().Run(runner, ref enumerator/*, false*/);
         }
     }
 }
@@ -96,7 +108,7 @@ public static class TaskRunnerExtensions
     internal static ContinuationEnumerator RunImmediate<TTask, TRunner>(this TTask enumerator, TRunner runner)
         where TTask : IEnumerator<TaskContract> where TRunner : class, IRunner<Svelto.Tasks.Lean.SveltoTask<TTask>>
     {
-        return new Svelto.Tasks.Lean.SveltoTask<TTask>().Start(runner, ref enumerator/*, false*/);
+        return new Svelto.Tasks.Lean.SveltoTask<TTask>().Run(runner, ref enumerator/*, false*/);
     }
 }
 

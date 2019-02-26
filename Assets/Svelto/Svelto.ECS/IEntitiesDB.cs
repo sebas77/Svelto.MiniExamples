@@ -21,6 +21,7 @@ namespace Svelto.ECS
         ref T  QueryEntity<T>(EGID    entityGid) where T : IEntityStruct;
         ref T  QueryEntity<T>(int id, ExclusiveGroup.ExclusiveGroupStruct group) where T : IEntityStruct;
         ref T  QueryEntity<T>(int id, int group) where T : IEntityStruct;
+        
         /// <summary>
         /// Fast and raw (therefore not safe) return of entities buffer
         /// Modifying a buffer would compromise the integrity of the whole DB
@@ -74,7 +75,7 @@ namespace Svelto.ECS
         void ExecuteOnAllEntities<T>(ExclusiveGroup[] groups, EntitiesAction<T> action) where T : IEntityStruct;
         void ExecuteOnAllEntities<T, W>(ExclusiveGroup[] groups, ref W value, EntitiesAction<T, W> action) where T : IEntityStruct;
         /// <summary>
-        /// ECS is meant to work on a set of Entities. Working on a single entity is sometime necessary, but using
+        /// ECS is meant to work on a set of Entities. Working on a single entity is sometime necessary, but us    ing
         /// the following functions inside a loop would be a mistake as performance can be significantly impacted
         /// Execute an action on a specific Entity. Be sure that the action is not capturing variables
         /// otherwise you will allocate memory which will have a great impact on the execution performance
@@ -98,6 +99,8 @@ namespace Svelto.ECS
         
         int Count<T>(ExclusiveGroup.ExclusiveGroupStruct groupStruct)  where T:IEntityStruct;
         int Count<T>(int groupStruct)  where T:IEntityStruct;
+        
+        void PublishEntityChange<T>(EGID egid)  where T : unmanaged, IEntityStruct;
     }
 
     public delegate void EntityAction<T, W>(ref T target, ref W       value);

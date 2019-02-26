@@ -13,10 +13,11 @@ namespace Svelto.ECS.Internal
     partial class EntitiesDB : IEntitiesDB
     {
         internal EntitiesDB(FasterDictionary<int, Dictionary<Type, ITypeSafeDictionary>> groupEntityViewsDB,
-            Dictionary<Type, FasterDictionary<int, ITypeSafeDictionary>> groupedGroups)
+            Dictionary<Type, FasterDictionary<int, ITypeSafeDictionary>> groupedGroups, EntitiesStream entityStream)
         {
             _groupEntityViewsDB = groupEntityViewsDB;
             _groupedGroups = groupedGroups;
+            _entityStream = entityStream;
         }
 
         public ReadOnlyCollectionStruct<T> QueryEntityViews<T>(int group) where T:class, IEntityStruct
@@ -45,12 +46,12 @@ namespace Svelto.ECS.Internal
             
             return ref entities[0];
         }
-        
+
         public ref T QueryUniqueEntity<T>(ExclusiveGroup.ExclusiveGroupStruct @group) where T : IEntityStruct
         {
             return ref QueryUniqueEntity<T>((int) @group);
         }
-
+        
         public ref T QueryEntity<T>(EGID entityGID) where T : IEntityStruct
         {
             T[]  array;
@@ -216,6 +217,11 @@ namespace Svelto.ECS.Internal
             return count;
         }
 
+        public void PublishEntityChange<T>(EGID egid) where T : unmanaged, IEntityStruct
+        {
+            _entityStream.PublishEntity(ref QueryEntity<T>(egid));
+        }
+
         public bool TryQueryEntityView<T>(EGID entityegid, out T entityView) where T : class, IEntityStruct
         {
             return TryQueryEntityViewInGroupInternal(entityegid, out entityView);
@@ -296,5 +302,6 @@ namespace Svelto.ECS.Internal
         //needed to be able to iterate over all the entities of the same type regardless the group
         //may change in future
         readonly Dictionary<Type, FasterDictionary<int, ITypeSafeDictionary>> _groupedGroups;
+        readonly EntitiesStream _entityStream;
     }
 }

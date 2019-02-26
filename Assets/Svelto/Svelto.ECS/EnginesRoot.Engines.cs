@@ -33,9 +33,9 @@ namespace Svelto.ECS
             _groupsPerEntity = new Dictionary<Type, FasterDictionary<int, ITypeSafeDictionary>>();
             _groupedEntityToAdd = new DoubleBufferedEntitiesToAdd<FasterDictionary<int, Dictionary<Type, ITypeSafeDictionary>>>();
 
-            _entitiesDB = new EntitiesDB(_groupEntityDB, _groupsPerEntity);
-            _entitiesStream = new EntitiesStream(_entitiesDB);
-
+            _entitiesStream = new EntitiesStream();
+            _entitiesDB = new EntitiesDB(_groupEntityDB, _groupsPerEntity, _entitiesStream);
+            
             _scheduler = entityViewScheduler;
             _scheduler.onTick = new WeakAction(SubmitEntityViews);
         }

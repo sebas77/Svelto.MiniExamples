@@ -2,7 +2,6 @@ using System.Collections;
 using Svelto.ECS.Components;
 using Svelto.ECS.EntityStructs;
 using Svelto.Tasks;
-using Svelto.Tasks.Enumerators;
 using Svelto.Tasks.ExtraLean;
 using Unity.Entities;
 using Unity.Mathematics;
@@ -32,23 +31,23 @@ namespace Svelto.ECS.MiniExamples.Example1
         
         IEnumerator SpawningDoofuses()
         {
-            var wait = new WaitForSecondsEnumerator(0.01f);
-            
             while (_numberOfDoofuses < 10000)
             {
-                var init = _factory.BuildEntity<DoofusEntityDescriptor>(_numberOfDoofuses, GameGroups.DOOFUSES);
+                EntityStructInitializer init;
+                
+                init = _factory.BuildEntity<DoofusEntityDescriptor>(_numberOfDoofuses, Random.value < 0.5f ? GameGroups.DOOFUSESMOVING : GameGroups.DOOFUSESJUMPING);
 
                 var positionEntityStruct = new PositionEntityStruct
                 {
-                    position = new ECSVector3(Random.value * 20, 0, Random.value * 20)
+                    position = new ECSVector3(Random.value * 40, 0, Random.value * 40)
                 };
                 init.Init(positionEntityStruct);
                 
                 SpawnUnityECSEntity(ref positionEntityStruct);
                 
-                _numberOfDoofuses++;    
+                _numberOfDoofuses++;
 
-                while (wait.MoveNext()) yield return Yield.It;
+                yield return Yield.It;
             }
         }
 

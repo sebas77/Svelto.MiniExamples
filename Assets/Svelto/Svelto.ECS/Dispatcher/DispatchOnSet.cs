@@ -44,7 +44,7 @@ namespace Svelto.ECS
         
         public void NotifyOnValueSet(Action<EGID, T> action)
         {
-            _subscribers += action;
+            _subscribers += action;    
         }
 
         public void StopNotify(Action<EGID, T> action)

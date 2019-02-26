@@ -16,7 +16,7 @@ namespace Svelto.ECS.MiniExamples.Example1
             {
                 var entities =
                     entitiesDB.QueryEntities<PositionEntityStruct, InterpolateVector3EntityStruct>(
-                        GameGroups.DOOFUSES, out var count);
+                        GameGroups.DOOFUSESMOVING, out var count);
 
                 for (int i = 0; i < count; i++)
                 {
@@ -35,7 +35,11 @@ namespace Svelto.ECS.MiniExamples.Example1
                                                                time);
                     }
                     else
+                    {
                         entities.Item2[i].time = 0;
+                        
+                        entities.Item2[i].starPos.Swap(ref entities.Item2[i].endPos);
+                    }
 
 
                     entities.Item2[i].time += Time.deltaTime;

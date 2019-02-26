@@ -30,6 +30,21 @@ namespace Svelto.ECS.Components.Unity
                 vector.y = vectorS.y * (1 - time) + vectorE.y * (time);
                 vector.z = vectorS.z * (1 - time) + vectorE.z * (time);
             }
+            
+            public static void Swap(ref this ECSVector3 vector, ref ECSVector3 vectorS)
+            {
+                float x = vector.x;
+                float y = vector.y;
+                float z = vector.z;
+                
+                vector.x = vectorS.x;
+                vector.y = vectorS.y;
+                vector.z = vectorS.z;
+                
+                vectorS.x = x;
+                vectorS.y = y;
+                vectorS.z = z;
+            }
         }
     }
 }

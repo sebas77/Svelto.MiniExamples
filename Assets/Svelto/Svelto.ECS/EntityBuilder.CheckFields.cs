@@ -53,6 +53,8 @@ namespace Svelto.ECS
                 {
                     var field = fields[i];
                     var fieldFieldType = field.FieldType;
+                    
+                    if (fieldFieldType == STRINGTYPE) continue;
 
                     SubCheckFields(fieldFieldType);
                 }
