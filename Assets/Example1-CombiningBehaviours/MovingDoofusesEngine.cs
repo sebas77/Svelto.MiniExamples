@@ -16,7 +16,7 @@ namespace Svelto.ECS.MiniExamples.Example1
             {
                 var entities =
                     entitiesDB.QueryEntities<PositionEntityStruct, InterpolateVector3EntityStruct>(
-                        GameGroups.DOOFUSESMOVING, out var count);
+                        GameGroups.DOOFUSES, out var count);
 
                 for (int i = 0; i < count; i++)
                 {

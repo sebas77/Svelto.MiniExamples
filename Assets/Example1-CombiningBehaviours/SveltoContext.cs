@@ -5,7 +5,6 @@ namespace Svelto.ECS.MiniExamples.Example1
 {
     public class SveltoContext : UnityContext<SveltoCompositionRoot>
     {
-        public Mesh mesh;
-        public Material material;
+        public GameObject capsule;
     }
 }

@@ -2,7 +2,8 @@ using System;
 using Svelto.Context;
 using Svelto.ECS.Schedulers.Unity;
 using Svelto.Tasks;
-using Unity.Entities;    
+using Unity.Entities;
+using UnityEngine;
 
 
 namespace Svelto.ECS.MiniExamples.Example1
@@ -11,22 +12,22 @@ namespace Svelto.ECS.MiniExamples.Example1
     {
         public void OnContextInitialized<T>(T contextHolder)
         {
+            QualitySettings.vSyncCount = -1;
+            
             _enginesRoot = new EnginesRoot(new UnityEntitySubmissionScheduler());
 
             var context = contextHolder as SveltoContext;
-            
             //add the engines we are going to use
-            var renderingDataSyncronizationEngine = new RenderingDataSyncronizationEngine();
-            
+            World world = World.Active;
             _enginesRoot.AddEngine(new SpawningDoofusEngine
-                                       (context.mesh, context.material, _enginesRoot.GenerateEntityFactory()));
+                                       (context.capsule, _enginesRoot.GenerateEntityFactory(), world));
             _enginesRoot.AddEngine(new MovingDoofusesEngine());
-            _enginesRoot.AddEngine(new JumpingDoofusesEngine());
-            _enginesRoot.AddEngine(new VelocityToPositionEngine());
-            _enginesRoot.AddEngine(renderingDataSyncronizationEngine);
-
+//            _enginesRoot.AddEngine(new VelocityToPositionEngine());
+            
             //one engine two ECS implementations :P
-            World.Active.AddManager(renderingDataSyncronizationEngine);
+            var renderingDataSynchronizationEngine = new RenderingDataSynchronizationEngine();
+            _enginesRoot.AddEngine(renderingDataSynchronizationEngine);
+            world.AddManager(renderingDataSynchronizationEngine);
         }
 
         public void OnContextDestroyed()
