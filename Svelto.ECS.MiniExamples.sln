@@ -1,0 +1,52 @@
+﻿Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.Tasks", "Svelto.Tasks.csproj", "{EF091F0B-E282-39D0-34EC-74342382DD2A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.Common", "Svelto.Common.csproj", "{05F610BD-0F11-3BBF-09FB-1D670EA3F6F5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.ECS", "Svelto.ECS.csproj", "{3CCA7281-016F-B279-EFFB-3A38477BD7CF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "Assembly-CSharp.csproj", "{B9CCFA5E-FB76-DB39-5B63-C29E6A1A0BD1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.Tasks.StopEditorThread", "Svelto.Tasks.StopEditorThread.csproj", "{EAF03DA9-AE54-4AD8-8717-75A7712654B3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.Pool.Debugger", "Svelto.Pool.Debugger.csproj", "{4F1DF209-168A-9241-A286-D35D61C4CEB4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EF091F0B-E282-39D0-34EC-74342382DD2A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF091F0B-E282-39D0-34EC-74342382DD2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF091F0B-E282-39D0-34EC-74342382DD2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF091F0B-E282-39D0-34EC-74342382DD2A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{05F610BD-0F11-3BBF-09FB-1D670EA3F6F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{05F610BD-0F11-3BBF-09FB-1D670EA3F6F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{05F610BD-0F11-3BBF-09FB-1D670EA3F6F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{05F610BD-0F11-3BBF-09FB-1D670EA3F6F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3CCA7281-016F-B279-EFFB-3A38477BD7CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3CCA7281-016F-B279-EFFB-3A38477BD7CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3CCA7281-016F-B279-EFFB-3A38477BD7CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3CCA7281-016F-B279-EFFB-3A38477BD7CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B9CCFA5E-FB76-DB39-5B63-C29E6A1A0BD1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9CCFA5E-FB76-DB39-5B63-C29E6A1A0BD1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9CCFA5E-FB76-DB39-5B63-C29E6A1A0BD1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9CCFA5E-FB76-DB39-5B63-C29E6A1A0BD1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EAF03DA9-AE54-4AD8-8717-75A7712654B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EAF03DA9-AE54-4AD8-8717-75A7712654B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EAF03DA9-AE54-4AD8-8717-75A7712654B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EAF03DA9-AE54-4AD8-8717-75A7712654B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4F1DF209-168A-9241-A286-D35D61C4CEB4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4F1DF209-168A-9241-A286-D35D61C4CEB4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4F1DF209-168A-9241-A286-D35D61C4CEB4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4F1DF209-168A-9241-A286-D35D61C4CEB4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = Assembly-CSharp.csproj
+	EndGlobalSection
+EndGlobal
