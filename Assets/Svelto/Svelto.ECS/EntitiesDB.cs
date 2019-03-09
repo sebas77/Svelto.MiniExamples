@@ -275,13 +275,6 @@ namespace Svelto.ECS.Internal
             return true;
         }
         
-        [Conditional("ENABLE_DEBUG_FUNC")]
-        static void SafetyChecks<T>(TypeSafeDictionary<T> typeSafeDictionary, int count) where T : IEntityStruct
-        {
-            if (typeSafeDictionary.Count != count)
-                throw new ECSException("Entities cannot be swapped or removed during an iteration");
-        }
-
         static ReadOnlyCollectionStruct<T> RetrieveEmptyEntityViewList<T>()
         {
             var arrayFast = FasterList<T>.DefaultList.ToArrayFast();

@@ -1,3 +1,5 @@
+using System;
+
 namespace Svelto.ECS.Internal
 {
     partial class EntitiesDB
@@ -64,8 +66,6 @@ namespace Svelto.ECS.Internal
 
             for (var i = 0; i < count; i++)
                 action(ref entities[i], new EntityActionData(this, i));
-
-            SafetyChecks(typeSafeDictionary, count);
         }
 
         public void ExecuteOnEntities<T>(ExclusiveGroup.ExclusiveGroupStruct groupStructId,
@@ -82,8 +82,6 @@ namespace Svelto.ECS.Internal
 
             for (var i = 0; i < count; i++)
                 action(ref entities[i], ref value, new EntityActionData(this, i));
-
-            SafetyChecks(typeSafeDictionary, count);
         }
 
         public void ExecuteOnEntities<T, W>(ExclusiveGroup.ExclusiveGroupStruct groupStructId,
@@ -94,7 +92,7 @@ namespace Svelto.ECS.Internal
 
         //-----------------------------------------------------------------------------------------------------------
         
-        public void ExecuteOnAllEntities<T>(AllEntitiesAction<T> action) where T : IEntityStruct
+        public void ExecuteOnAllEntities<T>(Action<T[], int, IEntitiesDB> action) where T : IEntityStruct
         {
             var type = typeof(T);
 
@@ -104,15 +102,10 @@ namespace Svelto.ECS.Internal
 
                 for (int j = 0; j < count; j++)
                 {
-                    var typeSafeDictionary = typeSafeDictionaries[j];
-                    var casted             = typeSafeDictionary as TypeSafeDictionary<T>;
+                    var entities = (typeSafeDictionaries[j] as TypeSafeDictionary<T>).GetValuesArray(out var innerCount);
 
-                    var entities = casted.GetValuesArray(out var innerCount);
-
-                    for (int i = 0; i < innerCount; i++)
-                        action(ref entities[i], this);
-
-                    SafetyChecks(casted, innerCount);
+                    if (innerCount > 0)
+                        action(entities, innerCount, this);
                 }
             }
         }
@@ -127,15 +120,10 @@ namespace Svelto.ECS.Internal
 
                 for (int j = 0; j < count; j++)
                 {
-                    var typeSafeDictionary = typeSafeDictionaries[j];
-                    var casted             = typeSafeDictionary as TypeSafeDictionary<T>;
+                    var entities = (typeSafeDictionaries[j] as TypeSafeDictionary<T>).GetValuesArray(out var innerCount);
 
-                    var entities = casted.GetValuesArray(out var innerCount);
-
-                    for (int i = 0; i < innerCount; i++)
-                        action(ref entities[i], ref value, this);
-
-                    SafetyChecks(casted, innerCount);
+                    if (innerCount > 0)
+                        action(entities, innerCount, this, ref value);
                 }
             }
         }
