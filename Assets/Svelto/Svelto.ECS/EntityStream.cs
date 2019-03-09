@@ -4,13 +4,6 @@ using Svelto.DataStructures;
 
 namespace Svelto.ECS
 {
-    public interface IEntitiesStream
-    {
-        Consumer<T> GenerateConsumer<T>(int capacity) where T : unmanaged, IEntityStruct;
-        
-        void PublishEntity<T>(EGID id) where T : unmanaged, IEntityStruct;
-    }
-
     /// <summary>
     /// Do not use this class in place of a normal polling.
     /// I eventually realised than in ECS no form of communication other than polling entity components can exist.
@@ -22,31 +15,25 @@ namespace Svelto.ECS
     /// one only
     /// - you want to communicate between EnginesRoots  
     /// </summary>
-    class EntitiesStream : IEntitiesStream
+    class EntitiesStream
     {
-        public EntitiesStream(IEntitiesDB entitiesDb)
-        {
-            _entitiesDB = entitiesDb;
-        }
-
-        public Consumer<T> GenerateConsumer<T>(int capacity) where T : unmanaged, IEntityStruct
+        internal Consumer<T> GenerateConsumer<T>(int capacity) where T : unmanaged, IEntityStruct
         {
             if (_streams.ContainsKey(typeof(T)) == false) _streams[typeof(T)] = new EntityStream<T>();
             
             return (_streams[typeof(T)] as EntityStream<T>).GenerateConsumer(capacity);
         }
 
-        public void PublishEntity<T>(EGID id) where T : unmanaged, IEntityStruct
+        internal void PublishEntity<T>(ref T entity) where T : unmanaged, IEntityStruct
         {
             if (_streams.TryGetValue(typeof(T), out var typeSafeStream)) 
-                (typeSafeStream as EntityStream<T>).PublishEntity(ref _entitiesDB.QueryEntity<T>(id));
+                (typeSafeStream as EntityStream<T>).PublishEntity(ref entity);
             else
                 Console.LogWarning("No Consumers are waiting for this entity to change "
                                       .FastConcat(typeof(T).ToString()));
         }
 
         readonly Dictionary<Type, ITypeSafeStream> _streams = new Dictionary<Type, ITypeSafeStream>();
-        readonly IEntitiesDB                       _entitiesDB;
     }
 
     interface ITypeSafeStream

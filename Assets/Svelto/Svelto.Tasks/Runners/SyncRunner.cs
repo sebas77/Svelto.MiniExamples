@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Svelto.Tasks.Internal;
 
 namespace Svelto.Tasks
 {

@@ -54,9 +54,9 @@ namespace Svelto.ECS
 
         ///--------------------------------------------
         ///
-        public IEntitiesStream GenerateEntityStream()
+        public Consumer<T> GenerateConsumer<T>(int capacity) where T:unmanaged, IEntityStruct
         {
-            return new GenericEntitiesStream(new DataStructures.WeakReference<EnginesRoot>(this));
+            return _entitiesStream.GenerateConsumer<T>(capacity);
         }
         
         public IEntityFactory GenerateEntityFactory()

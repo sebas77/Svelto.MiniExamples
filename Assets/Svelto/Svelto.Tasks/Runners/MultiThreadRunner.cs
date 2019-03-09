@@ -16,7 +16,18 @@ namespace Svelto.Tasks
 {
     namespace Lean
     {
-        public sealed class MultiThreadRunner<T>:Svelto.Tasks.MultiThreadRunner<SveltoTask<T>> where T : IEnumerator<TaskContract>
+        public sealed class MultiThreadRunner:MultiThreadRunner<IEnumerator<TaskContract>>
+        {
+            public MultiThreadRunner(string name, bool relaxed = false, bool tightTasks = false) : base(name, relaxed, tightTasks)
+            {
+            }
+
+            public MultiThreadRunner(string name, float intervalInMs) : base(name, intervalInMs)
+            {
+            }
+        }
+        
+        public class MultiThreadRunner<T>:Svelto.Tasks.MultiThreadRunner<SveltoTask<T>> where T : IEnumerator<TaskContract>
         {
             public MultiThreadRunner(string name, bool relaxed = false, bool tightTasks = false) : base(name, relaxed, tightTasks)
             {
@@ -30,7 +41,18 @@ namespace Svelto.Tasks
     
     namespace ExtraLean
     {
-        public sealed class MultiThreadRunner<T>:Svelto.Tasks.MultiThreadRunner<SveltoTask<T>> where T : IEnumerator
+        public sealed class MultiThreadRunner:MultiThreadRunner<IEnumerator>
+        {
+            public MultiThreadRunner(string name, bool relaxed = false, bool tightTasks = false) : base(name, relaxed, tightTasks)
+            {
+            }
+
+            public MultiThreadRunner(string name, float intervalInMs) : base(name, intervalInMs)
+            {
+            }
+        }
+        
+        public class MultiThreadRunner<T>:Svelto.Tasks.MultiThreadRunner<SveltoTask<T>> where T : IEnumerator
         {
             public MultiThreadRunner(string name, bool relaxed = false, bool tightTasks = false) : base(name, relaxed, tightTasks)
             {
@@ -273,7 +295,10 @@ namespace Svelto.Tasks
 
                 while (_watch.ElapsedTicks < _interval)
                 {
-                    ThreadUtility.Wait(ref quickIterations);
+                    if ((_interval - _watch.ElapsedTicks) < 16000)
+                        ThreadUtility.Wait(ref quickIterations);
+                    else
+                        ThreadUtility.TakeItEasy();
 
                     if (ThreadUtility.VolatileRead(ref _flushingOperation.kill) == true) return;
                 }

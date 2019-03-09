@@ -21,6 +21,8 @@ namespace Svelto.ECS.MiniExamples.Example1
             _enginesRoot.AddEngine(new SpawningDoofusEngine
                                        (context.mesh, context.material, _enginesRoot.GenerateEntityFactory()));
             _enginesRoot.AddEngine(new MovingDoofusesEngine());
+            _enginesRoot.AddEngine(new JumpingDoofusesEngine());
+            _enginesRoot.AddEngine(new VelocityToPositionEngine());
             _enginesRoot.AddEngine(renderingDataSyncronizationEngine);
 
             //one engine two ECS implementations :P

@@ -87,10 +87,10 @@ namespace Svelto.Tasks
             return new TaskContract(breakit);
         }
 
-        public static implicit operator TaskContract(Yield yieldit)
-        {
-            return new TaskContract(yieldit);
-        }
+            public static implicit operator TaskContract(Yield yieldit)
+            {
+                return new TaskContract(yieldit);
+            }
         
         public static implicit operator TaskContract(string payload)
         {
