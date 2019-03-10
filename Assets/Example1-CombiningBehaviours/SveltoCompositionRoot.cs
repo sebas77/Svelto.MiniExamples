@@ -30,9 +30,8 @@ namespace Svelto.ECS.MiniExamples.Example1
 //            _enginesRoot.AddEngine(new VelocityToPositionEngine());
             
             //one engine two ECS implementations :P
-            var renderingDataSynchronizationEngine = new RenderingDataSynchronizationEngine();
+            var renderingDataSynchronizationEngine = new RenderingDataSynchronizationEngine(world);
             _enginesRoot.AddEngine(renderingDataSynchronizationEngine);
-            world.AddManager(renderingDataSynchronizationEngine);
         }
 
         public void OnContextDestroyed()

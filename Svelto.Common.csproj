@@ -75,6 +75,7 @@
     <Compile Include="Assets\Svelto\Svelto.Common\DataStructures\HashableWeakReference.cs" />
     <Compile Include="Assets\Svelto\Svelto.Common\DataStructures\HashHelpers.cs" />
     <Compile Include="Assets\Svelto\Svelto.Common\DataStructures\LockFreeQueue.cs" />
+    <Compile Include="Assets\Svelto\Svelto.Common\DataStructures\NewFasterDictionary.cs" />
     <Compile Include="Assets\Svelto\Svelto.Common\DataStructures\ReadOnlyCollectionStruct.cs" />
     <Compile Include="Assets\Svelto\Svelto.Common\DataStructures\ReadOnlyDictionary.cs" />
     <Compile Include="Assets\Svelto\Svelto.Common\DataStructures\RingBuffer.cs" />

@@ -104,12 +104,6 @@ namespace Svelto.ECS
                             //callback and database update must be interleaved.
                             AddEntityViewsToTheDBAndSuitableEngines(_groupedEntityToAdd.other, profiler);
                         }
-#if !DEBUG
-                        catch (Exception e)
-                        {
-                            Console.LogException(e);
-                        }
-#endif
                         finally
                         {
                             //other can be cleared now, but let's avoid deleting the dictionary every time

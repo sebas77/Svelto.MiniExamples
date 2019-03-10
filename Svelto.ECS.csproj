@@ -104,6 +104,7 @@
     <Compile Include="Assets\Svelto\Svelto.ECS\Extensions\Unity\IImplementor.cs" />
     <Compile Include="Assets\Svelto\Svelto.ECS\Extensions\Unity\SveltoEntityFactoryForUnity.cs" />
     <Compile Include="Assets\Svelto\Svelto.ECS\Extensions\Unity\UnityEntitySubmissionScheduler.cs" />
+    <Compile Include="Assets\Svelto\Svelto.ECS\FasterDictionaryBenchmarks.cs" />
     <Compile Include="Assets\Svelto\Svelto.ECS\GenericEntityDescriptor.cs" />
     <Compile Include="Assets\Svelto\Svelto.ECS\IEngine.cs" />
     <Compile Include="Assets\Svelto\Svelto.ECS\IEntitiesDB.cs" />

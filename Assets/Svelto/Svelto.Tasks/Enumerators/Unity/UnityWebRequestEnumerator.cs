@@ -12,7 +12,7 @@ namespace Svelto.Tasks.Enumerators
             _www         = www;
             _www.timeout = timeOutInSeconds;
 
-            _www.SendWebRequest();
+                _www.SendWebRequest();
         }
 
         public bool MoveNext()

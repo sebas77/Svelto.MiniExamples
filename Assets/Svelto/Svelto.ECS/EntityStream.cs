@@ -17,11 +17,11 @@ namespace Svelto.ECS
     /// </summary>
     class EntitiesStream
     {
-        internal Consumer<T> GenerateConsumer<T>(int capacity) where T : unmanaged, IEntityStruct
+        internal Consumer<T> GenerateConsumer<T>(string name, int capacity) where T : unmanaged, IEntityStruct
         {
             if (_streams.ContainsKey(typeof(T)) == false) _streams[typeof(T)] = new EntityStream<T>();
             
-            return (_streams[typeof(T)] as EntityStream<T>).GenerateConsumer(capacity);
+            return (_streams[typeof(T)] as EntityStream<T>).GenerateConsumer(name, capacity);
         }
 
         internal void PublishEntity<T>(ref T entity) where T : unmanaged, IEntityStruct
@@ -47,9 +47,9 @@ namespace Svelto.ECS
                 _buffers[i].Enqueue(ref entity);
         }
 
-        public Consumer<T> GenerateConsumer(int capacity)
+        public Consumer<T> GenerateConsumer(string name, int capacity)
         {
-            var consumer = new Consumer<T>(capacity);
+            var consumer = new Consumer<T>(name, capacity);
             _buffers.Add(consumer);
             return consumer;
         }
@@ -59,16 +59,19 @@ namespace Svelto.ECS
 
     public class Consumer<T> where T:unmanaged, IEntityStruct
     {
-        public Consumer(int capacity)
+        public Consumer(string name, int capacity)
         {
             _ringBuffer = new RingBuffer<T>(capacity);
             _capacity = capacity;
+            _name = name;
         }
 
         public void Enqueue(ref T entity)
         {
             if (_ringBuffer.Count >= _capacity)
-                throw new Exception("EntityStream capacity has been saturated");
+                throw new Exception(
+                    "Entity Stream capacity has been saturated Type: ".FastConcat(typeof(T).ToString(), 
+                                                                                  " Consumer Name: ", _name));
                 
             _ringBuffer.Enqueue(ref entity);
         }
@@ -87,6 +90,6 @@ namespace Svelto.ECS
         
         readonly RingBuffer<T> _ringBuffer;
         readonly int           _capacity;
-        
+        readonly string        _name;
     }
 }    

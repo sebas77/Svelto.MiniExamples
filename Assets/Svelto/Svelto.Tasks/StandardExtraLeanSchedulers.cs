@@ -55,7 +55,7 @@ namespace Svelto.Tasks.ExtraLean
             if (_multiThreadScheduler != null && multiThreadScheduler.isKilled == false)
                 _multiThreadScheduler.Dispose();
             _multiThreadScheduler = null;
-
+#if UNITY_5 || UNITY_5_3_OR_NEWER
             if (_coroutineScheduler != null)
                  _coroutineScheduler.Dispose();
             if (_updateScheduler != null)
@@ -63,7 +63,7 @@ namespace Svelto.Tasks.ExtraLean
             
             _coroutineScheduler = null;
             _updateScheduler = null;
-#if UNITY_5 || UNITY_5_3_OR_NEWER && later            
+#if later
             if (_physicScheduler != null)
                 _physicScheduler.Dispose();
             if (_lateScheduler != null)
@@ -72,6 +72,7 @@ namespace Svelto.Tasks.ExtraLean
             _physicScheduler = null;
             _lateScheduler = null;
             _earlyScheduler = null;
+#endif
 #endif
         }
 
@@ -84,7 +85,7 @@ namespace Svelto.Tasks.ExtraLean
                 _coroutineScheduler.Pause();
             if (_updateScheduler != null)
                 _updateScheduler.Pause();
-#endif            
+#endif
         }
         
         public static void Resume()
@@ -96,7 +97,7 @@ namespace Svelto.Tasks.ExtraLean
                 _coroutineScheduler.Resume();
             if (_updateScheduler != null)
                 _updateScheduler.Resume();
-#endif            
+#endif
         }
     }
 }

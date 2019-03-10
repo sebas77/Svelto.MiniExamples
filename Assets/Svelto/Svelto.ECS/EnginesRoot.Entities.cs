@@ -54,9 +54,9 @@ namespace Svelto.ECS
 
         ///--------------------------------------------
         ///
-        public Consumer<T> GenerateConsumer<T>(int capacity) where T:unmanaged, IEntityStruct
+        public Consumer<T> GenerateConsumer<T>(string name, int capacity) where T:unmanaged, IEntityStruct
         {
-            return _entitiesStream.GenerateConsumer<T>(capacity);
+            return _entitiesStream.GenerateConsumer<T>(name, capacity);
         }
         
         public IEntityFactory GenerateEntityFactory()
@@ -147,7 +147,7 @@ namespace Svelto.ECS
 
                 //Check if there is an EntityInfoView linked to this entity, if so it's a DynamicEntityDescriptor!
                 bool correctEntityDescriptorFound = true;
-                if (fromGroup.TryGetValue(_entityInfoView, out entityInfoViewDic)
+                if (fromGroup.TryGetValue(ENTITY_INFO_VIEW_TYPE, out entityInfoViewDic)
                  && (entityInfoViewDic as TypeSafeDictionary<EntityInfoView>).TryGetValue
                         (entityGID.entityID, out entityInfoView) &&
                     (correctEntityDescriptorFound = entityInfoView.type == originalDescriptorType))
@@ -277,9 +277,6 @@ namespace Svelto.ECS
             MoveEntity(builders, fromEntityID, originalEntityDescriptor, toEntityID, toGroup);
         }
 
-        readonly EntitiesStream _entitiesStream;
-        
-        readonly Type  _entityInfoView = typeof(EntityInfoView);
         const string INVALID_DYNAMIC_DESCRIPTOR_ERROR = "Found an entity requesting an invalid dynamic descriptor, this "   +
                                                         "can happen only if you are building different entities with the " +
                                                         "same ID in the same group! The operation will continue using" +

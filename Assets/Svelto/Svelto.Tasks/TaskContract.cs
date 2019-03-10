@@ -19,9 +19,15 @@ namespace Svelto.Tasks
             _continuation = continuation;
         }
 
+        internal TaskContract(IEnumerator<TaskContract> enumerator) : this()
+        {
+            _currentState            = states.leanEnumerator;
+            _returnObjects.reference = enumerator;
+        }
+        
         internal TaskContract(IEnumerator enumerator) : this()
         {
-            _currentState            = states.enumerator;
+            _currentState            = states.extraLeanEnumerator;
             _returnObjects.reference = enumerator;
         }
 
@@ -87,10 +93,10 @@ namespace Svelto.Tasks
             return new TaskContract(breakit);
         }
 
-            public static implicit operator TaskContract(Yield yieldit)
-            {
-                return new TaskContract(yieldit);
-            }
+        public static implicit operator TaskContract(Yield yieldit)
+        {
+            return new TaskContract(yieldit);
+        }
         
         public static implicit operator TaskContract(string payload)
         {
@@ -107,15 +113,12 @@ namespace Svelto.Tasks
             return _returnValue.single;
         }
         
-        public Break breakit
-        {
-            get { return _currentState == states.breakit ?_returnObjects.breakIt : null; }
-        }
+        internal Break breakIt => _currentState == states.breakit ?_returnObjects.breakIt : null;
 
-        public IEnumerator<TaskContract> enumerator
-        {
-            get { return _currentState == states.enumerator ? (IEnumerator<TaskContract>) _returnObjects.reference : null; }
-        }
+        internal IEnumerator enumerator => _currentState == states.leanEnumerator || 
+            _currentState == states.extraLeanEnumerator
+            ? (IEnumerator) _returnObjects.reference
+            : null;
 
         internal ContinuationEnumerator? Continuation
         {
@@ -127,18 +130,23 @@ namespace Svelto.Tasks
                 return _continuation;
             }
         }
+        
+        internal bool isTaskEnumerator
+        {
+            get { return _currentState == states.leanEnumerator; }
+        }
 
-        public object reference
+        internal object reference
         {
             get { return _currentState == states.value ? _returnObjects.reference : null; }
         }
         
-        public bool hasValue
+        internal bool hasValue
         {
             get { return _currentState == states.value; }
         }
 
-        public bool yieldIt
+        internal bool yieldIt
         {
             get { return _currentState == states.yieldit; }
         }
@@ -147,7 +155,7 @@ namespace Svelto.Tasks
         readonly fieldObjects           _returnObjects;
         readonly states                 _currentState;
         readonly ContinuationEnumerator _continuation;
-
+        
 
         enum states
         {
@@ -155,7 +163,8 @@ namespace Svelto.Tasks
             value,
             continuation,
             breakit,
-            enumerator
+            leanEnumerator,
+            extraLeanEnumerator
         }
     }
 }

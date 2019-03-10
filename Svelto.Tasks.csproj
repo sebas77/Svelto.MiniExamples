@@ -71,6 +71,7 @@
     <Compile Include="Assets\Svelto\Svelto.Tasks\Enumerators\ActionEnumerators\TimedLoopFunctionEnumerator.cs" />
     <Compile Include="Assets\Svelto\Svelto.Tasks\Enumerators\ContinuationEnumerator.cs" />
     <Compile Include="Assets\Svelto\Svelto.Tasks\Enumerators\ContinuationPool.cs" />
+    <Compile Include="Assets\Svelto\Svelto.Tasks\Enumerators\ExceptionHandledEnumerator.cs" />
     <Compile Include="Assets\Svelto\Svelto.Tasks\Enumerators\ExceptionHandlingEnumerator.cs" />
     <Compile Include="Assets\Svelto\Svelto.Tasks\Enumerators\ReusableWaitForSecondsEnumerator.cs" />
     <Compile Include="Assets\Svelto\Svelto.Tasks\Enumerators\Unity\AsyncOperationEnumerator.cs" />

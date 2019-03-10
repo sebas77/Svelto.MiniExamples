@@ -14,6 +14,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 namespace Svelto.DataStructures
 {
@@ -78,6 +79,7 @@ namespace Svelto.DataStructures
         }
 
         // Returns size of hashtable to grow to.
+        //[MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int ExpandPrime(int oldSize)
         {
             int newSize = 2 * oldSize;

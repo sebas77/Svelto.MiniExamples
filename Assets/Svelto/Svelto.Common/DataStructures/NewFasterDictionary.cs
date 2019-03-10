@@ -2,23 +2,22 @@
 using System.Collections;
 using System.Collections.Generic;
  using System.Runtime.CompilerServices;
- using Svelto.Utilities;
 
  namespace Svelto.DataStructures.Experimental
 {
-    public class FasterDictionary<TKey, TValue> : IDictionary<TKey, TValue> where TKey : IComparable<TKey>
+    public class NewFasterDictionary<TValue> : IDictionary<uint ,TValue>
     {
-        public FasterDictionary(int size)
+        public NewFasterDictionary(int size)
         {
             _valuesInfo = new Node[size];
             _values     = new TValue[size];
             _buckets    = new int[HashHelpers.GetPrime(size)];
         }
 
-        public FasterDictionary():this(1)
+        public NewFasterDictionary():this(1)
         {}
 
-        ICollection<TKey> IDictionary<TKey,TValue>.Keys
+        ICollection<uint> IDictionary<uint,TValue>.Keys
         {
             get { throw new NotImplementedException(); }
         }
@@ -28,7 +27,7 @@ using System.Collections.Generic;
             get { throw new NotImplementedException(); }
         }
 
-        ICollection<TValue> IDictionary<TKey,TValue>.Values
+        ICollection<TValue> IDictionary<uint,TValue>.Values
         {
             get { throw new NotImplementedException(); }
         }
@@ -44,33 +43,20 @@ using System.Collections.Generic;
 
             return _values;
         }
-        
+
         public int Collisions => _collisions;
-        
-        public int Count
-        {
-            get { return _freeValueCellIndex; }
-        }
+        public int Count => _freeValueCellIndex;
+        public bool IsReadOnly => false;
 
-        public bool IsReadOnly
+        public void Add(uint key, TValue value)
         {
-            get { return false; }
-        }
-        
-        public void Add(TKey key, TValue value)
-        {
-            Add(key, ref value);
-        }
-
-        public void Add(TKey key, ref TValue value)
-        {
-            if (AddValue(key, ref value) == false)
+            if (AddValue(key, value) == false)
             {
                 throw new FasterDictionaryException("Key already present");
             }
         }
 
-        public void Add(KeyValuePair<TKey, TValue> item)
+        public void Add(KeyValuePair<uint, TValue> item)
         {
             throw new NotImplementedException();
         }
@@ -86,12 +72,12 @@ using System.Collections.Generic;
             Array.Clear(_valuesInfo, 0, _valuesInfo.Length);
         }
 
-        public bool Contains(KeyValuePair<TKey, TValue> item)
+        public bool Contains(KeyValuePair<uint, TValue> item)
         {
             throw new NotImplementedException();
         }
 
-        public bool ContainsKey(TKey key)
+        public bool ContainsKey(uint key)
         {
             uint findIndex;
             if (FindIndex(key, _buckets, _valuesInfo, out findIndex))
@@ -102,12 +88,12 @@ using System.Collections.Generic;
             return false;
         }
 
-        public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
+        public void CopyTo(KeyValuePair<uint, TValue>[] array, int arrayIndex)
         {
             throw new NotImplementedException();
         }
 
-        IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator()
+        IEnumerator<KeyValuePair<uint, TValue>> IEnumerable<KeyValuePair<uint, TValue>>.GetEnumerator()
         {
             return new FasterDictionaryKeyValueEnumerator(this);
         }
@@ -117,20 +103,19 @@ using System.Collections.Generic;
             return new FasterDictionaryKeyValueEnumerator(this);
         }
 
-        public bool Remove(KeyValuePair<TKey, TValue> item)
+        public bool Remove(KeyValuePair<uint, TValue> item)
         {
             throw new NotImplementedException();
         }
         
-        protected uint GetValueIndex(TKey index)
+        protected uint GetValueIndex(uint index)
         {
             return GetIndex(index, _buckets, _valuesInfo);
         }
 
-        public bool TryGetValue(TKey key, out TValue result)
+        public bool TryGetValue(uint key, out TValue result)
         {
-            uint findIndex;
-            if (FindIndex(key, _buckets, _valuesInfo, out findIndex))
+            if (FindIndex(key, _buckets, _valuesInfo, out var findIndex))
             {
                 result = _values[findIndex];
                 return true;
@@ -150,46 +135,38 @@ using System.Collections.Generic;
             throw new NotImplementedException();
         }
 
-        public TValue this[TKey key]
-        {[MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => _values[GetIndex(key, _buckets, _valuesInfo)];
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            set => AddValue(key, ref value);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static int Hash(TKey key)
+        public TValue this[uint key]
         {
-            return key.GetHashCode()& 0x7FFFFFFF;
+            //[MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => _values[GetIndex(key, _buckets, _valuesInfo)];
+            //[MethodImpl(MethodImplOptions.AggressiveInlining)]
+            set => AddValue(key, value);
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static uint Reduce(uint x, uint N) 
+        static uint Reduce(uint x, int N) 
         {
+            unchecked
             {
-                if (x >= N)
-                {
-                    var hash = (11400714819323198485 * x);
-                    hash >>= 32;
-                    
-                    return (uint) ((hash * N) >> 32);
-                }
-
-                return x;
+                if (x < N) return x;
+                
+                ulong hash = x;
+                hash ^= hash >> 32;
+                hash = (11400714819323198485 * hash) >> 32;
+                return (uint) ((long) hash * N >> 32) ;
             }
         }
 
-        bool AddValue(TKey key, ref TValue value)
+        bool AddValue(uint hash, TValue value)
         {
-            int hash        = Hash(key);
-            uint bucketIndex = Reduce((uint) hash, (uint) _buckets.Length);
+            uint bucketIndex = Reduce(hash, _buckets.Length);
 
             //buckets value -1 means it's empty
-            var valueIndex = _buckets[bucketIndex] - 1;
+            var valueIndex = GetValueIndexFromBuckets(_buckets, bucketIndex);
             
             if (valueIndex == -1)
                 //create the info node at the last position and fill it with the relevant information
-                _valuesInfo[_freeValueCellIndex] = new Node(ref key, hash);
+                _valuesInfo[_freeValueCellIndex] = new Node(hash);
             else //collision or already exists
             {
                 {
@@ -197,11 +174,10 @@ using System.Collections.Generic;
                     do
                     {
                         //must check if the key already exists in the dictionary
-                        //for some reason this is faster than using Comparer<TKey>.default, should investigate
-                        if (_valuesInfo[currentValueIndex].hashcode           == hash
-                         && _valuesInfo[currentValueIndex].key.CompareTo(key) == 0)
+                        if (_valuesInfo[currentValueIndex].key == hash)
                         {//the key already exists, simply replace the value!
                             _values[currentValueIndex] = value;
+                            
                             return false;
                         }
 
@@ -213,7 +189,7 @@ using System.Collections.Generic;
                 //oops collision!
                 _collisions++;
                 //create a new node which previous index points to node currently pointed in the bucket
-                _valuesInfo[_freeValueCellIndex] = new Node(ref key, hash, valueIndex);
+                _valuesInfo[_freeValueCellIndex] = new Node(hash, valueIndex);
                 //update the next of the existing cell to point to the new one
                 //old one -> new one | old one <- next one
                 _valuesInfo[valueIndex].next = _freeValueCellIndex;
@@ -225,7 +201,7 @@ using System.Collections.Generic;
             //item with this bucketIndex will point to the last value created
             //ToDo: if instead I assume that the original one is the one in the bucket
             //I wouldn't need to update the bucket here. Small optimization but important
-            _buckets[bucketIndex] = _freeValueCellIndex + 1;
+            SetValueIndexInBuckets(_buckets, bucketIndex, _freeValueCellIndex);
 
             _values[_freeValueCellIndex] = value;
 
@@ -233,10 +209,8 @@ using System.Collections.Generic;
 
             if (_freeValueCellIndex == _values.Length)
             {
-                Array.Resize(ref _values, 
-                    HashHelpers.ExpandPrime(_freeValueCellIndex));
-                Array.Resize(ref _valuesInfo, 
-                    HashHelpers.ExpandPrime(_freeValueCellIndex));
+                Array.Resize(ref _values, HashHelpers.ExpandPrime(_freeValueCellIndex));
+                Array.Resize(ref _valuesInfo, HashHelpers.ExpandPrime(_freeValueCellIndex));
             }
             
             //too many collisions?
@@ -253,16 +227,16 @@ using System.Collections.Generic;
                 for (int newValueIndex = 0; newValueIndex < _freeValueCellIndex; newValueIndex++)
                 {
                     //get the original hash code and find the new bucketIndex due to the new length
-                    bucketIndex = Reduce((uint) _valuesInfo[newValueIndex].hashcode, (uint) _buckets.Length);
+                    bucketIndex = Reduce(_valuesInfo[newValueIndex].key ,_buckets.Length);
                     //bucketsIndex can be -1 or a next value. If it's -1 means no collisions. If there is collision,
                     //we create a new node which prev points to the old one. Old one next points to the new one.
                     //the bucket will now points to the new one
                     //In this way we can rebuild the linkedlist.
                     //get the current valueIndex, it's -1 if no collision happens
-                    int existingValueIndex = _buckets[bucketIndex] - 1;
+                    int existingValueIndex = GetValueIndexFromBuckets(_buckets, bucketIndex);
                     //update the bucket index to the index of the current item that share the bucketIndex
                     //(last found is always the one in the bucket)
-                    _buckets[bucketIndex] = newValueIndex + 1;
+                    SetValueIndexInBuckets(_buckets, bucketIndex, newValueIndex);
                     if (existingValueIndex != -1)
                     {   //oops a value was already being pointed by this cell in the new bucket list,
                         //it means there is a collision, problem
@@ -286,24 +260,22 @@ using System.Collections.Generic;
             return true;
         }
 
-        public bool Remove(TKey key)
+        public bool Remove(uint key)
         {
-            int hash = Hash(key);
-            uint bucketIndex = Reduce((uint) hash, (uint) _buckets.Length);
+            uint bucketIndex = Reduce(key, _buckets.Length);
 
             //find the bucket
-            int indexToValueToRemove = _buckets[bucketIndex] - 1;
+            int indexToValueToRemove = GetValueIndexFromBuckets(_buckets, bucketIndex);
        
             //Part one: look for the actual key in the bucket list if found
             //we update the bucket list so that it doesn't point anymore
             //to the cell to remove
             while (indexToValueToRemove != -1)
             {
-                if (_valuesInfo[indexToValueToRemove].hashcode == hash 
-                 && _valuesInfo[indexToValueToRemove].key.CompareTo(key) == 0)
+                if (_valuesInfo[indexToValueToRemove].key == key)
                 {
                     //if the key is found and the bucket points directly to the node to remove
-                    if (_buckets[bucketIndex] - 1 == indexToValueToRemove)
+                    if (GetValueIndexFromBuckets(_buckets, bucketIndex) == indexToValueToRemove)
                     {
                         DBC.Common.Check.Require(_valuesInfo[indexToValueToRemove].next == -1,
                                                 "if the bucket points to the cell, next MUST NOT exists");
@@ -315,8 +287,7 @@ using System.Collections.Generic;
                         //   |  1  | |  2  | |  3  | //bucket cannot have next, only previous
                         //   ------- ------- -------
                         //--> insert order
-                        int value = _valuesInfo[indexToValueToRemove].previous;
-                        _buckets[bucketIndex] = value + 1;
+                        SetValueIndexInBuckets(_buckets, bucketIndex, _valuesInfo[indexToValueToRemove].previous);
                     }
                     else
                         DBC.Common.Check.Require(_valuesInfo[indexToValueToRemove].next != -1,
@@ -348,12 +319,12 @@ using System.Collections.Generic;
                 //in order to do so, we need to be sure that the bucket pointer is updated
                 //first we find the index in the bucket list of the pointer that points to the cell
                 //to move
-                var movingBucketIndex = Reduce((uint) _valuesInfo[_freeValueCellIndex].hashcode, (uint) _buckets.Length);
+                var movingBucketIndex = Reduce(_valuesInfo[_freeValueCellIndex].key, _buckets.Length);
 
                 //if the key is found and the bucket points directly to the node to remove
                 //it must now point to the cell where it's going to be moved
-                if (_buckets[movingBucketIndex] - 1 == _freeValueCellIndex)
-                    _buckets[movingBucketIndex] = indexToValueToRemove + 1;
+                if (GetValueIndexFromBuckets(_buckets, movingBucketIndex) == _freeValueCellIndex)
+                    SetValueIndexInBuckets(_buckets, movingBucketIndex, indexToValueToRemove);
 
                 //otherwise it means that there was more than one key with the same hash (collision), so 
                 //we need to update the linked list and its pointers
@@ -387,24 +358,32 @@ using System.Collections.Generic;
 
         //I store all the index with an offset + 1, so that in the bucket
         //list 0 means actually not existing.
-
+        //[MethodImpl(MethodImplOptions.AggressiveInlining)]
+        static void SetValueIndexInBuckets(int[] buckets, uint index, int value)
+        {
+            buckets[index] = value + 1;
+        }
+        
         //When read the offset must
         //be offset by -1 again to be the real one. In this way
         //I avoid to initialize the array to -1
-
-        protected bool FindIndex(TKey key, out uint findIndex)
+        //[MethodImpl(MethodImplOptions.AggressiveInlining)]
+        static int GetValueIndexFromBuckets(int[] buckets, uint index)
         {
-            int hash        = Hash(key);
-            uint bucketIndex = Reduce((uint) hash, (uint) _buckets.Length);
+            return buckets[index] - 1;
+        }
 
-            int valueIndex = _buckets[bucketIndex] - 1;
+        protected bool FindIndex(uint key, out uint findIndex)
+        {
+            uint bucketIndex = Reduce(key, _buckets.Length);
+
+            int valueIndex = GetValueIndexFromBuckets(_buckets, bucketIndex);
 
             //even if we found an existing value we need to be sure it's the one we requested
             while (valueIndex != -1)
             {
                 //for some reason this is way faster than using Comparer<TKey>.default, should investigate
-                if (_valuesInfo[valueIndex].hashcode == hash && 
-                    _valuesInfo[valueIndex].key.CompareTo(key) == 0)
+                if (_valuesInfo[valueIndex].key == key)
                 {
                     //this is the one
                     findIndex = (uint) valueIndex;
@@ -418,7 +397,7 @@ using System.Collections.Generic;
             return false;
         }
 
-        static uint GetIndex(TKey key, int[] buckets, Node[] valuesInfo)
+        static uint GetIndex(uint key, int[] buckets, Node[] valuesInfo)
         {
             uint findIndex;
             if (FindIndex(key, buckets, valuesInfo, out findIndex)) return findIndex;
@@ -426,16 +405,15 @@ using System.Collections.Generic;
             throw new FasterDictionaryException("Key not found");
         }
 
-        static bool FindIndex(TKey key, int[] buckets, Node[] valuesInfo, out uint findIndex)
+        static bool FindIndex(uint hash, int[] buckets, Node[] valuesInfo, out uint findIndex)
         {
-            int hash        = Hash(key);
-            var bucketIndex = Reduce((uint) hash, (uint) buckets.Length);
+            uint bucketIndex = Reduce(hash, buckets.Length);
 
-            int valueIndex = buckets[bucketIndex] - 1;
+            int valueIndex = GetValueIndexFromBuckets(buckets, bucketIndex);
 
             while (valueIndex != -1)
             {   //for some reason this is way faster they use Comparer<TKey>.default, should investigate
-                if (valuesInfo[valueIndex].hashcode == hash && valuesInfo[valueIndex].key.CompareTo(key) == 0)
+                if (valuesInfo[valueIndex].key == hash)
                 {
                     findIndex = (uint) valueIndex;
                     return true;
@@ -458,9 +436,9 @@ using System.Collections.Generic;
                 valuesInfo[previous].next = next;
         }
 
-        public struct FasterDictionaryKeyValueEnumerator : IEnumerator<KeyValuePair<TKey, TValue>>
+        public struct FasterDictionaryKeyValueEnumerator : IEnumerator<KeyValuePair<uint, TValue>>
         {
-            public FasterDictionaryKeyValueEnumerator(FasterDictionary<TKey,TValue> dic):this()
+            public FasterDictionaryKeyValueEnumerator(NewFasterDictionary< TValue> dic):this()
             {
                 _dic = dic;
                 _index = -1;
@@ -489,14 +467,14 @@ using System.Collections.Generic;
                 throw new NotImplementedException();
             }
 
-            public KeyValuePair<TKey, TValue> Current { get { return new KeyValuePair<TKey, TValue>(_dic._valuesInfo[_index].key, _dic._values[_index]); } }
+            public KeyValuePair<uint, TValue> Current { get { return new KeyValuePair<uint, TValue>(_dic._valuesInfo[_index].key, _dic._values[_index]); } }
 
             object IEnumerator.Current
             {
                 get { throw new NotImplementedException(); }
             }
             
-            readonly FasterDictionary<TKey, TValue> _dic;
+            readonly NewFasterDictionary<TValue> _dic;
             readonly int _count;
             
             int _index;
@@ -504,35 +482,31 @@ using System.Collections.Generic;
 
         struct Node
         {
-            public readonly TKey   key;
-            public readonly int hashcode;
-            public          int previous;
-            public          int next;
+            public readonly uint key;
+            public          int  previous;
+            public          int  next;
 
-            public Node(ref TKey key, int hash, int previousNode)
+            public Node(uint key, int previousNode)
             {
                 this.key = key;
-                hashcode = hash;
                 previous = previousNode;
                 next     = -1;
             }
 
-            public Node(ref TKey key, int hash)
+            public Node(uint key)
             {
                 this.key = key;
-                hashcode = hash;
                 previous = -1;
                 next     = -1;
             }
         }
         
-        public struct FasterDictionaryKeys : ICollection<TKey>
+        public struct FasterDictionaryKeys : ICollection<uint>
         {
-            internal FasterDictionaryKeys(FasterDictionary<TKey, TValue> dic):this()
-            {
-            }
+            internal FasterDictionaryKeys(FasterDictionary<uint, TValue> dic):this()
+            {}
 
-            IEnumerator<TKey> IEnumerable<TKey>.GetEnumerator()
+            IEnumerator<uint> IEnumerable<uint>.GetEnumerator()
             {
                 throw new NotImplementedException();
             }
@@ -547,7 +521,7 @@ using System.Collections.Generic;
                 throw new NotImplementedException();
             }
 
-            public void Add(TKey item)
+            public void Add(uint item)
             {
                 throw new NotImplementedException();
             }
@@ -557,17 +531,17 @@ using System.Collections.Generic;
                 throw new NotImplementedException();
             }
 
-            public bool Contains(TKey item)
+            public bool Contains(uint item)
             {
                 throw new NotImplementedException();
             }
 
-            public void CopyTo(TKey[] array, int arrayIndex)
+            public void CopyTo(uint[] array, int arrayIndex)
             {
                 throw new NotImplementedException();
             }
 
-            public bool Remove(TKey item)
+            public bool Remove(uint item)
             {
                 throw new NotImplementedException();
             }
@@ -576,7 +550,7 @@ using System.Collections.Generic;
             public bool IsReadOnly { get; }
         }
         
-        public struct FasterDictionaryKeyEnumerator:IEnumerator<TKey>
+        public struct FasterDictionaryKeyEnumerator:IEnumerator<uint>
         {
             public bool MoveNext()
             {
@@ -588,7 +562,7 @@ using System.Collections.Generic;
                 throw new NotImplementedException();
             }
 
-            public TKey Current { get; }
+            public uint Current { get; }
 
             object IEnumerator.Current
             {
@@ -601,20 +575,12 @@ using System.Collections.Generic;
             }
         }
 
-        
-        protected TValue[] _values;
-        
-        Node[] _valuesInfo;
-        int[]  _buckets;
-        int    _freeValueCellIndex;
-        public int    _collisions;
-    }
-
-    public class FasterDictionaryException : Exception
-    {
-        public FasterDictionaryException(string keyAlreadyExisting):base(keyAlreadyExisting)
-        {}
+        TValue[] _values;
+        Node[]   _valuesInfo;
+        int[]    _buckets;
+        int      _freeValueCellIndex;
+        int      _collisions;
     }
 }
 
-//todo check https://github.com/benaadams/Ben.TypeDictionary
+ 

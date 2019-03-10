@@ -1,5 +1,4 @@
 using System;
-using JetBrains.Annotations;
 using Svelto.DataStructures;
 using Svelto.Tasks.Internal;
 
@@ -70,7 +69,7 @@ namespace Svelto.Tasks
             _newTaskRoutines.Clear();
         }
 
-        void IRunner<T>.StartCoroutine([CanBeNull] ref T task /*, bool immediate*/)
+        void IRunner<T>.StartCoroutine(ref T task /*, bool immediate*/)
         {
             _newTaskRoutines.Enqueue(task);
             

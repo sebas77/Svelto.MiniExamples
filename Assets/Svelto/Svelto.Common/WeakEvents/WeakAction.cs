@@ -88,7 +88,14 @@ namespace Svelto.WeakEvents
         {
             if (objectRef.IsValid)
             {
-                method.Invoke(objectRef.Target, data);
+                try
+                {
+                    method.Invoke(objectRef.Target, data);
+                }
+                catch (Exception e)
+                {
+                    throw e.InnerException;
+                }
 
                 return true;
             }

@@ -180,7 +180,7 @@ namespace Svelto.Tasks
                 return TaskState.yieldIt;
 
             //can be a Svelto.Tasks Break
-            if (returnObject.breakit == Break.It || returnObject.breakit == Break.AndStop)
+            if (returnObject.breakIt == Break.It || returnObject.breakIt == Break.AndStop)
                 return TaskState.breakIt;
 
             if (returnObject.enumerator is T) //can be a compatible IEnumerator

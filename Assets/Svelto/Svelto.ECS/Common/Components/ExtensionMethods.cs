@@ -7,12 +7,7 @@ namespace Svelto.ECS.Components.Unity
     {
         public static class ExtensionMethods
         {
-            public static Vector3 ToVector3(ref this ECSVector3 vector)
-            {
-                return new Vector3(vector.x,
-                                   vector.y,
-                                   vector.z);
-            }
+            public static Vector3 ToVector3(ref this ECSVector3 vector) { return new Vector3(vector.x, vector.y, vector.z); }
 
             public static void Add(ref this ECSVector3 vector1, ref ECSVector3 vector2)
             {

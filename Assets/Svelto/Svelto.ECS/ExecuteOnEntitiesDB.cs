@@ -110,7 +110,7 @@ namespace Svelto.ECS.Internal
             }
         }
 
-        public void ExecuteOnAllEntities<T, W>(ref W value, AllEntitiesAction<T, W> action) where T : IEntityStruct
+        public void ExecuteOnAllEntities<T, W>(ref W value, Action<T[], int, IEntitiesDB, W> action) where T : IEntityStruct
         {
             var type = typeof(T);
 
@@ -123,7 +123,7 @@ namespace Svelto.ECS.Internal
                     var entities = (typeSafeDictionaries[j] as TypeSafeDictionary<T>).GetValuesArray(out var innerCount);
 
                     if (innerCount > 0)
-                        action(entities, innerCount, this, ref value);
+                        action(entities, innerCount, this, value);
                 }
             }
         }

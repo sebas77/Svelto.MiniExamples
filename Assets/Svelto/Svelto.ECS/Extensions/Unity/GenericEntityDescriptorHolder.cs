@@ -1,6 +1,6 @@
+#if UNITY_5 || UNITY_5_3_OR_NEWER
 using UnityEngine;
 
-#if UNITY_5 || UNITY_5_3_OR_NEWER
 namespace Svelto.ECS.Unity
 {
     public class GenericEntityDescriptorHolder<T>: 
@@ -15,9 +15,9 @@ namespace Svelto.ECS.Unity
         public string groupName => _groupName;
 
         [SerializeField]
-#pragma warning disable 649        
+#pragma warning disable 649
         string _groupName;
-#pragma warning restore 649        
+#pragma warning restore 649
     }
 }
 #endif

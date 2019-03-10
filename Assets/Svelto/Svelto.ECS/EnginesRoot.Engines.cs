@@ -79,7 +79,7 @@ namespace Svelto.ECS
         {
             var baseType = engine.GetType().GetBaseType();
 
-            while (baseType != _objectType)
+            while (baseType != OBJECT_TYPE)
             {
                 if (baseType.IsGenericTypeEx())
                 {
@@ -130,12 +130,16 @@ namespace Svelto.ECS
         //to the FasterDictionary capabilities OR it's possible to get a specific entityView indexed by
         //ID. This ID doesn't need to be the EGID, it can be just the entityID
         //for each group id, save a dictionary indexed by entity type of entities indexed by id
+        //ITypeSafeDictionary = Key = entityID, Value = EntityStruct
         readonly FasterDictionary<int, Dictionary<Type, ITypeSafeDictionary>> _groupEntityDB;
         readonly EntitiesDB                                                   _entitiesDB;
         //for each entity view type, return the groups (dictionary of entities indexed by entity id) where they are
-        //found indexed by group id 
-        readonly Dictionary<Type, FasterDictionary<int, ITypeSafeDictionary>> _groupsPerEntity; //yes I am being sarcastic
+        //found indexed by group id
+                   //EntityViewType           //groupID  //entityID, EntityStruct
+        readonly Dictionary<Type, FasterDictionary<int, ITypeSafeDictionary>> _groupsPerEntity; 
+        readonly EntitiesStream                                               _entitiesStream;
         
-        static readonly Type _objectType = typeof(object);
+        static readonly Type OBJECT_TYPE           = typeof(object);
+        static readonly Type ENTITY_INFO_VIEW_TYPE = typeof(EntityInfoView);
     }
 }
