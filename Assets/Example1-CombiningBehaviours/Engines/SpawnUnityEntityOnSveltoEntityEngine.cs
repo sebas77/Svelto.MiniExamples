@@ -1,41 +1,53 @@
+using System.Collections;
+using Svelto.Tasks.ExtraLean;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
 
 namespace Svelto.ECS.MiniExamples.Example1
 {
-    public class SpawnUnityEntityOnSveltoEntityEngine : SingleEntityEngine<UnityECSEntityStruct>
+    public class SpawnUnityEntityOnSveltoEntityEngine : IQueryingEntitiesEngine
     {
-        public SpawnUnityEntityOnSveltoEntityEngine(World world)
+        public IEntitiesDB entitiesDB { get; set; }
+
+        public void Ready()
         {
+            SpawnUnityEntities().RunOn(StandardSchedulers.updateScheduler);
+        }
+        
+        public SpawnUnityEntityOnSveltoEntityEngine(World world, IEntityStreamConsumerFactory consumerFactory)
+        {
+            _consumerFactory = consumerFactory;
             _entityManager = world.EntityManager;
         }
         
-        protected override void Add(ref UnityECSEntityStruct unityEcsEntityView)
+        IEnumerator SpawnUnityEntities()
         {
-            SpawnUnityECSEntity(ref unityEcsEntityView);
-        }
-
-        protected override void Remove(ref UnityECSEntityStruct unityEcsEntityView)
-        {
-            //remove from unity ECS?
-        }
-        
-        void SpawnUnityECSEntity(ref UnityECSEntityStruct unityEcsEntityStruct)
-        {
-            var instance = _entityManager.Instantiate(unityEcsEntityStruct.prefab);
+            var consumer = _consumerFactory.GenerateConsumer<UnityECSEntityStruct>("UnityECSSpawner", 2);
             
-            _entityManager.AddComponent(instance, unityEcsEntityStruct.unityComponent);
-                
-            _entityManager.SetComponentData(instance, new Translation
+            while (true)
             {
-                Value = new float3(unityEcsEntityStruct.spawnPosition.x,
-                unityEcsEntityStruct.spawnPosition.y, unityEcsEntityStruct.spawnPosition.z)
-                
-            });
+                while (consumer.TryDequeue(out var unityEcsEntityStruct))
+                {
+                    var uecsEntity = _entityManager.Instantiate(unityEcsEntityStruct.uecsEntity);
+
+                    entitiesDB.QueryEntity<UnityECSEntityStruct>(unityEcsEntityStruct.ID).uecsEntity = uecsEntity;
+
+                    _entityManager.AddComponent(uecsEntity, unityEcsEntityStruct.unityComponent);
+
+                    _entityManager.SetComponentData(uecsEntity, new Translation
+                    {
+                        Value = new float3(unityEcsEntityStruct.spawnPosition.x, unityEcsEntityStruct.spawnPosition.y,
+                                           unityEcsEntityStruct.spawnPosition.z)
+
+                    });
+                }
+
+                yield return null;
+            }
         }
 
-        int                     _numberOfDoofuses;
-        readonly EntityManager  _entityManager;
+        readonly EntityManager                _entityManager;
+        readonly IEntityStreamConsumerFactory _consumerFactory;
     }
 }

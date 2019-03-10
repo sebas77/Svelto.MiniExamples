@@ -31,10 +31,14 @@ namespace Svelto.ECS.MiniExamples.Example1
                         init.Init(ref positionEntityStruct);
                         init.Init(new UnityECSEntityStruct
                         {
-                            prefab        = _food,
+                            uecsEntity        = _food,
                             spawnPosition = positionEntityStruct.position,
                             unityComponent = ComponentType.ReadWrite<UnityECSFoodGroup>()
                         });
+                        
+                        yield return null; //todo: wait for entity to be created properly
+                        
+                        entitiesDB.PublishEntityChange<UnityECSEntityStruct>(init.ID);
                     }
                 }
 

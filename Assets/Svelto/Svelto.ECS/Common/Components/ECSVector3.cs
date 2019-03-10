@@ -13,5 +13,5 @@ namespace Svelto.ECS.Components
             y = Y;
             z = Z;
         }
-    }
+   }
 }

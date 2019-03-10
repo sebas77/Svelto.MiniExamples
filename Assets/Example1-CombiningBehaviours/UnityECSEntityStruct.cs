@@ -5,8 +5,8 @@ namespace Svelto.ECS.MiniExamples.Example1
 {
     public struct UnityECSEntityStruct : IEntityStruct
     {
-        public Entity     prefab;
-        public ECSVector3 spawnPosition;
+        public Entity        uecsEntity;
+        public ECSVector3    spawnPosition;
         public ComponentType unityComponent;
 
         public EGID ID { get; set; }

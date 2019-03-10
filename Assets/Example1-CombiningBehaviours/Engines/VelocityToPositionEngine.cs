@@ -1,8 +1,7 @@
-using System;
 using System.Collections;
-using Svelto.ECS.Components;
 using Svelto.ECS.EntityStructs;
 using Svelto.Tasks.ExtraLean;
+using UnityEngine;
 
 namespace Svelto.ECS.MiniExamples.Example1
 {
@@ -12,29 +11,18 @@ namespace Svelto.ECS.MiniExamples.Example1
 
         IEnumerator ComputeVelocity()
         {
-            Action<VelocityEntityStruct[], int, IEntitiesDB> allEntitiesAction =
-                (entities, count, entitiesDB) =>
-                {
-                    EGIDMapper<PositionEntityStruct> positionMapper =
-                        entitiesDB.QueryMappedEntities<PositionEntityStruct>(entities[0].ID.groupID);
-
-                    for (int i = 0; i < count; i++)
-                    {
-                        positionMapper.entity(entities[i].ID).position = new ECSVector3();
-                    }
-                };
-            
             while (true)
             {
-                entitiesDB.ExecuteOnAllEntities(allEntitiesAction);
+                var doofuses = entitiesDB.QueryEntities<PositionEntityStruct, VelocityEntityStruct>(GameGroups.DOOFUSESHUNGRY, out var count);
+
+                for (int i = 0; i < count; i++)
+                {
+                    var ecsVector3 = doofuses.Item2[i].velocity;
+                    doofuses.Item1[i].position.Add(ecsVector3.Mul(Time.deltaTime));
+                }
 
                 yield return null;
             }
-        }
-
-        static void ComputeVelocity(ref VelocityEntityStruct target, IEntitiesDB entitiesdb)
-        {
-            entitiesdb.QueryEntity<PositionEntityStruct>(target.ID);
         }
 
         public IEntitiesDB entitiesDB { get; set; }

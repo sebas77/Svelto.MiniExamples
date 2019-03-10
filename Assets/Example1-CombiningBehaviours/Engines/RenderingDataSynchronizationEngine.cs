@@ -11,13 +11,14 @@ using Unity.Transforms;
 namespace Svelto.ECS.MiniExamples.Example1
 {
     [DisableAutoCreation]
-    public class RenderingDataSynchronizationEngine : IDisposable, IQueryingEntitiesEngine
+    public class RenderingDataSynchronizationEngine : SingleEntityEngine<UnityECSEntityStruct>, IDisposable, IQueryingEntitiesEngine
     {
         public IEntitiesDB entitiesDB { get; set; }
 
         public RenderingDataSynchronizationEngine(World world)
         {
             _runner = new CoroutineMonoRunner("test");
+            _uecsManager = world.EntityManager;
             _group = world.EntityManager.CreateComponentGroup(typeof(Translation),
                                                               typeof(UnityECSDoofusesGroup));
         }
@@ -27,14 +28,23 @@ namespace Svelto.ECS.MiniExamples.Example1
             SynchronizeUnityECSEntitiesWithSveltoECSEntities().RunOn(_runner);
         }
 
+        protected override void Add(ref UnityECSEntityStruct entityView)
+        {}
+
+        protected override void Remove(ref UnityECSEntityStruct entityView)
+        {
+            if (entityView.ID.groupID == GameGroups.DOOFUSESHUNGRY)
+            {
+                if (_uecsManager.IsCreated)
+                _uecsManager.RemoveComponent(entityView.uecsEntity, typeof(UnityECSDoofusesGroup));
+            }
+        }
         IEnumerator SynchronizeUnityECSEntitiesWithSveltoECSEntities()
         {
             while (true)
             {
                 var positionEntityStructs =
-                    entitiesDB
-                       .QueryEntities<PositionEntityStruct>(GameGroups.DOOFUSES,
-                                                                                  out _);
+                    entitiesDB.QueryEntities<PositionEntityStruct>(GameGroups.DOOFUSESHUNGRY, out _);
                 var positions = _group.ToComponentDataArray<Translation>(Allocator.TempJob, out var handle1);
 
                 handle1.Complete();
@@ -68,6 +78,7 @@ namespace Svelto.ECS.MiniExamples.Example1
         }
 
         readonly CoroutineMonoRunner _runner;
-        ComponentGroup               _group;
+        readonly ComponentGroup      _group;
+        readonly EntityManager       _uecsManager;
     }
 }

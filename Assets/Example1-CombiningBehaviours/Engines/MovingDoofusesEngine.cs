@@ -1,13 +1,14 @@
 using System.Collections;
-using Svelto.ECS.Components.Unity.Svelto.ECS.Components;
+using Svelto.ECS.Components;
 using Svelto.ECS.EntityStructs;
 using Svelto.Tasks.ExtraLean;
-using UnityEngine;
 
 namespace Svelto.ECS.MiniExamples.Example1
 {
     public class MovingDoofusesEngine : IQueryingEntitiesEngine
     {
+        public MovingDoofusesEngine(IEntityFunctions entityFunctions) { _entityFunctions = entityFunctions; }
+        
         public void Ready() { MoveDoofuses().RunOn(StandardSchedulers.coroutineScheduler); }
 
         IEnumerator MoveDoofuses()
@@ -15,16 +16,36 @@ namespace Svelto.ECS.MiniExamples.Example1
             while (true)
             {
                 var doofuses =
-                    entitiesDB.QueryEntities<PositionEntityStruct>(
-                        GameGroups.DOOFUSES, out var count);
-                
-                var foods = entitiesDB.QueryEntities<PositionEntityStruct>(
-                                                                           GameGroups.FOOD, out var foodcount);
+                    entitiesDB.QueryEntities<PositionEntityStruct, VelocityEntityStruct>(GameGroups.DOOFUSESHUNGRY,
+                                                                                         out var count);
+                var foods = entitiesDB.QueryEntities<PositionEntityStruct>(GameGroups.FOOD, out var foodcount);
 
                 for (int i = 0; i < count; i++)
-                    for (int j = 0; j < foodcount; j++)
                 {
-                //    var direction = doofuses[i].position.
+                    float currentMin = float.MaxValue;
+                    ECSVector3 direction = new ECSVector3();
+
+                    for (int j = 0; j < foodcount; j++)
+                    {
+                        var computeDirection = foods[j].position;
+                        computeDirection.Sub(doofuses.Item1[i].position);
+                        var module = computeDirection.SqrMagnitude();
+
+                        if (currentMin > module)
+                        {
+                            currentMin = module;
+                            direction = computeDirection;
+
+                            if (module < 10)
+                            {
+                                _entityFunctions.SwapEntityGroup<DoofusEntityDescriptor>(doofuses.Item1[i].ID,
+                                                                                         GameGroups.DOOFUSESEATING);
+                                break; //close enough let's save some computations
+                            }
+                        }
+                    }
+
+                    doofuses.Item2[i].velocity = new ECSVector3(direction.x, 0, direction.z);
                 }
 
                 yield return null;
@@ -32,5 +53,7 @@ namespace Svelto.ECS.MiniExamples.Example1
         }
 
         public IEntitiesDB entitiesDB { get; set; }
+
+        readonly IEntityFunctions _entityFunctions;
     }
 }

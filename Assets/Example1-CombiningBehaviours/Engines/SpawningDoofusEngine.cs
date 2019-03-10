@@ -25,11 +25,13 @@ namespace Svelto.ECS.MiniExamples.Example1
         
         IEnumerator SpawningDoofuses()
         {
-            _factory.PreallocateEntitySpace<DoofusEntityDescriptor>(GameGroups.DOOFUSES, NumberOfDoofuses);
+            //todo: be sure that this is unit tested properly
+            _factory.PreallocateEntitySpace<DoofusEntityDescriptor>(GameGroups.DOOFUSESHUNGRY, NumberOfDoofuses);
+            _factory.PreallocateEntitySpace<DoofusEntityDescriptor>(GameGroups.DOOFUSESEATING, NumberOfDoofuses);
             
             while (_numberOfDoofuses < NumberOfDoofuses)
             {
-                var init = _factory.BuildEntity<DoofusEntityDescriptor>(_numberOfDoofuses, GameGroups.DOOFUSES);
+                var init = _factory.BuildEntity<DoofusEntityDescriptor>(_numberOfDoofuses, GameGroups.DOOFUSESHUNGRY);
 
                 var positionEntityStruct = new PositionEntityStruct
                 {
@@ -39,12 +41,14 @@ namespace Svelto.ECS.MiniExamples.Example1
                 init.Init(positionEntityStruct);
                 init.Init(new UnityECSEntityStruct()
                           {
-                              prefab = _capsule,
+                              uecsEntity = _capsule,
                               spawnPosition = positionEntityStruct.position,
                               unityComponent = ComponentType.ReadWrite<UnityECSDoofusesGroup>()
                           });
-
-                yield return null;
+                
+                yield return null; //todo: wait for entity to be created properly
+                
+                entitiesDB.PublishEntityChange<UnityECSEntityStruct>(init.ID);
                 
                 _numberOfDoofuses++;
             }

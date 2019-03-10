@@ -9,8 +9,10 @@ namespace Svelto.ECS
         public EntityStructInitializer(EGID id, Dictionary<Type, ITypeSafeDictionary> current)
         {
             _current = current;
-            _id      = id;
+            ID      = id;
         }
+        
+        public EGID ID { get; }
 
         public void Init<T>(ref T initializer) where T: struct, IEntityStruct
         {
@@ -19,10 +21,10 @@ namespace Svelto.ECS
             
             var typeSafeDictionary = (TypeSafeDictionary<T>) _current[typeof(T)];
 
-            initializer.ID = _id;
+            initializer.ID = ID;
 
             int count;
-            typeSafeDictionary.GetValuesArray(out count)[typeSafeDictionary.FindElementIndex(_id.entityID)] = initializer;
+            typeSafeDictionary.GetValuesArray(out count)[typeSafeDictionary.FindElementIndex(ID.entityID)] = initializer;
         }
         
         public void Init<T>(T initializer) where T: struct, IEntityStruct
@@ -31,6 +33,5 @@ namespace Svelto.ECS
         }
 
         readonly Dictionary<Type, ITypeSafeDictionary> _current;
-        readonly EGID                                  _id;
     }
 }

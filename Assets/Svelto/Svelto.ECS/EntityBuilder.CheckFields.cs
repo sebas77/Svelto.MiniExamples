@@ -17,31 +17,6 @@ namespace Svelto.ECS
             if (ENTITY_VIEW_TYPE == ENTITYINFOVIEW_TYPE || type == EGIDType || type == ECLUSIVEGROUPSTRUCTTYPE) 
                 return;
 
-            {
-                var methods = type.GetMethods(BindingFlags.Public   |
-                                              BindingFlags.Instance | BindingFlags.DeclaredOnly);
-
-                var properties = type.GetProperties(BindingFlags.Public   |
-                                                    BindingFlags.Instance | BindingFlags.DeclaredOnly);
-
-                if (isRoot)
-                {
-                    if (properties.Length > 1)
-                        ProcessError("Entity views cannot have public methods or properties.", type);
-                        
-                    if (methods.Length > properties.Length + 1)
-                        ProcessError("Entity views cannot have public methods or properties.", type);
-                }
-                else
-                {
-                    if (properties.Length > 0)
-                        ProcessError("Entity components fields cannot have public methods or properties.", type);
-
-                    if (methods.Length > 0)
-                        ProcessError("Entity components fields cannot have public methods or properties.", type);
-                }
-            }
-
             if (needsReflection == false)
             {
                 if (type.IsClass)

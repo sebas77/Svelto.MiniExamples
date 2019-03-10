@@ -60,11 +60,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Svelto\Svelto.ECS\CheckEntityUtilities.cs" />
+    <Compile Include="Assets\Svelto\Svelto.ECS\Common\Components\ECSQuaternion.cs" />
     <Compile Include="Assets\Svelto\Svelto.ECS\Common\Components\ECSRect.cs" />
     <Compile Include="Assets\Svelto\Svelto.ECS\Common\Components\ECSVector2.cs" />
     <Compile Include="Assets\Svelto\Svelto.ECS\Common\Components\ECSVector3.cs" />
     <Compile Include="Assets\Svelto\Svelto.ECS\Common\Components\EcsVector4.cs" />
     <Compile Include="Assets\Svelto\Svelto.ECS\Common\Components\ExtensionMethods.cs" />
+    <Compile Include="Assets\Svelto\Svelto.ECS\Common\Components\ExtensionMethodsUnity.cs" />
     <Compile Include="Assets\Svelto\Svelto.ECS\Common\EntityStructs\PositionEntityStruct.cs" />
     <Compile Include="Assets\Svelto\Svelto.ECS\Common\EntityStructs\RotationEntityStruct.cs" />
     <Compile Include="Assets\Svelto\Svelto.ECS\Common\EntityStructs\VelocityEntityStruct.cs" />
@@ -106,6 +108,7 @@
     <Compile Include="Assets\Svelto\Svelto.ECS\Extensions\Unity\UnityEntitySubmissionScheduler.cs" />
     <Compile Include="Assets\Svelto\Svelto.ECS\FasterDictionaryBenchmarks.cs" />
     <Compile Include="Assets\Svelto\Svelto.ECS\GenericEntityDescriptor.cs" />
+    <Compile Include="Assets\Svelto\Svelto.ECS\GenericentityStreamConsumerFactory.cs" />
     <Compile Include="Assets\Svelto\Svelto.ECS\IEngine.cs" />
     <Compile Include="Assets\Svelto\Svelto.ECS\IEntitiesDB.cs" />
     <Compile Include="Assets\Svelto\Svelto.ECS\IEntityBuilder.cs" />

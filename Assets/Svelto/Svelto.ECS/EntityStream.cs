@@ -77,10 +77,10 @@ namespace Svelto.ECS
         internal void Enqueue(ref T entity)
         {
 #if DEBUG && !PROFILER            
-            if (_ringBuffer.Count >= _ringBuffer.Capacity)
+            if (_ringBuffer.Count > _ringBuffer.Capacity)
                 throw new Exception(
                     "Entity Stream capacity has been saturated Type: ".FastConcat(typeof(T).ToString(), 
-                                                                                  " Consumer Name: ", _name));
+                                                                                  " Consumer Name: ", _name, " count ").FastConcat(_ringBuffer.Count));
 #endif            
                 
             _ringBuffer.Enqueue(ref entity);
