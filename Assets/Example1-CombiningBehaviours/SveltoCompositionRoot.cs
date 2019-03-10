@@ -24,8 +24,7 @@ namespace Svelto.ECS.MiniExamples.Example1
                             context.food, world), generateEntityFactory));
             _enginesRoot.AddEngine(new SpawningDoofusEngine
                                        (GameObjectConversionUtility.ConvertGameObjectHierarchy(context.capsule,
-                                                                                               world),
-                                        generateEntityFactory));
+                                                                              world), generateEntityFactory));
             _enginesRoot.AddEngine(new MovingDoofusesEngine());
             _enginesRoot.AddEngine(new SpawnUnityEntityOnSveltoEntityEngine(world));
 //            _enginesRoot.AddEngine(new VelocityToPositionEngine());

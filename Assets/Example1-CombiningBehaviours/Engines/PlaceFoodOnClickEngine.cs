@@ -21,10 +21,9 @@ namespace Svelto.ECS.MiniExamples.Example1
             {
                 if (Input.GetMouseButton(0) == true)
                 {
-                    var init = _entityFactory.BuildEntity<FoodEntityDescriptor>(_foodPlaced++, GameGroups.FOOD);
-
                     if (UnityUtilities.MouseToPosition(out Vector3 position))
                     {
+                        var init = _entityFactory.BuildEntity<FoodEntityDescriptor>(_foodPlaced++, GameGroups.FOOD);
                         var positionEntityStruct = new PositionEntityStruct()
                         {
                             position = new ECSVector3(position.x, position.y, position.z)
@@ -53,9 +52,5 @@ namespace Svelto.ECS.MiniExamples.Example1
         readonly IEntityFactory _entityFactory;
         readonly Entity         _food;
         int                     _foodPlaced;
-    }
-
-    class UnityECSFoodGroup:Component
-    {
     }
 }

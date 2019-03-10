@@ -4,18 +4,13 @@ using Unity.Transforms;
 
 namespace Svelto.ECS.MiniExamples.Example1
 {
-    public class SpawnUnityEntityOnSveltoEntityEngine : SingleEntityEngine<UnityECSEntityStruct>, IQueryingEntitiesEngine
+    public class SpawnUnityEntityOnSveltoEntityEngine : SingleEntityEngine<UnityECSEntityStruct>
     {
         public SpawnUnityEntityOnSveltoEntityEngine(World world)
         {
             _entityManager = world.EntityManager;
         }
         
-        public IEntitiesDB entitiesDB { get; set; }
-
-        public void Ready()
-        {}
-
         protected override void Add(ref UnityECSEntityStruct unityEcsEntityView)
         {
             SpawnUnityECSEntity(ref unityEcsEntityView);
