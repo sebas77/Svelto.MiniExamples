@@ -47,5 +47,11 @@ namespace Svelto.Tasks
             Lean.StandardSchedulers.Resume();
             ExtraLean.StandardSchedulers.Resume();
         }
+
+        public static void StopAllCoroutines()
+        {
+            Lean.StandardSchedulers.StopAllCoroutines();
+            ExtraLean.StandardSchedulers.StopAllCoroutines();
+        }
     }
 }

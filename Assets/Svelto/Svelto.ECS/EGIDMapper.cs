@@ -6,11 +6,11 @@ namespace Svelto.ECS
     {
         internal TypeSafeDictionary<T> map;
 
-        public ref T entity(EGID id)
+        public ref T Entity(EGID id)
         {
-                int count;
-                var index = map.FindElementIndex(id.entityID); 
-                return ref map.GetValuesArray(out count)[index];
+            int count;
+            var index = map.FindElementIndex(id.entityID);
+            return ref map.GetValuesArray(out count)[index];
         }
     }
 }

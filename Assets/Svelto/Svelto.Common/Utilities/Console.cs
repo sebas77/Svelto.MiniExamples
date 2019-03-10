@@ -151,6 +151,14 @@ namespace Svelto
             LogWarning(txt);
         }
 
+#if DISABLE_DEBUG
+		[Conditional("__NEVER_DEFINED__")]
+#endif
+        public static void LogWarningDebug(string txt, object reference)
+        {
+            LogWarning(txt.FastConcat(" ", reference.ToString()));
+        }
+
         /// <summary>
         /// Use this function if you don't want the message to be batched
         /// </summary>

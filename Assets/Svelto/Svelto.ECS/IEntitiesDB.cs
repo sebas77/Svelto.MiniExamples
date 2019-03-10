@@ -5,7 +5,7 @@ namespace Svelto.ECS
         /// <summary>
         /// ECS is meant to work on a set of Entities. Working on a single entity is sometime necessary, but using
         /// the following functions inside a loop would be a mistake as performance can be significantly impacted
-        /// return the buffer and the index of the entity inside the buffer using the input EGID 
+        /// return the buffer and the index of the entity inside the buffer using the input EGID
         /// </summary>
         /// <param name="entityGid"></param>
         /// <param name="index"></param>
@@ -14,11 +14,11 @@ namespace Svelto.ECS
         bool TryQueryEntitiesAndIndex<T>(int  id, int group, out uint index, out T[] array) where T : IEntityStruct;
         bool TryQueryEntitiesAndIndex<T>(EGID entityGid, out uint index, out T[]  array) where T : IEntityStruct;
         bool TryQueryEntitiesAndIndex<T>(int id, ExclusiveGroup.ExclusiveGroupStruct group, out uint index, out T[] array) where T : IEntityStruct;
-        
+
         /// <summary>
         /// ECS is meant to work on a set of Entities. Working on a single entity is sometime necessary, but using
         /// the following functions inside a loop would be a mistake as performance can be significantly impacted
-        /// return the buffer and the index of the entity inside the buffer using the input EGID 
+        /// return the buffer and the index of the entity inside the buffer using the input EGID
         /// </summary>
         /// <param name="entityGid"></param>
         /// <param name="index"></param>
@@ -29,16 +29,16 @@ namespace Svelto.ECS
         T[] QueryEntitiesAndIndex<T>(int id, int group, out uint index) where T : IEntityStruct;
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="group"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         ref T QueryUniqueEntity<T>(ExclusiveGroup.ExclusiveGroupStruct group) where T : IEntityStruct;
         ref T QueryUniqueEntity<T>(int group) where T : IEntityStruct;
-        
+
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="entityGid"></param>
         /// <typeparam name="T"></typeparam>
@@ -46,7 +46,7 @@ namespace Svelto.ECS
         ref T  QueryEntity<T>(EGID    entityGid) where T : IEntityStruct;
         ref T  QueryEntity<T>(int id, ExclusiveGroup.ExclusiveGroupStruct group) where T : IEntityStruct;
         ref T  QueryEntity<T>(int id, int group) where T : IEntityStruct;
-        
+
         /// <summary>
         /// Fast and raw (therefore not safe) return of entities buffer
         /// Modifying a buffer would compromise the integrity of the whole DB
@@ -58,17 +58,23 @@ namespace Svelto.ECS
         T[] QueryEntities<T>(int group, out int count) where T : IEntityStruct;
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="groupStruct"></param>
         /// <param name="count"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         T[] QueryEntities<T>(ExclusiveGroup.ExclusiveGroupStruct groupStruct, out int count) where T : IEntityStruct;
-        (T1[], T2[]) QueryEntities<T1, T2>(int group, out int count) where T1 : IEntityStruct where T2 : IEntityStruct;
 
-        (T1[], T2[]) QueryEntities<T1, T2>(ExclusiveGroup.ExclusiveGroupStruct groupStruct, out int count) 
+        (T1[], T2[]) QueryEntities<T1, T2>(int group, out int count) where T1 : IEntityStruct where T2 : IEntityStruct;
+        (T1[], T2[]) QueryEntities<T1, T2>(ExclusiveGroup.ExclusiveGroupStruct groupStruct, out int count)
             where T1 : IEntityStruct where T2 : IEntityStruct;
+
+        (T1[], T2[], T3[]) QueryEntities<T1, T2, T3>(int group, out int count)
+            where T1 : IEntityStruct where T2 : IEntityStruct where T3 : IEntityStruct;
+        (T1[], T2[], T3[]) QueryEntities<T1, T2, T3>(ExclusiveGroup.ExclusiveGroupStruct groupStruct, out int count)
+            where T1 : IEntityStruct where T2 : IEntityStruct where T3 : IEntityStruct;
+
         /// <summary>
         /// this version returns a mapped version of the entity array so that is possible to find the
         /// index of the entity inside the returned buffer through it's EGID
@@ -85,7 +91,7 @@ namespace Svelto.ECS
         /// otherwise you will allocate memory which will have a great impact on the execution performance.
         /// ExecuteOnEntities can be used to iterate safely over entities, several checks are in place
         /// to be sure that everything will be done correctly.
-        /// Cache friendliness is guaranteed if only Entity Structs are used, but 
+        /// Cache friendliness is guaranteed if only Entity Structs are used, but
         /// </summary>
         /// <param name="egid"></param>
         /// <param name="action"></param>
@@ -96,8 +102,8 @@ namespace Svelto.ECS
         void ExecuteOnEntities<T, W>(ExclusiveGroup.ExclusiveGroupStruct groupStructId, ref W value, EntitiesAction<T, W> action) where T : IEntityStruct;
         /// <summary>
         /// Execute an action on ALL the entities regardless the group. This function doesn't guarantee cache
-        /// friendliness even if just EntityStructs are used. 
-        /// Safety checks are in place 
+        /// friendliness even if just EntityStructs are used.
+        /// Safety checks are in place
         /// </summary>
         /// <param name="damageableGroups"></param>
         /// <param name="action"></param>
@@ -123,7 +129,7 @@ namespace Svelto.ECS
         void ExecuteOnEntity<T, W>(int id,  ExclusiveGroup.ExclusiveGroupStruct groupid, ref W value, EntityAction<T, W> action) where T : IEntityStruct;
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="egid"></param>
         /// <typeparam name="T"></typeparam>
@@ -131,27 +137,27 @@ namespace Svelto.ECS
         bool Exists<T>(EGID egid) where T : IEntityStruct;
         bool Exists<T>(int id, int groupid) where T : IEntityStruct;
         bool Exists (ExclusiveGroup.ExclusiveGroupStruct gid);
-        
+
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="group"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         bool HasAny<T>(int group) where T:IEntityStruct;
         bool HasAny<T>(ExclusiveGroup.ExclusiveGroupStruct groupStruct) where T:IEntityStruct;
-        
+
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="groupStruct"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         int Count<T>(ExclusiveGroup.ExclusiveGroupStruct groupStruct)  where T:IEntityStruct;
         int Count<T>(int groupStruct)  where T:IEntityStruct;
-        
+
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="egid"></param>
         /// <typeparam name="T"></typeparam>
@@ -163,7 +169,7 @@ namespace Svelto.ECS
 
     public delegate void AllEntitiesAction<T, W>(ref T target, ref W value, IEntitiesDB entitiesDb);
     public delegate void AllEntitiesAction<T>(ref T target, IEntitiesDB entitiesDb);
-    
+
     public delegate void EntitiesAction<T, W>(ref T target, ref W value, EntityActionData extraParams);
     public delegate void EntitiesAction<T>(ref T target, EntityActionData extraParams);
 

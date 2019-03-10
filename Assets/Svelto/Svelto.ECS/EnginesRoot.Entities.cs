@@ -54,9 +54,9 @@ namespace Svelto.ECS
 
         ///--------------------------------------------
         ///
-        public Consumer<T> GenerateConsumer<T>(string name, int capacity) where T:unmanaged, IEntityStruct
+        public IEntityStreamConsumerFactory GenerateConsumerFactory()
         {
-            return _entitiesStream.GenerateConsumer<T>(name, capacity);
+            return new GenericentityStreamConsumerFactory(new DataStructures.WeakReference<EnginesRoot>(this));
         }
         
         public IEntityFactory GenerateEntityFactory()
@@ -275,6 +275,11 @@ namespace Svelto.ECS
                 toGroup = _groupEntityDB[toEntityID.groupID] = new Dictionary<Type, ITypeSafeDictionary>();
 
             MoveEntity(builders, fromEntityID, originalEntityDescriptor, toEntityID, toGroup);
+        }
+        
+        internal Consumer<T> GenerateConsumer<T>(string name, int capacity) where T:unmanaged, IEntityStruct
+        {
+            return _entitiesStream.GenerateConsumer<T>(name, capacity);
         }
 
         const string INVALID_DYNAMIC_DESCRIPTOR_ERROR = "Found an entity requesting an invalid dynamic descriptor, this "   +

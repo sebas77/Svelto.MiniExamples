@@ -4,7 +4,4 @@
     <AssemblyName>Svelto.Common</AssemblyName>
 	<LangVersion>7.3</LangVersion>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-    <PlatformTarget>x64</PlatformTarget>
-  </PropertyGroup>
 </Project>

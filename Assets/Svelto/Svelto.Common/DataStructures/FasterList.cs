@@ -385,6 +385,19 @@ namespace Svelto.DataStructures
             }
         }
         
+        public void UnorderedRemove(T value)
+        {
+            _lockQ.EnterWriteLock();
+            try
+            {
+                _list.UnorderedRemove(value);
+            }
+            finally
+            {
+                _lockQ.ExitWriteLock();
+            }
+        }
+        
         public T[] ToArrayFast(out int count)
         {
             _lockQ.EnterReadLock();

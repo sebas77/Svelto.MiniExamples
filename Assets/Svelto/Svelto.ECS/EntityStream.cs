@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Svelto.DataStructures;
 
@@ -33,7 +34,7 @@ namespace Svelto.ECS
                                       .FastConcat(typeof(T).ToString()));
         }
 
-        readonly Dictionary<Type, ITypeSafeStream> _streams = new Dictionary<Type, ITypeSafeStream>();
+        readonly ConcurrentDictionary<Type, ITypeSafeStream> _streams = new ConcurrentDictionary<Type, ITypeSafeStream>();
     }
 
     interface ITypeSafeStream
@@ -49,29 +50,38 @@ namespace Svelto.ECS
 
         public Consumer<T> GenerateConsumer(string name, int capacity)
         {
-            var consumer = new Consumer<T>(name, capacity);
+            var consumer = new Consumer<T>(name, capacity, this);
             _buffers.Add(consumer);
             return consumer;
         }
-
-        readonly FasterList<Consumer<T>> _buffers = new FasterList<Consumer<T>>();
-    }
-
-    public class Consumer<T> where T:unmanaged, IEntityStruct
-    {
-        public Consumer(string name, int capacity)
+        
+        public void RemoveConsumer(Consumer<T> consumer)
         {
-            _ringBuffer = new RingBuffer<T>(capacity);
-            _capacity = capacity;
-            _name = name;
+            _buffers.UnorderedRemove(consumer); 
         }
 
-        public void Enqueue(ref T entity)
+        readonly FasterListThreadSafe<Consumer<T>> _buffers = new FasterListThreadSafe<Consumer<T>>();
+    }
+
+    public struct Consumer<T>: IDisposable where T:unmanaged, IEntityStruct
+    {
+        internal Consumer(string name, int capacity, EntityStream<T> stream)
         {
-            if (_ringBuffer.Count >= _capacity)
+            _ringBuffer = new RingBuffer<T>(capacity);
+#if DEBUG && !PROFILER            
+            _name = name;
+#endif            
+            _stream = stream;
+        }
+
+        internal void Enqueue(ref T entity)
+        {
+#if DEBUG && !PROFILER            
+            if (_ringBuffer.Count >= _ringBuffer.Capacity)
                 throw new Exception(
                     "Entity Stream capacity has been saturated Type: ".FastConcat(typeof(T).ToString(), 
                                                                                   " Consumer Name: ", _name));
+#endif            
                 
             _ringBuffer.Enqueue(ref entity);
         }
@@ -85,11 +95,13 @@ namespace Svelto.ECS
         }
         
         public bool TryDequeue(out T entity) { return _ringBuffer.TryDequeue(out entity); }
-
         public void Flush() { _ringBuffer.Reset(); }
+        public void Dispose() { _stream.RemoveConsumer(this); }
         
-        readonly RingBuffer<T> _ringBuffer;
-        readonly int           _capacity;
-        readonly string        _name;
+        readonly RingBuffer<T>   _ringBuffer;
+        readonly EntityStream<T> _stream;
+#if DEBUG && !PROFILER        
+        readonly string          _name;
+#endif        
     }
 }    

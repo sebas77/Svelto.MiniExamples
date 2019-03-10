@@ -10,9 +10,11 @@ namespace Svelto.Utilities
 {
     public class Murmur3
     {
-        static public uint MurmurHash3_x86_32(byte[] data, uint length, uint h1)
+        static public uint MurmurHash3_x86_32(byte[] data, uint length, uint seed)
         {
             uint nblocks = length >> 2;
+
+            uint h1 = seed;
 
             const uint c1 = 0xcc9e2d51;
             const uint c2 = 0x1b873593;
