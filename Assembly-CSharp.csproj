@@ -60,14 +60,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Example1-CombiningBehaviours\DoofusEntityDescriptor.cs" />
+    <Compile Include="Assets\Example1-CombiningBehaviours\Engines\MovingDoofusesEngine.cs" />
+    <Compile Include="Assets\Example1-CombiningBehaviours\Engines\PlaceFoodOnClickEngine.cs" />
+    <Compile Include="Assets\Example1-CombiningBehaviours\Engines\RenderingDataSynchronizationEngine.cs" />
+    <Compile Include="Assets\Example1-CombiningBehaviours\Engines\SpawningDoofusEngine.cs" />
+    <Compile Include="Assets\Example1-CombiningBehaviours\Engines\SpawnUnityEntityOnSveltoEntityEngine.cs" />
+    <Compile Include="Assets\Example1-CombiningBehaviours\FoodEntityDescriptor.cs" />
     <Compile Include="Assets\Example1-CombiningBehaviours\GameGroups.cs" />
-    <Compile Include="Assets\Example1-CombiningBehaviours\HelloSpawnMonoBehaviour.cs" />
     <Compile Include="Assets\Example1-CombiningBehaviours\InterpolateVector3EntityStruct.cs" />
-    <Compile Include="Assets\Example1-CombiningBehaviours\MovingDoofusesEngine.cs" />
-    <Compile Include="Assets\Example1-CombiningBehaviours\RenderingDataSynchronizationEngine.cs" />
-    <Compile Include="Assets\Example1-CombiningBehaviours\SpawningDoofusEngine.cs" />
     <Compile Include="Assets\Example1-CombiningBehaviours\SveltoCompositionRoot.cs" />
     <Compile Include="Assets\Example1-CombiningBehaviours\SveltoContext.cs" />
+    <Compile Include="Assets\Example1-CombiningBehaviours\UnityECSEntityStruct.cs" />
+    <Compile Include="Assets\Example1-CombiningBehaviours\UnityUtilities.cs" />
     <Compile Include="Assets\Example1-CombiningBehaviours\VelocityToPositionEngine.cs" />
     <Compile Include="Assets\UnityFreeCamera.cs" />
     <Reference Include="Unity.Timeline.Editor">

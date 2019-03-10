@@ -381,7 +381,7 @@ MeshRenderer:
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
+  m_DynamicOccludee: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -474,3 +474,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   capsule: {fileID: 682977448313023505, guid: 83149006bdce0fa46872f93195835dfe, type: 3}
+  food: {fileID: 6904254650914295564, guid: 1ca1ab4290541044bb3b789f78398f35, type: 3}

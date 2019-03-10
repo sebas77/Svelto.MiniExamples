@@ -19,9 +19,15 @@ namespace Svelto.ECS.MiniExamples.Example1
             var context = contextHolder as SveltoContext;
             //add the engines we are going to use
             World world = World.Active;
+            var generateEntityFactory = _enginesRoot.GenerateEntityFactory();
+            _enginesRoot.AddEngine(new PlaceFoodOnClickEngine(GameObjectConversionUtility.ConvertGameObjectHierarchy(
+                            context.food, world), generateEntityFactory));
             _enginesRoot.AddEngine(new SpawningDoofusEngine
-                                       (context.capsule, _enginesRoot.GenerateEntityFactory(), world));
-            _enginesRoot.AddEngine(new MovingDoofusesEngine());
+                                       (GameObjectConversionUtility.ConvertGameObjectHierarchy(context.capsule,
+                                                                                               world),
+                                        generateEntityFactory));
+           // _enginesRoot.AddEngine(new MovingDoofusesEngine());
+            _enginesRoot.AddEngine(new SpawnUnityEntityOnSveltoEntityEngine(world));
 //            _enginesRoot.AddEngine(new VelocityToPositionEngine());
             
             //one engine two ECS implementations :P
