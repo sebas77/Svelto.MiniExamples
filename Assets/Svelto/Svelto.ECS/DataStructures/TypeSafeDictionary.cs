@@ -68,12 +68,8 @@ namespace Svelto.ECS.Internal
         {
             var values = GetValuesArray(out var count);
 
-            //pay attention: even if the entity is passed by ref, it won't be saved back in the database when this
-            //function is called from the building of an entity. This is by design. Entity structs must be initialized
-            //through the EntityInitializer method and not with an Add callback.
-            //however the struct can be modified during an add callback if this happens as consequence of a group swap
             for (var i = 0; i < count; i++)
-                AddEntityViewToEngines(entityViewEnginesDB, ref values[i], ref profiler);
+                AddEntityViewToEngines(entityViewEnginesDB, ref values[i], null, ref profiler);
         }
 
         public bool Has(int entityIdEntityId) { return ContainsKey(entityIdEntityId); }
@@ -91,13 +87,15 @@ namespace Svelto.ECS.Internal
             if (toGroup != null)
             {
                 var toGroupCasted = toGroup as TypeSafeDictionary<TValue>;
+                var previousGroup = fasterValuesBuffer[valueIndex].ID.groupID; 
                 fasterValuesBuffer[valueIndex].ID = toEntityID;
                 toGroupCasted.Add(toEntityID.entityID, ref fasterValuesBuffer[valueIndex]);
 
                 if (entityViewEnginesDB != null)
                     AddEntityViewToEngines(entityViewEnginesDB,
                                            ref toGroupCasted.GetValuesArray(out _)[
-                                               toGroupCasted.GetValueIndex(toEntityID.entityID)], ref profiler);
+                                               toGroupCasted.GetValueIndex(toEntityID.entityID)], previousGroup,
+                                           ref profiler);
             }
 
             Remove(fromEntityGid.entityID);
@@ -116,7 +114,9 @@ namespace Svelto.ECS.Internal
         public ITypeSafeDictionary Create() { return new TypeSafeDictionary<TValue>(); }
 
         void AddEntityViewToEngines(Dictionary<Type, FasterList<IHandleEntityViewEngineAbstracted>> entityViewEnginesDB,
-            ref TValue entity, ref PlatformProfiler profiler)
+                                    ref TValue                                                      entity,
+                                    ExclusiveGroup.ExclusiveGroupStruct?                            previousGroup,
+                                    ref PlatformProfiler                                            profiler)
         {
             //get all the engines linked to TValue
             if (!entityViewEnginesDB.TryGetValue(_type, out var entityViewsEngines)) return;
@@ -126,7 +126,7 @@ namespace Svelto.ECS.Internal
                 {
                     using (profiler.Sample((entityViewsEngines[i] as EngineInfo).name))
                     {
-                        (entityViewsEngines[i] as IHandleEntityStructEngine<TValue>).AddInternal(ref entity);
+                        (entityViewsEngines[i] as IHandleEntityStructEngine<TValue>).AddInternal(ref entity, previousGroup);
                     }
                 }
                 catch (Exception e)

@@ -121,22 +121,19 @@ namespace Svelto.ECS
             //each group is indexed by entity view type. for each type there is a dictionary indexed by entityID
             foreach (var groupOfEntitiesToSubmit in groupsOfEntitiesToSubmit)
             {
-                Dictionary<Type, ITypeSafeDictionary> groupDB;
                 int groupID = groupOfEntitiesToSubmit.Key;
 
                 //if the group doesn't exist in the current DB let's create it first
-                if (_groupEntityDB.TryGetValue(groupID, out groupDB) == false)
+                if (_groupEntityDB.TryGetValue(groupID, out var groupDB) == false)
                     groupDB = _groupEntityDB[groupID] = new Dictionary<Type, ITypeSafeDictionary>();
 
                 //add the entityViews in the group
                 foreach (var entityViewTypeSafeDictionary in groupOfEntitiesToSubmit.Value)
                 {
-                    ITypeSafeDictionary dbDic;
-                    FasterDictionary<int, ITypeSafeDictionary> groupedGroup = null;
-                    if (groupDB.TryGetValue(entityViewTypeSafeDictionary.Key, out dbDic) == false)
+                    if (groupDB.TryGetValue(entityViewTypeSafeDictionary.Key, out var dbDic) == false)
                         dbDic = groupDB[entityViewTypeSafeDictionary.Key] = entityViewTypeSafeDictionary.Value.Create();
 
-                    if (_groupsPerEntity.TryGetValue(entityViewTypeSafeDictionary.Key, out groupedGroup) == false)
+                    if (_groupsPerEntity.TryGetValue(entityViewTypeSafeDictionary.Key, out var groupedGroup) == false)
                         groupedGroup = _groupsPerEntity[entityViewTypeSafeDictionary.Key] =
                             new FasterDictionary<int, ITypeSafeDictionary>();
 

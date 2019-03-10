@@ -1,6 +1,6 @@
 //https: //github.com/dave-hillier/disruptor-unity3d/blob/master/DisruptorUnity3d/Assets/RingBuffer.cs
 
-using System.Threading;
+using System;
 using Svelto.Utilities;
 
 namespace Svelto.DataStructures
@@ -45,11 +45,17 @@ namespace Svelto.DataStructures
         public ref T Dequeue()
         {
             var next = _consumerCursor.ReadAcquireFence() + 1;
-            while (_producerCursor.ReadAcquireFence() < next) // makes sure we read the data from _entries after we have read the producer cursor
+            
+            int quickIterations = 0;
+
+            // makes sure we read the data from _entries after we have read the producer cursor
+            while (_producerCursor.ReadAcquireFence() < next && quickIterations < 1024)
             {
-                Thread.SpinWait(1);
+                ThreadUtility.Wait(ref quickIterations, 16);
             }
             
+            if (quickIterations >= 1024) throw new Exception("Enqueue failed");
+
             _consumerCursor.WriteReleaseFence(next); // makes sure we read the data from _entries before we update the consumer cursor
             return ref this[next];
         }
@@ -68,6 +74,7 @@ namespace Svelto.DataStructures
                 obj = default(T);
                 return false;
             }
+            
             obj = Dequeue();
             return true;
         }
@@ -76,9 +83,9 @@ namespace Svelto.DataStructures
         /// The number of items in the buffer
         /// </summary>
         /// <remarks>for indicative purposes only, may contain stale data</remarks>
-        public int Count { get { return (int)(_producerCursor.ReadFullFence() - _consumerCursor.ReadFullFence()); } }
+        public int Count { get { return (int)(_producerCursor.ReadAcquireFence() - _consumerCursor.ReadAcquireFence()); } }
 
-        public void Reset() { _consumerCursor.WriteReleaseFence(_producerCursor.ReadFullFence());}
+        public void Reset() { _consumerCursor.WriteReleaseFence(_producerCursor.ReadAcquireFence());}
 
         /// <summary>
         /// Add an item to the buffer
@@ -86,19 +93,7 @@ namespace Svelto.DataStructures
         /// <param name="item"></param>
         public void Enqueue(T item)
         {
-            var next = _producerCursor.ReadAcquireFence() + 1;
-
-            long wrapPoint = next - _entries.Length;
-            long min = _consumerCursor.ReadAcquireFence(); 
-
-            while (wrapPoint > min)
-            {
-                min = _consumerCursor.ReadAcquireFence();
-                Thread.SpinWait(1);
-            }
-
-            this[next] = item;
-            _producerCursor.WriteReleaseFence(next); // makes sure we write the data in _entries before we update the producer cursor
+            Enqueue(ref item);
         }
         
         public void Enqueue(ref T item)
@@ -106,18 +101,24 @@ namespace Svelto.DataStructures
             var next = _producerCursor.ReadAcquireFence() + 1;
 
             long wrapPoint = next - _entries.Length;
-            long min = _consumerCursor.ReadAcquireFence(); 
+            long min = _consumerCursor.ReadAcquireFence();
+            
+            int quickIterations = 0;
 
-            while (wrapPoint > min)
+            while (wrapPoint > min && quickIterations < 1024)
             {
                 min = _consumerCursor.ReadAcquireFence();
-                Thread.SpinWait(1);
+                
+                ThreadUtility.Wait(ref quickIterations, 16);
             }
+            
+            if (quickIterations >= 1024) throw new Exception("Enqueue failed");
 
             this[next] = item;
             _producerCursor.WriteReleaseFence(next); // makes sure we write the data in _entries before we update the producer cursor
         }
 
+        //todo: probably better to move to prime and fasts mod
         static int NextPowerOfTwo(int x)
         {
             var result = 2;
@@ -141,21 +142,9 @@ namespace Svelto.DataStructures
             /// <returns>The current value</returns>
             public long ReadAcquireFence()
             {
-                Thread.MemoryBarrier();
-                var value = _value;
+                var value = ThreadUtility.VolatileRead(ref _value);
                 return value;
             }
-
-            /// <summary>
-            /// Read the value applying full fence semantic
-            /// </summary>
-            /// <returns>The current value</returns>
-            public long ReadFullFence()
-            {
-                Thread.MemoryBarrier();
-                return _value;
-            }
-
             /// <summary>
             /// Write the value applying release fence semantic
             /// </summary>

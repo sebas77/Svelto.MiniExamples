@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using Svelto.ECS.Internal;
 
 namespace Svelto.ECS
@@ -6,6 +7,7 @@ namespace Svelto.ECS
     {
         internal TypeSafeDictionary<T> map;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref T Entity(EGID id)
         {
             int count;

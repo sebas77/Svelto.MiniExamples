@@ -52,7 +52,7 @@ namespace Svelto.ECS.MiniExamples.Example1
             }
         }
 
-        public IEntitiesDB entitiesDB { get; set; }
+        public IEntitiesDB entitiesDB { private get; set; }
 
         readonly IEntityFunctions _entityFunctions;
     }
