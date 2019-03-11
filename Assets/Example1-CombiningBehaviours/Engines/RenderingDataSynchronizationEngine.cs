@@ -10,54 +10,32 @@ using Unity.Transforms;
 
 namespace Svelto.ECS.MiniExamples.Example1
 {
-    [DisableAutoCreation]
-    public class RenderingDataSynchronizationEngine
-        : SingleEntityEngine<UnityECSEntityStruct>, IDisposable, IQueryingEntitiesEngine
+    public class RenderingDataSynchronizationEngine: IDisposable, IQueryingEntitiesEngine
     {
         public IEntitiesDB entitiesDB { get; set; }
 
         public RenderingDataSynchronizationEngine(World world)
         {
             _runner      = new CoroutineMonoRunner("test");
-            _uecsManager = world.EntityManager;
+            
+            //I need to 
             _group       = world.EntityManager.CreateComponentGroup(typeof(Translation), typeof(UnityECSDoofusesGroup));
         }
 
         public void Ready() { SynchronizeUnityECSEntitiesWithSveltoECSEntities().RunOn(_runner); }
 
-        protected override void Add(ref UnityECSEntityStruct             entityView,
-                                    ExclusiveGroup.ExclusiveGroupStruct? previousGroup)
-        {
-            if (previousGroup != null && entityView.ID.groupID == GameGroups.DOOFUSESHUNGRY)
-            {
-                if (_uecsManager.IsCreated)
-                {
-                    if (_uecsManager.HasComponent(entityView.uecsEntity, typeof(UnityECSDoofusesGroup)) == false)
-                        _uecsManager.AddComponent(entityView.uecsEntity, typeof(UnityECSDoofusesGroup));
-                }
-            }
-        }
-
-        protected override void Remove(ref UnityECSEntityStruct entityView)
-        {
-            if (entityView.ID.groupID == GameGroups.DOOFUSESHUNGRY)
-            {
-                if (_uecsManager.IsCreated)
-                    _uecsManager.RemoveComponent(entityView.uecsEntity, typeof(UnityECSDoofusesGroup));
-            }
-        }
-
         IEnumerator SynchronizeUnityECSEntitiesWithSveltoECSEntities()
         {
             while (true)
             {
+                var positions = new NativeArray<Translation>(_group.CalculateLength(), Allocator.TempJob, NativeArrayOptions.UninitializedMemory);
+                
                 var positionEntityStructs =
-                    entitiesDB.QueryEntities<PositionEntityStruct>(GameGroups.DOOFUSESHUNGRY, out _);
-                var positions = _group.ToComponentDataArray<Translation>(Allocator.TempJob, out var handle1);
+                    entitiesDB.QueryEntities<PositionEntityStruct>(GameGroups.DOOFUSESHUNGRY, out var count);
+                var positionEntityStructs2 =
+                    entitiesDB.QueryEntities<PositionEntityStruct>(GameGroups.DOOFUSESEATING, out var count2);
 
-                handle1.Complete();
-
-                for (int index = 0; index < positions.Length; index++)
+                for (int index = 0; index < count; index++)
                 {
                     positions[index] = new Translation
                     {
@@ -66,8 +44,21 @@ namespace Svelto.ECS.MiniExamples.Example1
                                            positionEntityStructs[index].position.z)
                     };
                 }
-
-                //I wanted to spawn one doofus per frame, but I can't find a way to copy just a subset of entities
+                
+                for (int index = 0; index < count2; index++)
+                {
+                    positions[index + count] = new Translation
+                    {
+                        Value = new float3(positionEntityStructs2[index].position.x,
+                                           positionEntityStructs2[index].position.y,
+                                           positionEntityStructs2[index].position.z)
+                    };
+                }
+                
+                //Why I cannot set the number of items I want? I could avoid creating the native array every frame!
+                
+                //Also I cannot find a way to iterate over the chunks linearly (with the operator[]). It would
+                //be better to access the components directly.
                 _group.CopyFromComponentDataArray(positions, out var handle3);
 
                 handle3.Complete();
@@ -81,6 +72,5 @@ namespace Svelto.ECS.MiniExamples.Example1
 
         readonly CoroutineMonoRunner _runner;
         readonly ComponentGroup      _group;
-        readonly EntityManager       _uecsManager;
     }
 }
