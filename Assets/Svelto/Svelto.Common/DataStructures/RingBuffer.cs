@@ -41,8 +41,9 @@ namespace Svelto.DataStructures
         /// <summary>
         /// Removes an item from the buffer.
         /// </summary>
+        /// <param name="name"></param>
         /// <returns>The next available item</returns>
-        public ref T Dequeue()
+        public ref T Dequeue(string name)
         {
             var next = _consumerCursor.ReadAcquireFence() + 1;
             
@@ -54,7 +55,7 @@ namespace Svelto.DataStructures
                 ThreadUtility.Wait(ref quickIterations, 16);
             }
             
-            if (quickIterations >= 1024) throw new Exception("Enqueue failed");
+            if (quickIterations >= 1024) throw new RingBufferExceptionDequeue<T>(name, next);
 
             _consumerCursor.WriteReleaseFence(next); // makes sure we read the data from _entries before we update the consumer cursor
             return ref this[next];
@@ -64,8 +65,9 @@ namespace Svelto.DataStructures
         /// Attempts to remove an items from the queue
         /// </summary>
         /// <param name="obj">the items</param>
+        /// <param name="name"></param>
         /// <returns>True if successful</returns>
-        public bool TryDequeue(out T obj)
+        public bool TryDequeue(out T obj, string name)
         {
             var next = _consumerCursor.ReadAcquireFence() + 1;
 
@@ -75,7 +77,7 @@ namespace Svelto.DataStructures
                 return false;
             }
             
-            obj = Dequeue();
+            obj = Dequeue(name);
             return true;
         }
         
@@ -87,16 +89,7 @@ namespace Svelto.DataStructures
 
         public void Reset() { _consumerCursor.WriteReleaseFence(_producerCursor.ReadAcquireFence());}
 
-        /// <summary>
-        /// Add an item to the buffer
-        /// </summary>
-        /// <param name="item"></param>
-        public void Enqueue(T item)
-        {
-            Enqueue(ref item);
-        }
-        
-        public void Enqueue(ref T item)
+        public void Enqueue(ref T item, string name)
         {
             var next = _producerCursor.ReadAcquireFence() + 1;
 
@@ -112,7 +105,7 @@ namespace Svelto.DataStructures
                 ThreadUtility.Wait(ref quickIterations, 16);
             }
             
-            if (quickIterations >= 1024) throw new Exception("Enqueue failed");
+            if (quickIterations >= 1024) throw new RingBufferExceptionEnqueue<T>(name, next);
 
             this[next] = item;
             _producerCursor.WriteReleaseFence(next); // makes sure we write the data in _entries before we update the producer cursor
@@ -129,7 +122,27 @@ namespace Svelto.DataStructures
             return result;
         }
     }
+
+    public class RingBufferExceptionDequeue<T> : Exception
+    {
+        public RingBufferExceptionDequeue(string name, long count) : base(
+            "Consumer is consuming too fast. Type: "
+               .FastConcat(typeof(T).ToString(), " Consumer Name: ", name, " count ").FastConcat(count))
+        {
+            
+        }
+    }
     
+    public class RingBufferExceptionEnqueue<T> : Exception
+    {
+        public RingBufferExceptionEnqueue(string name, long count) : base(
+            "Entity Stream capacity has been saturated Type: "
+               .FastConcat(typeof(T).ToString(), " Consumer Name: ", name, " count ").FastConcat(count))
+        {
+            
+        }
+    }
+
     public static class Volatile
     {
         public struct PaddedLong

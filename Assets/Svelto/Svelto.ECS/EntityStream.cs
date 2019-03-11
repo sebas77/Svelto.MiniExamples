@@ -68,40 +68,30 @@ namespace Svelto.ECS
         internal Consumer(string name, int capacity, EntityStream<T> stream)
         {
             _ringBuffer = new RingBuffer<T>(capacity);
-#if DEBUG && !PROFILER            
             _name = name;
-#endif            
             _stream = stream;
         }
 
         internal void Enqueue(ref T entity)
         {
-#if DEBUG && !PROFILER            
-            if (_ringBuffer.Count > _ringBuffer.Capacity)
-                throw new Exception(
-                    "Entity Stream capacity has been saturated Type: ".FastConcat(typeof(T).ToString(), 
-                                                                                  " Consumer Name: ", _name, " count ").FastConcat(_ringBuffer.Count));
-#endif            
-                
-            _ringBuffer.Enqueue(ref entity);
+            _ringBuffer.Enqueue(ref entity, _name);
         }
 
         public bool TryDequeue(ExclusiveGroup group, out T entity)
         {
-            if (_ringBuffer.TryDequeue(out entity) == true)
+            if (_ringBuffer.TryDequeue(out entity, _name) == true)
                 return entity.ID.groupID == @group;
 
             return false;
         }
         
-        public bool TryDequeue(out T entity) { return _ringBuffer.TryDequeue(out entity); }
+        public bool TryDequeue(out T entity) { return _ringBuffer.TryDequeue(out entity, _name); }
         public void Flush() { _ringBuffer.Reset(); }
         public void Dispose() { _stream.RemoveConsumer(this); }
         
         readonly RingBuffer<T>   _ringBuffer;
         readonly EntityStream<T> _stream;
-#if DEBUG && !PROFILER        
         readonly string          _name;
-#endif        
+       
     }
 }    

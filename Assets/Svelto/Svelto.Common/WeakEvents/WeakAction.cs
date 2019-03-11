@@ -86,16 +86,10 @@ namespace Svelto.WeakEvents
 
         protected bool Invoke_Internal(object[] data)
         {
+            //please do not add the try catch here, it's very annoying to not be able to check the real stack
             if (objectRef.IsValid)
             {
-                try
-                {
-                    method.Invoke(objectRef.Target, data);
-                }
-                catch (Exception e)
-                {
-                    throw e.InnerException;
-                }
+                method.Invoke(objectRef.Target, data);
 
                 return true;
             }
