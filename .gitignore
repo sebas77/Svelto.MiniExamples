@@ -3,3 +3,5 @@ Temp/
 obj/
 .idea/
 *.DotSettings
+Assets/Plugins/
+Assets/Plugins.meta

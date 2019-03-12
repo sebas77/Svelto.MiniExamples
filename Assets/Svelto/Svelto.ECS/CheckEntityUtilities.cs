@@ -38,15 +38,15 @@ namespace Svelto.ECS
 #if DISABLE_CHECKS        
         [Conditional("_CHECKS_DISABLED")]
 #endif        
-        void CheckRemoveEntityID(EGID entityID, Type entityType, Dictionary<Type, ITypeSafeDictionary> group, string name)
+        void CheckRemoveEntityID(EGID entityID, Type entityViewType, Dictionary<Type, ITypeSafeDictionary> group, string name)
         {
             ITypeSafeDictionary entities;
-            if (group.TryGetValue(entityType, out entities))
+            if (group.TryGetValue(entityViewType, out entities))
             {
                 if (entities.Has(entityID.entityID) == false)
                 {
                     Console.LogError("Entity ".FastConcat(name, " with not found ID is about to be removed: ")
-                                                               .FastConcat(entityType.ToString())
+                                                               .FastConcat(entityViewType.ToString())
                                                                .FastConcat(" id: ")
                                                                .FastConcat(entityID.entityID)
                                                                .FastConcat(" groupid: ")
@@ -56,7 +56,7 @@ namespace Svelto.ECS
             else
             {
                 Console.LogError("Entity ".FastConcat(name, " with not found ID is about to be removed: ")
-                                                           .FastConcat(entityType.ToString())
+                                                           .FastConcat(entityViewType.ToString())
                                                            .FastConcat(" id: ")
                                                            .FastConcat(entityID.entityID)
                                                            .FastConcat(" groupid: ")
@@ -85,15 +85,15 @@ namespace Svelto.ECS
 #if DISABLE_CHECKS        
         [Conditional("_CHECKS_DISABLED")]
 #endif        
-        static void CheckAddEntityID(EGID entityID, Type entityType, Dictionary<Type, ITypeSafeDictionary> group, string name)
+        static void CheckAddEntityID(EGID entityID, Type entityViewType, Dictionary<Type, ITypeSafeDictionary> group, string name)
         {
             ITypeSafeDictionary entities;
-            if (group.TryGetValue(entityType, out entities))
+            if (group.TryGetValue(entityViewType, out entities))
             {
                 if (entities.Has(entityID.entityID))
                 {
                     Console.LogError("Entity ".FastConcat(name, " with used ID is about to be built: ")
-                                                               .FastConcat(entityType.ToString())
+                                                               .FastConcat(entityViewType.ToString())
                                                                .FastConcat(" id: ")
                                                                .FastConcat(entityID.entityID)
                                                                .FastConcat(" groupid: ")

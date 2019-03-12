@@ -59,7 +59,6 @@ namespace Svelto.ECS
                             }
                             catch (Exception e)
                             {
-#if DEBUG && !PROFILER
                                 var str = "Crash while executing Entity Operation"
                                    .FastConcat(entitiesOperations[i].type.ToString()).FastConcat(" id: ")
                                    .FastConcat(entitiesOperations[i].ID).FastConcat(" to id: ")
@@ -69,20 +68,11 @@ namespace Svelto.ECS
 #if RELAXED_ECS
                                 Console.LogException(str.FastConcat(" ", entitiesOperations[i].trace), e);
 #else
-                                throw new ECSException(str.FastConcat(" ").FastConcat(entitiesOperations[i].trace), e);
+                                throw new ECSException(str.FastConcat(" ")
+#if DEBUG && !PROFILER                                                           
+                                                          .FastConcat(entitiesOperations[i].trace)
 #endif
-#else
-                                var str = "Entity Operation is ".FastConcat(entitiesOperations[i].type.ToString())
-                                                                .FastConcat(" id: ")
-                                                                .FastConcat(entitiesOperations[i].ID)
-                                                                .FastConcat(" to id: ")
-                                                                .FastConcat(entitiesOperations[i].toID)
-                                                                .FastConcat(" from groupid: ")
-                                                                .FastConcat(entitiesOperations[i].fromGroupID)
-                                                                .FastConcat(" to groupid: ")
-                                                                .FastConcat(entitiesOperations[i].toGroupID);
-
-                                Console.LogException(str, e);
+                                                     , e);
 #endif
                             }
                         }
@@ -100,7 +90,7 @@ namespace Svelto.ECS
                         {
                             //Note: if N entity of the same type are added on the same frame the Add callback is called N
                             //times on the same frame. if the Add callback builds a new entity, that entity will not
-                            //be available in the database until the N callbacks are done solving it could be complicated as
+                            //be available in the database until the N callbacks are done. Solving this could be complicated as
                             //callback and database update must be interleaved.
                             AddEntityViewsToTheDBAndSuitableEngines(_groupedEntityToAdd.other, profiler);
                         }

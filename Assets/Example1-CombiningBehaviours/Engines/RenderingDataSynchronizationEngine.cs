@@ -28,13 +28,18 @@ namespace Svelto.ECS.MiniExamples.Example1
         {
             while (true)
             {
-                var positions = new NativeArray<Translation>(_group.CalculateLength(), Allocator.TempJob, NativeArrayOptions.UninitializedMemory);
+                var calculateLength = _group.CalculateLength();
                 
                 var positionEntityStructs =
                     entitiesDB.QueryEntities<PositionEntityStruct>(GameGroups.DOOFUSESHUNGRY, out var count);
                 var positionEntityStructs2 =
                     entitiesDB.QueryEntities<PositionEntityStruct>(GameGroups.DOOFUSESEATING, out var count2);
 
+                if (calculateLength != count + count2)
+                {yield return null; continue;}
+
+                var positions = new NativeArray<Translation>(calculateLength, Allocator.TempJob, NativeArrayOptions.UninitializedMemory);
+                
                 for (int index = 0; index < count; index++)
                 {
                     positions[index] = new Translation

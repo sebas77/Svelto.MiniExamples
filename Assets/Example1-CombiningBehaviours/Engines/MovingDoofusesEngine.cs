@@ -29,14 +29,14 @@ namespace Svelto.ECS.MiniExamples.Example1
                     {
                         var computeDirection = foods[j].position;
                         computeDirection.Sub(doofuses.Item1[i].position);
-                        var module = computeDirection.SqrMagnitude();
+                        var sqrModule = computeDirection.SqrMagnitude();
 
-                        if (currentMin > module)
+                        if (currentMin > sqrModule)
                         {
-                            currentMin = module;
+                            currentMin = sqrModule;
                             direction = computeDirection;
 
-                            if (module < 10)
+                            if (sqrModule < 10)
                             {
                                 _entityFunctions.SwapEntityGroup<DoofusEntityDescriptor>(doofuses.Item1[i].ID,
                                                                                          GameGroups.DOOFUSESEATING);

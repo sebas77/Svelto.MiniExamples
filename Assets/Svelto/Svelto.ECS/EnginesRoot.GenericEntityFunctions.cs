@@ -119,7 +119,7 @@ namespace Svelto.ECS
                                           .FastConcat(entitySubmitOperation.ID)
                                           .FastConcat(" groupid: ")
                                           .FastConcat(entitySubmitOperation.fromGroupID)
-                                          .FastConcat(" entityType: ")
+                                          .FastConcat(" entityViewType: ")
                                           .FastConcat(typeof(T).Name)
                                           .FastConcat(" submission type ", entitySubmitOperation.type.ToString(),
                                                       " previous type: ",  _entitiesOperationsDebug[(long)egid].ToString()));
