@@ -153,9 +153,11 @@ namespace Svelto.ECS
 
                 //Check if there is an EntityInfoView linked to this entity, if so it's a DynamicEntityDescriptor!
                 bool correctEntityDescriptorFound = true;
+
+                EntityInfoView entityInfoView = default;
                 if (fromGroup.TryGetValue(ENTITY_INFO_VIEW_TYPE, out var entityInfoViewDic)
                  && (entityInfoViewDic as TypeSafeDictionary<EntityInfoView>).TryGetValue
-                        (entityGID.entityID, out var entityInfoView) &&
+                        (entityGID.entityID, out entityInfoView) &&
                     (correctEntityDescriptorFound = entityInfoView.type == originalDescriptorType))
                 {
                     var entitiesToMove = entityInfoView.entitiesToBuild;
@@ -168,18 +170,10 @@ namespace Svelto.ECS
                 {
 #if DEBUG && !PROFILER
                     if (correctEntityDescriptorFound == false)
-#if RELAXED_ECS
-                        Console.LogError(INVALID_DYNAMIC_DESCRIPTOR_ERROR
-                                                  .FastConcat(" ID ").FastConcat(entityGID.entityID)
-                                                  .FastConcat(" group ID ").FastConcat(entityGID.groupID).FastConcat(
-                                                      " descriptor found: ", entityInfoView.type.Name,
-                                                      " descriptor Excepted ", originalDescriptorType.Name));
-#else
                     throw new ECSException(INVALID_DYNAMIC_DESCRIPTOR_ERROR.FastConcat(" ID ").FastConcat(entityGID.entityID)
                                                .FastConcat(" group ID ").FastConcat(entityGID.groupID).FastConcat(
                                                 " descriptor found: ", entityInfoView.type.Name, " descriptor Excepted ",
                                                 originalDescriptorType.Name));
-#endif
 #endif
 
                     for (var i = 0; i < entityBuilders.Length; i++)
