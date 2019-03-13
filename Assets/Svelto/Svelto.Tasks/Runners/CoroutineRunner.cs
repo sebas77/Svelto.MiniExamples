@@ -37,6 +37,11 @@ namespace Svelto.Tasks.Internal
                 using (_profiler.StartNewSession(_info.runnerName))
 #endif
                 {
+                    if (_flushingOperation.stopping == true && _coroutines.Count == 0)
+                    { //once all the coroutines are flushed the loop can return accepting new tasks
+                        _flushingOperation.stopping = false;
+                    }
+
                     //don't start anything while flushing
                     if (_newTaskRoutines.Count > 0 && false == _flushingOperation.stopping) 
                         _newTaskRoutines.DequeueAllInto(_coroutines);
@@ -45,8 +50,10 @@ namespace Svelto.Tasks.Internal
                     
                     if (coroutinesCount == 0 ||
                         _flushingOperation.paused == true && _flushingOperation.stopping == false)
+                    {
                         return true;
-
+                    }
+                        
                     _info.Reset();
 
                     //I decided to adopt this strategy instead to call MoveNext() directly when a task
@@ -103,11 +110,6 @@ namespace Svelto.Tasks.Internal
                             index >= coroutinesCount);
                     } 
                     while (!mustExit);
-                }
-
-                if (_flushingOperation.stopping == true && _coroutines.Count == 0)
-                { //once all the coroutines are flushed the loop can return accepting new tasks
-                    _flushingOperation.stopping = false;
                 }
 
                 return true;

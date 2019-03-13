@@ -19,7 +19,7 @@ namespace Svelto.ECS.Unity
         public static void CreateAll<T>(ExclusiveGroup group, Transform contextHolder,
             IEntityFactory factory) where T : MonoBehaviour, IEntityDescriptorHolder
         {
-            var holders       = contextHolder.GetComponentsInChildren<T>(true);
+            var holders = contextHolder.GetComponentsInChildren<T>(true);
 
             foreach (var holder in holders)
             {
@@ -27,10 +27,12 @@ namespace Svelto.ECS.Unity
 
                 ExclusiveGroup.ExclusiveGroupStruct realGroup = group;
 
-                if (string.IsNullOrEmpty( holder.groupName) == false)
+                if (string.IsNullOrEmpty(holder.groupName) == false)
                     realGroup = ExclusiveGroup.Search(holder.groupName);
 
-                factory.BuildEntity(holder.GetInstanceID(), realGroup, holder.GetDescriptor(), implementors);
+                 var init = factory.BuildEntity(holder.GetInstanceID(), realGroup, holder.GetDescriptor(), implementors);
+                 
+                 init.Init(new EntityHierarchyStruct(group));
             }
         }
     }

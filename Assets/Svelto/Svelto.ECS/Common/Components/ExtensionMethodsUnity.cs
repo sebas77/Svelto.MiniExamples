@@ -25,6 +25,21 @@ namespace Svelto.ECS.Components.Unity
         {
             return new ECSQuaternion(quaternion.x, quaternion.y, quaternion.z, quaternion.w);
         }
+
+        public static void Set(ref this ECSQuaternion ecsQuaternion, in Quaternion quaternion)
+        {
+            ecsQuaternion.x = quaternion.x;
+            ecsQuaternion.y = quaternion.y;
+            ecsQuaternion.z = quaternion.z;
+            ecsQuaternion.w = quaternion.w;
+        }
+
+        public static void Set(ref this ECSVector3 ecsVector3, in Vector3 vector3)
+        {
+            ecsVector3.x = vector3.x;
+            ecsVector3.y = vector3.y;
+            ecsVector3.z = vector3.z;
+        }
     }
 }
 #endif

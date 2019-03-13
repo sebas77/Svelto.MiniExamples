@@ -36,10 +36,7 @@ namespace Svelto.ECS
                 _subscribers.Invoke(_senderID, value);
             }
 
-            get 
-            {
-                return _value;
-            }
+            get => _value;
         }
         
         public void NotifyOnValueSet(Action<EGID, T> action)

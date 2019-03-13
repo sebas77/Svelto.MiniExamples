@@ -181,7 +181,7 @@ namespace Svelto.ECS.Internal
         public uint FindElementIndex(int entityGidEntityId)
         {
             if (FindIndex(entityGidEntityId, out var findIndex) == false)
-                throw new Exception("Entity not found in this group");
+                throw new Exception("Entity not found in this group ".FastConcat(typeof(TValue).ToString()));
 
             return findIndex;
         }

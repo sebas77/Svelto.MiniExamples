@@ -68,7 +68,7 @@ public static class ExtensionMethods
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static ECSVector3 Mul(ref this ECSQuaternion rotation, in ECSVector3 point)
+    public static ECSVector3 Mul(in this ECSQuaternion rotation, in ECSVector3 point)
     {
         float x  = rotation.x * 2F;
         float y  = rotation.y * 2F;

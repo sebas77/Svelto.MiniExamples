@@ -128,9 +128,7 @@ namespace Svelto.DataStructures
         public RingBufferExceptionDequeue(string name, long count) : base(
             "Consumer is consuming too fast. Type: "
                .FastConcat(typeof(T).ToString(), " Consumer Name: ", name, " count ").FastConcat(count))
-        {
-            
-        }
+        {}
     }
     
     public class RingBufferExceptionEnqueue<T> : Exception
@@ -138,9 +136,7 @@ namespace Svelto.DataStructures
         public RingBufferExceptionEnqueue(string name, long count) : base(
             "Entity Stream capacity has been saturated Type: "
                .FastConcat(typeof(T).ToString(), " Consumer Name: ", name, " count ").FastConcat(count))
-        {
-            
-        }
+        {}
     }
 
     public static class Volatile

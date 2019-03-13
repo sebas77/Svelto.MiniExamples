@@ -53,6 +53,12 @@ namespace Svelto.Tasks
             _currentState            = states.value;
             _returnObjects.reference = val;
         }
+        
+        public TaskContract(object o) : this()
+        {
+            _currentState          = states.reference;
+            _returnObjects.reference = o;
+        }
 
         [StructLayout(LayoutKind.Explicit)]
         struct fieldValues
@@ -112,6 +118,11 @@ namespace Svelto.Tasks
         {
             return _returnValue.single;
         }
+
+        public T ToRef<T>() where T : class
+        {
+            return _returnObjects.reference as T;
+        }
         
         internal Break breakIt => _currentState == states.breakit ?_returnObjects.breakIt : null;
 
@@ -164,7 +175,8 @@ namespace Svelto.Tasks
             continuation,
             breakit,
             leanEnumerator,
-            extraLeanEnumerator
+            extraLeanEnumerator,
+            reference
         }
     }
 }

@@ -26,7 +26,7 @@ namespace Svelto.Tasks
     
     namespace ExtraLean.Unity
     {
-        public class LateMonoRunner:PhysicMonoRunner<IEnumerator>
+        public class LateMonoRunner: LateMonoRunner<IEnumerator>
         {
             public LateMonoRunner(string name) : base(name)
             {
