@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
- using System.Runtime.CompilerServices;
- using Svelto.Utilities;
+using System.Runtime.CompilerServices;
 
  namespace Svelto.DataStructures.Experimental
 {
@@ -166,18 +165,18 @@ using System.Collections.Generic;
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static uint Reduce(uint x, uint N) 
+        static uint Reduce(uint value, uint N) 
         {
             {
-                if (x >= N)
+                if (value >= N)
                 {
-                    var hash = (11400714819323198485 * x);
+                    var hash = (11400714819323198485u * value);
                     hash >>= 32;
                     
                     return (uint) ((hash * N) >> 32);
                 }
 
-                return x;
+                return value;
             }
         }
 

@@ -16,7 +16,7 @@ namespace Svelto.ECS.Unity
             return holder;
         }
         
-        public static void CreateAll<T>(ExclusiveGroup group, Transform contextHolder,
+        public static int CreateAll<T>(int startIndex, ExclusiveGroup group, Transform contextHolder,
             IEntityFactory factory) where T : MonoBehaviour, IEntityDescriptorHolder
         {
             var holders = contextHolder.GetComponentsInChildren<T>(true);
@@ -26,14 +26,23 @@ namespace Svelto.ECS.Unity
                 var implementors = holder.GetComponents<IImplementor>();
 
                 ExclusiveGroup.ExclusiveGroupStruct realGroup = group;
-
+                
                 if (string.IsNullOrEmpty(holder.groupName) == false)
                     realGroup = ExclusiveGroup.Search(holder.groupName);
 
-                 var init = factory.BuildEntity(holder.GetInstanceID(), realGroup, holder.GetDescriptor(), implementors);
+                EGID egid;
+                var holderId = holder.id;
+                if (holderId == 0)
+                    egid = new EGID(startIndex++, realGroup);
+                else
+                    egid = new EGID(holderId, realGroup);
+
+                var init = factory.BuildEntity(egid, holder.GetDescriptor(), implementors);
                  
-                 init.Init(new EntityHierarchyStruct(group));
+                init.Init(new EntityHierarchyStruct(group));
             }
+
+            return startIndex;
         }
     }
 }  

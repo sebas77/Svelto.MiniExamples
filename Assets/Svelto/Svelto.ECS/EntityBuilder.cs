@@ -27,6 +27,8 @@ namespace Svelto.ECS
 
             var castedDic = dictionary as TypeSafeDictionary<T>;
 
+            entityID = new EGID(EGID.MAKE_GLOBAL_ID(entityID.entityID, entityID.groupID, (uint) castedDic.Count));
+
             if (NEEDS_REFLECTION)
             {
                 Check.Require(implementors != null, "Implementors not found while building an EntityView");
