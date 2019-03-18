@@ -55,8 +55,7 @@ namespace Svelto.Tasks.ExtraLean
         /// <returns></returns>
         public bool MoveNext()
         {
-            Check.Require(_threadSafeSveltoTaskStates.completed == false,
-                          "ExtraLeanSveltoTask impossible state ".FastConcat(ToString()));
+            Check.Require(_threadSafeSveltoTaskStates.completed == false, "ExtraLeanSveltoTask impossible state ");
 
             bool completed;
             if (_threadSafeSveltoTaskStates.explicitlyStopped == false)

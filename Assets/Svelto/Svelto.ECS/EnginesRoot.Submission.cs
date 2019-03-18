@@ -72,7 +72,7 @@ namespace Svelto.ECS
                     }
                 }
 
-                if (_groupedEntityToAdd.entitiesBuiltThisSubmission > 0)
+                if (_groupedEntityToAdd.entitiesCreatedPerGroup.Count > 0)
                 {
                     using (profiler.Sample("Add operations"))
                     {
@@ -85,7 +85,7 @@ namespace Svelto.ECS
                             //N times on the same frame. if the Add callback builds a new entity, that entity will not
                             //be available in the database until the N callbacks are done. Solving this could be
                             //complicated as callback and database update must be interleaved.
-                            AddEntityViewsToTheDBAndSuitableEngines(_groupedEntityToAdd.other, profiler);
+                            AddEntityViewsToTheDBAndSuitableEngines(_groupedEntityToAdd, profiler);
                         }
                         finally
                         {
@@ -98,14 +98,17 @@ namespace Svelto.ECS
         }
 
         void AddEntityViewsToTheDBAndSuitableEngines(
-            FasterDictionary<uint, Dictionary<Type, ITypeSafeDictionary>> groupsOfEntitiesToSubmit,
+            DoubleBufferedEntitiesToAdd dbgroupsOfEntitiesToSubmit,
             PlatformProfiler profiler)
         {
             //each group is indexed by entity view type. for each type there is a dictionary indexed by entityID
+            var groupsOfEntitiesToSubmit = dbgroupsOfEntitiesToSubmit.other;
             foreach (var groupOfEntitiesToSubmit in groupsOfEntitiesToSubmit)
             { 
                 var groupID = groupOfEntitiesToSubmit.Key;
-
+                
+                if (dbgroupsOfEntitiesToSubmit.entitiesCreatedPerGroup.ContainsKey(groupID) == false) continue;
+                
                 //if the group doesn't exist in the current DB let's create it first
                 if (_groupEntityDB.TryGetValue(groupID, out var groupDB) == false)
                     groupDB = _groupEntityDB[groupID] = new Dictionary<Type, ITypeSafeDictionary>();

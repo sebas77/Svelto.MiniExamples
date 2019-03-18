@@ -85,9 +85,7 @@ namespace Svelto.ECS
 
             CheckAddEntityID(entityID, entityDescriptor);
 
-            _groupedEntityToAdd.entitiesBuiltThisSubmission++;
-
-            var dic = EntityFactory.BuildGroupedEntities(entityID, _groupedEntityToAdd.current,
+            var dic = EntityFactory.BuildGroupedEntities(entityID, _groupedEntityToAdd,
                                                          descriptorEntitiesToBuild, implementors);
 
             return new EntityStructInitializer(entityID, dic);
@@ -118,11 +116,11 @@ namespace Svelto.ECS
                 group = _groupEntityDB[groupID] = new Dictionary<Type, ITypeSafeDictionary>();
 
             //reserve space in building buffer
-            if (_groupedEntityToAdd.current.TryGetValue(groupID, out var groupBufferA) == false)
-                groupBufferA = _groupedEntityToAdd.current[groupID] = new Dictionary<Type, ITypeSafeDictionary>();
+//            if (_groupedEntityToAdd.current.TryGetValue(groupID, out var groupBufferA) == false)
+  //              groupBufferA = _groupedEntityToAdd.current[groupID] = new Dictionary<Type, ITypeSafeDictionary>();
             
-            if (_groupedEntityToAdd.other.TryGetValue(groupID, out var groupBufferB) == false)
-                groupBufferB = _groupedEntityToAdd.other[groupID] = new Dictionary<Type, ITypeSafeDictionary>();
+    //        if (_groupedEntityToAdd.other.TryGetValue(groupID, out var groupBufferB) == false)
+      //          groupBufferB = _groupedEntityToAdd.other[groupID] = new Dictionary<Type, ITypeSafeDictionary>();
 
             for (var index = 0; index < numberOfEntityViews; index++)
             {
@@ -134,15 +132,15 @@ namespace Svelto.ECS
                 else
                     dbList.AddCapacity(size);
 
-                if (groupBufferA.TryGetValue(entityViewType, out dbList) == false)
-                    groupBufferA[entityViewType] = entityViewBuilder.Preallocate(ref dbList, size);
-                else
-                    dbList.AddCapacity(size);
+          //      if (groupBufferA.TryGetValue(entityViewType, out dbList) == false)
+            //        groupBufferA[entityViewType] = entityViewBuilder.Preallocate(ref dbList, size);
+//                else
+  //                  dbList.AddCapacity(size);
 
-                if (groupBufferB.TryGetValue(entityViewType, out dbList) == false)
-                    groupBufferB[entityViewType] = entityViewBuilder.Preallocate(ref dbList, size);
-                else
-                    dbList.AddCapacity(size);
+    //            if (groupBufferB.TryGetValue(entityViewType, out dbList) == false)
+      //              groupBufferB[entityViewType] = entityViewBuilder.Preallocate(ref dbList, size);
+        //        else
+          //          dbList.AddCapacity(size);
 
                 if (_groupsPerEntity.TryGetValue(entityViewType, out var groupedGroup) == false)
                     groupedGroup = _groupsPerEntity[entityViewType] = new FasterDictionary<uint, ITypeSafeDictionary>();

@@ -54,8 +54,7 @@ namespace Svelto.Tasks.Lean
 
         public bool MoveNext()
         {
-            DBC.Tasks.Check.Require(_threadSafeSveltoTaskStates.completed == false,
-                                    "impossible state ".FastConcat(ToString()));
+            DBC.Tasks.Check.Require(_threadSafeSveltoTaskStates.completed == false, "impossible state ");
             bool completed = false;
             try
             {
