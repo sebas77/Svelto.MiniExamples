@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Svelto.ECS.MiniExamples.Example1
 {
-    class FoodEntityDescriptor : GenericEntityDescriptor<PositionEntityStruct, UnityECSEntityStruct>
+    public class FoodEntityDescriptor : GenericEntityDescriptor<PositionEntityStruct, UnityECSEntityStruct>
     {
     }
     

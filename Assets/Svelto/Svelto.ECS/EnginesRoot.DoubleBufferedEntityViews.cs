@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using Svelto.DataStructures.Experimental;
 using Svelto.ECS.Internal;
+using T =
+    Svelto.DataStructures.Experimental.FasterDictionary<uint, System.Collections.Generic.Dictionary<System.Type,
+        Svelto.ECS.Internal.ITypeSafeDictionary>>;
 
 namespace Svelto.ECS
 {
     public partial class EnginesRoot
     {
-        class DoubleBufferedEntitiesToAdd<T> where T : FasterDictionary<int, Dictionary<Type, ITypeSafeDictionary>>, new()
+        class DoubleBufferedEntitiesToAdd
         {
             readonly T _entityViewsToAddBufferA = new T();
             readonly T _entityViewsToAddBufferB = new T();
@@ -20,7 +23,8 @@ namespace Svelto.ECS
 
             internal T other;
             internal T current;
-            
+            internal uint entitiesBuiltThisSubmission;
+
             internal void Swap()
             {
                 var toSwap = other;
@@ -29,8 +33,7 @@ namespace Svelto.ECS
             }
 
             /// <summary>
-            /// Careful, I don't clear the whole group, because otherwise it would be recreated every time
-            /// but if a group is removed from good, this should be updated it too
+            /// I will need to pool the groups here instead to recreate every time
             /// </summary>
             public void ClearOther()
             {
@@ -40,7 +43,13 @@ namespace Svelto.ECS
                     {
                         subitem.Value.Clear();
                     }
+
+                    item.Value.Clear();
                 }
+
+                other.Clear();
+                
+                entitiesBuiltThisSubmission = 0;
             }
         }
     }

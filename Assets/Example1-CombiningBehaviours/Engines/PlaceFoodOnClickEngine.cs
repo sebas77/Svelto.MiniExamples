@@ -24,7 +24,7 @@ namespace Svelto.ECS.MiniExamples.Example1
                     if (UnityUtilities.MouseToPosition(out Vector3 position))
                     {
                         var init = _entityFactory.BuildEntity<FoodEntityDescriptor>(_foodPlaced++, GameGroups.FOOD);
-                        var positionEntityStruct = new PositionEntityStruct()
+                        var positionEntityStruct = new PositionEntityStruct
                         {
                             position = new ECSVector3(position.x, position.y, position.z)
                         };
@@ -35,10 +35,6 @@ namespace Svelto.ECS.MiniExamples.Example1
                             spawnPosition = positionEntityStruct.position,
                             unityComponent = ComponentType.ReadWrite<UnityECSFoodGroup>()
                         });
-                        
-                        yield return null; //todo: wait for entity to be created properly
-                        
-                        entitiesDB.PublishEntityChange<UnityECSEntityStruct>(init.ID);
                     }
                 }
 
@@ -46,7 +42,7 @@ namespace Svelto.ECS.MiniExamples.Example1
             }
         }
 
-        public IEntitiesDB entitiesDB { get; set; }
+        public IEntitiesDB entitiesDB { private get; set; }
 
         public void Ready()
         {
@@ -55,6 +51,7 @@ namespace Svelto.ECS.MiniExamples.Example1
         
         readonly IEntityFactory _entityFactory;
         readonly Entity         _food;
-        int                     _foodPlaced;
+        
+        uint _foodPlaced;
     }
 }

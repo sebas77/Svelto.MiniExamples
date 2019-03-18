@@ -16,7 +16,7 @@ namespace Svelto.ECS.Unity
             return holder;
         }
         
-        public static int CreateAll<T>(int startIndex, ExclusiveGroup group, Transform contextHolder,
+        public static uint CreateAll<T>(uint startIndex, ExclusiveGroup group, Transform contextHolder,
             IEntityFactory factory) where T : MonoBehaviour, IEntityDescriptorHolder
         {
             var holders = contextHolder.GetComponentsInChildren<T>(true);

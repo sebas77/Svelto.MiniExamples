@@ -20,7 +20,7 @@ namespace Svelto.ECS.MiniExamples.Example1
                                                                                          out var count);
                 var foods = entitiesDB.QueryEntities<PositionEntityStruct>(GameGroups.FOOD, out var foodcount);
 
-                for (int i = 0; i < count; i++)
+                for (int entityIndex = 0; entityIndex < count; entityIndex++)
                 {
                     float currentMin = float.MaxValue;
                     ECSVector3 direction = new ECSVector3();
@@ -28,7 +28,7 @@ namespace Svelto.ECS.MiniExamples.Example1
                     for (int j = 0; j < foodcount; j++)
                     {
                         var computeDirection = foods[j].position;
-                        computeDirection.Sub(doofuses.Item1[i].position);
+                        computeDirection.Sub(doofuses.Item1[entityIndex].position);
                         var sqrModule = computeDirection.SqrMagnitude();
 
                         if (currentMin > sqrModule)
@@ -38,14 +38,15 @@ namespace Svelto.ECS.MiniExamples.Example1
 
                             if (sqrModule < 10)
                             {
-                                _entityFunctions.SwapEntityGroup<DoofusEntityDescriptor>(doofuses.Item1[i].ID,
+                                _entityFunctions.SwapEntityGroup<DoofusEntityDescriptor>(doofuses.Item1[entityIndex].ID,
                                                                                          GameGroups.DOOFUSESEATING);
                                 break; //close enough let's save some computations
                             }
                         }
                     }
 
-                    doofuses.Item2[i].velocity = new ECSVector3(direction.x, 0, direction.z);
+                    doofuses.Item2[entityIndex].velocity.x = direction.x;
+                    doofuses.Item2[entityIndex].velocity.z = direction.z;
                 }
 
                 yield return null;

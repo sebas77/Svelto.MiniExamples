@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Svelto.Tasks.ExtraLean.Unity;
 
 namespace Svelto.Tasks.Lean
 {
@@ -11,7 +10,7 @@ namespace Svelto.Tasks.Lean
         static Unity.UpdateMonoRunner<IEnumerator<TaskContract>>    _updateScheduler;
         static Unity.PhysicMonoRunner<IEnumerator<TaskContract>>    _physicScheduler;
         static Unity.LateMonoRunner<IEnumerator<TaskContract>>      _lateScheduler;
-        static EarlyUpdateMonoRunner<IEnumerator<TaskContract>>     _earlyScheduler;
+        static Unity.EarlyUpdateMonoRunner<IEnumerator<TaskContract>>     _earlyScheduler;
 #endif
         public static MultiThreadRunner<IEnumerator<TaskContract>> multiThreadScheduler => _multiThreadScheduler ??
             (_multiThreadScheduler =
@@ -46,12 +45,12 @@ namespace Svelto.Tasks.Lean
             }
         }
 
-        public static EarlyUpdateMonoRunner<IEnumerator<TaskContract>> earlyScheduler
+        public static Unity.EarlyUpdateMonoRunner<IEnumerator<TaskContract>> earlyScheduler
         {
             get
             {
                 if (_earlyScheduler == null)
-                    _earlyScheduler = new EarlyUpdateMonoRunner<IEnumerator<TaskContract>>("EarlyUpdateMonoRunner");
+                    _earlyScheduler = new Unity.EarlyUpdateMonoRunner<IEnumerator<TaskContract>>("EarlyUpdateMonoRunner");
                 return _earlyScheduler;
             }
         }
@@ -115,11 +114,16 @@ namespace Svelto.Tasks.Lean
 
         public static void StopAllCoroutines()
         {
+            if (_multiThreadScheduler != null && multiThreadScheduler.isKilled == false)
+                _multiThreadScheduler.StopAllCoroutines();
+            
+#if UNITY_5 || UNITY_5_3_OR_NEWER            
             _coroutineScheduler?.StopAllCoroutines();
             _updateScheduler?.StopAllCoroutines();
             _physicScheduler?.StopAllCoroutines();
             _lateScheduler?.StopAllCoroutines();
             _earlyScheduler?.StopAllCoroutines();
+#endif
         }
     }
 }

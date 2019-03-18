@@ -7,14 +7,15 @@ using System.Reflection;
 
 namespace Svelto.ECS
 {
-    public partial class EntityBuilder<T>
+    public static class EntityBuilderUtilities
     {
 #if DISABLE_CHECKS        
         [Conditional("_CHECKS_DISABLED")]
 #endif
-        static void CheckFields(Type type, bool needsReflection, bool isRoot)
+        public static void CheckFields(Type type, bool needsReflection, bool isRoot)
         {
-            if (ENTITY_VIEW_TYPE == ENTITYINFOVIEW_TYPE || type == EGIDType || type == ECLUSIVEGROUPSTRUCTTYPE) 
+            Type ENTITY_VIEW_TYPE = typeof(Type);
+            if (ENTITY_VIEW_TYPE == typeof(EntityInfoView) || type == EGIDType || type == ECLUSIVEGROUPSTRUCTTYPE) 
                 return;
 
             if (needsReflection == false)
@@ -87,6 +88,7 @@ namespace Svelto.ECS
         static void ProcessError(string message, Type type)
         {
 #if !RELAXED_ECS
+            Type ENTITY_VIEW_TYPE = typeof(Type);
             throw new EntityStructException(message, ENTITY_VIEW_TYPE, type);
 #endif
         }

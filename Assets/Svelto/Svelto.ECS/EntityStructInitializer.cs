@@ -11,8 +11,6 @@ namespace Svelto.ECS
             _group = @group;
             ID      = id;
         }
-        
-        public EGID ID { get; }
 
         public void Init<T>(ref T initializer) where T: struct, IEntityStruct
         {
@@ -32,6 +30,7 @@ namespace Svelto.ECS
             Init(ref initializer);
         }
 
+        readonly EGID ID;
         readonly Dictionary<Type, ITypeSafeDictionary> _group;
     }
 }

@@ -17,8 +17,6 @@ namespace Svelto.ECS.MiniExamples.Example1
         public RenderingDataSynchronizationEngine(World world)
         {
             _runner      = new CoroutineMonoRunner("test");
-            
-            //I need to 
             _group       = world.EntityManager.CreateComponentGroup(typeof(Translation), typeof(UnityECSDoofusesGroup));
         }
 
@@ -52,7 +50,7 @@ namespace Svelto.ECS.MiniExamples.Example1
                 
                 for (int index = 0; index < count2; index++)
                 {
-                    positions[index + count] = new Translation
+                    positions[(int) (index + count)] = new Translation
                     {
                         Value = new float3(positionEntityStructs2[index].position.x,
                                            positionEntityStructs2[index].position.y,
@@ -60,8 +58,8 @@ namespace Svelto.ECS.MiniExamples.Example1
                     };
                 }
                 
-                //Why I cannot set the number of items I want? I could avoid creating the native array every frame!
-                
+                //UnityECS: Why I cannot set the number of items I want? I could avoid creating the native array every
+                //frame!
                 //Also I cannot find a way to iterate over the chunks linearly (with the operator[]). It would
                 //be better to access the components directly.
                 _group.CopyFromComponentDataArray(positions, out var handle3);

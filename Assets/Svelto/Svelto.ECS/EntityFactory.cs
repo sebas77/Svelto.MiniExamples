@@ -8,22 +8,20 @@ namespace Svelto.ECS.Internal
     {
         internal static Dictionary<Type, ITypeSafeDictionary> 
             BuildGroupedEntities(EGID egid,
-                 FasterDictionary<int, Dictionary<Type, ITypeSafeDictionary>> groupEntityViewsByType,
+                 FasterDictionary<uint, Dictionary<Type, ITypeSafeDictionary>> groupEntityViewsByType,
                  IEntityBuilder[] entitiesToBuild, object[] implementors)
         {
             var @group = FetchEntityGroup(egid.groupID, groupEntityViewsByType);
-
+            
             BuildEntitiesAndAddToGroup(egid, group, entitiesToBuild, implementors);
 
             return group;
         }
 
-        static Dictionary<Type, ITypeSafeDictionary> FetchEntityGroup(int groupID, 
-            FasterDictionary<int, Dictionary<Type, ITypeSafeDictionary>> groupEntityViewsByType)
+        static Dictionary<Type, ITypeSafeDictionary> FetchEntityGroup(uint groupID, 
+            FasterDictionary<uint, Dictionary<Type, ITypeSafeDictionary>> groupEntityViewsByType)
         {
-            Dictionary<Type, ITypeSafeDictionary> group;
-
-            if (groupEntityViewsByType.TryGetValue(groupID, out @group) == false)
+            if (groupEntityViewsByType.TryGetValue(groupID, out Dictionary<Type, ITypeSafeDictionary> @group) == false)
             {
                 @group = new Dictionary<Type, ITypeSafeDictionary>();
                 groupEntityViewsByType.Add(groupID, @group);

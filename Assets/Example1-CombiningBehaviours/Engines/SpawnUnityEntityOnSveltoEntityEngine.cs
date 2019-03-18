@@ -1,53 +1,49 @@
-using System.Collections;
-using Svelto.Tasks.ExtraLean;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
 
 namespace Svelto.ECS.MiniExamples.Example1
 {
-    public class SpawnUnityEntityOnSveltoEntityEngine : IQueryingEntitiesEngine
+    public class SpawnUnityEntityOnSveltoEntityEngine : SingleEntityEngine<UnityECSEntityStruct>, IQueryingEntitiesEngine
     {
         public IEntitiesDB entitiesDB { get; set; }
 
         public void Ready()
-        {
-            SpawnUnityEntities().RunOn(StandardSchedulers.updateScheduler);
-        }
+        {}
         
-        public SpawnUnityEntityOnSveltoEntityEngine(World world, IEntityStreamConsumerFactory consumerFactory)
+        protected override void Add(ref UnityECSEntityStruct             entityView,
+                                    ExclusiveGroup.ExclusiveGroupStruct? previousGroup)
         {
-            _consumerFactory = consumerFactory;
+            //this pattern must be improved, it's in the to do list
+            //move to its engine, it's spawning all the unity entities
+            if (previousGroup == null)
+                SpawnUnityEntities(ref entityView);
+        }
+
+        protected override void Remove(ref UnityECSEntityStruct entityView) {  }
+
+        public SpawnUnityEntityOnSveltoEntityEngine(World world)
+        {
             _entityManager = world.EntityManager;
         }
         
-        IEnumerator SpawnUnityEntities()
+        //it seems that the add callback was enough
+        void SpawnUnityEntities(ref UnityECSEntityStruct unityEcsEntityStruct)
         {
-            var consumer = _consumerFactory.GenerateConsumer<UnityECSEntityStruct>("UnityECSSpawner", 2);
-            
-            while (true)
+            var uecsEntity = _entityManager.Instantiate(unityEcsEntityStruct.uecsEntity);
+
+            unityEcsEntityStruct.uecsEntity = uecsEntity;
+
+            _entityManager.AddComponent(uecsEntity, unityEcsEntityStruct.unityComponent);
+
+            _entityManager.SetComponentData(uecsEntity, new Translation
             {
-                while (consumer.TryDequeue(out var unityEcsEntityStruct))
-                {
-                    var uecsEntity = _entityManager.Instantiate(unityEcsEntityStruct.uecsEntity);
+                Value = new float3(unityEcsEntityStruct.spawnPosition.x, unityEcsEntityStruct.spawnPosition.y,
+                                   unityEcsEntityStruct.spawnPosition.z)
 
-                    entitiesDB.QueryEntity<UnityECSEntityStruct>(unityEcsEntityStruct.ID).uecsEntity = uecsEntity;
-
-                    _entityManager.AddComponent(uecsEntity, unityEcsEntityStruct.unityComponent);
-
-                    _entityManager.SetComponentData(uecsEntity, new Translation
-                    {
-                        Value = new float3(unityEcsEntityStruct.spawnPosition.x, unityEcsEntityStruct.spawnPosition.y,
-                                           unityEcsEntityStruct.spawnPosition.z)
-
-                    });
-                }
-
-                yield return null;
-            }
+            });
         }
 
         readonly EntityManager                _entityManager;
-        readonly IEntityStreamConsumerFactory _consumerFactory;
     }
 }

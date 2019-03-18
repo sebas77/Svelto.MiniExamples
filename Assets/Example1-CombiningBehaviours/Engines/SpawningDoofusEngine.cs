@@ -1,6 +1,7 @@
 using System.Collections;
 using Svelto.ECS.Components;
 using Svelto.ECS.EntityStructs;
+using Svelto.Tasks;
 using Svelto.Tasks.ExtraLean;
 using Unity.Entities;
 using UnityEngine;
@@ -46,22 +47,20 @@ namespace Svelto.ECS.MiniExamples.Example1
                               unityComponent = ComponentType.ReadWrite<UnityECSDoofusesGroup>()
                           });
                 
-                yield return null; //todo: wait for entity to be created properly
-                
-                entitiesDB.PublishEntityChange<UnityECSEntityStruct>(init.ID);
                 
                 _numberOfDoofuses++;
+                
+                yield return Yield.It;
             }
         }
 
         readonly IEntityFactory _factory;
         readonly Entity         _capsule;
-        int                     _numberOfDoofuses;
+        uint                    _numberOfDoofuses;
         
         public const int NumberOfDoofuses = 10000;
     }
 
     class UnityECSDoofusesGroup:Component
-    {
-    }
+    {}
 }

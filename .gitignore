@@ -6,3 +6,4 @@ obj/
 Assets/Plugins/
 Assets/Plugins.meta
 *.user
+client/

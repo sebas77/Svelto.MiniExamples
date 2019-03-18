@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using DBC.ECS;
 using Svelto.DataStructures;
 using Svelto.ECS.Hybrid;
 using Svelto.ECS.Internal;
@@ -8,13 +7,13 @@ using Svelto.Utilities;
 
 namespace Svelto.ECS
 {
-    public partial class EntityBuilder<T> : IEntityBuilder where T : IEntityStruct, new()
+    public class EntityBuilder<T> : IEntityBuilder where T : IEntityStruct, new()
     {
         public EntityBuilder()
         {
             _initializer = DEFAULT_IT;
 
-            CheckFields(ENTITY_VIEW_TYPE, NEEDS_REFLECTION, true);
+            EntityBuilderUtilities.CheckFields(ENTITY_VIEW_TYPE, NEEDS_REFLECTION, true);
 
             if (NEEDS_REFLECTION)
                 EntityView<T>.InitCache();
@@ -27,13 +26,11 @@ namespace Svelto.ECS
 
             var castedDic = dictionary as TypeSafeDictionary<T>;
 
-            entityID = new EGID(EGID.MAKE_GLOBAL_ID(entityID.entityID, entityID.groupID, (uint) castedDic.Count));
-
             if (NEEDS_REFLECTION)
             {
-                Check.Require(implementors != null, "Implementors not found while building an EntityView");
-                Check.Require(castedDic.ContainsKey(entityID.entityID) == false,
-                              "building an entity with already used entity id! id: ".FastConcat((long) entityID)
+                DBC.ECS.Check.Require(implementors != null, "Implementors not found while building an EntityView");
+                DBC.ECS.Check.Require(castedDic.ContainsKey(entityID.entityID) == false,
+                              "building an entity with already used entity id! id: ".FastConcat((ulong) entityID)
                                  .FastConcat(" ", ENTITY_VIEW_NAME));
 
                 EntityView<T>.BuildEntityView(entityID, out var entityView);
@@ -51,12 +48,12 @@ namespace Svelto.ECS
             }
         }
 
-        ITypeSafeDictionary IEntityBuilder.Preallocate(ref ITypeSafeDictionary dictionary, int size)
+        ITypeSafeDictionary IEntityBuilder.Preallocate(ref ITypeSafeDictionary dictionary, uint size)
         {
             return Preallocate(ref dictionary, size);
         }
 
-        public static ITypeSafeDictionary Preallocate(ref ITypeSafeDictionary dictionary, int size)
+        static ITypeSafeDictionary Preallocate(ref ITypeSafeDictionary dictionary, uint size)
         {
             if (dictionary == null)
                 dictionary = new TypeSafeDictionary<T>(size);

@@ -64,7 +64,7 @@
     <Compile Include="Assets\Svelto\Svelto.ECS\Common\Components\ECSRect.cs" />
     <Compile Include="Assets\Svelto\Svelto.ECS\Common\Components\ECSVector2.cs" />
     <Compile Include="Assets\Svelto\Svelto.ECS\Common\Components\ECSVector3.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\Common\Components\ECSVector4.cs" />
+    <Compile Include="Assets\Svelto\Svelto.ECS\Common\Components\EcsVector4.cs" />
     <Compile Include="Assets\Svelto\Svelto.ECS\Common\Components\ExtensionMethods.cs" />
     <Compile Include="Assets\Svelto\Svelto.ECS\Common\Components\ExtensionMethodsUnity.cs" />
     <Compile Include="Assets\Svelto\Svelto.ECS\Common\EntityStructs\EntityHierarchyStruct.cs" />

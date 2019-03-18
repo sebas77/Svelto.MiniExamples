@@ -15,11 +15,10 @@ namespace Svelto.ECS
 #endif        
         void CheckRemoveEntityID(EGID entityID, IEntityDescriptor descriptorEntity)
         {
-
-            Dictionary<Type, ITypeSafeDictionary> group;
-            var                                   descriptorEntitiesToBuild = descriptorEntity.entitiesToBuild;
             
-            if (_groupEntityDB.TryGetValue(entityID.groupID, out group))
+            var descriptorEntitiesToBuild = descriptorEntity.entitiesToBuild;
+            
+            if (_groupEntityDB.TryGetValue(entityID.groupID, out var @group))
             {
                 for (int i = 0; i < descriptorEntitiesToBuild.Length; i++)
                 {
@@ -69,15 +68,15 @@ namespace Svelto.ECS
 #endif        
         void CheckAddEntityID<T>(EGID entityID, T descriptorEntity) where T:IEntityDescriptor
         {
-            Dictionary<Type, ITypeSafeDictionary> group;
-            var                                   descriptorEntitiesToBuild = descriptorEntity.entitiesToBuild;
+            var descriptorEntitiesToBuild = descriptorEntity.entitiesToBuild;
             
             //these are the entities added in this frame
-            if (_groupEntityDB.TryGetValue(entityID.groupID, out group))
+            if (_groupEntityDB.TryGetValue(entityID.groupID, out var @group))
             {
                 for (int i = 0; i < descriptorEntitiesToBuild.Length; i++)
                 {
-                    CheckAddEntityID(entityID, descriptorEntitiesToBuild[i].GetEntityType(), group, descriptorEntity.ToString());
+                    CheckAddEntityID(entityID, descriptorEntitiesToBuild[i].GetEntityType(), group,
+                                     descriptorEntity.ToString());
                 }
             }
         }
@@ -85,7 +84,8 @@ namespace Svelto.ECS
 #if DISABLE_CHECKS        
         [Conditional("_CHECKS_DISABLED")]
 #endif        
-        static void CheckAddEntityID(EGID entityID, Type entityViewType, Dictionary<Type, ITypeSafeDictionary> group, string name)
+        static void CheckAddEntityID(EGID   entityID, Type entityViewType, Dictionary<Type, ITypeSafeDictionary> group,
+                                     string name)
         {
             ITypeSafeDictionary entities;
             if (group.TryGetValue(entityViewType, out entities))

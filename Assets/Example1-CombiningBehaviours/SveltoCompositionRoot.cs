@@ -26,7 +26,7 @@ namespace Svelto.ECS.MiniExamples.Example1
                                        (GameObjectConversionUtility.ConvertGameObjectHierarchy(context.capsule,
                                                                               world), generateEntityFactory));
             _enginesRoot.AddEngine(new MovingDoofusesEngine(_enginesRoot.GenerateEntityFunctions()));
-            _enginesRoot.AddEngine(new SpawnUnityEntityOnSveltoEntityEngine(world, _enginesRoot.GenerateConsumerFactory()));
+            _enginesRoot.AddEngine(new SpawnUnityEntityOnSveltoEntityEngine(world));
             _enginesRoot.AddEngine(new VelocityToPositionEngine());
             
             //one engine two ECS implementations :P

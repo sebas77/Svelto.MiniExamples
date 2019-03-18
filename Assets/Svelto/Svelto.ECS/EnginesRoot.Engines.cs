@@ -21,7 +21,7 @@ namespace Svelto.ECS
         public EnginesRoot(IEntitySubmissionScheduler entityViewScheduler)
         {
 #if DEBUG && !PROFILER            
-            _entitiesOperationsDebug = new FasterDictionary<long, EntitySubmitOperationType>();
+            _entitiesOperationsDebug = new FasterDictionary<ulong, EntitySubmitOperationType>();
 #endif            
             _entitiesOperations = new FasterList<EntitySubmitOperation>();
             _entityEngines = new Dictionary<Type, FasterList<IHandleEntityViewEngineAbstracted>>();
@@ -29,9 +29,9 @@ namespace Svelto.ECS
             _disposableEngines = new FasterList<IDisposable>();
             _transientEntitiesOperations = new FasterList<EntitySubmitOperation>();
 
-            _groupEntityDB = new FasterDictionary<int, Dictionary<Type, ITypeSafeDictionary>>();
-            _groupsPerEntity = new Dictionary<Type, FasterDictionary<int, ITypeSafeDictionary>>();
-            _groupedEntityToAdd = new DoubleBufferedEntitiesToAdd<FasterDictionary<int, Dictionary<Type, ITypeSafeDictionary>>>();
+            _groupEntityDB = new FasterDictionary<uint, Dictionary<Type, ITypeSafeDictionary>>();
+            _groupsPerEntity = new Dictionary<Type, FasterDictionary<uint, ITypeSafeDictionary>>();
+            _groupedEntityToAdd = new DoubleBufferedEntitiesToAdd();
 
             _entitiesStream = new EntitiesStream();
             _entitiesDB = new EntitiesDB(_groupEntityDB, _groupsPerEntity, _entitiesStream);
@@ -48,9 +48,7 @@ namespace Svelto.ECS
 
             try
             {
-                var viewEngine = engine as IHandleEntityViewEngineAbstracted;
-
-                if (viewEngine != null)
+                if (engine is IHandleEntityViewEngineAbstracted viewEngine)
                     CheckEntityViewsEngine(viewEngine);
 
                 _enginesSet.Add(engine);
@@ -58,8 +56,7 @@ namespace Svelto.ECS
                 if (engine is IDisposable)
                     _disposableEngines.Add(engine as IDisposable);
 
-                var queryableEntityViewEngine = engine as IQueryingEntitiesEngine;
-                if (queryableEntityViewEngine != null)
+                if (engine is IQueryingEntitiesEngine queryableEntityViewEngine)
                 {
                     queryableEntityViewEngine.entitiesDB = _entitiesDB;
                     queryableEntityViewEngine.Ready();
@@ -109,8 +106,7 @@ namespace Svelto.ECS
 
         static void AddEngine<T>(T engine, Dictionary<Type, FasterList<T>> engines, Type type) where T : IEngine
         {
-            FasterList<T> list;
-            if (engines.TryGetValue(type, out list) == false)
+            if (engines.TryGetValue(type, out var list) == false)
             {
                 list = new FasterList<T>();
 
@@ -131,13 +127,17 @@ namespace Svelto.ECS
         //ID. This ID doesn't need to be the EGID, it can be just the entityID
         //for each group id, save a dictionary indexed by entity type of entities indexed by id
         //ITypeSafeDictionary = Key = entityID, Value = EntityStruct
-        readonly FasterDictionary<int, Dictionary<Type, ITypeSafeDictionary>> _groupEntityDB;
-        readonly EntitiesDB                                                   _entitiesDB;
+        readonly FasterDictionary<uint, Dictionary<Type, ITypeSafeDictionary>> _groupEntityDB;
         //for each entity view type, return the groups (dictionary of entities indexed by entity id) where they are
         //found indexed by group id
-                   //EntityViewType           //groupID  //entityID, EntityStruct
-        readonly Dictionary<Type, FasterDictionary<int, ITypeSafeDictionary>> _groupsPerEntity; 
-        readonly EntitiesStream                                               _entitiesStream;
+                    //EntityViewType           //groupID  //entityID, EntityStruct
+        readonly Dictionary<Type, FasterDictionary<uint, ITypeSafeDictionary>> _groupsPerEntity;
+        
+        //experimental
+        readonly FasterDictionary<uint, uint> _entitiesBuiltPerGroup;
+        
+        readonly EntitiesStream _entitiesStream;
+        readonly EntitiesDB     _entitiesDB;
         
         static readonly Type OBJECT_TYPE           = typeof(object);
         static readonly Type ENTITY_INFO_VIEW_TYPE = typeof(EntityInfoView);

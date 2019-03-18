@@ -10,9 +10,7 @@ namespace Svelto.ECS
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref T Entity(EGID id)
         {
-            int count;
-            var index = map.FindElementIndex(id.entityID);
-            return ref map.GetValuesArray(out count)[index];
+            return ref map.FindElement(id.entityID);
         }
     }
 }

@@ -4,12 +4,9 @@ namespace Svelto.ECS
 {
     public class DispatchOnChange<T> : DispatchOnSet<T> where T:struct
     {
-        public DispatchOnChange(int senderID) : base(senderID)
+        public DispatchOnChange(EGID senderID) : base(senderID)
         { }
         
-        public DispatchOnChange()
-        {}
-
         public new T value
         {
             set

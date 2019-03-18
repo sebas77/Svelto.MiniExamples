@@ -6,26 +6,22 @@ namespace Svelto.ECS
     {
         public readonly EntitySubmitOperationType type;
         public readonly IEntityBuilder[]          builders;
-        public readonly int                       ID;
-        public readonly int                       toID;
-        public readonly int                       toGroupID;
-        public readonly int                       fromGroupID;
+        public readonly EGID                      fromID;
+        public readonly EGID                      toID;
         public readonly Type                      entityDescriptor;
 #if DEBUG && !PROFILER
         public string trace;
 #endif
 
-        public EntitySubmitOperation(
-            EntitySubmitOperationType operation, int entityId, int toId, int fromGroupId, int toGroupId,
-            IEntityBuilder[] builders, Type entityDescriptor)
+        public EntitySubmitOperation(EntitySubmitOperationType operation, EGID from, EGID to,
+                                     IEntityBuilder[]          builders         = null,
+                                     Type                      entityDescriptor = null)
         {
-            type = operation;
+            type          = operation;
             this.builders = builders;
-            ID = entityId;
-            toID = toId;
+            fromID            = from;
+            toID          = to;
 
-            toGroupID = toGroupId;
-            fromGroupID = fromGroupId;
             this.entityDescriptor = entityDescriptor;
 #if DEBUG && !PROFILER
             trace = string.Empty;
@@ -37,6 +33,6 @@ namespace Svelto.ECS
     {
         Swap,
         Remove,
-        RemoveGroup,
+        RemoveGroup
     }
 }

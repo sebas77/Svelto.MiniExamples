@@ -7,24 +7,11 @@ namespace Svelto.ECS
     {
         static ExclusiveGroup OBSOLETE_GROUP = new ExclusiveGroup();
         
-        public DispatchOnSet(int senderID)
-        {
-            Console.LogWarningDebug("This method is obsolete and shouldn't be used anymore");
-            
-            _senderID    = new EGID(senderID, (int) OBSOLETE_GROUP);
-            _subscribers = new WeakEvent<EGID, T>();
-        }
-
         public DispatchOnSet(EGID senderID)
         {      
             _subscribers = new WeakEvent<EGID, T>();
             
             _senderID = senderID;
-        }
-        
-        public DispatchOnSet()
-        {      
-            _subscribers = new WeakEvent<EGID, T>();
         }
         
         public T value
