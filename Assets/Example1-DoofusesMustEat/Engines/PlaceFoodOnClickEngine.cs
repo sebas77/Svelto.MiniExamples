@@ -1,6 +1,8 @@
 using System.Collections;
 using Svelto.ECS.Components;
 using Svelto.ECS.EntityStructs;
+using Svelto.Tasks;
+using Svelto.Tasks.Enumerators;
 using Svelto.Tasks.ExtraLean;
 using Unity.Entities;
 using UnityEngine;
@@ -17,6 +19,8 @@ namespace Svelto.ECS.MiniExamples.Example1
 
         IEnumerator CheckClick()
         {
+            var timer = new ReusableWaitForSecondsEnumerator(0.08f);
+            
             while (true)
             {
                 if (Input.GetMouseButton(0) == true)
@@ -38,8 +42,9 @@ namespace Svelto.ECS.MiniExamples.Example1
                         });
                     }
                 }
-
-                yield return null;
+                
+                while (timer.IsDone() == false)
+                    yield return Yield.It;
             }
         }
 

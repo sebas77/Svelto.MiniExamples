@@ -588,7 +588,7 @@ PlayerSettings:
   webGLThreadsSupport: 0
   webGLWasmStreaming: 0
   scriptingDefineSymbols:
-    1: 
+    1: PROFILER;ENABLE_PLATFORM_PROFILER
   platformArchitecture: {}
   scriptingBackend: {}
   il2cppCompilerConfiguration: {}

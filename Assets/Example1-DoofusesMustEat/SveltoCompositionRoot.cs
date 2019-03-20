@@ -5,7 +5,6 @@ using Svelto.Tasks;
 using Unity.Entities;
 using UnityEngine;
 
-
 namespace Svelto.ECS.MiniExamples.Example1
 {
     public class SveltoCompositionRoot : ICompositionRoot
@@ -25,6 +24,7 @@ namespace Svelto.ECS.MiniExamples.Example1
             _enginesRoot.AddEngine(new SpawningDoofusEngine
                                        (GameObjectConversionUtility.ConvertGameObjectHierarchy(context.capsule,
                                                                               world), generateEntityFactory));
+            
             _enginesRoot.AddEngine(new LookingForFoodDoofusesEngine(_enginesRoot.GenerateEntityFunctions()));
             _enginesRoot.AddEngine(new ConsumingFoodEngine(_enginesRoot.GenerateEntityFunctions()));
             _enginesRoot.AddEngine(new SpawnUnityEntityOnSveltoEntityEngine(world));

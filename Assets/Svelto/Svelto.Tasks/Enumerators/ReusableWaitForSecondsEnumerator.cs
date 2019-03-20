@@ -12,7 +12,7 @@ namespace Svelto.Tasks.Enumerators
             _init    = false;
         }
         
-        public bool IsDone() { return MoveNext(); }
+        public bool IsDone() { return !MoveNext(); }
 
         public bool MoveNext()
         {

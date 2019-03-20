@@ -16,20 +16,17 @@ namespace Svelto.ECS.MiniExamples.Example1
             _capsule = capsule;
             _factory = factory;
         }
-        
+
         public IEntitiesDB entitiesDB { get; set; }
 
-        public void Ready()
-        {
-            SpawningDoofuses().RunOn(StandardSchedulers.updateScheduler);
-        }
-        
+        public void Ready() { SpawningDoofuses().RunOn(StandardSchedulers.updateScheduler); }
+
         IEnumerator SpawningDoofuses()
         {
-            //todo: be sure that this is unit tested properly
-            _factory.PreallocateEntitySpace<DoofusEntityDescriptor>(GameGroups.DOOFUSES, NumberOfDoofuses);
-            
-            while (_numberOfDoofuses < NumberOfDoofuses)
+            //not really needed, can be useful to avoid run time allocations
+            _factory.PreallocateEntitySpace<DoofusEntityDescriptor>(GameGroups.DOOFUSES, MaxNumberOfDoofuses);
+
+            while (_numberOfDoofuses < MaxNumberOfDoofuses)
             {
                 var init = _factory.BuildEntity<DoofusEntityDescriptor>(_numberOfDoofuses, GameGroups.DOOFUSES);
 
@@ -39,16 +36,15 @@ namespace Svelto.ECS.MiniExamples.Example1
                 };
 
                 init.Init(positionEntityStruct);
-                init.Init(new UnityECSEntityStruct()
-                          {
-                              uecsEntity = _capsule,
-                              spawnPosition = positionEntityStruct.position,
-                              unityComponent = ComponentType.ReadWrite<UnityECSDoofusesGroup>()
-                          });
-                
-                
+                init.Init(new UnityECSEntityStruct
+                {
+                    uecsEntity = _capsule,
+                    spawnPosition = positionEntityStruct.position,
+                    unityComponent = ComponentType.ReadOnly<UnityECSDoofusesGroup>()
+                });
+
                 _numberOfDoofuses++;
-                
+
                 yield return Yield.It;
             }
         }
@@ -56,10 +52,11 @@ namespace Svelto.ECS.MiniExamples.Example1
         readonly IEntityFactory _factory;
         readonly Entity         _capsule;
         uint                    _numberOfDoofuses;
-        
-        public const int NumberOfDoofuses = 10000;
+
+        public const int MaxNumberOfDoofuses = 10000;
     }
 
-    class UnityECSDoofusesGroup:Component
-    {}
+    class UnityECSDoofusesGroup : Component
+    {
+    }
 }

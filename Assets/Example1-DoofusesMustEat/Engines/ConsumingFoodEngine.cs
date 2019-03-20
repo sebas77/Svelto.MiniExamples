@@ -33,7 +33,7 @@ namespace Svelto.ECS.MiniExamples.Example1
                         _entityFunctions.RemoveEntity<FoodEntityDescriptor>(mealStructs[j].ID);
                 }
                 
-                while (wait.IsDone()) yield return Yield.It; 
+                while (wait.IsDone() == false) yield return Yield.It; 
             }
         }
     }

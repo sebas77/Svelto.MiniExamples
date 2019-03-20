@@ -7,5 +7,7 @@ namespace Svelto.ECS.MiniExamples.Example1
     {
         public GameObject capsule;
         public GameObject food;
+
+        [TextArea] public string Notes;
     }
 }
