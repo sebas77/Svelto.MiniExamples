@@ -7,7 +7,7 @@ namespace Svelto.ECS.MiniExamples.Example1
 {
     public class VelocityToPositionDoofusesEngine : IQueryingEntitiesEngine
     {
-        public void Ready() { ComputeVelocity().RunOn(StandardSchedulers.coroutineScheduler); }
+        public void Ready() { ComputeVelocity().RunOn(DoofusesStandardSchedulers.physicScheduler); }
 
         IEnumerator ComputeVelocity()
         {

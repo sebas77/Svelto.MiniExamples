@@ -38,6 +38,7 @@ namespace Svelto.ECS.MiniExamples.Example1
 
         public void OnContextDestroyed()
         {
+            DoofusesStandardSchedulers.StopAndCleanupAllDefaultSchedulers();
             TaskRunner.StopAndCleanupAllDefaultSchedulers();
 
             GC.Collect();

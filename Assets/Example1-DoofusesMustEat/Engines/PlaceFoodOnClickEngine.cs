@@ -47,7 +47,7 @@ namespace Svelto.ECS.MiniExamples.Example1
 
         public void Ready()
         {
-            CheckClick().RunOn(StandardSchedulers.updateScheduler);
+            CheckClick().RunOn(DoofusesStandardSchedulers.UIInteraction);
         }
         
         readonly IEntityFactory _entityFactory;

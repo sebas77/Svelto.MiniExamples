@@ -1,8 +1,6 @@
-using System;
 using System.Collections;
 using Svelto.ECS.EntityStructs;
 using Svelto.Tasks.ExtraLean;
-using Svelto.Tasks.ExtraLean.Unity;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
@@ -10,17 +8,19 @@ using Unity.Transforms;
 
 namespace Svelto.ECS.MiniExamples.Example1
 {
-    public class RenderingDataSynchronizationEngine: IDisposable, IQueryingEntitiesEngine
+    public class RenderingDataSynchronizationEngine: IQueryingEntitiesEngine
     {
         public IEntitiesDB entitiesDB { get; set; }
 
         public RenderingDataSynchronizationEngine(World world)
         {
-            _runner      = new CoroutineMonoRunner("test");
             _group       = world.EntityManager.CreateComponentGroup(typeof(Translation), typeof(UnityECSDoofusesGroup));
         }
 
-        public void Ready() { SynchronizeUnityECSEntitiesWithSveltoECSEntities().RunOn(_runner); }
+        public void Ready()
+        {
+            SynchronizeUnityECSEntitiesWithSveltoECSEntities().RunOn(DoofusesStandardSchedulers.rendererScheduler);
+        }
 
         IEnumerator SynchronizeUnityECSEntitiesWithSveltoECSEntities()
         {
@@ -31,7 +31,9 @@ namespace Svelto.ECS.MiniExamples.Example1
                 var positionEntityStructs =
                     entitiesDB.QueryEntities<PositionEntityStruct>(GameGroups.DOOFUSES, out var count);
 
+#if DEBUG && !PROFILER                
                 if (calculateLength != count) {yield return null; continue;}
+#endif
 
                 var positions =
                     new NativeArray<Translation>(calculateLength, Allocator.TempJob,
@@ -59,9 +61,6 @@ namespace Svelto.ECS.MiniExamples.Example1
             }
         }
 
-        public void Dispose() { _runner?.Dispose(); }
-
-        readonly CoroutineMonoRunner _runner;
         readonly ComponentGroup      _group;
     }
 }

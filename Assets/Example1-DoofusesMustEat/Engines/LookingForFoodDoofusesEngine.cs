@@ -9,7 +9,7 @@ namespace Svelto.ECS.MiniExamples.Example1
     {
         public LookingForFoodDoofusesEngine(IEntityFunctions entityFunctions) { _entityFunctions = entityFunctions; }
         
-        public void Ready() { SearchFoodOrGetHungry().RunOn(StandardSchedulers.coroutineScheduler); }
+        public void Ready() { SearchFoodOrGetHungry().RunOn(DoofusesStandardSchedulers.doofusesLogicScheduler); }
 
         IEnumerator SearchFoodOrGetHungry()
         {

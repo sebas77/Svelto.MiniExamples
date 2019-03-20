@@ -9,7 +9,7 @@ namespace Svelto.ECS.MiniExamples.Example1
         readonly IEntityFunctions _entityFunctions;
         public DieOfHungerDoofusesEngine(IEntityFunctions entityFunctions) { _entityFunctions = entityFunctions; }
 
-        public void Ready() { ConsumingFood().RunOn(DoofusesStandardSchedulers.foodScheduler); }
+        public void Ready() { ConsumingFood().RunOn(DoofusesStandardSchedulers.doofusesLogicScheduler); }
 
         public IEntitiesDB entitiesDB { private get; set; }
 

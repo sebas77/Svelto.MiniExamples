@@ -14,8 +14,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <RootNamespace>
-    </RootNamespace>
+    <RootNamespace></RootNamespace>
     <ProjectGuid>{F6753556-21A4-BEB6-353A-47DA619C3D0D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -719,13 +718,6 @@
       <Project>{FC439F1B-DA1D-69E1-2B7C-B74BF74F3BF4}</Project>
       <Name>Svelto.Tasks</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Assets\Example1-DoofusesMustEat\Asset\Boid.mat" />
-    <Content Include="Assets\Example1-DoofusesMustEat\Asset\Capsule.prefab" />
-    <Content Include="Assets\Example1-DoofusesMustEat\Asset\CombiningBehaviours.unity" />
-    <Content Include="Assets\Example1-DoofusesMustEat\Asset\Sphere.mat" />
-    <Content Include="Assets\Example1-DoofusesMustEat\Asset\Sphere.prefab" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
