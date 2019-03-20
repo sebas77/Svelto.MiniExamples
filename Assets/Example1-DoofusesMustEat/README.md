@@ -1,4 +1,4 @@
-First Svelto ECS - Svelto Task example.
+First Svelto.ECS-Task example.
 
 Please note, at the time of writing:
 
