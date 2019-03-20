@@ -61,12 +61,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Example1-DoofusesMustEat\DoofusEntityDescriptor.cs" />
+    <Compile Include="Assets\Example1-DoofusesMustEat\DoofusesStandardSchedulers.cs" />
     <Compile Include="Assets\Example1-DoofusesMustEat\Engines\ConsumingFoodEngine.cs" />
     <Compile Include="Assets\Example1-DoofusesMustEat\Engines\DieOfHungerDoofusesEnginecs.cs" />
-    <Compile Include="Assets\Example1-DoofusesMustEat\Engines\DoofusesStandardSchedulers.cs" />
-    <Compile Include="Assets\Example1-DoofusesMustEat\Engines\HungerEntityStruct.cs" />
     <Compile Include="Assets\Example1-DoofusesMustEat\Engines\LookingForFoodDoofusesEngine.cs" />
-    <Compile Include="Assets\Example1-DoofusesMustEat\Engines\MealEntityStruct.cs" />
     <Compile Include="Assets\Example1-DoofusesMustEat\Engines\PlaceFoodOnClickEngine.cs" />
     <Compile Include="Assets\Example1-DoofusesMustEat\Engines\RenderingDataSynchronizationEngine.cs" />
     <Compile Include="Assets\Example1-DoofusesMustEat\Engines\SpawningDoofusEngine.cs" />
@@ -74,6 +72,8 @@
     <Compile Include="Assets\Example1-DoofusesMustEat\Engines\VelocityToPositionDoofusesEngine.cs" />
     <Compile Include="Assets\Example1-DoofusesMustEat\FoodEntityDescriptor.cs" />
     <Compile Include="Assets\Example1-DoofusesMustEat\GameGroups.cs" />
+    <Compile Include="Assets\Example1-DoofusesMustEat\HungerEntityStruct.cs" />
+    <Compile Include="Assets\Example1-DoofusesMustEat\MealEntityStruct.cs" />
     <Compile Include="Assets\Example1-DoofusesMustEat\SveltoCompositionRoot.cs" />
     <Compile Include="Assets\Example1-DoofusesMustEat\SveltoContext.cs" />
     <Compile Include="Assets\Example1-DoofusesMustEat\UnityECSEntityStruct.cs" />
@@ -719,6 +719,13 @@
       <Project>{FC439F1B-DA1D-69E1-2B7C-B74BF74F3BF4}</Project>
       <Name>Svelto.Tasks</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Assets\Example1-DoofusesMustEat\Asset\Boid.mat" />
+    <Content Include="Assets\Example1-DoofusesMustEat\Asset\Capsule.prefab" />
+    <Content Include="Assets\Example1-DoofusesMustEat\Asset\CombiningBehaviours.unity" />
+    <Content Include="Assets\Example1-DoofusesMustEat\Asset\Sphere.mat" />
+    <Content Include="Assets\Example1-DoofusesMustEat\Asset\Sphere.prefab" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
