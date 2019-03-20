@@ -25,19 +25,23 @@ namespace Svelto.ECS.MiniExamples.Example1
             {
                 if (Input.GetMouseButton(0) == true)
                 {
+                    //I am cheating a bit with the MouseToPosition function, but for the purposes of this demo
+                    //creating a Camera Entity was an overkill
                     if (UnityUtilities.MouseToPosition(out Vector3 position))
                     {
+                        //BuildEntity returns an EntityInitialized that is used to set the default values of the
+                        //entity that will be built.
                         var init = _entityFactory.BuildEntity<FoodEntityDescriptor>(_foodPlaced++, GameGroups.FOOD);
+                        
                         init.Init(new MealEntityStruct(10000));
-                        var positionEntityStruct = new PositionEntityStruct
+                        init.Init(new PositionEntityStruct
                         {
                             position = new ECSVector3(position.x, position.y, position.z)
-                        };
-                        init.Init(ref positionEntityStruct);
+                        });
                         init.Init(new UnityECSEntityStruct
                         {
-                            uecsEntity        = _food,
-                            spawnPosition = positionEntityStruct.position,
+                            uecsEntity     = _food,
+                            spawnPosition  = new ECSVector3(position.x, position.y, position.z),
                             unityComponent = ComponentType.ReadWrite<UnityECSFoodGroup>()
                         });
                     }
@@ -59,5 +63,9 @@ namespace Svelto.ECS.MiniExamples.Example1
         readonly Entity         _food;
         
         uint _foodPlaced;
+    }
+    
+    class UnityECSFoodGroup:Component
+    {
     }
 }
