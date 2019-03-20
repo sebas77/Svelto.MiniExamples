@@ -1,6 +1,5 @@
 using System.Collections;
 using Svelto.Tasks;
-using Svelto.Tasks.Enumerators;
 using Svelto.Tasks.ExtraLean;
 
 namespace Svelto.ECS.MiniExamples.Example1

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Svelto.ECS.MiniExamples.Example1
 {
-    public class VelocityToPositionEngine : IQueryingEntitiesEngine
+    public class VelocityToPositionDoofusesEngine : IQueryingEntitiesEngine
     {
         public void Ready() { ComputeVelocity().RunOn(StandardSchedulers.coroutineScheduler); }
 
