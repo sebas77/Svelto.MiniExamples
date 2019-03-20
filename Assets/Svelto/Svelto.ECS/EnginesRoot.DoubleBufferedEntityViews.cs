@@ -1,5 +1,4 @@
-﻿using System;
-using Svelto.DataStructures.Experimental;
+﻿using Svelto.DataStructures.Experimental;
 using T =
     Svelto.DataStructures.Experimental.FasterDictionary<uint, System.Collections.Generic.Dictionary<System.Type,
         Svelto.ECS.Internal.ITypeSafeDictionary>>;
@@ -12,7 +11,7 @@ namespace Svelto.ECS
         {
             readonly T _entityViewsToAddBufferA = new T();
             readonly T _entityViewsToAddBufferB = new T();
-            readonly internal FasterDictionary<uint, uint> entitiesCreatedPerGroup = new FasterDictionary<uint, uint>();
+            internal readonly FasterDictionary<uint, uint> entitiesCreatedPerGroup = new FasterDictionary<uint, uint>();
 
             internal DoubleBufferedEntitiesToAdd()
             {

@@ -78,7 +78,7 @@ namespace Svelto.Tasks.Internal
                         if (_flushingOperation.stopping) coroutines[index].Stop();
 
 #if ENABLE_PLATFORM_PROFILER
-                        using (_profiler.BeginSample(coroutines[index].ToString()))
+                        using (_profiler.Sample(coroutines[index].ToString()))
 #endif
 #if TASKS_PROFILER_ENABLED
                             result =

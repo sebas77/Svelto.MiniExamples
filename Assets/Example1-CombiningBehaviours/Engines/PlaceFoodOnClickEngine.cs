@@ -24,6 +24,7 @@ namespace Svelto.ECS.MiniExamples.Example1
                     if (UnityUtilities.MouseToPosition(out Vector3 position))
                     {
                         var init = _entityFactory.BuildEntity<FoodEntityDescriptor>(_foodPlaced++, GameGroups.FOOD);
+                        init.Init(new MealEntityStruct(10000));
                         var positionEntityStruct = new PositionEntityStruct
                         {
                             position = new ECSVector3(position.x, position.y, position.z)

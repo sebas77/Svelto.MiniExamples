@@ -37,6 +37,9 @@ namespace Svelto.ECS
             return id.entityID;
         }
         
+        //in the way it's used, ulong must be always the same for each id/group
+        public static explicit operator ulong(EGID id) { return id._GID; }
+        
         public bool Equals(EGID other)
         {
             return _GID == other._GID;
@@ -141,6 +144,9 @@ namespace Svelto.ECS
         {
             throw new NotSupportedException();
         }
+
+//in the way it's used, ulong must be always the same for each id/group
+        public static explicit operator ulong(EGID id) { return id._GID; }
 
         public int GetHashCode(EGID egid) { return _GID.GetHashCode(); }
         

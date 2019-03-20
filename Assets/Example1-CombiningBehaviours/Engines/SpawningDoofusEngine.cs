@@ -27,12 +27,11 @@ namespace Svelto.ECS.MiniExamples.Example1
         IEnumerator SpawningDoofuses()
         {
             //todo: be sure that this is unit tested properly
-            _factory.PreallocateEntitySpace<DoofusEntityDescriptor>(GameGroups.DOOFUSESHUNGRY, NumberOfDoofuses);
-            _factory.PreallocateEntitySpace<DoofusEntityDescriptor>(GameGroups.DOOFUSESEATING, NumberOfDoofuses);
+            _factory.PreallocateEntitySpace<DoofusEntityDescriptor>(GameGroups.DOOFUSES, NumberOfDoofuses);
             
             while (_numberOfDoofuses < NumberOfDoofuses)
             {
-                var init = _factory.BuildEntity<DoofusEntityDescriptor>(_numberOfDoofuses, GameGroups.DOOFUSESHUNGRY);
+                var init = _factory.BuildEntity<DoofusEntityDescriptor>(_numberOfDoofuses, GameGroups.DOOFUSES);
 
                 var positionEntityStruct = new PositionEntityStruct
                 {

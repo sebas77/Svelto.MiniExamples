@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -62,6 +62,14 @@ namespace Svelto.DataStructures.Experimental
 
             return _freeValueCellIndex - 1;
         }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public uint Set(TKey key, ref TValue value)
+        {
+            AddValue(key, ref value);
+
+            return _freeValueCellIndex - 1;
+        }
 
         public void Add(KeyValuePair<TKey, TValue> item) { throw new NotImplementedException(); }
 
@@ -73,6 +81,16 @@ namespace Svelto.DataStructures.Experimental
 
             Array.Clear(_buckets, 0, _buckets.Length);
             Array.Clear(_values, 0, _values.Length);
+            Array.Clear(_valuesInfo, 0, _valuesInfo.Length);
+        }
+
+        public void FastClear()
+        {
+            if (_freeValueCellIndex == 0) return;
+
+            _freeValueCellIndex = 0;
+
+            Array.Clear(_buckets, 0, _buckets.Length);
             Array.Clear(_valuesInfo, 0, _valuesInfo.Length);
         }
 
@@ -117,7 +135,7 @@ namespace Svelto.DataStructures.Experimental
             return false;
         }
         
-        public ref TValue GetValue(TKey key)
+        public ref TValue GetDirectValue(TKey key)
         {
             if (FindIndex(key, _buckets, _valuesInfo, out var findIndex))
             {
@@ -138,7 +156,7 @@ namespace Svelto.DataStructures.Experimental
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set => AddValue(key, ref value);
         }
-
+        
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         static int Hash(TKey key) { return key.GetHashCode(); }
 

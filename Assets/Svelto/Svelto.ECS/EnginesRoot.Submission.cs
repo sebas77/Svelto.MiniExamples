@@ -10,6 +10,8 @@ namespace Svelto.ECS
 {
     public partial class EnginesRoot
     {
+        readonly FasterList<EntitySubmitOperation> _transientEntitiesOperations;
+        
         void SubmitEntityViews()
         {
             var profiler = new PlatformProfiler();
@@ -19,11 +21,9 @@ namespace Svelto.ECS
                 {
                     using (profiler.Sample("Remove and Swap operations"))
                     {
-#if DEBUG && !PROFILER
-                        _entitiesOperationsDebug.Clear();
-#endif
                         _transientEntitiesOperations.FastClear();
-                        _transientEntitiesOperations.AddRange(_entitiesOperations);
+                        var entitySubmitOperations = _entitiesOperations.GetValuesArray(out var count);
+                        _transientEntitiesOperations.AddRange(entitySubmitOperations, (int)count);
                         _entitiesOperations.FastClear();
 
                         var entitiesOperations = _transientEntitiesOperations.ToArrayFast();
@@ -42,7 +42,7 @@ namespace Svelto.ECS
                                     case EntitySubmitOperationType.Remove:
                                         MoveEntity(entitiesOperations[i].builders,
                                                    entitiesOperations[i].fromID,
-                                                   entitiesOperations[i].entityDescriptor, new EGID());
+                                                   entitiesOperations[i].entityDescriptor, null);
                                         break;
                                     case EntitySubmitOperationType.RemoveGroup:
                                         if (entitiesOperations[i].entityDescriptor == null)
@@ -118,13 +118,14 @@ namespace Svelto.ECS
                 {
                     if (groupDB.TryGetValue(entityViewsToSubmit.Key, out var dbDic) == false)
                         dbDic = groupDB[entityViewsToSubmit.Key] = entityViewsToSubmit.Value.Create();
+                    
+                    //Fill the DB with the entity views generate this frame.
+                    dbDic.FillWithIndexedEntities(entityViewsToSubmit.Value);
 
                     if (_groupsPerEntity.TryGetValue(entityViewsToSubmit.Key, out var groupedGroup) == false)
                         groupedGroup = _groupsPerEntity[entityViewsToSubmit.Key] =
                             new FasterDictionary<uint, ITypeSafeDictionary>();
-
-                    //Fill the DB with the entity views generate this frame.
-                    dbDic.FillWithIndexedEntities(entityViewsToSubmit.Value);
+                    
                     groupedGroup[groupID] = dbDic;
                 }
             }
@@ -143,10 +144,8 @@ namespace Svelto.ECS
             }
         }
 
-        readonly DoubleBufferedEntitiesToAdd _groupedEntityToAdd;
-
-        readonly IEntitySubmissionScheduler        _scheduler;
-        readonly FasterList<EntitySubmitOperation> _transientEntitiesOperations;
-        readonly FasterList<EntitySubmitOperation> _entitiesOperations;
+        readonly DoubleBufferedEntitiesToAdd                    _groupedEntityToAdd;
+        readonly IEntitySubmissionScheduler                     _scheduler;
+        readonly FasterDictionary<ulong, EntitySubmitOperation> _entitiesOperations;
     }
 }

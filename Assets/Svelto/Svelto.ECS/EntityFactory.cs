@@ -6,10 +6,10 @@ namespace Svelto.ECS.Internal
     static class EntityFactory
     {
         internal static Dictionary<Type, ITypeSafeDictionary> BuildGroupedEntities(EGID egid,
-            EnginesRoot.DoubleBufferedEntitiesToAdd groupEntityViewsByType, IEntityBuilder[] entitiesToBuild,
+            EnginesRoot.DoubleBufferedEntitiesToAdd groupEntitiesToAdd, IEntityBuilder[] entitiesToBuild,
             object[] implementors)
         {
-            var @group = FetchEntityGroup(egid.groupID, groupEntityViewsByType);
+            var @group = FetchEntityGroup(egid.groupID, groupEntitiesToAdd);
 
             BuildEntitiesAndAddToGroup(egid, group, entitiesToBuild, implementors);
 
@@ -23,11 +23,12 @@ namespace Svelto.ECS.Internal
                 false)
             {
                 @group = new Dictionary<Type, ITypeSafeDictionary>();
+                
                 groupEntityViewsByType.current.Add(groupID, @group);
             }
 
             if (groupEntityViewsByType.entitiesCreatedPerGroup.TryGetValue(groupID, out var value))
-                groupEntityViewsByType.entitiesCreatedPerGroup[groupID] = value++;
+                groupEntityViewsByType.entitiesCreatedPerGroup[groupID] = value+1;
             else
                 groupEntityViewsByType.entitiesCreatedPerGroup.Add(groupID, 0);
 

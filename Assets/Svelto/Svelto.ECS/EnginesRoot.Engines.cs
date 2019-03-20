@@ -20,10 +20,7 @@ namespace Svelto.ECS
         /// </summary>
         public EnginesRoot(IEntitySubmissionScheduler entityViewScheduler)
         {
-#if DEBUG && !PROFILER            
-            _entitiesOperationsDebug = new FasterDictionary<ulong, EntitySubmitOperationType>();
-#endif            
-            _entitiesOperations = new FasterList<EntitySubmitOperation>();
+            _entitiesOperations = new FasterDictionary<ulong, EntitySubmitOperation>();
             _entityEngines = new Dictionary<Type, FasterList<IHandleEntityViewEngineAbstracted>>();
             _enginesSet = new HashSet<IEngine>();
             _disposableEngines = new FasterList<IDisposable>();

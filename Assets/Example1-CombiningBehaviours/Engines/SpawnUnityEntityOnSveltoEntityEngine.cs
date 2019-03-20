@@ -11,16 +11,28 @@ namespace Svelto.ECS.MiniExamples.Example1
         public void Ready()
         {}
         
-        protected override void Add(ref UnityECSEntityStruct             entityView,
+        protected override void Add(in UnityECSEntityStruct             entityView,
                                     ExclusiveGroup.ExclusiveGroupStruct? previousGroup)
         {
             //this pattern must be improved, it's in the to do list
             //move to its engine, it's spawning all the unity entities
             if (previousGroup == null)
-                SpawnUnityEntities(ref entityView);
+                SpawnUnityEntities(in entityView);
+        }
+        
+        protected override void Remove(in UnityECSEntityStruct entityView, bool itsaSwap)
+        {
+            //this pattern must be improved, it's in the to do list
+            //move to its engine, it's spawning all the unity entities
+            if (itsaSwap == false)
+                DestroyEntity(in entityView);
         }
 
-        protected override void Remove(ref UnityECSEntityStruct entityView) {  }
+        void DestroyEntity(in UnityECSEntityStruct entityView)
+        {
+            if (_entityManager.IsCreated)
+                _entityManager.DestroyEntity(entityView.uecsEntity);
+        }
 
         public SpawnUnityEntityOnSveltoEntityEngine(World world)
         {
@@ -28,12 +40,12 @@ namespace Svelto.ECS.MiniExamples.Example1
         }
         
         //it seems that the add callback was enough
-        void SpawnUnityEntities(ref UnityECSEntityStruct unityEcsEntityStruct)
+        void SpawnUnityEntities(in UnityECSEntityStruct unityEcsEntityStruct)
         {
             var uecsEntity = _entityManager.Instantiate(unityEcsEntityStruct.uecsEntity);
 
-            unityEcsEntityStruct.uecsEntity = uecsEntity;
-
+            entitiesDB.QueryEntity<UnityECSEntityStruct>(unityEcsEntityStruct.ID).uecsEntity = uecsEntity;
+            
             _entityManager.AddComponent(uecsEntity, unityEcsEntityStruct.unityComponent);
 
             _entityManager.SetComponentData(uecsEntity, new Translation

@@ -2,7 +2,10 @@
 
 namespace Svelto.ECS
 {
+#pragma warning disable 660,661
     struct EntitySubmitOperation
+#pragma warning restore 660,661
+        : IEquatable<EntitySubmitOperation>
     {
         public readonly EntitySubmitOperationType type;
         public readonly IEntityBuilder[]          builders;
@@ -26,6 +29,21 @@ namespace Svelto.ECS
 #if DEBUG && !PROFILER
             trace = string.Empty;
 #endif
+        }
+        
+        public static bool operator ==(EntitySubmitOperation obj1, EntitySubmitOperation obj2)
+        {
+            return obj1.Equals(obj2);
+        }
+        
+        public static bool operator !=(EntitySubmitOperation obj1, EntitySubmitOperation obj2)
+        {
+            return obj1.Equals(obj2) == false;
+        }
+
+        public bool Equals(EntitySubmitOperation other)
+        {
+            return type == other.type && fromID == other.fromID && toID == other.toID;
         }
     }
 

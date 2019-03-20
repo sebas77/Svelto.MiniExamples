@@ -115,29 +115,27 @@ namespace Svelto.ECS
 #if DEBUG && !PROFILER          
             entitySubmitOperation.trace = Environment.StackTrace;
 #endif            
-            _entitiesOperations.AddRef(ref entitySubmitOperation);
+            _entitiesOperations.Add((ulong)entitySubmitOperation.fromID, ref entitySubmitOperation);
         }
 
         void QueueEntitySubmitOperation<T>(EntitySubmitOperation entitySubmitOperation) where T:IEntityDescriptor
         {
-#if DEBUG && !PROFILER          
+#if DEBUG && !PROFILER            
             entitySubmitOperation.trace = Environment.StackTrace;
-            if (_entitiesOperationsDebug.ContainsKey((ulong)entitySubmitOperation.fromID) == true)
-                Console.LogError("Only one entity operation per submission is allowed"
-                                          .FastConcat(" entityViewType: ")
-                                          .FastConcat(typeof(T).Name)
-                                          .FastConcat(" submission type ", entitySubmitOperation.type.ToString(),
-                                                      " previous operation type: ",
-                                                      _entitiesOperationsDebug[(ulong) entitySubmitOperation.fromID]
-                                                         .ToString()));
+            
+            if (_entitiesOperations.TryGetValue((ulong) entitySubmitOperation.fromID, out var entitySubmitedOperation) == true)
+            {
+                if (entitySubmitedOperation != entitySubmitOperation)
+                Console.LogError("Only one entity operation per submission is allowed".FastConcat(" entityViewType: ")
+                                    .FastConcat(typeof(T).Name)
+                                    .FastConcat(" submission type ", entitySubmitOperation.type.ToString(),
+                                                " previous operation type: ",
+                                                _entitiesOperations[(ulong) entitySubmitOperation.fromID].type
+                                                   .ToString()));
+            }
             else
-                _entitiesOperationsDebug[(ulong)entitySubmitOperation.fromID] = entitySubmitOperation.type;
 #endif            
-            _entitiesOperations.AddRef(ref entitySubmitOperation);
+            _entitiesOperations.Set((ulong)entitySubmitOperation.fromID, ref entitySubmitOperation);
         }
-#if DEBUG && !PROFILER        
-        readonly DataStructures.Experimental.FasterDictionary<ulong, EntitySubmitOperationType>
-            _entitiesOperationsDebug;
-#endif        
     }
 }

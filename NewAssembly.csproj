@@ -15,10 +15,10 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{8948B857-6ECD-5503-B73B-B2BDE944EB02}</ProjectGuid>
+    <ProjectGuid>{1CD37662-49FC-7890-23F3-C81BC9DF3461}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <AssemblyName>Svelto.ECS</AssemblyName>
+    <AssemblyName>NewAssembly</AssemblyName>
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <BaseDirectory>.</BaseDirectory>
@@ -28,11 +28,11 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>Temp\bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;UNITY_2019_1_0;UNITY_2019_1;UNITY_2019;UNITY_5_3_OR_NEWER;UNITY_5_4_OR_NEWER;UNITY_5_5_OR_NEWER;UNITY_5_6_OR_NEWER;UNITY_2017_1_OR_NEWER;UNITY_2017_2_OR_NEWER;UNITY_2017_3_OR_NEWER;UNITY_2017_4_OR_NEWER;UNITY_2018_1_OR_NEWER;UNITY_2018_2_OR_NEWER;UNITY_2018_3_OR_NEWER;UNITY_2019_1_OR_NEWER;PLATFORM_ARCH_64;UNITY_64;UNITY_INCLUDE_TESTS;ENABLE_AUDIO;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_DUCK_TYPING;ENABLE_MICROPHONE;ENABLE_MULTIPLE_DISPLAYS;ENABLE_PHYSICS;ENABLE_SPRITES;ENABLE_GRID;ENABLE_TILEMAP;ENABLE_TERRAIN;ENABLE_TEXTURE_STREAMING;ENABLE_DIRECTOR;ENABLE_UNET;ENABLE_LZMA;ENABLE_UNITYEVENTS;ENABLE_WEBCAM;ENABLE_WWW;ENABLE_CLOUD_SERVICES_COLLAB;ENABLE_CLOUD_SERVICES_COLLAB_SOFTLOCKS;ENABLE_CLOUD_SERVICES_ADS;ENABLE_CLOUD_HUB;ENABLE_CLOUD_PROJECT_ID;ENABLE_CLOUD_SERVICES_USE_WEBREQUEST;ENABLE_CLOUD_SERVICES_UNET;ENABLE_CLOUD_SERVICES_BUILD;ENABLE_CLOUD_LICENSE;ENABLE_EDITOR_HUB;ENABLE_EDITOR_HUB_LICENSE;ENABLE_WEBSOCKET_CLIENT;ENABLE_DIRECTOR_AUDIO;ENABLE_DIRECTOR_TEXTURE;ENABLE_TIMELINE;ENABLE_EDITOR_METRICS;ENABLE_EDITOR_METRICS_CACHING;ENABLE_MANAGED_JOBS;ENABLE_MANAGED_TRANSFORM_JOBS;ENABLE_MANAGED_ANIMATION_JOBS;ENABLE_MANAGED_AUDIO_JOBS;INCLUDE_DYNAMIC_GI;INCLUDE_GI;ENABLE_MONO_BDWGC;PLATFORM_SUPPORTS_MONO;RENDER_SOFTWARE_CURSOR;INCLUDE_PUBNUB;ENABLE_VIDEO;ENABLE_CUSTOM_RENDER_TEXTURE;ENABLE_LOCALIZATION;PLATFORM_STANDALONE_WIN;PLATFORM_STANDALONE;UNITY_STANDALONE_WIN;UNITY_STANDALONE;ENABLE_SUBSTANCE;ENABLE_RUNTIME_GI;ENABLE_MOVIES;ENABLE_NETWORK;ENABLE_CRUNCH_TEXTURE_COMPRESSION;ENABLE_UNITYWEBREQUEST;ENABLE_CLOUD_SERVICES;ENABLE_CLOUD_SERVICES_ANALYTICS;ENABLE_CLOUD_SERVICES_PURCHASING;ENABLE_CLOUD_SERVICES_CRASH_REPORTING;ENABLE_OUT_OF_PROCESS_CRASH_HANDLER;ENABLE_SCRIPTING_GC_WBARRIERS;ENABLE_EVENT_QUEUE;ENABLE_CLUSTER_SYNC;ENABLE_CLUSTERINPUT;ENABLE_VR;ENABLE_AR;ENABLE_WEBSOCKET_HOST;ENABLE_MONO;NET_STANDARD_2_0;ENABLE_PROFILER;UNITY_ASSERTIONS;UNITY_EDITOR;UNITY_EDITOR_64;UNITY_EDITOR_WIN;ENABLE_UNITY_COLLECTIONS_CHECKS;ENABLE_BURST_AOT;UNITY_TEAM_LICENSE;UNITY_PRO_LICENSE;PROFILER;ENABLE_PLATFORM_PROFILER;CSHARP_7_OR_LATER;CSHARP_7_3_OR_NEWER</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;UNITY_2019_1_0;UNITY_2019_1;UNITY_2019;UNITY_5_3_OR_NEWER;UNITY_5_4_OR_NEWER;UNITY_5_5_OR_NEWER;UNITY_5_6_OR_NEWER;UNITY_2017_1_OR_NEWER;UNITY_2017_2_OR_NEWER;UNITY_2017_3_OR_NEWER;UNITY_2017_4_OR_NEWER;UNITY_2018_1_OR_NEWER;UNITY_2018_2_OR_NEWER;UNITY_2018_3_OR_NEWER;UNITY_2019_1_OR_NEWER;PLATFORM_ARCH_64;UNITY_64;UNITY_INCLUDE_TESTS;ENABLE_AUDIO;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_DUCK_TYPING;ENABLE_MICROPHONE;ENABLE_MULTIPLE_DISPLAYS;ENABLE_PHYSICS;ENABLE_SPRITES;ENABLE_GRID;ENABLE_TILEMAP;ENABLE_TERRAIN;ENABLE_TEXTURE_STREAMING;ENABLE_DIRECTOR;ENABLE_UNET;ENABLE_LZMA;ENABLE_UNITYEVENTS;ENABLE_WEBCAM;ENABLE_WWW;ENABLE_CLOUD_SERVICES_COLLAB;ENABLE_CLOUD_SERVICES_COLLAB_SOFTLOCKS;ENABLE_CLOUD_SERVICES_ADS;ENABLE_CLOUD_HUB;ENABLE_CLOUD_PROJECT_ID;ENABLE_CLOUD_SERVICES_USE_WEBREQUEST;ENABLE_CLOUD_SERVICES_UNET;ENABLE_CLOUD_SERVICES_BUILD;ENABLE_CLOUD_LICENSE;ENABLE_EDITOR_HUB;ENABLE_EDITOR_HUB_LICENSE;ENABLE_WEBSOCKET_CLIENT;ENABLE_DIRECTOR_AUDIO;ENABLE_DIRECTOR_TEXTURE;ENABLE_TIMELINE;ENABLE_EDITOR_METRICS;ENABLE_EDITOR_METRICS_CACHING;ENABLE_MANAGED_JOBS;ENABLE_MANAGED_TRANSFORM_JOBS;ENABLE_MANAGED_ANIMATION_JOBS;ENABLE_MANAGED_AUDIO_JOBS;INCLUDE_DYNAMIC_GI;INCLUDE_GI;ENABLE_MONO_BDWGC;PLATFORM_SUPPORTS_MONO;RENDER_SOFTWARE_CURSOR;INCLUDE_PUBNUB;ENABLE_VIDEO;ENABLE_CUSTOM_RENDER_TEXTURE;ENABLE_LOCALIZATION;PLATFORM_STANDALONE_WIN;PLATFORM_STANDALONE;UNITY_STANDALONE_WIN;UNITY_STANDALONE;ENABLE_SUBSTANCE;ENABLE_RUNTIME_GI;ENABLE_MOVIES;ENABLE_NETWORK;ENABLE_CRUNCH_TEXTURE_COMPRESSION;ENABLE_UNITYWEBREQUEST;ENABLE_CLOUD_SERVICES;ENABLE_CLOUD_SERVICES_ANALYTICS;ENABLE_CLOUD_SERVICES_PURCHASING;ENABLE_CLOUD_SERVICES_CRASH_REPORTING;ENABLE_OUT_OF_PROCESS_CRASH_HANDLER;ENABLE_SCRIPTING_GC_WBARRIERS;ENABLE_EVENT_QUEUE;ENABLE_CLUSTER_SYNC;ENABLE_CLUSTERINPUT;ENABLE_VR;ENABLE_AR;ENABLE_WEBSOCKET_HOST;ENABLE_MONO;NET_STANDARD_2_0;ENABLE_PROFILER;UNITY_ASSERTIONS;UNITY_EDITOR;UNITY_EDITOR_64;UNITY_EDITOR_WIN;ENABLE_UNITY_COLLECTIONS_CHECKS;ENABLE_BURST_AOT;UNITY_TEAM_LICENSE;UNITY_PRO_LICENSE;CSHARP_7_OR_LATER;CSHARP_7_3_OR_NEWER</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoWarn>0169</NoWarn>
-    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -41,7 +41,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoWarn>0169</NoWarn>
-    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup>
     <NoConfig>true</NoConfig>
@@ -59,75 +59,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Svelto\Svelto.ECS\CheckEntityUtilities.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\Common\Components\ECSQuaternion.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\Common\Components\ECSRect.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\Common\Components\ECSVector2.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\Common\Components\ECSVector3.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\Common\Components\EcsVector4.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\Common\Components\ExtensionMethods.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\Common\Components\ExtensionMethodsUnity.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\Common\EntityStructs\EntityHierarchyStruct.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\Common\EntityStructs\PositionEntityStruct.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\Common\EntityStructs\RotationEntityStruct.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\Common\EntityStructs\VelocityEntityStruct.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\DataStructures\TypeSafeDictionary.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\DataStructures\TypeSafeDictionaryException.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\DBC.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\Dispatcher\DispatchOnChange.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\Dispatcher\DispatchOnSet.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\DynamicEntityDescriptorInfo.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\ECSException.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\EGID.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\EGIDMapper.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\EnginesRoot.DoubleBufferedEntityViews.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\EnginesRoot.Engines.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\EnginesRoot.Entities.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\EnginesRoot.GenericEntityFactory.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\EnginesRoot.GenericEntityFunctions.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\EnginesRoot.Submission.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\EntitiesDB.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\EntityBuilder.CheckFields.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\EntityBuilder.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\EntityDescriptorInfo.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\EntityFactory.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\EntityGroupNotFoundException.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\EntityInfoView.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\EntityNotFoundException.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\EntityStream.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\EntityStructInitializer.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\EntitySubmissionScheduler.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\EntitySubmitOperation.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\EntityView.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\EntityViewUtility.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\ExclusiveGroup.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\ExecuteOnEntitiesDB.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\ExtendibleEntityDescriptor.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\Extensions\Unity\GenericEntityDescriptorHolder.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\Extensions\Unity\IImplementor.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\Extensions\Unity\SveltoEntityFactoryForUnity.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\Extensions\Unity\UnityEntitySubmissionScheduler.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\FasterDictionaryBenchmarks.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\GenericEntityDescriptor.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\GenericentityStreamConsumerFactory.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\IEngine.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\IEntitiesDB.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\IEntityBuilder.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\IEntityDescriptorHolder.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\IEntityFactory.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\IEntityFunctions.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\IEntityStruct.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\IEntityViewStruct.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\IObsoleteInterfaceDb.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\IQueryingEntitiesEngine.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\MultiEntitiesEngine.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\MultiEntityViewsEngine.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\Sequencer.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\SimpleSubmissionEntityViewScheduler.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\SingleEntityEngine.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\SingleEntityViewEngine.cs" />
-    <Compile Include="Assets\Svelto\Svelto.ECS\StaticEntityDescriptorInfo.cs" />
-    <None Include="Assets\Svelto\Svelto.ECS\Svelto.ECS.asmdef" />
+    <Compile Include="Assets\Svelto\Svelto.Common\Utilities\ActionRef.cs" />
+    <Compile Include="Assets\Svelto\Svelto.Common\Utilities\Console.cs" />
+    <Compile Include="Assets\Svelto\Svelto.Common\Utilities\DataToString.cs" />
+    <Compile Include="Assets\Svelto\Svelto.Common\Utilities\FastConcatUtility.cs" />
+    <Compile Include="Assets\Svelto\Svelto.Common\Utilities\FastInvoke.cs" />
+    <Compile Include="Assets\Svelto\Svelto.Common\Utilities\ILogger.cs" />
+    <Compile Include="Assets\Svelto\Svelto.Common\Utilities\Murmur3.cs" />
+    <Compile Include="Assets\Svelto\Svelto.Common\Utilities\NetFXCoreWrappers.cs" />
+    <Compile Include="Assets\Svelto\Svelto.Common\Utilities\SimpleLogger.cs" />
+    <Compile Include="Assets\Svelto\Svelto.Common\Utilities\SlowLoggerUnity.cs" />
+    <Compile Include="Assets\Svelto\Svelto.Common\Utilities\ThreadUtility.cs" />
+    <None Include="Assets\Svelto\Svelto.Common\Utilities\Utilities.asmdef" />
     <Reference Include="UnityEngine.AIModule">
       <HintPath>E:/Unity/Hub/Editor/2019.1.0b8/Editor/Data/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>
     </Reference>
@@ -677,12 +620,6 @@
     <Reference Include="System.Xml.Serialization">
       <HintPath>E:/Unity/Hub/Editor/2019.1.0b8/Editor/Data/NetStandard/compat/2.0.0/shims/netfx/System.Xml.Serialization.dll</HintPath>
     </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="Svelto.Common.csproj">
-      <Project>{56179CE4-2FB7-A4FD-4C56-B8AA1544C6CB}</Project>
-      <Name>Svelto.Common</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
