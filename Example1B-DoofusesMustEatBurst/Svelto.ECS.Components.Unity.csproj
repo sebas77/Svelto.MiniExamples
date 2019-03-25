@@ -74,7 +74,7 @@
     <Compile Include="Assets\Svelto\Svelto.ECS.Components\EntityStructs\VelocityEntityStruct.cs" />
     <None Include="Assets\Svelto\Svelto.ECS.Components\Svelto.ECS.Components.asmdef" />
     <Reference Include="Unity.Mathematics">
-      <HintPath>E:/Prgdir/unity/Svelto/Svelto.MiniExamples/Example1B-DoofusesMustEatBurst/Library/ScriptAssemblies/Unity.Mathematics.dll</HintPath>
+      <HintPath>E:/Prgdir/unity/Svelto/Svelto-ECS/Svelto.ECS.MiniExamples/Example1B-DoofusesMustEatBurst/Library/ScriptAssemblies/Unity.Mathematics.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AIModule">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2019.1.0b8/Editor/Data/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>

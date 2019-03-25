@@ -1,8 +1,8 @@
 {
     "name": "Svelto.ECS.Components.Unity",
     "references": [
-        "GUID:d8b63aba1907145bea998dd612889d6b",
-        "GUID:915ab2d0df61fe246b08eddd579c8841"
+        "Svelto.ECS",
+        "Unity.Mathematics"
     ],
     "optionalUnityReferences": [],
     "includePlatforms": [],

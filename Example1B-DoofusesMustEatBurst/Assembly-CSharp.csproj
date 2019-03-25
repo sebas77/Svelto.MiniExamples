@@ -83,91 +83,91 @@
     <Compile Include="Assets\UnityFreeCamera.cs" />
     <Compile Include="Assets\UnityUtilities.cs" />
     <Reference Include="Unity.Timeline.Editor">
-      <HintPath>E:/Prgdir/unity/Svelto/Svelto.MiniExamples/Example1B-DoofusesMustEatBurst/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
+      <HintPath>E:/Prgdir/unity/Svelto/Svelto-ECS/Svelto.ECS.MiniExamples/Example1B-DoofusesMustEatBurst/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Entities.Properties">
-      <HintPath>E:/Prgdir/unity/Svelto/Svelto.MiniExamples/Example1B-DoofusesMustEatBurst/Library/ScriptAssemblies/Unity.Entities.Properties.dll</HintPath>
+      <HintPath>E:/Prgdir/unity/Svelto/Svelto-ECS/Svelto.ECS.MiniExamples/Example1B-DoofusesMustEatBurst/Library/ScriptAssemblies/Unity.Entities.Properties.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Properties.Codegen">
-      <HintPath>E:/Prgdir/unity/Svelto/Svelto.MiniExamples/Example1B-DoofusesMustEatBurst/Library/ScriptAssemblies/Unity.Properties.Codegen.dll</HintPath>
+      <HintPath>E:/Prgdir/unity/Svelto/Svelto-ECS/Svelto.ECS.MiniExamples/Example1B-DoofusesMustEatBurst/Library/ScriptAssemblies/Unity.Properties.Codegen.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Jobs">
-      <HintPath>E:/Prgdir/unity/Svelto/Svelto.MiniExamples/Example1B-DoofusesMustEatBurst/Library/ScriptAssemblies/Unity.Jobs.dll</HintPath>
+      <HintPath>E:/Prgdir/unity/Svelto/Svelto-ECS/Svelto.ECS.MiniExamples/Example1B-DoofusesMustEatBurst/Library/ScriptAssemblies/Unity.Jobs.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Jobs.Editor">
-      <HintPath>E:/Prgdir/unity/Svelto/Svelto.MiniExamples/Example1B-DoofusesMustEatBurst/Library/ScriptAssemblies/Unity.Jobs.Editor.dll</HintPath>
+      <HintPath>E:/Prgdir/unity/Svelto/Svelto-ECS/Svelto.ECS.MiniExamples/Example1B-DoofusesMustEatBurst/Library/ScriptAssemblies/Unity.Jobs.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Entities.Editor">
-      <HintPath>E:/Prgdir/unity/Svelto/Svelto.MiniExamples/Example1B-DoofusesMustEatBurst/Library/ScriptAssemblies/Unity.Entities.Editor.dll</HintPath>
+      <HintPath>E:/Prgdir/unity/Svelto/Svelto-ECS/Svelto.ECS.MiniExamples/Example1B-DoofusesMustEatBurst/Library/ScriptAssemblies/Unity.Entities.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Entities.StaticTypeRegistry">
-      <HintPath>E:/Prgdir/unity/Svelto/Svelto.MiniExamples/Example1B-DoofusesMustEatBurst/Library/ScriptAssemblies/Unity.Entities.StaticTypeRegistry.dll</HintPath>
+      <HintPath>E:/Prgdir/unity/Svelto/Svelto-ECS/Svelto.ECS.MiniExamples/Example1B-DoofusesMustEatBurst/Library/ScriptAssemblies/Unity.Entities.StaticTypeRegistry.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Properties">
-      <HintPath>E:/Prgdir/unity/Svelto/Svelto.MiniExamples/Example1B-DoofusesMustEatBurst/Library/ScriptAssemblies/Unity.Properties.dll</HintPath>
+      <HintPath>E:/Prgdir/unity/Svelto/Svelto-ECS/Svelto.ECS.MiniExamples/Example1B-DoofusesMustEatBurst/Library/ScriptAssemblies/Unity.Properties.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Collections">
-      <HintPath>E:/Prgdir/unity/Svelto/Svelto.MiniExamples/Example1B-DoofusesMustEatBurst/Library/ScriptAssemblies/Unity.Collections.dll</HintPath>
+      <HintPath>E:/Prgdir/unity/Svelto/Svelto-ECS/Svelto.ECS.MiniExamples/Example1B-DoofusesMustEatBurst/Library/ScriptAssemblies/Unity.Collections.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Scenes.Hybrid">
-      <HintPath>E:/Prgdir/unity/Svelto/Svelto.MiniExamples/Example1B-DoofusesMustEatBurst/Library/ScriptAssemblies/Unity.Scenes.Hybrid.dll</HintPath>
+      <HintPath>E:/Prgdir/unity/Svelto/Svelto-ECS/Svelto.ECS.MiniExamples/Example1B-DoofusesMustEatBurst/Library/ScriptAssemblies/Unity.Scenes.Hybrid.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Scenes.Editor">
-      <HintPath>E:/Prgdir/unity/Svelto/Svelto.MiniExamples/Example1B-DoofusesMustEatBurst/Library/ScriptAssemblies/Unity.Scenes.Editor.dll</HintPath>
+      <HintPath>E:/Prgdir/unity/Svelto/Svelto-ECS/Svelto.ECS.MiniExamples/Example1B-DoofusesMustEatBurst/Library/ScriptAssemblies/Unity.Scenes.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Physics">
-      <HintPath>E:/Prgdir/unity/Svelto/Svelto.MiniExamples/Example1B-DoofusesMustEatBurst/Library/ScriptAssemblies/Unity.Physics.dll</HintPath>
+      <HintPath>E:/Prgdir/unity/Svelto/Svelto-ECS/Svelto.ECS.MiniExamples/Example1B-DoofusesMustEatBurst/Library/ScriptAssemblies/Unity.Physics.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Mathematics.Extensions">
-      <HintPath>E:/Prgdir/unity/Svelto/Svelto.MiniExamples/Example1B-DoofusesMustEatBurst/Library/ScriptAssemblies/Unity.Mathematics.Extensions.dll</HintPath>
+      <HintPath>E:/Prgdir/unity/Svelto/Svelto-ECS/Svelto.ECS.MiniExamples/Example1B-DoofusesMustEatBurst/Library/ScriptAssemblies/Unity.Mathematics.Extensions.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Burst">
-      <HintPath>E:/Prgdir/unity/Svelto/Svelto.MiniExamples/Example1B-DoofusesMustEatBurst/Library/ScriptAssemblies/Unity.Burst.dll</HintPath>
+      <HintPath>E:/Prgdir/unity/Svelto/Svelto-ECS/Svelto.ECS.MiniExamples/Example1B-DoofusesMustEatBurst/Library/ScriptAssemblies/Unity.Burst.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Mathematics.Extensions.Hybrid">
-      <HintPath>E:/Prgdir/unity/Svelto/Svelto.MiniExamples/Example1B-DoofusesMustEatBurst/Library/ScriptAssemblies/Unity.Mathematics.Extensions.Hybrid.dll</HintPath>
+      <HintPath>E:/Prgdir/unity/Svelto/Svelto-ECS/Svelto.ECS.MiniExamples/Example1B-DoofusesMustEatBurst/Library/ScriptAssemblies/Unity.Mathematics.Extensions.Hybrid.dll</HintPath>
     </Reference>
     <Reference Include="Unity.PackageManagerUI.Editor">
-      <HintPath>E:/Prgdir/unity/Svelto/Svelto.MiniExamples/Example1B-DoofusesMustEatBurst/Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll</HintPath>
+      <HintPath>E:/Prgdir/unity/Svelto/Svelto-ECS/Svelto.ECS.MiniExamples/Example1B-DoofusesMustEatBurst/Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Timeline">
-      <HintPath>E:/Prgdir/unity/Svelto/Svelto.MiniExamples/Example1B-DoofusesMustEatBurst/Library/ScriptAssemblies/Unity.Timeline.dll</HintPath>
+      <HintPath>E:/Prgdir/unity/Svelto/Svelto-ECS/Svelto.ECS.MiniExamples/Example1B-DoofusesMustEatBurst/Library/ScriptAssemblies/Unity.Timeline.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Rendering.Hybrid">
-      <HintPath>E:/Prgdir/unity/Svelto/Svelto.MiniExamples/Example1B-DoofusesMustEatBurst/Library/ScriptAssemblies/Unity.Rendering.Hybrid.dll</HintPath>
+      <HintPath>E:/Prgdir/unity/Svelto/Svelto-ECS/Svelto.ECS.MiniExamples/Example1B-DoofusesMustEatBurst/Library/ScriptAssemblies/Unity.Rendering.Hybrid.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Physics.Authoring">
-      <HintPath>E:/Prgdir/unity/Svelto/Svelto.MiniExamples/Example1B-DoofusesMustEatBurst/Library/ScriptAssemblies/Unity.Physics.Authoring.dll</HintPath>
+      <HintPath>E:/Prgdir/unity/Svelto/Svelto-ECS/Svelto.ECS.MiniExamples/Example1B-DoofusesMustEatBurst/Library/ScriptAssemblies/Unity.Physics.Authoring.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Entities.BuildUtils">
-      <HintPath>E:/Prgdir/unity/Svelto/Svelto.MiniExamples/Example1B-DoofusesMustEatBurst/Library/ScriptAssemblies/Unity.Entities.BuildUtils.dll</HintPath>
+      <HintPath>E:/Prgdir/unity/Svelto/Svelto-ECS/Svelto.ECS.MiniExamples/Example1B-DoofusesMustEatBurst/Library/ScriptAssemblies/Unity.Entities.BuildUtils.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Entities.Hybrid">
-      <HintPath>E:/Prgdir/unity/Svelto/Svelto.MiniExamples/Example1B-DoofusesMustEatBurst/Library/ScriptAssemblies/Unity.Entities.Hybrid.dll</HintPath>
+      <HintPath>E:/Prgdir/unity/Svelto/Svelto-ECS/Svelto.ECS.MiniExamples/Example1B-DoofusesMustEatBurst/Library/ScriptAssemblies/Unity.Entities.Hybrid.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Mathematics">
-      <HintPath>E:/Prgdir/unity/Svelto/Svelto.MiniExamples/Example1B-DoofusesMustEatBurst/Library/ScriptAssemblies/Unity.Mathematics.dll</HintPath>
+      <HintPath>E:/Prgdir/unity/Svelto/Svelto-ECS/Svelto.ECS.MiniExamples/Example1B-DoofusesMustEatBurst/Library/ScriptAssemblies/Unity.Mathematics.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Physics.Editor">
-      <HintPath>E:/Prgdir/unity/Svelto/Svelto.MiniExamples/Example1B-DoofusesMustEatBurst/Library/ScriptAssemblies/Unity.Physics.Editor.dll</HintPath>
+      <HintPath>E:/Prgdir/unity/Svelto/Svelto-ECS/Svelto.ECS.MiniExamples/Example1B-DoofusesMustEatBurst/Library/ScriptAssemblies/Unity.Physics.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Entities">
-      <HintPath>E:/Prgdir/unity/Svelto/Svelto.MiniExamples/Example1B-DoofusesMustEatBurst/Library/ScriptAssemblies/Unity.Entities.dll</HintPath>
+      <HintPath>E:/Prgdir/unity/Svelto/Svelto-ECS/Svelto.ECS.MiniExamples/Example1B-DoofusesMustEatBurst/Library/ScriptAssemblies/Unity.Entities.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Transforms">
-      <HintPath>E:/Prgdir/unity/Svelto/Svelto.MiniExamples/Example1B-DoofusesMustEatBurst/Library/ScriptAssemblies/Unity.Transforms.dll</HintPath>
+      <HintPath>E:/Prgdir/unity/Svelto/Svelto-ECS/Svelto.ECS.MiniExamples/Example1B-DoofusesMustEatBurst/Library/ScriptAssemblies/Unity.Transforms.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Transforms.Editor">
-      <HintPath>E:/Prgdir/unity/Svelto/Svelto.MiniExamples/Example1B-DoofusesMustEatBurst/Library/ScriptAssemblies/Unity.Transforms.Editor.dll</HintPath>
+      <HintPath>E:/Prgdir/unity/Svelto/Svelto-ECS/Svelto.ECS.MiniExamples/Example1B-DoofusesMustEatBurst/Library/ScriptAssemblies/Unity.Transforms.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Burst.Editor">
-      <HintPath>E:/Prgdir/unity/Svelto/Svelto.MiniExamples/Example1B-DoofusesMustEatBurst/Library/ScriptAssemblies/Unity.Burst.Editor.dll</HintPath>
+      <HintPath>E:/Prgdir/unity/Svelto/Svelto-ECS/Svelto.ECS.MiniExamples/Example1B-DoofusesMustEatBurst/Library/ScriptAssemblies/Unity.Burst.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Mathematics.Editor">
-      <HintPath>E:/Prgdir/unity/Svelto/Svelto.MiniExamples/Example1B-DoofusesMustEatBurst/Library/ScriptAssemblies/Unity.Mathematics.Editor.dll</HintPath>
+      <HintPath>E:/Prgdir/unity/Svelto/Svelto-ECS/Svelto.ECS.MiniExamples/Example1B-DoofusesMustEatBurst/Library/ScriptAssemblies/Unity.Mathematics.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Transforms.Hybrid">
-      <HintPath>E:/Prgdir/unity/Svelto/Svelto.MiniExamples/Example1B-DoofusesMustEatBurst/Library/ScriptAssemblies/Unity.Transforms.Hybrid.dll</HintPath>
+      <HintPath>E:/Prgdir/unity/Svelto/Svelto-ECS/Svelto.ECS.MiniExamples/Example1B-DoofusesMustEatBurst/Library/ScriptAssemblies/Unity.Transforms.Hybrid.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AIModule">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2019.1.0b8/Editor/Data/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>
@@ -353,7 +353,7 @@
       <HintPath>C:/Program Files/Unity/Hub/Editor/2019.1.0b8/Editor/Data/UnityExtensions/Unity/TestRunner/net35/unity-custom/nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System.Runtime.CompilerServices.Unsafe">
-      <HintPath>E:/Prgdir/unity/Svelto/Svelto.MiniExamples/Example1B-DoofusesMustEatBurst/Library/PackageCache/com.unity.collections@0.0.9-preview.16/System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+      <HintPath>E:/Prgdir/unity/Svelto/Svelto-ECS/Svelto.ECS.MiniExamples/Example1B-DoofusesMustEatBurst/Library/PackageCache/com.unity.collections@0.0.9-preview.16/System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
     <Reference Include="mscorlib">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2019.1.0b8/Editor/Data/MonoBleedingEdge/lib/mono/4.7.1-api/mscorlib.dll</HintPath>
@@ -711,14 +711,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="Svelto.ECS.csproj">
-      <Project>{F13BA55F-9B93-2B32-F933-7248AEA1D55A}</Project>
-      <Name>Svelto.ECS</Name>
-    </ProjectReference>
-    <ProjectReference Include="Svelto.ECS.Components.Unity.csproj">
-      <Project>{572A065D-FC25-8A8E-221A-4F5846F54BD5}</Project>
-      <Name>Svelto.ECS.Components.Unity</Name>
-    </ProjectReference>
     <ProjectReference Include="Svelto.Pool.Debugger.csproj">
       <Project>{4DD66CC5-6E10-5DB9-07BE-9BC59F03E6FB}</Project>
       <Name>Svelto.Pool.Debugger</Name>
@@ -726,6 +718,14 @@
     <ProjectReference Include="Svelto.Common.csproj">
       <Project>{D3A2DFFC-841A-47A1-FBA8-A5F84FB016B6}</Project>
       <Name>Svelto.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="Svelto.ECS.Components.Unity.csproj">
+      <Project>{572A065D-FC25-8A8E-221A-4F5846F54BD5}</Project>
+      <Name>Svelto.ECS.Components.Unity</Name>
+    </ProjectReference>
+    <ProjectReference Include="Svelto.ECS.csproj">
+      <Project>{F13BA55F-9B93-2B32-F933-7248AEA1D55A}</Project>
+      <Name>Svelto.ECS</Name>
     </ProjectReference>
     <ProjectReference Include="Svelto.Tasks.StopEditorThread.csproj">
       <Project>{AE602AF4-4AA3-05B3-EEE8-573AA39BB66D}</Project>

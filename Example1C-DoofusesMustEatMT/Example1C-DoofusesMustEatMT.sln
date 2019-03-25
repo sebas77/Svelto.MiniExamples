@@ -1,0 +1,55 @@
+﻿Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.Tasks", "Svelto.Tasks.csproj", "{C2C177CF-C95B-09C1-628F-6AC2AA21D202}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "Assembly-CSharp.csproj", "{10E98807-758B-1FA7-7549-0DAD5A27384C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.Common", "Svelto.Common.csproj", "{29AAF803-0CDB-B4EB-6EB1-F105CB523507}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.ECS", "Svelto.ECS.csproj", "{EFCBE764-4571-1CFC-9339-DF746B529800}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.ECS.Components.Unity", "Svelto.ECS.Components.Unity.csproj", "{CAEE28D3-9177-BAF0-7290-413062A94AA2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.Tasks.StopEditorThread", "Svelto.Tasks.StopEditorThread.csproj", "{7EB7ACB0-41D4-9B94-D9A1-8044FF7F4EF9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.Pool.Debugger", "Svelto.Pool.Debugger.csproj", "{17BB7C7F-FAA1-CA13-5A34-E6ACAD410620}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C2C177CF-C95B-09C1-628F-6AC2AA21D202}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2C177CF-C95B-09C1-628F-6AC2AA21D202}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2C177CF-C95B-09C1-628F-6AC2AA21D202}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C2C177CF-C95B-09C1-628F-6AC2AA21D202}.Release|Any CPU.Build.0 = Release|Any CPU
+		{10E98807-758B-1FA7-7549-0DAD5A27384C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{10E98807-758B-1FA7-7549-0DAD5A27384C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{10E98807-758B-1FA7-7549-0DAD5A27384C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{10E98807-758B-1FA7-7549-0DAD5A27384C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{29AAF803-0CDB-B4EB-6EB1-F105CB523507}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{29AAF803-0CDB-B4EB-6EB1-F105CB523507}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{29AAF803-0CDB-B4EB-6EB1-F105CB523507}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{29AAF803-0CDB-B4EB-6EB1-F105CB523507}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EFCBE764-4571-1CFC-9339-DF746B529800}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFCBE764-4571-1CFC-9339-DF746B529800}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFCBE764-4571-1CFC-9339-DF746B529800}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EFCBE764-4571-1CFC-9339-DF746B529800}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CAEE28D3-9177-BAF0-7290-413062A94AA2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CAEE28D3-9177-BAF0-7290-413062A94AA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CAEE28D3-9177-BAF0-7290-413062A94AA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CAEE28D3-9177-BAF0-7290-413062A94AA2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7EB7ACB0-41D4-9B94-D9A1-8044FF7F4EF9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7EB7ACB0-41D4-9B94-D9A1-8044FF7F4EF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7EB7ACB0-41D4-9B94-D9A1-8044FF7F4EF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7EB7ACB0-41D4-9B94-D9A1-8044FF7F4EF9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{17BB7C7F-FAA1-CA13-5A34-E6ACAD410620}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{17BB7C7F-FAA1-CA13-5A34-E6ACAD410620}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17BB7C7F-FAA1-CA13-5A34-E6ACAD410620}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{17BB7C7F-FAA1-CA13-5A34-E6ACAD410620}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
