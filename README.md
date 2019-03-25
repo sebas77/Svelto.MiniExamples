@@ -10,7 +10,7 @@ Object-less pure ECS example that shows the basics of Svelto.ECS and Svelto.Task
 
 * **Iteration 1 (done):**
   * Integration with UnityECS for rendering
-* **Iteration 2 (to do):**
+* **Iteration 2 (done):**
   * Integration with Burst for better performance
 * **Iteration 3 (to do):**
   * Enable Svelto.Tasks multithreading for better performance
