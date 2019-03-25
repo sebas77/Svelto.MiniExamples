@@ -30,7 +30,7 @@ namespace Svelto.ECS.MiniExamples.Example1B
          //   _enginesRoot.AddEngine(new ConsumingFoodEngine(_enginesRoot.GenerateEntityFunctions()));
             _enginesRoot.AddEngine(new SpawnUnityEntityOnSveltoEntityEngine(world));
             _enginesRoot.AddEngine(new VelocityToPositionDoofusesEngine());
-            _enginesRoot.AddEngine(new DieOfHungerDoofusesEngine(_enginesRoot.GenerateEntityFunctions()));
+//            _enginesRoot.AddEngine(new DieOfHungerDoofusesEngine(_enginesRoot.GenerateEntityFunctions()));
             
             //one engine two ECS implementations :P
             var renderingDataSynchronizationEngine = new RenderingDataSynchronizationEngine(world);

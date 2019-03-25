@@ -2,7 +2,7 @@
     "name": "Svelto.ECS.Components.Unity",
     "references": [
         "GUID:d8b63aba1907145bea998dd612889d6b",
-        "GUID:0afaff8afff19a44c8e2013f40633b56"
+        "GUID:1869b46461d119144a089fe5899ab312"
     ],
     "optionalUnityReferences": [],
     "includePlatforms": [],

@@ -22,8 +22,8 @@ namespace Svelto.ECS.MiniExamples.Example1B
 
                 for (var j = 0; j < doofusesCount; j++)
                 {
-                    if (hungryDoofuses[j].hunger > 1000) ;
-                    //         _entityFunctions.RemoveEntity<DoofusEntityDescriptor>(hungryDoofuses[j].ID);
+                    if (hungryDoofuses[j].hunger > 1000)
+                       _entityFunctions.RemoveEntity<DoofusEntityDescriptor>(hungryDoofuses[j].ID);
                 }
 
                 yield return Yield.It;
