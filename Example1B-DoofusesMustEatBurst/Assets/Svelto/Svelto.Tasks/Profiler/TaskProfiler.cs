@@ -19,12 +19,19 @@ namespace Svelto.Tasks.Profiler
         internal static readonly ThreadSafeDictionary<string, TaskInfo> taskInfos =
             new ThreadSafeDictionary<string, TaskInfo>();
 
-        public static bool MonitorUpdateDuration<T, PP>(T sveltoTask, string runnerName
+        public static bool MonitorUpdateDuration<T
+#if ENABLE_PLATFORM_PROFILER            
+          , PP
+#endif                        
+        >(T sveltoTask, string runnerName
 #if ENABLE_PLATFORM_PROFILER                                                        
                                                       , PP profiler
 #endif            
             )
-            where T : ISveltoTask where PP : IPlatformProfiler
+            where T : ISveltoTask
+#if ENABLE_PLATFORM_PROFILER            
+            where PP : IPlatformProfiler
+#endif            
         {
             var  key = sveltoTask.ToString().FastConcat(runnerName);
             bool result;

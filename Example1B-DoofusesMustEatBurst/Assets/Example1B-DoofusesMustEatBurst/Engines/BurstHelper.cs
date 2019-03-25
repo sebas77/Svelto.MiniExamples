@@ -107,7 +107,7 @@ namespace BurstHelper
             {
                 ReturnType = returnType;
                 Arguments = arguments;
-            }
+            }    
 
             public readonly Type ReturnType;
 

@@ -1,7 +1,7 @@
 namespace Svelto.ECS.Hybrid
 {
     ///<summary>EntityViewStructs MUST implement IEntityViewStruct</summary>
-    public interface IEntityStructViewStruct:IEntityStruct, INeedEGID
+    public interface IEntityViewStruct:IEntityStruct, INeedEGID
     {}
 }
 

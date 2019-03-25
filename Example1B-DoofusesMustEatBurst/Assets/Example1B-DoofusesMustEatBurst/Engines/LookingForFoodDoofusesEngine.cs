@@ -8,6 +8,7 @@ using Unity.Mathematics;
 
 namespace Svelto.ECS.MiniExamples.Example1B
 {
+#if UNITY_BURST_FEATURE_FUNCPTR    
     public class LookingForFoodDoofusesEngine : IQueryingEntitiesEngine
     {
         public void Ready() { SearchFoodOrGetHungry().RunOn(DoofusesStandardSchedulers.doofusesLogicScheduler); }
@@ -121,4 +122,98 @@ namespace Svelto.ECS.MiniExamples.Example1B
 
         public static float SqrMagnitude(in float3 a) { return a.x * a.x + a.y * a.y + a.z * a.z; }
     }
+#else
+    public class LookingForFoodDoofusesEngine : IQueryingEntitiesEngine
+    {
+        public void Ready() { SearchFoodOrGetHungry().RunOn(DoofusesStandardSchedulers.doofusesLogicScheduler); }
+        
+        IEnumerator SearchFoodOrGetHungry()
+        {
+            void Execute()
+            {
+                var doofuses = entitiesDB
+                     .QueryEntities<PositionEntityStruct, VelocityEntityStruct, HungerEntityStruct>(GameGroups.DOOFUSES,
+                                                                                                      out var count);
+
+                var foods =
+                   entitiesDB.QueryEntities<PositionEntityStruct, MealEntityStruct>(GameGroups.FOOD, out var foodcount);
+                
+                NoBurstIt.NoBurst((int) count, (int) foodcount, doofuses.Item2, doofuses.Item3, foods.Item1, doofuses.Item1, foods.Item2);
+            }
+
+            while (entitiesDB.Count<PositionEntityStruct>(GameGroups.DOOFUSES) == 0)
+                yield return null;
+
+            while (true)
+            {
+                Execute();
+
+                yield return null;
+            }
+        }
+
+        public IEntitiesDB entitiesDB { private get; set; }
+    }
+
+    public class NoBurstIt
+    {
+        /// <summary>
+        /// Couldn't find a way to make it not unsafe yet
+        /// </summary>
+        public static unsafe void NoBurst(int count, int foodcount, VelocityEntityStruct[] dvp,
+            HungerEntityStruct[] hrp, PositionEntityStruct[] fpp, PositionEntityStruct[] dpp,
+            MealEntityStruct[] msp)
+        {
+            var dv = dvp;
+            var hr = hrp;
+            var ms = msp;
+            var fp = fpp;
+            var dp = dpp;
+            
+            for (int doofusIndex = 0; doofusIndex < count; doofusIndex++)
+            {
+                float currentMin = float.MaxValue;
+                
+                ref var velocityEntityStruct = ref dv[doofusIndex];
+                velocityEntityStruct.velocity = new float3();
+                ref var hungerEntityStruct = ref hr[doofusIndex];
+                ref var positionEntityStruct = ref dp[doofusIndex];
+
+                for (int foodIndex = 0; foodIndex < foodcount; foodIndex++)
+                {
+                    var computeDirection = fp[foodIndex];
+                    ref var mealEntityStruct = ref ms[foodIndex];
+                    
+                    computeDirection.position -= positionEntityStruct.position;
+                    
+                    var sqrModule = SqrMagnitude(computeDirection.position);
+
+                    if (currentMin > sqrModule)
+                    {
+                        currentMin = sqrModule;
+
+                        //food found
+                        if (sqrModule < 10)
+                        {
+                            hungerEntityStruct.hunger--;
+                            mealEntityStruct.eaters++;
+
+                 //           break; //close enough let's save some computations
+                        }
+                        else
+                            //going toward food, not breaking as closer food can spawn
+                        {
+                            velocityEntityStruct.velocity.x = computeDirection.position.x;
+                            velocityEntityStruct.velocity.z = computeDirection.position.z;
+                        }
+                    }
+                }
+
+                hungerEntityStruct.hunger++;
+            }
+        }
+
+        public static float SqrMagnitude(in float3 a) { return a.x * a.x + a.y * a.y + a.z * a.z; }
+    }
+#endif    
 }

@@ -81,7 +81,9 @@ namespace Svelto.Tasks.Internal
                         using (_profiler.Sample(coroutines[index].name))
 #endif
 #if TASKS_PROFILER_ENABLED
+#if ENABLE_PLATFORM_PROFILER                        
                         using (_profiler.Sample("TaskMonitor"))
+#endif
                         result =
                             Profiler.TaskProfiler.MonitorUpdateDuration(coroutines[index], _info.runnerName
 #if ENABLE_PLATFORM_PROFILER                                                                        

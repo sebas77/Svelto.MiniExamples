@@ -147,13 +147,13 @@ namespace Svelto.ECS
                 //Check if there is an EntityInfoView linked to this entity, if so it's a DynamicEntityDescriptor!
                 bool correctEntityDescriptorFound = true;
 
-                EntityStructInfoView entityStructInfoView = default;
+                EntityStructInfoView entityInfoView = default;
                 if (fromGroup.TryGetValue(ENTITY_INFO_VIEW_TYPE, out var entityInfoViewDic) &&
                     (entityInfoViewDic as TypeSafeDictionary<EntityStructInfoView>).TryGetValue(
-                        fromEntityGID.entityID, out entityStructInfoView) && (correctEntityDescriptorFound =
-                        entityStructInfoView.type == originalDescriptorType))
+                        fromEntityGID.entityID, out entityInfoView) && (correctEntityDescriptorFound =
+                        entityInfoView.type == originalDescriptorType))
                 {
-                    var entitiesToMove = entityStructInfoView.entitiesToBuild;
+                    var entitiesToMove = entityInfoView.entitiesToBuild;
 
                     Dictionary<Type, ITypeSafeDictionary> toGroup = null;
 

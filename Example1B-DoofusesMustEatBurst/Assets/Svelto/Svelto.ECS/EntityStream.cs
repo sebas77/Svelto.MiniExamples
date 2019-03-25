@@ -76,6 +76,25 @@ namespace Svelto.ECS
         {
             _ringBuffer.Enqueue(ref entity, _name);
         }
+        
+        /// <summary>
+        /// this can be better, I probably would need to get the group regardless if it supports EGID or not
+        /// </summary>
+        /// <param name="group"></param>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        public bool TryDequeue(ExclusiveGroup group, out T entity)
+        {
+            if (_ringBuffer.TryDequeue(out entity, _name) == true)
+            {
+                if (EntityBuilder<T>.HAS_EGID)
+                    return (entity as INeedEGID).ID.groupID == @group;
+
+                return true;
+            }
+
+            return false;
+        }
 
         public bool TryDequeue(out T entity) { return _ringBuffer.TryDequeue(out entity, _name); }
         public void Flush() { _ringBuffer.Reset(); }
