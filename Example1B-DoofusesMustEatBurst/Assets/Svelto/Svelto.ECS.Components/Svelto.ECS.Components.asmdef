@@ -2,13 +2,13 @@
     "name": "Svelto.ECS.Components.Unity",
     "references": [
         "GUID:d8b63aba1907145bea998dd612889d6b",
-        "GUID:1869b46461d119144a089fe5899ab312"
+        "GUID:915ab2d0df61fe246b08eddd579c8841"
     ],
     "optionalUnityReferences": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
-    "overrideReferences": false,
+    "overrideReferences": true,
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [],
