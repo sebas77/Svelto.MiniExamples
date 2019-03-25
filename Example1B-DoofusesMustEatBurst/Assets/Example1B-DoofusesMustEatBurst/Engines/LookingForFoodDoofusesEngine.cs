@@ -1,7 +1,10 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Reflection;
+using System.Reflection.Emit;
 using System.Runtime.InteropServices;
+using MethodEmitter;
 using Svelto.ECS.EntityStructs;
 using Svelto.Tasks.ExtraLean;
 using Unity.Burst;
@@ -11,6 +14,93 @@ using Unity.Mathematics;
 
 namespace Svelto.ECS.MiniExamples.Example1B
 {
+    public static class DelegateHelper
+    {
+        private static readonly Type[] _DelegateCtorSignature = new Type[2]
+        {
+            typeof(object),
+            typeof(IntPtr)
+        };
+
+        private static readonly Dictionary<DelegateKey, Type> DelegateTypes = new Dictionary<DelegateKey, Type>();
+
+        public static Type NewDelegateType(Type ret, Type[] parameters)
+        {
+            var key = new DelegateKey(ret, (Type[])parameters.Clone());
+            Type delegateType;
+            if (!DelegateTypes.TryGetValue(key, out delegateType))
+            {
+                var assemblyName = Guid.NewGuid().ToString();
+
+                var name = new AssemblyName(assemblyName);
+                var assemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(name, AssemblyBuilderAccess.Run);
+                var moduleBuilder = assemblyBuilder.DefineDynamicModule(name.Name);
+                assemblyBuilder.DefineVersionInfoResource();
+
+                var typeBuilder = moduleBuilder.DefineType("CustomDelegate", System.Reflection.TypeAttributes.Public | System.Reflection.TypeAttributes.Sealed | System.Reflection.TypeAttributes.AutoClass, typeof(MulticastDelegate));
+                var constructor = typeof(UnmanagedFunctionPointerAttribute).GetConstructors()[0];
+
+                // Make sure that we setup the C calling convention on the unmanaged delegate
+                var customAttribute = new CustomAttributeBuilder(constructor, new object[] { CallingConvention.Cdecl });
+                typeBuilder.SetCustomAttribute(customAttribute);
+                typeBuilder.DefineConstructor(System.Reflection.MethodAttributes.Public | System.Reflection.MethodAttributes.HideBySig | System.Reflection.MethodAttributes.RTSpecialName, CallingConventions.Standard, _DelegateCtorSignature).SetImplementationFlags(System.Reflection.MethodImplAttributes.CodeTypeMask);
+                typeBuilder.DefineMethod("Invoke", System.Reflection.MethodAttributes.Public | System.Reflection.MethodAttributes.Virtual | System.Reflection.MethodAttributes.HideBySig | System.Reflection.MethodAttributes.VtableLayoutMask, ret, parameters).SetImplementationFlags(System.Reflection.MethodImplAttributes.CodeTypeMask);
+                delegateType = typeBuilder.CreateType();
+
+                DelegateTypes.Add(key, delegateType);
+            }
+            return delegateType;
+        }
+
+        private struct DelegateKey : IEquatable<DelegateKey>
+        {
+            public DelegateKey(Type returnType, Type[] arguments)
+            {
+                ReturnType = returnType;
+                Arguments = arguments;
+            }
+
+            public readonly Type ReturnType;
+
+            public readonly Type[] Arguments;
+
+            public bool Equals(DelegateKey other)
+            {
+                if (ReturnType.Equals(other.ReturnType) && Arguments.Length == other.Arguments.Length)
+                {
+                    for (int i = 0; i < Arguments.Length; i++)
+                    {
+                        if (Arguments[i] != other.Arguments[i])
+                        {
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+                return false;
+            }
+
+            public override bool Equals(object obj)
+            {
+                if (ReferenceEquals(null, obj)) return false;
+                return obj is DelegateKey && Equals((DelegateKey) obj);
+            }
+
+            public override int GetHashCode()
+            {
+                unchecked
+                {
+                    int hashcode = (ReturnType.GetHashCode() * 397) ^ Arguments.Length.GetHashCode();
+                    for (int i = 0; i < Arguments.Length; i++)
+                    {
+                        hashcode = (hashcode * 397) ^ Arguments[i].GetHashCode();
+                    }
+                    return hashcode;
+                }
+            }
+        }
+    }
+    
     delegate T CompileDelegate<T>(T delegateMethod) where T : class;
     
     public class LookingForFoodDoofusesEngine : IQueryingEntitiesEngine
@@ -21,21 +111,17 @@ namespace Svelto.ECS.MiniExamples.Example1B
         
         IEnumerator SearchFoodOrGetHungry()
         {
-/*            
-            var ass  = Assembly.GetAssembly(typeof(BurstCompileAttribute));
-            var type = ass.GetType("Unity.Burst.BurstCompiler");
-            var prop = type.GetMethods();
-
-            Delegate function;
-            foreach (var method in prop)
+            T ConvertBurstMethodToDelegate<T>()
             {
-                if (method.Name == "CompileDelegate")
-                {
-                    Type funcType = typeof(Func<,>).MakeGenericType();
-                    function = Delegate.CreateDelegate(funcType, null, method);
-                }
+                Delegate o;
+                Delegate t = new Action<int, int, IntPtr, IntPtr, IntPtr, IntPtr, IntPtr>(BurstIt.Burst);
+                o = BurstCompiler.CompileDelegate(t);
+                T compile = DelegateCompiler.Compile<T>(o.Method);
+                return compile;
             }
-  */          
+
+            var function = ConvertBurstMethodToDelegate<Action<int, int, IntPtr, IntPtr, IntPtr, IntPtr, IntPtr>>();
+            
             unsafe void Execute()
             {
                 var doofuses = entitiesDB
@@ -49,16 +135,16 @@ namespace Svelto.ECS.MiniExamples.Example1B
                 var doofusesVelocity    = GCHandle.Alloc(doofuses.Item2, GCHandleType.Pinned);
                 var foodPositions       = GCHandle.Alloc(foods.Item1, GCHandleType.Pinned);
                 var mealStructs         = GCHandle.Alloc(foods.Item2, GCHandleType.Pinned);
-                                                                                            var hungerEntityStructs = GCHandle.Alloc(doofuses.Item3, GCHandleType.Pinned);
+                var hungerEntityStructs = GCHandle.Alloc(doofuses.Item3, GCHandleType.Pinned);
                 
-                var dv = (VelocityEntityStruct *)doofusesVelocity.AddrOfPinnedObject();
-                var hr = (HungerEntityStruct *)hungerEntityStructs.AddrOfPinnedObject();
-                var ms = (MealEntityStruct *)mealStructs.AddrOfPinnedObject();
-                var fp = (PositionEntityStruct *)foodPositions.AddrOfPinnedObject();
-                var dp = (PositionEntityStruct *)doofusesPosition.AddrOfPinnedObject();
+                var dv = doofusesVelocity.AddrOfPinnedObject();
+                var hr = hungerEntityStructs.AddrOfPinnedObject();
+                var ms = mealStructs.AddrOfPinnedObject();
+                var fp = foodPositions.AddrOfPinnedObject();
+                var dp = doofusesPosition.AddrOfPinnedObject();
 
-                    //                s.CompileDelegate(BurstIt);
-                BurstIt.Burst((int) count, (int) foodcount, dv, hr, fp, dp, ms);
+               
+                function((int) count, (int) foodcount, dv, hr, fp, dp, ms);
 
                 doofusesVelocity.Free();
                 foodPositions.Free();
@@ -86,9 +172,15 @@ namespace Svelto.ECS.MiniExamples.Example1B
     {
 
         [BurstCompile]
-        public static unsafe void Burst(int count, int foodcount, VelocityEntityStruct* dv, HungerEntityStruct* hr, 
-                                        PositionEntityStruct* fp, PositionEntityStruct* dp, MealEntityStruct* ms)
+        public static unsafe void Burst(int count, int foodcount, IntPtr dvp, IntPtr hrp, 
+                                        IntPtr fpp, IntPtr dpp, IntPtr msp)
         {
+            var dv = (VelocityEntityStruct *)dvp;
+            var hr = (HungerEntityStruct *)hrp;
+            var ms = (MealEntityStruct *)msp;
+            var fp = (PositionEntityStruct *)fpp;
+            var dp = (PositionEntityStruct *)dpp;
+            
             for (int doofusIndex = 0; doofusIndex < count; doofusIndex++)
             {
                 float currentMin = float.MaxValue;
