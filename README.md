@@ -11,7 +11,7 @@ Object-less pure ECS example that shows the basics of Svelto.ECS and Svelto.Task
 * **Iteration 1: Example1-DoofusesMustEat (done):**
   * Integration with UnityECS for rendering
   * Move the camera with arrows and mouse, left button to drop food
-* **Iteration 2 (done):**
+* **Iteration 2: Example1B-DoofusesMustEatBurst (done):**
   * Integration with Burst for better performance
   * Move the camera with arrows and mouse, left button to drop 100 random food only once
 * **Iteration 3 (to do):**
