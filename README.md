@@ -6,6 +6,10 @@ New Mini Examples for Svelto.ECS and Svelto.Tasks
 
 https://github.com/sebas77/Svelto.MiniExamples/tree/master/Assets/Example1-DoofusesMustEat
 
+
+        GithubWikiImages/Example1-Doofuses.gif
+      
+
 Object-less pure ECS example that shows the basics of Svelto.ECS and Svelto.Tasks
 
 * **Iteration 1 (done):**
