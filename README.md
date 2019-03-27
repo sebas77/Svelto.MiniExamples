@@ -10,8 +10,8 @@ Note: these examples are using unofficial versions of Svelto that you won't find
 
 Object-less pure ECS example that shows the basics of Svelto.ECS and Svelto.Tasks.
 
-Goal of this example: show the simplest use of Svelto 2.8 (beta state), intoduce to the concept of entity descriptors, entity structs and groups. 
-Secondary goal: show integration with UnityECS, show the use of Svelto.Tasks 2.0 (alpha state), show integration with Burst
+* Goal of this example: show the simplest use of Svelto 2.8 (beta state), intoduce to the concept of entity descriptors, entity structs and groups. 
+* Secondary goal: show integration with UnityECS, show the use of Svelto.Tasks 2.0 (alpha state), show integration with Burst
 
 * **Iteration 1: Example1-DoofusesMustEat (done):**
   * Integration with UnityECS for rendering
