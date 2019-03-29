@@ -8,3 +8,6 @@ Assets/Plugins.meta
 *.user
 client/
 Example1B-DoofusesMustEatBurst/Assets/Plugins/Editor/
+Example1C-DoofusesMustEatMT/Assets/Plugins/Editor/JetBrains/JetBrains.Rider.Unity.Editor.Plugin.Repacked.dll
+*.sln
+*.csproj

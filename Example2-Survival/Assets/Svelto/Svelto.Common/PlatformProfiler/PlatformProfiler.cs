@@ -83,7 +83,6 @@ namespace Svelto.Common
     public struct PlatformProfiler: IPlatformProfiler
     {
         static readonly Action<object> END_SAMPLE_ACTION  = (info) => UnityEngine.Profiling.Profiler.EndSample(); 
-        
         static readonly Action<object> BEGIN_SAMPLE_ACTION  = (info) => UnityEngine.Profiling.Profiler.BeginSample(info as string); 
         
         public DisposableStruct Sample(string samplerName, string samplerInfo = null)

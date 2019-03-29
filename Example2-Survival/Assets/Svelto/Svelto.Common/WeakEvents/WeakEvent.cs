@@ -91,9 +91,8 @@ namespace Svelto.WeakEvents
             _subscribers.Clear();
         }
 
-        protected readonly FasterList<WeakActionBase> 
-            _subscribers = new FasterList<WeakActionBase>();
-        readonly FasterList<KeyValuePair<object, MethodInfo>> 
+        protected readonly FasterList<WeakActionBase> _subscribers = new FasterList<WeakActionBase>();
+        readonly FasterList<KeyValuePair<object, MethodInfo>>
             _toRemove = new FasterList<KeyValuePair<object, MethodInfo>>();
 
         bool _isIterating;

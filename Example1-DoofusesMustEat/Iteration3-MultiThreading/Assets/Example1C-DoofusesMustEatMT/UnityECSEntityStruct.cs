@@ -1,0 +1,14 @@
+using Unity.Entities;
+using Unity.Mathematics;
+
+namespace Svelto.ECS.MiniExamples.Example1C
+{
+    public struct UnityEcsEntityStructStruct : IEntityStruct, INeedEGID
+    {
+        public Entity        uecsEntity;
+        public float3        spawnPosition;
+        public ComponentType unityComponent;
+
+        public EGID ID { get; set; }
+    }
+}

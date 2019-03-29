@@ -1,3 +1,7 @@
+#if !DEBUG || PROFILER
+#define DISABLE_DEBUG
+#endif
+
 using System;
 using System.Collections.Generic;
 #if NETFX_CORE
@@ -14,7 +18,7 @@ namespace Svelto
     public static class Console
     {
         static readonly StringBuilder _stringBuilder = new StringBuilder(256);
-        static readonly FasterList<Svelto.DataStructures.WeakReference<ILogger>> _loggers;
+        static readonly FasterList<DataStructures.WeakReference<ILogger>> _loggers;
 
         static readonly ILogger _standardLogger;
         
@@ -40,12 +44,12 @@ namespace Svelto
             _loggers.Add(new Svelto.DataStructures.WeakReference<ILogger>(log));
         } 
  
-        static void Log(string txt, string stack, LogType type, Dictionary<string, string> extraData = null)
+        static void Log(string txt, LogType type, Exception e = null, Dictionary<string, string> extraData = null)
         {
             for (int i = 0; i < _loggers.Count; i++)
             {
                 if (_loggers[i].IsValid == true)
-                    _loggers[i].Target.Log(txt, stack, type, extraData);
+                    _loggers[i].Target.Log(txt, type, e, extraData);
                 else
                 {
                     _loggers.UnorderedRemoveAt(i);
@@ -56,18 +60,11 @@ namespace Svelto
         
         public static void Log(string txt)
         {
-            Log(txt, null, LogType.Log);
+            Log(txt, LogType.Log);
         }
 
         public static void LogError(string txt, Dictionary<string, string> extraData = null)
         {
-            LogError(txt, null, extraData);
-        }
-
-        public static void LogError(string txt, string stack, Dictionary<string, string> extraData = null)
-        {
-            if (stack == null) stack = Environment.StackTrace;
-            
             string toPrint;
             
             lock (_stringBuilder)
@@ -79,7 +76,7 @@ namespace Svelto
                 toPrint = _stringBuilder.ToString();
             }    
              
-            Log(toPrint, stack, LogType.Error, extraData);
+            Log(toPrint, LogType.Error, null, extraData);
             
         }
 
@@ -94,7 +91,6 @@ namespace Svelto
                 extraData = new Dictionary<string, string>();
             
             string toPrint;
-            string stackTrace;
 
             lock (_stringBuilder)
             {
@@ -125,12 +121,10 @@ namespace Svelto
                     toPrint = _stringBuilder.Append("-******-> ").Append("-Exception-").Append(e.GetType())
                                   .Append("-<color=cyan>").Append(e.Message)
                                   .Append("</color> ").AppendLine().Append(message).ToString();
-                    
-                    stackTrace = e.StackTrace;
                 }
             }
             
-            Log(toPrint, stackTrace, LogType.Exception, extraData);
+            Log(toPrint, LogType.Exception, e, extraData);
         }
 
         public static void LogWarning(string txt)
@@ -146,7 +140,23 @@ namespace Svelto
                 toPrint = _stringBuilder.ToString();
             }
 
-            Log(toPrint, null, LogType.Warning);
+            Log(toPrint,  LogType.Warning);
+        }
+        
+#if DISABLE_DEBUG
+		[Conditional("__NEVER_DEFINED__")]
+#endif
+        public static void LogWarningDebug(string txt)
+        {
+            LogWarning(txt);
+        }
+
+#if DISABLE_DEBUG
+		[Conditional("__NEVER_DEFINED__")]
+#endif
+        public static void LogWarningDebug(string txt, object reference)
+        {
+            LogWarning(txt.FastConcat(" ", reference.ToString()));
         }
 
         /// <summary>

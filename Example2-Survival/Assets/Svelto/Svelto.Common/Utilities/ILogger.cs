@@ -1,3 +1,5 @@
+using System;
+
 namespace Svelto.Utilities
 {
     public enum LogType
@@ -9,6 +11,9 @@ namespace Svelto.Utilities
     }
     public interface ILogger
     {
-        void Log (string txt, string stack = null, LogType type = LogType.Log, System.Collections.Generic.Dictionary<string, string> data = null);
+        void Log(string                                                txt,
+                 LogType                                               type  = LogType.Log,
+                 Exception                                             e = null,
+                 System.Collections.Generic.Dictionary<string, string> data  = null);
     }
 }

@@ -8,14 +8,72 @@ public static class FastConcatUtility
     static readonly StringBuilder _stringBuilder = new StringBuilder(256);
 #endif
 
-    public static string FastConcat<T>(this string str1, T str2)
+    public static string FastConcat(this string str1, string value)
     {
         lock (_stringBuilder)
         {
             _stringBuilder.Length = 0;
 
-            _stringBuilder.Append(str1);
-            _stringBuilder.Append(str2);
+            _stringBuilder.Append(str1).Append(value);
+
+            return _stringBuilder.ToString();
+        }
+    }
+    public static string FastConcat(this string str1, int value)
+    {
+        lock (_stringBuilder)
+        {
+            _stringBuilder.Length = 0;
+
+            _stringBuilder.Append(str1).Append(value);
+
+            return _stringBuilder.ToString();
+        }
+    }
+    
+    public static string FastConcat(this string str1, uint value)
+    {
+        lock (_stringBuilder)
+        {
+            _stringBuilder.Length = 0;
+
+            _stringBuilder.Append(str1).Append(value);
+
+            return _stringBuilder.ToString();
+        }
+    }
+    
+    public static string FastConcat(this string str1, long value)
+    {
+        lock (_stringBuilder)
+        {
+            _stringBuilder.Length = 0;
+
+            _stringBuilder.Append(str1).Append(value);
+
+            return _stringBuilder.ToString();
+        }
+    }    
+    
+    public static string FastConcat(this string str1, float value)
+    {
+        lock (_stringBuilder)
+        {
+            _stringBuilder.Length = 0;
+
+            _stringBuilder.Append(str1).Append(value);
+
+            return _stringBuilder.ToString();
+        }
+    }
+    
+    public static string FastConcat(this string str1, double value)
+    {
+        lock (_stringBuilder)
+        {
+            _stringBuilder.Length = 0;
+
+            _stringBuilder.Append(str1).Append(value);
 
             return _stringBuilder.ToString();
         }
