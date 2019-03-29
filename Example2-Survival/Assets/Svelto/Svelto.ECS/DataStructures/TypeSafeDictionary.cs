@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.DataStructures.Experimental;

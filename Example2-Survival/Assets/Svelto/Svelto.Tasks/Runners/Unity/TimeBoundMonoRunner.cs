@@ -1,8 +1,6 @@
-#if later
 #if UNITY_5 || UNITY_5_3_OR_NEWER
-using System.Collections.Generic;
+using System.Collections;
 using System.Diagnostics;
-using Svelto.Tasks.Internal;
 using Svelto.Tasks.Unity.Internal;
 
 namespace Svelto.Tasks.Unity
@@ -12,13 +10,13 @@ namespace Svelto.Tasks.Unity
     //Several tasks must run on this runner to make sense. TaskCollections are considered
     //single tasks, so they don't count (may change in future)
     /// </summary>
-    public class TimeBoundMonoRunner : TimeBoundMonoRunner<LeanSveltoTask<IEnumerator<TaskContract>>>
+    public class TimeBoundMonoRunner : TimeBoundMonoRunner<IEnumerator>
     {
         public TimeBoundMonoRunner(string name, float maxMilliseconds) : base(name, maxMilliseconds)
         {
         }
     }
-    public class TimeBoundMonoRunner<T> : BaseRunner<T> where T: ISveltoTask
+    public class TimeBoundMonoRunner<T> : MonoRunner<T> where T:IEnumerator
     {
         public float maxMilliseconds
         {
@@ -38,21 +36,26 @@ namespace Svelto.Tasks.Unity
                 runnerName = name
             };
 
-            StartProcess(new UnityCoroutineRunner<T>.Process<TimeBoundRunningInfo>
-                (_newTaskRoutines, _coroutines, _flushingOperation, _info));
+            enumerator = new UnityCoroutineRunner<T>.Process<TimeBoundRunningInfo>
+                (_newTaskRoutines, _coroutines, _flushingOperation, _info);
+            UnityCoroutineRunner<T>.StartUpdateCoroutine(enumerator);
         }
         
-        struct TimeBoundRunningInfo : IRunningTasksInfo
+        public void Step()
+        {
+            enumerator.MoveNext();
+        }
+
+        class TimeBoundRunningInfo : IRunningTasksInfo<T>
         {
             public long maxMilliseconds;
 
-            public TimeBoundRunningInfo(float maxMilliseconds):this()
+            public TimeBoundRunningInfo(float maxMilliseconds)
             {
                 this.maxMilliseconds = (long) (maxMilliseconds * 10000);
-                _stopWatch = new Stopwatch();
             }
             
-            public bool CanMoveNext(ref int nextIndex, TaskContract currentResult)
+            public bool CanMoveNext(ref int nextIndex, TaskCollection<T>.CollectionTask currentResult)
             {
                 if (_stopWatch.ElapsedTicks > maxMilliseconds)
                     return false;
@@ -73,12 +76,12 @@ namespace Svelto.Tasks.Unity
 
             public string runnerName { get; set; }
 
-            readonly Stopwatch _stopWatch;
+            readonly Stopwatch _stopWatch = new Stopwatch();
 
         }
 
-        TimeBoundRunningInfo _info;
+        readonly TimeBoundRunningInfo _info;
+        UnityCoroutineRunner<T>.Process<TimeBoundMonoRunner<T>.TimeBoundRunningInfo> enumerator;
     }
 }
-#endif
 #endif

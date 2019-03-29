@@ -1,4 +1,4 @@
-using Svelto.ECS.Components.Unity;
+using Svelto.ECS.Components;
 
 namespace Svelto.ECS.EntityStructs
 {

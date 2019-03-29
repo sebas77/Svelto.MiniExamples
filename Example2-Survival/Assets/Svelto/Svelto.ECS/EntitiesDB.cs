@@ -95,6 +95,17 @@ namespace Svelto.ECS.Internal
             return QueryEntities<T>((uint) groupStruct, out count);
         }
 
+        public EntityCollection<T> QueryEntities<T>(uint @group) where T : IEntityStruct
+        {
+            return new EntityCollection<T>(QueryEntities<T>(group, out var count), count);
+        }
+
+        public EntityCollection<T> QueryEntities<T>(ExclusiveGroup.ExclusiveGroupStruct groupStruct)
+            where T : IEntityStruct
+        {
+            return new EntityCollection<T>(QueryEntities<T>((uint)groupStruct, out var count), count);
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public (T1[], T2[]) QueryEntities<T1, T2>(uint @group, out uint count) where T1 : IEntityStruct where T2 : IEntityStruct
         {

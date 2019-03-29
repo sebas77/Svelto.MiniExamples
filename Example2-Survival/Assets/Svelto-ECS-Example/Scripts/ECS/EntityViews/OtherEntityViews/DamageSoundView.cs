@@ -1,3 +1,5 @@
+using Svelto.ECS.Hybrid;
+
 namespace Svelto.ECS.Example.Survive.Characters.Sounds
 {
     public struct DamageSoundEntityView: IEntityViewStruct

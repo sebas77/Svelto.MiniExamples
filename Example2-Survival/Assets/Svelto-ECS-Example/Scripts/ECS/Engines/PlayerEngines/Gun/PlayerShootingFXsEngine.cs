@@ -1,6 +1,4 @@
-using UnityEngine;
 using System.Collections;
-using System.Diagnostics;
 using Svelto.Tasks;
 using Svelto.Tasks.Enumerators;
 
@@ -24,17 +22,17 @@ namespace Svelto.ECS.Example.Survive.Characters.Player.Gun
         /// querying is always cleaner.
         /// </summary>
         /// <param name="playerGunEntityView"></param>
-        protected override void Add(ref GunEntityViewStruct playerGunEntityView)
+        protected override void Add(in GunEntityViewStruct playerGunEntityView, ExclusiveGroup.ExclusiveGroupStruct? previousGroup)
         {
             playerGunEntityView.gunHitTargetComponent.targetHit.NotifyOnValueSet(PlayerHasShot);
             
             _waitForSeconds = new WaitForSecondsEnumerator(playerGunEntityView.gunComponent.timeBetweenBullets * playerGunEntityView.gunFXComponent.effectsDisplayTime);
         }
 
-        protected override void Remove(ref GunEntityViewStruct playerGunEntityView)
+        protected override void Remove(in GunEntityViewStruct entityView, bool itsaSwap)
         {}
-
-        void PlayerHasShot(int ID, bool targetHasBeenHit)
+        
+        void PlayerHasShot(EGID egid, bool targetHasBeenHit)
         {
             uint index;
             var structs = entitiesDB.QueryEntitiesAndIndex<GunEntityViewStruct>(new EGID(ID, ECSGroups.Player), out index);

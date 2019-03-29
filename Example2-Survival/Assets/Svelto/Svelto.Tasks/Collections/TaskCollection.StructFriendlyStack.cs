@@ -18,7 +18,7 @@ namespace Svelto.Tasks
                 _nextFreeStackIndex = 0;
             }
 
-            public void Push(ref T value)
+            public void Push(T value)
             {
                 // Don't reallocate before we actually want to push to it
                 if (_nextFreeStackIndex == _stack.Length)

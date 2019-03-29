@@ -21,18 +21,21 @@ namespace Svelto.ECS.Example.Survive.Camera
             _taskRoutine.Start();            
         }
         
-        protected override void Add(ref CameraEntityView entityView)
-        {}
+        protected override void Add(in CameraEntityView entityView, ExclusiveGroup.ExclusiveGroupStruct? previousGroup)
+        {
+        }
 
-        protected override void Remove(ref CameraEntityView entityView)
+        protected override void Remove(in CameraEntityView entityView, bool itsaSwap)
         {
             _taskRoutine.Stop();
         }
 
-        protected override void Add(ref CameraTargetEntityView entityView)
-        {}
+        protected override void Add(in CameraTargetEntityView entityView,
+            ExclusiveGroup.ExclusiveGroupStruct? previousGroup)
+        {
+        }
 
-        protected override void Remove(ref CameraTargetEntityView entityView)
+        protected override void Remove(in CameraTargetEntityView entityView, bool itsaSwap)
         {
             _taskRoutine.Stop();
         }

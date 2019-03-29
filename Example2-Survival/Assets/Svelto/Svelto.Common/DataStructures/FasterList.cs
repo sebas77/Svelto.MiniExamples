@@ -503,11 +503,11 @@ namespace Svelto.DataStructures
     {
         public static readonly FasterList<T> DefaultList = new FasterList<T>();
 
-        const int MIN_SIZE = 0;
+        const uint MIN_SIZE = 0;
 
         public int Count
         {
-            get { return _count; }
+            get { return (int) _count; }
         }
 
         public bool IsReadOnly
@@ -522,7 +522,14 @@ namespace Svelto.DataStructures
             _buffer = new T[MIN_SIZE];
         }
 
-        public FasterList(int initialSize = MIN_SIZE)
+        public FasterList(uint initialSize = MIN_SIZE)
+        {
+            _count = 0;
+
+            _buffer = new T[initialSize];
+        }
+
+        public FasterList(int initialSize)
         {
             _count = 0;
 
@@ -535,7 +542,7 @@ namespace Svelto.DataStructures
 
             Array.Copy(collection, _buffer, collection.Length);
 
-            _count = collection.Length;
+            _count = (uint) collection.Length;
         }
 
         public FasterList(ICollection<T> collection)
@@ -544,7 +551,7 @@ namespace Svelto.DataStructures
 
             collection.CopyTo(_buffer, 0);
 
-            _count = collection.Count;
+            _count = (uint) collection.Count;
         }
 
         public FasterList(ICollection<T> collection, int extraSize)
@@ -553,7 +560,7 @@ namespace Svelto.DataStructures
 
             collection.CopyTo(_buffer, 0);
 
-            _count = collection.Count;
+            _count = (uint) collection.Count;
         }
 
         public FasterList(FasterList<T> listCopy)
@@ -562,13 +569,39 @@ namespace Svelto.DataStructures
 
             listCopy.CopyTo(_buffer, 0);
 
-            _count = listCopy.Count;
+            _count = (uint) listCopy.Count;
         }
 
-        public T this[int i]
+        T IList<T>.this[int index]
         {
-            get { DBC.Common.Check.Require(i < _count, "out of bound index"); return _buffer[i]; }
-            set { DBC.Common.Check.Require(i < _count, "out of bound index"); _buffer[i] = value; }
+            get
+            {
+                DBC.Common.Check.Require(index < _count && _count > 0, "out of bound index");
+                return _buffer[index];
+            }
+            set 
+            {
+                DBC.Common.Check.Require(index < _count && _count > 0, "out of bound index");
+                _buffer[index] = value; 
+            }
+        }
+        
+        public ref T this[int index]
+        {
+            get
+            {
+                DBC.Common.Check.Require(index < _count && _count > 0, "out of bound index");
+                return ref _buffer[index];
+            }
+        }
+        
+        public ref T this[uint index]
+        {
+            get
+            {
+                DBC.Common.Check.Require(index < _count, "out of bound index");
+                return ref _buffer[index];
+            }
         }
 
         public void Add(T item)
@@ -594,23 +627,23 @@ namespace Svelto.DataStructures
         /// <typeparam name="U"></typeparam>
         /// <param name="initialSize"></param>
         /// <returns></returns>
-        public static FasterList<T> PreFill<U>(int initialSize) where U: class, T, new()
+        public static FasterList<T> PreFill<U>(uint initialSize) where U: class, T, new()
         {
             var list = new FasterList<T>(initialSize);
 
-            var listCount = list._count;
+            uint listCount = list._count;
             for (int i = 0; i < initialSize; i++)
-                list[listCount + i] = new U();
+                list[(uint) (listCount + i)] = new U();
 
             return list;
         }
 
-        public void AddRange(IEnumerable<T> items, int count)
+        public void AddRange(IEnumerable<T> items, uint count)
         {
             AddRange(items.GetEnumerator(), count);
         }
 
-        public void AddRange(IEnumerator<T> items, int count)
+        public void AddRange(IEnumerator<T> items, uint count)
         {
             if (_count + count > _buffer.Length)
                 AllocateMore(_count + count);
@@ -621,15 +654,15 @@ namespace Svelto.DataStructures
 
         public void AddRange(ICollection<T> items)
         {
-            AddRange(items.GetEnumerator(), items.Count);
+            AddRange(items.GetEnumerator(), (uint)items.Count);
         }
 
         public void AddRange(FasterList<T> items)
         {
-            AddRange(items.ToArrayFast(), items.Count);
+            AddRange(items.ToArrayFast(), (uint)items.Count);
         }
 
-        public void AddRange(T[] items, int count)
+        public void AddRange(T[] items, uint count)
         {
             if (count == 0) return;
 
@@ -642,7 +675,7 @@ namespace Svelto.DataStructures
 
         public void AddRange(T[] items)
         {
-            AddRange(items, items.Length);
+            AddRange(items, (uint)items.Length);
         }
 
         public FasterReadOnlyList<T> AsReadOnly()
@@ -736,24 +769,24 @@ namespace Svelto.DataStructures
             _buffer[_count] = default(T);
         }
 
-        public void Resize(int newSize)
+        public void Resize(uint newSize)
         {
             if (newSize == _buffer.Length) return;
 
             if (newSize < MIN_SIZE)
                 newSize = MIN_SIZE;
 
-            Array.Resize(ref _buffer, newSize);
+            Array.Resize(ref _buffer, (int) newSize);
         }
 
         public void Sort(IComparer<T> comparer)
         {
-            Array.Sort(_buffer, 0, _count, comparer);
+            Array.Sort(_buffer, 0, (int)_count, comparer);
         }
 
         public void Sort()
         {
-            Array.Sort(_buffer, 0, _count, Comparer<T>.Default);
+            Array.Sort(_buffer, 0, (int)_count, Comparer<T>.Default);
         }
 
         public T[] ToArray()
@@ -820,7 +853,7 @@ namespace Svelto.DataStructures
             _buffer = newList;
         }
 
-        void AllocateMore(int newSize)
+        void AllocateMore(uint newSize)
         {
             DBC.Common.Check.Require(newSize > _buffer.Length);
             var newLength = Math.Max(_buffer.Length, 1);
@@ -839,7 +872,7 @@ namespace Svelto.DataStructures
                 Resize(_count);
         }
 
-        public void TrimCount(int newCount)
+        public void TrimCount(uint newCount)
         {
             DBC.Common.Check.Require(_count >= newCount, "the new length must be less than the current one");
 
@@ -875,9 +908,9 @@ namespace Svelto.DataStructures
             Array.Copy(_buffer, groupEnd, _buffer, groupStart, groupEnd - groupStart);
         }
 
-        public void GrowAndSetCount(int increment)
+        public void GrowAndSetCount(uint increment)
         {
-            int count = _count + increment;
+            uint count = _count + increment;
             
             if (_buffer.Length < count)
                 AllocateMore(count);
@@ -886,17 +919,17 @@ namespace Svelto.DataStructures
         }
 
         T[] _buffer;
-        int _count;
+        uint _count;
         static readonly bool _isValueType = typeof(T).IsValueTypeEx();
 
         public static class NoVirt
         {
-            public static int Count(FasterList<T> fasterList)
+            public static uint Count(FasterList<T> fasterList)
             {
                 return fasterList._count;
             }
 
-            public static T[] ToArrayFast(FasterList<T> fasterList, out int count)
+            public static T[] ToArrayFast(FasterList<T> fasterList, out uint count)
             {
                 count = fasterList._count;
 
@@ -908,7 +941,7 @@ namespace Svelto.DataStructures
                 return fasterList._buffer;
             }
 
-            public static void FastSet(FasterList<T> fasterList, int index, T item)
+            public static void FastSet(FasterList<T> fasterList, uint index, T item)
             {
                 fasterList._buffer[index] = item;
                 fasterList._count = index + 1;

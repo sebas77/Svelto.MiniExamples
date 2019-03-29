@@ -58,11 +58,10 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
         {
             while (true)
             {
-                int numberOfEnemies;
                 var enemyEntityViewsStructs =
-                    entitiesDB.QueryEntities<EnemyEntityViewStruct>(ECSGroups.DeadEnemiesGroups, out numberOfEnemies);
+                    entitiesDB.QueryEntities<EnemyEntityViewStruct>(ECSGroups.DeadEnemiesGroups, out var numberOfEnemies);
                 var enemyEntitySinkStructs =
-                    entitiesDB.QueryEntities<EnemySinkStruct>(ECSGroups.DeadEnemiesGroups, out numberOfEnemies);
+                    entitiesDB.QueryEntities<EnemySinkStruct>(ECSGroups.DeadEnemiesGroups, out _);
             
                 for (int i = 0; i < numberOfEnemies; i++)
                 {

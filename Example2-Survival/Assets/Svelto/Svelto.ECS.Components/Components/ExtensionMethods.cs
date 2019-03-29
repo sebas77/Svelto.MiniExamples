@@ -1,6 +1,6 @@
 using System;
 using System.Runtime.CompilerServices;
-using Svelto.ECS.Components.Unity;
+using Svelto.ECS.Components;
 
 public static class ExtensionMethods
 {

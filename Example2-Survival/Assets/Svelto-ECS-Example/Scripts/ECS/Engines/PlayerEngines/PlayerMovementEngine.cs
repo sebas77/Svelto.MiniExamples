@@ -20,12 +20,12 @@ namespace Svelto.ECS.Example.Survive.Characters.Player
                 _taskRoutine.SetEnumerator(PhysicsTick());
         }
 
-        protected override void Add(ref PlayerEntityViewStruct entityView)
+        protected override void Add(in PlayerEntityViewStruct playerEntityViewStruct, ExclusiveGroup.ExclusiveGroupStruct? previousGroup)
         {
             _taskRoutine.Start();
         }
 
-        protected override void Remove(ref PlayerEntityViewStruct entityView)
+        protected override void Remove(in PlayerEntityViewStruct playerEntityViewStruct, bool itsaSwap)
         {
             _taskRoutine.Stop();
         }

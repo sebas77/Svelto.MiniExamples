@@ -1,9 +1,8 @@
 using System.Collections;
-using System.Collections.Generic;
 
 namespace Svelto.Tasks.Parallelism.Internal
 {
-    public class ParallelRunEnumerator<T> : IEnumerator<TaskContract> where T:struct, ISveltoJob
+    class ParallelRunEnumerator<T> : IEnumerator where T:struct, ISveltoJob
     {
         public ParallelRunEnumerator(ref T job, int startIndex, int numberOfIterations)
         {
@@ -30,12 +29,7 @@ namespace Svelto.Tasks.Parallelism.Internal
         public void Reset()
         {}
 
-        public TaskContract Current
-        {
-            get { return Yield.It; }
-        }
-
-        object IEnumerator.Current
+        public object Current
         {
             get { return null; }
         }
@@ -46,9 +40,5 @@ namespace Svelto.Tasks.Parallelism.Internal
         
         int _index;
         int _endIndex;
-        
-        public void Dispose()
-        {
-        }
     }
 }

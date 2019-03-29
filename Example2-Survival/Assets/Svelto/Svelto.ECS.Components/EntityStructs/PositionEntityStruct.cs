@@ -1,4 +1,3 @@
-#if UNITY_MATH
 using Unity.Mathematics;
 
 namespace Svelto.ECS.EntityStructs

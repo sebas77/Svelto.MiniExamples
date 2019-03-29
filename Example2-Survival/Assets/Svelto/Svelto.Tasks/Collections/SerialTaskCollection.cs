@@ -1,8 +1,9 @@
-using System.Collections.Generic;
+using System;
+using System.Collections;
 
 namespace Svelto.Tasks
 {
-    public class SerialTaskCollection : SerialTaskCollection<IEnumerator<TaskContract>>
+    public class SerialTaskCollection : SerialTaskCollection<IEnumerator>
     {
         public SerialTaskCollection() : base()
         {}
@@ -17,7 +18,7 @@ namespace Svelto.Tasks
         {}
     }
 
-    public class SerialTaskCollection<T> : TaskCollection<T> where T : IEnumerator<TaskContract>
+    public class SerialTaskCollection<T> : TaskCollection<T> where T : IEnumerator
     {
         const int _INITIAL_STACK_COUNT = 1;
 

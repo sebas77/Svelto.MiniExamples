@@ -8,9 +8,15 @@
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
-    "overrideReferences": true,
+    "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [],
-    "versionDefines": []
+    "versionDefines": [
+        {
+            "name": "com.unity.mathematics",
+            "expression": "0.0.9",
+            "define": "UNITY_MATHEMATICS"
+        }
+    ]
 }

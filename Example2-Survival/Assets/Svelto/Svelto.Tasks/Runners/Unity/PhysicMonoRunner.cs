@@ -1,68 +1,28 @@
 #if UNITY_5 || UNITY_5_3_OR_NEWER
 using System.Collections;
-using System.Collections.Generic;
-using Svelto.Common;
-using Svelto.Tasks.Internal;
 using Svelto.Tasks.Unity.Internal;
 
-namespace Svelto.Tasks
+namespace Svelto.Tasks.Unity
 {
-    namespace Lean.Unity
+    /// <summary>
+    /// while you can istantiate a MonoRunner, you should use the standard one whenever possible. Istantiating multiple
+    /// runners will defeat the initial purpose to get away from the Unity monobehaviours internal updates.
+    /// MonoRunners are disposable though, so at least be sure to dispose of them once done
+    /// </summary>
+    public class PhysicMonoRunner : PhysicMonoRunner<IEnumerator> 
     {
-        public class PhysicMonoRunner:PhysicMonoRunner<IEnumerator<TaskContract>>
+        public PhysicMonoRunner(string name) : base(name)
         {
-            public PhysicMonoRunner(string name) : base(name)
-            {
-            }
-        }
-        
-        public class PhysicMonoRunner<T> : Svelto.Tasks.Unity.PhysicMonoRunner<SveltoTask<T>> where T : IEnumerator<TaskContract>
-        {
-            public PhysicMonoRunner(string name) : base(name)
-            {
-            }
         }
     }
-    
-    namespace ExtraLean.Unity
+    public class PhysicMonoRunner<T> : MonoRunner<T> where T:IEnumerator
     {
-        public class PhysicMonoRunner:PhysicMonoRunner<IEnumerator>
+        public PhysicMonoRunner(string name):base(name)
         {
-            public PhysicMonoRunner(string name) : base(name)
-            {
-            }
-        }
-        
-        public class PhysicMonoRunner<T> : Svelto.Tasks.Unity.PhysicMonoRunner<SveltoTask<T>> where T : IEnumerator
-        {
-            public PhysicMonoRunner(string name) : base(name)
-            {
-            }
-        }
-    }
+            var info = new UnityCoroutineRunner<T>.RunningTasksInfo() { runnerName = name };
 
-    namespace Unity
-    {
-        public class PhysicMonoRunner<T> : PhysicMonoRunner<T, StandardRunningTasksInfo> where T : ISveltoTask
-        {
-            public PhysicMonoRunner(string name) : base(name, new StandardRunningTasksInfo())
-            {
-            }
-        }
-
-        public class PhysicMonoRunner<T, TFlowModifier> : BaseRunner<T> where T : ISveltoTask
-                                                                        where TFlowModifier : IRunningTasksInfo
-        {
-            public PhysicMonoRunner(string name, TFlowModifier modifier) : base(name)
-            {
-                modifier.runnerName = name;
-
-                _processEnumerator =
-                    new CoroutineRunner<T>.Process<TFlowModifier, PlatformProfiler>
-                        (_newTaskRoutines, _coroutines, _flushingOperation, modifier);
-
-                UnityCoroutineRunner.StartPhysicCoroutine(_processEnumerator);
-            }
+            UnityCoroutineRunner<T>.StartPhysicCoroutine(new UnityCoroutineRunner<T>.Process<UnityCoroutineRunner<T>.RunningTasksInfo>
+                (_newTaskRoutines, _coroutines, _flushingOperation, info));
         }
     }
 }

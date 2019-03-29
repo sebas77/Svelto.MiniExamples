@@ -1,7 +1,5 @@
-#if later
 #if UNITY_5 || UNITY_5_3_OR_NEWER
-using System.Collections.Generic;
-using Svelto.Tasks.Internal;
+using System.Collections;
 using Svelto.Tasks.Unity.Internal;
 
 namespace Svelto.Tasks.Unity
@@ -11,25 +9,33 @@ namespace Svelto.Tasks.Unity
     /// Several tasks must run on this runner to make sense. TaskCollections are considered
     /// single tasks, so they don't count (may change in future)
     /// </summary>
-    public class StaggeredMonoRunner : StaggeredMonoRunner<LeanSveltoTask<IEnumerator<TaskContract>>>
+    public class StaggeredMonoRunner : StaggeredMonoRunner<IEnumerator>
     {
         public StaggeredMonoRunner(string name, int maxTasksPerIteration) : base(name, maxTasksPerIteration)
         {
         }
     }
-    public class StaggeredMonoRunner<T> : BaseRunner<T> where T: ISveltoTask
+    public class StaggeredMonoRunner<T> : MonoRunner<T> where T:IEnumerator
     {
+        UnityCoroutineRunner<T>.Process<StaggeredMonoRunner<T>.StaggeredRunningInfo> enumerator;
+
         public StaggeredMonoRunner(string name, int maxTasksPerIteration):base(name)
         {
             _flushingOperation = new UnityCoroutineRunner<T>.FlushingOperation();
             
             var info = new StaggeredRunningInfo(maxTasksPerIteration) { runnerName = name };
 
-            StartProcess(new UnityCoroutineRunner<T>.Process<StaggeredRunningInfo>(_newTaskRoutines, 
-                                _coroutines, _flushingOperation, info));
+            enumerator = new UnityCoroutineRunner<T>.Process<StaggeredRunningInfo>
+                (_newTaskRoutines, _coroutines, _flushingOperation, info);
+            UnityCoroutineRunner<T>.StartUpdateCoroutine(enumerator);
         }
         
-        struct StaggeredRunningInfo : IRunningTasksInfo
+        public void Step()
+        {
+            enumerator.MoveNext();
+        }
+
+        struct StaggeredRunningInfo : IRunningTasksInfo<T>
         {
             public StaggeredRunningInfo(int maxTasksPerIteration)
             {
@@ -38,7 +44,7 @@ namespace Svelto.Tasks.Unity
                 runnerName = "StaggeredRunningInfo";
             }
             
-            public bool CanMoveNext(ref int nextIndex, TaskContract currentResult)
+            public bool CanMoveNext(ref int nextIndex, TaskCollection<T>.CollectionTask currentResult)
             {
                 if (_iterations >= _maxTasksPerIteration - 1)
                 {
@@ -69,5 +75,4 @@ namespace Svelto.Tasks.Unity
         }
     }
 }
-#endif
 #endif

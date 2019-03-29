@@ -17,13 +17,13 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
             _taskRoutine = TaskRunner.Instance.AllocateNewTaskRoutine(StandardSchedulers.physicScheduler);
                 _taskRoutine.SetEnumerator(CheckIfHittingEnemyTarget());
         }
-
-        protected override void Add(ref EnemyTargetEntityViewStruct entity)
+        
+        protected override void Add(in EnemyTargetEntityViewStruct entityView, ExclusiveGroup.ExclusiveGroupStruct? previousGroup)
         {
             _taskRoutine.Start();
         }
 
-        protected override void Remove(ref EnemyTargetEntityViewStruct entity)
+        protected override void Remove(in EnemyTargetEntityViewStruct entityView, bool itsaSwap)
         {
             _taskRoutine.Stop();
         }

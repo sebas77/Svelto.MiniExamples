@@ -3,7 +3,7 @@ using UnityEngine;
 namespace Svelto.ECS.Example.Survive.Characters.Enemies
 {
     //Implementors act as bridge between Svelto.ECS Engines and third party platforms.
-    //This featureaw is of fundamental importance. If you need unity to communicate with the engines
+    //This feature is of fundamental importance. If you need unity to communicate with the engines
     //you don't need to use awkward workarounds, simply create an implementor as Monobehaviour.
     //In this way you could use, inside the implementor, Unity callbacks, like OnTriggerEnter/OnTriggerExit
     //and change data according the Unity callback. Logic should not be used inside these callback,

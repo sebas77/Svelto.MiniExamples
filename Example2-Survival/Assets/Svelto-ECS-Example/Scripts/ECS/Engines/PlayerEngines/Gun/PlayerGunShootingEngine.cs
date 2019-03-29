@@ -22,18 +22,18 @@ namespace Svelto.ECS.Example.Survive.Characters.Player.Gun
             _taskRoutine.SetEnumerator(Tick());
         }
 
-        protected override void Add(ref GunEntityViewStruct entityView)
+        protected override void Add(in GunEntityViewStruct entityView, ExclusiveGroup.ExclusiveGroupStruct? previousGroup)
         {}
 
-        protected override void Remove(ref GunEntityViewStruct entityView)
+        protected override void Remove(in GunEntityViewStruct entityView, bool itsaSwap)
         {
             _taskRoutine.Stop();
         }
 
-        protected override void Add(ref PlayerEntityViewStruct entityView)
+        protected override void Add(in PlayerEntityViewStruct entityView, ExclusiveGroup.ExclusiveGroupStruct? previousGroup)
         {}
 
-        protected override void Remove(ref PlayerEntityViewStruct entityView)
+        protected override void Remove(in PlayerEntityViewStruct entityView, bool itsaSwap)
         {
             _taskRoutine.Stop();
         }

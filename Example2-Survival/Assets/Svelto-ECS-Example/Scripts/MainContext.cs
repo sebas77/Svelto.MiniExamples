@@ -288,9 +288,7 @@ namespace Svelto.ECS.Example.Survive
             }
         }
 
-        public void OnContextInitialized()
-        {
-        }
+        public void OnContextInitialized<T>(T contextHolder) {}
 
         public void OnContextDestroyed()
         {

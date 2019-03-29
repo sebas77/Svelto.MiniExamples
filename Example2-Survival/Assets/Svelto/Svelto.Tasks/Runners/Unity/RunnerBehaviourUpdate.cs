@@ -1,44 +1,26 @@
 #if UNITY_5 || UNITY_5_3_OR_NEWER
 using System.Collections;
 using Svelto.DataStructures;
-using Svelto.Tasks.Internal;
 using UnityEngine;
 
 namespace Svelto.Tasks.Unity.Internal
 {
     class RunnerBehaviourUpdate : MonoBehaviour
     {
-        void Awake()
-        {
-            StartCoroutine(CoroutineProcess());
-        }
-
-        IEnumerator CoroutineProcess()
-        {
-            while (true)
-            {
-                ExecuteRoutines(_coroutineProcesses);
-                
-                yield return _waitForEndOfFrame;
-                
-                ExecuteRoutines(_endOfFrameRoutines);
-            }
-        }
-        
         public void Update()
         {
-            ExecuteRoutines(_earlyProcesses);
-            ExecuteRoutines(_updateProcesses);
+            ExecuteRoutines(_earlyMainRoutines);
+            ExecuteRoutines(_mainRoutines);
         }
 
-        static void ExecuteRoutines(FasterListThreadSafe<IProcessSveltoTasks> list)
+        static void ExecuteRoutines(FasterList<IEnumerator> list)
         {
-            int count;
-            var routines = list.ToArrayFast(out count);
+            var count    = list.Count;
+            var routines = list.ToArrayFast();
 
             for (int i = 0; i < count; i++)
             {
-                var ret = routines[i].MoveNext(false);
+                var ret = routines[i].MoveNext();
                 if (ret == false)
                 {
                     list.UnorderedRemoveAt(i);
@@ -47,33 +29,43 @@ namespace Svelto.Tasks.Unity.Internal
                 }
             }
         }
-        
-        public void StartSveltoCoroutine(IProcessSveltoTasks process)
-        {
-            _coroutineProcesses.Add(process);
-        }
 
-        public void StartUpdateCoroutine(IProcessSveltoTasks enumerator)
+        public void StartUpdateCoroutine(IEnumerator enumerator)
         {
-            _updateProcesses.Add(enumerator);
+            _mainRoutines.Add(enumerator);
         }
         
-        public void StartEarlyUpdateCoroutine(IProcessSveltoTasks enumerator)
+        public void StartEarlyUpdateCoroutine(IEnumerator enumerator)
         {
-            _earlyProcesses.Add(enumerator);
+            _earlyMainRoutines.Add(enumerator);
         }
         
-        public void StartEndOfFrameCoroutine(IProcessSveltoTasks enumerator)
+        void Awake()
+        {
+            StartCoroutine(WaitForEndOfFrameLoop());
+        }
+        
+        public void StartEndOfFrameCoroutine(IEnumerator enumerator)
         {
             _endOfFrameRoutines.Add(enumerator);
         }
 
+        IEnumerator WaitForEndOfFrameLoop()
+        {
+            while (true)
+            {
+                yield return _waitForEndOfFrame;
+
+                ExecuteRoutines(_earlyMainRoutines);
+            }
+        }
+        
         void LateUpdate()
         {
             ExecuteRoutines(_lateRoutines);
         }
 
-        public void StartLateCoroutine(IProcessSveltoTasks enumerator)
+        public void StartLateCoroutine(IEnumerator enumerator)
         {
             _lateRoutines.Add(enumerator);
         }
@@ -83,19 +75,20 @@ namespace Svelto.Tasks.Unity.Internal
             ExecuteRoutines(_physicRoutines);
         }
 
-        public void StartPhysicCoroutine(IProcessSveltoTasks enumerator)
+        public void StartPhysicCoroutine(IEnumerator enumerator)
         {
             _physicRoutines.Add(enumerator);
         }
 
-        readonly WaitForEndOfFrame _waitForEndOfFrame = new WaitForEndOfFrame();
+        IEnumerator _mainRoutine;
 
-        readonly FasterListThreadSafe<IProcessSveltoTasks> _earlyProcesses     = new FasterListThreadSafe<IProcessSveltoTasks>();
-        readonly FasterListThreadSafe<IProcessSveltoTasks> _endOfFrameRoutines = new FasterListThreadSafe<IProcessSveltoTasks>();
-        readonly FasterListThreadSafe<IProcessSveltoTasks> _updateProcesses    = new FasterListThreadSafe<IProcessSveltoTasks>();
-        readonly FasterListThreadSafe<IProcessSveltoTasks> _lateRoutines       = new FasterListThreadSafe<IProcessSveltoTasks>();
-        readonly FasterListThreadSafe<IProcessSveltoTasks> _physicRoutines     = new FasterListThreadSafe<IProcessSveltoTasks>();
-        readonly FasterListThreadSafe<IProcessSveltoTasks> _coroutineProcesses = new FasterListThreadSafe<IProcessSveltoTasks>();
+        readonly WaitForEndOfFrame _waitForEndOfFrame = new WaitForEndOfFrame();
+        
+        FasterList<IEnumerator> _earlyMainRoutines  = new FasterList<IEnumerator>();
+        FasterList<IEnumerator> _endOfFrameRoutines = new FasterList<IEnumerator>();
+        FasterList<IEnumerator> _mainRoutines       = new FasterList<IEnumerator>();
+        FasterList<IEnumerator> _lateRoutines = new FasterList<IEnumerator>();
+        FasterList<IEnumerator> _physicRoutines = new FasterList<IEnumerator>();
     }
 }
 #endif

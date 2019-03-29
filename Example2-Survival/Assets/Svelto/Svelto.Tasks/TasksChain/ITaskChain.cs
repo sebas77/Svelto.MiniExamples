@@ -1,8 +1,8 @@
-using System.Collections.Generic;
+using System.Collections;
 
 namespace Svelto.Tasks.Chain
 {
-    public interface ITaskChain<Token> : IEnumerator<TaskContract>
+    public interface ITaskChain<Token> : IEnumerator
     {
         Token token { set; }
     }

@@ -1,4 +1,4 @@
-namespace Svelto.ECS.Components.Unity
+namespace Svelto.ECS.Components
 {
     public struct ECSVector2
     {

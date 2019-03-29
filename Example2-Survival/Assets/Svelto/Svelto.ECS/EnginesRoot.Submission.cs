@@ -23,7 +23,7 @@ namespace Svelto.ECS
                     {
                         _transientEntitiesOperations.FastClear();
                         var entitySubmitOperations = _entitiesOperations.GetValuesArray(out var count);
-                        _transientEntitiesOperations.AddRange(entitySubmitOperations, (int)count);
+                        _transientEntitiesOperations.AddRange(entitySubmitOperations, count);
                         _entitiesOperations.FastClear();
 
                         var entitiesOperations = _transientEntitiesOperations.ToArrayFast();

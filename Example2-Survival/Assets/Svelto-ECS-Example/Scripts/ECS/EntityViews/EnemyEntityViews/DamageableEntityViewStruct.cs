@@ -1,3 +1,5 @@
+using Svelto.ECS.Hybrid;
+
 namespace Svelto.ECS.Example.Survive.Characters.Enemies
 {
     public struct DamageableEntityViewStruct : IEntityViewStruct

@@ -51,10 +51,10 @@ namespace Svelto.ECS.Example.Survive.Characters.Player
             playerEntityViews[index].animationComponent.playAnimation = "Die";
         }
 
-        protected override void Add(ref PlayerEntityViewStruct entityView)
+        protected override void Add(in PlayerEntityViewStruct entityView, ExclusiveGroup.ExclusiveGroupStruct? previousGroup)
         {}
 
-        protected override void Remove(ref PlayerEntityViewStruct entityView)
+        protected override void Remove(in PlayerEntityViewStruct entityView, bool itsaSwap) 
         {
             _taskRoutine.Stop();
         }

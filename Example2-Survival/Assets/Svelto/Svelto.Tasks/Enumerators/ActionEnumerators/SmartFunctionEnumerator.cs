@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using Svelto.Utilities;
@@ -6,25 +5,41 @@ using Svelto.Utilities;
 namespace Svelto.Tasks.Enumerators
 {
     /// <summary>
-    /// Yield a function that control the flow execution through the return value.
+    /// /// Yield a function that control the flow execution through the return value.
     /// </summary>
-    /// <typeparam name="TVal">
+    /// <typeparam name="T">
     /// facilitate the use of counters that can be passed by reference to the callback function
     /// </typeparam>
-    public class SmartFunctionEnumerator<TVal>: IEnumerator<TaskContract>
+    public class SmartFunctionEnumerator<T>:IEnumerator, IEnumerator<T>
     {
-        public SmartFunctionEnumerator(FuncRef<TVal, bool> func, TVal value = default)
+        public SmartFunctionEnumerator(FuncRef<T, bool> func)
         {
             _func  = func;
-            _value = value;
+            _value = default(T);
         }
 
-        public bool MoveNext() { return _func(ref _value); }
-        public void Reset() {}
+        public T field
+        {
+            get { return _value; }
+        }
 
-        public TaskContract Current => Yield.It;
-        object IEnumerator.Current => throw new NotSupportedException();
-        public TVal value => _value;
+        public bool MoveNext()
+        {
+            return _func(ref _value);
+        }
+
+        public void Reset()
+        {}
+
+        T IEnumerator<T>.Current
+        {
+            get { return _value; }
+        }
+
+        public object Current
+        {
+            get { return null; }
+        }
         
         public override string ToString()
         {
@@ -38,10 +53,13 @@ namespace Svelto.Tasks.Enumerators
             return _name;
         }
 
-        public void Dispose() {}
+        public void Dispose()
+        {}
 
-        readonly FuncRef<TVal, bool> _func;
-        TVal                         _value;
-        string                       _name;
+        FuncRef<T, bool> _func;
+        T                _value;
+
+        string _name;
+        T _current;
     }
 }

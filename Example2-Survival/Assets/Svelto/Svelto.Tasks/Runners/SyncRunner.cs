@@ -1,51 +1,34 @@
 using System.Collections;
-using System.Collections.Generic;
 
 namespace Svelto.Tasks
 {
+    
     /// <summary>
     /// Be sure you know what you are doing when you are using the Sync runner, it will stall the current thread!
-    /// Depending by the case, it may be better to use the ManualResetEventEx synchronization instead.
+    /// Depending by the case, it may be better to use the ManualResetEventEx synchronization instead. 
     /// </summary>
-    namespace Lean
+    public class SyncRunner : SyncRunner<IEnumerator>
     {
-        public class SyncRunner : SyncRunner<SveltoTask<IEnumerator<TaskContract>>>
+        public SyncRunner(int timeout = 1000) : base(timeout)
         {
-            public SyncRunner(int timeout = 1000) : base(timeout) { }
         }
     }
-
-    namespace ExtraLean
+    public class SyncRunner<T> : IRunner<T>, IEnumerator where T:IEnumerator
     {
-        public class SyncRunner : SyncRunner<SveltoTask<IEnumerator>>
-        {
-            public SyncRunner(int timeout = 1000) : base(timeout) { }
-        }
-    }
-
-    public class SyncRunner<T> : IRunner, IRunner<T> where T: ISveltoTask
-    {
+        public bool isPaused { get; set; }
         public bool isStopping { private set; get; }
         public bool isKilled { get { return false; } }
-
-        public void Pause()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public void Resume()
-        {
-            throw new System.NotImplementedException();
-        }
 
         public SyncRunner(int timeout = 1000)
         {
             _timeout = timeout;
         }
 
-        public void StartCoroutine(ref T task/*, bool immediate*/)
+        public void StartCoroutine(ISveltoTask<T> task)
         {
-            TaskRunnerExtensions.CompleteTask(ref task, _timeout);
+            _syncTask = task;
+            
+            this.Complete(_timeout);
         }
 
         /// <summary>
@@ -55,11 +38,25 @@ namespace Svelto.Tasks
         public void StopAllCoroutines()
         {}
 
+        public void Dispose()
+        {}
+        
+        public bool MoveNext()
+        {
+            return _syncTask.MoveNext();
+        }
+
+        public void Reset()
+        {
+            throw new System.NotImplementedException();
+        }
+
         public int numberOfRunningTasks { get { return 0; } }
         public int numberOfQueuedTasks { get { return 0; } }
-        public int numberOfProcessingTasks { get { return 0; } }
-        public void Dispose() {}
 
-        readonly int _timeout;
+        int _timeout;
+        ISveltoTask<T> _syncTask;
+
+        public object Current { get; }
     }
 }

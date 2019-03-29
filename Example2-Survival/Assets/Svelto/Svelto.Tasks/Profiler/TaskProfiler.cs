@@ -1,8 +1,8 @@
 #if TASKS_PROFILER_ENABLED
-//#define ENABLE_PIX_EVENTS
+ //#define ENABLE_PIX_EVENTS
 
+using System.Collections;
 using System.Diagnostics;
-using Svelto.Common;
 using Svelto.DataStructures;
 
 //This profiler is based on the Entitas Visual Debugging tool 
@@ -13,46 +13,29 @@ namespace Svelto.Tasks.Profiler
     public static class TaskProfiler
     {
         static readonly Stopwatch _stopwatch = new Stopwatch();
-
+        
         static object LOCK_OBJECT = new object();
 
         internal static readonly ThreadSafeDictionary<string, TaskInfo> taskInfos =
             new ThreadSafeDictionary<string, TaskInfo>();
-
-        public static bool MonitorUpdateDuration<T
-#if ENABLE_PLATFORM_PROFILER            
-          , PP
-#endif                        
-        >(T sveltoTask, string runnerName
-#if ENABLE_PLATFORM_PROFILER                                                        
-                                                      , PP profiler
-#endif            
-            )
-            where T : ISveltoTask
-#if ENABLE_PLATFORM_PROFILER            
-            where PP : IPlatformProfiler
-#endif            
+ 
+        public static bool MonitorUpdateDuration<T>(ISveltoTask<T> sveltoTask, string runnerName) where T : IEnumerator
         {
-            var  key = sveltoTask.ToString().FastConcat(runnerName);
-            bool result;
-#if ENABLE_PLATFORM_PROFILER            
-            using (profiler.Sample(sveltoTask.ToString()))
-#endif                
-            {
-                _stopwatch.Start();
-#if ENABLE_PIX_EVENTS
+            var key = sveltoTask.ToString().FastConcat(runnerName);
+#if ENABLE_PIX_EVENTS            
             PixWrapper.PIXBeginEventEx(0x11000000, key);
-#endif
-                result = sveltoTask.MoveNext();
-#if ENABLE_PIX_EVENTS
+#endif    
+            _stopwatch.Start();
+            var result = sveltoTask.MoveNext();
+            _stopwatch.Stop();
+#if ENABLE_PIX_EVENTS            
             PixWrapper.PIXEndEventEx();
-#endif
-                _stopwatch.Stop();
-            }
-
+#endif      
             lock (LOCK_OBJECT)
             {
-                if (taskInfos.TryGetValue(key, out var info) == false)
+                TaskInfo info;
+                
+                if (taskInfos.TryGetValue(key, out info) == false)
                 {
                     info = new TaskInfo(sveltoTask.ToString());
                     info.AddThreadInfo(runnerName.FastConcat(": "));
@@ -61,7 +44,7 @@ namespace Svelto.Tasks.Profiler
                 else
                 {
                     info.AddUpdateDuration(_stopwatch.Elapsed.TotalMilliseconds);
-
+                    
                     taskInfos.Update(key, ref info);
                 }
             }
@@ -71,7 +54,10 @@ namespace Svelto.Tasks.Profiler
             return result;
         }
 
-        public static void ResetDurations() { taskInfos.Clear(); }
+        public static void ResetDurations()
+        {
+            taskInfos.Clear();
+        }
     }
 }
 #endif

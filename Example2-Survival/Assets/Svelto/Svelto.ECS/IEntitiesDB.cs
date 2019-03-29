@@ -1,3 +1,6 @@
+using System.Collections;
+using System.Collections.Generic;
+
 namespace Svelto.ECS
 {
     public interface IEntitiesDB: IObsoleteInterfaceDb
@@ -56,15 +59,10 @@ namespace Svelto.ECS
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         T[] QueryEntities<T>(uint group, out uint count) where T : IEntityStruct;
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="groupStruct"></param>
-        /// <param name="count"></param>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
         T[] QueryEntities<T>(ExclusiveGroup.ExclusiveGroupStruct groupStruct, out uint count) where T : IEntityStruct;
+        
+        EntityCollection<T> QueryEntities<T>(uint group) where T : IEntityStruct;
+        EntityCollection<T> QueryEntities<T>(ExclusiveGroup.ExclusiveGroupStruct groupStruct) where T : IEntityStruct;
 
         (T1[], T2[]) QueryEntities<T1, T2>(uint group, out uint count) where T1 : IEntityStruct where T2 : IEntityStruct;
         (T1[], T2[]) QueryEntities<T1, T2>(ExclusiveGroup.ExclusiveGroupStruct groupStruct, out uint count)
@@ -87,20 +85,6 @@ namespace Svelto.ECS
         EGIDMapper<T> QueryMappedEntities<T>(uint groupID) where T : IEntityStruct;
         EGIDMapper<T> QueryMappedEntities<T>(ExclusiveGroup.ExclusiveGroupStruct groupStructId) where T : IEntityStruct;
         /// <summary>
-        /// Execute an action on entities. Be sure that the action is not capturing variables
-        /// otherwise you will allocate memory which will have a great impact on the execution performance.
-        /// ExecuteOnEntities can be used to iterate safely over entities, several checks are in place
-        /// to be sure that everything will be done correctly.
-        /// Cache friendliness is guaranteed if only Entity Structs are used, but
-        /// </summary>
-        /// <param name="egid"></param>
-        /// <param name="action"></param>
-        /// <typeparam name="T"></typeparam>
-        void ExecuteOnEntities<T>(uint groupID, EntitiesAction<T> action) where T : IEntityStruct;
-        void ExecuteOnEntities<T>(ExclusiveGroup.ExclusiveGroupStruct groupStructId, EntitiesAction<T> action) where T : IEntityStruct;
-        void ExecuteOnEntities<T, W>(uint groupID, ref W value, EntitiesAction<T, W> action) where T : IEntityStruct;
-        void ExecuteOnEntities<T, W>(ExclusiveGroup.ExclusiveGroupStruct groupStructId, ref W value, EntitiesAction<T, W> action) where T : IEntityStruct;
-        /// <summary>
         /// Execute an action on ALL the entities regardless the group. This function doesn't guarantee cache
         /// friendliness even if just EntityStructs are used.
         /// Safety checks are in place
@@ -108,10 +92,11 @@ namespace Svelto.ECS
         /// <param name="damageableGroups"></param>
         /// <param name="action"></param>
         /// <typeparam name="T"></typeparam>
-        void ExecuteOnAllEntities<T>(System.Action<T[], uint, IEntitiesDB> action) where T : IEntityStruct;
-        void ExecuteOnAllEntities<T, W>(ref W value, System.Action<T[], uint, IEntitiesDB, W> action) where T : IEntityStruct;
-        void ExecuteOnAllEntities<T>(ExclusiveGroup[] groups, EntitiesAction<T> action) where T : IEntityStruct;
-        void ExecuteOnAllEntities<T, W>(ExclusiveGroup[] groups, ref W value, EntitiesAction<T, W> action) where T : IEntityStruct;
+        void ExecuteOnAllEntities<T>(System.Action<T[], ExclusiveGroup.ExclusiveGroupStruct, uint, IEntitiesDB> action)
+            where T : IEntityStruct;
+        void ExecuteOnAllEntities<T, W>(ref W value,
+            System.Action<T[], ExclusiveGroup.ExclusiveGroupStruct, uint, IEntitiesDB, W> action)
+            where T : IEntityStruct;
 
         /// <summary>
         ///
@@ -149,24 +134,42 @@ namespace Svelto.ECS
         void PublishEntityChange<T>(EGID egid)  where T : unmanaged, IEntityStruct;
     }
 
-    public delegate void EntityAction<T, W>(ref T target, ref W       value);
-    public delegate void EntityAction<T>(ref    T target);
-
-    public delegate void AllEntitiesAction<T, W>(ref T target, ref W value, IEntitiesDB entitiesDb);
-    public delegate void AllEntitiesAction<T>(ref T target, IEntitiesDB entitiesDb);
-
-    public delegate void EntitiesAction<T, W>(ref T target, ref W value, EntityActionData extraParams);
-    public delegate void EntitiesAction<T>(ref T target, EntityActionData extraParams);
-
-    public struct EntityActionData
+    public struct EntityCollection<T>: IEnumerable<T>
     {
-        public readonly IEntitiesDB entitiesDB;
-        public readonly uint entityIndex;
-
-        public EntityActionData(IEntitiesDB entitiesDb, uint index)
+        public EntityCollection(T[] array, uint count)
         {
-            this.entitiesDB = entitiesDb;
-            entityIndex = index;
+            _array = array;
+            _count = count;
         }
+        IEnumerator IEnumerable.GetEnumerator() =>  throw new System.NotImplementedException();
+
+        IEnumerator<T> IEnumerable<T>.GetEnumerator() =>  throw new System.NotImplementedException();
+        
+        public EntityIterator<T> GetEnumerator() { return new EntityIterator<T>(_array, _count); }
+        
+        readonly T[]  _array;
+        readonly uint _count;
+    }
+    
+    public struct EntityIterator<T>:IEnumerator<T>
+    {
+        readonly T[]  _array;
+        readonly uint _count;
+        int           _index;
+
+        public EntityIterator(T[] array, uint count):this()
+        {
+            _array = array;
+            _count = count;
+        }
+
+        public bool MoveNext() { return _index++ < _count; }
+        public void Reset()    { _index = 0; }
+        
+        public ref T Current => ref _array[_index];
+        
+        T IEnumerator<T>.Current =>  throw new System.NotImplementedException();
+        object IEnumerator.Current =>  throw new System.NotImplementedException();
+        public void        Dispose()       { throw new System.NotImplementedException(); }
     }
 }

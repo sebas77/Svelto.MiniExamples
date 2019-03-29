@@ -1,18 +1,15 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 
 namespace Svelto.Tasks.Enumerators
 {
-    public struct ReusableWaitForSecondsEnumerator:IEnumerator<TaskContract>
+    public struct ReusableWaitForSecondsEnumerator:IEnumerator
     {
         public ReusableWaitForSecondsEnumerator(float seconds):this()
         {
             _seconds = seconds;
             _init    = false;
         }
-        
-        public bool IsDone() { return !MoveNext(); }
 
         public bool MoveNext()
         {
@@ -36,18 +33,13 @@ namespace Svelto.Tasks.Enumerators
             _init = false;
         }
 
-        public TaskContract Current => Yield.It;
-
         public void Reset(float seconds)
         {
             _seconds = seconds;
             _init    = false;
         }
 
-        object IEnumerator.Current => null;
-
-        public void Dispose()
-        {}
+        public object Current { get { return null; } }
 
         DateTime _future;
         float    _seconds;

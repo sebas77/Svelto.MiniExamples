@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 
 namespace Svelto.Tasks
 {
@@ -23,7 +22,7 @@ namespace Svelto.Tasks
     {
         bool isDone { get; }
         
-        IEnumerator<TaskContract> Execute();	
+        void		Execute();	
     }
 
     public interface IServiceTaskExceptionHandler

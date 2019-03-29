@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿﻿﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -375,10 +375,9 @@ namespace Svelto.DataStructures.Experimental
         }
 
         //I store all the index with an offset + 1, so that in the bucket list 0 means actually not existing.
-
         //When read the offset must be offset by -1 again to be the real one. In this way
         //I avoid to initialize the array to -1
-        protected bool FindIndex(TKey key, out uint findIndex)
+        public bool FindIndex(TKey key, out uint findIndex)
         {
             int  hash        = Hash(key);
             uint bucketIndex = Reduce((uint) hash, (uint) _buckets.Length);

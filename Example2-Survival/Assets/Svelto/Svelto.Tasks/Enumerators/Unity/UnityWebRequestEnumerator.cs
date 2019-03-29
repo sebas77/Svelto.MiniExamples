@@ -1,18 +1,21 @@
-#if UNITY_2017_2_OR_NEWER
+#if UNITY_5 || UNITY_5_3_OR_NEWER
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.Networking;
 
 namespace Svelto.Tasks.Enumerators
 {
-    public class UnityWebRequestEnumerator : IEnumerator<TaskContract>
+    public class UnityWebRequestEnumerator : IEnumerator<UnityWebRequest>
     {
-        public UnityWebRequestEnumerator(UnityWebRequest www, int timeOutInSeconds = -1)
+        public UnityWebRequestEnumerator(UnityWebRequest www, int timeOut = -1)
         {
             _www         = www;
-            _www.timeout = timeOutInSeconds;
-
-                _www.SendWebRequest();
+            _www.timeout = timeOut;
+#if UNITY_2017_2_OR_NEWER
+            _www.SendWebRequest();
+#else
+            _www.Send();
+#endif
         }
 
         public bool MoveNext()
@@ -27,8 +30,6 @@ namespace Svelto.Tasks.Enumerators
         {
             get { return _www; }
         }
-
-        TaskContract IEnumerator<TaskContract>.Current { get; }
 
         public UnityWebRequest Current
         {

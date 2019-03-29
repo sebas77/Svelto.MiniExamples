@@ -1,68 +1,23 @@
 #if UNITY_5 || UNITY_5_3_OR_NEWER
 using System.Collections;
-using System.Collections.Generic;
-using Svelto.Common;
-using Svelto.Tasks.Internal;
 using Svelto.Tasks.Unity.Internal;
 
-namespace Svelto.Tasks
+namespace Svelto.Tasks.Unity
 {
-    namespace Lean.Unity
+    class EarlyUpdateMonoRunner : EarlyUpdateMonoRunner<IEnumerator>
     {
-        public class EarlyUpdateMonoRunner:EarlyUpdateMonoRunner<IEnumerator<TaskContract>>
+        public EarlyUpdateMonoRunner(string name) : base(name)
         {
-            public EarlyUpdateMonoRunner(string name) : base(name)
-            {
-            }
-        }
-        
-        public class EarlyUpdateMonoRunner<T> : Svelto.Tasks.Unity.EarlyUpdateMonoRunner<SveltoTask<T>> where T : IEnumerator<TaskContract>
-        {
-            public EarlyUpdateMonoRunner(string name) : base(name)
-            {
-            }
         }
     }
-    
-    namespace ExtraLean.Unity
+    class EarlyUpdateMonoRunner<T> : MonoRunner<T> where T:IEnumerator
     {
-        public class EarlyUpdateMonoRunner:EarlyUpdateMonoRunner<IEnumerator>
+        public EarlyUpdateMonoRunner(string name):base(name)
         {
-            public EarlyUpdateMonoRunner(string name) : base(name)
-            {
-            }
-        }
-        
-        public class EarlyUpdateMonoRunner<T> : Svelto.Tasks.Unity.EarlyUpdateMonoRunner<SveltoTask<T>> where T : IEnumerator
-        {
-            public EarlyUpdateMonoRunner(string name) : base(name)
-            {
-            }
-        }
-    }
+            var info = new UnityCoroutineRunner<T>.RunningTasksInfo() { runnerName = name };
 
-    namespace Unity
-    {
-        public class EarlyUpdateMonoRunner<T> : EarlyUpdateMonoRunner<T, StandardRunningTasksInfo> where T : ISveltoTask
-        {
-            public EarlyUpdateMonoRunner(string name) : base(name, new StandardRunningTasksInfo())
-            {
-            }
-        }
-
-        public class EarlyUpdateMonoRunner<T, TFlowModifier> : BaseRunner<T> where T : ISveltoTask
-                                                                        where TFlowModifier : IRunningTasksInfo
-        {
-            public EarlyUpdateMonoRunner(string name, TFlowModifier modifier) : base(name)
-            {
-                modifier.runnerName = name;
-
-                _processEnumerator =
-                    new CoroutineRunner<T>.Process<TFlowModifier, PlatformProfiler>
-                        (_newTaskRoutines, _coroutines, _flushingOperation, modifier);
-
-                UnityCoroutineRunner.StartUpdateCoroutine(_processEnumerator);
-            }
+            UnityCoroutineRunner<T>.StartEarlyUpdateCoroutine(new UnityCoroutineRunner<T>.Process<UnityCoroutineRunner<T>.RunningTasksInfo>
+                (_newTaskRoutines, _coroutines, _flushingOperation, info));
         }
     }
 }

@@ -45,12 +45,12 @@ namespace Svelto.ECS.Example.Survive.Characters.Player
             }
         }
 
-        protected override void Add(ref PlayerEntityViewStruct entityView)
+        protected override void Add(in PlayerEntityViewStruct entityView, ExclusiveGroup.ExclusiveGroupStruct? previousGroup)
         {
             _taskRoutine.Start();
         }
 
-        protected override void Remove(ref PlayerEntityViewStruct entityView)
+        protected override void Remove(in PlayerEntityViewStruct entityView, bool itsaSwap) 
         {
             _taskRoutine.Stop();
         }

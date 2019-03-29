@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using Svelto.Tasks.Enumerators;
 
 //ITaskRoutine allocated explicitly have several features not 
 //available on task started implicitly with the extension
@@ -28,7 +27,7 @@ namespace Svelto.Tasks
         void SetEnumeratorProvider(Func<T> taskGenerator);
         void SetEnumerator(T taskGenerator);
     
-        ContinuationEnumerator Start(Action<SveltoTaskException> onFail = null, Action onStop = null);
+        IContinuationWrapper Start(Action<SveltoTaskException> onFail = null, Action onStop = null);
      
         void Pause();
         void Resume();
@@ -36,6 +35,5 @@ namespace Svelto.Tasks
         
         bool isRunning { get; }
         bool isDone { get; }
-        ContinuationEnumerator StartImmediate();
     }
 }
