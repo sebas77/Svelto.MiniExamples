@@ -6,20 +6,10 @@ namespace Svelto.ECS.Example.Survive.Camera
     {
         Transform cameraTransform;
 
-        void Awake()
-        {
-            cameraTransform = transform;
-        }
+        public Vector3 position { get { return cameraTransform.position; } set { cameraTransform.position = value; } }
 
-        public Vector3 position
-        {
-            get { return cameraTransform.position; }
-            set { cameraTransform.position = value; }
-        }
+        public Quaternion rotation { set { cameraTransform.rotation = value; } }
 
-        public Quaternion rotation
-        {
-            set { cameraTransform.rotation = value; }
-        }
+        void Awake() { cameraTransform = transform; }
     }
 }

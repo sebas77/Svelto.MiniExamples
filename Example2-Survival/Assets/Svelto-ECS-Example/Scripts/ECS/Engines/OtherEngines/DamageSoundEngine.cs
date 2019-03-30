@@ -7,17 +7,17 @@ namespace Svelto.ECS.Example.Survive.Characters.Sounds
     {
         public IEntitiesDB entitiesDB { set; private get; }
 
-        public void Ready()
-        {
-            CheckForDamage().Run();
-        }
+        public void Ready() { CheckForDamage().Run(); }
+
+        public void Step(EGID id) { TriggerDeathSound(id); }
+
+        public void Step(PlayerDeathCondition condition, EGID id) { TriggerDeathSound(id); }
 
         void TriggerDeathSound(EGID targetID)
         {
             uint index;
-            entitiesDB.QueryEntitiesAndIndex<DamageSoundEntityView>(targetID,
-                                                                    out index)[index]
-                      .audioComponent.playOneShot = AudioType.death;
+            entitiesDB.QueryEntitiesAndIndex<DamageSoundEntityView>(targetID, out index)[index].audioComponent
+                      .playOneShot = AudioType.death;
         }
 
         IEnumerator CheckForDamage()
@@ -28,7 +28,7 @@ namespace Svelto.ECS.Example.Survive.Characters.Sounds
                 {
                     var damageableEntities = entitiesDB.QueryEntities<DamageableEntityStruct>(group, out var count);
                     var damageSounds       = entitiesDB.QueryEntities<DamageSoundEntityView>(group, out _);
-                    for (int i = 0; i < count; i++)
+                    for (var i = 0; i < count; i++)
                     {
                         if (damageableEntities[i].damaged == false) continue;
 
@@ -38,16 +38,6 @@ namespace Svelto.ECS.Example.Survive.Characters.Sounds
 
                 yield return null;
             }
-        }
-
-        public void Step(PlayerDeathCondition condition, EGID id)
-        {
-            TriggerDeathSound(id);
-        }
-
-        public void Step(EGID id)
-        {
-            TriggerDeathSound(id);
         }
     }
 }

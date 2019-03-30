@@ -1,63 +1,34 @@
 #if UNITY_5 || UNITY_5_3_OR_NEWER
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
-namespace Svelto.Context
+namespace Svelto.ECS.Example.Survive.ResourceManager
 {
-    public class GameObjectFactory : Factories.IGameObjectFactory
+    /// <summary>
+    ///     this is a very rudimentary resource manager, you will need to use similar solutions if you need to
+    ///     mix ECS with OOP data.
+    /// </summary>
+    public class GameObjectFactory
     {
-        public GameObjectFactory()
+        public GameObjectFactory() { _prefabs = new Dictionary<string, GameObject>(); }
+
+        public IEnumerator<GameObject> Build(string prefabName)
         {
-            _prefabs = new Dictionary<string, GameObject[]>();
-        }
-
-        public GameObject Build(string prefabName)
-        {
-            var go = Build(_prefabs[prefabName][0]);
-
-            GameObject parent = _prefabs[prefabName][1];
-
-            if (parent != null)
+            GameObject go;
+            if (_prefabs.TryGetValue(prefabName, out go) == false)
             {
-                Transform transform = go.transform;
+                var load = Addressables.LoadAsset<GameObject>(prefabName);
 
-                var scale = transform.localScale;
-                var rotation = transform.localRotation;
-                var position = transform.localPosition;
+                while (load.IsDone == false) yield return null;
 
-                parent.SetActive(true);
-
-                transform.parent = parent.transform;
-
-                transform.localPosition = position;
-                transform.localRotation = rotation;
-                transform.localScale = scale;
+                go = load.Result;
             }
 
-            return go;
+            yield return GameObject.Instantiate(go);
         }
 
-        public virtual GameObject Build(GameObject prefab)
-        {
-            var copy = Object.Instantiate(prefab) as GameObject;
-
-            return copy;
-        }
-
-        /// <summary>
-        /// Register a prefab to be built later using a string ID.
-        /// </summary>
-        /// <param name="prefab">original prefab</param>
-        public void RegisterPrefab(GameObject prefab, string prefabName, GameObject parent = null)
-        {
-            var objects = new GameObject[2];
-
-            objects[0] = prefab; objects[1] = parent;
-
-            _prefabs.Add(prefabName, objects);
-        }
-
-        Dictionary<string, GameObject[]>                        _prefabs;
+        readonly Dictionary<string, GameObject> _prefabs;
     }
 }
 #endif

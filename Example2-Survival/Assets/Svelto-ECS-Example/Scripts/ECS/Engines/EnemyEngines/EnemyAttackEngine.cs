@@ -6,19 +6,24 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
 {
     public class EnemyAttackEngine : SingleEntityEngine<EnemyTargetEntityViewStruct>, IQueryingEntitiesEngine
     {
-        public IEntitiesDB entitiesDB { set; private get; }
+        readonly ITaskRoutine<IEnumerator> _taskRoutine;
 
-        public void Ready()
-        {}
+
+        readonly ITime _time;
 
         public EnemyAttackEngine(ITime time)
         {
-            _time = time;
+            _time        = time;
             _taskRoutine = TaskRunner.Instance.AllocateNewTaskRoutine(StandardSchedulers.physicScheduler);
-                _taskRoutine.SetEnumerator(CheckIfHittingEnemyTarget());
+            _taskRoutine.SetEnumerator(CheckIfHittingEnemyTarget());
         }
-        
-        protected override void Add(ref EnemyTargetEntityViewStruct entityView, ExclusiveGroup.ExclusiveGroupStruct? previousGroup)
+
+        public IEntitiesDB entitiesDB { set; private get; }
+
+        public void Ready() { }
+
+        protected override void Add(ref EnemyTargetEntityViewStruct      entityView,
+                                    ExclusiveGroup.ExclusiveGroupStruct? previousGroup)
         {
             _taskRoutine.Start();
         }
@@ -39,16 +44,16 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
                 // EntityViews to promote encapsulation and modularity
                 while (entitiesDB.HasAny<DamageableEntityStruct>(ECSGroups.EnemyTargets) == false ||
                        entitiesDB.HasAny<EnemyAttackEntityView>(ECSGroups.ActiveEnemies) == false)
-                {
                     yield return null;
-                }
 
-                var targetEntities = entitiesDB.QueryEntities<DamageableEntityStruct>(ECSGroups.EnemyTargets,
-                                                                          out uint targetsCount);
+                var targetEntities =
+                    entitiesDB.QueryEntities<DamageableEntityStruct>(ECSGroups.EnemyTargets, out var targetsCount);
 
-                var enemiesAttackData = entitiesDB.QueryEntities<EnemyAttackStruct>(ECSGroups.ActiveEnemies, out uint enemiesCount);
-                var enemies = entitiesDB.QueryEntities<EnemyAttackEntityView>(ECSGroups.ActiveEnemies, out enemiesCount);
-                
+                var enemiesAttackData =
+                    entitiesDB.QueryEntities<EnemyAttackStruct>(ECSGroups.ActiveEnemies, out var enemiesCount);
+                var enemies =
+                    entitiesDB.QueryEntities<EnemyAttackEntityView>(ECSGroups.ActiveEnemies, out enemiesCount);
+
                 //this is more complex than needed code is just to show how you can use entity structs
                 //this case is banal, entity structs should be use to handle hundreds or thousands
                 //of entities in a cache friendly and multi threaded code. However entity structs would allow
@@ -56,46 +61,37 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
                 //cases where entity should be built fast! Theoretically is possible to create
                 //a game using only entity structs, but entity structs make sense ONLY if they
                 //hold value types, so they come with a lot of limitations
-                for (int enemyIndex = 0; enemyIndex < enemiesCount; enemyIndex++)
+                for (var enemyIndex = 0; enemyIndex < enemiesCount; enemyIndex++)
                 {
                     var enemyAttackEntityView = enemies[enemyIndex];
-                    
-                    enemiesAttackData[enemyIndex].entityInRange = enemyAttackEntityView.targetTriggerComponent.entityInRange;
+
+                    enemiesAttackData[enemyIndex].entityInRange =
+                        enemyAttackEntityView.targetTriggerComponent.entityInRange;
                 }
 
-                for (int enemyTargetIndex = 0; enemyTargetIndex < targetsCount; enemyTargetIndex++)
+                for (var enemyTargetIndex = 0; enemyTargetIndex < targetsCount; enemyTargetIndex++)
                 {
                     var targetEntityView = targetEntities[enemyTargetIndex];
 
-                    for (int enemyIndex = 0; enemyIndex < enemiesCount; enemyIndex++)
-                    {
+                    for (var enemyIndex = 0; enemyIndex < enemiesCount; enemyIndex++)
                         if (enemiesAttackData[enemyIndex].entityInRange.collides)
-                        {
-                            //the IEnemyTriggerComponent implementors sets a the collides boolean
-                            //whenever anything enters in the trigger range, but there is not more logic
-                            //we have to check here if the colliding entity is actually an EnemyTarget
                             if (enemiesAttackData[enemyIndex].entityInRange.otherEntityID == targetEntityView.ID)
                             {
                                 enemiesAttackData[enemyIndex].timer += _time.deltaTime;
-                                
-                                if (enemiesAttackData[enemyIndex].timer >= enemiesAttackData[enemyIndex].timeBetweenAttack)
+
+                                if (enemiesAttackData[enemyIndex].timer >=
+                                    enemiesAttackData[enemyIndex].timeBetweenAttack)
                                 {
                                     enemiesAttackData[enemyIndex].timer = 0.0f;
-                                    
-                                    targetEntities[enemyTargetIndex].damageInfo = new DamageInfo(enemiesAttackData[enemyIndex].attackDamage,
-                                                                                                 Vector3.zero);
+
+                                    targetEntities[enemyTargetIndex].damageInfo =
+                                        new DamageInfo(enemiesAttackData[enemyIndex].attackDamage, Vector3.zero);
                                 }
                             }
-                        }
-                    }
                 }
 
                 yield return null;
             }
         }
-
-
-        readonly ITime                 _time;
-        readonly ITaskRoutine<IEnumerator>          _taskRoutine;
     }
 }

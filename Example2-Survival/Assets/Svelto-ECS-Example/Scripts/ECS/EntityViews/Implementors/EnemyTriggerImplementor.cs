@@ -11,18 +11,20 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
     //This is the case when implementor can and should be Monobehaviours. Here an example:
     public class EnemyTriggerImplementor : MonoBehaviour, IImplementor, IEnemyTriggerComponent
     {
+        bool                      _targetInRange;
         public EnemyCollisionData entityInRange { get; private set; }
 
         void OnTriggerEnter(Collider other)
         {
-            entityInRange = new EnemyCollisionData(new EGID((uint) other.gameObject.GetInstanceID(), ECSGroups.EnemyTargets), true);
+            entityInRange =
+                new EnemyCollisionData(new EGID((uint) other.gameObject.GetInstanceID(), ECSGroups.EnemyTargets), true);
         }
 
         void OnTriggerExit(Collider other)
         {
-            entityInRange = new EnemyCollisionData(new EGID((uint) other.gameObject.GetInstanceID(), ECSGroups.EnemyTargets), false);
+            entityInRange =
+                new EnemyCollisionData(new EGID((uint) other.gameObject.GetInstanceID(), ECSGroups.EnemyTargets),
+                                       false);
         }
-
-        bool    _targetInRange;
     }
 }

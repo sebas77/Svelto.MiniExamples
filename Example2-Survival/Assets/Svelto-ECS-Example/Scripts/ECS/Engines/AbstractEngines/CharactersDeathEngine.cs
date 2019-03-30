@@ -2,12 +2,11 @@
 
 namespace Svelto.ECS.Example.Survive.Characters
 {
-    public class CharactersDeathEngine:IQueryingEntitiesEngine
+    public class CharactersDeathEngine : IQueryingEntitiesEngine
     {
-        public void Ready()
-        {
-            CheckEnergy().Run();
-        }
+        public void Ready() { CheckEnergy().Run(); }
+
+        public IEntitiesDB entitiesDB { set; private get; }
 
         IEnumerator CheckEnergy()
         {
@@ -27,7 +26,5 @@ namespace Svelto.ECS.Example.Survive.Characters
                 yield return null;
             }
         }
-
-        public IEntitiesDB entitiesDB { set; private get; }
     }
 }

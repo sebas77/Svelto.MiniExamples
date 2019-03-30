@@ -3,17 +3,12 @@ using UnityEngine;
 
 namespace Svelto.ECS.Example.Survive.Implementors
 {
-    public class AudioImplementor : MonoBehaviour, IImplementor, 
-        IDamageSoundComponent
+    public class AudioImplementor : MonoBehaviour, IImplementor, IDamageSoundComponent
     {
-        public AudioClip deathClip;                 // The sound to play when the enemy dies.
-        public AudioClip damageClip;                 // The sound to play when the enemy dies.
+        AudioSource      _audioSource; // Reference to the audio source.
+        public AudioClip damageClip;   // The sound to play when the enemy dies.
+        public AudioClip deathClip;    // The sound to play when the enemy dies.
 
-        void Awake ()
-        {// Setting up the references.
-            _audioSource = GetComponent <AudioSource>();
-        }
-        
         public AudioType playOneShot
         {
             set
@@ -33,6 +28,10 @@ namespace Svelto.ECS.Example.Survive.Implementors
             }
         }
 
-        AudioSource     _audioSource;           // Reference to the audio source.
+        void Awake()
+        {
+            // Setting up the references.
+            _audioSource = GetComponent<AudioSource>();
+        }
     }
 }
