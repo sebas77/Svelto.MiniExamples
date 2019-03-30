@@ -26,9 +26,8 @@ namespace Svelto.ECS.Example.Survive.Characters.Sounds
             {
                 foreach (var group in ECSGroups.DamageableGroups)
                 {
-                    int count;
-                    var damageableEntities = entitiesDB.QueryEntities<DamageableEntityStruct>(group, out count);
-                    var damageSounds       = entitiesDB.QueryEntities<DamageSoundEntityView>(group, out count);
+                    var damageableEntities = entitiesDB.QueryEntities<DamageableEntityStruct>(group, out var count);
+                    var damageSounds       = entitiesDB.QueryEntities<DamageSoundEntityView>(group, out _);
                     for (int i = 0; i < count; i++)
                     {
                         if (damageableEntities[i].damaged == false) continue;

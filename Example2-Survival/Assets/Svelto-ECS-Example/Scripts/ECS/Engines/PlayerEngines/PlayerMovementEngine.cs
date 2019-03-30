@@ -20,12 +20,12 @@ namespace Svelto.ECS.Example.Survive.Characters.Player
                 _taskRoutine.SetEnumerator(PhysicsTick());
         }
 
-        protected override void Add(in PlayerEntityViewStruct playerEntityViewStruct, ExclusiveGroup.ExclusiveGroupStruct? previousGroup)
+        protected override void Add(ref PlayerEntityViewStruct playerEntityViewStruct, ExclusiveGroup.ExclusiveGroupStruct? previousGroup)
         {
             _taskRoutine.Start();
         }
 
-        protected override void Remove(in PlayerEntityViewStruct playerEntityViewStruct, bool itsaSwap)
+        protected override void Remove(ref PlayerEntityViewStruct playerEntityViewStruct, bool itsaSwap)
         {
             _taskRoutine.Stop();
         }
@@ -34,14 +34,14 @@ namespace Svelto.ECS.Example.Survive.Characters.Player
         {  
             while (true)
             {
-                int targetsCount;
-                var playerEntityViews = entitiesDB.QueryEntities<PlayerEntityViewStruct>(ECSGroups.Player, out targetsCount);
-                var playerInputDatas  = entitiesDB.QueryEntities<PlayerInputDataStruct>(ECSGroups.Player, out targetsCount);
+                var playerEntities =
+                    entitiesDB.QueryEntities<PlayerEntityViewStruct, PlayerInputDataStruct>(ECSGroups.Player,
+                                                                                            out var targetsCount);
 
                 for (int i = 0; i < targetsCount; i++)
                 {
-                    Movement(ref playerInputDatas[i], ref playerEntityViews[i]);
-                    Turning(ref playerInputDatas[i], ref playerEntityViews[i]);
+                    Movement(ref playerEntities.Item2[i], ref playerEntities.Item1[i]);
+                    Turning(ref playerEntities.Item2[i], ref playerEntities.Item1[i]);
                 }
 
                 yield return null; //don't forget to yield or you will enter in an infinite loop!
@@ -94,8 +94,7 @@ namespace Svelto.ECS.Example.Survive.Characters.Player
 
         public void Step(PlayerDeathCondition condition, EGID id)
         {
-            int count;
-            var playerEntityView = entitiesDB.QueryEntities<PlayerEntityViewStruct>(ECSGroups.Player, out count)[0]; 
+            var playerEntityView = entitiesDB.QueryEntities<PlayerEntityViewStruct>(ECSGroups.Player, out var count)[0]; 
             playerEntityView.rigidBodyComponent.isKinematic = true;
         }
 

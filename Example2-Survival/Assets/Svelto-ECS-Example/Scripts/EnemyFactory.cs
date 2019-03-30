@@ -20,28 +20,17 @@ namespace Svelto.ECS.Example.Survive
         {
             // Find a random index between zero and one less than the number of spawn points.
             // Create an instance of the enemy prefab at the randomly selected spawn point position and rotation.
-            using (var profiler = new PlatformProfiler("BuildEnemy"))
-            {
                 GameObject go;
-                using (profiler.Sample("Build GameObject"))
-                {
                     go = _gameobjectFactory.Build(enemySpawnData.enemyPrefab);
-                }
-
+ 
                 IImplementor[] implementors;
-                using (profiler.Sample("Get Components In Children"))
-                {
                     implementors = go.GetComponentsInChildren<IImplementor>();
-                }
                 //using the GameObject GetInstanceID() will help to directly use the result of Unity functions
                 //to index the entity in the Svelto database
 
                 EntityStructInitializer initializer;
-                using (profiler.Sample("BuildEntity"))
-                {
                     initializer = _entityFactory
-                       .BuildEntity<EnemyEntityDescriptor>(new EGID(go.GetInstanceID(), ECSGroups.ActiveEnemies), implementors);
-                }
+                       .BuildEntity<EnemyEntityDescriptor>(new EGID((uint) go.GetInstanceID(), ECSGroups.ActiveEnemies), implementors);
                 
                 initializer.Init(enemyAttackstruct);
                 initializer.Init(new HealthEntityStruct {currentHealth  = 100});
@@ -54,8 +43,7 @@ namespace Svelto.ECS.Example.Survive
                 var spawnInfo = enemySpawnData.spawnPoint;
 
                 transform.position = spawnInfo;
-            }
-        }
+ }
 
         public void Preallocate()
         {

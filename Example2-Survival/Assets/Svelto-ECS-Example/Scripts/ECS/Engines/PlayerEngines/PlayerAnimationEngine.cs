@@ -25,8 +25,7 @@ namespace Svelto.ECS.Example.Survive.Characters.Player
                 yield return null; //skip a frame
             }
 
-            int targetsCount;
-            var playerEntityViews = entitiesDB.QueryEntities<PlayerEntityViewStruct>(ECSGroups.Player, out targetsCount);
+            var playerEntityViews = entitiesDB.QueryEntities<PlayerEntityViewStruct>(ECSGroups.Player, out var targetsCount);
             var playerInputDatas = entitiesDB.QueryEntities<PlayerInputDataStruct>(ECSGroups.Player, out targetsCount);
             
             while (true)
@@ -51,10 +50,10 @@ namespace Svelto.ECS.Example.Survive.Characters.Player
             playerEntityViews[index].animationComponent.playAnimation = "Die";
         }
 
-        protected override void Add(in PlayerEntityViewStruct entityView, ExclusiveGroup.ExclusiveGroupStruct? previousGroup)
+        protected override void Add(ref PlayerEntityViewStruct entityView, ExclusiveGroup.ExclusiveGroupStruct? previousGroup)
         {}
 
-        protected override void Remove(in PlayerEntityViewStruct entityView, bool itsaSwap) 
+        protected override void Remove(ref PlayerEntityViewStruct entityView, bool itsaSwap) 
         {
             _taskRoutine.Stop();
         }

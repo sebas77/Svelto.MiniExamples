@@ -26,12 +26,12 @@ namespace Svelto.ECS.Example.Survive.Characters
             {
                 foreach (var group in ECSGroups.TargetGroups)
                 {
-                    int count;
-                    var damagedEntites = entitiesDB.QueryEntities<DamageableEntityStruct>(group, out count);
-                    var entitiesHealth = entitiesDB.QueryEntities<HealthEntityStruct>(group, out count);
+                    var entities = entitiesDB.QueryEntities<DamageableEntityStruct, HealthEntityStruct>(group, out var count);
 
                     for (int i = 0; i < count; i++)
                     {
+                        var damagedEntites = entities.Item1;
+                        var entitiesHealth = entities.Item2;
                         if (damagedEntites[i].damageInfo.shotDamageToApply > 0)
                         {
                             entitiesHealth[i].currentHealth               -= damagedEntites[i].damageInfo.shotDamageToApply;

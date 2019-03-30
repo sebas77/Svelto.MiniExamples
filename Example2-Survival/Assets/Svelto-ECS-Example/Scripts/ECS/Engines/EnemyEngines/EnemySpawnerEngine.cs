@@ -49,8 +49,6 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
 //but it's better to not abuse it.                
                 yield return _waitForSecondsEnumerator;
 
-                using (var profiler = new PlatformProfiler("EnemySpawning"))
-                {
                     //cycle around the enemies to spawn and check if it can be spawned
                     for (int i = enemiestoSpawn.Length - 1; i >= 0 && _numberOfEnemyToSpawn > 0; --i)
                     {
@@ -74,22 +72,16 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
                             //Note, pooling make sense only for Entities that use implementors.
                             //A pure struct based entity doesn't need pooling because it never allocates.
                             //to simplify the logic, we use a recycle group for each entity type
-                            var fromGroupId = (int) ECSGroups.EnemiesToRecycleGroups +
-                                              (int) spawnData.enemySpawnData.targetType;
+                            var fromGroupId = ECSGroups.EnemiesToRecycleGroups +
+                                              (uint) spawnData.enemySpawnData.targetType;
 
                             if (entitiesDB.HasAny<EnemyEntityViewStruct>(fromGroupId))
                             {
-                                using (profiler.Sample("Recycling"))
-                                {
                                     ReuseEnemy(fromGroupId, spawnData);
-                                }
                             }
                             else
                             {
-                                using (profiler.Sample("Building"))
-                                {
                                     _enemyFactory.Build(spawnData.enemySpawnData, ref enemyAttackStruct);
-                                }
                             }
 
                             spawningTimes[i] = spawnData.enemySpawnData.spawnTime;
@@ -97,7 +89,6 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
                         }
 
                         spawningTimes[i] -= SECONDS_BETWEEN_SPAWNS;
-                    }
                 }
             }
         }
@@ -111,10 +102,9 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
         /// <param name="spawnData"></param>
         /// <returns></returns>
 
-        void ReuseEnemy(int fromGroupId, JSonEnemySpawnData spawnData)
+        void ReuseEnemy(ExclusiveGroup.ExclusiveGroupStruct fromGroupId, JSonEnemySpawnData spawnData)
         {
-            int count;
-            var healths = entitiesDB.QueryEntities<HealthEntityStruct>(fromGroupId, out count);
+            var healths = entitiesDB.QueryEntities<HealthEntityStruct>(fromGroupId, out var count);
            
             if (count > 0)
             {

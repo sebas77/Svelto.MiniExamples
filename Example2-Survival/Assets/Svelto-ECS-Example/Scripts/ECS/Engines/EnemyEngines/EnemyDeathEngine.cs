@@ -28,9 +28,8 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
                 //Groups affect the memory layour. Entity views are split according groups, so that even if entity
                 //views are used by entities outside a specific group, those entity views won't be present 
                 //in the array returned by QueryEntities.
-                int count;
                 var enemyEntitiesViews =
-                    entitiesDB.QueryEntities<EnemyEntityViewStruct>(ECSGroups.ActiveEnemies, out count);
+                    entitiesDB.QueryEntities<EnemyEntityViewStruct>(ECSGroups.ActiveEnemies, out var count);
                 var enemyEntitiesHealth =
                     entitiesDB.QueryEntities<HealthEntityStruct>(ECSGroups.ActiveEnemies, out count);
 

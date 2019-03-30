@@ -5,8 +5,6 @@ namespace Svelto.ECS
 {
     public class DispatchOnSet<T> where T:struct
     {
-        static ExclusiveGroup OBSOLETE_GROUP = new ExclusiveGroup();
-        
         public DispatchOnSet(EGID senderID)
         {      
             _subscribers = new WeakEvent<EGID, T>();

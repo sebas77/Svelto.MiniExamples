@@ -15,9 +15,8 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
         {
             while (true)
             {
-                int count;
                 //query all the enemies from the standard group (no disabled nor respawning)
-                var enemyTargetEntityViews = entitiesDB.QueryEntities<EnemyTargetEntityViewStruct>(ECSGroups.EnemyTargets, out count);
+                var enemyTargetEntityViews = entitiesDB.QueryEntities<EnemyTargetEntityViewStruct>(ECSGroups.EnemyTargets, out var count);
 
                 if (count > 0)
                 {

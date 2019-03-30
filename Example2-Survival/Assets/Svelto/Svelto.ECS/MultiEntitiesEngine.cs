@@ -7,28 +7,28 @@ namespace Svelto.ECS
         where U : IEntityStruct where T : IEntityStruct
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void AddInternal(in U entityView, ExclusiveGroup.ExclusiveGroupStruct? previousGroup)
-        { Add(in entityView, previousGroup); }
+        public void AddInternal(ref U entityView, ExclusiveGroup.ExclusiveGroupStruct? previousGroup)
+        { Add(ref entityView, previousGroup); }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void RemoveInternal(in U entityView, bool itsaSwap)
-        { Remove(in entityView, itsaSwap); }
+        public void RemoveInternal(ref U entityView, bool itsaSwap)
+        { Remove(ref entityView, itsaSwap); }
         
-        protected abstract void Add(in U entityView, ExclusiveGroup.ExclusiveGroupStruct? previousGroup);
-        protected abstract void Remove(in U entityView, bool itsaSwap);
+        protected abstract void Add(ref U entityView, ExclusiveGroup.ExclusiveGroupStruct? previousGroup);
+        protected abstract void Remove(ref U entityView, bool itsaSwap);
     }
     
     public abstract class MultiEntitiesEngine<T, U, V> : MultiEntitiesEngine<T, U>, IHandleEntityStructEngine<V>
         where V :  IEntityStruct where U :  IEntityStruct where T :  IEntityStruct
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void AddInternal(in V entityView, ExclusiveGroup.ExclusiveGroupStruct? previousGroup)
-        { Add(in entityView, previousGroup); }
+        public void AddInternal(ref V entityView, ExclusiveGroup.ExclusiveGroupStruct? previousGroup)
+        { Add(ref entityView, previousGroup); }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void RemoveInternal(in V entityView, bool itsaSwap)
-        { Remove(in  entityView, itsaSwap); }
+        public void RemoveInternal(ref V entityView, bool itsaSwap)
+        { Remove(ref  entityView, itsaSwap); }
         
-        protected abstract void Add(in V entityView, ExclusiveGroup.ExclusiveGroupStruct? previousGroup);
-        protected abstract void Remove(in V entityView, bool itsaSwap);
+        protected abstract void Add(ref V entityView, ExclusiveGroup.ExclusiveGroupStruct? previousGroup);
+        protected abstract void Remove(ref V entityView, bool itsaSwap);
     }
 
     /// <summary>
@@ -39,13 +39,13 @@ namespace Svelto.ECS
         where W :  IEntityStruct where V :  IEntityStruct where U :  IEntityStruct where T : IEntityStruct
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void AddInternal(in W entityView, ExclusiveGroup.ExclusiveGroupStruct? previousGroup)
-        { Add(in  entityView, previousGroup); }
+        public void AddInternal(ref W entityView, ExclusiveGroup.ExclusiveGroupStruct? previousGroup)
+        { Add(ref  entityView, previousGroup); }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void RemoveInternal(in W entityView, bool itsaSwap)
-        { Remove(in  entityView, itsaSwap); }
+        public void RemoveInternal(ref W entityView, bool itsaSwap)
+        { Remove(ref  entityView, itsaSwap); }
         
-        protected abstract void Add(in W entityView, ExclusiveGroup.ExclusiveGroupStruct? previousGroup);
-        protected abstract void Remove(in W entityView, bool itsaSwap);
+        protected abstract void Add(ref W entityView, ExclusiveGroup.ExclusiveGroupStruct? previousGroup);
+        protected abstract void Remove(ref W entityView, bool itsaSwap);
     }
 }

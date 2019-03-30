@@ -22,22 +22,22 @@ namespace Svelto.ECS.Example.Survive.Characters.Player.Gun
         /// querying is always cleaner.
         /// </summary>
         /// <param name="playerGunEntityView"></param>
-        protected override void Add(in GunEntityViewStruct playerGunEntityView, ExclusiveGroup.ExclusiveGroupStruct? previousGroup)
+        protected override void Add(ref GunEntityViewStruct playerGunEntityView, ExclusiveGroup.ExclusiveGroupStruct? previousGroup)
         {
+            playerGunEntityView.gunHitTargetComponent.targetHit = new DispatchOnSet<bool>(playerGunEntityView.ID);
             playerGunEntityView.gunHitTargetComponent.targetHit.NotifyOnValueSet(PlayerHasShot);
             
             _waitForSeconds = new WaitForSecondsEnumerator(playerGunEntityView.gunComponent.timeBetweenBullets * playerGunEntityView.gunFXComponent.effectsDisplayTime);
         }
 
-        protected override void Remove(in GunEntityViewStruct entityView, bool itsaSwap)
+        protected override void Remove(ref GunEntityViewStruct entityView, bool itsaSwap)
         {}
         
         void PlayerHasShot(EGID egid, bool targetHasBeenHit)
         {
-            uint index;
-            var structs = entitiesDB.QueryEntitiesAndIndex<GunEntityViewStruct>(new EGID(ID, ECSGroups.Player), out index);
+            var structs = entitiesDB.QueryEntitiesAndIndex<GunEntityViewStruct>(egid, out var index);
 
-            var gunFXComponent = structs[index].gunFXComponent;
+            ref var gunFXComponent = ref structs[index].gunFXComponent;
 
             // Play the gun shot audioclip.
             gunFXComponent.playAudio = true;
@@ -81,8 +81,7 @@ namespace Svelto.ECS.Example.Survive.Characters.Player.Gun
 
         void DisableEffects ()
         {
-            int targetsCount;
-            var gunEntityViews = entitiesDB.QueryEntities<GunEntityViewStruct>(ECSGroups.Player, out targetsCount);
+            var gunEntityViews = entitiesDB.QueryEntities<GunEntityViewStruct>(ECSGroups.Player, out _);
 
             var fxComponent = gunEntityViews[0].gunFXComponent;
             // Disable the line renderer and the light.

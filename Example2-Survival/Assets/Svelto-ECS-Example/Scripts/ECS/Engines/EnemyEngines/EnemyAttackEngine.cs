@@ -18,12 +18,12 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
                 _taskRoutine.SetEnumerator(CheckIfHittingEnemyTarget());
         }
         
-        protected override void Add(in EnemyTargetEntityViewStruct entityView, ExclusiveGroup.ExclusiveGroupStruct? previousGroup)
+        protected override void Add(ref EnemyTargetEntityViewStruct entityView, ExclusiveGroup.ExclusiveGroupStruct? previousGroup)
         {
             _taskRoutine.Start();
         }
 
-        protected override void Remove(in EnemyTargetEntityViewStruct entityView, bool itsaSwap)
+        protected override void Remove(ref EnemyTargetEntityViewStruct entityView, bool itsaSwap)
         {
             _taskRoutine.Stop();
         }
@@ -42,13 +42,11 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
                 {
                     yield return null;
                 }
-                
-                int targetsCount;
+
                 var targetEntities = entitiesDB.QueryEntities<DamageableEntityStruct>(ECSGroups.EnemyTargets,
-                                                                          out targetsCount);
-                
-                int enemiesCount;
-                var enemiesAttackData = entitiesDB.QueryEntities<EnemyAttackStruct>(ECSGroups.ActiveEnemies, out enemiesCount);
+                                                                          out uint targetsCount);
+
+                var enemiesAttackData = entitiesDB.QueryEntities<EnemyAttackStruct>(ECSGroups.ActiveEnemies, out uint enemiesCount);
                 var enemies = entitiesDB.QueryEntities<EnemyAttackEntityView>(ECSGroups.ActiveEnemies, out enemiesCount);
                 
                 //this is more complex than needed code is just to show how you can use entity structs

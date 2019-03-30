@@ -21,46 +21,46 @@ namespace Svelto.ECS.Example.Survive.Camera
             _taskRoutine.Start();            
         }
         
-        protected override void Add(in CameraEntityView entityView, ExclusiveGroup.ExclusiveGroupStruct? previousGroup)
+        protected override void Add(ref CameraEntityView entityView, ExclusiveGroup.ExclusiveGroupStruct? previousGroup)
         {
         }
 
-        protected override void Remove(in CameraEntityView entityView, bool itsaSwap)
+        protected override void Remove(ref CameraEntityView entityView, bool itsaSwap)
         {
             _taskRoutine.Stop();
         }
 
-        protected override void Add(in CameraTargetEntityView entityView,
+        protected override void Add(ref CameraTargetEntityView entityView,
             ExclusiveGroup.ExclusiveGroupStruct? previousGroup)
         {
         }
 
-        protected override void Remove(in CameraTargetEntityView entityView, bool itsaSwap)
+        protected override void Remove(ref CameraTargetEntityView entityView, bool itsaSwap)
         {
             _taskRoutine.Stop();
         }
         
         IEnumerator PhysicUpdate()
         {
-            while (entitiesDB.HasAny<CameraTargetEntityView>(ECSGroups.CameraTarget) == false || entitiesDB.HasAny<CameraEntityView>(ECSGroups.ExtraStuff) == false)
+            while (entitiesDB.HasAny<CameraTargetEntityView>(ECSGroups.CameraTarget) == false ||
+                   entitiesDB.HasAny<CameraEntityView>(ECSGroups.ExtraStuff) == false)
             {
                 yield return null; //skip a frame
             }
-            
-            int count;
-            var cameraTargets = entitiesDB.QueryEntities<CameraTargetEntityView>(ECSGroups.CameraTarget, out count);
-            var cameraEntities = entitiesDB.QueryEntities<CameraEntityView>(ECSGroups.ExtraStuff,out count);
+
+            var cameraTarget = entitiesDB.QueryUniqueEntity<CameraTargetEntityView>(ECSGroups.CameraTarget);
+            var camera = entitiesDB.QueryUniqueEntity<CameraEntityView>(ECSGroups.ExtraStuff);
 
             float smoothing = 5.0f;
             
-            Vector3 offset = cameraEntities[0].positionComponent.position - cameraTargets[0].targetComponent.position;
+            Vector3 offset = camera.positionComponent.position - cameraTarget.targetComponent.position;
             
             while (true)
             {
-                Vector3 targetCameraPos = cameraTargets[0].targetComponent.position + offset;
+                Vector3 targetCameraPos = cameraTarget.targetComponent.position + offset;
 
-                cameraEntities[0].transformComponent.position = Vector3.Lerp(
-                                                                             cameraEntities[0].positionComponent.position, targetCameraPos, smoothing * _time.deltaTime);
+                camera.transformComponent.position = Vector3.Lerp(
+                                       camera.positionComponent.position, targetCameraPos, smoothing * _time.deltaTime);
                 
                 yield return null;
             }

@@ -25,8 +25,7 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
         public void Step(PlayerDeathCondition condition, EGID id)
         {
             //is player is dead, the enemy cheers
-            int count;
-            var entity = entitiesDB.QueryEntities<EnemyEntityViewStruct>(ECSGroups.ActiveEnemies, out count);
+            var entity = entitiesDB.QueryEntities<EnemyEntityViewStruct>(ECSGroups.ActiveEnemies, out var count);
 
             for (var i = 0; i < count; i++)
                 entity[i].animationComponent.playAnimation = "PlayerDead";
@@ -36,12 +35,11 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
         {
             while (true)
             {
-                int numberOfEnemies;
-                var damageableEntityStructs =
-                    entitiesDB.QueryEntities<DamageableEntityStruct>(ECSGroups.ActiveEnemies, out numberOfEnemies);
-                var enemyEntityViewsStructs =
-                    entitiesDB.QueryEntities<EnemyEntityViewStruct>(ECSGroups.ActiveEnemies, out numberOfEnemies);
+                var entities =
+                    entitiesDB.QueryEntities<DamageableEntityStruct, EnemyEntityViewStruct>(ECSGroups.ActiveEnemies, out var numberOfEnemies);
 
+                var damageableEntityStructs = entities.Item1;
+                var enemyEntityViewsStructs = entities.Item2;
                 for (int i = 0; i < numberOfEnemies; i++)
                 {
                     if (damageableEntityStructs[i].damaged == false) continue;
@@ -84,8 +82,7 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
                                 entitiesDB.QueryEntities<EnemyEntityStruct>(
                                     ECSGroups.DeadEnemiesGroups, out numberOfEnemies);
                             _entityFunctions.SwapEntityGroup<EnemyEntityDescriptor>(
-                                enemyEntityViewsStructs[i].ID,
-                                ECSGroups.EnemiesToRecycleGroups + (int) enemyStructs[i].enemyType);
+                                enemyEntityViewsStructs[i].ID, ECSGroups.EnemiesToRecycleGroups + (uint) enemyStructs[i].enemyType);
 
                             _enemyDeadSequencer.Next(this, enemyEntityViewsStructs[i].ID);
                         }

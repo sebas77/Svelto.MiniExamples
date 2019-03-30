@@ -235,7 +235,7 @@ namespace Svelto.ECS.Example.Survive
             //The PlayerInputDataStruct doesn't need to be initialized (yay!!) but the HealthEntityStruct does.
             //Here I show the official method to do it
             var initializer =
-                _entityFactory.BuildEntity<PlayerEntityDescriptor>(player.GetInstanceID(), ECSGroups.Player,
+                _entityFactory.BuildEntity<PlayerEntityDescriptor>((uint) player.GetInstanceID(), ECSGroups.Player,
                                                                    player.GetComponents<IImplementor>());
             initializer.Init(new HealthEntityStruct {currentHealth = 100});
 
@@ -243,7 +243,7 @@ namespace Svelto.ECS.Example.Survive
             //have to create if from the existing gameobject.
             var gun = player.GetComponentInChildren<PlayerShootingImplementor>();
 
-            _entityFactory.BuildEntity<PlayerGunEntityDescriptor>(gun.gameObject.GetInstanceID(), ECSGroups.Player,
+            _entityFactory.BuildEntity<PlayerGunEntityDescriptor>((uint) gun.gameObject.GetInstanceID(), ECSGroups.Player,
                                                                   new[] {gun});
         }
 
@@ -251,7 +251,7 @@ namespace Svelto.ECS.Example.Survive
         {
             var implementor = UnityEngine.Camera.main.gameObject.AddComponent<CameraImplementor>();
 
-            _entityFactory.BuildEntity<CameraEntityDescriptor>(UnityEngine.Camera.main.GetInstanceID(),
+            _entityFactory.BuildEntity<CameraEntityDescriptor>((uint) UnityEngine.Camera.main.GetInstanceID(),
                                                                ECSGroups.ExtraStuff, new[] {implementor});
         }
 
@@ -282,7 +282,7 @@ namespace Svelto.ECS.Example.Survive
                 var entityDescriptorHolder = entities[i];
                 var entityViewsToBuild     = entityDescriptorHolder.GetDescriptor();
                 _entityFactory.BuildEntity
-                    (new EGID(((MonoBehaviour) entityDescriptorHolder).gameObject.GetInstanceID(), ECSGroups.ExtraStuff),
+                    (new EGID((uint) ((MonoBehaviour) entityDescriptorHolder).gameObject.GetInstanceID(), ECSGroups.ExtraStuff),
                      entityViewsToBuild,
                      (entityDescriptorHolder as MonoBehaviour).GetComponentsInChildren<IImplementor>());
             }

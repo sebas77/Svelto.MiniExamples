@@ -22,8 +22,7 @@ namespace Svelto.ECS.Example.Survive
         {
             while (true)
             {
-                int numberOfPlayers;
-                var players = entitiesDB.QueryEntities<HealthEntityStruct>(ECSGroups.Player, out numberOfPlayers);
+                var players = entitiesDB.QueryEntities<HealthEntityStruct>(ECSGroups.Player, out var numberOfPlayers);
                 for (int i = 0; i < numberOfPlayers; i++)
                 {
                     if (players[i].dead)

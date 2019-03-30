@@ -29,8 +29,7 @@ namespace Svelto.ECS.Example.Survive.Characters.Player
                 yield return null; //skip a frame
             }
             
-            int targetsCount;
-            var playerEntityViews = entitiesDB.QueryEntities<PlayerInputDataStruct>(ECSGroups.Player, out targetsCount);
+            var playerEntityViews = entitiesDB.QueryEntities<PlayerInputDataStruct>(ECSGroups.Player, out var targetsCount);
            
             while (true)
             {
@@ -45,12 +44,12 @@ namespace Svelto.ECS.Example.Survive.Characters.Player
             }
         }
 
-        protected override void Add(in PlayerEntityViewStruct entityView, ExclusiveGroup.ExclusiveGroupStruct? previousGroup)
+        protected override void Add(ref PlayerEntityViewStruct entityView, ExclusiveGroup.ExclusiveGroupStruct? previousGroup)
         {
             _taskRoutine.Start();
         }
 
-        protected override void Remove(in PlayerEntityViewStruct entityView, bool itsaSwap) 
+        protected override void Remove(ref PlayerEntityViewStruct entityView, bool itsaSwap) 
         {
             _taskRoutine.Stop();
         }

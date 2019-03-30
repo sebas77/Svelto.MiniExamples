@@ -26,16 +26,15 @@ namespace Svelto.ECS.Example.Survive.HUD
         {
             while (true)
             {
-                entitiesDB.ExecuteOnEntities(ECSGroups.ExtraStuff, ref _time,
-                                             (ref HUDEntityView guiEntityView, ref ITime time, IEntitiesDB entitiesDb,
-                                              int               index) =>
+                var entities = entitiesDB.QueryEntities<HUDEntityView>(ECSGroups.ExtraStuff);
+                      foreach (var guiEntityView in entities)
                       {
                           var damageComponent = guiEntityView.damageImageComponent;
 
                           damageComponent.imageColor =
                               Color.Lerp(damageComponent.imageColor, Color.clear,
-                                         damageComponent.speed * time.deltaTime);
-                      });
+                                         damageComponent.speed * UnityEngine.Time.deltaTime);
+                      };
                 
                 
                 yield return null;
@@ -52,26 +51,22 @@ namespace Svelto.ECS.Example.Survive.HUD
         {
             while (true)
             {
-                int numberOfPlayers;
-                var damageablePlayerEntities =
-                    entitiesDB.QueryEntities<DamageableEntityStruct>(ECSGroups.Player, out numberOfPlayers);
-                var playerHealthEntities =
-                    entitiesDB.QueryEntities<HealthEntityStruct>(ECSGroups.Player, out numberOfPlayers);
+                var entities =
+                    entitiesDB.QueryEntities<DamageableEntityStruct, HealthEntityStruct>(ECSGroups.Player, out var numberOfPlayers);
                 for (int i = 0; i < numberOfPlayers; i++)
                 {
-                    if (damageablePlayerEntities[i].damaged == false) continue;
+                    if (entities.Item1[i].damaged == false) continue;
 
                     //An engine should never assume how many entities will be used, so we iterate over all the
                     //HUDEntityViews even if we know there is just one
-                    entitiesDB.ExecuteOnEntities(ECSGroups.ExtraStuff, ref playerHealthEntities[i].currentHealth,
-                                                 (ref HUDEntityView guiEntityView, ref int refhealth,
-                                                  IEntitiesDB       entitiesdb,    int     innerIndex) =>
-                                                 {
-                                                     var damageComponent = guiEntityView.damageImageComponent;
-                                                     damageComponent.imageColor = damageComponent.flashColor;
+                    
+                    var guiEntityView = entitiesDB.QueryUniqueEntity<HUDEntityView>(ECSGroups.ExtraStuff);
 
-                                                     guiEntityView.healthSliderComponent.value = refhealth;
-                                                 });
+                    
+                        var damageComponent = guiEntityView.damageImageComponent;
+                        damageComponent.imageColor = damageComponent.flashColor;
+
+                        guiEntityView.healthSliderComponent.value = entities.Item2[i].currentHealth;
                 }
 
                 yield return null;
@@ -83,11 +78,8 @@ namespace Svelto.ECS.Example.Survive.HUD
             _waitForSeconds.Reset(5);
             yield return _waitForSeconds;
 
-            int hudEntityViewsCount;
-            var hudEntityViews =
-                entitiesDB.QueryEntities<HUDEntityView>(ECSGroups.ExtraStuff, out hudEntityViewsCount);
-            for (int i = 0; i < hudEntityViewsCount; i++)
-                hudEntityViews[i].HUDAnimator.playAnimation = "GameOver";
+            var guiEntityView = entitiesDB.QueryUniqueEntity<HUDEntityView>(ECSGroups.ExtraStuff);
+            guiEntityView.HUDAnimator.playAnimation = "GameOver";
 
             _waitForSeconds.Reset(2);
             yield return _waitForSeconds;
@@ -97,11 +89,8 @@ namespace Svelto.ECS.Example.Survive.HUD
 
         public void Step(PlayerDeathCondition condition, EGID id)
         {
-            int hudEntityViewsCount;
-            var hudEntityViews =
-                entitiesDB.QueryEntities<HUDEntityView>(ECSGroups.ExtraStuff, out hudEntityViewsCount);
-            for (int i = 0; i < hudEntityViewsCount; i++)
-                hudEntityViews[i].healthSliderComponent.value = 0;
+            var guiEntityView = entitiesDB.QueryUniqueEntity<HUDEntityView>(ECSGroups.ExtraStuff);
+            guiEntityView.healthSliderComponent.value = 0;
 
             RestartLevelAfterFewSeconds().Run();
         }

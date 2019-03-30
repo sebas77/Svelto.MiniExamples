@@ -11,14 +11,18 @@ namespace Svelto.ECS.Example.Survive.Characters
 
         IEnumerator CheckEnergy()
         {
+            void EnumeratorHelper()
+            {
+                var healths = entitiesDB.QueryEntities<HealthEntityStruct>(ECSGroups.DamageableGroups);
+
+                foreach (ref var health in healths)
+                    if (health.currentHealth <= 0)
+                        health.dead = true;
+            }
+
             while (true)
             {
-                entitiesDB.ExecuteOnAllEntities(ECSGroups.DamageableGroups,
-                                                (ref HealthEntityStruct health, IEntitiesDB entitiesdb, int index) =>
-                        {
-                            if (health.currentHealth <= 0)
-                                health.dead = true;
-                        });
+                EnumeratorHelper();
 
                 yield return null;
             }

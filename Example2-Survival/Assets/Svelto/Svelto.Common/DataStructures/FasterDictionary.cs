@@ -444,7 +444,7 @@ namespace Svelto.DataStructures.Experimental
                 valuesInfo[previous].next = next;
         }
 
-        public struct FasterDictionaryKeyValueEnumerator : IEnumerator<KeyValuePair<TKey, TValue>>
+        public struct FasterDictionaryKeyValueEnumerator : IEnumerator<KeyValuePairFast<TKey, TValue>>
         {
             public FasterDictionaryKeyValueEnumerator(FasterDictionary<TKey, TValue> dic) : this()
             {
@@ -471,9 +471,9 @@ namespace Svelto.DataStructures.Experimental
 
             public void Reset() { throw new NotImplementedException(); }
 
-            public KeyValuePair<TKey, TValue> Current
+            public KeyValuePairFast<TKey, TValue> Current
             {
-                get { return new KeyValuePair<TKey, TValue>(_dic._valuesInfo[_index].key, _dic._values[_index]); }
+                get { return new KeyValuePairFast<TKey, TValue>(_dic._valuesInfo[_index].key, _dic._values, _index); }
             }
 
             object IEnumerator.Current { get { throw new NotImplementedException(); } }
@@ -552,6 +552,20 @@ namespace Svelto.DataStructures.Experimental
         int[]   _buckets;
         uint    _freeValueCellIndex;
         uint     _collisions;
+    }
+
+    public struct KeyValuePairFast<TKey, TValue>
+    {
+        readonly TValue[] _dicValues;
+        readonly int _index;
+
+        public KeyValuePairFast(TKey key, TValue[] dicValues, int index) { Key = key;
+            _dicValues = dicValues;
+            _index = index;
+        }
+
+        public TKey Key;
+        public ref TValue Value => ref _dicValues[_index];
     }
 
     public class FasterDictionaryException : Exception

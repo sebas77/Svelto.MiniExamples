@@ -22,18 +22,18 @@ namespace Svelto.ECS.Example.Survive.Characters.Player.Gun
             _taskRoutine.SetEnumerator(Tick());
         }
 
-        protected override void Add(in GunEntityViewStruct entityView, ExclusiveGroup.ExclusiveGroupStruct? previousGroup)
+        protected override void Add(ref GunEntityViewStruct entityView, ExclusiveGroup.ExclusiveGroupStruct? previousGroup)
         {}
 
-        protected override void Remove(in GunEntityViewStruct entityView, bool itsaSwap)
+        protected override void Remove(ref GunEntityViewStruct entityView, bool itsaSwap)
         {
             _taskRoutine.Stop();
         }
 
-        protected override void Add(in PlayerEntityViewStruct entityView, ExclusiveGroup.ExclusiveGroupStruct? previousGroup)
+        protected override void Add(ref PlayerEntityViewStruct entityView, ExclusiveGroup.ExclusiveGroupStruct? previousGroup)
         {}
 
-        protected override void Remove(in PlayerEntityViewStruct entityView, bool itsaSwap)
+        protected override void Remove(ref PlayerEntityViewStruct entityView, bool itsaSwap)
         {
             _taskRoutine.Stop();
         }
@@ -46,9 +46,8 @@ namespace Svelto.ECS.Example.Survive.Characters.Player.Gun
                 yield return null; //skip a frame
             }
 
-            int count;
             //never changes
-            var playerGunEntities = entitiesDB.QueryEntities<GunEntityViewStruct>(ECSGroups.Player, out count);
+            var playerGunEntities = entitiesDB.QueryEntities<GunEntityViewStruct>(ECSGroups.Player, out var count);
             //never changes
             var playerEntities = entitiesDB.QueryEntities<PlayerInputDataStruct>(ECSGroups.Player, out count);
             
@@ -78,28 +77,20 @@ namespace Svelto.ECS.Example.Survive.Characters.Player.Gun
 
             playerGunComponent.timer = 0;
 
-            Vector3 point;
-            int instanceID;
             var entityHit = _rayCaster.CheckHit(playerGunComponent.shootRay,
                                                 playerGunComponent.range,
                                                 GAME_LAYERS.ENEMY_LAYER,
                                                 GAME_LAYERS.SHOOTABLE_MASK | GAME_LAYERS.ENEMY_MASK,
-                                                out point, out instanceID);
+                                                out var point, out var instanceID);
             
             if (entityHit)
             {
-                var damageInfo =
-                    new
-                        DamageInfo(playerGunComponent.damagePerShot,
-                                   point);
+                var damageInfo = new DamageInfo(playerGunComponent.damagePerShot, point);
                 
                 //note how the GameObject GetInstanceID is used to identify the entity as well
                 if (instanceID != -1)
-                    entitiesDB.ExecuteOnEntity(instanceID, ECSGroups.PlayerTargets, ref damageInfo,
-                                               (ref DamageableEntityStruct entity, ref DamageInfo info) => //
-                                               { //never catch external variables so that the lambda doesn't allocate
-                                                   entity.damageInfo = info;
-                                               });
+                    entitiesDB.QueryEntity<DamageableEntityStruct>((uint) instanceID, ECSGroups.PlayerTargets).damageInfo =
+                        damageInfo;
 
                 playerGunComponent.lastTargetPosition = point;
                 playerGunHitComponent.targetHit.value = true;

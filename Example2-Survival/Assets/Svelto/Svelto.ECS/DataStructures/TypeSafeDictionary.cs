@@ -20,10 +20,9 @@ namespace Svelto.ECS.Internal
             Dictionary<Type, FasterList<IHandleEntityViewEngineAbstracted>> engines,
             ref PlatformProfiler profiler);
 
-        void CopyTypeSafeDictionary(ITypeSafeDictionary entitiesToSubmit, uint groupId);
+        void AddEntitiesFromDictionary(ITypeSafeDictionary entitiesToSubmit, uint groupId);
 
-        void AddEntitiesToEngines(Dictionary<Type, FasterList<IHandleEntityViewEngineAbstracted>> entityViewEnginesDB,
-            ref PlatformProfiler profiler);
+        void AddEntitiesToEngines(Dictionary<Type,FasterList<IHandleEntityViewEngineAbstracted>> entityViewEnginesDb, ITypeSafeDictionary realDic, ref PlatformProfiler profiler);
 
         void AddCapacity(uint size);
         void Trim();
@@ -40,35 +39,42 @@ namespace Svelto.ECS.Internal
         public TypeSafeDictionary(uint size) : base(size) { }
         public TypeSafeDictionary() {}
         
-        public void CopyTypeSafeDictionary(ITypeSafeDictionary entitiesToSubmit, uint groupId)
+        public void AddEntitiesFromDictionary(ITypeSafeDictionary entitiesToSubmit, uint groupId)
         {
             var typeSafeDictionary = (entitiesToSubmit as TypeSafeDictionary<TValue>);
-            foreach (var value in typeSafeDictionary)
+            foreach (var tuple in typeSafeDictionary)
             {
                 try
                 {
                     if (HasEgid)
-                        (value.Value as INeedEGID).ID = new EGID(value.Key, groupId);
-                    
-                    Add(value.Key, value.Value);
+                    {
+                        var needEgid = (INeedEGID)tuple.Value;
+                        needEgid.ID = new EGID(tuple.Key, groupId);
+                        Add(tuple.Key, (TValue) needEgid);
+                    }
+                    else
+                        Add(tuple.Key, ref tuple.Value);
                 }
                 catch (Exception e)
                 {
                     throw new TypeSafeDictionaryException(
                         "trying to add an EntityView with the same ID more than once Entity: "
-                           .FastConcat(typeof(TValue).ToString()).FastConcat("id ").FastConcat(value.Key), e);
+                           .FastConcat(typeof(TValue).ToString()).FastConcat("id ").FastConcat(tuple.Key), e);
                 }
             }
         }
 
         public void AddEntitiesToEngines(
             Dictionary<Type, FasterList<IHandleEntityViewEngineAbstracted>> entityViewEnginesDB,
-            ref PlatformProfiler profiler)
+            ITypeSafeDictionary realDic, ref PlatformProfiler profiler)
         {
-            var values = GetValuesArray(out var count);
-
-            for (var i = 0; i < count; i++)
-                AddEntityViewToEngines(entityViewEnginesDB, ref values[i], null, ref profiler);
+            foreach (var value in this)
+            {
+                var typeSafeDictionary = realDic as TypeSafeDictionary<TValue>;
+                var i = typeSafeDictionary.GetValueIndex(value.Key);
+               
+                AddEntityViewToEngines(entityViewEnginesDB, ref typeSafeDictionary._values[i], null, ref profiler);
+            }
         }
 
         public bool Has(uint entityIdEntityId) { return ContainsKey(entityIdEntityId); }
@@ -95,8 +101,12 @@ namespace Svelto.ECS.Internal
                 /// 
                 
           //      entity.ID = EGID.UPDATE_REAL_ID_AND_GROUP(entity.ID, toEntityID.groupID, entityCount);
-                if (HasEgid)
-                    (entity as INeedEGID).ID = toEntityID.Value;
+                  if (HasEgid)
+                  {
+                      var needEgid = (INeedEGID)entity;
+                      needEgid.ID = toEntityID.Value;
+                      entity = (TValue) needEgid;
+                  }
                 
                 var index = toGroupCasted.Add(fromEntityGid.entityID, ref entity);
 
@@ -133,7 +143,7 @@ namespace Svelto.ECS.Internal
                 {
                     using (profiler.Sample((entityViewsEngines[i] as EngineInfo).name))
                     {
-                        (entityViewsEngines[i] as IHandleEntityStructEngine<TValue>).AddInternal(in entity, previousGroup);
+                        (entityViewsEngines[i] as IHandleEntityStructEngine<TValue>).AddInternal(ref entity, previousGroup);
                     }
                 }
                 catch (Exception e)
@@ -154,7 +164,7 @@ namespace Svelto.ECS.Internal
                 {
                     using (profiler.Sample((entityViewsEngines[i] as EngineInfo).name, _typeName))
                         (entityViewsEngines[i] as IHandleEntityStructEngine<TValue>).RemoveInternal(
-                            in entity, itsaswap);
+                                                                                                    ref entity, itsaswap);
                 }
                 catch (Exception e)
                 {
