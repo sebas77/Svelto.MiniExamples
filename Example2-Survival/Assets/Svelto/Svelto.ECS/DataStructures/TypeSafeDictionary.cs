@@ -41,7 +41,8 @@ namespace Svelto.ECS.Internal
         
         public void AddEntitiesFromDictionary(ITypeSafeDictionary entitiesToSubmit, uint groupId)
         {
-            var typeSafeDictionary = (entitiesToSubmit as TypeSafeDictionary<TValue>);
+            var typeSafeDictionary = entitiesToSubmit as TypeSafeDictionary<TValue>;
+            
             foreach (var tuple in typeSafeDictionary)
             {
                 try

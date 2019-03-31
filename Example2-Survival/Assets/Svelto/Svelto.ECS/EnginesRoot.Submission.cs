@@ -97,9 +97,8 @@ namespace Svelto.ECS
             }
         }
 
-        void AddEntityViewsToTheDBAndSuitableEngines(
-            DoubleBufferedEntitiesToAdd dbgroupsOfEntitiesToSubmit,
-            PlatformProfiler            profiler)
+        void AddEntityViewsToTheDBAndSuitableEngines(DoubleBufferedEntitiesToAdd dbgroupsOfEntitiesToSubmit,
+                                                     PlatformProfiler            profiler)
         {
             //each group is indexed by entity view type. for each type there is a dictionary indexed by entityID
             var groupsOfEntitiesToSubmit = dbgroupsOfEntitiesToSubmit.other;

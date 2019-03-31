@@ -64,14 +64,16 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
         {
             while (true)
             {
-                var enemyEntityViewsStructs =
-                    entitiesDB.QueryEntities<EnemyEntityViewStruct>(ECSGroups.DeadEnemiesGroups,
+                var entites =
+                    entitiesDB.QueryEntities<EnemyEntityViewStruct, EnemySinkStruct, EnemyEntityStruct>(ECSGroups.DeadEnemiesGroups,
                                                                     out var numberOfEnemies);
-                var enemyEntitySinkStructs =
-                    entitiesDB.QueryEntities<EnemySinkStruct>(ECSGroups.DeadEnemiesGroups, out _);
+
+                var enemyEntityViewsStructs = entites.Item1;
+                var enemyEntitySinkStructs = entites.Item2;
 
                 for (var i = 0; i < numberOfEnemies; i++)
                 {
+                    
                     var animationComponent = enemyEntityViewsStructs[i].animationComponent;
                     if (animationComponent.playAnimation != "Dead")
                     {
@@ -88,9 +90,8 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
                         }
                         else
                         {
-                            var enemyStructs =
-                                entitiesDB.QueryEntities<EnemyEntityStruct>(ECSGroups.DeadEnemiesGroups,
-                                                                            out numberOfEnemies);
+                            var enemyStructs = entites.Item3;
+                                
                             _entityFunctions.SwapEntityGroup<EnemyEntityDescriptor>(enemyEntityViewsStructs[i].ID,
                                                                                     ECSGroups.EnemiesToRecycleGroups +
                                                                                     (uint) enemyStructs[i].enemyType);

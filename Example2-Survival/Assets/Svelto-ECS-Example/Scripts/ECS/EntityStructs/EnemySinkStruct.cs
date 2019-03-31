@@ -6,6 +6,5 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
     {
         public float    sinkAnimSpeed;
         public DateTime animationTime;
-        public EGID     ID { get; set; }
     }
 }

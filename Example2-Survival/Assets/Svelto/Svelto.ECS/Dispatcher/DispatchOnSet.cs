@@ -35,8 +35,31 @@ namespace Svelto.ECS
         }
 
         protected T  _value;
-        readonly EGID _senderID;
+        internal EGID _senderID;
 
         WeakEvent<EGID, T> _subscribers;
+    }
+
+    public static class DispatchExtensions
+    {
+        public static DispatchOnSet<T> Setup<T>(DispatchOnSet<T> dispatcher, EGID entity) where T : struct
+        {
+            if (dispatcher == null)
+                dispatcher = new DispatchOnSet<T>(entity);
+            else
+                dispatcher._senderID = entity;
+
+            return dispatcher;
+        }
+        
+        public static DispatchOnChange<T> Setup<T>(DispatchOnChange<T> dispatcher, EGID entity) where T : struct, IEquatable<T>
+        {
+            if (dispatcher == null)
+                dispatcher = new DispatchOnChange<T>(entity);
+            else
+                dispatcher._senderID = entity;
+            
+            return dispatcher;
+        }
     }
 }

@@ -30,6 +30,8 @@ namespace Svelto.ECS.Example.Survive
 
         public Main()
         {
+            QualitySettings.vSyncCount = 1;
+            
             SetupEngines();
             SetupEntities();
         }
@@ -220,13 +222,7 @@ namespace Svelto.ECS.Example.Survive
 
             var player = prefabsDictionary.Istantiate("Player");
 
-            //Building entities explicitly should be always preferred and MUST be used if an implementor doesn't need to
-            //be a Monobehaviour. You should strive to create implementors not as monobehaviours. Implementors as
-            //monobehaviours are meant only to function as bridge between Svelto.ECS and Unity3D. Using implementor as
-            //monobehaviour just to read serialized data from the editor, is also a bad practice, use a Json file
-            //instead. The Player Entity is made of EntityViewStruct+Implementors as monobehaviours and EntityStructs.
-            //The PlayerInputDataStruct doesn't need to be initialized (yay!!) but the HealthEntityStruct does.
-            //Here I show the official method to do it
+            //Initialize an entity inside a composition root is a so-so practice, better to have an engineSpawner.
             var initializer =
                 _entityFactory.BuildEntity<PlayerEntityDescriptor>((uint) player.GetInstanceID(), ECSGroups.Player,
                                                                    player.GetComponents<IImplementor>());
@@ -234,10 +230,10 @@ namespace Svelto.ECS.Example.Survive
 
             //unluckily the gun is parented in the original prefab, so there is no easy way to create it explicitly, I
             //have to create if from the existing gameobject.
-            var gun = player.GetComponentInChildren<PlayerShootingImplementor>();
+            var gunImplementor = player.GetComponentInChildren<PlayerShootingImplementor>();
 
-            _entityFactory.BuildEntity<PlayerGunEntityDescriptor>((uint) gun.gameObject.GetInstanceID(),
-                                                                  ECSGroups.Player, new[] {gun});
+            _entityFactory.BuildEntity<PlayerGunEntityDescriptor>((uint) gunImplementor.gameObject.GetInstanceID(),
+                                                                  ECSGroups.Player, new[] {gunImplementor});
         }
 
         void BuildCameraEntity()

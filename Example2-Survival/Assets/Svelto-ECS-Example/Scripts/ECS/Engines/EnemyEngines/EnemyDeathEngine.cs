@@ -29,19 +29,20 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
                 //Groups affect the memory layour. Entity views are split according groups, so that even if entity
                 //views are used by entities outside a specific group, those entity views won't be present 
                 //in the array returned by QueryEntities.
-                var enemyEntitiesViews =
-                    entitiesDB.QueryEntities<EnemyEntityViewStruct>(ECSGroups.ActiveEnemies, out var count);
-                var enemyEntitiesHealth =
-                    entitiesDB.QueryEntities<HealthEntityStruct>(ECSGroups.ActiveEnemies, out count);
+                var entities =
+                    entitiesDB.QueryEntities<EnemyEntityViewStruct, HealthEntityStruct, EnemyAttackStruct>(ECSGroups.ActiveEnemies, out var count);
 
+                var enemyEntitiesHealth = entities.Item2; 
+                var enemyEntitiesViews = entities.Item1;
+                var enemyAttackStruct = entities.Item3;
+                
                 for (var index = 0; index < count; index++)
                 {
                     if (enemyEntitiesHealth[index].dead == false) continue;
 
-                    SetParametersForDeath(ref enemyEntitiesViews[index]);
+                    SetParametersForDeath(ref enemyEntitiesViews[index], ref enemyAttackStruct[index]);
 
                     _enemyDeadSequencer.Next(this, enemyEntitiesViews[index].ID);
-
                     _entityFunctions.SwapEntityGroup<EnemyEntityDescriptor>(enemyEntitiesViews[index].ID,
                                                                             ECSGroups.DeadEnemiesGroups);
                 }
@@ -50,11 +51,13 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
             }
         }
 
-        static void SetParametersForDeath(ref EnemyEntityViewStruct enemyEntityViewStruct)
+        static void SetParametersForDeath(ref EnemyEntityViewStruct enemyEntityViewStruct,
+                                          ref EnemyAttackStruct     enemyAttackStruct)
         {
             enemyEntityViewStruct.layerComponent.layer                  = GAME_LAYERS.NOT_SHOOTABLE_MASK;
             enemyEntityViewStruct.movementComponent.navMeshEnabled      = false;
-            enemyEntityViewStruct.movementComponent.setCapsuleAsTrigger = true;
+//            enemyEntityViewStruct.movementComponent.setCapsuleAsTrigger = true;
+            enemyAttackStruct.entityInRange = new EnemyCollisionData();
         }
     }
 }

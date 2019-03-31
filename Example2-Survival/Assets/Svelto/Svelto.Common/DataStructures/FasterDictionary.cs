@@ -15,7 +15,7 @@ namespace Svelto.DataStructures.Experimental
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
-    public class FasterDictionary<TKey, TValue> : IDictionary<TKey, TValue> where TKey : IComparable<TKey>
+    public class FasterDictionary<TKey, TValue> : IDictionary<TKey, TValue> where TKey : IEquatable<TKey>
     {
         public FasterDictionary(uint size)
         {
@@ -197,7 +197,7 @@ namespace Svelto.DataStructures.Experimental
                         //must check if the key already exists in the dictionary
                         //for some reason this is faster than using Comparer<TKey>.default, should investigate
                         if (_valuesInfo[currentValueIndex].hashcode == hash &&
-                            _valuesInfo[currentValueIndex].key.CompareTo(key) == 0)
+                            _valuesInfo[currentValueIndex].key.Equals(key) == true)
                         {
                             //the key already exists, simply replace the value!
                             _values[currentValueIndex] = value;
@@ -291,7 +291,7 @@ namespace Svelto.DataStructures.Experimental
             while (indexToValueToRemove != -1)
             {
                 if (_valuesInfo[indexToValueToRemove].hashcode == hash &&
-                    _valuesInfo[indexToValueToRemove].key.CompareTo(key) == 0)
+                    _valuesInfo[indexToValueToRemove].key.Equals(key) == true)
                 {
                     //if the key is found and the bucket points directly to the node to remove
                     if (_buckets[bucketIndex] - 1 == indexToValueToRemove)
@@ -388,7 +388,7 @@ namespace Svelto.DataStructures.Experimental
             while (valueIndex != -1)
             {
                 //for some reason this is way faster than using Comparer<TKey>.default, should investigate
-                if (_valuesInfo[valueIndex].hashcode == hash && _valuesInfo[valueIndex].key.CompareTo(key) == 0)
+                if (_valuesInfo[valueIndex].hashcode == hash && _valuesInfo[valueIndex].key.Equals(key) == true)
                 {
                     //this is the one
                     findIndex = (uint) valueIndex;
@@ -419,7 +419,7 @@ namespace Svelto.DataStructures.Experimental
             while (valueIndex != -1)
             {
                 //for some reason this is way faster they use Comparer<TKey>.default, should investigate
-                if (valuesInfo[valueIndex].hashcode == hash && valuesInfo[valueIndex].key.CompareTo(key) == 0)
+                if (valuesInfo[valueIndex].hashcode == hash && valuesInfo[valueIndex].key.Equals(key) == true)
                 {
                     findIndex = (uint) valueIndex;
                     return true;

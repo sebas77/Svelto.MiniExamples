@@ -118,7 +118,7 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
 
                 enemystructs[0].transformComponent.position           = spawnInfo;
                 enemystructs[0].movementComponent.navMeshEnabled      = true;
-                enemystructs[0].movementComponent.setCapsuleAsTrigger = false;
+//                enemystructs[0].movementComponent.setCapsuleAsTrigger = false;
                 enemystructs[0].layerComponent.layer                  = GAME_LAYERS.ENEMY_LAYER;
                 enemystructs[0].animationComponent.reset              = true;
 

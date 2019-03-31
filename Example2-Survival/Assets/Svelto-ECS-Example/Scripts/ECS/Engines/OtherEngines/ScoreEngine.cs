@@ -23,7 +23,5 @@ namespace Svelto.ECS.Example.Survive.HUD
     public struct ScoreValueEntityStruct : IEntityStruct
     {
         public int scoreValue;
-
-        public EGID ID { get; set; }
     }
 }

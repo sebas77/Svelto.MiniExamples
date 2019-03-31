@@ -32,7 +32,8 @@ namespace Svelto.ECS
         T[] QueryEntitiesAndIndex<T>(uint id, uint                                group, out uint index) where T : IEntityStruct;
 
         /// <summary>
-        ///
+        /// QueryUniqueEntity is a contract method that explicitly declare the intention to have just on entity in a
+        /// specific group, usually used for GUI elements
         /// </summary>
         /// <param name="group"></param>
         /// <typeparam name="T"></typeparam>
@@ -61,10 +62,6 @@ namespace Svelto.ECS
         T[] QueryEntities<T>(uint group, out uint count) where T : IEntityStruct;
         T[] QueryEntities<T>(ExclusiveGroup.ExclusiveGroupStruct groupStruct, out uint count) where T : IEntityStruct;
         
-        EntityCollection<T>  QueryEntities<T>(uint                                group) where T : IEntityStruct;
-        EntityCollection<T>  QueryEntities<T>(ExclusiveGroup.ExclusiveGroupStruct groupStruct) where T : IEntityStruct;
-        EntityCollections<T> QueryEntities<T>(ExclusiveGroup[]                    groups) where T : IEntityStruct;
-
         (T1[], T2[]) QueryEntities<T1, T2>(uint group, out uint count) where T1 : IEntityStruct where T2 : IEntityStruct;
         (T1[], T2[]) QueryEntities<T1, T2>(ExclusiveGroup.ExclusiveGroupStruct groupStruct, out uint count)
             where T1 : IEntityStruct where T2 : IEntityStruct;
@@ -73,6 +70,11 @@ namespace Svelto.ECS
             where T1 : IEntityStruct where T2 : IEntityStruct where T3 : IEntityStruct;
         (T1[], T2[], T3[]) QueryEntities<T1, T2, T3>(ExclusiveGroup.ExclusiveGroupStruct groupStruct, out uint count)
             where T1 : IEntityStruct where T2 : IEntityStruct where T3 : IEntityStruct;
+        
+        EntityCollection<T> QueryEntities<T>(uint                                group) where T : IEntityStruct;
+        EntityCollection<T> QueryEntities<T>(ExclusiveGroup.ExclusiveGroupStruct groupStruct) where T : IEntityStruct;
+        
+        EntityCollections<T> QueryEntities<T>(ExclusiveGroup[] groups) where T : IEntityStruct;
 
         /// <summary>
         /// this version returns a mapped version of the entity array so that is possible to find the

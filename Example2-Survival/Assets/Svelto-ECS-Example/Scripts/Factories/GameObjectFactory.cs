@@ -15,8 +15,7 @@ namespace Svelto.ECS.Example.Survive.ResourceManager
 
         public IEnumerator<GameObject> Build(string prefabName)
         {
-            GameObject go;
-            if (_prefabs.TryGetValue(prefabName, out go) == false)
+            if (_prefabs.TryGetValue(prefabName, out var go) == false)
             {
                 var load = Addressables.LoadAsset<GameObject>(prefabName);
 

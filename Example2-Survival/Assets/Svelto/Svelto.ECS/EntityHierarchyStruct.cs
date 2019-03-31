@@ -1,6 +1,6 @@
 namespace Svelto.ECS
 {
-    public struct EntityHierarchyStruct : IEntityStruct
+    public struct EntityHierarchyStruct : IEntityStruct, INeedEGID
     {
         public readonly ExclusiveGroup.ExclusiveGroupStruct parentGroup;
             

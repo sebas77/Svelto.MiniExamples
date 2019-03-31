@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace Svelto.ECS.Example.Survive.Characters.Enemies
@@ -6,15 +7,15 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
     {
         bool    navMeshEnabled      { set; }
         Vector3 navMeshDestination  { set; }
-        bool    setCapsuleAsTrigger { set; }
+        //bool    setCapsuleAsTrigger { set; }
     }
 
     public interface IEnemyTriggerComponent : IComponent
     {
-        EnemyCollisionData entityInRange { get; }
+        DispatchOnChange<EnemyCollisionData> hitChange { get; set; }
     }
 
-    public struct EnemyCollisionData
+    public struct EnemyCollisionData : IEquatable<EnemyCollisionData>
     {
         public          EGID otherEntityID;
         public readonly bool collides;
@@ -23,6 +24,19 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
         {
             this.otherEntityID = otherEntityID;
             this.collides      = collides;
+        }
+
+        public bool Equals(EnemyCollisionData other)
+        {
+            return otherEntityID.Equals(other.otherEntityID) && collides == other.collides;
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return (otherEntityID.GetHashCode() * 397) ^ collides.GetHashCode();
+            }
         }
     }
 
