@@ -25,4 +25,10 @@ Object-less pure ECS example that shows the basics of Svelto.ECS and Svelto.Task
   * Something I will say later
   
 ## Example 2: To do
+
+Integration with Unity GameObjects and Monobehaviours. Uses Svelto ECS 2.0 (beta) and Svelto Tasks 1.5
+
+* Goal of this example: show the integration with OOP platforms (Unity in this case) throught the use of Entity View Structs and implementors.
+
+
 ## Example 3: To do
