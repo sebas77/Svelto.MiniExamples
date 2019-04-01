@@ -21,8 +21,8 @@ namespace Svelto.ECS.Example.Survive
                                          {
                                              {
                                                  PlayerDeathCondition.Death, playerMovementEngine,
-                                                 playerAnimationEngine,
-                                                 enemyAnimationEngine, damageSoundEngine, hudEngine
+                                                 playerAnimationEngine, enemyAnimationEngine, damageSoundEngine, 
+                                                 hudEngine
                                              }
                                          }
                                  }));

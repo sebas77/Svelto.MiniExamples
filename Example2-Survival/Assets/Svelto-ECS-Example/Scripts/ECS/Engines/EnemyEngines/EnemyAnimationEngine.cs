@@ -12,8 +12,8 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
 
         readonly ITime _time;
 
-        public EnemyAnimationEngine(ITime            time, EnemyDeathSequencer enemyDeadSequencer,
-                                    IEntityFunctions entityFunctions)
+        public EnemyAnimationEngine(ITime time, EnemyDeathSequencer enemyDeadSequencer,
+            IEntityFunctions entityFunctions)
         {
             _time               = time;
             _enemyDeadSequencer = enemyDeadSequencer;
@@ -65,15 +65,14 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
             while (true)
             {
                 var entites =
-                    entitiesDB.QueryEntities<EnemyEntityViewStruct, EnemySinkStruct, EnemyEntityStruct>(ECSGroups.DeadEnemiesGroups,
-                                                                    out var numberOfEnemies);
+                    entitiesDB.QueryEntities<EnemyEntityViewStruct, EnemySinkStruct, EnemyEntityStruct>(
+                        ECSGroups.DeadEnemiesGroups, out var numberOfEnemies);
 
                 var enemyEntityViewsStructs = entites.Item1;
                 var enemyEntitySinkStructs = entites.Item2;
 
                 for (var i = 0; i < numberOfEnemies; i++)
                 {
-                    
                     var animationComponent = enemyEntityViewsStructs[i].animationComponent;
                     if (animationComponent.playAnimation != "Dead")
                     {

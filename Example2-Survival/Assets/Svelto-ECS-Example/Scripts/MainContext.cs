@@ -18,7 +18,7 @@ using UnityEngine;
 namespace Svelto.ECS.Example.Survive
 {
     /// <summary>
-    ///     IComposition root is part of Svelto.Context Svelto.Context is not formally part of Svelto.ECS, but
+    ///     IComposition root is part of Svelto.Context. Svelto.Context is not formally part of Svelto.ECS, but
     ///     it's helpful to use in an environment where a Context is not present, like in Unity.
     ///     It's a bootstrap!
     /// </summary>
@@ -49,54 +49,28 @@ namespace Svelto.ECS.Example.Survive
         }
 
         /// <summary>
-        ///     Before to start a review of Svelto.ECS terminologies:
+        ///     Before to start, let's review some of the Svelto.ECS terms:
         ///     - Entity:
-        ///     it must be a real and concrete entity that you can explain
-        ///     in terms of game design. The name of each entity should reflect
-        ///     a specific concept from the game design domain
+        ///     it must be a real and concrete entity that you can explain in terms of game design. The name of each
+        ///     entity should reflect a specific concept from the game design domain
         ///     - Engines (Systems):
-        ///     Where all the logic lies. Engines operates on EntityViews or EntityStructs
-        ///     - EntityViews and EntitiyViewStructs:
-        ///     EntityViews maps Entity Components. The Engines can't
-        ///     access directly to each entity (as a single set of components), but
-        ///     through component sets defined by the EntityView.
-        ///     They act as component filters and expose only the entity components
-        ///     that the Engine is interested in.
-        ///     EntityViews are actually defined with the Engine so they
-        ///     come together with the engine and in the same namespace of the engine.
-        ///     EntityViewStructs should always be used, while EntityViews as
-        ///     class use should be considered an exception.
-        ///     - Component Interfaces:
-        ///     Components must be seen as data holders. There may be implementation
-        ///     exceptions, but the interface must declare a group
-        ///     of readable and/or writeable data.
-        ///     In Svelto.ECS components are always interfaces declaring
-        ///     Setters and Getters of Value Types. DispatchOnSet
-        ///     and DispatchOnChange must not be seen as events, but
-        ///     as pushing of data instead of data polling, similar
-        ///     to the concept of DataBinding.
-        ///     - Implementors:
-        ///     Being components interfaces, they must be implemented through
-        ///     Implementors. The relation Implementors to Components
-        ///     is not 1:1 so that you can group several
-        ///     components into fewer implementors. This allows to easily
-        ///     share data between components. Implementors also act
-        ///     as bridge between the platform and Svelto.ECS.
-        ///     Since Components can hold only value types, Implementors
-        ///     are the objects that can interact directly with the platform
-        ///     objects, I.E.: RigidBody, Transform and so on.
-        ///     Note: IComponents must hold only valuetypes for
-        ///     code design purposes and not optmization purposes.
-        ///     The reason is that all the logic must lie in the engines
-        ///     so Components cannot hold references to instances that can
-        ///     expose functions with logic.
+        ///     Where all the logic lies. Engines operates on EntityViewStructs and EntityStructs
         ///     - EntityStructs:
-        ///     In order to write Data Oriented Cache Friendly and allocation 0 code, Svelto.ECS
-        ///     also supports EntityStructs.
+        ///     EntityStructs is the preferred way to store entity data. They are just plain structs of pure data (no
+        ///     objects)
+        ///     - EntityViewStructs:
+        ///     EntityViewStructs are used to wrap Objects that come from OOP libraries. You will never use it unless
+        ///     you are forced to mix your ECS code with OOP code because of external libraries or platforms.
+        ///     The Objects are known to svelto through Component Interfaces. 
+        ///     - Component Interfaces:
+        ///     Components must be seen as data holders. In Svelto.ECS components are always interfaces declaring
+        ///     Setters and Getters of Value Types coming from the Objects they wrap 
+        ///     - Implementors:
+        ///     The components interfaces must be implemented through Implementors and the implementors are the
+        ///     Objects you need to wrap.
         ///     - EntityDescriptors:
-        ///     Gives a way to formalize your Entity in svelto.ECS, it also
-        ///     defoines the EntityViews, EntityStructs and EntityViewStructs that must be generated once the
-        ///     Entity is built
+        ///     Gives a way to formalise your Entity, it also defines the EntityStructs and EntityViewStructs that must
+        ///     be generated once the Entity is built
         /// </summary>
         void SetupEngines()
         {
