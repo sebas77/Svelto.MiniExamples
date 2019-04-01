@@ -24,7 +24,7 @@ Object-less pure ECS example that shows the basics of Svelto.ECS and Svelto.Task
 * **Iteration 4 (to do):**
   * Something I will say later
   
-## Example 2: To do
+## Example 2: Work In Progress
 
 Integration with Unity GameObjects and Monobehaviours. Uses Svelto ECS 2.0 (beta) and Svelto Tasks 1.5
 
