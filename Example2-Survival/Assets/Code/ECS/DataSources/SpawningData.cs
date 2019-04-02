@@ -3,7 +3,6 @@ using Svelto;
 using Svelto.ECS.Example.Survive;
 using UnityEngine;
 
-[ExecuteInEditMode]
 public class SpawningData : MonoBehaviour
 {
     static bool serializedSpawnDataOnce;
