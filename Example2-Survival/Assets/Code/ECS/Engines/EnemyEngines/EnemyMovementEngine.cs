@@ -18,7 +18,8 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
 
                 if (playersCount > 0)
                 {
-                    var enemies = entitiesDB.QueryEntities<EnemyEntityViewStruct>(ECSGroups.ActiveEnemies, out var enemiesCount);
+                    var enemies =
+                        entitiesDB.QueryEntities<EnemyEntityViewStruct>(ECSGroups.ActiveEnemies, out var enemiesCount);
 
                     for (var i = 0; i < enemiesCount; i++)
                         enemies[i].movementComponent.navMeshDestination =

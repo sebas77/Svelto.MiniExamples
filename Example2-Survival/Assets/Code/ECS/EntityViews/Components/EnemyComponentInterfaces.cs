@@ -7,7 +7,7 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
     {
         bool    navMeshEnabled      { set; }
         Vector3 navMeshDestination  { set; }
-        //bool    setCapsuleAsTrigger { set; }
+        bool    setCapsuleAsTrigger { set; }
     }
 
     public interface IEnemyTriggerComponent : IComponent

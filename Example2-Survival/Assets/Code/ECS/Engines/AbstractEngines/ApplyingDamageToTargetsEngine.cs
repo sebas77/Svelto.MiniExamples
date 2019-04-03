@@ -4,7 +4,7 @@ namespace Svelto.ECS.Example.Survive.Characters
 {
     /// <summary>
     ///     The responsibility of this engine is to apply the damage to any damageable entity. If the logic applied to
-    ///     the enemy was different than the logic applied to the player, I would have created two
+    ///     the enemy was different compared to the logic applied to the player, I would have created two
     ///     different engines
     /// </summary>
     public class ApplyingDamageToTargetsEngine : IQueryingEntitiesEngine

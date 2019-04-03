@@ -75,7 +75,7 @@ namespace Svelto.ECS.Example.Survive
         /// </summary>
         void SetupEngines()
         {
-            //The Engines Root is the core of Svelto.ECS. You shouldn't inject the EngineRoot as it is to avoid leaks,
+            //The Engines Root is the core of Svelto.ECS. You shouldn't inject the EngineRoot,
             //therefore the composition root must hold a reference or it will be GCed.
             //the UnitySumbmissionEntityViewScheduler is the scheduler that is used by the EnginesRoot to know
             //when to submit the entities. Custom ones can be created for special cases.
