@@ -13,3 +13,5 @@ Example1C-DoofusesMustEatMT/Assets/Plugins/Editor/JetBrains/JetBrains.Rider.Unit
 *.csproj
 Example2-Survival/Assets/AddressableAssetsData/
 Example2-Survival/Assets/Plugins/Editor/
+Example1-DoofusesMustEat/Iteration2-Burst/Assets/Plugins/
+Example1-DoofusesMustEat/Iteration1/Assets/Plugins/Editor/

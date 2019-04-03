@@ -6,6 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Example1B-DoofusesMustEatBurst/CombiningBehaviours.unity
+    path: Assets/Code/CombiningBehaviours.unity
     guid: 61d25b2685a298a4bbd39ac960d7fda6
   m_configObjects: {}

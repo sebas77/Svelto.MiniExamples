@@ -48,10 +48,8 @@ namespace Svelto.ECS.MiniExamples.Example1
                                            positionEntityStructs[index].position.z)
                     };
                 }
-                //UnityECS: Why I cannot set the number of items I want? I could avoid creating the native array every
-                //frame!
-                //Also I cannot find a way to iterate over the chunks linearly (with the operator[]). It would
-                //be better to access the components directly.
+                //UnityECS: this is not the proper way to sync with UnityECS. I will update when I have the time
+                //but for the purpose of this example, it doesn't matter
                 _group.CopyFromComponentDataArray(positions, out var handle3);
 
                 handle3.Complete();

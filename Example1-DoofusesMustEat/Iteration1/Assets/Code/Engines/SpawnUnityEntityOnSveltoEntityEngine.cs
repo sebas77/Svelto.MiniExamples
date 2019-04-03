@@ -14,16 +14,12 @@ namespace Svelto.ECS.MiniExamples.Example1
         protected override void Add(in UnityECSEntityStruct             entityView,
                                     ExclusiveGroup.ExclusiveGroupStruct? previousGroup)
         {
-            //this pattern must be improved, it's in the to do list
-            //move to its engine, it's spawning all the unity entities
             if (previousGroup == null)
                 SpawnUnityEntities(in entityView);
         }
         
         protected override void Remove(in UnityECSEntityStruct entityView, bool itsaSwap)
         {
-            //this pattern must be improved, it's in the to do list
-            //move to its engine, it's spawning all the unity entities
             if (itsaSwap == false)
                 DestroyEntity(in entityView);
         }
@@ -39,13 +35,12 @@ namespace Svelto.ECS.MiniExamples.Example1
             _entityManager = world.EntityManager;
         }
         
-        //it seems that the add callback was enough
         void SpawnUnityEntities(in UnityECSEntityStruct unityEcsEntityStruct)
         {
             var uecsEntity = _entityManager.Instantiate(unityEcsEntityStruct.uecsEntity);
 
             entitiesDB.QueryEntity<UnityECSEntityStruct>(unityEcsEntityStruct.ID).uecsEntity = uecsEntity;
-            
+             
             _entityManager.AddComponent(uecsEntity, unityEcsEntityStruct.unityComponent);
 
             _entityManager.SetComponentData(uecsEntity, new Translation
