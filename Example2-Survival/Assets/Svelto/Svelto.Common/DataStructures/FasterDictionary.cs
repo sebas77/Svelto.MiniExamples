@@ -144,7 +144,16 @@ namespace Svelto.DataStructures.Experimental
 
         IEnumerator IEnumerable.GetEnumerator() { throw new NotImplementedException(); }
 
-        public void AddCapacity(uint size) { throw new NotImplementedException(); }
+        public void SetCapacity(uint size)
+        {
+            var expandPrime = HashHelpers.ExpandPrime((int) size);
+
+            if (_values.Length < expandPrime)
+            {
+                Array.Resize(ref _values, expandPrime);
+                Array.Resize(ref _valuesInfo, expandPrime);
+            }
+        }
 
         public TValue this[TKey key]
         {
@@ -172,8 +181,8 @@ namespace Svelto.DataStructures.Experimental
             {
                 var expandPrime = HashHelpers.ExpandPrime((int) _freeValueCellIndex);
                 
-                Array.Resize(ref _values, (int) expandPrime);
-                Array.Resize(ref _valuesInfo, (int) expandPrime);
+                Array.Resize(ref _values, expandPrime);
+                Array.Resize(ref _valuesInfo, expandPrime);
             }
             
             int  hash        = key.GetHashCode();
@@ -540,7 +549,6 @@ namespace Svelto.DataStructures.Experimental
 
             public void Dispose() { throw new NotImplementedException(); }
         }
-
 
         protected TValue[] _values;
 

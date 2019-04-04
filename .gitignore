@@ -1,1 +1,4 @@
 *.csproj
+Example2-Survival/Assets/Plugins/
+Example2-Survival/Assets/Plugins.meta
+*.sln

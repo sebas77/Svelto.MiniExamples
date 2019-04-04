@@ -123,7 +123,7 @@ namespace Svelto.ECS
                 if (group.TryGetValue(entityViewType, out var dbList) == false)
                     group[entityViewType] = entityViewBuilder.Preallocate(ref dbList, size);
                 else
-                    dbList.AddCapacity(size);
+                    dbList.SetCapacity(size);
 
                 if (_groupsPerEntity.TryGetValue(entityViewType, out var groupedGroup) == false)
                     groupedGroup = _groupsPerEntity[entityViewType] = new FasterDictionary<uint, ITypeSafeDictionary>();

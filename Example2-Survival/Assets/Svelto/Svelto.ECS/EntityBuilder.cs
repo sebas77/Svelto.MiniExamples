@@ -56,7 +56,7 @@ namespace Svelto.ECS
             if (dictionary == null)
                 dictionary = new TypeSafeDictionary<T>(size);
             else
-                dictionary.AddCapacity(size);
+                dictionary.SetCapacity(size);
 
             return dictionary;
         }

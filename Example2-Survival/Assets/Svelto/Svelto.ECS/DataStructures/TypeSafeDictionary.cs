@@ -24,7 +24,7 @@ namespace Svelto.ECS.Internal
 
         void AddEntitiesToEngines(Dictionary<Type,FasterList<IHandleEntityViewEngineAbstracted>> entityViewEnginesDb, ITypeSafeDictionary realDic, ref PlatformProfiler profiler);
 
-        void AddCapacity(uint size);
+        void SetCapacity(uint size);
         void Trim();
         void Clear();
         bool Has(uint entityIdEntityId);
@@ -72,9 +72,8 @@ namespace Svelto.ECS.Internal
             foreach (var value in this)
             {
                 var typeSafeDictionary = realDic as TypeSafeDictionary<TValue>;
-                var i = typeSafeDictionary.GetValueIndex(value.Key);
                
-                AddEntityViewToEngines(entityViewEnginesDB, ref typeSafeDictionary._values[i], null, ref profiler);
+                AddEntityViewToEngines(entityViewEnginesDB, ref typeSafeDictionary.GetDirectValue(value.Key), null, ref profiler);
             }
         }
 
