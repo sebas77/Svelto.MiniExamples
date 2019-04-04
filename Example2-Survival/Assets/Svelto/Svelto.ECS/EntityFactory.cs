@@ -27,8 +27,8 @@ namespace Svelto.ECS.Internal
                 groupEntityViewsByType.current.Add(groupID, @group);
             }
 
-            groupEntityViewsByType.entitiesCreatedPerGroup.TryGetValue(groupID, out var value);
-            groupEntityViewsByType.entitiesCreatedPerGroup[groupID] = value+1;
+            groupEntityViewsByType.currentEntitiesCreatedPerGroup.TryGetValue(groupID, out var value);
+            groupEntityViewsByType.currentEntitiesCreatedPerGroup[groupID] = value+1;
             
             return @group;
         }

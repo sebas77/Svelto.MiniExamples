@@ -130,9 +130,6 @@ namespace Svelto.ECS
                     //EntityViewType           //groupID  //entityID, EntityStruct
         readonly Dictionary<Type, FasterDictionary<uint, ITypeSafeDictionary>> _groupsPerEntity;
         
-        //experimental
-        readonly FasterDictionary<uint, uint> _entitiesBuiltPerGroup;
-        
         readonly EntitiesStream _entitiesStream;
         readonly EntitiesDB     _entitiesDB;
         

@@ -12,10 +12,9 @@ namespace Svelto.ECS
 #if DISABLE_CHECKS        
         [Conditional("_CHECKS_DISABLED")]
 #endif
-        public static void CheckFields(Type type, bool needsReflection, bool isRoot)
+        public static void CheckFields(Type type, bool needsReflection)
         {
-            Type ENTITY_VIEW_TYPE = typeof(Type);
-            if (ENTITY_VIEW_TYPE == typeof(EntityStructInfoView) || type == EGIDType || type == ECLUSIVEGROUPSTRUCTTYPE) 
+            if (type == ENTITY_STRUCT_INFO_VIEW || type == EGIDType || type == ECLUSIVEGROUPSTRUCTTYPE) 
                 return;
 
             if (needsReflection == false)
@@ -75,7 +74,7 @@ namespace Svelto.ECS
             {
                 if (fieldFieldType.IsValueType == true && !fieldFieldType.IsEnum && fieldFieldType.IsPrimitive == false)
                 {
-                    CheckFields(fieldFieldType, false, false);
+                    CheckFields(fieldFieldType, false);
                 }
 
                 return;
@@ -98,6 +97,8 @@ namespace Svelto.ECS
         static readonly Type DISPATCHONSETTYPE       = typeof(DispatchOnSet<>);
         static readonly Type DISPATCHONCHANGETYPE    = typeof(DispatchOnChange<>);
         static readonly Type STRINGTYPE              = typeof(String);
+        static readonly Type ENTITY_VIEW_TYPE        = typeof(Type);
+        static readonly Type ENTITY_STRUCT_INFO_VIEW  = typeof(EntityStructInfoView);
     }
     
     public class EntityStructException : Exception

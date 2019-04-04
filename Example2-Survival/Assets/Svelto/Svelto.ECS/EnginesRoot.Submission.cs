@@ -59,7 +59,11 @@ namespace Svelto.ECS
                                 var str = "Crash while executing Entity Operation"
                                    .FastConcat(entitiesOperations[i].type.ToString());
 #if RELAXED_ECS
-                                Console.LogException(str.FastConcat(" ", entitiesOperations[i].trace), e);
+                                Console.LogException(str.FastConcat(" "
+#if DEBUG && !PROFILER                                                                                                                  
+                                                                  , entitiesOperations[i].trace
+#endif                                                                    
+                                                                    ), e);
 #else
                                 throw new ECSException(str.FastConcat(" ")
 #if DEBUG && !PROFILER                                                           
@@ -72,7 +76,7 @@ namespace Svelto.ECS
                     }
                 }
 
-                if (_groupedEntityToAdd.entitiesCreatedPerGroup.Count > 0)
+                if (_groupedEntityToAdd.currentEntitiesCreatedPerGroup.Count > 0)
                 {
                     using (profiler.Sample("Add operations"))
                     {
@@ -106,7 +110,7 @@ namespace Svelto.ECS
             { 
                 var groupID = groupOfEntitiesToSubmit.Key;
                 
-                if (dbgroupsOfEntitiesToSubmit.entitiesCreatedPerGroup.ContainsKey(groupID) == false) continue;
+                if (dbgroupsOfEntitiesToSubmit.otherEntitiesCreatedPerGroup.ContainsKey(groupID) == false) continue;
                 
                 //if the group doesn't exist in the current DB let's create it first
                 if (_groupEntityDB.TryGetValue(groupID, out var groupDB) == false)
@@ -125,8 +129,7 @@ namespace Svelto.ECS
                     dbDic.AddEntitiesFromDictionary(typeSafeDictionary, groupID);
 
                     if (_groupsPerEntity.TryGetValue(type, out var groupedGroup) == false)
-                        groupedGroup = _groupsPerEntity[type] =
-                                           new FasterDictionary<uint, ITypeSafeDictionary>();
+                        groupedGroup = _groupsPerEntity[type] = new FasterDictionary<uint, ITypeSafeDictionary>();
                     
                     groupedGroup[groupID] = dbDic;
                 }

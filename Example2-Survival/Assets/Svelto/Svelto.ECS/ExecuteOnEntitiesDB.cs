@@ -5,7 +5,7 @@ namespace Svelto.ECS.Internal
     partial class EntitiesDB
     {
         public void ExecuteOnAllEntities<T>(Action<T[], ExclusiveGroup.ExclusiveGroupStruct, uint, IEntitiesDB> action)
-            where T : IEntityStruct
+            where T : struct,  IEntityStruct
         {
             var type = typeof(T);
 
@@ -24,7 +24,7 @@ namespace Svelto.ECS.Internal
 
         public void ExecuteOnAllEntities
             <T, W>(ref W value, Action<T[], ExclusiveGroup.ExclusiveGroupStruct, uint, IEntitiesDB, W> action)
-            where T : IEntityStruct
+            where T : struct, IEntityStruct
         {
             var type = typeof(T);
 

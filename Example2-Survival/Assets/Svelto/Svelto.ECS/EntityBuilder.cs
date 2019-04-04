@@ -13,7 +13,7 @@ namespace Svelto.ECS
         {
             _initializer = DEFAULT_IT;
 
-            EntityBuilderUtilities.CheckFields(ENTITY_VIEW_TYPE, NEEDS_REFLECTION, true);
+            EntityBuilderUtilities.CheckFields(ENTITY_VIEW_TYPE, NEEDS_REFLECTION);
 
             if (NEEDS_REFLECTION)
                 EntityView<T>.InitCache();

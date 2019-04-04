@@ -129,7 +129,8 @@ namespace Svelto.ECS
                 Console.LogError("Only one entity operation per submission is allowed".FastConcat(" entityViewType: ")
                                     .FastConcat(typeof(T).Name)
                                     .FastConcat(" submission type ", entitySubmitOperation.type.ToString(),
-                                                " previous operation type: ",
+                                                " from ID: ",  entitySubmitOperation.fromID.entityID.ToString())
+                                    .FastConcat(            " previous operation type: ",
                                                 _entitiesOperations[(ulong) entitySubmitOperation.fromID].type
                                                    .ToString()));
             }

@@ -1,4 +1,4 @@
-﻿﻿﻿using System;
+﻿﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -21,21 +21,18 @@ namespace Svelto.DataStructures.Experimental
         {
             _valuesInfo = new Node[size];
             _values     = new TValue[size];
-            _buckets    = new int[HashHelpers.GetPrime(size)];
+            _buckets    = new int[HashHelpers.GetPrime((int) size)];
         }
 
         public FasterDictionary() : this(1) { }
 
-        ICollection<TKey> IDictionary<TKey, TValue>.Keys { get { throw new NotImplementedException(); } }
+        ICollection<TKey> IDictionary<TKey, TValue>.Keys => throw new NotImplementedException();
 
-        public FasterDictionaryKeys Keys { get { throw new NotImplementedException(); } }
+        public FasterDictionaryKeys Keys => throw new NotImplementedException();
 
-        ICollection<TValue> IDictionary<TKey, TValue>.Values { get { throw new NotImplementedException(); } }
+        ICollection<TValue> IDictionary<TKey, TValue>.Values => throw new NotImplementedException();
 
-        public ReadOnlyCollectionStruct<TValue> Values
-        {
-            get { return new ReadOnlyCollectionStruct<TValue>(_values, _freeValueCellIndex); }
-        }
+        public ReadOnlyCollectionStruct<TValue> Values => new ReadOnlyCollectionStruct<TValue>(_values, _freeValueCellIndex);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public TValue[] GetValuesArray(out uint count)
@@ -47,9 +44,9 @@ namespace Svelto.DataStructures.Experimental
 
         public uint Collisions => _collisions;
 
-        public int Count { get { return (int) _freeValueCellIndex; } }
+        public int Count => (int) _freeValueCellIndex;
 
-        public bool IsReadOnly { get { return false; } }
+        public bool IsReadOnly => false;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Add(TKey key, TValue value) { Add(key, ref value); }
@@ -173,7 +170,7 @@ namespace Svelto.DataStructures.Experimental
         {
             if (_freeValueCellIndex == _values.Length)
             {
-                var expandPrime = HashHelpers.ExpandPrime(_freeValueCellIndex);
+                var expandPrime = HashHelpers.ExpandPrime((int) _freeValueCellIndex);
                 
                 Array.Resize(ref _values, (int) expandPrime);
                 Array.Resize(ref _valuesInfo, (int) expandPrime);
@@ -234,7 +231,7 @@ namespace Svelto.DataStructures.Experimental
             if (_collisions > _buckets.Length)
             {
                 //we need more space and less collisions
-                _buckets = new int[HashHelpers.ExpandPrime(_collisions)];
+                _buckets = new int[HashHelpers.ExpandPrime((int) _collisions)];
 
                 _collisions = 0;
 
@@ -367,10 +364,12 @@ namespace Svelto.DataStructures.Experimental
 
         public void Trim()
         {
-            if (HashHelpers.ExpandPrime(_freeValueCellIndex) < _valuesInfo.Length)
+            var expandPrime = HashHelpers.ExpandPrime((int) _freeValueCellIndex);
+            
+            if (expandPrime < _valuesInfo.Length)
             {
-                Array.Resize(ref _values, (int) HashHelpers.ExpandPrime(_freeValueCellIndex));
-                Array.Resize(ref _valuesInfo, (int) HashHelpers.ExpandPrime(_freeValueCellIndex));
+                Array.Resize(ref _values, (int) expandPrime);
+                Array.Resize(ref _valuesInfo, (int) expandPrime);
             }
         }
 
@@ -471,12 +470,9 @@ namespace Svelto.DataStructures.Experimental
 
             public void Reset() { throw new NotImplementedException(); }
 
-            public KeyValuePairFast<TKey, TValue> Current
-            {
-                get { return new KeyValuePairFast<TKey, TValue>(_dic._valuesInfo[_index].key, _dic._values, _index); }
-            }
+            public KeyValuePairFast<TKey, TValue> Current => new KeyValuePairFast<TKey, TValue>(_dic._valuesInfo[_index].key, _dic._values, _index);
 
-            object IEnumerator.Current { get { throw new NotImplementedException(); } }
+            object IEnumerator.Current => throw new NotImplementedException();
 
             readonly FasterDictionary<TKey, TValue> _dic;
             readonly int                            _count;
@@ -540,7 +536,7 @@ namespace Svelto.DataStructures.Experimental
 
             public TKey Current { get; }
 
-            object IEnumerator.Current { get { return Current; } }
+            object IEnumerator.Current => Current;
 
             public void Dispose() { throw new NotImplementedException(); }
         }
@@ -564,7 +560,7 @@ namespace Svelto.DataStructures.Experimental
             _index = index;
         }
 
-        public TKey Key;
+        public readonly TKey Key;
         public ref TValue Value => ref _dicValues[_index];
     }
 

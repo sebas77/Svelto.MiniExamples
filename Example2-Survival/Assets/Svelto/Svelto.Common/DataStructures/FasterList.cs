@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Threading;
 
 namespace Svelto.DataStructures
@@ -588,15 +589,17 @@ namespace Svelto.DataStructures
         
         public ref T this[int index]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 DBC.Common.Check.Require(index < _count && _count > 0, "out of bound index");
                 return ref _buffer[index];
             }
         }
-        
+
         public ref T this[uint index]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 DBC.Common.Check.Require(index < _count, "out of bound index");

@@ -36,7 +36,7 @@ namespace Svelto.ECS.Internal
         static readonly string _typeName = _type.Name;
         static readonly bool HasEgid = typeof(INeedEGID).IsAssignableFrom(_type);
         
-        public TypeSafeDictionary(uint size) : base(size) { }
+        public TypeSafeDictionary(uint size) : base((uint) size) { }
         public TypeSafeDictionary() {}
         
         public void AddEntitiesFromDictionary(ITypeSafeDictionary entitiesToSubmit, uint groupId)
