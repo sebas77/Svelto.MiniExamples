@@ -1,4 +1,13 @@
 *.csproj
+*.csproj.*
 Example2-Survival/Assets/Plugins/
 Example2-Survival/Assets/Plugins.meta
 *.sln
+Library/
+Temp/
+.idea/
+JetBrains
+JetBrains.*
+obj/
+Recordings/
+*.user
