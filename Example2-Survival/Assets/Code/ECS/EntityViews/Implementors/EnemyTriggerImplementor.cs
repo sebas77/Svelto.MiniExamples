@@ -1,3 +1,4 @@
+using Svelto.ECS.Unity;
 using UnityEngine;
 
 namespace Svelto.ECS.Example.Survive.Characters.Enemies

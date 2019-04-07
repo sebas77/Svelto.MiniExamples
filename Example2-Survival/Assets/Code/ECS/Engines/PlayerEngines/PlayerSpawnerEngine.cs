@@ -3,6 +3,7 @@ using Svelto.ECS.Example.Survive;
 using Svelto.ECS.Example.Survive.Characters;
 using Svelto.ECS.Example.Survive.Characters.Player;
 using Svelto.ECS.Example.Survive.ResourceManager;
+using Svelto.ECS.Unity;
 using UnityEngine;
 
 namespace Svelto.ECS.Example.Player

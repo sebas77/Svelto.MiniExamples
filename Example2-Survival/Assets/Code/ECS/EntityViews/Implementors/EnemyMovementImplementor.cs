@@ -1,4 +1,5 @@
 using System;
+using Svelto.ECS.Unity;
 using UnityEngine;
 using UnityEngine.AI;
 

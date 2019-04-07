@@ -9,6 +9,7 @@ using Svelto.ECS.Example.Survive.Characters.Sounds;
 using Svelto.ECS.Example.Survive.HUD;
 using Svelto.ECS.Example.Survive.ResourceManager;
 using Svelto.ECS.Schedulers.Unity;
+using Svelto.ECS.Unity;
 using Svelto.Tasks;
 using UnityEngine;
 

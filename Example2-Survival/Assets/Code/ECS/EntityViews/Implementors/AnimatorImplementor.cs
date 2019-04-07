@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Svelto.ECS.Unity;
+using UnityEngine;
 
 namespace Svelto.ECS.Example.Survive.Implementors
 {

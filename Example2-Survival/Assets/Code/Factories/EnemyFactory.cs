@@ -3,6 +3,7 @@ using Svelto.ECS.Example.Survive.Characters;
 using Svelto.ECS.Example.Survive.Characters.Enemies;
 using Svelto.ECS.Example.Survive.HUD;
 using Svelto.ECS.Example.Survive.ResourceManager;
+using Svelto.ECS.Unity;
 using UnityEngine;
 
 namespace Svelto.ECS.Example.Survive

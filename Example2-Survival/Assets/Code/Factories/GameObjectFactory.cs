@@ -7,7 +7,9 @@ namespace Svelto.ECS.Example.Survive.ResourceManager
 {
     /// <summary>
     ///     this is a very rudimentary resource manager, you will need to use similar solutions if you need to
-    ///     mix ECS with OOP data.
+    ///     mix ECS with OOP data. However you must isolate these cases and keep in separate, abstracted layers.
+    ///     The user must be clear that these strategies are to solve specific problems and not to be used
+    ///     for everything.
     /// </summary>
     public class GameObjectFactory
     {
@@ -22,6 +24,8 @@ namespace Svelto.ECS.Example.Survive.ResourceManager
                 while (load.IsDone == false) yield return null;
 
                 go = load.Result;
+                
+                _prefabs.Add(prefabName, go);
             }
 
             yield return GameObject.Instantiate(go);
