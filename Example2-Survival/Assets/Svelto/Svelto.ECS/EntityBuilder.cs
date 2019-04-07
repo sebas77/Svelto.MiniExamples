@@ -7,7 +7,7 @@ using Svelto.Utilities;
 
 namespace Svelto.ECS
 {
-    public class EntityBuilder<T> : IEntityBuilder where T : IEntityStruct, new()
+    public class EntityBuilder<T> : IEntityBuilder where T : struct, IEntityStruct
     {
         public EntityBuilder()
         {

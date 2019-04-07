@@ -5,7 +5,7 @@ using Svelto.ECS.Internal;
 
 namespace Svelto.ECS
 {
-    public struct EntityCollection<T> : IEnumerable<T>
+    public struct EntityCollection<T>
     {
         public EntityCollection(T[] array, uint count)
         {
@@ -13,16 +13,12 @@ namespace Svelto.ECS
             _count = count;
         }
 
-        IEnumerator IEnumerable.GetEnumerator() => throw new NotImplementedException();
-
-        IEnumerator<T> IEnumerable<T>.GetEnumerator() => throw new NotImplementedException();
-
         public EntityIterator<T> GetEnumerator() { return new EntityIterator<T>(_array, _count); }
 
         readonly T[]  _array;
         readonly uint _count;
     }
-     public struct EntityCollections<T> : IEnumerable<T> where T : struct, IEntityStruct
+     public struct EntityCollections<T> where T : struct, IEntityStruct
      {
         public EntityCollections(IEntitiesDB db, ExclusiveGroup[] groups) : this()
         {
@@ -30,27 +26,19 @@ namespace Svelto.ECS
             _groups = groups;
         }
 
-        IEnumerator IEnumerable.GetEnumerator() => throw new NotImplementedException();
-
-        IEnumerator<T> IEnumerable<T>.GetEnumerator() => throw new NotImplementedException();
-
         public EntityGroupsIterator<T> GetEnumerator() { return new EntityGroupsIterator<T>(_db, _groups); }
 
         readonly IEntitiesDB      _db;
         readonly ExclusiveGroup[] _groups;
     }
      
-     public struct EntityCollections<T1, T2> : IEnumerable<(T1, T2)> where T1 : struct, IEntityStruct where T2 : struct, IEntityStruct
+     public struct EntityCollections<T1, T2> where T1 : struct, IEntityStruct where T2 : struct, IEntityStruct
      {
          public EntityCollections(IEntitiesDB db, ExclusiveGroup[] groups) : this()
          {
              _db = db;
              _groups = groups;
          }
-
-         IEnumerator IEnumerable.GetEnumerator() => throw new NotImplementedException();
-
-         IEnumerator<(T1, T2)> IEnumerable<(T1, T2)>.GetEnumerator() => throw new NotImplementedException();
 
          public EntityGroupsIterator<T1, T2> GetEnumerator() { return new EntityGroupsIterator<T1, T2>(_db, _groups); }
 

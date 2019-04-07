@@ -30,7 +30,7 @@ namespace Svelto.ECS.Internal
         bool Has(uint entityIdEntityId);
     }
 
-    class TypeSafeDictionary<TValue> : FasterDictionary<uint, TValue>, ITypeSafeDictionary where TValue : IEntityStruct
+    class TypeSafeDictionary<TValue> : FasterDictionary<uint, TValue>, ITypeSafeDictionary where TValue : struct, IEntityStruct
     {
         static readonly Type   _type     = typeof(TValue);
         static readonly string _typeName = _type.Name;

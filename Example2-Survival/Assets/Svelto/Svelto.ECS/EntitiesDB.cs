@@ -275,7 +275,7 @@ namespace Svelto.ECS.Internal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        bool QueryEntitySafeDictionary<T>(uint group, out TypeSafeDictionary<T> typeSafeDictionary) where T : IEntityStruct
+        bool QueryEntitySafeDictionary<T>(uint group, out TypeSafeDictionary<T> typeSafeDictionary) where T : struct, IEntityStruct
         {
             typeSafeDictionary = null;
 

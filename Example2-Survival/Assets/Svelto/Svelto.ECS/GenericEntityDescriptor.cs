@@ -1,6 +1,6 @@
 ﻿namespace Svelto.ECS
 {
-    public abstract class GenericEntityDescriptor<T> : IEntityDescriptor where T : IEntityStruct, new()
+    public abstract class GenericEntityDescriptor<T> : IEntityDescriptor where T : struct,  IEntityStruct
     {
         static readonly IEntityBuilder[] _entityBuilders;
         static GenericEntityDescriptor() { _entityBuilders = new IEntityBuilder[] {new EntityBuilder<T>()}; }
@@ -9,7 +9,7 @@
     }
 
     public abstract class GenericEntityDescriptor<T, U> : IEntityDescriptor
-        where T : IEntityStruct, new() where U : IEntityStruct, new()
+        where T : struct,  IEntityStruct where U : struct,  IEntityStruct
     {
         static readonly IEntityBuilder[] _entityBuilders;
 
@@ -22,7 +22,7 @@
     }
 
     public abstract class GenericEntityDescriptor<T, U, V> : IEntityDescriptor
-        where T : IEntityStruct, new() where U : IEntityStruct, new() where V : IEntityStruct, new()
+        where T : struct,  IEntityStruct where U : struct,  IEntityStruct where V : struct,  IEntityStruct
     {
         static readonly IEntityBuilder[] _entityBuilders;
 
@@ -40,8 +40,8 @@
     }
 
     public abstract class GenericEntityDescriptor<T, U, V, W> : IEntityDescriptor
-        where T : IEntityStruct, new() where U : IEntityStruct, new() where V : IEntityStruct, new()
-        where W : IEntityStruct, new()
+        where T : struct,  IEntityStruct where U : struct,  IEntityStruct where V : struct,  IEntityStruct
+        where W : struct,  IEntityStruct
     {
         static readonly IEntityBuilder[] _entityBuilders;
 
@@ -60,8 +60,8 @@
     }
 
     public abstract class GenericEntityDescriptor<T, U, V, W, X> : IEntityDescriptor
-        where T : IEntityStruct, new() where U : IEntityStruct, new() where V : IEntityStruct, new()
-        where W : IEntityStruct, new() where X : IEntityStruct, new()
+        where T : struct,  IEntityStruct where U : struct,  IEntityStruct where V : struct,  IEntityStruct
+        where W : struct,  IEntityStruct where X : struct,  IEntityStruct
     {
         static readonly IEntityBuilder[] _entityBuilders;
 
@@ -81,8 +81,8 @@
     }
 
     public abstract class GenericEntityDescriptor<T, U, V, W, X, Y> : IEntityDescriptor
-        where T : IEntityStruct, new() where U : IEntityStruct, new() where V : IEntityStruct, new()
-        where W : IEntityStruct, new() where X : IEntityStruct, new() where Y : IEntityStruct, new()
+        where T : struct,  IEntityStruct where U : struct,  IEntityStruct where V : struct,  IEntityStruct
+        where W : struct,  IEntityStruct where X : struct,  IEntityStruct where Y : struct,  IEntityStruct
     {
         static readonly IEntityBuilder[] _entityBuilders;
 

@@ -3,7 +3,7 @@ using Svelto.ECS.Internal;
 
 namespace Svelto.ECS
 {
-    public struct EGIDMapper<T> where T : IEntityStruct
+    public struct EGIDMapper<T> where T : struct, IEntityStruct
     {
         internal TypeSafeDictionary<T> map;
 
