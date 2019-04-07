@@ -4,7 +4,7 @@ using Svelto.Tasks;
 namespace Svelto.ECS.Example.Survive.Characters.Player
 {
     public class PlayerAnimationEngine
-        : SingleEntityEngine<PlayerEntityViewStruct>, IQueryingEntitiesEngine, IStep<PlayerDeathCondition>
+        : SingleEntityReactiveEngine<PlayerEntityViewStruct>, IQueryingEntitiesEngine, IStep<PlayerDeathCondition>
     {
         readonly ITaskRoutine<IEnumerator> _taskRoutine;
 

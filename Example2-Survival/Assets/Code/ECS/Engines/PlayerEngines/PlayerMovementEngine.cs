@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Svelto.ECS.Example.Survive.Characters.Player
 {
     public class PlayerMovementEngine
-        : SingleEntityEngine<PlayerEntityViewStruct>, IQueryingEntitiesEngine, IStep<PlayerDeathCondition>
+        : SingleEntityReactiveEngine<PlayerEntityViewStruct>, IQueryingEntitiesEngine, IStep<PlayerDeathCondition>
     {
         const float camRayLength = 100f; // The length of the ray from the camera into the scene.
 

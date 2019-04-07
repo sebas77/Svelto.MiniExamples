@@ -8,7 +8,7 @@ namespace Svelto.ECS.Example.Survive.Camera
     //Second step name the engine according the behaviour and the entity: I.E.: CameraFollowTargetEngine
     //Third step start to write the code and create classes/fields as needed using refactoring tools 
     public class CameraFollowTargetEngine
-        : MultiEntitiesEngine<CameraEntityView, CameraTargetEntityView>, IQueryingEntitiesEngine
+        : MultiEntitiesReactiveEngine<CameraEntityView, CameraTargetEntityView>, IQueryingEntitiesEngine
     {
         readonly ITaskRoutine<IEnumerator> _taskRoutine;
 

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Svelto.ECS.Example.Survive.Characters.Enemies
 {
-    public class EnemyAttackEngine : SingleEntityEngine<EnemyAttackEntityViewStruct>, IQueryingEntitiesEngine
+    public class EnemyAttackEngine : SingleEntityReactiveEngine<EnemyAttackEntityViewStruct>, IQueryingEntitiesEngine
     {
         public EnemyAttackEngine(ITime time)
         {
@@ -17,7 +17,7 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
         public void Ready() { CheckIfHittingEnemyTarget().Run();}
 
         /// <summary>
-        /// Add and Remove callback are enable by the SingleEntityEngine and MultiEntitiesEngine specifications
+        /// Add and Remove callback are enable by the SingleEntityReactiveEngine and MultiEntitiesReactiveEngine specifications
         /// They are called when:
         /// an Entity is built in a group
         /// an Entity is swapped in and from a group
@@ -40,7 +40,7 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
         }
 
         /// <summary>
-        /// Add and Remove callback are enable by the SingleEntityEngine and MultiEntitiesEngine specifications
+        /// Add and Remove callback are enable by the SingleEntityReactiveEngine and MultiEntitiesReactiveEngine specifications
         /// They are called when:
         /// an Entity is built in a group
         /// an Entity is swapped in and from a group

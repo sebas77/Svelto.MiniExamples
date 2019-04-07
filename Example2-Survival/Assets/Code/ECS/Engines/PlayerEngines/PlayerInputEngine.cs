@@ -9,7 +9,7 @@ namespace Svelto.ECS.Example.Survive.Characters.Player
     ///     if you need to test input, you can mock this class
     ///     alternatively you can mock the implementor.
     /// </summary>
-    public class PlayerInputEngine : SingleEntityEngine<PlayerEntityViewStruct>, IQueryingEntitiesEngine
+    public class PlayerInputEngine : SingleEntityReactiveEngine<PlayerEntityViewStruct>, IQueryingEntitiesEngine
     {
         readonly ITaskRoutine<IEnumerator> _taskRoutine;
 

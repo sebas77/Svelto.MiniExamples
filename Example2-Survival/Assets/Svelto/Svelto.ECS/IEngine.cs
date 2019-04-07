@@ -2,8 +2,8 @@ namespace Svelto.ECS.Internal
 {
     public interface IHandleEntityViewEngineAbstracted : IEngine
     {}
-
-    interface IHandleEntityStructEngine<T> : IHandleEntityViewEngineAbstracted
+    
+    internal interface IHandleEntityStructEngine<T> : IHandleEntityViewEngineAbstracted
     {
         void AddInternal(ref T entityView, ExclusiveGroup.ExclusiveGroupStruct? previousGroup);
         void RemoveInternal(ref T entityView, bool itsaSwap);

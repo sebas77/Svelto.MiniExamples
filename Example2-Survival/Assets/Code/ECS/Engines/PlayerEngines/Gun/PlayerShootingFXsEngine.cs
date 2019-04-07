@@ -4,7 +4,7 @@ using Svelto.Tasks.Enumerators;
 
 namespace Svelto.ECS.Example.Survive.Characters.Player.Gun
 {
-    public class PlayerGunShootingFXsEngine : SingleEntityEngine<GunEntityViewStruct>, IQueryingEntitiesEngine
+    public class PlayerGunShootingFXsEngine : SingleEntityReactiveEngine<GunEntityViewStruct>, IQueryingEntitiesEngine
     {
         ITaskRoutine<IEnumerator> _taskRoutine;
         WaitForSecondsEnumerator  _waitForSeconds;

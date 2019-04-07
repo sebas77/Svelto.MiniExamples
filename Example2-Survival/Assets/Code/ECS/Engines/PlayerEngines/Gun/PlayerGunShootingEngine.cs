@@ -4,7 +4,7 @@ using Svelto.Tasks;
 namespace Svelto.ECS.Example.Survive.Characters.Player.Gun
 {
     public class PlayerGunShootingEngine
-        : MultiEntitiesEngine<GunEntityViewStruct, PlayerEntityViewStruct>, IQueryingEntitiesEngine
+        : MultiEntitiesReactiveEngine<GunEntityViewStruct, PlayerEntityViewStruct>, IQueryingEntitiesEngine
     {
         readonly IRayCaster                _rayCaster;
         readonly ITaskRoutine<IEnumerator> _taskRoutine;
