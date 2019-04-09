@@ -18,6 +18,6 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
             new EntityBuilder<DamageableEntityStruct>()
         };
 
-        public IEntityBuilder[] entitiesToBuild { get { return _entitiesToBuild; } }
+        public IEntityBuilder[] entitiesToBuild => _entitiesToBuild;
     }
 }

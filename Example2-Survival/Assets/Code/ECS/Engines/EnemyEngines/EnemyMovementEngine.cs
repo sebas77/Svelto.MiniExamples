@@ -14,13 +14,17 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
             {
                 //query all the enemies from the standard group (no disabled nor respawning)
                 var enemyTargetEntityViews =
-                    entitiesDB.QueryEntities<EnemyTargetEntityViewStruct>(ECSGroups.EnemyTargets, out var playersCount);
+                    entitiesDB.QueryEntities<EnemyTargetEntityViewStruct>(
+                        ECSGroups.EnemyTargets, out var enemyTargetsCount);
 
-                if (playersCount > 0)
+                if (enemyTargetsCount > 0)
                 {
                     var enemies =
                         entitiesDB.QueryEntities<EnemyEntityViewStruct>(ECSGroups.ActiveEnemies, out var enemiesCount);
 
+                    //using always the first target because in this case I know there can be only one, but if 
+                    //there were more, I could use different strategies, like choose the closest. This is 
+                    //for a very simple AI scenario of course.
                     for (var i = 0; i < enemiesCount; i++)
                         enemies[i].movementComponent.navMeshDestination =
                             enemyTargetEntityViews[0].targetPositionComponent.position;

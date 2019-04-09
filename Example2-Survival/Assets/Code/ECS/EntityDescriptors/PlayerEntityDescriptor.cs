@@ -17,6 +17,6 @@ namespace Svelto.ECS.Example.Survive.Characters.Player
             new EntityBuilder<PlayerInputDataStruct>()
         };
 
-        public IEntityBuilder[] entitiesToBuild { get { return _entitiesToBuild; } }
+        public IEntityBuilder[] entitiesToBuild => _entitiesToBuild;
     }
 }
