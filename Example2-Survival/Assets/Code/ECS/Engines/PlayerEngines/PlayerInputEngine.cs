@@ -9,7 +9,7 @@ namespace Svelto.ECS.Example.Survive.Characters.Player
     ///     if you need to test input, you can mock this class
     ///     alternatively you can mock the implementor.
     /// </summary>
-    public class PlayerInputEngine : SingleEntityReactiveEngine<PlayerEntityViewStruct>, IQueryingEntitiesEngine
+    public class PlayerInputEngine : IReactOnAddAndRemove<PlayerEntityViewStruct>, IQueryingEntitiesEngine
     {
         readonly ITaskRoutine<IEnumerator> _taskRoutine;
 
@@ -45,12 +45,11 @@ namespace Svelto.ECS.Example.Survive.Characters.Player
             }
         }
 
-        protected override void Add(ref PlayerEntityViewStruct           entityView,
-                                    ExclusiveGroup.ExclusiveGroupStruct? previousGroup)
+        public void Add(ref PlayerEntityViewStruct           entityView)
         {
             _taskRoutine.Start();
         }
 
-        protected override void Remove(ref PlayerEntityViewStruct entityView, bool itsaSwap) { _taskRoutine.Stop(); }
+        public void Remove(ref PlayerEntityViewStruct entityView) { _taskRoutine.Stop(); }
     }
 }

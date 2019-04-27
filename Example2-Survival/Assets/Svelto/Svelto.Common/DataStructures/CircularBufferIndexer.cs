@@ -11,25 +11,13 @@ namespace Svelto.DataStructures
 
     public class CircularBufferIndexer<TKey, TVal> : IDictionary<TKey, TVal>
     {
-        public ICollection<TKey> Keys
-        {
-            get { return _keys; }
-        }
+        public ICollection<TKey> Keys => _keys;
 
-        public ICollection<TVal> Values
-        {
-            get { return _values; }
-        }
+        public ICollection<TVal> Values => _values;
 
-        public int Count
-        {
-            get { throw new NotImplementedException(); }
-        }
+        public int Count => throw new NotImplementedException();
 
-        public bool IsReadOnly
-        {
-            get { throw new NotImplementedException(); }
-        }
+        public bool IsReadOnly => throw new NotImplementedException();
 
         public CircularBufferIndexer(int size)
         {

@@ -64,24 +64,13 @@ namespace Svelto.DataStructures
             throw new NotImplementedException();
         }
 
-        public int Count
-        {
-            get { return (int) _count;  }
-        }
+        public int Count => (int) _count;
 
-        public bool IsReadOnly
-        {
-            get { return true;  }
-        }
+        public bool IsReadOnly => true;
 
-        public bool IsSynchronized
-        {
-            get { return false; }
-        }
-        public object SyncRoot
-        {
-            get { return null; }
-        }
+        public bool IsSynchronized => false;
+
+        public object SyncRoot => null;
 
         readonly T[] _values;
         readonly uint _count;
@@ -122,20 +111,11 @@ namespace Svelto.DataStructures
             _index = 0;
         }
         
-        public T Current
-        {
-            get { return _current; }
-        }
+        public T Current => _current;
 
-        T IEnumerator<T>.Current
-        {
-            get { return _current; }
-        }
+        T IEnumerator<T>.Current => _current;
 
-        object IEnumerator.Current
-        {
-            get { return _current; }
-        }
+        object IEnumerator.Current => _current;
         public void   Dispose() { }
 
         readonly T[] _values;

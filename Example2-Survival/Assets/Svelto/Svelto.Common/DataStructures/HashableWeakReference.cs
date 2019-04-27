@@ -4,8 +4,8 @@ namespace Svelto.DataStructures
 {
     class HashableWeakRef<T> : IEquatable<HashableWeakRef<T>> where T : class
     {
-        public bool isAlive { get { return _weakRef.IsAlive; } }
-        public T Target { get { return (T)_weakRef.Target; } }
+        public bool isAlive => _weakRef.IsAlive;
+        public T Target => (T)_weakRef.Target;
 
         public HashableWeakRef(T target)
         {

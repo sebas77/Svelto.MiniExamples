@@ -4,7 +4,7 @@ using Svelto.Tasks;
 namespace Svelto.ECS.Example.Survive.Characters.Player
 {
     public class PlayerAnimationEngine
-        : SingleEntityReactiveEngine<PlayerEntityViewStruct>, IQueryingEntitiesEngine, IStep<PlayerDeathCondition>
+        : IReactOnAddAndRemove<PlayerEntityViewStruct>, IQueryingEntitiesEngine, IStep<PlayerDeathCondition>
     {
         readonly ITaskRoutine<IEnumerator> _taskRoutine;
 
@@ -50,11 +50,10 @@ namespace Svelto.ECS.Example.Survive.Characters.Player
             }
         }
 
-        protected override void Add(ref PlayerEntityViewStruct           entityView,
-                                    ExclusiveGroup.ExclusiveGroupStruct? previousGroup)
+        public void Add(ref PlayerEntityViewStruct           entityView)
         {
         }
 
-        protected override void Remove(ref PlayerEntityViewStruct entityView, bool itsaSwap) { _taskRoutine.Stop(); }
+        public void Remove(ref PlayerEntityViewStruct entityView) { _taskRoutine.Stop(); }
     }
 }

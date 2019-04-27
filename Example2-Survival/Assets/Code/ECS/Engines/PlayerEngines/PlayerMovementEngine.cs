@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Svelto.ECS.Example.Survive.Characters.Player
 {
     public class PlayerMovementEngine
-        : SingleEntityReactiveEngine<PlayerEntityViewStruct>, IQueryingEntitiesEngine, IStep<PlayerDeathCondition>
+        : IReactOnAddAndRemove<PlayerEntityViewStruct>, IQueryingEntitiesEngine, IStep<PlayerDeathCondition>
     {
         const float camRayLength = 100f; // The length of the ray from the camera into the scene.
 
@@ -35,13 +35,12 @@ namespace Svelto.ECS.Example.Survive.Characters.Player
             playerEntityView.rigidBodyComponent.isKinematic = true;
         }
 
-        protected override void Add(ref PlayerEntityViewStruct           playerEntityViewStruct,
-                                    ExclusiveGroup.ExclusiveGroupStruct? previousGroup)
+        public void Add(ref PlayerEntityViewStruct           playerEntityViewStruct)
         {
             _taskRoutine.Start();
         }
 
-        protected override void Remove(ref PlayerEntityViewStruct playerEntityViewStruct, bool itsaSwap)
+        public void Remove(ref PlayerEntityViewStruct playerEntityViewStruct)
         {
             _taskRoutine.Stop();
         }

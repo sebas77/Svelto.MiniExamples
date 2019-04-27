@@ -58,7 +58,7 @@ namespace Svelto.ECS
                             {
                                 var str = "Crash while executing Entity Operation"
                                    .FastConcat(entitiesOperations[i].type.ToString());
-#if RELAXED_ECS
+#if RELAXED_ECS && !PROFILER
                                 Console.LogException(str.FastConcat(" "
 #if DEBUG && !PROFILER                                                                                                                  
                                                                   , entitiesOperations[i].trace
@@ -135,8 +135,8 @@ namespace Svelto.ECS
                 }
             }
 
-            //then submit everything in the engines, so that the DB is up to date
-            //with all the entity views and struct created by the entity built
+            //then submit everything in the engines, so that the DB is up to date with all the entity views and struct
+            //created by the entity built
             using (profiler.Sample("Add entities to engines"))
             {
                 foreach (var groupToSubmit in groupsOfEntitiesToSubmit)
@@ -148,8 +148,7 @@ namespace Svelto.ECS
                     {
                         var realDic = groupDB[entityViewsPerType.Key];
                             
-                        entityViewsPerType.Value.AddEntitiesToEngines(_entityEngines, realDic, ref profiler);
-                    
+                        entityViewsPerType.Value.AddEntitiesToEngines(_reactiveEnginesAddRemove, realDic, ref profiler);
                     }
                 }
             }

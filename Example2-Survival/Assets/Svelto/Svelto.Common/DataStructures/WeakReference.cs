@@ -13,7 +13,7 @@ namespace Svelto.DataStructures
     public class WeakReference<T>
         : WeakReference where T : class
     {
-        public bool IsValid { get { return Object.ReferenceEquals(Target, null) == false && IsAlive == true; } }
+        public bool IsValid => Object.ReferenceEquals(Target, null) == false && IsAlive == true;
 
         /// <span class="code-SummaryComment"><summary></span>
         /// Gets or sets the object (the target) referenced by the
@@ -21,14 +21,8 @@ namespace Svelto.DataStructures
         /// <span class="code-SummaryComment"></summary></span>
         public new T Target
         {
-            get
-            {
-                return (T)base.Target;
-            }
-            set
-            {
-                base.Target = value;
-            }
+            get => (T)base.Target;
+            set => base.Target = value;
         }
         /// <span class="code-SummaryComment"><summary></span>
         /// Initializes a new instance of the WeakReference{T} class, referencing

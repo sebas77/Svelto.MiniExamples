@@ -8,7 +8,7 @@ namespace Svelto.ECS.Example.Survive.Camera
     //Second step name the engine according the behaviour and the entity: I.E.: CameraFollowTargetEngine
     //Third step start to write the code and create classes/fields as needed using refactoring tools 
     public class CameraFollowTargetEngine
-        : MultiEntitiesReactiveEngine<CameraEntityView, CameraTargetEntityView>, IQueryingEntitiesEngine
+        : IReactOnAddAndRemove<CameraEntityView>, IReactOnAddAndRemove<CameraTargetEntityView>, IQueryingEntitiesEngine
     {
         readonly ITaskRoutine<IEnumerator> _taskRoutine;
 
@@ -25,18 +25,17 @@ namespace Svelto.ECS.Example.Survive.Camera
 
         public IEntitiesDB entitiesDB { get; set; }
 
-        protected override void Add(ref CameraEntityView entityView, ExclusiveGroup.ExclusiveGroupStruct? previousGroup)
+        public void Add(ref CameraEntityView entityView)
         {
         }
 
-        protected override void Remove(ref CameraEntityView entityView, bool itsaSwap) { _taskRoutine.Stop(); }
+        public void Remove(ref CameraEntityView entityView) { _taskRoutine.Stop(); }
 
-        protected override void Add(ref CameraTargetEntityView           entityView,
-                                    ExclusiveGroup.ExclusiveGroupStruct? previousGroup)
+        public void Add(ref CameraTargetEntityView           entityView)
         {
         }
 
-        protected override void Remove(ref CameraTargetEntityView entityView, bool itsaSwap) { _taskRoutine.Stop(); }
+        public void Remove(ref CameraTargetEntityView entityView) { _taskRoutine.Stop(); }
 
         IEnumerator PhysicUpdate()
         {

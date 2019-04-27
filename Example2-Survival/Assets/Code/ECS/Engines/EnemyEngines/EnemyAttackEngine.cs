@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Svelto.ECS.Example.Survive.Characters.Enemies
 {
-    public class EnemyAttackEngine : SingleEntityReactiveEngine<EnemyAttackEntityViewStruct>, IQueryingEntitiesEngine
+    public class EnemyAttackEngine : IReactOnAddAndRemove<EnemyAttackEntityViewStruct>, IQueryingEntitiesEngine
     {
         public EnemyAttackEngine(ITime time)
         {
@@ -17,7 +17,7 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
         public void Ready() { CheckIfHittingEnemyTarget().Run();}
 
         /// <summary>
-        /// Add and Remove callback are enable by the SingleEntityReactiveEngine and MultiEntitiesReactiveEngine specifications
+        /// Add and Remove callback are enable by the IReactOnAddAndRemove and MultiEntitiesReactiveEngine specifications
         /// They are called when:
         /// an Entity is built in a group
         /// an Entity is swapped in and from a group
@@ -26,8 +26,7 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
         /// </summary>
         /// <param name="entityViewStruct">the up to date entity</param>
         /// <param name="previousGroup">where the entity is coming from</param>
-        protected override void Add(ref EnemyAttackEntityViewStruct entityViewStruct,
-                                    ExclusiveGroup.ExclusiveGroupStruct? previousGroup)
+        public void Add(ref EnemyAttackEntityViewStruct entityViewStruct)
         {
             //setup the Dispatch On Change only when the enemy is active
             if (entityViewStruct.ID.groupID == ECSGroups.ActiveEnemies)
@@ -40,7 +39,7 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
         }
 
         /// <summary>
-        /// Add and Remove callback are enable by the SingleEntityReactiveEngine and MultiEntitiesReactiveEngine specifications
+        /// Add and Remove callback are enable by the IReactOnAddAndRemove and MultiEntitiesReactiveEngine specifications
         /// They are called when:
         /// an Entity is built in a group
         /// an Entity is swapped in and from a group
@@ -49,7 +48,7 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
         /// </summary>
         /// <param name="entityViewStruct">the up to date entity</param>
         /// <param name="itsaSwap">if this Remove is caused by a swap</param>
-        protected override void Remove(ref EnemyAttackEntityViewStruct entityViewStruct, bool itsaSwap)
+        public void Remove(ref EnemyAttackEntityViewStruct entityViewStruct)
         {
             if (entityViewStruct.ID.groupID == ECSGroups.ActiveEnemies)
                 entityViewStruct.targetTriggerComponent.hitChange.StopNotify(_onCollidedWithTarget);

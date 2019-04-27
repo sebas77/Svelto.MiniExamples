@@ -6,7 +6,7 @@ namespace Svelto.DataStructures
 {
     public struct ReadOnlyDictionary<TKey, TValue> : IDictionary<TKey, TValue>
     {
-        public bool isInitialized { get { return _dictionary != null; } }
+        public bool isInitialized => _dictionary != null;
 
         /// <summary>
         /// Gets the element that has the specified key.
@@ -15,13 +15,7 @@ namespace Svelto.DataStructures
         /// <returns>The element that has the specified key.</returns>
         /// <exception cref="ArgumentNullException">If <paramref name="key"/> is <see langword="null"/>.</exception>
         /// <exception cref="KeyNotFoundException">If property is retrieved and <paramref name="key"/> is not found.</exception>
-        public TValue this[TKey key]
-        {
-            get
-            {
-                return _dictionary[key];
-            }
-        }
+        public TValue this[TKey key] => _dictionary[key];
 
         /// <summary>
         /// Gets the number of items in the dictionary.
@@ -29,13 +23,7 @@ namespace Svelto.DataStructures
         /// <value>
         /// The number of items in the dictionary.
         /// </value>
-        public int Count
-        {
-            get
-            {                
-                return _dictionary.Count;                                
-            }
-        }
+        public int Count => _dictionary.Count;
 
         /// <summary>
         /// Gets a key collection that contains the keys of the dictionary.
@@ -43,13 +31,7 @@ namespace Svelto.DataStructures
         /// <value>
         /// A key collection that contains the keys of the dictionary.
         /// </value>
-        public KeyCollection Keys
-        {
-            get
-            {
-                return new KeyCollection(_dictionary.Keys);
-            }
-        }
+        public KeyCollection Keys => new KeyCollection(_dictionary.Keys);
 
         /// <summary>
         /// Gets a collection that contains the values in the dictionary.
@@ -57,13 +39,7 @@ namespace Svelto.DataStructures
         /// <value>
         /// A collection that contains the values in the object that implements <see cref="ReadOnlyDictionary{TKey, TValue}"/>.
         /// </value>
-        public ValueCollection Values
-        {
-            get
-            {
-                return new ValueCollection(_dictionary.Values);
-            }
-        }
+        public ValueCollection Values => new ValueCollection(_dictionary.Values);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ReadOnlyDictionary{TKey, TValue}"/> class
@@ -85,43 +61,18 @@ namespace Svelto.DataStructures
         /// <exception cref="NotSupportedException">If the property is set.</exception>
         TValue IDictionary<TKey, TValue>.this[TKey key]
         {
-            get
-            {
-                return this[key];
-            }
-
-            set
-            {
-                throw new NotSupportedException();
-            }
+            get => this[key];
+            set => throw new NotSupportedException();
         }
 
         /// <inheritdoc/>
-        ICollection<TKey> IDictionary<TKey, TValue>.Keys
-        {
-            get
-            {
-                return Keys;
-            }
-        }
+        ICollection<TKey> IDictionary<TKey, TValue>.Keys => Keys;
 
         /// <inheritdoc/>
-        ICollection<TValue> IDictionary<TKey, TValue>.Values
-        {
-            get
-            {
-                return Values;
-            }
-        }
+        ICollection<TValue> IDictionary<TKey, TValue>.Values => Values;
 
         /// <inheritdoc/>
-        bool ICollection<KeyValuePair<TKey, TValue>>.IsReadOnly
-        {
-            get
-            {
-                return true;
-            }
-        }
+        bool ICollection<KeyValuePair<TKey, TValue>>.IsReadOnly => true;
 
         /// <inheritdoc/>
         IEnumerator IEnumerable.GetEnumerator()
@@ -181,10 +132,7 @@ namespace Svelto.DataStructures
             return _dictionary.TryGetValue(key, out value);
         }
 
-        int ICollection<KeyValuePair<TKey, TValue>>.Count
-        {
-            get { return _dictionary.Count; }
-        }
+        int ICollection<KeyValuePair<TKey, TValue>>.Count => _dictionary.Count;
 
         IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator()
         {
@@ -239,22 +187,10 @@ namespace Svelto.DataStructures
             }
 
     /// <inheritdoc/>
-            bool ICollection.IsSynchronized
-            {
-                get
-                {
-                    return false;
-                }
-            }
+            bool ICollection.IsSynchronized => false;
 
     /// <inheritdoc/>
-            object ICollection.SyncRoot
-            {
-                get
-                {
-                    throw new NotImplementedException();
-                }
-            }
+            object ICollection.SyncRoot => throw new NotImplementedException();
 
     /// <inheritdoc/>
             void ICollection.CopyTo(Array array, int index)
@@ -268,22 +204,10 @@ namespace Svelto.DataStructures
             /// <value>
             /// The number of elements in the collection.
             /// </value>
-            public int Count
-            {
-                get
-                {
-                    return _keys.Count;
-                }
-            }
+            public int Count => _keys.Count;
 
     /// <inheritdoc/>
-            bool ICollection<TKey>.IsReadOnly
-            {
-                get
-                {
-                    return true;
-                }
-            }
+            bool ICollection<TKey>.IsReadOnly => true;
 
     /// <summary>
             /// Copies the elements of the collection to an array, starting at a specific array index.
@@ -369,22 +293,10 @@ namespace Svelto.DataStructures
             }
 
             /// <inheritdoc/>
-            bool ICollection.IsSynchronized
-            {
-                get
-                {
-                    return false;
-                }
-            }
+            bool ICollection.IsSynchronized => false;
 
             /// <inheritdoc/>
-            object ICollection.SyncRoot
-            {
-                get
-                {
-                    throw new NotImplementedException();
-                }
-            }
+            object ICollection.SyncRoot => throw new NotImplementedException();
 
             /// <inheritdoc/>
             void ICollection.CopyTo(Array array, int index)
@@ -398,22 +310,10 @@ namespace Svelto.DataStructures
             /// <value>
             /// The number of elements in the collection.
             /// </value>
-            public int Count
-            {
-                get
-                {
-                    return _values.Count;
-                }
-            }
+            public int Count => _values.Count;
 
             /// <inheritdoc/>
-            bool ICollection<TValue>.IsReadOnly
-            {
-                get
-                {
-                    return true;
-                }
-            }
+            bool ICollection<TValue>.IsReadOnly => true;
 
             /// <summary>
             /// Copies the elements of the collection to an array, starting at a specific array index.
@@ -482,22 +382,10 @@ namespace Svelto.DataStructures
         public struct DictionaryEnumerator:IEnumerator<KeyValuePair<TKey,TValue>>
         {
             /// <inheritdoc/>
-            public TKey Key
-            {
-                get
-                {
-                    return _enumerator.Current.Key;
-                }
-            }
+            public TKey Key => _enumerator.Current.Key;
 
             /// <inheritdoc/>
-            public TValue Value
-            {
-                get
-                {
-                    return _enumerator.Current.Value;
-                }
-            }
+            public TValue Value => _enumerator.Current.Value;
 
             public DictionaryEnumerator(IDictionary<TKey, TValue> dictionary)
             {
@@ -508,13 +396,7 @@ namespace Svelto.DataStructures
             }
 
             /// <inheritdoc/>
-            public KeyValuePair<TKey, TValue> Current
-            {
-                get
-                {
-                    return _enumerator.Current;
-                }
-            }
+            public KeyValuePair<TKey, TValue> Current => _enumerator.Current;
 
             /// <inheritdoc/>
             public bool MoveNext()
@@ -528,10 +410,7 @@ namespace Svelto.DataStructures
                 _enumerator.Reset();
             }
 
-            object IEnumerator.Current
-            {
-                get { return _enumerator.Current; }
-            }
+            object IEnumerator.Current => _enumerator.Current;
 
             public void Dispose()
             {

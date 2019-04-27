@@ -52,7 +52,8 @@ namespace Svelto.ECS
             return dispatcher;
         }
         
-        public static DispatchOnChange<T> Setup<T>(DispatchOnChange<T> dispatcher, EGID entity) where T : struct, IEquatable<T>
+        public static DispatchOnChange<T> Setup<T>(DispatchOnChange<T> dispatcher, EGID entity)
+            where T : struct, IEquatable<T>
         {
             if (dispatcher == null)
                 dispatcher = new DispatchOnChange<T>(entity);

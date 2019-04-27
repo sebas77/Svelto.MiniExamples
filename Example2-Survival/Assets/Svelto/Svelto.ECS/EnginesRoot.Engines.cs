@@ -21,7 +21,8 @@ namespace Svelto.ECS
         public EnginesRoot(IEntitySubmissionScheduler entityViewScheduler)
         {
             _entitiesOperations = new FasterDictionary<ulong, EntitySubmitOperation>();
-            _entityEngines = new Dictionary<Type, FasterList<IHandleEntityViewEngineAbstracted>>();
+            _reactiveEnginesAddRemove = new Dictionary<Type, FasterList<IEngine>>();
+            _reactiveEnginesSwap = new Dictionary<Type, FasterList<IEngine>>();
             _enginesSet = new HashSet<IEngine>();
             _disposableEngines = new FasterList<IDisposable>();
             _transientEntitiesOperations = new FasterList<EntitySubmitOperation>();
@@ -45,8 +46,11 @@ namespace Svelto.ECS
 
             try
             {
-                if (engine is IHandleEntityViewEngineAbstracted viewEngine)
-                    CheckEntityViewsEngine(viewEngine);
+                if (engine is IReactOnAddAndRemove viewEngine)
+                    CheckEntityViewsEngine(viewEngine, _reactiveEnginesAddRemove);
+                
+                if (engine is IReactOnSwap viewEngineSwap)
+                    CheckEntityViewsEngine(viewEngineSwap, _reactiveEnginesSwap);
 
                 _enginesSet.Add(engine);
 
@@ -69,25 +73,19 @@ namespace Svelto.ECS
             }
         }
        
-        void CheckEntityViewsEngine(IEngine engine)
+        void CheckEntityViewsEngine(IEngine engine, Dictionary<Type, FasterList<IEngine>> engines)
         {
-            var baseType = engine.GetType().GetBaseType();
+            var interfaces = engine.GetType().GetInterfaces();
 
-            while (baseType != OBJECT_TYPE)
+            foreach (var interf in interfaces)
             {
-                if (baseType.IsGenericTypeEx())
+                if (interf.IsGenericTypeEx() && typeof(IReactEngine).IsAssignableFrom(interf))
                 {
-                    var genericArguments = baseType.GetGenericArgumentsEx();
-                    
-                    AddEngine(engine as IHandleEntityViewEngineAbstracted, genericArguments, _entityEngines);
+                    var genericArguments = interf.GetGenericArgumentsEx();
 
-                    return;
+                    AddEngine(engine, genericArguments, engines);
                 }
-
-                baseType = baseType.GetBaseType();
             }
-
-            throw new ArgumentException("Not Supported Engine " + engine);
         }
 
         static void AddEngine<T>(T engine, Type[] entityViewTypes,
@@ -113,9 +111,10 @@ namespace Svelto.ECS
             list.Add(engine);
         }
 
-        readonly Dictionary<Type, FasterList<IHandleEntityViewEngineAbstracted>> _entityEngines;    
-        readonly HashSet<IEngine>                                                _enginesSet;
-        readonly FasterList<IDisposable>                                         _disposableEngines;
+        readonly Dictionary<Type, FasterList<IEngine>> _reactiveEnginesAddRemove;    
+        readonly Dictionary<Type, FasterList<IEngine>> _reactiveEnginesSwap;
+        readonly HashSet<IEngine>                      _enginesSet;
+        readonly FasterList<IDisposable>               _disposableEngines;
         
         //one datastructure rule them all:
         //split by group

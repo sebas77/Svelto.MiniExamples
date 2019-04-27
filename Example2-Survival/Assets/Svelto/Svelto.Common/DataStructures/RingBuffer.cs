@@ -31,10 +31,7 @@ namespace Svelto.DataStructures
         /// <summary>
         /// The maximum number of items that can be stored
         /// </summary>
-        public int Capacity
-        {
-            get { return _entries.Length; }
-        }
+        public int Capacity => _entries.Length;
 
         ref T this[long index] => ref _entries[index & _modMask];
 
@@ -85,7 +82,7 @@ namespace Svelto.DataStructures
         /// The number of items in the buffer
         /// </summary>
         /// <remarks>for indicative purposes only, may contain stale data</remarks>
-        public int Count { get { return (int)(_producerCursor.ReadAcquireFence() - _consumerCursor.ReadAcquireFence()); } }
+        public int Count => (int)(_producerCursor.ReadAcquireFence() - _consumerCursor.ReadAcquireFence());
 
         public void Reset() { _consumerCursor.WriteReleaseFence(_producerCursor.ReadAcquireFence());}
 

@@ -56,10 +56,7 @@ namespace Svelto.WeakEvents
         readonly DataStructures.WeakReference<object> objectRef;
         readonly MethodInfo method;
 
-        public bool IsValid
-        {
-            get { return objectRef.IsValid; }
-        }
+        public bool IsValid => objectRef.IsValid;
 
         protected WeakActionBase(Action listener)
             : this(listener.Target, listener.GetMethodInfoEx())

@@ -4,7 +4,7 @@ using Svelto.Tasks.Enumerators;
 
 namespace Svelto.ECS.Example.Survive.Characters.Player.Gun
 {
-    public class PlayerGunShootingFXsEngine : SingleEntityReactiveEngine<GunEntityViewStruct>, IQueryingEntitiesEngine
+    public class PlayerGunShootingFXsEngine : IReactOnAddAndRemove<GunEntityViewStruct>, IQueryingEntitiesEngine
     {
         ITaskRoutine<IEnumerator> _taskRoutine;
         WaitForSecondsEnumerator  _waitForSeconds;
@@ -24,8 +24,7 @@ namespace Svelto.ECS.Example.Survive.Characters.Player.Gun
         ///     querying is always cleaner.
         /// </summary>
         /// <param name="playerGunEntityView"></param>
-        protected override void Add(ref GunEntityViewStruct              playerGunEntityView,
-                                    ExclusiveGroup.ExclusiveGroupStruct? previousGroup)
+        public void Add(ref GunEntityViewStruct              playerGunEntityView)
         {
             playerGunEntityView.gunHitTargetComponent.targetHit = new DispatchOnSet<bool>(playerGunEntityView.ID);
             playerGunEntityView.gunHitTargetComponent.targetHit.NotifyOnValueSet(PlayerHasShot);
@@ -34,7 +33,7 @@ namespace Svelto.ECS.Example.Survive.Characters.Player.Gun
                                                            playerGunEntityView.gunFXComponent.effectsDisplayTime);
         }
 
-        protected override void Remove(ref GunEntityViewStruct entityView, bool itsaSwap) { }
+        public void Remove(ref GunEntityViewStruct entityView) { }
 
         void PlayerHasShot(EGID egid, bool targetHasBeenHit)
         {

@@ -4,7 +4,7 @@ using Svelto.Tasks;
 namespace Svelto.ECS.Example.Survive.Characters.Player.Gun
 {
     public class PlayerGunShootingEngine
-        : MultiEntitiesReactiveEngine<GunEntityViewStruct, PlayerEntityViewStruct>, IQueryingEntitiesEngine
+        : IReactOnAddAndRemove<GunEntityViewStruct>, IReactOnAddAndRemove<PlayerEntityViewStruct>, IQueryingEntitiesEngine
     {
         readonly IRayCaster                _rayCaster;
         readonly ITaskRoutine<IEnumerator> _taskRoutine;
@@ -22,19 +22,17 @@ namespace Svelto.ECS.Example.Survive.Characters.Player.Gun
 
         public void Ready() { _taskRoutine.Start(); }
 
-        protected override void Add(ref GunEntityViewStruct              entityView,
-                                    ExclusiveGroup.ExclusiveGroupStruct? previousGroup)
+        public void Add(ref GunEntityViewStruct              entityView)
         {
         }
 
-        protected override void Remove(ref GunEntityViewStruct entityView, bool itsaSwap) { _taskRoutine.Stop(); }
+        public void Remove(ref GunEntityViewStruct entityView) { _taskRoutine.Stop(); }
 
-        protected override void Add(ref PlayerEntityViewStruct           entityView,
-                                    ExclusiveGroup.ExclusiveGroupStruct? previousGroup)
+        public void Add(ref PlayerEntityViewStruct           entityView)
         {
         }
 
-        protected override void Remove(ref PlayerEntityViewStruct entityView, bool itsaSwap) { _taskRoutine.Stop(); }
+        public void Remove(ref PlayerEntityViewStruct entityView) { _taskRoutine.Stop(); }
 
         IEnumerator Tick()
         {
