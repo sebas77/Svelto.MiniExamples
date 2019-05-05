@@ -32,7 +32,7 @@ http://www.sebaslab.com/svelto-mini-examples-doofuses-must-eat/
 
 ![Image](https://github.com/sebas77/GithubWikiImages/blob/master/gif_animation_002.gif)
 
-Integration with Unity GameObjects and Monobehaviours. Uses Svelto ECS 2.8 (beta) and Svelto Tasks 1.5
+Basic integration with Unity GameObjects and Monobehaviours. Uses Svelto ECS 2.8 and Svelto Tasks 1.5
 
 * Goal of this example: show the integration with OOP platforms (Unity in this case) throught the use of Entity View Structs and implementors.
 
