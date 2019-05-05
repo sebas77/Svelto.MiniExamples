@@ -42,4 +42,5 @@ I used the Survival Shooter Unity Demo to show how an ECS framework could work i
 
 Most of the source code has been rewritten to work with Svelto.ECS framework. The Survival Demo is tested with the latest version of Unity, so I cannot guarantee that it always works, but it should work with all the versions from 5.3 and above.
 
-## Example 3: To do
+## Example 3: GUI and Service Layer (ToDO)
+## Example 4: Multiple Contexts and more serious alternative to the implementors (ToDO)
