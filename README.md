@@ -4,7 +4,7 @@ New Mini Examples for Svelto.ECS and Svelto.Tasks
 
 Note: these examples are using unofficial versions of Svelto that you won't find on the main repository until officially released.
 
-## Example 1:
+## Example 1: Doofuses Must Eat
 
 ![Image](https://github.com/sebas77/GithubWikiImages/blob/master/Example1-Doofuses.gif)
 
@@ -28,7 +28,7 @@ http://www.sebaslab.com/svelto-mini-examples-doofuses-must-eat/
 * **Iteration 4 (to do):**
   * Something I will say later
   
-## Example 2: Work In Progress
+## Example 2: The Survival ECS demo
 
 ![Image](https://github.com/sebas77/GithubWikiImages/blob/master/gif_animation_002.gif)
 
