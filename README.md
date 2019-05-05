@@ -2,7 +2,7 @@
 
 New Mini Examples for Svelto.ECS and Svelto.Tasks
 
-Note: these examples are using unofficial versions of Svelto that you won't find on the main repository until officially released.
+Warning: these examples may use using unofficial versions of Svelto that you won't find on the main repository until officially released.
 
 ## Example 1: Doofuses Must Eat
 
