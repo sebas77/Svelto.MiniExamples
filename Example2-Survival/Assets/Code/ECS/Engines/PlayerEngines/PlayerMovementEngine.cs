@@ -5,12 +5,11 @@ using UnityEngine;
 namespace Svelto.ECS.Example.Survive.Characters.Player
 {
     public class PlayerMovementEngine
-        : IReactOnAddAndRemove<PlayerEntityViewStruct>, IQueryingEntitiesEngine, IStep<PlayerDeathCondition>
+        : IQueryingEntitiesEngine, IStep<PlayerDeathCondition>
     {
         const float camRayLength = 100f; // The length of the ray from the camera into the scene.
 
         readonly IRayCaster                _rayCaster;
-        readonly ITaskRoutine<IEnumerator> _taskRoutine;
         readonly ITime                     _time;
 
         readonly int
@@ -21,28 +20,16 @@ namespace Svelto.ECS.Example.Survive.Characters.Player
         {
             _rayCaster   = raycaster;
             _time        = time;
-            _taskRoutine = TaskRunner.Instance.AllocateNewTaskRoutine(StandardSchedulers.physicScheduler);
-            _taskRoutine.SetEnumerator(PhysicsTick());
         }
 
         public IEntitiesDB entitiesDB { private get; set; }
 
-        public void Ready() { }
+        public void Ready() { PhysicsTick().RunOnScheduler(StandardSchedulers.physicScheduler);}
 
         public void Step(PlayerDeathCondition condition, EGID id)
         {
             var playerEntityView = entitiesDB.QueryEntities<PlayerEntityViewStruct>(ECSGroups.Player, out var count)[0];
             playerEntityView.rigidBodyComponent.isKinematic = true;
-        }
-
-        public void Add(ref PlayerEntityViewStruct           playerEntityViewStruct)
-        {
-            _taskRoutine.Start();
-        }
-
-        public void Remove(ref PlayerEntityViewStruct playerEntityViewStruct)
-        {
-            _taskRoutine.Stop();
         }
 
         IEnumerator PhysicsTick()
@@ -51,9 +38,9 @@ namespace Svelto.ECS.Example.Survive.Characters.Player
             {
                 var playerEntities =
                     entitiesDB.QueryEntities<PlayerEntityViewStruct, PlayerInputDataStruct>(ECSGroups.Player,
-                                                                                            out var targetsCount);
+                                                                                            out var count);
 
-                for (var i = 0; i < targetsCount; i++)
+                for (var i = 0; i < count; i++)
                 {
                     Movement(ref playerEntities.Item2[i], ref playerEntities.Item1[i]);
                     Turning(ref playerEntities.Item2[i], ref playerEntities.Item1[i]);

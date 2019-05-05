@@ -4,57 +4,43 @@ using Svelto.Tasks;
 namespace Svelto.ECS.Example.Survive.Characters.Player.Gun
 {
     public class PlayerGunShootingEngine
-        : IReactOnAddAndRemove<GunEntityViewStruct>, IReactOnAddAndRemove<PlayerEntityViewStruct>, IQueryingEntitiesEngine
+        : IQueryingEntitiesEngine
     {
         readonly IRayCaster                _rayCaster;
-        readonly ITaskRoutine<IEnumerator> _taskRoutine;
         readonly ITime                     _time;
 
         public PlayerGunShootingEngine(IRayCaster rayCaster, ITime time)
         {
             _rayCaster   = rayCaster;
             _time        = time;
-            _taskRoutine = TaskRunner.Instance.AllocateNewTaskRoutine(StandardSchedulers.physicScheduler);
-            _taskRoutine.SetEnumerator(Tick());
         }
 
         public IEntitiesDB entitiesDB { set; private get; }
 
-        public void Ready() { _taskRoutine.Start(); }
-
-        public void Add(ref GunEntityViewStruct              entityView)
-        {
-        }
-
-        public void Remove(ref GunEntityViewStruct entityView) { _taskRoutine.Stop(); }
-
-        public void Add(ref PlayerEntityViewStruct           entityView)
-        {
-        }
-
-        public void Remove(ref PlayerEntityViewStruct entityView) { _taskRoutine.Stop(); }
+        public void Ready() { Tick().RunOnScheduler(StandardSchedulers.physicScheduler); }
 
         IEnumerator Tick()
         {
-            while (entitiesDB.HasAny<PlayerEntityViewStruct>(ECSGroups.Player) == false ||
-                   entitiesDB.HasAny<GunEntityViewStruct>(ECSGroups.Player) == false)
-                yield return null; //skip a frame
-
-            //never changes
-            var playerGunEntities = entitiesDB.QueryEntities<GunEntityViewStruct>(ECSGroups.Player, out var count);
-            //never changes
-            var playerEntities = entitiesDB.QueryEntities<PlayerInputDataStruct>(ECSGroups.Player, out count);
-
             while (true)
             {
-                var playerGunComponent = playerGunEntities[0].gunComponent;
+                ///pay attention: the code of this example started in a naive way, it originally assumed that
+                /// there was just one player available, which resulting code could have promoted some not
+                /// very good practices. However assuming that there is a relationship 1:1 between entities
+                /// between groups is just naive. This works because there is just one player
+                var playerEntities =
+                    entitiesDB.QueryEntities<PlayerInputDataStruct>(ECSGroups.Player, out var count);
+                var gunEntities =
+                    entitiesDB.QueryEntities<GunEntityViewStruct>(ECSGroups.PlayerGun, out _);
+                
+                for (var i = 0; i < count; i++)
+                {
+                    var playerGunComponent = gunEntities[i].gunComponent;
+                    playerGunComponent.timer += _time.deltaTime;
 
-                playerGunComponent.timer += _time.deltaTime;
-
-                if (playerEntities[0].fire &&
-                    playerGunComponent.timer >= playerGunEntities[0].gunComponent.timeBetweenBullets)
-                    Shoot(playerGunEntities[0]);
-
+                    if (playerEntities[i].fire && playerGunComponent.timer >= playerGunComponent.timeBetweenBullets)
+                        Shoot(ref gunEntities[i]);
+                }
+                
                 yield return null;
             }
         }
@@ -64,7 +50,7 @@ namespace Svelto.ECS.Example.Survive.Characters.Player.Gun
         ///     and probably would need two different engines.
         /// </summary>
         /// <param name="playerGunEntityView"></param>
-        void Shoot(GunEntityViewStruct playerGunEntityView)
+        void Shoot(ref GunEntityViewStruct playerGunEntityView)
         {
             var playerGunComponent    = playerGunEntityView.gunComponent;
             var playerGunHitComponent = playerGunEntityView.gunHitTargetComponent;

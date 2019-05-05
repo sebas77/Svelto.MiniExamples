@@ -601,7 +601,7 @@ namespace Svelto.DataStructures
         
         public void Add(uint location, T item)
         {
-            SetSizeAndCount(location + 1);
+            Expand(location + 1);
 
             _buffer[location] = item;
         }
@@ -613,13 +613,24 @@ namespace Svelto.DataStructures
         /// <typeparam name="U"></typeparam>
         /// <param name="initialSize"></param>
         /// <returns></returns>
-        public static FasterList<T> PreFill<U>(uint initialSize) where U: class, T, new()
+        public static FasterList<T> PreFill<U>(uint initialSize) where U: T, new()
         {
             var list = new FasterList<T>(initialSize);
 
-            uint listCount = list._count;
-            for (int i = 0; i < initialSize; i++)
-                list[(uint) (listCount + i)] = new U();
+            if (typeof(U).IsClass)
+            {
+                for (int i = 0; i < initialSize; i++)
+                    list._buffer[(uint) (i)] = new U();
+            }
+
+            return list;
+        }
+        
+        public static FasterList<T> Fill<U>(uint initialSize) where U: T, new()
+        {
+            var list = PreFill<U>(initialSize);
+
+            list._count = initialSize;
 
             return list;
         }
@@ -676,15 +687,41 @@ namespace Svelto.DataStructures
         public void FastClear()
         {
 #if DEBUG && !PROFILER
-//            if (default(T) == null)
-  //              Svelto.Console.LogWarning("Warning: objects held by this list won't be garbage collected. Use ResetCountToAvoidGC to avoid this warning");
+            if (typeof(T).IsClass)
+                Svelto.Console.LogWarning(
+                    "Warning: objects held by this list won't be garbage collected. Use ResetToReuse or Clear " +
+                    "to avoid this warning");
 #endif            
             _count = 0;
         }
         
-        public void ResetCountToAvoidGC()
+        public void ResetToReuse()
         {
             _count = 0;
+        }
+        
+        public bool ReuseOneSlot<U>(out U result) where U:class, T
+        {
+            var index = _count;
+            result = null;
+
+            if (index >= _buffer.Length)
+                return false;
+
+            result = (U)_buffer[index];
+            _count++;
+
+            return result != null;
+        }
+        
+        public bool ReuseOneSlot()
+        {
+            if (_count >= _buffer.Length)
+                return false;
+            
+            _count++;
+
+            return true;
         }
 
         public void Clear()
@@ -874,49 +911,12 @@ namespace Svelto.DataStructures
             _count = newCount;
         }
 
-        public bool ReuseOneSlot<U>(out U result) where U:class, T
-        {
-            var index = _count;
-            result = default(U);
-
-            if (index >= _buffer.Length)
-                return false;
-
-            result = (U)_buffer[index];
-            _count++;
-
-            return _isValueType == true || result != null;
-        }
-        
-        public bool ReuseOneSlotAt<U>(uint index, out U result) where U:class, T
-        {
-            result = default(U);
-
-            if (index >= _buffer.Length)
-                return false;
-
-            result = (U)_buffer[index];
-            _count++;
-
-            return _isValueType == true || result != null;
-        }
-        
-        public bool ReuseOneSlot()
-        {
-            if (_count >= _buffer.Length)
-                return false;
-            
-            _count++;
-
-            return true;
-        }
-
         public void UnorderedRemoveRange(int groupStart, int groupEnd)
         {
             Array.Copy(_buffer, groupEnd, _buffer, groupStart, groupEnd - groupStart);
         }
 
-        public void GrowAndSetCount(uint increment)
+        public void ExpandBy(uint increment)
         {
             uint count = _count + increment;
             
@@ -926,7 +926,7 @@ namespace Svelto.DataStructures
             _count = count;
         }
         
-        public void SetSizeAndCount(uint newSize)
+        public void Expand(uint newSize)
         {
             if (_buffer.Length < newSize)
                 AllocateMore(newSize);
@@ -937,7 +937,6 @@ namespace Svelto.DataStructures
 
         T[] _buffer;
         uint _count;
-        static readonly bool _isValueType = typeof(T).IsValueTypeEx();
 
         public static class NoVirt
         {

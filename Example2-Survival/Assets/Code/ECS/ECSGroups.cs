@@ -20,6 +20,7 @@ namespace Svelto.ECS.Example.Survive
         public static readonly ExclusiveGroup ActiveEnemies = new ExclusiveGroup();
 
         public static readonly ExclusiveGroup Player     = new ExclusiveGroup();
+        public static readonly ExclusiveGroup PlayerGun  = new ExclusiveGroup();
         public static readonly ExclusiveGroup ExtraStuff = new ExclusiveGroup();
 
         public static readonly ExclusiveGroup PlayerTargets = ActiveEnemies;

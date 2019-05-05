@@ -1,44 +1,30 @@
 using System.Collections;
-using Svelto.Tasks;
 using Svelto.Tasks.Enumerators;
 
 namespace Svelto.ECS.Example.Survive.Characters.Player.Gun
 {
     public class PlayerGunShootingFXsEngine : IReactOnAddAndRemove<GunEntityViewStruct>, IQueryingEntitiesEngine
     {
-        ITaskRoutine<IEnumerator> _taskRoutine;
-        WaitForSecondsEnumerator  _waitForSeconds;
         public IEntitiesDB        entitiesDB { set; private get; }
+        public void Ready() {  }
 
-        public void Ready()
-        {
-            //In this case a taskroutine is used because we want to have control over when it starts
-            //and we want to reuse it.
-            _taskRoutine = TaskRunner.Instance.AllocateNewTaskRoutine();
-            _taskRoutine.SetEnumeratorProvider(DisableFXAfterTime);
-        }
-
-        /// <summary>
-        ///     Using the Add/Remove method to hold a local reference of an entity
-        ///     is not necessary. Do it only if you find convenient, otherwise
-        ///     querying is always cleaner.
-        /// </summary>
-        /// <param name="playerGunEntityView"></param>
-        public void Add(ref GunEntityViewStruct              playerGunEntityView)
+        public void Add(ref GunEntityViewStruct playerGunEntityView)
         {
             playerGunEntityView.gunHitTargetComponent.targetHit = new DispatchOnSet<bool>(playerGunEntityView.ID);
             playerGunEntityView.gunHitTargetComponent.targetHit.NotifyOnValueSet(PlayerHasShot);
-
-            _waitForSeconds = new WaitForSecondsEnumerator(playerGunEntityView.gunComponent.timeBetweenBullets *
-                                                           playerGunEntityView.gunFXComponent.effectsDisplayTime);
         }
 
-        public void Remove(ref GunEntityViewStruct entityView) { }
+        public void Remove(ref GunEntityViewStruct playerGunEntityView) 
+        {
+            playerGunEntityView.gunHitTargetComponent.targetHit.StopNotify(PlayerHasShot); 
+            playerGunEntityView.gunHitTargetComponent.targetHit = null;
+        }
 
         void PlayerHasShot(EGID egid, bool targetHasBeenHit)
         {
             var structs = entitiesDB.QueryEntitiesAndIndex<GunEntityViewStruct>(egid, out var index);
 
+            ref var playerGunEntityView = ref structs[index].gunComponent ;
             ref var gunFXComponent = ref structs[index].gunFXComponent;
 
             // Play the gun shot audioclip.
@@ -65,19 +51,23 @@ namespace Svelto.ECS.Example.Survive.Characters.Player.Gun
             else
                 gunFXComponent.lineEndPosition = shootRay.origin + shootRay.direction * gunComponent.range;
 
-            _taskRoutine.Start();
+            //Note:
+            //this is going to allocate. With Svelto Tasks 1.5 it's not simple to find a workaround for this.
+            //There are some tricks, but they are out of the scope of this example. Svelto Tasks 2.0 allows
+            //simpler solution, like using IEnumerator as structs.
+            DisableFXAfterTime(playerGunEntityView.timeBetweenBullets * gunFXComponent.effectsDisplayTime).Run();
         }
 
-        IEnumerator DisableFXAfterTime()
+        IEnumerator DisableFXAfterTime(float wait)
         {
-            yield return _waitForSeconds;
+            yield return new WaitForSecondsEnumerator(wait);
             // ... disable the effects.
             DisableEffects();
         }
 
         void DisableEffects()
         {
-            var gunEntityViews = entitiesDB.QueryEntities<GunEntityViewStruct>(ECSGroups.Player, out _);
+            var gunEntityViews = entitiesDB.QueryEntities<GunEntityViewStruct>(ECSGroups.PlayerGun, out _);
 
             var fxComponent = gunEntityViews[0].gunFXComponent;
             // Disable the line renderer and the light.

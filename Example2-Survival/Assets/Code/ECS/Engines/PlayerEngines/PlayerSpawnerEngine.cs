@@ -31,20 +31,20 @@ namespace Svelto.ECS.Example.Player
             //implementors are ONLY necessary if you need to wrap objects around entity view structs. In the case
             //of Unity, they are needed to wrap Monobehaviours and not used in any other case
             
-            var implementors = player.GetComponentsInChildren<IImplementor>();
+            var implementors = player.GetComponents<IImplementor>();
 
             //Initialize an entity inside a composition root is a so-so practice, better to have an engineSpawner.
             var initializer =
                 _entityFactory.BuildEntity<PlayerEntityDescriptor>((uint) player.GetInstanceID(), ECSGroups.Player,
-                                                                   player.GetComponents<IImplementor>());
+                                                                   implementors);
             initializer.Init(new HealthEntityStruct {currentHealth = 100});
 
             //unluckily the gun is parented in the original prefab, so there is no easy way to create it explicitly, I
             //have to create if from the existing gameobject.
             var gunImplementor = player.GetComponentInChildren<PlayerShootingImplementor>();
 
-            _entityFactory.BuildEntity<PlayerGunEntityDescriptor>((uint) gunImplementor.gameObject.GetInstanceID(),
-                                                                  ECSGroups.Player, new[] {gunImplementor});
+            _entityFactory.BuildEntity<PlayerGunEntityDescriptor>((uint) player.GetInstanceID(),
+                                                                  ECSGroups.PlayerGun, new[] {gunImplementor});
 
         }
         

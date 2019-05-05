@@ -3,20 +3,13 @@ using Svelto.Tasks;
 
 namespace Svelto.ECS.Example.Survive.Characters.Player
 {
-    public class PlayerAnimationEngine
-        : IReactOnAddAndRemove<PlayerEntityViewStruct>, IQueryingEntitiesEngine, IStep<PlayerDeathCondition>
+    public class PlayerAnimationEngine: IQueryingEntitiesEngine, IStep<PlayerDeathCondition>
     {
         readonly ITaskRoutine<IEnumerator> _taskRoutine;
 
-        public PlayerAnimationEngine()
-        {
-            _taskRoutine = TaskRunner.Instance.AllocateNewTaskRoutine(StandardSchedulers.physicScheduler);
-            _taskRoutine.SetEnumerator(PhysicsTick());
-        }
-
         public IEntitiesDB entitiesDB { get; set; }
 
-        public void Ready() { _taskRoutine.Start(); }
+        public void Ready() { PhysicsTick().RunOnScheduler(StandardSchedulers.physicScheduler); }
 
         public void Step(PlayerDeathCondition condition, EGID id)
         {
@@ -28,32 +21,25 @@ namespace Svelto.ECS.Example.Survive.Characters.Player
 
         IEnumerator PhysicsTick()
         {
-            //wait for the player to spawn
-            while (entitiesDB.HasAny<PlayerEntityViewStruct>(ECSGroups.Player) == false)
-                yield return null; //skip a frame
-
-            var playerEntityViews =
-                entitiesDB.QueryEntities<PlayerEntityViewStruct>(ECSGroups.Player, out var targetsCount);
-            var playerInputDatas = entitiesDB.QueryEntities<PlayerInputDataStruct>(ECSGroups.Player, out targetsCount);
-
             while (true)
             {
-                var input = playerInputDatas[0].input;
+                var playerEntities =
+                    entitiesDB.QueryEntities<PlayerEntityViewStruct, PlayerInputDataStruct>(ECSGroups.Player,
+                                                                                            out var count);
 
-                // Create a boolean that is true if either of the input axes is non-zero.
-                var walking = input.x != 0f || input.z != 0f;
+                for (var i = 0; i < count; i++)
+                {
+                    var input = playerEntities.Item2[i].input;
 
-                // Tell the animator whether or not the player is walking.
-                playerEntityViews[0].animationComponent.animationState = new AnimationState("IsWalking", walking);
+                    // Create a boolean that is true if either of the input axes is non-zero.
+                    var walking = input.x != 0f || input.z != 0f;
+
+                    // Tell the animator whether or not the player is walking.
+                    playerEntities.Item1[i].animationComponent.animationState = new AnimationState("IsWalking", walking);
+                }
 
                 yield return null;
             }
         }
-
-        public void Add(ref PlayerEntityViewStruct           entityView)
-        {
-        }
-
-        public void Remove(ref PlayerEntityViewStruct entityView) { _taskRoutine.Stop(); }
     }
 }

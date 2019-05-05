@@ -4,54 +4,61 @@ using UnityEngine;
 
 namespace Svelto.ECS.Example.Survive.Characters.Enemies
 {
-    public class EnemyAttackEngine : IReactOnAddAndRemove<EnemyAttackEntityViewStruct>, IQueryingEntitiesEngine
+    public class EnemyAttackEngine
+        : IReactOnAddAndRemove<EnemyAttackEntityViewStruct>, IReactOnSwap<EnemyAttackEntityViewStruct>,
+          IQueryingEntitiesEngine
     {
+        readonly Action<EGID, EnemyCollisionData> _onCollidedWithTarget;
+
+
+        readonly ITime _time;
+
         public EnemyAttackEngine(ITime time)
         {
-            _time        = time;
+            _time                 = time;
             _onCollidedWithTarget = OnCollidedWithTarget;
         }
 
         public IEntitiesDB entitiesDB { set; private get; }
 
-        public void Ready() { CheckIfHittingEnemyTarget().Run();}
+        public void Ready() { CheckIfHittingEnemyTarget().Run(); }
 
         /// <summary>
-        /// Add and Remove callback are enable by the IReactOnAddAndRemove and MultiEntitiesReactiveEngine specifications
-        /// They are called when:
-        /// an Entity is built in a group
-        /// an Entity is swapped in and from a group
-        /// an Entity is removed from a group
-        /// Be careful to handle the swap case separately from the other cases.
+        ///     Add and Remove callbacks are enabled by the IReactOnAddAndRemove interface
+        ///     They are called when:
+        ///     an Entity is built in a group  (no swap case)
+        ///     an Entity is removed from a group (no swap case)
         /// </summary>
         /// <param name="entityViewStruct">the up to date entity</param>
         /// <param name="previousGroup">where the entity is coming from</param>
         public void Add(ref EnemyAttackEntityViewStruct entityViewStruct)
         {
-            //setup the Dispatch On Change only when the enemy is active
-            if (entityViewStruct.ID.groupID == ECSGroups.ActiveEnemies)
-            {
-                entityViewStruct.targetTriggerComponent.hitChange =
-                    DispatchExtensions.Setup(entityViewStruct.targetTriggerComponent.hitChange, entityViewStruct.ID);
+            entityViewStruct.targetTriggerComponent.hitChange =
+                new DispatchOnChange<EnemyCollisionData>(entityViewStruct.ID);
 
-                entityViewStruct.targetTriggerComponent.hitChange.NotifyOnValueSet(_onCollidedWithTarget);
-            }
+            entityViewStruct.targetTriggerComponent.hitChange.NotifyOnValueSet(_onCollidedWithTarget);
+        }
+
+        public void Remove(ref EnemyAttackEntityViewStruct entityViewStruct)
+        {
+            entityViewStruct.targetTriggerComponent.hitChange = null;
         }
 
         /// <summary>
-        /// Add and Remove callback are enable by the IReactOnAddAndRemove and MultiEntitiesReactiveEngine specifications
-        /// They are called when:
-        /// an Entity is built in a group
-        /// an Entity is swapped in and from a group
-        /// an Entity is removed from a group
-        /// Be careful to handle the swap case separately from the other cases.
+        ///     NovedTo and MovedFrom callbacks are enabled by the IReactOnSwap interface
+        ///     They are called on entity swap (when leaving a group and moving to the new one)
         /// </summary>
-        /// <param name="entityViewStruct">the up to date entity</param>
-        /// <param name="itsaSwap">if this Remove is caused by a swap</param>
-        public void Remove(ref EnemyAttackEntityViewStruct entityViewStruct)
+        /// <param name="entityViewStruct"></param>
+        public void MovedFrom(ref EnemyAttackEntityViewStruct     entityViewStruct)
+        {}
+
+        public void MovedTo(ref EnemyAttackEntityViewStruct     entityViewStruct,
+                            ExclusiveGroup.ExclusiveGroupStruct previousGroup)
         {
             if (entityViewStruct.ID.groupID == ECSGroups.ActiveEnemies)
-                entityViewStruct.targetTriggerComponent.hitChange.StopNotify(_onCollidedWithTarget);
+                entityViewStruct.targetTriggerComponent.hitChange.ResumeNotify();
+            else
+                entityViewStruct.targetTriggerComponent.hitChange.PauseNotify();
         }
 
         void OnCollidedWithTarget(EGID sender, EnemyCollisionData enemyCollisionData)
@@ -85,7 +92,7 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
                 for (var enemyTargetIndex = 0; enemyTargetIndex < targetsCount; enemyTargetIndex++)
                 {
                     for (var enemyIndex = 0; enemyIndex < enemiesCount; enemyIndex++)
-                        if (enemiesAttackData[enemyIndex].entityInRange.collides == true)
+                        if (enemiesAttackData[enemyIndex].entityInRange.collides)
                             if (enemiesAttackData[enemyIndex].entityInRange.otherEntityID ==
                                 targetEntities[enemyTargetIndex].ID)
                             {
@@ -105,8 +112,5 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
                 yield return null;
             }
         }
-        
-        readonly ITime _time;
-        Action<EGID, EnemyCollisionData> _onCollidedWithTarget;
     }
 }
