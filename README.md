@@ -46,8 +46,8 @@ Most of the source code has been rewritten to work with Svelto.ECS framework. Th
 
 Integration with Unity UI and Svelto entities.
 
-* **Iteration 1:
+* **Iteration 1:**
 * Goal of this example: show how EntityStreams work to publish data changes. Show how to enable databinding with ExclusiveGroups. Show how to setup a data oriented GUI with nested prefabs.
-* **Iteration 2:
+* **Iteration 2:**
 
 ## Example 4: Multiple Contexts and more serious alternative to the implementors (ToDO)
