@@ -51,3 +51,7 @@ Goal of this example: show how EntityStreams work to publish data changes. Show 
 * **Iteration 2:**
 
 ## Example 4: Multiple Contexts and more serious alternative to the implementors (ToDO)
+
+## Example 5: Platform Agnostic Svelto
+
+Goal: Shows the very foundation of a simple entity and engine logic, without any Unity or other platform dependency (pure .net). This example won't cover all the aspects of SECS, but only the basics.
