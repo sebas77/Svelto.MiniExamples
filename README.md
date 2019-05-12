@@ -28,7 +28,7 @@ http://www.sebaslab.com/svelto-mini-examples-doofuses-must-eat/
 * **Iteration 4 (to do):**
   * Something I will say later
   
-## Example 2: The Survival ECS demo
+## Example 2: The classic Survival demo
 
 ![Image](https://github.com/sebas77/GithubWikiImages/blob/master/gif_animation_002.gif)
 
@@ -52,6 +52,8 @@ Goal of this example: show how EntityStreams work to publish data changes. Show 
 
 ## Example 4: Multiple Contexts and more serious alternative to the implementors (ToDO)
 
-## Example 5: Platform Agnostic Svelto
+## Example 5: Vanilla
+
+Basic Platform Agnostic Svelto example
 
 Goal: Shows the very foundation of a simple entity and engine logic, without any Unity or other platform dependency (pure .net). This example won't cover all the aspects of SECS, but only the basics.
