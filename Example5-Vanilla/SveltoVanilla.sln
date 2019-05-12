@@ -1,0 +1,49 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27205.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.ECS.Vanilla", "Svelto.ECS.Example\Svelto.ECS.Vanilla.csproj", "{609EAAA5-9323-407E-8279-D6A20C493188}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto", "Svelto\Svelto.csproj", "{2A05CA00-7E60-417E-B55D-BE1F056D42FB}"
+EndProject
+Global
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{609EAAA5-9323-407E-8279-D6A20C493188}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{609EAAA5-9323-407E-8279-D6A20C493188}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{609EAAA5-9323-407E-8279-D6A20C493188}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{609EAAA5-9323-407E-8279-D6A20C493188}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A05CA00-7E60-417E-B55D-BE1F056D42FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A05CA00-7E60-417E-B55D-BE1F056D42FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A05CA00-7E60-417E-B55D-BE1F056D42FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A05CA00-7E60-417E-B55D-BE1F056D42FB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {45A5FF7D-5919-4E39-9EB5-20731E297275}
+	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
+	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
+	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
+	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
+	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
+	EndGlobalSection
+EndGlobal
