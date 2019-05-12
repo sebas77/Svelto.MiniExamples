@@ -13,6 +13,7 @@ namespace Svelto.Utilities
         static SlowUnityLogger()
         {
             Application.SetStackTraceLogType(UnityEngine.LogType.Error, StackTraceLogType.None);
+            projectFolder = Application.dataPath.Replace("Assets", "");
         }
         
         public void Log(string txt, LogType type = LogType.Log, Exception e = null,
@@ -113,7 +114,6 @@ namespace Svelto.Utilities
                     {
                         stringBuilder.Append(" (at ");
 #if UNITY_EDITOR
-                        var projectFolder = Application.dataPath.Replace("Assets", "");
                         str2 = str2.Replace(@"\", "/");
                         if (!string.IsNullOrEmpty(projectFolder) && str2.StartsWith(projectFolder))
                             
@@ -130,6 +130,8 @@ namespace Svelto.Utilities
             }
         }
         readonly StringBuilder _stringBuilder = new StringBuilder(Byte.MaxValue);
+        
+        static readonly string projectFolder;
     }
    
 }

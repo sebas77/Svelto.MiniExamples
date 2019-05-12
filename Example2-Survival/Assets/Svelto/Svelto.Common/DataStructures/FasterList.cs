@@ -702,16 +702,21 @@ namespace Svelto.DataStructures
         
         public bool ReuseOneSlot<U>(out U result) where U:class, T
         {
-            var index = _count;
             result = null;
 
-            if (index >= _buffer.Length)
+            if (_count >= _buffer.Length)
                 return false;
 
-            result = (U)_buffer[index];
-            _count++;
+            result = (U)_buffer[_count];
 
-            return result != null;
+            if (result != null)
+            {
+                _count++;
+
+                return true;
+            }
+
+            return false;
         }
         
         public bool ReuseOneSlot()
