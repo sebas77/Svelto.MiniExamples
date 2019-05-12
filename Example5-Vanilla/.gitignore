@@ -1,0 +1,8 @@
+/.idea/.idea.SveltoVanilla
+netcoreapp2.0
+obj
+netstandard2.0
+/.vs
+/Svelto/Svelto.ECS/Svelto.Common
+/Svelto/Svelto.Tasks/Svelto.Common
+Svelto.ECS.Example/.idea/
