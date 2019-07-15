@@ -14,7 +14,7 @@ namespace Svelto.ECS.MiniExamples.Example1B
 
         public RenderingDataSynchronizationEngine(World world)
         {
-            _group       = world.EntityManager.CreateComponentGroup(typeof(Translation), typeof(UnityECSDoofusesGroup));
+            _group       = world.EntityManager.CreateEntityQuery(typeof(Translation), typeof(UnityECSDoofusesGroup));
         }
 
         public void Ready()
@@ -66,6 +66,6 @@ namespace Svelto.ECS.MiniExamples.Example1B
             }
         }
 
-        readonly ComponentGroup      _group;
+        readonly EntityQuery      _group;
     }
 }

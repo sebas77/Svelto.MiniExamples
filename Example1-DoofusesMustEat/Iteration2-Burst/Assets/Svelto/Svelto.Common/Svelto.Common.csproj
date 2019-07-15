@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>Svelto.Common</AssemblyName>
+	<LangVersion>7.3</LangVersion>
+	<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	<TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+        <PlatformTarget>AnyCPU</PlatformTarget>
+        <UseSharedCompilation>false</UseSharedCompilation>
+    </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <UseSharedCompilation>false</UseSharedCompilation>
+  </PropertyGroup>
+
+    <ItemGroup>
+    <PackageReference Include="System.Memory" Version="4.5.2" />
+      
+  </ItemGroup>
+</Project>

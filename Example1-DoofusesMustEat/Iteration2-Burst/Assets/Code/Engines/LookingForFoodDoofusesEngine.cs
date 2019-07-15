@@ -15,7 +15,7 @@ namespace Svelto.ECS.MiniExamples.Example1B
         
         IEnumerator SearchFoodOrGetHungry()
         {
-            var function = BurstHelper.MethodCompiler.ConvertBurstMethodToDelegate<Action<int, int, IntPtr, IntPtr, IntPtr, IntPtr, IntPtr>>(BurstIt.Burst);
+            var function = BurstCompiler.CompileFunctionPointer(BurstIt.functionToCompile).Invoke;
 
             void Execute()
             {
@@ -61,9 +61,13 @@ namespace Svelto.ECS.MiniExamples.Example1B
         public IEntitiesDB entitiesDB { private get; set; }
     }
 
-   [BurstCompile]
-    public class BurstIt
+    [BurstCompile]
+    public static class BurstIt
     {
+        public delegate void LookingDelegate(int count, int foodcount, IntPtr dvp, IntPtr hrp, IntPtr fpp, IntPtr dpp,
+            IntPtr msp);
+        
+        public static readonly LookingDelegate functionToCompile = Burst;
         /// <summary>
         /// Couldn't find a way to make it not unsafe yet
         /// </summary>
