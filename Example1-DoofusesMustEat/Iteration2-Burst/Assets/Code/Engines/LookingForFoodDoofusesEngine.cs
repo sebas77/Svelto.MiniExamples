@@ -8,13 +8,14 @@ using Unity.Mathematics;
 
 namespace Svelto.ECS.MiniExamples.Example1B
 {
-#if UNITY_BURST_FEATURE_FUNCPTR    
+#if !DISABLE_BURST    
     public class LookingForFoodDoofusesEngine : IQueryingEntitiesEngine
     {
         public void Ready() { SearchFoodOrGetHungry().RunOn(DoofusesStandardSchedulers.doofusesLogicScheduler); }
         
         IEnumerator SearchFoodOrGetHungry()
         {
+            //careful this function is not safe to call outside jobs, but it works
             var function = BurstCompiler.CompileFunctionPointer(BurstIt.functionToCompile).Invoke;
 
             void Execute()
@@ -26,6 +27,9 @@ namespace Svelto.ECS.MiniExamples.Example1B
                 var foods =
                    entitiesDB.QueryEntities<PositionEntityStruct, MealEntityStruct>(GameGroups.FOOD, out var foodcount);
                 
+                //this is not the correct way to use managed array inside burst functions, the
+                //class NativeArrayUnsafeUtility must be used instead. This works just because
+                //we are keeping the memory pinned
                 var doofusesPosition    = GCHandle.Alloc(doofuses.Item1, GCHandleType.Pinned);
                 var doofusesVelocity    = GCHandle.Alloc(doofuses.Item2, GCHandleType.Pinned);
                 var foodPositions       = GCHandle.Alloc(foods.Item1, GCHandleType.Pinned);
@@ -72,7 +76,7 @@ namespace Svelto.ECS.MiniExamples.Example1B
         /// Couldn't find a way to make it not unsafe yet
         /// </summary>
         [BurstCompile]
-        public static unsafe void Burst(int count, int foodcount, IntPtr dvp, IntPtr hrp, IntPtr fpp, IntPtr dpp,
+        static unsafe void Burst(int count, int foodcount, IntPtr dvp, IntPtr hrp, IntPtr fpp, IntPtr dpp,
             IntPtr msp)
         {
             var dv = (VelocityEntityStruct *)dvp;

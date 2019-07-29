@@ -1,0 +1,12 @@
+{
+    "name": "Svelto.Pool.Debugger",
+    "references": [
+        "Svelto.Common"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false
+}
