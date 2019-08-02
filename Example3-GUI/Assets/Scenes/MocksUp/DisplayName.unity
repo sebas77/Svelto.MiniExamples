@@ -164,7 +164,7 @@ GameObject:
   - component: {fileID: 302892747}
   - component: {fileID: 302892746}
   m_Layer: 5
-  m_Name: PopupDisplayName
+  m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -538,73 +538,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 3939865750662020583, guid: 0d3df1f35586b224eae5e0f9331362dd,
-        type: 3}
-      propertyPath: LocalisationKey
-      value: strTypeHere
-      objectReference: {fileID: 0}
-    - target: {fileID: 5476978525216662535, guid: 0d3df1f35586b224eae5e0f9331362dd,
-        type: 3}
-      propertyPath: m_havePropertiesChanged
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5476978525216662535, guid: 0d3df1f35586b224eae5e0f9331362dd,
-        type: 3}
-      propertyPath: m_isInputParsingRequired
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5476978525216662535, guid: 0d3df1f35586b224eae5e0f9331362dd,
-        type: 3}
-      propertyPath: m_fontAsset
-      value: 
-      objectReference: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee,
-        type: 2}
-    - target: {fileID: 5476978525216662535, guid: 0d3df1f35586b224eae5e0f9331362dd,
-        type: 3}
-      propertyPath: m_sharedMaterial
-      value: 
-      objectReference: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-    - target: {fileID: 22288292456881064, guid: 0d3df1f35586b224eae5e0f9331362dd,
-        type: 3}
-      propertyPath: m_havePropertiesChanged
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 22288292456881064, guid: 0d3df1f35586b224eae5e0f9331362dd,
-        type: 3}
-      propertyPath: m_isInputParsingRequired
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8453672203318411689, guid: 0d3df1f35586b224eae5e0f9331362dd,
-        type: 3}
-      propertyPath: m_havePropertiesChanged
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8453672203318411689, guid: 0d3df1f35586b224eae5e0f9331362dd,
-        type: 3}
-      propertyPath: m_isInputParsingRequired
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8453672203318411689, guid: 0d3df1f35586b224eae5e0f9331362dd,
-        type: 3}
-      propertyPath: m_inputSource
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8453672203318411689, guid: 0d3df1f35586b224eae5e0f9331362dd,
-        type: 3}
-      propertyPath: m_fontAsset
-      value: 
-      objectReference: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee,
-        type: 2}
-    - target: {fileID: 8453672203318411689, guid: 0d3df1f35586b224eae5e0f9331362dd,
-        type: 3}
-      propertyPath: m_sharedMaterial
-      value: 
-      objectReference: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-    - target: {fileID: 9172010843750848591, guid: 0d3df1f35586b224eae5e0f9331362dd,
-        type: 3}
-      propertyPath: LocalisationKey
-      value: 
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0d3df1f35586b224eae5e0f9331362dd, type: 3}

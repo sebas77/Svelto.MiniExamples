@@ -12,11 +12,6 @@ namespace ServiceLayer
             return LocalizedString.LocalizedStrings[GameStringIDsToString[entityStringIdId]];
         }
 
-        public static GameStringsID VerySlowParseEnum(string value)
-        {
-            return Enum.TryParse(value, true, out GameStringsID result) == false ? GameStringsID.strTranslationNotFound : result;
-        }
-
         static readonly Dictionary<GameStringsID, string> GameStringIDsToString = new Dictionary<GameStringsID, string>();
 
         static LocalizationService()

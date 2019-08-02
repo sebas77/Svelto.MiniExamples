@@ -1,3 +1,4 @@
+using System;
 using ServiceLayer;
 using Svelto.ECS.Unity;
 using TMPro;
@@ -14,7 +15,9 @@ namespace Boxtopia.GUIs.LocalisedText
             get
             {
                 if (_key == GameStringsID.NOT_INITIALIZED)
-                    _key = LocalizationService.VerySlowParseEnum(LocalisationKey);
+                    _key = Enum.TryParse(LocalisationKey, true, out GameStringsID result) == false
+                        ? GameStringsID.strTranslationNotFound
+                        : result;
                 
                 return _key;
             }
@@ -33,7 +36,7 @@ namespace Boxtopia.GUIs.LocalisedText
             }
         }
 
-        TextMeshProUGUI                 _reference;
-        GameStringsID _key;
+        TextMeshProUGUI _reference;
+        GameStringsID   _key;
     }
 }

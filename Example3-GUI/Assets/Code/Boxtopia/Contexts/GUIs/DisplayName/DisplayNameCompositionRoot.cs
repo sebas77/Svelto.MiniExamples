@@ -39,10 +39,12 @@ namespace Boxtopia.GUIs.DisplayName
 
         static void BuildActualGUIEntities<T>(T contextHolder, IEntityFactory generateEntityFactory)
         {
+            //create the main GUI widget and relative entity
             var holder = SveltoGUIHelper.Create<DisplayNameDescriptorHolder>(
                 new EGID(0, ExclusiveGroups.DisplayName), (contextHolder as UnityContext).transform,
                 generateEntityFactory);
 
+            //extract all the entities from its nested widgets
             var index = SveltoGUIHelper.CreateAll<ButtonEntityDescriptorHolder>(1, 
                 ExclusiveGroups.DisplayName, holder.transform, generateEntityFactory);
 

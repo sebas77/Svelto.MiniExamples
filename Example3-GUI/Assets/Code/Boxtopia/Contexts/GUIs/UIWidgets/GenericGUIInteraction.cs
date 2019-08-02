@@ -46,8 +46,7 @@ namespace Boxtopia.GUIs
                         }
                         
                         if (entity.message == ButtonEvents.OK || entity.message == ButtonEvents.CANCEL)
-                        {
-                            // The buttons are contextual to the GUI that owns them, so the group must be the same
+                        {// The buttons are contextual to the GUI that owns them, so the group must be the same
                             var entityHierarchy =
                                 entitiesDb.QueryEntity<EntityHierarchyStruct>(entity.ID);
                             

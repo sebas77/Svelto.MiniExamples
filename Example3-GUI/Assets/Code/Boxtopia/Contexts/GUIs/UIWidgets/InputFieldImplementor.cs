@@ -1,3 +1,4 @@
+using System;
 using System.Text.RegularExpressions;
 using Boxtopia.GUIs.LocalisedText;
 using ServiceLayer;
@@ -26,7 +27,7 @@ namespace Boxtopia.GUIs.InputField
             get
             {
                 if (_key == GameStringsID.NOT_INITIALIZED)
-                    _key = LocalizationService.VerySlowParseEnum(LocalisationKey);
+                    _key = Enum.TryParse(LocalisationKey, true, out GameStringsID result) == false ? GameStringsID.strTranslationNotFound : result;
                 
                 return _key;
             }

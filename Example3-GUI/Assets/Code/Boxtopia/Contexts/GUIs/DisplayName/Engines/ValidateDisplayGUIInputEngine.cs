@@ -16,7 +16,7 @@ using Svelto.ServiceLayer.Experimental.Unity;
 
 namespace Boxtopia.GUIs.DisplayName
 {
-    public class ValidateDisplayGUIInputEngine : IReactOnAddAndRemove<UserEntityStruct>, IQueryingEntitiesEngine
+    public class ValidateDisplayGUIInputEngine : IQueryingEntitiesEngine
     {
         public IEntitiesDB entitiesDB { get; set; }
 
@@ -28,17 +28,11 @@ namespace Boxtopia.GUIs.DisplayName
             _entitiesFunction = entitiesFunction;
         }
 
-        public void Add(ref UserEntityStruct entityView)
-        {
-                CheckOKClicked().RunOn(ExtraLean.BoxtopiaSchedulers.UIScheduler);
-                CheckNameValidity().RunOn(Lean.BoxtopiaSchedulers.UIScheduler);
-        }
-
-        public void Remove(ref UserEntityStruct entityView)
-        {}
-
         public void Ready()
-        {}
+        {
+            CheckOKClicked().RunOn(ExtraLean.BoxtopiaSchedulers.UIScheduler);
+            CheckNameValidity().RunOn(Lean.BoxtopiaSchedulers.UIScheduler);
+        }
 
         /// <summary>
         /// User To Validate is the first state, so this starts immediately,
@@ -47,6 +41,9 @@ namespace Boxtopia.GUIs.DisplayName
         /// <returns></returns>
         IEnumerator CheckOKClicked()
         {
+            while (entitiesDB.Exists<UserEntityStruct>(UniqueEGID.UserToValidate) == false)
+                yield return Yield.It;
+            
             using (var consumer =
                 _buttonEntityConsumer.GenerateConsumer<ButtonEntityStruct>(ExclusiveGroups.DisplayName,
                     "ValidateDisplayGUIInputEngine", 1))
