@@ -3,56 +3,38 @@ using Svelto.ServiceLayer.Experimental;
 using Svelto.ServiceLayer.Experimental.Unity;
 using Svelto.Tasks;
 
-namespace User.Services.Authentication.Steam
+namespace User.Services.Authentication
 {
     public class UnifiedAuthVerifyDisplayNameService : IUnifiedAuthVerifyDisplayNameService
     {
-        public WebRequestResult result => _webRequest.result;
-        public VerifyDisplayNameResponse response { get; private set; }
+        string _displayName;
 
-        public UnifiedAuthVerifyDisplayNameService()
+        public IServiceRequest Inject(string registerData)
         {
-            _webRequest = new StandardWebRequest();
-
-            _webRequest.responseHandler = new JsonResponseHandler<VerifyDisplayNameResponse>();
-            _webRequest.URL = "http://172.30.10.10/account/displayname/available";
+            _displayName = registerData;
+            
+            return this;
         }
-
-        public IServiceRequest<WebRequestResult> Inject(string registerData) { _displayName = registerData; return this; }
 
         public IEnumerator<TaskContract> Execute()
         {
-            DBC.Check.Require(_displayName != null, "You forgot to inject the name");
+            response = new VerifyDisplayNameResponse() { valid = _displayName.Contains("sex") == false };
 
-            var displayNameData = new DisplayNameData
-            {
-                DisplayName = _displayName,
-            };
-
-            yield return _webRequest.Execute(displayNameData).Continue();
-
-            response = ((JsonResponseHandler<VerifyDisplayNameResponse>) _webRequest.responseHandler).response;
+            yield break;
         }
 
-        readonly StandardWebRequest _webRequest;
-        string                      _displayName;
+        public WebRequestResult result => WebRequestResult.Success;
+        public VerifyDisplayNameResponse response { get; private set; }
     }
-}
-
-namespace User.Services.Authentication
-{
+    
     public struct VerifyDisplayNameResponse
     {
-        public bool Available;
+        public bool valid;
     }
 
-    public struct DisplayNameData
-    {
-        public string DisplayName;
-    }
-
-    public interface IUnifiedAuthVerifyDisplayNameService: IServiceRequest<WebRequestResult, string>
+    public interface IUnifiedAuthVerifyDisplayNameService: IServiceRequest<string>
     {
         VerifyDisplayNameResponse response { get; }
+        WebRequestResult result { get; }
     }
 }

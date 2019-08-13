@@ -16,7 +16,6 @@ namespace Boxtopia.GUIs.LocalisedText
         }
 
         public void Remove(ref LocalizedLabelEntityViewStruct entityView)
-        {
-        }
+        {}
     }
 }

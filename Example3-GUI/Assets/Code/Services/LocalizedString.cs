@@ -6,16 +6,16 @@ namespace ServiceLayer
     {
         public static readonly Dictionary<string, string> LocalizedStrings = new Dictionary<string, string>
         {
-            {"strDisplayNameIsUsed", "This Name is already in use, please choose another."},
             {"strTypeYourDisplayName", "Type a new display name"},
-            {"strOK", "OK"},
+            {"strOK", "Submit"},
             {"strTypeHere", "Type Here"},
-            {"strInvalidDisplayName", "Invalid display name"},
-            {"strValidDisplayName", "I love your name, it's so sexy"},
+            {"strInvalidDisplayName", "Naught name!"},
+            {"strValidDisplayName", "Your name is OK"},
             {"strCancel", "Cancel"},
             {"strQuit", "Quit"},
             {"strRetry", "Retry"},
-            {"strAlreadyDisplayName", "Name already in use"},
+            {"strBody", "Don't use the word sex in your name otherwise it will be invalid!"},
+            {"strSomethingWentWrong", "Internet didn't like it"},
         };
     }
     
@@ -23,7 +23,6 @@ namespace ServiceLayer
     {
         NOT_INITIALIZED,
 
-        strDisplayNameIsUsed,
         strTypeYourDisplayName,
         strOK,
         strTypeHere,
@@ -33,6 +32,7 @@ namespace ServiceLayer
         strCancel,
         strQuit,
         strRetry,
-        strAlreadyDisplayName,
+        strBody,
+        strSomethingWentWrong
     }
 }

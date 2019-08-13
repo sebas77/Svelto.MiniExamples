@@ -1,6 +1,6 @@
 using Svelto.ServiceLayer.Experimental;
 
-namespace User.Services.Authentication.Steam
+namespace User.Services.Authentication
 {
     public class UserServicesFactory:ServiceRequestsFactory, IUserServicesFactory
     {

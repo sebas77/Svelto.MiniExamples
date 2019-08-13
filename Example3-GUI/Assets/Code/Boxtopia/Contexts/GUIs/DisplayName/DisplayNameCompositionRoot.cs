@@ -8,6 +8,7 @@ using Svelto.ECS.Schedulers.Unity;
 using Svelto.ECS.Unity;
 using Svelto.Tasks;
 using User;
+using User.Services.Authentication;
 
 namespace Boxtopia.GUIs.DisplayName
 {
@@ -16,7 +17,7 @@ namespace Boxtopia.GUIs.DisplayName
         public void OnContextInitialized<T>(T contextHolder)
         {
             _enginesRoot = new EnginesRoot(new UnityEntitySubmissionScheduler());
-            var userServicesFactory = new UserServicesFactoryMockup();
+            var userServicesFactory = new UserServicesFactory();
 
             var generateEntityFactory = _enginesRoot.GenerateEntityFactory();
             var generateEntityFunctions = _enginesRoot.GenerateEntityFunctions();
@@ -27,8 +28,7 @@ namespace Boxtopia.GUIs.DisplayName
             generateEntityFactory.BuildEntity<UserEntityDescriptor>(UniqueEGID.UserToValidate);
             
             var validateDisplayGuiInputEngine =
-                new ValidateDisplayGUIInputEngine(userServicesFactory,
-                    entityStreamConsumerFactory,
+                new ValidateDisplayGUIInputEngine(userServicesFactory, entityStreamConsumerFactory,
                     generateEntityFunctions);
 
             _enginesRoot.AddEngine(validateDisplayGuiInputEngine);

@@ -43,7 +43,7 @@ namespace Boxtopia.GUIs.DisplayName
         {
             while (entitiesDB.Exists<UserEntityStruct>(UniqueEGID.UserToValidate) == false)
                 yield return Yield.It;
-            
+
             using (var consumer =
                 _buttonEntityConsumer.GenerateConsumer<ButtonEntityStruct>(ExclusiveGroups.DisplayName,
                     "ValidateDisplayGUIInputEngine", 1))
@@ -100,18 +100,20 @@ namespace Boxtopia.GUIs.DisplayName
                 {
                     _currentString = inputFieldText;
 
-                    yield return unifiedAuthVerifyDisplayNameService.Inject(_currentString).Execute().Continue();
-
+                    var checkNameValidity =
+                        unifiedAuthVerifyDisplayNameService.Inject(_currentString).Execute();
+                    yield return checkNameValidity.Continue();
+                    
                     ///Should all the possible errors be handled properly?
                     entitiesDB.QueryUniqueEntity<LocalizedLabelEntityViewStruct>(ExclusiveGroups.FeedbackLabel).label
                             .text = unifiedAuthVerifyDisplayNameService.result == WebRequestResult.Success
                             ? OnSuccess(unifiedAuthVerifyDisplayNameService.response)
                             : OnFailure();
-
-                    yield return wait.Continue();
+                    
+                    yield return Yield.It;
                 }
-
-                yield return Yield.It;
+                else
+                    yield return wait.Continue();
 
                 //can the entity change? Actually it can't, but these kind of reasoning should be standard
                 inputFieldText = entitiesDB.QueryUniqueEntity<InputFieldEntityViewStruct>(ExclusiveGroups.DisplayName)
@@ -124,25 +126,23 @@ namespace Boxtopia.GUIs.DisplayName
             entitiesDB.QueryUniqueEntity<ButtonEntityViewStruct>(ExclusiveGroups.DisplayName).buttonState.interactive =
                 false;
 
-            return LocalizationService.Localize(GameStringsID.strInvalidDisplayName);
+            return LocalizationService.Localize(GameStringsID.strSomethingWentWrong);
         }
 
         string OnSuccess(VerifyDisplayNameResponse response)
         {
-            if (response.Available == true)
+            if (response.valid == true)
             {
-                //if I make this kind of assumptions (just one button present on the gui), I need to assert
-                //somewhere else (maybe initialization) if there is more than one button on the gui to communicate
-                //my intention. Otherwise let's always use the group bind.
                 entitiesDB.QueryUniqueEntity<ButtonEntityViewStruct>(ExclusiveGroups.DisplayName).buttonState
                     .interactive = true;
 
                 return LocalizationService.Localize(GameStringsID.strValidDisplayName);
             }
 
-            //According Mike's logic, the service return success because the name has been validated, even if
-            //it's actually in use.
-            return LocalizationService.Localize(GameStringsID.strAlreadyDisplayName);
+            entitiesDB.QueryUniqueEntity<ButtonEntityViewStruct>(ExclusiveGroups.DisplayName).buttonState
+                .interactive = false;
+
+            return LocalizationService.Localize(GameStringsID.strInvalidDisplayName);
         }
 
         IEnumerator YieldUntilDisplayGUIIsEnabled()
