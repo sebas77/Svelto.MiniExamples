@@ -35,6 +35,7 @@ namespace Boxtopia.GUIs.DisplayName
             _enginesRoot.AddEngine(new GenericGUIInteraction(entityStreamConsumerFactory));
             _enginesRoot.AddEngine(new LocalizingTextEngine());
             _enginesRoot.AddEngine(new ButtonClickingEventEngine());
+            _enginesRoot.AddEngine(new ClosingGUIEngine(entityStreamConsumerFactory));
         }
 
         static void BuildActualGUIEntities<T>(T contextHolder, IEntityFactory generateEntityFactory)

@@ -10,16 +10,18 @@ namespace Boxtopia.GUIs
         public IEntitiesDB entitiesDB { get; set; }
         public void        Ready()    { PollForButtonClicked().RunOn(ExtraLean.BoxtopiaSchedulers.UIScheduler); }
 
-        public ClosingGUIEngine(Consumer<ButtonEntityStruct> generateConsumer)
+        public ClosingGUIEngine(IEntityStreamConsumerFactory generateConsumer)
         {
             _generateConsumer = generateConsumer;
         }
 
         IEnumerator PollForButtonClicked()
         {
+            var generateConsumer = _generateConsumer.GenerateConsumer<ButtonEntityStruct>("ClosingGUIEngine", 1);
+            
             while (true)
             {
-                while (_generateConsumer.TryDequeue(out var entity))
+                while (generateConsumer.TryDequeue(out var entity))
                 {
                     if (entity.message == ButtonEvents.OK || entity.message == ButtonEvents.CANCEL)
                     {
@@ -36,6 +38,6 @@ namespace Boxtopia.GUIs
             }
         }
 
-        readonly Consumer<ButtonEntityStruct> _generateConsumer;
+        readonly IEntityStreamConsumerFactory _generateConsumer;
     }
 }

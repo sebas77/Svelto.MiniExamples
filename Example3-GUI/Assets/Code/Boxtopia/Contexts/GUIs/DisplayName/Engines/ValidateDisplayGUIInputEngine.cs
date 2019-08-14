@@ -55,11 +55,10 @@ namespace Boxtopia.GUIs.DisplayName
                         //User Is Now Validated
                         if (button.message == ButtonEvents.OK)
                         {
-                            //if CheckNameValidity was a task routine, I could have stopped it here
                             _onScreenOpen = false;
 
                             entitiesDB.QueryEntity<UserEntityStruct>(UniqueEGID.UserToValidate).name
-                                .Set(_currentString);
+                                .Set(_validatedString);
 
                             _entitiesFunction.SwapEntityGroup<UserEntityDescriptor>(
                                 UniqueEGID.UserToValidate, UniqueEGID.UserToRegister);
@@ -98,6 +97,10 @@ namespace Boxtopia.GUIs.DisplayName
             {
                 if (_currentString != inputFieldText)
                 {
+                    //disable the submit button until verified
+                    entitiesDB.QueryUniqueEntity<ButtonEntityViewStruct>(ExclusiveGroups.DisplayName).buttonState
+                            .interactive = false;
+                    
                     _currentString = inputFieldText;
 
                     var checkNameValidity =
@@ -110,10 +113,10 @@ namespace Boxtopia.GUIs.DisplayName
                             ? OnSuccess(unifiedAuthVerifyDisplayNameService.response)
                             : OnFailure();
                     
-                    yield return Yield.It;
+                    yield return wait.Continue();
                 }
                 else
-                    yield return wait.Continue();
+                    yield return Yield.It;
 
                 //can the entity change? Actually it can't, but these kind of reasoning should be standard
                 inputFieldText = entitiesDB.QueryUniqueEntity<InputFieldEntityViewStruct>(ExclusiveGroups.DisplayName)
@@ -123,9 +126,6 @@ namespace Boxtopia.GUIs.DisplayName
 
         string OnFailure()
         {
-            entitiesDB.QueryUniqueEntity<ButtonEntityViewStruct>(ExclusiveGroups.DisplayName).buttonState.interactive =
-                false;
-
             return LocalizationService.Localize(GameStringsID.strSomethingWentWrong);
         }
 
@@ -135,6 +135,8 @@ namespace Boxtopia.GUIs.DisplayName
             {
                 entitiesDB.QueryUniqueEntity<ButtonEntityViewStruct>(ExclusiveGroups.DisplayName).buttonState
                     .interactive = true;
+
+                _validatedString = _currentString;
 
                 return LocalizationService.Localize(GameStringsID.strValidDisplayName);
             }
@@ -158,5 +160,6 @@ namespace Boxtopia.GUIs.DisplayName
         readonly IEntityStreamConsumerFactory _buttonEntityConsumer;
         bool                                  _onScreenOpen;
         readonly IEntityFunctions             _entitiesFunction;
+        string                                _validatedString;
     }
 }
