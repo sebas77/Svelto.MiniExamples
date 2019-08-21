@@ -5,7 +5,6 @@ namespace Boxtopia.GUIs.Generic
 {
     public class ButtonClickingEventEngine : IReactOnAddAndRemove<ButtonEntityViewStruct>, IQueryingEntitiesEngine
     {
-        Action<EGID, ButtonEvents> _enqueueButtonChange;
         public IEntitiesDB entitiesDB { get; set; }
 
         public void Ready()
@@ -31,5 +30,7 @@ namespace Boxtopia.GUIs.Generic
             
             entitiesDB.PublishEntityChange<ButtonEntityStruct>(egid);
         }
+        
+        Action<EGID, ButtonEvents> _enqueueButtonChange;
    }
 }

@@ -9,7 +9,7 @@ namespace ServiceLayer
             {"strTypeYourDisplayName", "Type a new display name"},
             {"strOK", "Submit"},
             {"strTypeHere", "Type Here"},
-            {"strInvalidDisplayName", "Naught name!"},
+            {"strInvalidDisplayName", "Naughty name!"},
             {"strValidDisplayName", "Your name is OK"},
             {"strCancel", "Cancel"},
             {"strQuit", "Quit"},

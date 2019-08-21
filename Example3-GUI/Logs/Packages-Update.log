@@ -38,3 +38,11 @@ Update Mode: updateDependencies
 
 The following packages were updated:
   com.unity.test-framework from version 1.0.16 to 1.0.17
+
+=== Thu Aug 15 13:43:33 2019
+
+Packages were changed.
+Update Mode: updateDependencies
+
+The following packages were updated:
+  com.unity.ide.rider from version 1.0.8 to 1.1.0

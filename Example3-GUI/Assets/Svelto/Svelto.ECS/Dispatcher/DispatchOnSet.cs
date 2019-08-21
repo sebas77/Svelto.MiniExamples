@@ -36,10 +36,10 @@ namespace Svelto.ECS
         public void PauseNotify() { _paused = true; }
         public void ResumeNotify() { _paused = false; }
 
-        protected T  _value;
-        readonly EGID _senderID;
+        protected T    _value;
+        readonly  EGID _senderID;
 
         WeakEvent<EGID, T> _subscribers;
-        bool _paused;
+        bool               _paused;
     }
 }

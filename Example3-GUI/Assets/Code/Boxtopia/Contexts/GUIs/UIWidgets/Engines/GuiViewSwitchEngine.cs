@@ -10,7 +10,7 @@ namespace Boxtopia.GUIs.Generic
 
         public GuiViewSwitchEngine(IEntityStreamConsumerFactory consumerFactory)
         {
-            _buttonConsumer = consumerFactory.GenerateConsumer<ButtonEntityStruct>(Boxtopia.GUIs.ExclusiveGroups.GuiViewButton, "MaterialEditorViewSwitchButtons", 1);
+            _buttonConsumer = consumerFactory.GenerateConsumer<ButtonEntityStruct>(ExclusiveGroups.GuiViewButton, "MaterialEditorViewSwitchButtons", 1);
         }
 
         public void Ready()

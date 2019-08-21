@@ -12,6 +12,7 @@ using Svelto.Tasks.ExtraLean;
 using User;
 using User.Services.Authentication;
 using ServiceLayer;
+using Svelto.ServiceLayer.Experimental;
 using Svelto.ServiceLayer.Experimental.Unity;
 
 namespace Boxtopia.GUIs.DisplayName
@@ -20,7 +21,7 @@ namespace Boxtopia.GUIs.DisplayName
     {
         public IEntitiesDB entitiesDB { get; set; }
 
-        public ValidateDisplayGUIInputEngine(IUserServicesFactory serviceFactory,
+        public ValidateDisplayGUIInputEngine(IServiceRequestsFactory serviceFactory,
             IEntityStreamConsumerFactory buttonEntityConsumer, IEntityFunctions entitiesFunction)
         {
             _serviceFactory = serviceFactory;
@@ -156,7 +157,7 @@ namespace Boxtopia.GUIs.DisplayName
         }
 
         string                                _currentString;
-        readonly IUserServicesFactory         _serviceFactory;
+        readonly IServiceRequestsFactory      _serviceFactory;
         readonly IEntityStreamConsumerFactory _buttonEntityConsumer;
         bool                                  _onScreenOpen;
         readonly IEntityFunctions             _entitiesFunction;
