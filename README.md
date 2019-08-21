@@ -4,7 +4,7 @@ New Mini Examples for Svelto.ECS and Svelto.Tasks
 
 Warning: these examples may use using unofficial versions of Svelto that you won't find on the main repository until officially released.
 
-## Example 1: Doofuses Must Eat
+## Example 1: Doofuses Must Eat (Pure ECS)
 
 ![Image](https://github.com/sebas77/GithubWikiImages/blob/master/Example1-Doofuses.gif)
 
@@ -28,7 +28,7 @@ http://www.sebaslab.com/svelto-mini-examples-doofuses-must-eat/
 * **Iteration 4 (to do):**
   * Something I will say later
   
-## Example 2: The classic Survival demo
+## Example 2: The classic Survival demo (Hybrid ECS)
 
 ![Image](https://github.com/sebas77/GithubWikiImages/blob/master/gif_animation_002.gif)
 
@@ -42,7 +42,7 @@ I used the Survival Shooter Unity Demo to show how an ECS framework could work i
 
 Most of the source code has been rewritten to work with Svelto.ECS framework. The Survival Demo is tested with the latest version of Unity, so I cannot guarantee that it always works, but it should work with all the versions from 5.3 and above.
 
-## Example 3: GUI and Service Layer (ToDo)
+## Example 3: GUI and Service Layer (Hybrid ECS for GUI)
 
 Integration with Unity UI and Svelto entities.
 
