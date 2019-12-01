@@ -1,12 +1,13 @@
-﻿Microsoft Visual Studio Solution File, Format Version 11.00
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.ECS", "Svelto.ECS.csproj", "{612D6917-3274-31D5-89A8-C6DB123B27E3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.Common", "Svelto.Common.csproj", "{4EB1C1D2-3F13-633A-E7F6-64CA9903A59A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.Tasks", "Svelto.Tasks.csproj", "{B9CCC83B-904A-75B6-D876-D7E1467EF768}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "Assembly-CSharp.csproj", "{1E175BD6-1F8A-8A70-C127-D7761114206D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.Tasks", "Svelto.Tasks.csproj", "{B9CCC83B-904A-75B6-D876-D7E1467EF768}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.Pool.Debugger", "Svelto.Pool.Debugger.csproj", "{D0875076-2826-7DE3-66EA-095D90E78EBE}"
 EndProject
@@ -26,14 +27,14 @@ Global
 		{4EB1C1D2-3F13-633A-E7F6-64CA9903A59A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4EB1C1D2-3F13-633A-E7F6-64CA9903A59A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4EB1C1D2-3F13-633A-E7F6-64CA9903A59A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B9CCC83B-904A-75B6-D876-D7E1467EF768}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B9CCC83B-904A-75B6-D876-D7E1467EF768}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B9CCC83B-904A-75B6-D876-D7E1467EF768}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B9CCC83B-904A-75B6-D876-D7E1467EF768}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1E175BD6-1F8A-8A70-C127-D7761114206D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1E175BD6-1F8A-8A70-C127-D7761114206D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1E175BD6-1F8A-8A70-C127-D7761114206D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1E175BD6-1F8A-8A70-C127-D7761114206D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B9CCC83B-904A-75B6-D876-D7E1467EF768}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9CCC83B-904A-75B6-D876-D7E1467EF768}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9CCC83B-904A-75B6-D876-D7E1467EF768}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9CCC83B-904A-75B6-D876-D7E1467EF768}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D0875076-2826-7DE3-66EA-095D90E78EBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D0875076-2826-7DE3-66EA-095D90E78EBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D0875076-2826-7DE3-66EA-095D90E78EBE}.Release|Any CPU.ActiveCfg = Release|Any CPU

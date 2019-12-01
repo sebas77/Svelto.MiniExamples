@@ -11,41 +11,89 @@ namespace Svelto.Tasks
         {
             _currentState      = states.value;
             _returnValue.int32 = number;
+//#if DEBUG && !PROFILER            
+//            _trace = new StackTrace(0, true);
+//#endif          
+        }
+
+        internal TaskContract(ulong number) : this()
+        {
+            _currentState       = states.value;
+            _returnValue.uint64 = number;
+//#if DEBUG && !PROFILER            
+//            _trace = new StackTrace(0, true);
+//#endif          
         }
 
         internal TaskContract(ContinuationEnumerator continuation) : this()
         {
             _currentState = states.continuation;
             _continuation = continuation;
+//#if DEBUG && !PROFILER            
+//            _trace = new StackTrace(0, true);
+//#endif          
         }
 
+        internal TaskContract(IEnumerator<TaskContract> enumerator) : this()
+        {
+            _currentState            = states.leanEnumerator;
+            _returnObjects.reference = enumerator;
+//#if DEBUG && !PROFILER            
+//            _trace = new StackTrace(0, true);
+//#endif          
+        }
+        
         internal TaskContract(IEnumerator enumerator) : this()
         {
-            _currentState            = states.enumerator;
+            _currentState            = states.extraLeanEnumerator;
             _returnObjects.reference = enumerator;
+//#if DEBUG && !PROFILER            
+//            _trace = new StackTrace(0, true);
+//#endif          
         }
 
-        internal TaskContract(Break breakit) : this()
+        TaskContract(Break breakit) : this()
         {
             _currentState          = states.breakit;
             _returnObjects.breakIt = breakit;
-        }
-        
-        internal TaskContract(Yield yieldIt) : this()
-        {
-            _currentState = states.yieldit;
+//#if DEBUG && !PROFILER            
+//            _trace = new StackTrace(0, true);
+//#endif           
         }
 
-        internal TaskContract(float val) : this()
+        TaskContract(Yield yieldIt) : this()
+        {
+            _currentState = states.yieldit;
+//#if DEBUG && !PROFILER            
+//            _trace = new StackTrace(0, true);
+//#endif           
+        }
+
+        TaskContract(float val) : this()
         {
             _currentState       = states.value;
             _returnValue.single = val;
+//#if DEBUG && !PROFILER            
+//            _trace = new StackTrace(0, true);
+//#endif         
         }
 
-        internal TaskContract(string val) : this()
+        TaskContract(string val) : this()
         {
             _currentState            = states.value;
             _returnObjects.reference = val;
+//#if DEBUG && !PROFILER            
+//            _trace = new StackTrace(0, true);
+//#endif
+        }
+        
+        public TaskContract(object o) : this()
+        {
+            _currentState          = states.reference;
+            _returnObjects.reference = o;
+//#if DEBUG && !PROFILER            
+//            _trace = new StackTrace(0, true);
+//#endif            
         }
 
         [StructLayout(LayoutKind.Explicit)]
@@ -53,6 +101,8 @@ namespace Svelto.Tasks
         {
             [FieldOffset(0)] internal float single;
             [FieldOffset(0)] internal int   int32;
+            [FieldOffset(0)] internal uint  uint32;
+            [FieldOffset(0)] internal ulong  uint64;
         }
 
         [StructLayout(LayoutKind.Explicit)]
@@ -67,12 +117,12 @@ namespace Svelto.Tasks
             return new TaskContract(number);
         }
 
-        public static implicit operator TaskContract(float number)
+        public static implicit operator TaskContract(ulong number)
         {
             return new TaskContract(number);
         }
-
-        public static implicit operator TaskContract(long number)
+        
+        public static implicit operator TaskContract(float number)
         {
             return new TaskContract(number);
         }
@@ -101,21 +151,28 @@ namespace Svelto.Tasks
         {
             return _returnValue.int32;
         }
+
+        public ulong ToUlong()
+        {
+            return _returnValue.uint64;
+        }
+
+        public uint ToUInt() { return _returnValue.uint32; }
         
         public float ToFloat()
         {
             return _returnValue.single;
         }
-        
-        public Break breakit
-        {
-            get { return _currentState == states.breakit ?_returnObjects.breakIt : null; }
-        }
 
-        public IEnumerator<TaskContract> enumerator
+        public T ToRef<T>() where T : class
         {
-            get { return _currentState == states.enumerator ? (IEnumerator<TaskContract>) _returnObjects.reference : null; }
+            return _returnObjects.reference as T;
         }
+        
+        internal Break breakIt => _currentState == states.breakit ? _returnObjects.breakIt : null;
+
+        internal IEnumerator enumerator => _currentState == states.leanEnumerator || 
+            _currentState == states.extraLeanEnumerator ? (IEnumerator) _returnObjects.reference : null;
 
         internal ContinuationEnumerator? Continuation
         {
@@ -127,27 +184,25 @@ namespace Svelto.Tasks
                 return _continuation;
             }
         }
-
-        public object reference
-        {
-            get { return _currentState == states.value ? _returnObjects.reference : null; }
-        }
         
-        public bool hasValue
-        {
-            get { return _currentState == states.value; }
-        }
+        internal bool isTaskEnumerator => _currentState == states.leanEnumerator;
 
-        public bool yieldIt
-        {
-            get { return _currentState == states.yieldit; }
-        }
+        internal object reference => _currentState == states.value ? _returnObjects.reference : null;
+
+        internal bool hasValue => _currentState == states.value;
+
+        internal bool yieldIt => _currentState == states.yieldit;
 
         readonly fieldValues            _returnValue;
         readonly fieldObjects           _returnObjects;
         readonly states                 _currentState;
         readonly ContinuationEnumerator _continuation;
-
+#if DEBUG && !PROFILER
+        /// <summary>
+        /// Todo: I want to show the stack trace of where a task come from
+        /// </summary>
+        //internal StackTrace _trace;
+#endif        
 
         enum states
         {
@@ -155,7 +210,9 @@ namespace Svelto.Tasks
             value,
             continuation,
             breakit,
-            enumerator
+            leanEnumerator,
+            extraLeanEnumerator,
+            reference
         }
     }
 }

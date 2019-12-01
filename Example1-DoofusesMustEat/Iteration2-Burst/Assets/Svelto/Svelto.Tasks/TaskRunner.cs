@@ -17,23 +17,10 @@ namespace Svelto.Tasks
             return new TaskRoutine<T>(runner);
         }
 #endif        
-        public static void StopAndCleanupAllDefaultSchedulers()
+        public static void Dispose()
         {
-            Lean.StandardSchedulers.KillSchedulers();
+            Lean.StandardSchedulers.Dispose();
             ExtraLean.StandardSchedulers.KillSchedulers();
-        }
-
-        static TaskRunner()
-         {
-#if UNITY_EDITOR && TASKS_PROFILER_ENABLED
-            var debugTasksObject = UnityEngine.GameObject.Find("Svelto.Tasks.Profiler");
-            if (debugTasksObject == null)
-            {
-                debugTasksObject = new UnityEngine.GameObject("Svelto.Tasks.Profiler");
-                debugTasksObject.gameObject.AddComponent<Svelto.Tasks.Profiler.TasksProfilerBehaviour>();
-                UnityEngine.Object.DontDestroyOnLoad(debugTasksObject);
-            }
-#endif
         }
 
         public static void Pause()
@@ -46,6 +33,12 @@ namespace Svelto.Tasks
         {
             Lean.StandardSchedulers.Resume();
             ExtraLean.StandardSchedulers.Resume();
+        }
+
+        public static void Stop()
+        {
+            Lean.StandardSchedulers.Stop();
+            ExtraLean.StandardSchedulers.StopAllCoroutines();
         }
     }
 }
