@@ -7,24 +7,26 @@ using UnityEngine;
 
 namespace Svelto.ECS.MiniExamples.Example1B
 {
-    public class SveltoCompositionRoot : ICompositionRoot
+    public class SveltoCompositionRoot : ICompositionRoot, ICustomBootstrap
     {
-        public void OnContextInitialized<T>(T contextHolder)
+        public bool Initialize(string defaultWorldName)
         {
             QualitySettings.vSyncCount = -1;
 //            Physics.autoSimulation = false;
             
             _enginesRoot = new EnginesRoot(new UnityEntitySubmissionScheduler());
 
-            var context = contextHolder as SveltoContext;
+           // var context = contextHolder as SveltoContext;
             //add the engines we are going to use
-            World world = World.Active;
             var generateEntityFactory = _enginesRoot.GenerateEntityFactory();
-            _enginesRoot.AddEngine(new PlaceFoodOnClickEngine(GameObjectConversionUtility.ConvertGameObjectHierarchy(
-                            context.food, world), generateEntityFactory));
-            _enginesRoot.AddEngine(new SpawningDoofusEngine
-                                       (GameObjectConversionUtility.ConvertGameObjectHierarchy(context.capsule,
-                                                                              world), generateEntityFactory));
+            var world = new World("Custom world");
+
+            
+         //   _enginesRoot.AddEngine(new PlaceFoodOnClickEngine(GameObjectConversionUtility.ConvertGameObjectHierarchy(
+           //                 context.food, world), generateEntityFactory));
+            //_enginesRoot.AddEngine(new SpawningDoofusEngine
+              //                         (GameObjectConversionUtility.ConvertGameObjectHierarchy(context.capsule,
+                //                                                              world), generateEntityFactory));
             
             _enginesRoot.AddEngine(new LookingForFoodDoofusesEngine());
          //   _enginesRoot.AddEngine(new ConsumingFoodEngine(_enginesRoot.GenerateEntityFunctions()));
@@ -35,7 +37,19 @@ namespace Svelto.ECS.MiniExamples.Example1B
             //one engine two ECS implementations :P
             var renderingDataSynchronizationEngine = new RenderingDataSynchronizationEngine(world);
             _enginesRoot.AddEngine(renderingDataSynchronizationEngine);
+            Debug.Log("Executing bootstrap");
+            
+            world.AddSystem(renderingDataSynchronizationEngine);
+            World.DefaultGameObjectInjectionWorld = world;
+            var systems = DefaultWorldInitialization.GetAllSystems(WorldSystemFilterFlags.Default);
+
+            DefaultWorldInitialization.AddSystemsToRootLevelSystemGroups(world, systems);
+            ScriptBehaviourUpdateOrder.UpdatePlayerLoop(world);
+            return true;
+            
         }
+
+        public void OnContextInitialized<T>(T contextHolder) {  }
 
         public void OnContextDestroyed()
         {
@@ -52,6 +66,8 @@ namespace Svelto.ECS.MiniExamples.Example1B
         {}
 
         EnginesRoot _enginesRoot;
+        
+        
     }
 }
 
