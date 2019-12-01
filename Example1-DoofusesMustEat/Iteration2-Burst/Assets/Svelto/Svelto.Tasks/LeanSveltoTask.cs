@@ -49,14 +49,13 @@ namespace Svelto.Tasks.Lean
             _threadSafeSveltoTaskStates.explicitlyStopped = true;
         }
 
-        public string name { get { return ToString(); } }
-
         TaskContract ISveltoTask.Current => throw new Exception();
         TTask Current => _sveltoTask.task;
 
         public bool MoveNext()
         {
-            DBC.Tasks.Check.Require(_threadSafeSveltoTaskStates.completed == false, "impossible state ");
+            DBC.Tasks.Check.Require(_threadSafeSveltoTaskStates.completed == false,
+                                    "impossible state ".FastConcat(ToString()));
             bool completed = false;
             try
             {

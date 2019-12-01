@@ -1,14 +1,48 @@
+using System;
+using Svelto.ECS.Serialization;
+
 namespace Svelto.ECS
 {
-    public class ExtendibleEntityDescriptor<TType>:IEntityDescriptor where TType : IEntityDescriptor, new()
+    /// <summary>
+    /// Inherit from an ExtendibleEntityDescriptor to extend a base entity descriptor that can be used
+    /// to swap and remove specialized entities from abstract engines
+    /// </summary>
+    /// <typeparam name="TType"></typeparam>
+    public class ExtendibleEntityDescriptor<TType> : IEntityDescriptor where TType : IEntityDescriptor, new()
     {
-        protected ExtendibleEntityDescriptor(IEntityBuilder[] extraEntities)
+        static ExtendibleEntityDescriptor()
         {
-            _dynamicDescriptor = new  DynamicEntityDescriptorInfo<TType>(extraEntities);
+            if (typeof(ISerializableEntityDescriptor).IsAssignableFrom(typeof(TType)))
+                throw new Exception(
+                    $"SerializableEntityDescriptors cannot be used as base entity descriptor: {typeof(TType)}");
         }
 
-        public IEntityBuilder[] entitiesToBuild { get { return _dynamicDescriptor.entitiesToBuild; } }
+        public ExtendibleEntityDescriptor(IEntityBuilder[] extraEntities)
+        {
+            _dynamicDescriptor = new DynamicEntityDescriptor<TType>(extraEntities);
+        }
 
-        readonly DynamicEntityDescriptorInfo<TType> _dynamicDescriptor;
+        public ExtendibleEntityDescriptor()
+        {
+            _dynamicDescriptor = new DynamicEntityDescriptor<TType>(true);
+        }
+
+        public ExtendibleEntityDescriptor<TType> ExtendWith<T>() where T : IEntityDescriptor, new()
+        {
+            _dynamicDescriptor.ExtendWith<T>();
+
+            return this;
+        }
+
+        public ExtendibleEntityDescriptor<TType> ExtendWith(IEntityBuilder[] extraEntities)
+        {
+            _dynamicDescriptor.ExtendWith(extraEntities);
+
+            return this;
+        }
+
+        public IEntityBuilder[] entitiesToBuild => _dynamicDescriptor.entitiesToBuild;
+
+        DynamicEntityDescriptor<TType> _dynamicDescriptor;
     }
 }

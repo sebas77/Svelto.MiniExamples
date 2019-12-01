@@ -112,7 +112,7 @@ namespace Svelto.DataStructures
             {
                 int i = list.Count;
                 
-                list.GrowAndSetCount(m_Queue.Count);
+                list.ExpandBy((uint) m_Queue.Count);
 
                 var array = list.ToArrayFast();
                 

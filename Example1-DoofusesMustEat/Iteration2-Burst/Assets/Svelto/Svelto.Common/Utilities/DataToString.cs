@@ -13,10 +13,10 @@ namespace Svelto.Utilities
                 foreach (var value in data)
                 {
                     if (index++ < data.Count - 1)
-                        detailString = detailString.FastConcat("<color=orange>\"").FastConcat(value.Key, "\"")
+                        detailString = detailString.FastConcat("<color=teal>\"").FastConcat(value.Key, "\"")
                                                    .FastConcat(":\"", value.Value, "\",</color>");
                     else
-                        detailString = detailString.FastConcat("<color=orange>\"").FastConcat(value.Key, "\"")
+                        detailString = detailString.FastConcat("<color=teal>\"").FastConcat(value.Key, "\"")
                                                    .FastConcat(":\"", value.Value, "\"</color>");
                 }
             }

@@ -15,5 +15,7 @@ namespace Svelto.Utilities
                  LogType                                               type  = LogType.Log,
                  Exception                                             e = null,
                  System.Collections.Generic.Dictionary<string, string> data  = null);
+
+        void OnLoggerAdded();
     }
 }

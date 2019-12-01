@@ -43,12 +43,7 @@ namespace Svelto.Tasks.Lean
 
 public static class TaskRunnerExtensions
 {
-    public static TaskContract Continue<T>(this T enumerator) where T:class, IEnumerator<TaskContract> 
-    {
-        return new TaskContract(enumerator);
-    }
-    
-    public static TaskContract Continue(this IEnumerator enumerator)
+    public static TaskContract Continue<T>(this T enumerator) where T:class,IEnumerator<TaskContract> 
     {
         return new TaskContract(enumerator);
     }

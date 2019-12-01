@@ -2,6 +2,7 @@
 #define GENERATE_NAME
 #endif
 
+using System;
 using System.Collections;
 using DBC.Tasks;
 
@@ -45,8 +46,6 @@ namespace Svelto.Tasks.ExtraLean
             _threadSafeSveltoTaskStates.explicitlyStopped = true;
         }
 
-        public string name { get { return ToString(); } }
-
         public TaskContract Current => Yield.It;
 
         /// <summary>
@@ -56,7 +55,8 @@ namespace Svelto.Tasks.ExtraLean
         /// <returns></returns>
         public bool MoveNext()
         {
-            Check.Require(_threadSafeSveltoTaskStates.completed == false, "ExtraLeanSveltoTask impossible state ");
+            Check.Require(_threadSafeSveltoTaskStates.completed == false,
+                          "ExtraLeanSveltoTask impossible state ".FastConcat(ToString()));
 
             bool completed;
             if (_threadSafeSveltoTaskStates.explicitlyStopped == false)

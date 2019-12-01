@@ -1,94 +1,60 @@
 using System;
+using Svelto.DataStructures;
 
 namespace Svelto.ECS.Internal
 {
     partial class EntitiesDB
     {
-        public void ExecuteOnEntities<T>(uint groupID, EntitiesAction<T> action) where T : IEntityStruct
+        public void ExecuteOnAllEntities<T>(Action<T[], ExclusiveGroup.ExclusiveGroupStruct, uint, IEntitiesDB> action)
+            where T : struct, IEntityStruct
         {
-            if (QueryEntitySafeDictionary(groupID, out TypeSafeDictionary<T> typeSafeDictionary) == false) return;
+            var type = typeof(T);
 
-            var entities = typeSafeDictionary.GetValuesArray(out var count);
+            if (_groupsPerEntity.TryGetValue(new RefWrapper<Type>(type), out var dictionary))
+            {
+                foreach (var pair in dictionary)
+                {
+                    var entities = (pair.Value as TypeSafeDictionary<T>).GetValuesArray(out var innerCount);
 
-            for (uint i = 0; i < count; i++)
-                action(ref entities[i], new EntityActionData(this, i));
+                    if (innerCount > 0)
+                        action(entities, new ExclusiveGroup.ExclusiveGroupStruct(pair.Key), innerCount, this);
+                }
+            }
         }
 
-        public void ExecuteOnEntities<T>(ExclusiveGroup.ExclusiveGroupStruct groupStructId,
-                                         EntitiesAction<T>                   action) where T : IEntityStruct
+        public void ExecuteOnAllEntities
+            <T, W>(W value, Action<T[], ExclusiveGroup.ExclusiveGroupStruct, uint, IEntitiesDB, W> action)
+            where T : struct, IEntityStruct
         {
-            ExecuteOnEntities((uint)groupStructId, action);
+            var type = typeof(T);
+
+            if (_groupsPerEntity.TryGetValue(new RefWrapper<Type>(type), out var dic))
+            {
+                foreach (var pair in dic)
+                {
+                    var entities = (pair.Value as TypeSafeDictionary<T>).GetValuesArray(out var innerCount);
+
+                    if (innerCount > 0)
+                        action(entities, new ExclusiveGroup.ExclusiveGroupStruct(pair.Key), innerCount, this, value);
+                }
+            }
         }
-
-        public void ExecuteOnEntities<T, W>(uint groupID, ref W value, EntitiesAction<T, W> action) where T:IEntityStruct
-        {
-            if (QueryEntitySafeDictionary(groupID, out TypeSafeDictionary<T> typeSafeDictionary) == false) return;
-
-            var entities = typeSafeDictionary.GetValuesArray(out var count);
-
-            for (uint i = 0; i < count; i++)
-                action(ref entities[i], ref value, new EntityActionData(this, i));
-        }
-
-        public void ExecuteOnEntities<T, W>(ExclusiveGroup.ExclusiveGroupStruct groupStructId,
-                                            ref W value, EntitiesAction<T, W> action) where T : IEntityStruct
-        {
-            ExecuteOnEntities((uint)groupStructId, ref value, action);
-        }
-
-        //-----------------------------------------------------------------------------------------------------------
         
-        public void ExecuteOnAllEntities<T>(Action<T[], uint, IEntitiesDB> action) where T : IEntityStruct
+        public void ExecuteOnAllEntities
+            <T, W>(ref W value, ExecuteOnAllEntitiesAction<T, W> action)
+            where T : struct, IEntityStruct
         {
             var type = typeof(T);
 
-            if (_groupsPerEntity.TryGetValue(type, out var dic))
+            if (_groupsPerEntity.TryGetValue(new RefWrapper<Type>(type), out var dic))
             {
-                var typeSafeDictionaries = dic.GetValuesArray(out var count);
-
-                for (uint j = 0; j < count; j++)
+                foreach (var pair in dic)
                 {
-                    var entities = (typeSafeDictionaries[j] as TypeSafeDictionary<T>).GetValuesArray(out var innerCount);
+                    var entities = (pair.Value as TypeSafeDictionary<T>).GetValuesArray(out var innerCount);
 
                     if (innerCount > 0)
-                        action(entities, innerCount, this);
+                        action(entities, new ExclusiveGroup.ExclusiveGroupStruct(pair.Key), innerCount, this, ref value);
                 }
-            }
-        }
-
-        public void ExecuteOnAllEntities<T, W>(ref W value, Action<T[], uint, IEntitiesDB, W> action) where T : IEntityStruct
-        {
-            var type = typeof(T);
-
-            if (_groupsPerEntity.TryGetValue(type, out var dic))
-            {
-                var typeSafeDictionaries = dic.GetValuesArray(out var count);
-
-                for (uint j = 0; j < count; j++)
-                {
-                    var entities = (typeSafeDictionaries[j] as TypeSafeDictionary<T>).GetValuesArray(out var innerCount);
-
-                    if (innerCount > 0)
-                        action(entities, innerCount, this, value);
-                }
-            }
-        }
-
-        public void ExecuteOnAllEntities<T>(ExclusiveGroup[] groups, EntitiesAction<T> action) where T : IEntityStruct
-        {
-            foreach (var group in groups)
-            {
-                ExecuteOnEntities(group, action);
-            }
-        }
-
-        public void ExecuteOnAllEntities<T, W>(ExclusiveGroup[]     groups,
-                                               ref W                value,
-                                               EntitiesAction<T, W> action) where T : IEntityStruct
-        {
-            foreach (var group in groups)
-            {
-                ExecuteOnEntities(group, ref value, action);
             }
         }
     }

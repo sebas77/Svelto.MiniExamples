@@ -26,7 +26,7 @@ namespace Svelto.ECS.MiniExamples.Example1B
         {
             void NewFunction()
             {
-                var calculateLength = _group.CalculateLength();
+                var calculateLength = _group.CalculateEntityCount();
 
                 var positionEntityStructs = entitiesDB.QueryEntities<PositionEntityStruct>(GameGroups.DOOFUSES, out var count);
 

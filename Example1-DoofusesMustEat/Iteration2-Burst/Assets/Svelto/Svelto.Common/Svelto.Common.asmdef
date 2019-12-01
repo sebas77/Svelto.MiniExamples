@@ -1,3 +1,4 @@
 ﻿{
-	"name": "Svelto.Common"
+	"name": "Svelto.Common",
+	"allowUnsafeCode" : true
 }
