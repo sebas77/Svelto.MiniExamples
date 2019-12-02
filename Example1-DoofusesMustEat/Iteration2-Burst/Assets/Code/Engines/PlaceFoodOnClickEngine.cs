@@ -1,5 +1,4 @@
 using System.Collections;
-using Svelto.ECS.Components.Unity;
 using Svelto.ECS.EntityStructs;
 using Svelto.Tasks;
 using Svelto.Tasks.Enumerators;
@@ -50,16 +49,15 @@ namespace Svelto.ECS.MiniExamples.Example1B
                             {
                                 uecsEntity     = _food,
                                 spawnPosition  = newposition,
-                                unityComponent = ComponentType.ReadWrite<UnityECSFoodGroup>()
                             });
                         }
 
-                        yield break;
+                        while (timer.IsDone() == false)
+                            yield return Yield.It;
                     }
                 }
                 
-                while (timer.IsDone() == false)
-                    yield return Yield.It;
+                yield return Yield.It;
             }
         }
 
@@ -74,9 +72,5 @@ namespace Svelto.ECS.MiniExamples.Example1B
         readonly Entity         _food;
         
         uint _foodPlaced;
-    }
-    
-    class UnityECSFoodGroup:Component
-    {
     }
 }

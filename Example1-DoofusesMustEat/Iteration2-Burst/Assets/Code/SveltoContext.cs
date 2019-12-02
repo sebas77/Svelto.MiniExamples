@@ -5,9 +5,6 @@ namespace Svelto.ECS.MiniExamples.Example1B
 {
     public class SveltoContext : UnityContext<SveltoCompositionRoot>
     {
-        public GameObject capsule;
-        public GameObject food;
-
         [TextArea] public string Notes;
     }
 }

@@ -1,8 +1,8 @@
 namespace Svelto.ECS.MiniExamples.Example1B
 {
-    public struct HungerEntityStruct : IEntityStruct
+    public struct HungerEntityStruct : IEntityStruct, INeedEGID
     {
         public int  hunger;
-        public EGID ID { get { return new EGID(); } set { } }
+        public EGID ID { get; set; }
     }
 }

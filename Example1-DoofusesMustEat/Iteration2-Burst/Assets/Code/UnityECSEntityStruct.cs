@@ -7,7 +7,6 @@ namespace Svelto.ECS.MiniExamples.Example1B
     {
         public Entity        uecsEntity;
         public float3        spawnPosition;
-        public ComponentType unityComponent;
 
         public EGID ID { get; set; }
     }

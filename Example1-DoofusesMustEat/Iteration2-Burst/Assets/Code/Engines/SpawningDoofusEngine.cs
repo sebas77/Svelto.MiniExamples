@@ -1,11 +1,8 @@
 using System.Collections;
-using Svelto.ECS.Components.Unity;
 using Svelto.ECS.EntityStructs;
-using Svelto.Tasks;
 using Svelto.Tasks.ExtraLean;
 using Unity.Entities;
 using Unity.Mathematics;
-using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace Svelto.ECS.MiniExamples.Example1B
@@ -41,7 +38,6 @@ namespace Svelto.ECS.MiniExamples.Example1B
                 {
                     uecsEntity = _capsule,
                     spawnPosition = positionEntityStruct.position,
-                    unityComponent = ComponentType.ReadOnly<UnityECSDoofusesGroup>()
                 });
                 init.Init(new SpeedEntityStruct {speed = Random.Range(1, 10) / 10.0f});
 
@@ -49,7 +45,8 @@ namespace Svelto.ECS.MiniExamples.Example1B
 
 //                yield return Yield.It;
             }
-                            yield break;
+            
+            yield break;
         }
 
         readonly IEntityFactory _factory;
@@ -57,9 +54,5 @@ namespace Svelto.ECS.MiniExamples.Example1B
         uint                    _numberOfDoofuses;
 
         public const int MaxNumberOfDoofuses = 10000;
-    }
-
-    class UnityECSDoofusesGroup : Component
-    {
     }
 }
