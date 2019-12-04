@@ -400,13 +400,12 @@ namespace Svelto.DataStructures
             }
         }
 
-        public T[] ToArrayFast(out int count)
+        public T[] ToArrayFast(out uint count)
         {
             _lockQ.EnterReadLock();
             try
             {
-                count = _list.Count;
-                return _list.ToArrayFast();
+                return _list.ToArrayFast(out count);
             }
             finally
             {
@@ -867,6 +866,13 @@ namespace Svelto.DataStructures
         /// <returns></returns>
         public T[] ToArrayFast()
         {
+            return _buffer;
+        }
+        
+        public T[] ToArrayFast(out uint count)
+        {
+            count = this._count;
+            
             return _buffer;
         }
 

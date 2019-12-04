@@ -71,6 +71,7 @@ namespace Svelto.DataStructures
 
         public void Add(KeyValuePair<TKey, TValue> item) { throw new NotImplementedException(); }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Clear()
         {
             if (_freeValueCellIndex == 0) return;
@@ -82,6 +83,7 @@ namespace Svelto.DataStructures
             Array.Clear(_valuesInfo, 0, _valuesInfo.Length);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void FastClear()
         {
             if (_freeValueCellIndex == 0) return;
@@ -109,9 +111,10 @@ namespace Svelto.DataStructures
 
         IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator()
         {
-            throw new Exception();
+            throw new NotImplementedException();
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public FasterDictionaryKeyValueEnumerator GetEnumerator()
         {
             return new FasterDictionaryKeyValueEnumerator(this);
@@ -474,14 +477,16 @@ namespace Svelto.DataStructures
 
             public void Dispose() { }
 
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public bool MoveNext()
             {
+#if DEBUG && !PROFILER                
                 if (_count != _dic.Count)
                     throw new FasterDictionaryException("can't modify a dictionary during its iteration");
-
+#endif
                 if (_index < _count - 1)
                 {
-                    _index++;
+                    ++_index;
                     return true;
                 }
 
@@ -490,7 +495,7 @@ namespace Svelto.DataStructures
 
             public void Reset() { throw new NotImplementedException(); }
 
-            public KeyValuePairFast Current => new KeyValuePairFast(_dic._valuesInfo[_index].key, _dic._values, _index);
+            public KeyValuePairFast Current => new KeyValuePairFast(_dic._valuesInfo, _dic._values, _index);
 
             object IEnumerator.Current => throw new NotImplementedException();
 
@@ -500,7 +505,7 @@ namespace Svelto.DataStructures
             int _index;
         }
 
-        struct Node
+        public struct Node
         {
             public readonly TKey key;
             public readonly int  hashcode;
@@ -526,8 +531,6 @@ namespace Svelto.DataStructures
 
         public struct FasterDictionaryKeys : ICollection<TKey>
         {
-            internal FasterDictionaryKeys(FasterDictionary<TKey, TValue> dic) : this() { }
-
             IEnumerator<TKey> IEnumerable<TKey>.GetEnumerator() { throw new NotImplementedException(); }
 
             IEnumerator IEnumerable.GetEnumerator() { throw new NotImplementedException(); }
@@ -554,32 +557,34 @@ namespace Svelto.DataStructures
 
             public void Reset() { throw new NotImplementedException(); }
 
+            public void Dispose() { throw new NotImplementedException(); }
+            
             public TKey Current { get; }
 
             object IEnumerator.Current => Current;
-
-            public void Dispose() { throw new NotImplementedException(); }
         }
 
         TValue[] _values;
-
-        Node[] _valuesInfo;
-        int[]  _buckets;
-        uint   _freeValueCellIndex;
-        uint   _collisions;
+        Node[]   _valuesInfo;
+        int[]    _buckets;
+        uint     _freeValueCellIndex;
+        uint     _collisions;
         
         public struct KeyValuePairFast
         {
             readonly TValue[] _dicValues;
+            readonly Node[]   _dickeys;
             readonly int      _index;
 
-            public KeyValuePairFast(TKey key, TValue[] dicValues, int index) { Key = key;
+            public KeyValuePairFast(Node[] keys, TValue[] dicValues, int index) 
+            { 
                 _dicValues = dicValues;
                 _index = index;
+                _dickeys = keys;
             }
 
-            public readonly TKey   Key;
-            public ref      TValue Value => ref _dicValues[_index];
+            public TKey   Key =>  _dickeys[_index].key;
+            public ref TValue Value => ref _dicValues[_index];
         }
     }
 
