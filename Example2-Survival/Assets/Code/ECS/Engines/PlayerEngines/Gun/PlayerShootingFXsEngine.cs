@@ -17,14 +17,12 @@ namespace Svelto.ECS.Example.Survive.Characters.Player.Gun
 
         IEnumerator PlayerHasShot()
         {
-            var generateConsumer = _factory.GenerateConsumer<GunAttributesEntityStruct>("GunFireConsumer", 1);
-
-            while (true)
+            void IterateGunFires(Consumer<GunAttributesEntityStruct> consumer)
             {
-                while (generateConsumer.TryDequeue(out var gunEntityStruct, out var egid))
+                while (consumer.TryDequeue(out var gunEntityStruct, out var egid))
                 {
                     ref var gunFXComponent = ref entitiesDB.QueryEntity<GunEntityViewStruct>(egid).gunFXComponent;
-                    
+
                     ref var playerGunEntityView = ref gunEntityStruct;
 
                     // Play the gun shot audioclip.
@@ -50,9 +48,17 @@ namespace Svelto.ECS.Example.Survive.Characters.Player.Gun
                     //this is going to allocate. With Svelto Tasks 1.5 it's not simple to find a workaround for this.
                     //There are some tricks, but they are out of the scope of this example. Svelto Tasks 2.0 allows
                     //simpler solution, like using IEnumerator as structs.
-                    DisableFXAfterTime(playerGunEntityView.timeBetweenBullets * gunFXComponent.effectsDisplayTime)
-                       .Run();
+                    DisableFXAfterTime(playerGunEntityView.timeBetweenBullets * gunFXComponent.effectsDisplayTime).Run();
                 }
+            }
+
+            var generateConsumer = _factory.GenerateConsumer<GunAttributesEntityStruct>("GunFireConsumer", 1);
+
+            while (true)
+            {
+                IterateGunFires(generateConsumer);
+
+                yield return null;
             }
         }
 

@@ -21,7 +21,7 @@ namespace Svelto.ECS.Example.Survive.Characters.Player.Gun
 
         IEnumerator Tick()
         {
-            void NewFunction()
+            void Shot()
             {
                 var playerEntities = entitiesDB.QueryEntities<PlayerInputDataStruct>(ECSGroups.Player, out var count);
                 var gunEntities =
@@ -43,7 +43,7 @@ namespace Svelto.ECS.Example.Survive.Characters.Player.Gun
                 /// there was just one player available, which resulting code could have promoted some not
                 /// very good practices. However assuming that there is a relationship 1:1 between entities
                 /// between groups is just naive. This works because there is just one player
-                NewFunction();
+                Shot();
 
                 yield return null;
             }
