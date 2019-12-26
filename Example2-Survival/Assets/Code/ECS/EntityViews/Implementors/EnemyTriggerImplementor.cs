@@ -14,15 +14,22 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
     {
         bool _targetInRange;
 
+        /// <summary>
+        /// it's annoying that there isn't a physic matrix dedicated for triggers. This means that OnTriggerEnter
+        /// will be executed for any collider entering in the enemy trigger area, including the static ones  
+        /// </summary>
+        /// <param name="other"></param>
         void OnTriggerEnter(Collider other)
         {
-            hitChange.value =
-                new EnemyCollisionData(new EGID((uint) other.gameObject.GetInstanceID(), ECSGroups.EnemyTargets), true);
+            if (hitChange != null && other.attachedRigidbody != null)
+                hitChange.value =
+                    new EnemyCollisionData(new EGID((uint) other.gameObject.GetInstanceID(), ECSGroups.EnemyTargets), true);
         }
 
         void OnTriggerExit(Collider other)
         {
-            hitChange.value =
+            if (hitChange != null && other.attachedRigidbody != null)
+                hitChange.value =
                new EnemyCollisionData(new EGID((uint) other.gameObject.GetInstanceID(), ECSGroups.EnemyTargets), false);
         }
 

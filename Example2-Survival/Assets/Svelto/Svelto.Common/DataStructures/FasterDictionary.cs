@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
-namespace Svelto.DataStructures.Experimental
+namespace Svelto.DataStructures
 {
     /// <summary>
     /// This dictionary has been created for just one reason: I needed a dictionary that would have let me iterate
@@ -15,7 +15,7 @@ namespace Svelto.DataStructures.Experimental
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
-    public class FasterDictionary<TKey, TValue> : IDictionary<TKey, TValue> where TKey : IEquatable<TKey>
+    public class FasterDictionary<TKey, TValue> : IDictionary<TKey, TValue> where TKey:IEquatable<TKey>
     {
         public FasterDictionary(uint size)
         {
@@ -23,7 +23,7 @@ namespace Svelto.DataStructures.Experimental
             _values     = new TValue[size];
             _buckets    = new int[HashHelpers.GetPrime((int) size)];
         }
-
+        
         public FasterDictionary() : this(1) { }
 
         ICollection<TKey> IDictionary<TKey, TValue>.Keys => throw new NotImplementedException();
@@ -32,44 +32,46 @@ namespace Svelto.DataStructures.Experimental
 
         ICollection<TValue> IDictionary<TKey, TValue>.Values => throw new NotImplementedException();
 
-        public ReadOnlyCollectionStruct<TValue> Values => new ReadOnlyCollectionStruct<TValue>(_values, _freeValueCellIndex);
+        public ReadOnlyCollectionStruct<TValue> Values =>
+            new ReadOnlyCollectionStruct<TValue>(_values, _freeValueCellIndex);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public TValue[] GetValuesArray(out uint count)
         {
-            count = (uint) _freeValueCellIndex;
+            count = _freeValueCellIndex;
 
             return _values;
         }
-
-        public uint Collisions => _collisions;
+        
+        public TValue[] valuesArray  
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => _values;
+        }
 
         public int Count => (int) _freeValueCellIndex;
 
         public bool IsReadOnly => false;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Add(TKey key, TValue value) { Add(key, ref value); }
+        void IDictionary<TKey, TValue>.Add(TKey key, TValue value) { Add(key, in value); }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public uint Add(TKey key, ref TValue value)
+        public void Add(TKey key, in TValue value)
         {
-            if (AddValue(key, ref value) == false)
+            if (AddValue(key, in value, out _) == false)
                 throw new FasterDictionaryException("Key already present");
-
-            return _freeValueCellIndex - 1;
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public uint Set(TKey key, ref TValue value)
+        public void Set(TKey key, in TValue value)
         {
-            AddValue(key, ref value);
-
-            return _freeValueCellIndex - 1;
+            AddValue(key, in value, out _);
         }
 
         public void Add(KeyValuePair<TKey, TValue> item) { throw new NotImplementedException(); }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Clear()
         {
             if (_freeValueCellIndex == 0) return;
@@ -81,6 +83,7 @@ namespace Svelto.DataStructures.Experimental
             Array.Clear(_valuesInfo, 0, _valuesInfo.Length);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void FastClear()
         {
             if (_freeValueCellIndex == 0) return;
@@ -90,13 +93,13 @@ namespace Svelto.DataStructures.Experimental
             Array.Clear(_buckets, 0, _buckets.Length);
             Array.Clear(_valuesInfo, 0, _valuesInfo.Length);
         }
-
+        
         public bool Contains(KeyValuePair<TKey, TValue> item) { throw new NotImplementedException(); }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool ContainsKey(TKey key)
         {
-            if (FindIndex(key, _buckets, _valuesInfo, out _))
+            if (TryFindIndex(key, out _))
             {
                 return true;
             }
@@ -108,9 +111,10 @@ namespace Svelto.DataStructures.Experimental
 
         IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator()
         {
-            throw new Exception();
+            throw new NotImplementedException();
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public FasterDictionaryKeyValueEnumerator GetEnumerator()
         {
             return new FasterDictionaryKeyValueEnumerator(this);
@@ -118,11 +122,9 @@ namespace Svelto.DataStructures.Experimental
 
         public bool Remove(KeyValuePair<TKey, TValue> item) { throw new NotImplementedException(); }
 
-        protected uint GetValueIndex(TKey index) { return GetIndex(index, _buckets, _valuesInfo); }
-
         public bool TryGetValue(TKey key, out TValue result)
         {
-            if (FindIndex(key, _buckets, _valuesInfo, out var findIndex))
+            if (TryFindIndex(key, out var findIndex))
             {
                 result = _values[findIndex];
                 return true;
@@ -132,9 +134,37 @@ namespace Svelto.DataStructures.Experimental
             return false;
         }
         
-        public ref TValue GetDirectValue(TKey key)
+        //todo: can be optimized
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ref TValue GetOrCreate(TKey key)
         {
-            if (FindIndex(key, _buckets, _valuesInfo, out var findIndex))
+            if (TryFindIndex(key, out var findIndex))
+            {
+                return ref _values[findIndex];
+            }
+            
+            AddValue(key, default, out findIndex);
+            
+            return ref _values[findIndex];
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ref TValue GetOrCreate(TKey key, System.Func<TValue> builder)
+        {
+            if (TryFindIndex(key, out var findIndex))
+            {
+                return ref _values[findIndex];
+            }
+            
+            AddValue(key, builder(), out findIndex);
+            
+            return ref _values[findIndex];
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ref TValue GetValueByRef(TKey key)
+        {
+            if (TryFindIndex(key, out var findIndex))
             {
                 return ref _values[findIndex];
             }
@@ -154,29 +184,20 @@ namespace Svelto.DataStructures.Experimental
                 Array.Resize(ref _valuesInfo, expandPrime);
             }
         }
-
+        
         public TValue this[TKey key]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => _values[GetIndex(key, _buckets, _valuesInfo)];
+            get => _values[GetIndex(key)];
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            set => AddValue(key, ref value);
+            set => AddValue(key, in value, out _);
         }
         
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static int Hash(TKey key) { return key.GetHashCode(); }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static uint Reduce(uint x, uint N)
+        bool AddValue(TKey key, in TValue value, out uint indexSet)
         {
-            if (x >= N)
-                return x % N;
-
-            return x;
-        }
-
-        bool AddValue(TKey key, ref TValue value)
-        {
+            int  hash        = key.GetHashCode();
+            uint bucketIndex = Reduce((uint) hash, (uint) _buckets.Length);
+            
             if (_freeValueCellIndex == _values.Length)
             {
                 var expandPrime = HashHelpers.ExpandPrime((int) _freeValueCellIndex);
@@ -184,9 +205,6 @@ namespace Svelto.DataStructures.Experimental
                 Array.Resize(ref _values, expandPrime);
                 Array.Resize(ref _valuesInfo, expandPrime);
             }
-            
-            int  hash        = key.GetHashCode();
-            uint bucketIndex = Reduce((uint) hash, (uint) _buckets.Length);
 
             //buckets value -1 means it's empty
             var valueIndex = _buckets[bucketIndex] - 1;
@@ -207,6 +225,7 @@ namespace Svelto.DataStructures.Experimental
                         {
                             //the key already exists, simply replace the value!
                             _values[currentValueIndex] = value;
+                            indexSet = (uint) currentValueIndex;
                             return false;
                         }
 
@@ -233,6 +252,7 @@ namespace Svelto.DataStructures.Experimental
             _buckets[bucketIndex] = (int) (_freeValueCellIndex + 1);
 
             _values[_freeValueCellIndex] = value;
+            indexSet = (uint) _freeValueCellIndex;
 
             _freeValueCellIndex++;
 
@@ -385,7 +405,7 @@ namespace Svelto.DataStructures.Experimental
         //I store all the index with an offset + 1, so that in the bucket list 0 means actually not existing.
         //When read the offset must be offset by -1 again to be the real one. In this way
         //I avoid to initialize the array to -1
-        public bool FindIndex(TKey key, out uint findIndex)
+        public bool TryFindIndex(TKey key, out uint findIndex)
         {
             int  hash        = Hash(key);
             uint bucketIndex = Reduce((uint) hash, (uint) _buckets.Length);
@@ -409,35 +429,29 @@ namespace Svelto.DataStructures.Experimental
             findIndex = 0;
             return false;
         }
-
-        static uint GetIndex(TKey key, int[] buckets, Node[] valuesInfo)
+        
+        public ref TValue GetDirectValue(uint index)
         {
-            if (FindIndex(key, buckets, valuesInfo, out var findIndex)) return findIndex;
+            return ref _values[index];
+        }
+
+        public uint GetIndex(TKey key)
+        {
+            if (TryFindIndex(key,  out var findIndex)) return findIndex;
 
             throw new FasterDictionaryException("Key not found");
         }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        static int Hash(TKey key) { return key.GetHashCode(); }
 
-        static bool FindIndex(TKey key, int[] buckets, Node[] valuesInfo, out uint findIndex)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        static uint Reduce(uint x, uint N)
         {
-            int hash        = Hash(key);
-            var bucketIndex = Reduce((uint) hash, (uint) buckets.Length);
+            if (x >= N)
+                return x % N;
 
-            int valueIndex = buckets[bucketIndex] - 1;
-
-            while (valueIndex != -1)
-            {
-                //for some reason this is way faster they use Comparer<TKey>.default, should investigate
-                if (valuesInfo[valueIndex].hashcode == hash && valuesInfo[valueIndex].key.Equals(key) == true)
-                {
-                    findIndex = (uint) valueIndex;
-                    return true;
-                }
-
-                valueIndex = valuesInfo[valueIndex].previous;
-            }
-
-            findIndex = 0;
-            return false;
+            return x;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -452,7 +466,7 @@ namespace Svelto.DataStructures.Experimental
                 valuesInfo[previous].next = next;
         }
 
-        public struct FasterDictionaryKeyValueEnumerator : IEnumerator<KeyValuePairFast<TKey, TValue>>
+        public struct FasterDictionaryKeyValueEnumerator : IEnumerator<KeyValuePairFast>
         {
             public FasterDictionaryKeyValueEnumerator(FasterDictionary<TKey, TValue> dic) : this()
             {
@@ -463,14 +477,16 @@ namespace Svelto.DataStructures.Experimental
 
             public void Dispose() { }
 
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public bool MoveNext()
             {
+#if DEBUG && !PROFILER                
                 if (_count != _dic.Count)
                     throw new FasterDictionaryException("can't modify a dictionary during its iteration");
-
+#endif
                 if (_index < _count - 1)
                 {
-                    _index++;
+                    ++_index;
                     return true;
                 }
 
@@ -479,7 +495,7 @@ namespace Svelto.DataStructures.Experimental
 
             public void Reset() { throw new NotImplementedException(); }
 
-            public KeyValuePairFast<TKey, TValue> Current => new KeyValuePairFast<TKey, TValue>(_dic._valuesInfo[_index].key, _dic._values, _index);
+            public KeyValuePairFast Current => new KeyValuePairFast(_dic._valuesInfo, _dic._values, _index);
 
             object IEnumerator.Current => throw new NotImplementedException();
 
@@ -489,7 +505,7 @@ namespace Svelto.DataStructures.Experimental
             int _index;
         }
 
-        struct Node
+        public struct Node
         {
             public readonly TKey key;
             public readonly int  hashcode;
@@ -515,8 +531,6 @@ namespace Svelto.DataStructures.Experimental
 
         public struct FasterDictionaryKeys : ICollection<TKey>
         {
-            internal FasterDictionaryKeys(FasterDictionary<TKey, TValue> dic) : this() { }
-
             IEnumerator<TKey> IEnumerable<TKey>.GetEnumerator() { throw new NotImplementedException(); }
 
             IEnumerator IEnumerable.GetEnumerator() { throw new NotImplementedException(); }
@@ -543,33 +557,35 @@ namespace Svelto.DataStructures.Experimental
 
             public void Reset() { throw new NotImplementedException(); }
 
+            public void Dispose() { throw new NotImplementedException(); }
+            
             public TKey Current { get; }
 
             object IEnumerator.Current => Current;
-
-            public void Dispose() { throw new NotImplementedException(); }
         }
 
-        protected TValue[] _values;
-
-        Node[]  _valuesInfo;
-        int[]   _buckets;
-        uint    _freeValueCellIndex;
+        TValue[] _values;
+        Node[]   _valuesInfo;
+        int[]    _buckets;
+        uint     _freeValueCellIndex;
         uint     _collisions;
-    }
+        
+        public struct KeyValuePairFast
+        {
+            readonly TValue[] _dicValues;
+            readonly Node[]   _dickeys;
+            readonly int      _index;
 
-    public struct KeyValuePairFast<TKey, TValue>
-    {
-        readonly TValue[] _dicValues;
-        readonly int _index;
+            public KeyValuePairFast(Node[] keys, TValue[] dicValues, int index) 
+            { 
+                _dicValues = dicValues;
+                _index = index;
+                _dickeys = keys;
+            }
 
-        public KeyValuePairFast(TKey key, TValue[] dicValues, int index) { Key = key;
-            _dicValues = dicValues;
-            _index = index;
+            public TKey   Key =>  _dickeys[_index].key;
+            public ref TValue Value => ref _dicValues[_index];
         }
-
-        public readonly TKey Key;
-        public ref TValue Value => ref _dicValues[_index];
     }
 
     public class FasterDictionaryException : Exception

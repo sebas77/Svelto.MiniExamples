@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading;
 
@@ -5,32 +6,32 @@ namespace Svelto.DataStructures
 {
     /// <summary>
     ///   original code: http://devplanet.com/blogs/brianr/archive/2008/09/29/thread-safe-dictionary-update.aspx
-    ///   simplified (not an IDictionary) and apdated (uses FasterList)
+    ///   simplified (not an IDictionary) and apdated (uses NewFasterList)
     /// </summary>
     /// <typeparam name = "TKey"></typeparam>
     /// <typeparam name = "TValue"></typeparam>
 
-    public class ThreadSafeDictionary<TKey, TValue>
+    public sealed class ThreadSafeDictionary<TKey, TValue> where TKey : IEquatable<TKey>
     {
         public ThreadSafeDictionary(int size)
         {
-            dict = new Dictionary<TKey, TValue>(size);
+            dict = new FasterDictionary<TKey, TValue>((uint) size);
         }
 
         public ThreadSafeDictionary()
         {
-            dict = new Dictionary<TKey, TValue>();
+            dict = new FasterDictionary<TKey, TValue>();
         }
 
         // setup the lock;
-        public virtual int Count
+        public uint Count
         {
             get
             {
                 LockQ.EnterReadLock();
                 try
                 {
-                    return dict.Count;
+                    return (uint)dict.Count;
                 }
                 finally
                 {
@@ -39,55 +40,7 @@ namespace Svelto.DataStructures
             }
         }
 
-        public virtual bool IsReadOnly
-        {
-            get
-            {
-                LockQ.EnterReadLock();
-                try
-                {
-                    return dict.IsReadOnly;
-                }
-                finally
-                {
-                    LockQ.ExitReadLock();
-                }
-            }
-        }
-
-        public virtual FasterList<TKey> Keys
-        {
-            get
-            {
-                LockQ.EnterReadLock();
-                try
-                {
-                    return new FasterList<TKey>(dict.Keys);
-                }
-                finally
-                {
-                    LockQ.ExitReadLock();
-                }
-            }
-        }
-
-        public virtual FasterList<TValue> Values
-        {
-            get
-            {
-                LockQ.EnterReadLock();
-                try
-                {
-                    return new FasterList<TValue>(dict.Values);
-                }
-                finally
-                {
-                    LockQ.ExitReadLock();
-                }
-            }
-        }
-
-        public virtual TValue this[TKey key]
+        public TValue this[TKey key]
         {
             get
             {
@@ -116,20 +69,7 @@ namespace Svelto.DataStructures
             }
         }
 
-        public virtual void Add(KeyValuePair<TKey, TValue> item)
-        {
-            LockQ.EnterWriteLock();
-            try
-            {
-                dict.Add(item);
-            }
-            finally
-            {
-                LockQ.ExitWriteLock();
-            }
-        }
-
-        public virtual void Clear()
+        public void Clear()
         {
             LockQ.EnterWriteLock();
             try
@@ -142,46 +82,7 @@ namespace Svelto.DataStructures
             }
         }
 
-        public virtual bool Contains(KeyValuePair<TKey, TValue> item)
-        {
-            LockQ.EnterReadLock();
-            try
-            {
-                return dict.Contains(item);
-            }
-            finally
-            {
-                LockQ.ExitReadLock();
-            }
-        }
-
-        public virtual void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
-        {
-            LockQ.EnterReadLock();
-            try
-            {
-                dict.CopyTo(array, arrayIndex);
-            }
-            finally
-            {
-                LockQ.ExitReadLock();
-            }
-        }
-
-        public virtual bool Remove(KeyValuePair<TKey, TValue> item)
-        {
-            LockQ.EnterWriteLock();
-            try
-            {
-                return dict.Remove(item);
-            }
-            finally
-            {
-                LockQ.ExitWriteLock();
-            }
-        }
-
-        public virtual void Add(TKey key, TValue value)
+        public void Add(TKey key, TValue value)
         {
             LockQ.EnterWriteLock();
             try
@@ -194,7 +95,7 @@ namespace Svelto.DataStructures
             }
         }
         
-        public virtual void Add(TKey key, ref TValue value)
+        public void Add(TKey key, ref TValue value)
         {
             LockQ.EnterWriteLock();
             try
@@ -207,7 +108,7 @@ namespace Svelto.DataStructures
             }
         }
 
-        public virtual bool ContainsKey(TKey key)
+        public bool ContainsKey(TKey key)
         {
             LockQ.EnterReadLock();
             try
@@ -220,7 +121,7 @@ namespace Svelto.DataStructures
             }
         }
 
-        public virtual bool Remove(TKey key)
+        public bool Remove(TKey key)
         {
             LockQ.EnterWriteLock();
             try
@@ -233,7 +134,7 @@ namespace Svelto.DataStructures
             }
         }
 
-        public virtual bool TryGetValue(TKey key, out TValue value)
+        public bool TryGetValue(TKey key, out TValue value)
         {
             LockQ.EnterReadLock();
             try
@@ -295,7 +196,7 @@ namespace Svelto.DataStructures
         }
 
         // This is the internal dictionary that we are wrapping
-        readonly IDictionary<TKey, TValue> dict;
+        readonly FasterDictionary<TKey, TValue> dict;
 
         readonly ReaderWriterLockSlim LockQ = new ReaderWriterLockSlim();
 

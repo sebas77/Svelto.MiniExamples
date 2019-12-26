@@ -25,12 +25,15 @@ namespace Svelto.Utilities
                 case LogType.Warning:
                     Console.SystemLog(txt);
                     break;
-                case LogType.Exception:
                 case LogType.Error:
-                    Console.SystemLog("<color=cyan> ".FastConcat(txt, "</color> ", Environment.NewLine, stack)
-                                                     .FastConcat(Environment.NewLine, dataString));
+                case LogType.Exception:
+                    Console.SystemLog(txt.FastConcat("</color> ", Environment.NewLine, stack)
+                        .FastConcat(Environment.NewLine, dataString));
                     break;
             }
         }
+
+        public void OnLoggerAdded()
+        {}
     }
 }

@@ -1,6 +1,9 @@
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using Svelto.Tasks.Enumerators;
+using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace Svelto.ECS.Example.Survive.Characters.Enemies
 {
@@ -40,8 +43,14 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
             //Also note that I am loading the data only once per application run, outside the 
             //main loop. You can always exploit this pattern when you know that the data you need
             //to use will never change            
-            var enemiestoSpawn  = ReadEnemySpawningDataServiceRequest();
-            var enemyAttackData = ReadEnemyAttackDataServiceRequest();
+            var enemiestoSpawny  = ReadEnemySpawningDataServiceRequest();
+            var enemyAttackDatay = ReadEnemyAttackDataServiceRequest();
+
+            yield return enemiestoSpawny;
+            yield return enemyAttackDatay;
+
+            var enemiestoSpawn = enemiestoSpawny.Current;
+            var enemyAttackData = enemyAttackDatay.Current;
 
             var spawningTimes = new float[enemiestoSpawn.Length];
 
@@ -126,22 +135,26 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
             }
         }
 
-        static JSonEnemySpawnData[] ReadEnemySpawningDataServiceRequest()
+        static IEnumerator<JSonEnemySpawnData[]> ReadEnemySpawningDataServiceRequest()
         {
-            var json = File.ReadAllText("EnemySpawningData.json");
+            var json = Addressables.LoadAsset<TextAsset>("EnemySpawningData");
 
-            var enemiestoSpawn = JsonHelper.getJsonArray<JSonEnemySpawnData>(json);
+            while (json.IsDone == false) yield return null;
+            
+            var enemiestoSpawn = JsonHelper.getJsonArray<JSonEnemySpawnData>(json.Result.text);
 
-            return enemiestoSpawn;
+            yield return enemiestoSpawn;
         }
 
-        static JSonEnemyAttackData[] ReadEnemyAttackDataServiceRequest()
+        static IEnumerator<JSonEnemyAttackData[]> ReadEnemyAttackDataServiceRequest()
         {
-            var json = File.ReadAllText("EnemyAttackData.json");
+            var json = Addressables.LoadAsset<TextAsset>("EnemyAttackData");
+            
+            while (json.IsDone == false) yield return null;
 
-            var enemiestoSpawn = JsonHelper.getJsonArray<JSonEnemyAttackData>(json);
+            var enemiestoSpawn = JsonHelper.getJsonArray<JSonEnemyAttackData>(json.Result.text);
 
-            return enemiestoSpawn;
+            yield return enemiestoSpawn;
         }
     }
 }

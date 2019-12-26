@@ -17,25 +17,43 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: c18cc5dc0d0d8784a84ec94e83a6735f
   m_SerializeEntries:
+  - m_GUID: 0f97e03e8646d2f4e9de2138f5ba629c
+    m_Address: EnemyAttackData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    m_mainAssetType: UnityEngine.TextAsset, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
   - m_GUID: 4e5a0d387dc27394b81600988ad0216f
     m_Address: Player
     m_ReadOnly: 0
     m_SerializedLabels: []
+    m_mainAssetType: UnityEngine.GameObject, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
   - m_GUID: 548c56f4bcf4db24b8aa057e9846a005
     m_Address: Hellephant
     m_ReadOnly: 0
     m_SerializedLabels: []
+    m_mainAssetType: UnityEngine.GameObject, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
   - m_GUID: e5171f72421770240bd7c3989fe351e3
     m_Address: ZomBunny
     m_ReadOnly: 0
     m_SerializedLabels: []
+    m_mainAssetType: UnityEngine.GameObject, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
   - m_GUID: ea3c2728ef33e3a4d99527a86cda6465
     m_Address: ZomBear
     m_ReadOnly: 0
     m_SerializedLabels: []
+    m_mainAssetType: UnityEngine.GameObject, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  - m_GUID: eaaca9dc961bce8458ddd643b497f542
+    m_Address: EnemySpawningData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    m_mainAssetType: UnityEngine.TextAsset, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 25c10f5259757cd408945680fb2c8147, type: 2}
   m_SchemaSet:
-    m_Schemas:
-    - {fileID: 11400000, guid: 496765e4111cb7b41ba00db911e97845, type: 2}
-    - {fileID: 11400000, guid: fd485ad7a7409fa4483a4ad56d6d1e4e, type: 2}
+    m_Schemas: []

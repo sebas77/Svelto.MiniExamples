@@ -35,16 +35,11 @@ namespace Svelto.Context
         public void NotifyFrameworkDeinitialized()
         {
             for (var i = _toDeinitialize.Count - 1; i >= 0; --i)
-                try
-                {
-                    var obj = _toDeinitialize[i];
-                    if (obj.IsAlive)
-                        obj.Target.OnFrameworkDestroyed();
-                }
-                catch (Exception e)
-                {
-                    Svelto.Console.LogException(e);
-                }
+            {
+                var obj = _toDeinitialize[i];
+                if (obj.IsAlive)
+                    obj.Target.OnFrameworkDestroyed();
+            }
 
             _toDeinitialize = null;
         }
@@ -55,16 +50,11 @@ namespace Svelto.Context
         public void NotifyFrameworkInitialized()
         {
             for (var i = _toInitialize.Count - 1; i >= 0; --i)
-                try
-                {
-                    var obj = _toInitialize[i];
-                    if (obj.IsAlive)
-                        obj.Target.OnFrameworkInitialized();
-                }
-                catch (Exception e)
-                {
-                    Svelto.Console.LogException(e);
-                }
+            {
+                var obj = _toInitialize[i];
+                if (obj.IsAlive)
+                    obj.Target.OnFrameworkInitialized();
+            }
 
             _toInitialize = null;
         }

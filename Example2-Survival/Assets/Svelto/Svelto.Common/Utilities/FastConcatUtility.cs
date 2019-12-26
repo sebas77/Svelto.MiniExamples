@@ -12,7 +12,7 @@ public static class FastConcatUtility
     {
         lock (_stringBuilder)
         {
-            _stringBuilder.Length = 0;
+            _stringBuilder.Clear();
 
             _stringBuilder.Append(str1).Append(value);
 
@@ -23,7 +23,7 @@ public static class FastConcatUtility
     {
         lock (_stringBuilder)
         {
-            _stringBuilder.Length = 0;
+            _stringBuilder.Clear();
 
             _stringBuilder.Append(str1).Append(value);
 
@@ -35,7 +35,7 @@ public static class FastConcatUtility
     {
         lock (_stringBuilder)
         {
-            _stringBuilder.Length = 0;
+            _stringBuilder.Clear();
 
             _stringBuilder.Append(str1).Append(value);
 
@@ -47,7 +47,7 @@ public static class FastConcatUtility
     {
         lock (_stringBuilder)
         {
-            _stringBuilder.Length = 0;
+            _stringBuilder.Clear();
 
             _stringBuilder.Append(str1).Append(value);
 
@@ -59,7 +59,7 @@ public static class FastConcatUtility
     {
         lock (_stringBuilder)
         {
-            _stringBuilder.Length = 0;
+            _stringBuilder.Clear();
 
             _stringBuilder.Append(str1).Append(value);
 
@@ -71,7 +71,7 @@ public static class FastConcatUtility
     {
         lock (_stringBuilder)
         {
-            _stringBuilder.Length = 0;
+            _stringBuilder.Clear();
 
             _stringBuilder.Append(str1).Append(value);
 
@@ -83,7 +83,7 @@ public static class FastConcatUtility
     {
         lock (_stringBuilder)
         {
-            _stringBuilder.Length = 0;
+            _stringBuilder.Clear();
 
             _stringBuilder.Append(str1);
             _stringBuilder.Append(str2);
@@ -97,7 +97,7 @@ public static class FastConcatUtility
     {
         lock (_stringBuilder)
         {
-            _stringBuilder.Length = 0;
+            _stringBuilder.Clear();
 
             _stringBuilder.Append(str1);
             _stringBuilder.Append(str2);
@@ -113,7 +113,7 @@ public static class FastConcatUtility
     {
         lock (_stringBuilder)
         {
-            _stringBuilder.Length = 0;
+            _stringBuilder.Clear();
 
             _stringBuilder.Append(str1);
             _stringBuilder.Append(str2);

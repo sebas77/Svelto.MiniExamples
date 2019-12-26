@@ -1,24 +1,27 @@
+using System;
+using System.Collections.Generic;
+
 namespace Svelto.Common.Internal
 {
     public static class DebugExtensions
     {
         public static string TypeName<T>(this T any)
         {
-#if DEBUG && !PROFILER
-            return GetName<T>.Name;
+#if DEBUG            
+            var type = any.GetType();
+            if (_names.TryGetValue(type, out var name) == false)
+            {
+                name = type.ToString();
+                _names[type] = name;
+            }
+
+            return name;
 #else
             return "";
 #endif
         }
+#if DEBUG            
+        static readonly Dictionary<Type, string> _names = new Dictionary<Type, string>();
+#endif
     }
-
-     public static class GetName<T>
-     {
-         static GetName()
-         {
-             Name = typeof(T).ToString();
-         }
-    
-         public static string Name;
-     }
 }

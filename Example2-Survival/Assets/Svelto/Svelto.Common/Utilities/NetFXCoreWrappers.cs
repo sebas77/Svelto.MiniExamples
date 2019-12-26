@@ -81,7 +81,16 @@ public static class NetFXCoreWrappers
 #endif
     }
 
-    public static bool ContainsCustomAttribute(this MemberInfo memberInfo, Type customAttribute, bool inherit)
+    public static bool ContainsCustomAttribute(this MemberInfo memberInfo, Type customAttribute, bool inherit = false)
+    {
+#if !NETFX_CORE
+        return Attribute.IsDefined(memberInfo, customAttribute, inherit);
+#else
+            return memberInfo.GetCustomAttribute(customAttribute, inherit) != null;
+#endif
+    }
+    
+    public static bool ContainsCustomAttribute(this FieldInfo memberInfo, Type customAttribute, bool inherit = false)
     {
 #if !NETFX_CORE
         return Attribute.IsDefined(memberInfo, customAttribute, inherit);

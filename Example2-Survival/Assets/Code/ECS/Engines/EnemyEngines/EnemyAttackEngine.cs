@@ -8,11 +8,6 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
         : IReactOnAddAndRemove<EnemyAttackEntityViewStruct>, IReactOnSwap<EnemyAttackEntityViewStruct>,
           IQueryingEntitiesEngine
     {
-        readonly Action<EGID, EnemyCollisionData> _onCollidedWithTarget;
-
-
-        readonly ITime _time;
-
         public EnemyAttackEngine(ITime time)
         {
             _time                 = time;
@@ -31,36 +26,40 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
         /// </summary>
         /// <param name="entityViewStruct">the up to date entity</param>
         /// <param name="previousGroup">where the entity is coming from</param>
-        public void Add(ref EnemyAttackEntityViewStruct entityViewStruct)
+        public void Add(ref EnemyAttackEntityViewStruct entityViewStruct, EGID egid)
         {
-            entityViewStruct.targetTriggerComponent.hitChange =
-                new DispatchOnChange<EnemyCollisionData>(entityViewStruct.ID);
+            var dispatchOnChange = new DispatchOnChange<EnemyCollisionData>(egid);
 
-            entityViewStruct.targetTriggerComponent.hitChange.NotifyOnValueSet(_onCollidedWithTarget);
+            dispatchOnChange.NotifyOnValueSet(_onCollidedWithTarget);
+
+            entityViewStruct.targetTriggerComponent.hitChange = dispatchOnChange;
         }
 
-        public void Remove(ref EnemyAttackEntityViewStruct entityViewStruct)
+        public void Remove(ref EnemyAttackEntityViewStruct entityViewStruct, EGID egid)
         {
             entityViewStruct.targetTriggerComponent.hitChange = null;
         }
 
         /// <summary>
-        ///     NovedTo and MovedFrom callbacks are enabled by the IReactOnSwap interface
+        ///     MovedTo callbacks are enabled by the IReactOnSwap interface
         ///     They are called on entity swap (when leaving a group and moving to the new one)
         /// </summary>
         /// <param name="entityViewStruct"></param>
-        public void MovedFrom(ref EnemyAttackEntityViewStruct     entityViewStruct)
-        {}
-
         public void MovedTo(ref EnemyAttackEntityViewStruct     entityViewStruct,
-                            ExclusiveGroup.ExclusiveGroupStruct previousGroup)
+                            ExclusiveGroup.ExclusiveGroupStruct previousGroup, EGID egid)
         {
-            if (entityViewStruct.ID.groupID == ECSGroups.ActiveEnemies)
+            if (egid.groupID == ECSGroups.ActiveEnemies)
                 entityViewStruct.targetTriggerComponent.hitChange.ResumeNotify();
             else
                 entityViewStruct.targetTriggerComponent.hitChange.PauseNotify();
         }
 
+        /// <summary>
+        /// once an enemy enters in a trigger, we set the trigger data built inside the implementor and sent
+        /// through the DispatchOnChange
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="enemyCollisionData"></param>
         void OnCollidedWithTarget(EGID sender, EnemyCollisionData enemyCollisionData)
         {
             entitiesDB.QueryEntity<EnemyAttackStruct>(sender).entityInRange = enemyCollisionData;
@@ -68,6 +67,33 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
 
         IEnumerator CheckIfHittingEnemyTarget()
         {
+            void ChecCollisions(uint                     targetsCount, uint enemiesCount,
+                                EnemyAttackStruct[]      enemiesAttackData, DamageableEntityStruct[] targetEntities)
+            {
+                for (var enemyTargetIndex = 0; enemyTargetIndex < targetsCount; enemyTargetIndex++)
+                {
+                    for (var enemyIndex = 0; enemyIndex < enemiesCount; enemyIndex++)
+                    {
+                        ref var enemyAttackStruct  = ref enemiesAttackData[enemyIndex];
+                        ref var enemyCollisionData = ref enemyAttackStruct.entityInRange;
+                        
+                        if (enemyCollisionData.collides &&
+                            enemyCollisionData.otherEntityID == targetEntities[enemyTargetIndex].ID)
+                        {
+                            enemyAttackStruct.timer += _time.deltaTime;
+
+                            if (enemyAttackStruct.timer >= enemyAttackStruct.timeBetweenAttack)
+                            {
+                                enemyAttackStruct.timer = 0.0f;
+
+                                targetEntities[enemyTargetIndex].damageInfo =
+                                    new DamageInfo(enemyAttackStruct.attackDamage, Vector3.zero);
+                            }
+                        }
+                    }
+                }
+            }
+
             while (true)
             {
                 // The engine is querying the EnemyTargets group instead of the PlayersGroup.
@@ -89,28 +115,13 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
                 //cases where entity should be built fast! Theoretically is possible to create
                 //a game using only entity structs, but entity structs make sense ONLY if they
                 //hold value types, so they come with a lot of limitations
-                for (var enemyTargetIndex = 0; enemyTargetIndex < targetsCount; enemyTargetIndex++)
-                {
-                    for (var enemyIndex = 0; enemyIndex < enemiesCount; enemyIndex++)
-                        if (enemiesAttackData[enemyIndex].entityInRange.collides)
-                            if (enemiesAttackData[enemyIndex].entityInRange.otherEntityID ==
-                                targetEntities[enemyTargetIndex].ID)
-                            {
-                                enemiesAttackData[enemyIndex].timer += _time.deltaTime;
-
-                                if (enemiesAttackData[enemyIndex].timer >=
-                                    enemiesAttackData[enemyIndex].timeBetweenAttack)
-                                {
-                                    enemiesAttackData[enemyIndex].timer = 0.0f;
-
-                                    targetEntities[enemyTargetIndex].damageInfo =
-                                        new DamageInfo(enemiesAttackData[enemyIndex].attackDamage, Vector3.zero);
-                                }
-                            }
-                }
+                ChecCollisions(targetsCount, enemiesCount, enemiesAttackData, targetEntities);
 
                 yield return null;
             }
         }
+
+        readonly Action<EGID, EnemyCollisionData> _onCollidedWithTarget;
+        readonly ITime                            _time;
     }
 }

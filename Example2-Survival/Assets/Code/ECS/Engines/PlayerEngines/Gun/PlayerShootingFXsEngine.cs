@@ -8,13 +8,13 @@ namespace Svelto.ECS.Example.Survive.Characters.Player.Gun
         public IEntitiesDB        entitiesDB { set; private get; }
         public void Ready() {  }
 
-        public void Add(ref GunEntityViewStruct playerGunEntityView)
+        public void Add(ref GunEntityViewStruct playerGunEntityView, EGID egid)
         {
             playerGunEntityView.gunHitTargetComponent.targetHit = new DispatchOnSet<bool>(playerGunEntityView.ID);
             playerGunEntityView.gunHitTargetComponent.targetHit.NotifyOnValueSet(PlayerHasShot);
         }
 
-        public void Remove(ref GunEntityViewStruct playerGunEntityView) 
+        public void Remove(ref GunEntityViewStruct playerGunEntityView, EGID egid) 
         {
             playerGunEntityView.gunHitTargetComponent.targetHit.StopNotify(PlayerHasShot); 
             playerGunEntityView.gunHitTargetComponent.targetHit = null;
@@ -37,7 +37,7 @@ namespace Svelto.ECS.Example.Survive.Characters.Player.Gun
             gunFXComponent.play = false;
             gunFXComponent.play = true;
 
-            var gunComponent = structs[index].gunComponent;
+            ref var gunComponent = ref structs[index].gunComponent;
             var shootRay     = gunComponent.shootRay;
 
             // Enable the line renderer and set it's first position to be the end of the gun.
