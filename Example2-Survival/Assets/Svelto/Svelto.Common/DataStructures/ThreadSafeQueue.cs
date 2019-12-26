@@ -1,202 +1,191 @@
 using System.Collections.Generic;
-using System.Threading;
 
 namespace Svelto.DataStructures
 {
     public class ThreadSafeQueue<T>
     {
-        readonly Queue<T> m_Queue;
-
-        readonly ReaderWriterLockSlim LockQ = new ReaderWriterLockSlim();
-
         public ThreadSafeQueue()
         {
-            m_Queue = new Queue<T>();
+            _queue = new Queue<T>();
         }
 
         public ThreadSafeQueue(int capacity)
         {
-            m_Queue = new Queue<T>(capacity);
+            _queue = new Queue<T>(capacity);
         }
 
         public ThreadSafeQueue(IEnumerable<T> collection)
         {
-            m_Queue = new Queue<T>(collection);
+            _queue = new Queue<T>(collection);
         }
 
         public void Enqueue(T item)
         {
-            LockQ.EnterWriteLock();
+            _lockQ.EnterWriteLock();
             try
             {
-                m_Queue.Enqueue(item);
+                _queue.Enqueue(item);
             }
-
             finally
             {
-                LockQ.ExitWriteLock();
+                _lockQ.ExitWriteLock();
             }
         }
 
         public T Dequeue()
         {
-            LockQ.EnterWriteLock();
+            _lockQ.EnterWriteLock();
             try
             {
-                return m_Queue.Dequeue();
+                return _queue.Dequeue();
             }
-
             finally
             {
-                LockQ.ExitWriteLock();
+                _lockQ.ExitWriteLock();
             }
         }
 
         public void EnqueueAll(IEnumerable<T> ItemsToQueue)
         {
-            LockQ.EnterWriteLock();
+            _lockQ.EnterWriteLock();
             try
             {
                 foreach (T item in ItemsToQueue)
-                    m_Queue.Enqueue(item);
+                    _queue.Enqueue(item);
             }
-
             finally
             {
-                LockQ.ExitWriteLock();
+                _lockQ.ExitWriteLock();
             }
         }
 
         public FasterList<T> DequeueAll()
         {
-            LockQ.EnterWriteLock();
+            FasterList<T> returnList = new FasterList<T>(_queue.Count);
+            
+            _lockQ.EnterWriteLock();
             try
             {
-                FasterList<T> returnList = new FasterList<T>();
-
-                while (m_Queue.Count > 0)
-                    returnList.Add(m_Queue.Dequeue());
+                while (_queue.Count > 0)
+                    returnList.Add(_queue.Dequeue());
 
                 return returnList;
             }
-
             finally
             {
-                LockQ.ExitWriteLock();
+                _lockQ.ExitWriteLock();
             }
         }
 
         public void DequeueAllInto(FasterList<T> list)
         {
-            LockQ.EnterWriteLock();
+            int i = list.Count;
+                
+            list.ExpandBy((uint) _queue.Count);
+            
+            var array = list.ToArrayFast();
+            
+            _lockQ.EnterWriteLock();
             try
             {
-                int i = list.Count;
-                
-                list.ExpandBy((uint) m_Queue.Count);
-
-                var array = list.ToArrayFast();
-                
-                while (m_Queue.Count > 0)
-                    array[i++] = m_Queue.Dequeue();
+                while (_queue.Count > 0)
+                    array[i++] = _queue.Dequeue();
             }
-
             finally
             {
-                LockQ.ExitWriteLock();
+                _lockQ.ExitWriteLock();
             }
         }
 
         public void DequeueInto(FasterList<T> list, int count)
         {
-            LockQ.EnterWriteLock();
+            _lockQ.EnterWriteLock();
             try
             {
-                int originalSize = m_Queue.Count;
-                while (m_Queue.Count > 0 && originalSize - m_Queue.Count < count)
-                    list.Add(m_Queue.Dequeue());
+                int originalSize = _queue.Count;
+                while (_queue.Count > 0 && originalSize - _queue.Count < count)
+                    list.Add(_queue.Dequeue());
             }   
-
             finally
             {
-                LockQ.ExitWriteLock();
+                _lockQ.ExitWriteLock();
             }
         }
 
         public FasterList<U> DequeueAllAs<U>() where U:class
         {
-            LockQ.EnterWriteLock();
+            FasterList<U> returnList = new FasterList<U>();
+            _lockQ.EnterWriteLock();
             try
             {
-                FasterList<U> returnList = new FasterList<U>();
-
-                while (m_Queue.Count > 0)
-                    returnList.Add(m_Queue.Dequeue() as U);
+                while (_queue.Count > 0)
+                    returnList.Add(_queue.Dequeue() as U);
 
                 return returnList;
             }
-
             finally
             {
-                LockQ.ExitWriteLock();
+                _lockQ.ExitWriteLock();
             }
         }
 
         public T Peek()
         {
-            LockQ.EnterWriteLock();
+            T item = default(T);
+            
+            _lockQ.EnterReadLock();
             try
             {
-                T item = default(T);
-
-                if (m_Queue.Count > 0)
-                    item = m_Queue.Peek();
-
-                return item;
+                if (_queue.Count > 0)
+                    item = _queue.Peek();
             }
-
             finally
             {
-                LockQ.ExitWriteLock();
+                _lockQ.ExitReadLock();
             }
+            
+            return item;
         }
 
         public void Clear()
         {
-            LockQ.EnterWriteLock();
+            _lockQ.EnterWriteLock();
             try
             {
-                m_Queue.Clear();
+                _queue.Clear();
             }
-
             finally
             {
-                LockQ.ExitWriteLock();
+                _lockQ.ExitWriteLock();
             }
         }
 
         public bool TryDequeue(out T item)
         {
-            LockQ.EnterWriteLock();
+            _lockQ.EnterUpgradableReadLock();
             try
             {
-                if (m_Queue.Count > 0)
+                if (_queue.Count > 0)
                 {
-                    item = m_Queue.Dequeue();
-
+                    _lockQ.EnterWriteLock();
+                    try
+                    {
+                        item = _queue.Dequeue();
+                    }
+                    finally
+                    {
+                        _lockQ.ExitWriteLock();
+                    }
                     return true;
                 }
-                else
-                {
-                    item = default(T);
 
-                    return false;
-                }
+                item = default(T);
+                
+                return false;
             }
-
             finally
             {
-                LockQ.ExitWriteLock();
+                _lockQ.ExitUpgradableReadLock();
             }
         }
 
@@ -204,17 +193,19 @@ namespace Svelto.DataStructures
         {
             get
             {
-                LockQ.EnterWriteLock();
+                _lockQ.EnterReadLock();
                 try
                 {
-                    return m_Queue.Count;
+                    return _queue.Count;
                 }
-
                 finally
                 {
-                    LockQ.ExitWriteLock();
+                    _lockQ.ExitReadLock();
                 }
             }
         }
+        
+        readonly Queue<T>             _queue;
+        readonly ReaderWriterLockSlimEx _lockQ = ReaderWriterLockSlimEx.Create();
     }
 }

@@ -198,7 +198,7 @@ namespace Svelto.DataStructures
         // This is the internal dictionary that we are wrapping
         readonly FasterDictionary<TKey, TValue> dict;
 
-        readonly ReaderWriterLockSlim LockQ = new ReaderWriterLockSlim();
+        readonly ReaderWriterLockSlimEx LockQ = ReaderWriterLockSlimEx.Create();
 
         public void Update(TKey key, ref TValue value)
         {

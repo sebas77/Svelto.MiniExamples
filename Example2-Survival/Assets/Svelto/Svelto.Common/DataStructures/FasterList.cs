@@ -185,13 +185,13 @@ namespace Svelto.DataStructures
         {
             if (list == null) throw new ArgumentException("invalid list");
             _list = list;
-            _lockQ = new ReaderWriterLockSlim();
+            _lockQ = ReaderWriterLockSlimEx.Create();
         }
 
         public FasterListThreadSafe()
         {
             _list  = new FasterList<T>();
-            _lockQ = new ReaderWriterLockSlim();
+            _lockQ = ReaderWriterLockSlimEx.Create();
         }
 
         public int Count
@@ -425,7 +425,7 @@ namespace Svelto.DataStructures
 
         readonly FasterList<T> _list;
 
-        readonly ReaderWriterLockSlim _lockQ;
+        readonly ReaderWriterLockSlimEx _lockQ;
     }
 
     public struct FasterReadOnlyListCast<T, U> : IList<U> where U:T

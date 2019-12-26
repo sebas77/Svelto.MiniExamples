@@ -148,7 +148,7 @@ namespace Svelto.ECS.Example.Survive
             _enginesRoot.AddEngine(playerAnimationEngine);
             _enginesRoot.AddEngine(playerShootingEngine);
             _enginesRoot.AddEngine(new PlayerInputEngine());
-            _enginesRoot.AddEngine(new PlayerGunShootingFXsEngine());
+            _enginesRoot.AddEngine(new PlayerGunShootingFXsEngine(_enginesRoot.GenerateConsumerFactory()));
             _enginesRoot.AddEngine(playerDeathEngine);
             _enginesRoot.AddEngine(new PlayerSpawnerEngine(gameObjectFactory, _entityFactory));
             

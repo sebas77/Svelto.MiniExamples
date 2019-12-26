@@ -4,60 +4,56 @@ using Svelto.Tasks.Enumerators;
 
 namespace Svelto.ECS.Example.Survive.Characters.Player.Gun
 {
-    public class PlayerGunShootingFXsEngine : IReactOnAddAndRemove<GunEntityViewStruct>, IQueryingEntitiesEngine
+    public class PlayerGunShootingFXsEngine : IQueryingEntitiesEngine
     {
-        public PlayerGunShootingFXsEngine() { _playerHasShot = PlayerHasShot; }
         public IEntitiesDB        entitiesDB { set; private get; }
-        public void Ready() {  }
 
-        public void Add(ref GunEntityViewStruct playerGunEntityView, EGID egid)
+        public PlayerGunShootingFXsEngine(IEntityStreamConsumerFactory factory) { _factory = factory; }
+
+        public void Ready()
         {
-            playerGunEntityView.gunHitTargetComponent.targetHit = new DispatchOnSet<bool>(egid);
-            playerGunEntityView.gunHitTargetComponent.targetHit.NotifyOnValueSet(_playerHasShot);
+            PlayerHasShot().Run();
         }
 
-        public void Remove(ref GunEntityViewStruct playerGunEntityView, EGID egid) 
+        IEnumerator PlayerHasShot()
         {
-            playerGunEntityView.gunHitTargetComponent.targetHit.StopNotify(_playerHasShot); 
-            playerGunEntityView.gunHitTargetComponent.targetHit = null;
-        }
+            var generateConsumer = _factory.GenerateConsumer<GunAttributesEntityStruct>("GunFireConsumer", 1);
 
-        void PlayerHasShot(EGID egid, bool targetHasBeenHit)
-        {
-            var structs = entitiesDB.QueryEntitiesAndIndex<GunEntityViewStruct>(egid, out var index);
+            while (true)
+            {
+                while (generateConsumer.TryDequeue(out var gunEntityStruct, out var egid))
+                {
+                    ref var gunFXComponent = ref entitiesDB.QueryEntity<GunEntityViewStruct>(egid).gunFXComponent;
+                    
+                    ref var playerGunEntityView = ref gunEntityStruct;
 
-            ref var playerGunEntityView = ref structs[index].gunComponent ;
-            ref var gunFXComponent = ref structs[index].gunFXComponent;
+                    // Play the gun shot audioclip.
+                    gunFXComponent.playAudio = true;
 
-            // Play the gun shot audioclip.
-            gunFXComponent.playAudio = true;
+                    // Enable the light.
+                    gunFXComponent.lightEnabled = true;
 
-            // Enable the light.
-            gunFXComponent.lightEnabled = true;
+                    // Stop the particles from playing if they were, then start the particles.
+                    gunFXComponent.play = false;
+                    gunFXComponent.play = true;
 
-            // Stop the particles from playing if they were, then start the particles.
-            gunFXComponent.play = false;
-            gunFXComponent.play = true;
+                    ref var gunComponent = ref gunEntityStruct;
+                    var     shootRay     = gunFXComponent.shootRay;
 
-            ref var gunComponent = ref structs[index].gunComponent;
-            var shootRay     = gunComponent.shootRay;
+                    // Enable the line renderer and set it's first position to be the end of the gun.
+                    gunFXComponent.lineEnabled       = true;
+                    gunFXComponent.lineStartPosition = shootRay.origin;
 
-            // Enable the line renderer and set it's first position to be the end of the gun.
-            gunFXComponent.lineEnabled       = true;
-            gunFXComponent.lineStartPosition = shootRay.origin;
+                    gunFXComponent.lineEndPosition = gunComponent.lastTargetPosition;
 
-            // Perform the raycast against gameobjects on the shootable layer and if it hits something...
-            if (targetHasBeenHit)
-                gunFXComponent.lineEndPosition = gunComponent.lastTargetPosition;
-            // If the raycast didn't hit anything on the shootable layer...
-            else
-                gunFXComponent.lineEndPosition = shootRay.origin + shootRay.direction * gunComponent.range;
-
-            //Note:
-            //this is going to allocate. With Svelto Tasks 1.5 it's not simple to find a workaround for this.
-            //There are some tricks, but they are out of the scope of this example. Svelto Tasks 2.0 allows
-            //simpler solution, like using IEnumerator as structs.
-            DisableFXAfterTime(playerGunEntityView.timeBetweenBullets * gunFXComponent.effectsDisplayTime).Run();
+                    //Note:
+                    //this is going to allocate. With Svelto Tasks 1.5 it's not simple to find a workaround for this.
+                    //There are some tricks, but they are out of the scope of this example. Svelto Tasks 2.0 allows
+                    //simpler solution, like using IEnumerator as structs.
+                    DisableFXAfterTime(playerGunEntityView.timeBetweenBullets * gunFXComponent.effectsDisplayTime)
+                       .Run();
+                }
+            }
         }
 
         IEnumerator DisableFXAfterTime(float wait)
@@ -78,7 +74,6 @@ namespace Svelto.ECS.Example.Survive.Characters.Player.Gun
             fxComponent.play         = false;
         }
         
-        readonly Action<EGID, bool> _playerHasShot;
-
+        IEntityStreamConsumerFactory _factory;
     }
 }

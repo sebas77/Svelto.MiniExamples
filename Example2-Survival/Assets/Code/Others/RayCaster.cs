@@ -2,7 +2,7 @@ using UnityEngine;
 
 public interface IRayCaster
 {
-    bool CheckHit(Ray ray, float range, int layer, int         mask, out Vector3 point, out int instanceID);
+    bool CheckHit(Ray ray, float range, int layer, int mask, out Vector3 point, out int instanceID);
     bool CheckHit(Ray ray, float range, int mask,  out Vector3 point);
 }
 

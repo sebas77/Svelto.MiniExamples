@@ -17,9 +17,7 @@ namespace Svelto.ECS.Example.Survive.Characters.Player.Gun
 {
     public struct GunEntityViewStruct : IEntityViewStruct
     {
-        public IGunAttributesComponent gunComponent;
         public IGunFXComponent         gunFXComponent;
-        public IGunHitTargetComponent  gunHitTargetComponent;
         public EGID                    ID { get; set; }
     }
 }
