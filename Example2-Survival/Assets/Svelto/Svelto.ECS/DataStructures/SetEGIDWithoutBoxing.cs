@@ -27,7 +27,12 @@ namespace Svelto.ECS.Internal
 
                 return setter;
 #else        
-                return new ActionCast((ref T target, EGID value) => { ((INeedEGID) target).ID = value; });
+                return (ref T target, EGID value) =>
+                       {
+                           var needEgid = (target as INeedEGID);
+                           needEgid.ID = value;
+                           target      = (T) needEgid;
+                       };
 #endif
             }
 

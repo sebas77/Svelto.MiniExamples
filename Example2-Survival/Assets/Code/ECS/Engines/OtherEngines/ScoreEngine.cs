@@ -12,8 +12,7 @@ namespace Svelto.ECS.Example.Survive.HUD
 
             if (hudEntityViewsCount > 0)
             {
-                uint index;
-                var  playerTargets = entitiesDB.QueryEntitiesAndIndex<ScoreValueEntityStruct>(id, out index);
+                var  playerTargets = entitiesDB.QueryEntitiesAndIndex<ScoreValueEntityStruct>(id, out var index);
 
                 hudEntityViews[0].scoreComponent.score += playerTargets[index].scoreValue;
             }

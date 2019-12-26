@@ -27,7 +27,7 @@ namespace Svelto.ECS.Schedulers.Unity
                 while (true)
                 {
                     yield return _wait;
-
+                    
                     onTick.Invoke();
                 }
             }
@@ -52,7 +52,7 @@ namespace Svelto.ECS.Schedulers.Unity
                 if (_scheduler == null)
                 {
                     _scheduler = new GameObject(_name).AddComponent<Scheduler>();
-                    GameObject.DontDestroyOnLoad(_scheduler);
+                    GameObject.DontDestroyOnLoad(_scheduler.gameObject);
                 }
 
                 _scheduler.onTick = value;

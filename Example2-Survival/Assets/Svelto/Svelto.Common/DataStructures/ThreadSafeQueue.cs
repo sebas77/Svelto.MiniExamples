@@ -24,25 +24,6 @@ namespace Svelto.DataStructures
             m_Queue = new Queue<T>(collection);
         }
 
-        public IEnumerator<T> GetEnumerator()
-        {
-            Queue<T> localQ;
-
-            LockQ.EnterReadLock();
-            try
-            {
-                localQ = new Queue<T>(m_Queue);
-            }
-
-            finally
-            {
-                LockQ.ExitReadLock();
-            }
-
-            foreach (T item in localQ)
-                yield return item;
-        }
-
         public void Enqueue(T item)
         {
             LockQ.EnterWriteLock();

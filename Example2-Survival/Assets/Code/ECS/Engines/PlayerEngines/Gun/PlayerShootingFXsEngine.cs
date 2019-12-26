@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Svelto.Tasks.Enumerators;
 
@@ -5,18 +6,19 @@ namespace Svelto.ECS.Example.Survive.Characters.Player.Gun
 {
     public class PlayerGunShootingFXsEngine : IReactOnAddAndRemove<GunEntityViewStruct>, IQueryingEntitiesEngine
     {
+        public PlayerGunShootingFXsEngine() { _playerHasShot = PlayerHasShot; }
         public IEntitiesDB        entitiesDB { set; private get; }
         public void Ready() {  }
 
         public void Add(ref GunEntityViewStruct playerGunEntityView, EGID egid)
         {
-            playerGunEntityView.gunHitTargetComponent.targetHit = new DispatchOnSet<bool>(playerGunEntityView.ID);
-            playerGunEntityView.gunHitTargetComponent.targetHit.NotifyOnValueSet(PlayerHasShot);
+            playerGunEntityView.gunHitTargetComponent.targetHit = new DispatchOnSet<bool>(egid);
+            playerGunEntityView.gunHitTargetComponent.targetHit.NotifyOnValueSet(_playerHasShot);
         }
 
         public void Remove(ref GunEntityViewStruct playerGunEntityView, EGID egid) 
         {
-            playerGunEntityView.gunHitTargetComponent.targetHit.StopNotify(PlayerHasShot); 
+            playerGunEntityView.gunHitTargetComponent.targetHit.StopNotify(_playerHasShot); 
             playerGunEntityView.gunHitTargetComponent.targetHit = null;
         }
 
@@ -75,5 +77,8 @@ namespace Svelto.ECS.Example.Survive.Characters.Player.Gun
             fxComponent.lightEnabled = false;
             fxComponent.play         = false;
         }
+        
+        readonly Action<EGID, bool> _playerHasShot;
+
     }
 }
