@@ -15,4 +15,14 @@ public class SerializeDataInspector : Editor
             myScript.SerializeAttackData();
         }
     }
+    
+    [MenuItem("Assets/SetWebGLMemory")]
+    static void SetWebGLMemory()
+    {
+        PlayerSettings.WebGL.linkerTarget = WebGLLinkerTarget.Wasm;
+        PlayerSettings.WebGL.threadsSupport = false;
+        PlayerSettings.WebGL.memorySize = 512; // tweak this value for your project
+    }
 }
+
+

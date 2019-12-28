@@ -37,9 +37,9 @@ namespace Svelto.DataStructures
             return false;
         }
         
-        internal uint Push((uint index, T item) value)
+        internal uint Enqueue((uint index, T item) value)
         {
-            return values.Push(value.item);
+            return values.Enqueue(value.item);
         }
         
         internal ref T this[uint index] => ref values[index];

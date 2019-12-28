@@ -938,7 +938,7 @@ namespace Svelto.DataStructures
         void AllocateMore()
         {
             var newList = new T[(_buffer.Length + 1) << 1];
-            if (_count > 0) _buffer.CopyTo(newList, 0);
+            if (_count > 0) Array.Copy(_buffer, newList, _count);
             _buffer = newList;
         }
 
@@ -992,11 +992,20 @@ namespace Svelto.DataStructures
                 _count = newSize;
         }
         
-        public uint Push(in T item)
+        public uint Enqueue(in T item)
         {
             Add(_count, item);
 
             return _count - 1;
+        }
+
+        public ref readonly T Dequeue() { --_count;
+            return ref _buffer[_count];
+        }
+
+        public ref readonly T Peek()
+        {
+            return ref _buffer[_count - 1];
         }
         
         T[] _buffer;

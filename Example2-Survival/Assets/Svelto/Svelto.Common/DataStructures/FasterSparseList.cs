@@ -45,7 +45,7 @@ namespace Svelto.DataStructures
 
         public void Add(uint key, T  item)
         {
-            var index = _denseSet.Push((key, item));
+            var index = _denseSet.Enqueue((key, item));
             
             _keys.Add(key, index);
         }

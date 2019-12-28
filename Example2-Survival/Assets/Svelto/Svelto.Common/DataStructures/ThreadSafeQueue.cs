@@ -6,17 +6,12 @@ namespace Svelto.DataStructures
     {
         public ThreadSafeQueue()
         {
-            _queue = new Queue<T>();
+            _queue = new FasterList<T>(1);
         }
 
         public ThreadSafeQueue(int capacity)
         {
-            _queue = new Queue<T>(capacity);
-        }
-
-        public ThreadSafeQueue(IEnumerable<T> collection)
-        {
-            _queue = new Queue<T>(collection);
+            _queue = new FasterList<T>(capacity);
         }
 
         public void Enqueue(T item)
@@ -32,12 +27,12 @@ namespace Svelto.DataStructures
             }
         }
 
-        public T Dequeue()
+        public ref readonly T Dequeue()
         {
             _lockQ.EnterWriteLock();
             try
             {
-                return _queue.Dequeue();
+                return ref _queue.Dequeue();
             }
             finally
             {
@@ -205,7 +200,7 @@ namespace Svelto.DataStructures
             }
         }
         
-        readonly Queue<T>             _queue;
+        readonly FasterList<T>             _queue;
         readonly ReaderWriterLockSlimEx _lockQ = ReaderWriterLockSlimEx.Create();
     }
 }

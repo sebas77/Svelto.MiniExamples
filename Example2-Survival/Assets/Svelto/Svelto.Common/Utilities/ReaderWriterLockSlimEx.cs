@@ -32,7 +32,7 @@ namespace Svelto.DataStructures
         
         void ThrowOnMoreThanOne(ref int readLock)
         {
-            if (_readLock > 1) throw new System.Exception("RecursiveLock not supported");
+            if (_readLock++ > 0) throw new System.Exception("RecursiveLock not supported");
         }
 
         void ReleaseLock(ref int readLock) { --readLock; }
