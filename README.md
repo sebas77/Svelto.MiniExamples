@@ -17,13 +17,13 @@ http://www.sebaslab.com/svelto-mini-examples-doofuses-must-eat/
 * Goal of this example: show the simplest use of Svelto 2.8 (beta state), intoduce to the concept of entity descriptors, entity structs and groups. 
 * Secondary goal: show integration with UnityECS, show the use of Svelto.Tasks 2.0 (alpha state), show integration with Burst
 
-* **Iteration 1: Example1-DoofusesMustEat (done):**
+* **Iteration 1**
   * Integration with UnityECS for rendering
   * Move the camera with arrows and mouse, left button to drop food
-* **Iteration 2: Example1B-DoofusesMustEatBurst (done):**
+* **Iteration 2:**
   * Integration with Burst for better performance
   * Move the camera with arrows and mouse, left button to drop 100 random food only once
-* **Iteration 3 (to do):**
+* **Iteration 3:**
   * Full code jobification with Svelto ECS 3.0 alpha
   
 ## Example 2: The classic Survival demo (Hybrid ECS)
