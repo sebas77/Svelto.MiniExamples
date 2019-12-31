@@ -14,8 +14,7 @@ Article:
 
 http://www.sebaslab.com/svelto-mini-examples-doofuses-must-eat/
 
-* Goal of this example: show the simplest use of Svelto 2.8 (beta state), intoduce to the concept of entity descriptors, entity structs and groups. 
-* Secondary goal: show integration with UnityECS, show the use of Svelto.Tasks 2.0 (alpha state), show integration with Burst
+* Goal of this example: show the simplest use of Svelto ECS (mixed versions), intoduce to the concept of entity descriptors, entity structs and groups. Show the integration with UnityECS, show the use of Svelto.Tasks 2.0 (alpha state), show integration with Unity Jobs and Burst
  * **Iteration 1**
    * Integration with UnityECS for rendering
    * Move the camera with arrows and mouse, left button to drop food
