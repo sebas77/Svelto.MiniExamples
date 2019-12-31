@@ -32,6 +32,8 @@ namespace Svelto.ECS.MiniExamples.Example1
                     
                     doofusesVelocity[doofusIndex].velocity = new ECSVector3();
 
+                    ECSVector3 closerComputeDirection = default;
+
                     for (int foodIndex = 0; foodIndex < foodcount; foodIndex++)
                     {
                         var computeDirection = foodPositions[foodIndex].position;
@@ -41,23 +43,24 @@ namespace Svelto.ECS.MiniExamples.Example1
                         if (currentMin > sqrModule)
                         {
                             currentMin = sqrModule;
+                            closerComputeDirection = computeDirection;
 
                             //food found
-                            if (sqrModule < 10)
+                            if (sqrModule < 2)
                             {   //close enough to eat
-                                hungerStructs[doofusIndex].hunger--;
+                                hungerStructs[doofusIndex].hunger-=2;
                                 mealStructs[foodIndex].eaters++;
+                                
+                                closerComputeDirection = default;
                                 
                                 break; //close enough let's save some computations
                             }
                             //going toward food, not breaking as closer food can spawn
-                            else
-                            {
-                                doofusesVelocity[doofusIndex].velocity.x = computeDirection.x;
-                                doofusesVelocity[doofusIndex].velocity.z = computeDirection.z;
-                            }
                         }
                     }
+                    
+                    doofusesVelocity[doofusIndex].velocity.x = closerComputeDirection.x;
+                    doofusesVelocity[doofusIndex].velocity.z = closerComputeDirection.z;
                     
                     hungerStructs[doofusIndex].hunger++;
                 }

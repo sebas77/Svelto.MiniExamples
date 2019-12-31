@@ -11,23 +11,25 @@ using Unity.Mathematics;
 namespace Svelto.ECS.MiniExamples.Example1B
 {
 #if !DISABLE_BURST
-#if !BURST_WITH_FUNCTION    
+#if !BURST_WITH_FUNCTION
     public class LookingForFoodDoofusesEngine : IQueryingEntitiesEngine
     {
         public void Ready() { SearchFoodOrGetHungry().RunOn(DoofusesStandardSchedulers.doofusesLogicScheduler); }
-        
+
         IEnumerator SearchFoodOrGetHungry()
         {
             //careful this function is not safe to call outside jobs, but it works
             void Execute()
             {
-                var doofuses = entitiesDB
-                     .QueryEntities<PositionEntityStruct, VelocityEntityStruct, HungerEntityStruct>(GameGroups.DOOFUSES,
-                                                                                                      out var count);
+                var doofuses =
+                    entitiesDB
+                       .QueryEntities<PositionEntityStruct, VelocityEntityStruct, HungerEntityStruct
+                        >(GameGroups.DOOFUSES, out var count);
 
                 var foods =
-                   entitiesDB.QueryEntities<PositionEntityStruct, MealEntityStruct>(GameGroups.FOOD, out var foodcount);
-                
+                    entitiesDB.QueryEntities<PositionEntityStruct, MealEntityStruct>(GameGroups.FOOD,
+                                                                                     out var foodcount);
+
                 //this is not the correct way to use managed array inside burst functions, the
                 //class NativeArrayUnsafeUtility must be used instead. This works just because
                 //we are keeping the memory pinned
@@ -36,7 +38,7 @@ namespace Svelto.ECS.MiniExamples.Example1B
                 var foodPositions       = GCHandle.Alloc(foods.Item1, GCHandleType.Pinned);
                 var mealStructs         = GCHandle.Alloc(foods.Item2, GCHandleType.Pinned);
                 var hungerEntityStructs = GCHandle.Alloc(doofuses.Item3, GCHandleType.Pinned);
-                
+
                 var dv = doofusesVelocity.AddrOfPinnedObject();
                 var hr = hungerEntityStructs.AddrOfPinnedObject();
                 var ms = mealStructs.AddrOfPinnedObject();
@@ -67,23 +69,17 @@ namespace Svelto.ECS.MiniExamples.Example1B
     }
 
     [BurstCompile]
-    public struct BurstItOnMainThread:IJob
+    public struct BurstItOnMainThread : IJob
     {
-        [NativeDisableUnsafePtrRestriction]
-        IntPtr dpp;
-        [NativeDisableUnsafePtrRestriction]
-        IntPtr dvp;
-        [NativeDisableUnsafePtrRestriction]
-        IntPtr hrp;
-        [NativeDisableUnsafePtrRestriction]
-        IntPtr msp;
-        [NativeDisableUnsafePtrRestriction]
-        IntPtr fpp;
-        int foodCount;
-        int count;
+        [NativeDisableUnsafePtrRestriction] IntPtr dpp;
+        [NativeDisableUnsafePtrRestriction] IntPtr dvp;
+        [NativeDisableUnsafePtrRestriction] IntPtr hrp;
+        [NativeDisableUnsafePtrRestriction] IntPtr msp;
+        [NativeDisableUnsafePtrRestriction] IntPtr fpp;
+        int                                        foodCount;
+        int                                        count;
 
-        public BurstItOnMainThread(int count, int foodcount, IntPtr dvp, IntPtr hrp, IntPtr fpp, IntPtr dpp,
-                                   IntPtr msp)
+        public BurstItOnMainThread(int count, int foodcount, IntPtr dvp, IntPtr hrp, IntPtr fpp, IntPtr dpp, IntPtr msp)
         {
             this.dvp = dvp;
             this.hrp = hrp;
@@ -92,62 +88,64 @@ namespace Svelto.ECS.MiniExamples.Example1B
             this.dpp = dpp;
 
             this.foodCount = foodcount;
-            this.count = count;
+            this.count     = count;
         }
-
-        public static float SqrMagnitude(in float3 a) { return a.x * a.x + a.y * a.y + a.z * a.z; }
 
         public void Execute()
         {
             unsafe
             {
-                var dv = (VelocityEntityStruct *)dvp;
-                var hr = (HungerEntityStruct *)hrp;
-                var ms = (MealEntityStruct *)msp;
-                var fp = (PositionEntityStruct *)fpp;
-                var dp = (PositionEntityStruct *)dpp;
-            
+                var dv = (VelocityEntityStruct*) dvp;
+                var hr = (HungerEntityStruct*) hrp;
+                var ms = (MealEntityStruct*) msp;
+                var fp = (PositionEntityStruct*) fpp;
+                var dp = (PositionEntityStruct*) dpp;
+
+                float3 closerComputeDirection = default;
                 for (int doofusIndex = 0; doofusIndex < count; doofusIndex++)
                 {
                     float currentMin = float.MaxValue;
-                
+
                     ref var velocityEntityStruct = ref dv[doofusIndex];
                     ref var hungerEntityStruct   = ref hr[doofusIndex];
                     ref var positionEntityStruct = ref dp[doofusIndex];
 
-                    for (int foodIndex = 0; foodIndex < foodCount; foodIndex++)
+                    for (int foodIndex = 0; foodIndex < foodCount; ++foodIndex)
                     {
-                        var     computeDirection = fp[foodIndex];
-                        ref var mealEntityStruct = ref ms[foodIndex];
-                    
-                        computeDirection.position -= positionEntityStruct.position;
-                    
-                        var sqrModule = SqrMagnitude(computeDirection.position);
+                        var computeDirection = fp[foodIndex].position - positionEntityStruct.position;
+
+                        var sqrModule = computeDirection.x * computeDirection.x +
+                                        computeDirection.y * computeDirection.y +
+                                        computeDirection.z * computeDirection.z;
 
                         if (currentMin > sqrModule)
                         {
                             currentMin = sqrModule;
+                            closerComputeDirection = computeDirection;
 
-                            //food found
-                            if (sqrModule < 10)
+                            //close enough
+                            if (sqrModule < 2)
                             {
-                                hungerEntityStruct.hunger--;
-                                mealEntityStruct.eaters++;
+                                hungerEntityStruct.hunger-=2;
+                                ms[foodIndex].eaters++;
+
+                                closerComputeDirection = default;
 
                                 break; //close enough let's save some computations
                             }
-                                //going toward food, not breaking as closer food can spawn
-                                velocityEntityStruct.velocity.x = computeDirection.position.x;
-                                velocityEntityStruct.velocity.z = computeDirection.position.z;
                         }
                     }
 
                     hungerEntityStruct.hunger++;
+
+                    //going toward food, slower the closer
+                    velocityEntityStruct.velocity.x = closerComputeDirection.x;
+                    velocityEntityStruct.velocity.z = closerComputeDirection.z;
                 }
             }
         }
     }
-#else    
+#else
     public class LookingForFoodDoofusesEngine : IQueryingEntitiesEngine
     {
         public void Ready() { SearchFoodOrGetHungry().RunOn(DoofusesStandardSchedulers.doofusesLogicScheduler); }
@@ -169,10 +167,10 @@ namespace Svelto.ECS.MiniExamples.Example1B
                 //this is not the correct way to use managed array inside burst functions, the
                 //class NativeArrayUnsafeUtility must be used instead. This works just because
                 //we are keeping the memory pinned
-                var doofusesPosition    = GCHandle.Alloc(doofuses.Item1, GCHandleType.Pinned);
-                var doofusesVelocity    = GCHandle.Alloc(doofuses.Item2, GCHandleType.Pinned);
-                var foodPositions       = GCHandle.Alloc(foods.Item1, GCHandleType.Pinned);
-                var mealStructs         = GCHandle.Alloc(foods.Item2, GCHandleType.Pinned);
+                var doofusesPosition = GCHandle.Alloc(doofuses.Item1, GCHandleType.Pinned);
+                var doofusesVelocity = GCHandle.Alloc(doofuses.Item2, GCHandleType.Pinned);
+                var foodPositions = GCHandle.Alloc(foods.Item1, GCHandleType.Pinned);
+                var mealStructs = GCHandle.Alloc(foods.Item2, GCHandleType.Pinned);
                 var hungerEntityStructs = GCHandle.Alloc(doofuses.Item3, GCHandleType.Pinned);
                 
                 var dv = doofusesVelocity.AddrOfPinnedObject();
@@ -269,7 +267,7 @@ namespace Svelto.ECS.MiniExamples.Example1B
 
         public static float SqrMagnitude(in float3 a) { return a.x * a.x + a.y * a.y + a.z * a.z; }
     }
-#endif    
+#endif
 #else
     public class LookingForFoodDoofusesEngine : IQueryingEntitiesEngine
     {
@@ -363,5 +361,5 @@ namespace Svelto.ECS.MiniExamples.Example1B
 
         public static float SqrMagnitude(in float3 a) { return a.x * a.x + a.y * a.y + a.z * a.z; }
     }
-#endif    
+#endif
 }

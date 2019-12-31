@@ -1,15 +1,11 @@
-using System.Collections;
 using System.Threading;
 using Svelto.DataStructures;
 using Svelto.ECS.EntityStructs;
 using Svelto.ECS.Extensions.Unity;
-using Svelto.Tasks.ExtraLean;
 using Unity.Burst;
-using Unity.Collections;
 using Unity.Entities;
 using Unity.Jobs;
 using Unity.Mathematics;
-using UnityEditor;
 
 namespace Svelto.ECS.MiniExamples.Example1B
 {
@@ -40,7 +36,8 @@ namespace Svelto.ECS.MiniExamples.Example1B
 
             return
                 JobHandle
-                   .CombineDependencies(new DisposeJob<BufferTuple<NativeBuffer<PositionEntityStruct>, NativeBuffer<VelocityEntityStruct>, NativeBuffer<HungerEntityStruct>>>(bufferTuple).Schedule(deps),
+                   .CombineDependencies(new DisposeJob<BufferTuple<NativeBuffer<PositionEntityStruct>, 
+                NativeBuffer<VelocityEntityStruct>, NativeBuffer<HungerEntityStruct>>>(bufferTuple).Schedule(deps),
                                         new DisposeJob<BufferTuple<NativeBuffer<PositionEntityStruct>,
                                             NativeBuffer<MealEntityStruct>>>(foodcount).Schedule(deps));
         }
@@ -65,70 +62,46 @@ namespace Svelto.ECS.MiniExamples.Example1B
 
         public void Execute(int index)
         {
-            unsafe
+            float currentMin = float.MaxValue;
+
+            ref var velocityEntityStruct = ref _doofuses.buffer2[index];
+            ref var hungerEntityStruct   = ref _doofuses.buffer3[index];
+            ref var positionEntityStruct = ref _doofuses.buffer1[index];
+
+            var foodcountLength = _foodcount.length;
+
+            float3 closerComputeDirection = default;
+            for (int foodIndex = 0; foodIndex < foodcountLength; ++foodIndex)
             {
-                float currentMin = float.MaxValue;
+                var computeDirection = _foodcount.buffer1[foodIndex].position -
+                                       positionEntityStruct.position;
 
-                ref var velocityEntityStruct = ref _doofuses.buffer2[index];
-                ref var hungerEntityStruct   = ref _doofuses.buffer3[index];
-                ref var positionEntityStruct = ref _doofuses.buffer1[index];
+                var sqrModule = computeDirection.x * computeDirection.x + computeDirection.y * computeDirection.y +
+                                computeDirection.z * computeDirection.z;
 
-                var foodcountLength = _foodcount.length;
-                if (foodcountLength == 0)
+                if (currentMin > sqrModule)
                 {
-                    velocityEntityStruct.velocity.x = 0;
-                    velocityEntityStruct.velocity.z = 0;
+                    currentMin = sqrModule;
+                    closerComputeDirection = computeDirection;
 
-                    return;
-                }
-
-                int closer = 0;
-
-                uint* foodIndices = stackalloc uint[(int) foodcountLength];
-
-                for (uint foodIndex = 0; foodIndex < foodcountLength; ++foodIndex)
-                    foodIndices[foodIndex] = foodIndex;
-
-                float3 closerComputeDirection = default;
-                for (int foodIndex = 0; foodIndex < foodcountLength; ++foodIndex)
-                {
-                    var computeDirection = _foodcount.buffer1[foodIndices[foodIndex]].position -
-                                           positionEntityStruct.position;
-
-                    var sqrModule = computeDirection.x * computeDirection.x + computeDirection.y * computeDirection.y +
-                                    computeDirection.z * computeDirection.z;
-
-                    if (currentMin > sqrModule)
+                    //food found
+                    if (sqrModule < 2)
                     {
-                        currentMin = sqrModule;
-                        closer     = foodIndex;
-
-                        //food found
-                        if (sqrModule < 2)
-                        {
-                            hungerEntityStruct.hunger--;
-                            Interlocked.Increment(ref _foodcount.buffer2[foodIndices[foodIndex]].eaters);
+                        hungerEntityStruct.hunger-=2;
+                        Interlocked.Increment(ref _foodcount.buffer2[foodIndex].eaters);
                             
-                            closerComputeDirection = _foodcount.buffer1[foodIndices[foodIndex]].position - positionEntityStruct.position;
+                        closerComputeDirection = default;
 
-                            foodIndices[foodIndex--] = foodIndices[--foodcountLength];
-                            closer = -1;
-
-                            break; //close enough let's save some computations
-                        }
+                        break; //close enough let's save some computations
                     }
                 }
-
-                if (closer != -1)
-                    closerComputeDirection =
-                        _foodcount.buffer1[foodIndices[closer]].position - positionEntityStruct.position;
-
-                //going toward food, not breaking as closer food can spawn
-                velocityEntityStruct.velocity.x = closerComputeDirection.x;
-                velocityEntityStruct.velocity.z = closerComputeDirection.z;
-
-                hungerEntityStruct.hunger++;
             }
+
+            //going toward food, not breaking as closer food can spawn
+            velocityEntityStruct.velocity.x = closerComputeDirection.x;
+            velocityEntityStruct.velocity.z = closerComputeDirection.z;
+
+            hungerEntityStruct.hunger++;
         }
     }
 #if noJobVersion

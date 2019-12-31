@@ -40,7 +40,7 @@ namespace Svelto.ECS.MiniExamples.Example1B
                             
                             var init = _entityFactory.BuildEntity<FoodEntityDescriptor>(_foodPlaced++, GameGroups.FOOD);
 
-                            init.Init(new MealEntityStruct(10000));
+                            init.Init(new MealEntityStruct(1000));
                             init.Init(new PositionEntityStruct
                             {
                                 position = newposition

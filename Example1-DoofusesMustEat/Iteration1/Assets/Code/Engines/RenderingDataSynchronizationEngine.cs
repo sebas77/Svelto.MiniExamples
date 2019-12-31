@@ -14,7 +14,7 @@ namespace Svelto.ECS.MiniExamples.Example1
 
         public RenderingDataSynchronizationEngine(World world)
         {
-            _group       = world.EntityManager.CreateComponentGroup(typeof(Translation), typeof(UnityECSDoofusesGroup));
+            _group       = world.EntityManager.CreateEntityQuery(typeof(Translation), typeof(UnityECSDoofusesGroup));
         }
 
         public void Ready()
@@ -26,7 +26,7 @@ namespace Svelto.ECS.MiniExamples.Example1
         {
             while (true)
             {
-                var calculateLength = _group.CalculateLength();
+                var calculateLength = _group.CalculateEntityCount();
                 
                 var positionEntityStructs =
                     entitiesDB.QueryEntities<PositionEntityStruct>(GameGroups.DOOFUSES, out var count);
@@ -59,6 +59,6 @@ namespace Svelto.ECS.MiniExamples.Example1
             }
         }
 
-        readonly ComponentGroup      _group;
+        readonly EntityQuery      _group;
     }
 }

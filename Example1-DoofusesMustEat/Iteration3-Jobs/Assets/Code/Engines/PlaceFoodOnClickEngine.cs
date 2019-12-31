@@ -36,11 +36,10 @@ namespace Svelto.ECS.MiniExamples.Example1B
                         {
                             var newposition = new float3(position.x + Random.Range(-10, 10), position.y,
                                                   position.z + Random.Range(-10, 10));
-
                             
                             var init = _entityFactory.BuildEntity<FoodEntityDescriptor>(_foodPlaced++, GameGroups.FOOD);
 
-                            init.Init(new MealEntityStruct(10000));
+                            init.Init(new MealEntityStruct(1000));
                             init.Init(new PositionEntityStruct
                             {
                                 position = newposition
