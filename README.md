@@ -24,9 +24,7 @@ http://www.sebaslab.com/svelto-mini-examples-doofuses-must-eat/
   * Integration with Burst for better performance
   * Move the camera with arrows and mouse, left button to drop 100 random food only once
 * **Iteration 3 (to do):**
-  * Enable Svelto.Tasks multithreading for better performance
-* **Iteration 4 (to do):**
-  * Something I will say later
+  * Full code jobification with Svelto ECS 3.0 alpha
   
 ## Example 2: The classic Survival demo (Hybrid ECS)
 
