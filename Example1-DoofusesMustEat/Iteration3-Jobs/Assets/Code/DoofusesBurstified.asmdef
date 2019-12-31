@@ -1,0 +1,27 @@
+{
+    "name": "DoofusesBurstified",
+    "references": [
+        "Svelto.Common",
+        "Svelto.ECS",
+        "Svelto.Tasks",
+        "Unity.Mathematics",
+        "Unity.Entities",
+        "Unity.Burst",
+        "Unity.Entities.Hybrid",
+        "Unity.Collections",
+        "Unity.Transforms"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "System.Runtime.CompilerServices.Unsafe.dll",
+        "System.Buffers.dll",
+        "System.Memory.dll"
+    ],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
