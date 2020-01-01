@@ -1,12 +1,13 @@
 using System;
 using System.Runtime.CompilerServices;
 using Svelto.DataStructures;
+using Svelto.ECS.Internal;
 
 namespace Svelto.ECS
 {
     public struct EGIDMapper<T> where T : struct, IEntityStruct
     {
-        internal FasterDictionary<uint, T> map;
+        internal ITypeSafeDictionary<T> map;
         public uint Length => map.Count;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

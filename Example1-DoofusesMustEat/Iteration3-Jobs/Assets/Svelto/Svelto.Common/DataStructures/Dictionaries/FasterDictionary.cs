@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
-   using System.Runtime.InteropServices;
+using System.Runtime.InteropServices;
 
-   namespace Svelto.DataStructures
+namespace Svelto.DataStructures
 {
     /// <summary>
     /// This dictionary has been created for just one reason: I needed a dictionary that would have let me iterate
@@ -11,6 +11,7 @@ using System.Runtime.CompilerServices;
     /// the standard dictionary for most of the operations, but the difference is negligible. The only slower operation
     /// is resizing the memory on add, as this implementation needs to use two separate arrays compared to the standard
     /// one
+    /// note: use native memory? Use _valuesInfo only when there are collisions?
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
@@ -328,7 +329,7 @@ using System.Runtime.CompilerServices;
             if (indexToValueToRemove != _freeValueCellIndex)
             {
                 //we can move the last value of both arrays in place of the one to delete.
-                //in order to do so, we need to be sure that the bucket pointer is updated
+                //in order to do so, we need to be sure that the bucket pointer is updated.
                 //first we find the index in the bucket list of the pointer that points to the cell
                 //to move
                 var movingBucketIndex =
@@ -438,7 +439,7 @@ using System.Runtime.CompilerServices;
         {
             return new NativeFasterDictionaryStruct<TK, TV>(_buckets, _values as TV[], _valuesInfo as FasterDictionaryNode<TK>[], new GCHandle());
         }
-
+        
         public struct FasterDictionaryKeyValueEnumerator
         {
             public FasterDictionaryKeyValueEnumerator(FasterDictionary<TKey, TValue> dic) : this()
@@ -464,7 +465,7 @@ using System.Runtime.CompilerServices;
                 return false;
             }
 
-            public KeyValuePairFast Current => new KeyValuePairFast(_dic._valuesInfo, _dic._values, _index);
+            public KeyValuePairFast Current => new KeyValuePairFast(_dic._valuesInfo[_index].key, _dic._values[_index], _index);
 
             readonly FasterDictionary<TKey, TValue> _dic;
             readonly int                                  _count;
@@ -478,21 +479,18 @@ using System.Runtime.CompilerServices;
         uint                   _freeValueCellIndex;
         uint                   _collisions;
 
-        public struct KeyValuePairFast
+        public readonly ref struct KeyValuePairFast
         {
-            readonly TValue[] _dicValues;
-            readonly FasterDictionaryNode<TKey>[] _dickeys;
-            readonly int          _index;
+            public readonly TValue Value;
+            public readonly TKey Key;
+            public readonly int valueIndex;
 
-            public KeyValuePairFast(FasterDictionaryNode<TKey>[] keys, TValue[] dicValues, int index)
+            public KeyValuePairFast(TKey keys, TValue dicValues, int index)
             {
-                _dicValues = dicValues;
-                _index = index;
-                _dickeys = keys;
+                Value = dicValues;
+                Key = keys;
+                valueIndex = index;
             }
-
-            public     TKey   Key   => _dickeys[_index].key;
-            public ref TValue Value => ref _dicValues[_index];
         }
     }
 

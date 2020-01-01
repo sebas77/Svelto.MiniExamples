@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace Svelto.ECS.Internal
 {
-    internal static class SetEGIDWithoutBoxing<T> where T : struct, IEntityStruct
+    static class SetEGIDWithoutBoxing<T> where T : struct, IEntityStruct
     {
         internal delegate void ActionCast(ref T target, EGID egid);
 
@@ -23,7 +23,7 @@ namespace Svelto.ECS.Internal
                 BinaryExpression assignExp = Expression.Assign(fieldExp, valueExp);
 
                 var setter = Expression.Lambda<ActionCast>(assignExp, targetExp, valueExp).Compile();
-
+                
                 return setter;
             }
 

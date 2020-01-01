@@ -61,8 +61,11 @@
      <Compile Include="Assets\Svelto\Svelto.ECS\AllowMultipleAttribute.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\CheckEntityUtilities.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\DBC.cs" />
+     <Compile Include="Assets\Svelto\Svelto.ECS\DataStructures\FastTypeSafeDictionary.cs" />
+     <Compile Include="Assets\Svelto\Svelto.ECS\DataStructures\ITypeSafeDictionary.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\DataStructures\TypeSafeDictionary.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\DataStructures\TypeSafeDictionaryException.cs" />
+     <Compile Include="Assets\Svelto\Svelto.ECS\DataStructures\TypeSafeDictionaryUtilities.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\Dispatcher\DispatchOnChange.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\Dispatcher\DispatchOnSet.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\DynamicEntityDescriptor.cs" />

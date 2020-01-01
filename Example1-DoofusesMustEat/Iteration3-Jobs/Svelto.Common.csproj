@@ -82,6 +82,7 @@
      <Compile Include="Assets\Svelto\Svelto.Common\DataStructures\Dictionaries\IFasterDictionary.cs" />
      <Compile Include="Assets\Svelto\Svelto.Common\DataStructures\Dictionaries\NativeFasterDictionaryStruct.cs" />
      <Compile Include="Assets\Svelto\Svelto.Common\DataStructures\Dictionaries\ReadOnlyDictionary.cs" />
+     <Compile Include="Assets\Svelto\Svelto.Common\DataStructures\Dictionaries\SetDictionary.cs" />
      <Compile Include="Assets\Svelto\Svelto.Common\DataStructures\Dictionaries\ThreadSafeDictionary.cs" />
      <Compile Include="Assets\Svelto\Svelto.Common\DataStructures\FasterDenseList.cs" />
      <Compile Include="Assets\Svelto\Svelto.Common\DataStructures\FasterSparseList.cs" />

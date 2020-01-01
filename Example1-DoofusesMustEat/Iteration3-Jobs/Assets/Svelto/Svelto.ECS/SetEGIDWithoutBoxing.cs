@@ -14,7 +14,9 @@ namespace Svelto.ECS.Internal
         {
             if (EntityBuilder<T>.HAS_EGID)
             {
-#if !ENABLE_IL2CPP                
+#if !ENABLE_IL2CPP
+//not working in .net standard 2.0 on client, bug?
+//it may work with IL2CPP now: https://forum.unity.com/threads/are-c-expression-trees-or-ilgenerator-allowed-on-ios.489498/
                 Type         myTypeA     = typeof(T);
                 PropertyInfo myFieldInfo = myTypeA.GetProperty("ID");
 

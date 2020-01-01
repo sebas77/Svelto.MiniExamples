@@ -130,7 +130,17 @@ namespace Svelto.ECS.Internal
             if (SafeQueryEntityDictionary<T>(groupStructId, out var typeSafeDictionary) == false)
                 throw new EntityGroupNotFoundException(groupStructId, typeof(T));
 
-            return (typeSafeDictionary as ITypeSafeDictionary<T>).ToNativeEGIDMapper();
+            return (typeSafeDictionary as TypeSafeDictionary<T>).ToNativeEGIDMapper<T>();
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public NativeEGIDMapper<T> QueryNativeMappedEntities<T>(FastGroup.ExclusiveGroupStruct groupStructId)
+            where T : unmanaged, IEntityStruct
+        {
+            if (SafeQueryEntityDictionary<T>(groupStructId, out var typeSafeDictionary) == false)
+                throw new EntityGroupNotFoundException(groupStructId, typeof(T));
+
+            return (typeSafeDictionary as FastTypeSafeDictionary<T>).ToNativeEGIDMapper<T>();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -156,7 +166,21 @@ namespace Svelto.ECS.Internal
             if (SafeQueryEntityDictionary<T>(groupStructId, out var typeSafeDictionary) == false)
                 return false;
 
-            mapper = (typeSafeDictionary as ITypeSafeDictionary<T>).ToNativeEGIDMapper();
+            mapper = (typeSafeDictionary as TypeSafeDictionary<T>).ToNativeEGIDMapper();
+
+            return true;
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool TryQueryNativeMappedEntities<T>(FastGroup.ExclusiveGroupStruct groupStructId,
+                                                    out NativeEGIDMapper<T>             mapper)
+            where T : unmanaged, IEntityStruct
+        {
+            mapper = default;
+            if (SafeQueryEntityDictionary<T>(groupStructId, out var typeSafeDictionary) == false)
+                return false;
+
+            mapper = (typeSafeDictionary as FastTypeSafeDictionary<T>).ToNativeEGIDMapper();
 
             return true;
         }

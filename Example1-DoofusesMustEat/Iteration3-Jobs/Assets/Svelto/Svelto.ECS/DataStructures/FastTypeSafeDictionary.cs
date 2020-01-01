@@ -1,24 +1,24 @@
-﻿using System;
+using System;
 using System.Runtime.CompilerServices;
 using Svelto.Common;
 using Svelto.DataStructures;
 
 namespace Svelto.ECS.Internal
 {
-    sealed class TypeSafeDictionary<TValue> : ITypeSafeDictionary<TValue> where TValue : struct, IEntityStruct
+    sealed class FastTypeSafeDictionary<TValue> : ITypeSafeDictionary<TValue> where TValue : struct, IEntityStruct
     {
         static readonly Type   _type     = typeof(TValue);
         static readonly string _typeName = _type.Name;
         static readonly bool   _hasEgid  = typeof(INeedEGID).IsAssignableFrom(_type);
 
-        public TypeSafeDictionary(uint size)
+        public FastTypeSafeDictionary(uint size)
         {
-            _implementation = new FasterDictionary<uint, TValue>(size);
+            _implementation = new SetDictionary<TValue>(size);
         }
 
-        public TypeSafeDictionary()
+        public FastTypeSafeDictionary()
         {
-            _implementation = new FasterDictionary<uint, TValue>(1);
+            _implementation = new SetDictionary<TValue>(1);
         }
 
         /// <summary>
@@ -29,16 +29,16 @@ namespace Svelto.ECS.Internal
         /// <exception cref="TypeSafeDictionaryException"></exception>
         public void AddEntitiesFromDictionary(ITypeSafeDictionary entitiesToSubmit, uint groupId) 
         {
-            var typeSafeDictionary = entitiesToSubmit as TypeSafeDictionary<TValue>;
+            var typeSafeDictionary = entitiesToSubmit as FastTypeSafeDictionary<TValue>;
 
             foreach (var tuple in typeSafeDictionary)
             {
                 try
                 {
                     if (_hasEgid)
-                        SetEGIDWithoutBoxing<TValue>.SetIDWithoutBoxing(ref typeSafeDictionary.unsafeValues[tuple.valueIndex], new EGID(tuple.Key, groupId));
+                        SetEGIDWithoutBoxing<TValue>.SetIDWithoutBoxing(ref typeSafeDictionary.unsafeValues[tuple.Key], new EGID(tuple.Key, groupId));
 
-                    _implementation.Add(tuple.Key, tuple.Value);
+                    _implementation.Add(tuple.Value);
                 }
                 catch (Exception e)
                 {
@@ -67,7 +67,7 @@ namespace Svelto.ECS.Internal
         public void AddEntitiesToEngines(FasterDictionary<RefWrapper<Type>, FasterList<IEngine>> entityViewEnginesDB,
                                          ITypeSafeDictionary                                     realDic,
                                          ExclusiveGroup.ExclusiveGroupStruct                     @group,
-                                         in PlatformProfiler profiler)
+                                         in PlatformProfiler                                     profiler)
         {
             var typeSafeDictionary = realDic as ITypeSafeDictionary<TValue>;
 
@@ -99,7 +99,7 @@ namespace Svelto.ECS.Internal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void SetCapacity(uint size) { _implementation.SetCapacity(size); }
+        public void SetCapacity(uint size) { throw new NotImplementedException(); }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Trim() { _implementation.Trim(); }
@@ -240,10 +240,10 @@ namespace Svelto.ECS.Internal
         public bool ContainsKey(uint egidEntityId) { return _implementation.ContainsKey(egidEntityId); }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Add(uint egidEntityId, in TValue entityView) { _implementation.Add(egidEntityId, entityView); }
+        public void Add(uint egidEntityId, in TValue entityView) { _implementation.Add(entityView); }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public FasterDictionary<uint, TValue>.FasterDictionaryKeyValueEnumerator GetEnumerator()
+        public SetDictionary<TValue>.SetDictionaryKeyValueEnumerator GetEnumerator()
         {
             return _implementation.GetEnumerator();
         }
@@ -268,11 +268,13 @@ namespace Svelto.ECS.Internal
             get => _implementation.unsafeValues;
         }
 
+        public SetDictionary<TValue> implementation => _implementation;
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool TryGetValue(uint entityId, out TValue item) { return _implementation.TryGetValue(entityId, out item); }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ref TValue GetOrCreate(uint idEntityId) { return ref _implementation.GetOrCreate(idEntityId); }
+        public ref TValue GetOrCreate(uint idEntityId) { throw new NotImplementedException(); }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool TryFindIndex(uint entityId, out uint index) { return _implementation.TryFindIndex(entityId, out index); }
@@ -283,8 +285,6 @@ namespace Svelto.ECS.Internal
             return ref _implementation.GetDirectValue(findElementIndex);
         }
         
-        internal FasterDictionary<uint, TValue> implementation => implementation;
-        
-        readonly FasterDictionary<uint, TValue> _implementation;
+        readonly SetDictionary<TValue> _implementation;
     }
 }
