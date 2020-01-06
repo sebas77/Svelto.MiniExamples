@@ -209,7 +209,7 @@ namespace Svelto.DataStructures
             }
         }
 
-        public void CopyTo(TValue[] tasks, int i)
+        public void CopyTo(TValue[] tasks)
         {
             LockQ.EnterReadLock();
             try
