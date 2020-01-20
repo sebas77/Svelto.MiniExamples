@@ -12,25 +12,27 @@ namespace Svelto.DataStructures
             Set(array);
         }
         
+        public NativeBuffer(GCHandle alloc, uint count):this()
+        {
+            Set(alloc, count);
+        }
+        
         public void Set(T[] array)
         {
             _handle = GCHandle.Alloc(array, GCHandleType.Pinned);
             _ptr = _handle.AddrOfPinnedObject();
-            _length = (uint) array.Length;
         }
 
-        public void Set<Buffer1>(Buffer1 array) where Buffer1 : IBuffer<T>
+        public void Set<Buffer>(Buffer array) where Buffer : IBuffer<T>
         {
             _handle = array.Pin();
             _ptr = _handle.AddrOfPinnedObject();
-            _length = array.length;
         }
 
         public void Set(GCHandle handle, uint count)
         {
             _handle = handle;
             _ptr = _handle.AddrOfPinnedObject();
-            _length = count;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -134,18 +136,10 @@ namespace Svelto.DataStructures
             }
         }
 
-        public uint length
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => _length;
-        }
-
         GCHandle _handle;
 #if ENABLE_BURST_AOT        
         [Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction]
 #endif
         IntPtr _ptr;
-
-        uint _length;
     }
 }

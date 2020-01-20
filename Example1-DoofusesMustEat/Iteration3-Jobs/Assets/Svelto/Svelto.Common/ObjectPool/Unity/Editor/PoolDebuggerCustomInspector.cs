@@ -1,4 +1,4 @@
-#if UNITY_5_3_OR_NEWER || UNITY_5
+#if UNITY_EDITOR
 using UnityEngine;
 using UnityEditor;
 

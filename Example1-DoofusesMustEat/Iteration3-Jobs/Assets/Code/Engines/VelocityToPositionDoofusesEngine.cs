@@ -16,23 +16,33 @@ namespace Svelto.ECS.MiniExamples.Example1B
 
         protected override JobHandle OnUpdate(JobHandle inputDeps)
         {
-            var doofuses = entitiesDB
-                          .QueryEntities<PositionEntityStruct, VelocityEntityStruct, SpeedEntityStruct
-                           >(GameGroups.DOOFUSES)
-                          .ToNative<PositionEntityStruct, VelocityEntityStruct, SpeedEntityStruct>().ToBuffers();
-            var dep = new Job(doofuses, Time.DeltaTime).Schedule((int) doofuses.length, (int) (doofuses.length / 8), inputDeps);
-            
-            return new DisposeJob<BufferTuple<NativeBuffer<PositionEntityStruct>, NativeBuffer<VelocityEntityStruct>, NativeBuffer<SpeedEntityStruct>>>(doofuses).Schedule(dep);
+            JobHandle combinedDependencies = default;
+            foreach (var group in GameGroups.DOOFUSES.Groups)
+            {
+                var doofuses = entitiesDB
+                              .QueryEntities<PositionEntityStruct, VelocityEntityStruct, SpeedEntityStruct
+                               >(group)
+                              .ToNativeBuffers<PositionEntityStruct, VelocityEntityStruct, SpeedEntityStruct>();
+                var dep = new ThisSystemJob(doofuses, Time.DeltaTime).Schedule((int) doofuses.count,
+                                                                               (int) (doofuses.count / 8), inputDeps);
+                
+                combinedDependencies =
+                    JobHandle.CombineDependencies(combinedDependencies, 
+                                                  new DisposeJob<BufferTuple<NativeBuffer<PositionEntityStruct>, NativeBuffer<VelocityEntityStruct>,
+                    NativeBuffer<SpeedEntityStruct>>>(doofuses).Schedule(dep));
+            }
+
+            return combinedDependencies;
         }
 
         [BurstCompile(FloatPrecision.Medium, FloatMode.Fast)]
-        struct Job : IJobParallelFor
+        struct ThisSystemJob : IJobParallelFor
         {
-            public Job(
+            public ThisSystemJob(
                 BufferTuple<NativeBuffer<PositionEntityStruct>, NativeBuffer<VelocityEntityStruct>,
                     NativeBuffer<SpeedEntityStruct>> doofuses, float deltaTime)
             {
-                _doofuses = doofuses;
+                _doofuses  = doofuses;
                 _deltaTime = deltaTime;
             }
 

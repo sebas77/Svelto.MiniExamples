@@ -11,15 +11,9 @@ namespace Svelto.ECS.Internal
         static readonly string _typeName = _type.Name;
         static readonly bool   _hasEgid  = typeof(INeedEGID).IsAssignableFrom(_type);
 
-        public FastTypeSafeDictionary(uint size)
-        {
-            _implementation = new SetDictionary<TValue>(size);
-        }
+        public FastTypeSafeDictionary(uint size) { _implementation = new SetDictionary<TValue>(size); }
 
-        public FastTypeSafeDictionary()
-        {
-            _implementation = new SetDictionary<TValue>(1);
-        }
+        public FastTypeSafeDictionary() { _implementation = new SetDictionary<TValue>(1); }
 
         /// <summary>
         /// Add entities from external typeSafeDictionary
@@ -27,7 +21,7 @@ namespace Svelto.ECS.Internal
         /// <param name="entitiesToSubmit"></param>
         /// <param name="groupId"></param>
         /// <exception cref="TypeSafeDictionaryException"></exception>
-        public void AddEntitiesFromDictionary(ITypeSafeDictionary entitiesToSubmit, uint groupId) 
+        public void AddEntitiesFromDictionary(ITypeSafeDictionary entitiesToSubmit, uint groupId)
         {
             var typeSafeDictionary = entitiesToSubmit as FastTypeSafeDictionary<TValue>;
 
@@ -36,19 +30,21 @@ namespace Svelto.ECS.Internal
                 try
                 {
                     if (_hasEgid)
-                        SetEGIDWithoutBoxing<TValue>.SetIDWithoutBoxing(ref typeSafeDictionary.unsafeValues[tuple.Key], new EGID(tuple.Key, groupId));
+                        SetEGIDWithoutBoxing<TValue>.SetIDWithoutBoxing(ref typeSafeDictionary.unsafeValues[tuple.Key],
+                                                                        new EGID(tuple.Key, groupId));
 
                     _implementation.Add(tuple.Value);
                 }
                 catch (Exception e)
                 {
                     throw new
-                        TypeSafeDictionaryException("trying to add an EntityView with the same ID more than once Entity: ".FastConcat(typeof(TValue).ToString()).FastConcat(", group ").FastConcat(groupId).FastConcat(", id ").FastConcat(tuple.Key),
-                                                    e);
+                        TypeSafeDictionaryException("trying to add an EntityView with the same ID more than once Entity: ".
+                                                    FastConcat(typeof(TValue).ToString()).FastConcat(", group ").
+                                                    FastConcat(groupId).FastConcat(", id ").FastConcat(tuple.Key), e);
                 }
             }
         }
-        
+
         public void AddEntityToDictionary(EGID fromEntityGid, EGID toEntityID, ITypeSafeDictionary toGroup)
         {
             var valueIndex = _implementation.GetIndex(fromEntityGid.entityID);
@@ -66,7 +62,7 @@ namespace Svelto.ECS.Internal
 
         public void AddEntitiesToEngines(FasterDictionary<RefWrapper<Type>, FasterList<IEngine>> entityViewEnginesDB,
                                          ITypeSafeDictionary                                     realDic,
-                                         ExclusiveGroup.ExclusiveGroupStruct                     @group,
+                                         ExclusiveGroupStruct                                    @group,
                                          in PlatformProfiler                                     profiler)
         {
             var typeSafeDictionary = realDic as ITypeSafeDictionary<TValue>;
@@ -79,7 +75,7 @@ namespace Svelto.ECS.Internal
 
         public void RemoveEntitiesFromEngines(
             FasterDictionary<RefWrapper<Type>, FasterList<IEngine>> entityViewEnginesDB, in PlatformProfiler profiler,
-            ExclusiveGroup.ExclusiveGroupStruct                     @group)
+            ExclusiveGroupStruct @group)
         {
             foreach (var value in _implementation)
                 RemoveEntityViewFromEngines(entityViewEnginesDB, ref _implementation.GetValueByRef(value.Key), null,
@@ -93,7 +89,7 @@ namespace Svelto.ECS.Internal
         public bool Has(uint key) { return _implementation.ContainsKey(key); }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void RemoveEntityFromDictionary(EGID fromEntityGid, in PlatformProfiler profiler)
+        public void RemoveEntityFromDictionary(EGID fromEntityGid)
         {
             _implementation.Remove(fromEntityGid.entityID);
         }
@@ -107,10 +103,9 @@ namespace Svelto.ECS.Internal
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Clear() { _implementation.Clear(); }
 
-        public void MoveEntityFromEngines(EGID                                                    fromEntityGid,
-                                          EGID?                                                   toEntityID, ITypeSafeDictionary toGroup,
+        public void MoveEntityFromEngines(EGID fromEntityGid, EGID? toEntityID, ITypeSafeDictionary toGroup,
                                           FasterDictionary<RefWrapper<Type>, FasterList<IEngine>> engines,
-                                          in PlatformProfiler                                     profiler)
+                                          in PlatformProfiler profiler)
         {
             var valueIndex = _implementation.GetIndex(fromEntityGid.entityID);
 
@@ -137,15 +132,15 @@ namespace Svelto.ECS.Internal
         public uint Count
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => _implementation.Count;
+            get => _implementation.count;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ITypeSafeDictionary Create() { return new TypeSafeDictionary<TValue>(); }
+        public ITypeSafeDictionary Create() { return new FastTypeSafeDictionary<TValue>(); }
 
         void AddEntityViewToEngines(FasterDictionary<RefWrapper<Type>, FasterList<IEngine>> entityViewEnginesDB,
                                     ref TValue                                              entity,
-                                    ExclusiveGroup.ExclusiveGroupStruct?                    previousGroup,
+                                    ExclusiveGroupStruct?                                   previousGroup,
                                     in PlatformProfiler                                     profiler,
                                     EGID                                                    egid)
         {
@@ -190,7 +185,7 @@ namespace Svelto.ECS.Internal
 
         static void RemoveEntityViewFromEngines(FasterDictionary<RefWrapper<Type>, FasterList<IEngine>> @group,
                                                 ref TValue                                              entity,
-                                                ExclusiveGroup.ExclusiveGroupStruct?                    previousGroup,
+                                                ExclusiveGroupStruct?                                   previousGroup,
                                                 in PlatformProfiler                                     profiler,
                                                 EGID                                                    egid)
         {
@@ -268,23 +263,34 @@ namespace Svelto.ECS.Internal
             get => _implementation.unsafeValues;
         }
 
+        public object GenerateSentinel()
+        {
+            throw new NotImplementedException();
+        }
+
         public SetDictionary<TValue> implementation => _implementation;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool TryGetValue(uint entityId, out TValue item) { return _implementation.TryGetValue(entityId, out item); }
+        public bool TryGetValue(uint entityId, out TValue item)
+        {
+            return _implementation.TryGetValue(entityId, out item);
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref TValue GetOrCreate(uint idEntityId) { throw new NotImplementedException(); }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool TryFindIndex(uint entityId, out uint index) { return _implementation.TryFindIndex(entityId, out index); }
+        public bool TryFindIndex(uint entityId, out uint index)
+        {
+            return _implementation.TryFindIndex(entityId, out index);
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref TValue GetDirectValue(uint findElementIndex)
         {
             return ref _implementation.GetDirectValue(findElementIndex);
         }
-        
+
         readonly SetDictionary<TValue> _implementation;
     }
 }

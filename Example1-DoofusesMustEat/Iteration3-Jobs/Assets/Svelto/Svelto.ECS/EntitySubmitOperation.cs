@@ -12,7 +12,7 @@ namespace Svelto.ECS
         public readonly EGID                      fromID;
         public readonly EGID                      toID;
 #if DEBUG && !PROFILER
-        public StackFrame trace;
+        public System.Diagnostics.StackFrame trace;
 #endif
 
         public EntitySubmitOperation(EntitySubmitOperationType operation, EGID from, EGID to,

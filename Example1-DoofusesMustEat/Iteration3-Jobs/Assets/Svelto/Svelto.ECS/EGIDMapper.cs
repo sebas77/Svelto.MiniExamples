@@ -1,14 +1,20 @@
 using System;
 using System.Runtime.CompilerServices;
-using Svelto.DataStructures;
 using Svelto.ECS.Internal;
 
 namespace Svelto.ECS
 {
-    public struct EGIDMapper<T> where T : struct, IEntityStruct
+    public readonly struct EGIDMapper<T> where T : struct, IEntityStruct
     {
-        internal ITypeSafeDictionary<T> map;
+        internal readonly ITypeSafeDictionary<T> map;
         public uint Length => map.Count;
+        public readonly ExclusiveGroupStruct groupID;
+
+        public EGIDMapper(ExclusiveGroupStruct groupStructId, ITypeSafeDictionary<T> dic):this()
+        {
+            groupID = groupStructId;
+            map = dic;
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref T Entity(uint entityID)
@@ -42,6 +48,18 @@ namespace Svelto.ECS
             }
 
             throw new ECSException("Entity not found");
+        }
+        
+        public bool TryGetArrayAndEntityIndex(uint entityID, out uint index, out T[] array)
+        {
+            if (map.TryFindIndex(entityID, out index))
+            {
+                array =  map.unsafeValues;
+                return true;
+            }
+
+            array = default;
+            return false;
         }
         
         public void Dispose()

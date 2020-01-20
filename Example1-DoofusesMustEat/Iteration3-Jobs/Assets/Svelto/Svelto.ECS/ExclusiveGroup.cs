@@ -1,10 +1,88 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
+using Svelto.DataStructures;
+using UnityEditor;
 
 #pragma warning disable 660,661
 
 namespace Svelto.ECS
 {
+    /// <summary>
+    /// still experimental alternative to ExclusiveGroup, use this like:
+    /// use this like:
+    /// public class TriggersGroup : ExclusiveGroup<TriggersGroup> {}
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public abstract class NamedExclusiveGroup<T>:ExclusiveGroup
+    {
+        public static ExclusiveGroup Group = new ExclusiveGroup();
+        public static string         name  = typeof(T).FullName;
+
+        public NamedExclusiveGroup() { }
+        public NamedExclusiveGroup(string recognizeAs) : base(recognizeAs)  {}
+        public NamedExclusiveGroup(ushort range) : base(range) {}
+    }
+
+    public abstract class GroupCompound<T> where T:GroupCompound<T>
+    {
+        public static ExclusiveGroup[] Groups = new ExclusiveGroup[0];
+    }
+
+    public static class GroupCompound<G1, G2> where G1 : GroupCompound<G1> where G2: GroupCompound<G2>
+    {
+        public static ExclusiveGroup[] Groups = new ExclusiveGroup[1];
+
+        static GroupCompound()
+        {
+            Groups[0] = new ExclusiveGroup();
+            var Group = Groups[0];
+            
+            TypeGroupCache<G1>.Add(Group);  TypeGroupCache<G2>.Add(Group);
+            //GroupCompound<G2, G1>.Group = Group;
+        }
+
+        public static ExclusiveGroupStruct Group => Groups[0];
+    }
+    
+    public static class GroupCompound<G1, G2, G3> where G1 : GroupCompound<G1> where G2: GroupCompound<G2> where G3 : GroupCompound<G3>
+    {
+        public static ExclusiveGroup[] Groups = new ExclusiveGroup[1];
+
+        static GroupCompound()
+        {
+            var Group = new ExclusiveGroup();
+            Groups[0] = Group;
+            
+            TypeGroupCache<G1>.Add(Group);  TypeGroupCache<G2>.Add(Group); TypeGroupCache<G3>.Add(Group);
+//            TypeGroupCache<G1, G2>.Add(Group);  TypeGroupCache<G2, G1>.Add(Group);
+
+  //          GroupCompound<G3, G1, G2>.Group = Group;
+    //        GroupCompound<G2, G3, G1>.Group = Group;
+      //      GroupCompound<G3, G2, G1>.Group = Group;
+        ///    GroupCompound<G1, G3, G2>.Group = Group;
+           // GroupCompound<G2, G1, G3>.Group = Group;
+        }
+    }
+
+    static class TypeGroupCache<T> where T : GroupCompound<T>
+    {
+        public static void Add(ExclusiveGroup @group)
+        {
+                var type = typeof(GroupCompound<T>);
+                var fieldInfos = type.GetFields(BindingFlags.Public | BindingFlags.Static);
+                FieldInfo field = fieldInfos[0];
+
+                var _array = (ExclusiveGroup[]) field.GetValue(null);
+
+            Array.Resize(ref _array, _array.Length + 1);
+
+            _array[_array.Length - 1] = group;
+            
+            field.SetValue(null, _array);
+        }
+    }
+
     /// <summary>
     /// Exclusive Groups guarantee that the GroupID is unique.
     ///
@@ -17,176 +95,10 @@ namespace Svelto.ECS
     ///     public static ExclusiveGroup[] GroupOfGroups = { MyExclusiveGroup1, ...}; //for each on this!
     /// }
     /// </summary>
-    ///
-
-    ///use this like:
-    /// public class TriggersGroup : ExclusiveGroup<TriggersGroup> {}
-    public abstract class NamedExclusiveGroup<T>:ExclusiveGroup
-    {
-        public static ExclusiveGroup Group = new ExclusiveGroup();
-        public static string         name  = typeof(T).FullName;
-
-        public NamedExclusiveGroup() { }
-
-        public NamedExclusiveGroup(string recognizeAs) : base(recognizeAs)
-        {}
-
-        public NamedExclusiveGroup(ushort range) : base(range)
-        {}
-    }
-
-    public class FastGroup
-    {
-        public FastGroup()
-        {
-            _group = ExclusiveGroupStruct.Generate();
-        }
-
-        public FastGroup(string recognizeAs)
-        {
-            _group = ExclusiveGroupStruct.Generate();
-
-            _serialisedGroups.Add(recognizeAs, _group);
-        }
-
-        public FastGroup(ushort range)
-        {
-            _group = new ExclusiveGroupStruct(range);
-#if DEBUG
-            _range = range;
-#endif
-        }
-
-        public static implicit operator ExclusiveGroupStruct(FastGroup group)
-        {
-            return group._group;
-        }
-
-        public static explicit operator uint(FastGroup group)
-        {
-            return group._group;
-        }
-
-        public static ExclusiveGroupStruct operator+(FastGroup a, uint b)
-        {
-#if DEBUG
-            if (a._range == 0)
-                throw new ECSException($"Adding values to a not ranged ExclusiveGroup: {(uint)a}");
-            if (b >= a._range)
-                throw new ECSException($"Using out of range group: {(uint)a} + {b}");
-#endif
-            return a._group + b;
-        }
-
-        readonly ExclusiveGroupStruct _group;
-
-        //I use this as parameter because it must not be possible to pass null Exclusive Groups.
-        public struct ExclusiveGroupStruct : IEquatable<ExclusiveGroupStruct>, IComparable<ExclusiveGroupStruct>,
-                                IEqualityComparer<ExclusiveGroupStruct>
-        {
-            public static bool operator ==(ExclusiveGroupStruct c1, ExclusiveGroupStruct c2)
-            {
-                return c1.Equals(c2);
-            }
-
-            public static bool operator !=(ExclusiveGroupStruct c1, ExclusiveGroupStruct c2)
-            {
-                return c1.Equals(c2) == false;
-            }
-
-            public bool Equals(ExclusiveGroupStruct other)
-            {
-                return other._id == _id;
-            }
-
-            public int CompareTo(ExclusiveGroupStruct other)
-            {
-                return other._id.CompareTo(_id);
-            }
-
-            public bool Equals(ExclusiveGroupStruct x, ExclusiveGroupStruct y)
-            {
-                return x._id == y._id;
-            }
-
-            public int GetHashCode(ExclusiveGroupStruct obj)
-            {
-                return _id.GetHashCode();
-            }
-
-            internal static ExclusiveGroupStruct Generate()
-            {
-                ExclusiveGroupStruct groupStruct;
-
-                groupStruct._id = _globalId;
-                DBC.ECS.Check.Require(_globalId + 1 < ushort.MaxValue, "too many exclusive groups created");
-                _globalId++;
-
-                return groupStruct;
-            }
-
-            /// <summary>
-            /// Use this constructor to reserve N groups
-            /// </summary>
-            internal ExclusiveGroupStruct(ushort range)
-            {
-                _id =  _globalId;
-                DBC.ECS.Check.Require(_globalId + range < ushort.MaxValue, "too many exclusive groups created");
-                _globalId += range;
-            }
-
-            internal ExclusiveGroupStruct(uint groupID)
-            {
-                _id = groupID;
-            }
-
-            public ExclusiveGroupStruct(byte[] data, uint pos)
-            {
-                _id = (uint)(
-                    data[pos++]
-                    | data[pos++] << 8
-                    | data[pos++] << 16
-                    | data[pos++] << 24
-                );
-
-                DBC.ECS.Check.Ensure(_id < _globalId, "Invalid group ID deserialiased");
-            }
-
-            public static implicit operator uint(ExclusiveGroupStruct groupStruct)
-            {
-                return groupStruct._id;
-            }
-
-            public static ExclusiveGroupStruct operator+(ExclusiveGroupStruct a, uint b)
-            {
-                var group = new ExclusiveGroupStruct();
-
-                group._id = a._id + b;
-
-                return group;
-            }
-
-            uint        _id;
-            static uint _globalId;
-        }
-
-        public static ExclusiveGroupStruct Search(string holderGroupName)
-        {
-            if (_serialisedGroups.ContainsKey(holderGroupName) == false)
-                throw new Exception("Named Group Not Found ".FastConcat(holderGroupName));
-
-            return _serialisedGroups[holderGroupName];
-        }
-
-        static readonly Dictionary<string, ExclusiveGroupStruct> _serialisedGroups = new Dictionary<string,
-            ExclusiveGroupStruct>();
-#if DEBUG
-        readonly ushort _range;
-#endif
-    }
-
     public class ExclusiveGroup
     {
+        public const uint MaxNumberOfExclusiveGroups = 2 << 20; 
+        
         public ExclusiveGroup()
         {
             _group = ExclusiveGroupStruct.Generate();
@@ -196,7 +108,7 @@ namespace Svelto.ECS
         {
             _group = ExclusiveGroupStruct.Generate();
 
-            _serialisedGroups.Add(recognizeAs, _group);
+            _knownGroups.Add(recognizeAs, _group);
         }
 
         public ExclusiveGroup(ushort range)
@@ -227,112 +139,22 @@ namespace Svelto.ECS
 #endif
             return a._group + b;
         }
-
-        readonly ExclusiveGroupStruct _group;
-
-        //I use this as parameter because it must not be possible to pass null Exclusive Groups.
-        public struct ExclusiveGroupStruct : IEquatable<ExclusiveGroupStruct>, IComparable<ExclusiveGroupStruct>,
-                                IEqualityComparer<ExclusiveGroupStruct>
-        {
-            public static bool operator ==(ExclusiveGroupStruct c1, ExclusiveGroupStruct c2)
-            {
-                return c1.Equals(c2);
-            }
-
-            public static bool operator !=(ExclusiveGroupStruct c1, ExclusiveGroupStruct c2)
-            {
-                return c1.Equals(c2) == false;
-            }
-
-            public bool Equals(ExclusiveGroupStruct other)
-            {
-                return other._id == _id;
-            }
-
-            public int CompareTo(ExclusiveGroupStruct other)
-            {
-                return other._id.CompareTo(_id);
-            }
-
-            public bool Equals(ExclusiveGroupStruct x, ExclusiveGroupStruct y)
-            {
-                return x._id == y._id;
-            }
-
-            public int GetHashCode(ExclusiveGroupStruct obj)
-            {
-                return _id.GetHashCode();
-            }
-
-            internal static ExclusiveGroupStruct Generate()
-            {
-                ExclusiveGroupStruct groupStruct;
-
-                groupStruct._id = _globalId;
-                DBC.ECS.Check.Require(_globalId + 1 < ushort.MaxValue, "too many exclusive groups created");
-                _globalId++;
-
-                return groupStruct;
-            }
-
-            /// <summary>
-            /// Use this constructor to reserve N groups
-            /// </summary>
-            internal ExclusiveGroupStruct(ushort range)
-            {
-                _id =  _globalId;
-                DBC.ECS.Check.Require(_globalId + range < ushort.MaxValue, "too many exclusive groups created");
-                _globalId += range;
-            }
-
-            internal ExclusiveGroupStruct(uint groupID)
-            {
-                _id = groupID;
-            }
-
-            public ExclusiveGroupStruct(byte[] data, uint pos)
-            {
-                _id = (uint)(
-                    data[pos++]
-                    | data[pos++] << 8
-                    | data[pos++] << 16
-                    | data[pos++] << 24
-                );
-
-                DBC.ECS.Check.Ensure(_id < _globalId, "Invalid group ID deserialiased");
-            }
-
-            public static implicit operator uint(ExclusiveGroupStruct groupStruct)
-            {
-                return groupStruct._id;
-            }
-
-            public static ExclusiveGroupStruct operator+(ExclusiveGroupStruct a, uint b)
-            {
-                var group = new ExclusiveGroupStruct();
-
-                group._id = a._id + b;
-
-                return group;
-            }
-
-            uint        _id;
-            static uint _globalId;
-        }
-
+        
         public static ExclusiveGroupStruct Search(string holderGroupName)
         {
-            if (_serialisedGroups.ContainsKey(holderGroupName) == false)
+            if (_knownGroups.ContainsKey(holderGroupName) == false)
                 throw new Exception("Named Group Not Found ".FastConcat(holderGroupName));
 
-            return _serialisedGroups[holderGroupName];
+            return _knownGroups[holderGroupName];
         }
 
-        static readonly Dictionary<string, ExclusiveGroupStruct> _serialisedGroups = new Dictionary<string,
+        static readonly Dictionary<string, ExclusiveGroupStruct> _knownGroups = new Dictionary<string,
             ExclusiveGroupStruct>();
+
 #if DEBUG
         readonly ushort _range;
 #endif
+        readonly ExclusiveGroupStruct _group;
     }
 }
 
@@ -410,6 +232,6 @@ namespace Svelto.ECS
         }
 
 #if DEBUG
-        static string[] groupNames = new string[ushort.MaxValue];
+        static string[] groupNames = new string[ExclusiveGroup.MaxNumberOfExclusiveGroups];
 #endif
 #endif

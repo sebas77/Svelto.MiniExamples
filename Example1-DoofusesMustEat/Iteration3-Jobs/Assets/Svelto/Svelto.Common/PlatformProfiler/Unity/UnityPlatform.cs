@@ -5,7 +5,7 @@ using Unity.Profiling;
 
 namespace Svelto.Common
 {
-     public struct DisposableSampler : IDisposable
+    public struct DisposableSampler : IDisposable
     {
         ProfilerMarker _marker;
 
@@ -23,14 +23,14 @@ namespace Svelto.Common
             _marker.End();
         }
     }
-    
-    public struct PlatformProfilerMT : IPlatformProfiler<DisposableSampler>
+
+    public struct PlatformProfilerMT : IPlatformProfiler
     {
         public PlatformProfilerMT(string info)
         {
             _platformProfilerImplementation = new PlatformProfiler(info);
         }
-        
+
         public void Dispose()
         {
             _platformProfilerImplementation.Dispose();
@@ -45,11 +45,11 @@ namespace Svelto.Common
         {
             return _platformProfilerImplementation.Sample(sampled, samplerInfo);
         }
-        
+
         PlatformProfiler _platformProfilerImplementation;
     }
 
-    public struct PlatformProfiler: IPlatformProfiler<DisposableSampler>
+    public struct PlatformProfiler : IPlatformProfiler
     {
         readonly ProfilerMarker? maker;
 
@@ -58,14 +58,14 @@ namespace Svelto.Common
             maker = new ProfilerMarker(info);
             maker.Value.Begin();
         }
-        
+
         public DisposableSampler Sample(string samplerName, string samplerInfo = null)
         {
 #if !PROFILER
             var name = samplerInfo != null ? samplerName.FastConcat("-", samplerInfo) : samplerName;
 #else
             var name = samplerName;
-#endif            
+#endif
             return new DisposableSampler(new ProfilerMarker(name));
         }
 

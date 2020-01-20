@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using Svelto.DataStructures;
 using Svelto.ECS.Internal;
 
@@ -26,7 +26,7 @@ namespace Svelto.ECS
             public void ClearOther()
             {
                 //do not clear the groups created so far, they will be reused, unless they are too many!
-                var otherCount = other.Count;
+                var otherCount = other.count;
                 if (otherCount > MaximumNumberOfItemsPerFrameBeforeToClear)
                 {
                     otherEntitiesCreatedPerGroup.FastClear();
@@ -36,7 +36,7 @@ namespace Svelto.ECS
                 var otherValuesArray = other.unsafeValues;
                 for (int i = 0; i < otherCount; ++i)
                 {
-                    var safeDictionariesCount = otherValuesArray[i].Count;
+                    var safeDictionariesCount = otherValuesArray[i].count;
                     var safeDictionaries = otherValuesArray[i].unsafeValues;
                     //do not remove the dictionaries of entities per type created so far, they will be reused
                     if (safeDictionariesCount <= MaximumNumberOfItemsPerFrameBeforeToClear)
@@ -56,9 +56,16 @@ namespace Svelto.ECS
                 otherEntitiesCreatedPerGroup.FastClear();
             }
 
+            /// <summary>
+            /// To avoid extra allocation, I don't clear the dictionaries, so I need an extra data structure
+            /// to keep count of the number of entities submitted this frame
+            /// </summary>
             internal FasterDictionary<uint, uint> currentEntitiesCreatedPerGroup;
             internal FasterDictionary<uint, uint> otherEntitiesCreatedPerGroup;
 
+            //Before I tried for the third time to use a SparseSet instead of FasterDictionary, remember that
+            //while group indices are sequential, they may not be used in a sequential order. Sparaset needs
+            //entities to be created sequentially (the index cannot be managed externally)
             internal FasterDictionary<uint, FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary>> current;
             internal FasterDictionary<uint, FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary>> other;
 

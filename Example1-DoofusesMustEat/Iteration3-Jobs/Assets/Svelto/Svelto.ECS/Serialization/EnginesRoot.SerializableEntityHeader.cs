@@ -40,7 +40,7 @@ namespace Svelto.ECS
 
                 entityStructsCount = serializationData.data[serializationData.dataPos++];
 
-                egid = new EGID(entityID, new ExclusiveGroup.ExclusiveGroupStruct(groupID));
+                egid = new EGID(entityID, new ExclusiveGroupStruct(groupID));
             }
 
             internal void Copy(ISerializationData serializationData)

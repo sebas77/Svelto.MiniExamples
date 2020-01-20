@@ -1,10 +1,11 @@
+using System;
 using Svelto.DataStructures;
 
 namespace Svelto.ECS
 {
-    public delegate void ExecuteOnAllEntitiesAction<T, W>(T[] prefabStruct, ExclusiveGroup.ExclusiveGroupStruct group,
+    public delegate void ExecuteOnAllEntitiesAction<T, W>(T[] prefabStruct, ExclusiveGroupStruct group,
         uint count, IEntitiesDB db, ref W instances);
-    public delegate void ExecuteOnAllEntitiesAction<T>(T[] entities, ExclusiveGroup.ExclusiveGroupStruct group,
+    public delegate void ExecuteOnAllEntitiesAction<T>(T[] entities, ExclusiveGroupStruct group,
                                                        uint count, IEntitiesDB db);
 
     public interface IEntitiesDB
@@ -21,11 +22,11 @@ namespace Svelto.ECS
         /// <param name="groupStruct"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        EntityCollection<T, ManagedBuffer<T>> QueryEntities<T>(ExclusiveGroup.ExclusiveGroupStruct groupStruct)
+        EntityCollection<T> QueryEntities<T>(ExclusiveGroupStruct groupStruct)
             where T : struct, IEntityStruct;
-        EntityCollection<T1, T2, ManagedBuffer<T1>, ManagedBuffer<T2>> QueryEntities<T1, T2>(ExclusiveGroup.ExclusiveGroupStruct groupStruct)
+        EntityCollection<T1, T2> QueryEntities<T1, T2>(ExclusiveGroupStruct groupStruct)
             where T1 : struct, IEntityStruct where T2 : struct, IEntityStruct;
-        EntityCollection<T1, T2, T3, ManagedBuffer<T1>, ManagedBuffer<T2>, ManagedBuffer<T3>> QueryEntities<T1, T2, T3>(ExclusiveGroup.ExclusiveGroupStruct groupStruct)
+        EntityCollection<T1, T2, T3> QueryEntities<T1, T2, T3>(ExclusiveGroupStruct groupStruct)
             where T1 : struct, IEntityStruct where T2 : struct, IEntityStruct where T3 : struct, IEntityStruct;
 
         /// <summary>
@@ -34,9 +35,12 @@ namespace Svelto.ECS
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        EntityCollections<T> QueryEntities<T>(ExclusiveGroup[] groups) where T : struct, IEntityStruct;
+        EntityCollections<T> QueryEntities<T>(ExclusiveGroup[] groups)
+            where T : struct, IEntityStruct;
         EntityCollections<T1, T2> QueryEntities<T1, T2>(ExclusiveGroup[] groups)
             where T1 : struct, IEntityStruct where T2 : struct, IEntityStruct;
+        EntityCollections<T1, T2, T3> QueryEntities<T1, T2, T3>(ExclusiveGroup[] groups)
+            where T1 : struct, IEntityStruct where T2 : struct, IEntityStruct where T3 : struct, IEntityStruct;
 
         ///////////////////////////////////////////////////
         // Query entities regardless the group
@@ -78,7 +82,7 @@ namespace Svelto.ECS
         /// <param name="group"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        ref T QueryUniqueEntity<T>(ExclusiveGroup.ExclusiveGroupStruct group) where T : struct, IEntityStruct;
+        ref T QueryUniqueEntity<T>(ExclusiveGroupStruct group) where T : struct, IEntityStruct;
 
         /// <summary>
         /// return a specific entity by reference.
@@ -87,7 +91,7 @@ namespace Svelto.ECS
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         ref T QueryEntity<T>(EGID entityGid) where T : struct, IEntityStruct;
-        ref T QueryEntity<T>(uint id, ExclusiveGroup.ExclusiveGroupStruct group) where T : struct, IEntityStruct;
+        ref T QueryEntity<T>(uint id, ExclusiveGroupStruct group) where T : struct, IEntityStruct;
 
         ///  <summary>
         /// 
@@ -109,7 +113,7 @@ namespace Svelto.ECS
         ///  <typeparam name="T"></typeparam>
         ///  <returns></returns>
         T[] QueryEntitiesAndIndex<T>(EGID entityGid, out uint index) where T : struct, IEntityStruct;
-        T[] QueryEntitiesAndIndex<T>(uint id, ExclusiveGroup.ExclusiveGroupStruct @group, out uint index)
+        T[] QueryEntitiesAndIndex<T>(uint id, ExclusiveGroupStruct @group, out uint index)
             where T : struct, IEntityStruct;
 
         /// <summary>
@@ -121,7 +125,7 @@ namespace Svelto.ECS
         /// <returns></returns>
         bool TryQueryEntitiesAndIndex<T>(EGID entityGid, out uint index, out T[] array) where T : struct, IEntityStruct;
         bool TryQueryEntitiesAndIndex
-            <T>(uint id, ExclusiveGroup.ExclusiveGroupStruct group, out uint index, out T[] array)
+            <T>(uint id, ExclusiveGroupStruct group, out uint index, out T[] array)
             where T : struct, IEntityStruct;
 
         /// <summary>
@@ -132,14 +136,14 @@ namespace Svelto.ECS
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        EGIDMapper<T> QueryMappedEntities<T>(ExclusiveGroup.ExclusiveGroupStruct groupStructId)
+        EGIDMapper<T> QueryMappedEntities<T>(ExclusiveGroupStruct groupStructId)
             where T : struct, IEntityStruct;
-        bool TryQueryMappedEntities<T>(ExclusiveGroup.ExclusiveGroupStruct groupStructId, out EGIDMapper<T> mapper)
+        bool TryQueryMappedEntities<T>(ExclusiveGroupStruct groupStructId, out EGIDMapper<T> mapper)
             where T : struct, IEntityStruct;
         
-        NativeEGIDMapper<T> QueryNativeMappedEntities<T>(ExclusiveGroup.ExclusiveGroupStruct groupStructId)
+        NativeEGIDMapper<T> QueryNativeMappedEntities<T>(ExclusiveGroupStruct groupStructId)
             where T : unmanaged, IEntityStruct;
-        bool TryQueryNativeMappedEntities<T>(ExclusiveGroup.ExclusiveGroupStruct groupStructId,
+        bool TryQueryNativeMappedEntities<T>(ExclusiveGroupStruct groupStructId,
             out NativeEGIDMapper<T> mapper) where T : unmanaged, IEntityStruct;
 
         ///////////////////////////////////////////////////
@@ -153,8 +157,8 @@ namespace Svelto.ECS
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         bool Exists<T>(EGID egid) where T : struct, IEntityStruct;
-        bool Exists<T>(uint id, ExclusiveGroup.ExclusiveGroupStruct group) where T : struct, IEntityStruct;
-        bool Exists(ExclusiveGroup.ExclusiveGroupStruct gid);
+        bool Exists<T>(uint id, ExclusiveGroupStruct group) where T : struct, IEntityStruct;
+        bool ExistsAndIsNotEmpty(ExclusiveGroupStruct gid);
 
         /// <summary>
         /// know if there is any entity struct in a specific group
@@ -162,7 +166,7 @@ namespace Svelto.ECS
         /// <param name="groupStruct"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        bool HasAny<T>(ExclusiveGroup.ExclusiveGroupStruct groupStruct) where T : struct, IEntityStruct;
+        bool HasAny<T>(ExclusiveGroupStruct groupStruct) where T : struct, IEntityStruct;
 
         /// <summary>
         /// Count the number of entity structs in a specific group
@@ -170,7 +174,7 @@ namespace Svelto.ECS
         /// <param name="groupStruct"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        uint Count<T>(ExclusiveGroup.ExclusiveGroupStruct groupStruct) where T : struct, IEntityStruct;
+        uint Count<T>(ExclusiveGroupStruct groupStruct) where T : struct, IEntityStruct;
 
         /// <summary>
         /// </summary>

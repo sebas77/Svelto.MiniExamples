@@ -1,4 +1,5 @@
 #if UNITY_5 || UNITY_5_3_OR_NEWER
+using Svelto.ECS.Serialization;
 using UnityEngine;
 
 namespace Svelto.ECS.Extensions.Unity
@@ -18,12 +19,7 @@ namespace Svelto.ECS.Extensions.Unity
                     var monoBehaviour = child as MonoBehaviour;
                     var childImplementors = monoBehaviour.GetComponents<IImplementor>();
                     startIndex = InternalBuildAll(
-                        startIndex,
-                        child,
-                        factory,
-                        group,
-                        childImplementors,
-                        groupNamePostfix);
+                        startIndex, child, factory, group, childImplementors, groupNamePostfix);
                 }
             }
 
@@ -72,13 +68,13 @@ namespace Svelto.ECS.Extensions.Unity
         static uint InternalBuildAll(uint startIndex, IEntityDescriptorHolder descriptorHolder,
             IEntityFactory factory, ExclusiveGroup group, IImplementor[] implementors, string groupNamePostfix)
         {
-            ExclusiveGroup.ExclusiveGroupStruct realGroup = group;
+            ExclusiveGroupStruct realGroup = group;
 
             if (string.IsNullOrEmpty(descriptorHolder.groupName) == false)
             {
                 realGroup = ExclusiveGroup.Search(!string.IsNullOrEmpty(groupNamePostfix)
-                    ? $"{descriptorHolder.groupName}{groupNamePostfix}"
-                    : descriptorHolder.groupName);
+                                                      ? $"{descriptorHolder.groupName}{groupNamePostfix}"
+                                                      : descriptorHolder.groupName);
             }
 
             EGID egid;

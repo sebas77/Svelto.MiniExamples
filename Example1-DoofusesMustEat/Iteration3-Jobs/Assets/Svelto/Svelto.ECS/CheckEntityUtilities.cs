@@ -55,7 +55,7 @@ namespace Svelto.ECS
             hash.Add(egid.entityID);
         }
         
-        void RemoveGroupID(ExclusiveGroup.ExclusiveGroupStruct groupID)
+        void RemoveGroupID(ExclusiveGroupStruct groupID)
         {
             _idCheckers.Remove(groupID);
         }
@@ -73,7 +73,7 @@ namespace Svelto.ECS
         }
         
         [Conditional("_CHECKS_DISABLED")]
-        void RemoveGroupID(ExclusiveGroup.ExclusiveGroupStruct groupID)
+        void RemoveGroupID(ExclusiveGroupStruct groupID)
         {
         }
 #endif

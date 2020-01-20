@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using Svelto.Common;
+using UnityEditor;
 
 namespace Svelto.DataStructures
 {
     public class FasterList<T>
     {
-        internal static FasterList<T> DefaultEmptyList = new FasterList<T>();
+        internal static readonly FasterList<T> DefaultEmptyList = new FasterList<T>();
         
         public int Count => (int) _count;
         public uint Capacity => (uint) _buffer.Length;
@@ -93,7 +95,7 @@ namespace Svelto.DataStructures
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                DBC.Common.Check.Require(index < _count, $"out of bound index '{index}'. Size of list is '{_count}'");
+                DBC.Common.Check.Require(index < _count, "out of bound index");
                 return ref _buffer[index];
             }
         }
@@ -110,7 +112,7 @@ namespace Svelto.DataStructures
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Add(uint location, in T item)
         {
-            Expand(location + 1);
+            ExpandTo(location + 1);
 
             _buffer[location] = item;
         }
@@ -147,7 +149,7 @@ namespace Svelto.DataStructures
         public void FastClear()
         {
 #if DEBUG && !PROFILER
-            if (typeof(T).IsClass)
+            if (TypeCache<T>.type.IsClass)
                 Console.LogWarning(
                     "Warning: objects held by this list won't be garbage collected. Use ResetToReuse or Clear " +
                     "to avoid this warning");
@@ -423,7 +425,7 @@ namespace Svelto.DataStructures
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Expand(uint newSize)
+        public void ExpandTo(uint newSize)
         {
             if (_buffer.Length < newSize)
                 AllocateMore(newSize);

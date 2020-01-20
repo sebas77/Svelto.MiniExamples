@@ -31,7 +31,7 @@ namespace Svelto.DataStructures
                 _lockQ.EnterReadLock();
                 try
                 {
-                    return (uint)_dict.Count;
+                    return (uint)_dict.count;
                 }
                 finally
                 {
@@ -220,13 +220,13 @@ namespace Svelto.DataStructures
                 _lockQ.ExitWriteLock();
             }
         }
-
-        public TValue[] GetValuesArray(out uint count)
+        
+        public void CopyTo(TValue[] tasks)
         {
             _lockQ.EnterReadLock();
             try
             {
-                return _dict.GetValuesArray(out count);
+                Array.Copy(_dict.unsafeValues, tasks, _dict.count);
             }
             finally
             {
@@ -245,6 +245,12 @@ namespace Svelto.DataStructures
             {
                 _lockQ.ExitWriteLock();
             }
+        }
+        
+        public void CopyTo(FasterList<TValue> transientEntitiesOperations)
+        {
+            transientEntitiesOperations.ExpandTo(_dict.count);
+            CopyTo(transientEntitiesOperations.ToArrayFast());
         }
         
         readonly FasterDictionary<TKey, TValue> _dict;

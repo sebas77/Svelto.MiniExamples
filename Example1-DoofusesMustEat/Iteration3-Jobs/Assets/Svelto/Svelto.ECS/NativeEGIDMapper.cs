@@ -4,9 +4,17 @@ using Svelto.DataStructures;
 
 namespace Svelto.ECS
 {
-    public struct NativeEGIDMapper<T>:IDisposable where T : unmanaged, IEntityStruct
+    public readonly struct NativeEGIDMapper<T>:IDisposable where T : unmanaged, IEntityStruct
     {
-        internal NativeFasterDictionaryStruct<uint, T> map;
+        readonly NativeFasterDictionaryStruct<uint, T> map;
+        public readonly ExclusiveGroupStruct groupID;
+
+        public NativeEGIDMapper(ExclusiveGroupStruct groupStructId, NativeFasterDictionaryStruct<uint, T> toNative):this()
+        {
+            groupID = groupStructId;
+            map = toNative;
+        }
+
         public uint Length => map.Count;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -44,6 +52,18 @@ namespace Svelto.ECS
             }
 
             throw new ECSException("Entity not found");
+        }
+        
+        public unsafe bool TryGetArrayAndEntityIndex(uint entityID, out uint index, out T* array)
+        {
+            if (map.TryFindIndex(entityID, out index))
+            {
+                array =  map.unsafeValues;
+                return true;
+            }
+
+            array = default;
+            return false;
         }
 
         public void Dispose()

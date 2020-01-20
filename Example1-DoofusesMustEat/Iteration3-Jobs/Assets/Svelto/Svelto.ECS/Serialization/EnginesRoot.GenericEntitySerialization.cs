@@ -62,8 +62,7 @@ namespace Svelto.ECS
                 {
                     var initializer = _enginesRoot.BuildEntity(egid,
                         _enginesRoot._isDeserializationOnly
-                            ? entityDescriptor.entitiesToSerialize
-                            : entityDescriptor.entitiesToBuild);
+                            ? entityDescriptor.entitiesToSerialize : entityDescriptor.entitiesToBuild);
 
                     DeserializeEntityStructs(serializationData, entityDescriptor, ref initializer, serializationType);
 

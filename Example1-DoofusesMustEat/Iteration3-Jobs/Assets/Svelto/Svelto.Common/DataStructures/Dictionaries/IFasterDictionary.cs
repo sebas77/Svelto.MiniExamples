@@ -16,7 +16,7 @@ namespace Svelto.DataStructures
     
     public interface IFasterDictionary<TKey, TValue> where TKey : IEquatable<TKey>
     {
-        uint       Count { get; }
+        uint       count { get; }
         void       Add(TKey key, in TValue value);
         void       Set(TKey key, in TValue value);
         void       Clear();
@@ -41,7 +41,5 @@ namespace Svelto.DataStructures
         bool       TryFindIndex(TKey   key, out uint findIndex);
         ref TValue GetDirectValue(uint index);
         uint       GetIndex(TKey       key);
-        NativeFasterDictionaryStruct<TK, TV> ToNative<TK, TV>() where TK : unmanaged, TKey, IEquatable<TK> where TV : unmanaged, TValue;
     }
-
 }

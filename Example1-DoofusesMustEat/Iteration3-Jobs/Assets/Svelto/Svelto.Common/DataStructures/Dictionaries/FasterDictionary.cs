@@ -1,8 +1,8 @@
-﻿using System;
+﻿﻿﻿using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-
-namespace Svelto.DataStructures
+ 
+ namespace Svelto.DataStructures
 {
     /// <summary>
     /// This dictionary has been created for just one reason: I needed a dictionary that would have let me iterate
@@ -45,7 +45,7 @@ namespace Svelto.DataStructures
             get => _values;
         }
 
-        public uint Count => _freeValueCellIndex;
+        public uint count => _freeValueCellIndex;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Add(TKey key, in TValue value)
@@ -446,14 +446,14 @@ namespace Svelto.DataStructures
             {
                 _dic = dic;
                 _index = -1;
-                _count = (int) dic.Count;
+                _count = (int) dic.count;
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public bool MoveNext()
             {
 #if DEBUG && !PROFILER
-                if (_count != _dic.Count)
+                if (_count != _dic.count)
                     throw new FasterDictionaryException("can't modify a dictionary during its iteration");
 #endif
                 if (_index < _count - 1)
@@ -465,33 +465,38 @@ namespace Svelto.DataStructures
                 return false;
             }
 
-            public KeyValuePairFast Current => new KeyValuePairFast(_dic._valuesInfo[_index].key, _dic._values[_index], _index);
+            public KeyValuePairFast Current => new KeyValuePairFast(_dic._valuesInfo[_index].key, _dic.unsafeValues, _index);
 
             readonly FasterDictionary<TKey, TValue> _dic;
-            readonly int                                  _count;
+            readonly int                            _count;
 
             int _index;
         }
-
-        TValue[]               _values;
-        FasterDictionaryNode<TKey>[] _valuesInfo;
-        int[]                  _buckets;
-        uint                   _freeValueCellIndex;
-        uint                   _collisions;
-
+        /// <summary>
+        ///the mechanism to use arrays is fundamental to work 
+        /// </summary>
         public readonly ref struct KeyValuePairFast
         {
-            public readonly TValue Value;
-            public readonly TKey Key;
-            public readonly int valueIndex;
+            readonly TValue[] _dicValues;
+            readonly TKey     key;
+            readonly int      _index;
 
-            public KeyValuePairFast(TKey keys, TValue dicValues, int index)
+            public KeyValuePairFast(TKey keys, TValue[] dicValues, int index)
             {
-                Value = dicValues;
-                Key = keys;
-                valueIndex = index;
+                _dicValues = dicValues;
+                _index     = index;
+                key = keys;
             }
+
+            public TKey Key   => key;
+            public ref TValue Value => ref _dicValues[_index];
         }
+
+        TValue[]                     _values;
+        FasterDictionaryNode<TKey>[] _valuesInfo;
+        int[]                        _buckets;
+        uint                         _freeValueCellIndex;
+        uint                         _collisions;
     }
 
     public class FasterDictionaryException : Exception

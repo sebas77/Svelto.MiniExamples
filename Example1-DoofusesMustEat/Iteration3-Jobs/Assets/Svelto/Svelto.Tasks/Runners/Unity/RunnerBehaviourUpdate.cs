@@ -16,6 +16,14 @@ namespace Svelto.Tasks.Unity.Internal
             StartCoroutine(CoroutineProcess());
         }
 
+        void Update()
+        {
+            using (var platform = new PlatformProfiler("Early tasks")) 
+                ExecuteRoutines(_earlyProcesses, platform);
+            using (var platform = new PlatformProfiler("Update tasks")) 
+                ExecuteRoutines(_updateProcesses, platform);
+        }
+
         IEnumerator CoroutineProcess()
         {
             while (true)
@@ -30,14 +38,6 @@ namespace Svelto.Tasks.Unity.Internal
 
                 yield return null;
             }
-        }
-
-        public void Update()
-        {
-            using (var platform = new PlatformProfiler("Early tasks")) 
-                ExecuteRoutines(_earlyProcesses, platform);
-            using (var platform = new PlatformProfiler("Update tasks")) 
-                ExecuteRoutines(_updateProcesses, platform);
         }
 
         public void OnGUI()

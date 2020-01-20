@@ -18,28 +18,30 @@ namespace Svelto.ECS.MiniExamples.Example1B
 
         protected override JobHandle OnUpdate(JobHandle inputDeps)
         {
-            var doofuses =
-                entitiesDB
-                   .QueryEntities<PositionEntityStruct, VelocityEntityStruct, HungerEntityStruct>(GameGroups.DOOFUSES);
-
             var foods = entitiesDB.QueryEntities<PositionEntityStruct, MealEntityStruct>(GameGroups.FOOD);
-
-            BufferTuple<NativeBuffer<PositionEntityStruct>, NativeBuffer<VelocityEntityStruct>,
-                NativeBuffer<HungerEntityStruct>> bufferTuple = doofuses
-                                                               .ToNative<PositionEntityStruct, VelocityEntityStruct,
-                                                                    HungerEntityStruct>().ToBuffers();
             BufferTuple<NativeBuffer<PositionEntityStruct>, NativeBuffer<MealEntityStruct>> foodcount =
-                foods.ToNative<PositionEntityStruct, MealEntityStruct>().ToBuffers();
-            var deps = new LookingForFoodDoofusesJob(bufferTuple, foodcount).Schedule((int) doofuses.length,
-                                                                                      (int) (doofuses.length / 8),
-                                                                                      inputDeps);
+                foods.ToNativeBuffers<PositionEntityStruct, MealEntityStruct>();
 
-            return
-                JobHandle
-                   .CombineDependencies(new DisposeJob<BufferTuple<NativeBuffer<PositionEntityStruct>, 
-                NativeBuffer<VelocityEntityStruct>, NativeBuffer<HungerEntityStruct>>>(bufferTuple).Schedule(deps),
-                                        new DisposeJob<BufferTuple<NativeBuffer<PositionEntityStruct>,
-                                            NativeBuffer<MealEntityStruct>>>(foodcount).Schedule(deps));
+            JobHandle combinedDependencies = default;
+            foreach (var doofusGroup in GameGroups.DOOFUSES.Groups)
+            {
+                var doofuses = entitiesDB
+                       .QueryEntities<PositionEntityStruct, VelocityEntityStruct, HungerEntityStruct>(doofusGroup);
+                BufferTuple<NativeBuffer<PositionEntityStruct>, NativeBuffer<VelocityEntityStruct>,
+                    NativeBuffer<HungerEntityStruct>> bufferTuple = doofuses
+                   .ToNativeBuffers<PositionEntityStruct, VelocityEntityStruct, HungerEntityStruct>();
+
+                var deps = new LookingForFoodDoofusesJob(bufferTuple, foodcount).Schedule((int) doofuses.length,
+                                                (int) (doofuses.length / 8), inputDeps);
+
+                combinedDependencies = JobHandle.CombineDependencies(combinedDependencies,
+                            new DisposeJob<BufferTuple<NativeBuffer<PositionEntityStruct>,
+                                                       NativeBuffer<VelocityEntityStruct>,
+                                                       NativeBuffer<HungerEntityStruct>>>(bufferTuple).Schedule(deps));
+            }
+
+            return new DisposeJob<BufferTuple<NativeBuffer<PositionEntityStruct>, NativeBuffer<MealEntityStruct>>
+                    >(foodcount).Schedule(combinedDependencies);
         }
     }
 
@@ -73,23 +75,22 @@ namespace Svelto.ECS.MiniExamples.Example1B
             float3 closerComputeDirection = default;
             for (int foodIndex = 0; foodIndex < foodcountLength; ++foodIndex)
             {
-                var computeDirection = _foodcount.buffer1[foodIndex].position -
-                                       positionEntityStruct.position;
+                var computeDirection = _foodcount.buffer1[foodIndex].position - positionEntityStruct.position;
 
                 var sqrModule = computeDirection.x * computeDirection.x + computeDirection.y * computeDirection.y +
                                 computeDirection.z * computeDirection.z;
 
                 if (currentMin > sqrModule)
                 {
-                    currentMin = sqrModule;
+                    currentMin             = sqrModule;
                     closerComputeDirection = computeDirection;
 
                     //food found
                     if (sqrModule < 2)
                     {
-                        hungerEntityStruct.hunger-=2;
+                        hungerEntityStruct.hunger -= 2;
                         Interlocked.Increment(ref _foodcount.buffer2[foodIndex].eaters);
-                            
+
                         closerComputeDirection = default;
 
                         break; //close enough let's save some computations

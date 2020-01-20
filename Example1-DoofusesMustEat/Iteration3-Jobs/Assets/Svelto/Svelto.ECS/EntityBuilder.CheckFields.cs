@@ -116,7 +116,7 @@ namespace Svelto.ECS
         static readonly Type DISPATCHONCHANGETYPE       = typeof(DispatchOnChange<>);
         static readonly Type DISPATCHONSETTYPE          = typeof(DispatchOnSet<>);
         static readonly Type EGIDType                   = typeof(EGID);
-        static readonly Type EXCLUSIVEGROUPSTRUCTTYPE   = typeof(ExclusiveGroup.ExclusiveGroupStruct);
+        static readonly Type EXCLUSIVEGROUPSTRUCTTYPE   = typeof(ExclusiveGroupStruct);
         static readonly Type SERIALIZABLE_ENTITY_STRUCT = typeof(SerializableEntityStruct);
         static readonly Type STRINGTYPE                 = typeof(string);
 

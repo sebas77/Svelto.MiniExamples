@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.ECS.Internal;
@@ -18,7 +18,7 @@ namespace Svelto.ECS
                 do
                 {
                     SingleSubmission(profiler);
-                } while ((_groupedEntityToAdd.currentEntitiesCreatedPerGroup.Count > 0 ||
+                } while ((_groupedEntityToAdd.currentEntitiesCreatedPerGroup.count > 0 ||
                           _entitiesOperations.Count > 0) && ++iterations < 5);
 
 #if DEBUG && !PROFILER
@@ -35,8 +35,7 @@ namespace Svelto.ECS
                 using (profiler.Sample("Remove and Swap operations"))
                 {
                     _transientEntitiesOperations.FastClear();
-                    var entitySubmitOperations = _entitiesOperations.GetValuesArray(out var count);
-                    _transientEntitiesOperations.AddRange(entitySubmitOperations, count);
+                    _entitiesOperations.CopyTo(_transientEntitiesOperations);
                     _entitiesOperations.FastClear();
 
                     var entitiesOperations = _transientEntitiesOperations.ToArrayFast();
@@ -60,7 +59,8 @@ namespace Svelto.ECS
                                         entitiesOperations[i].fromID.groupID, profiler);
                                     break;
                                 case EntitySubmitOperationType.SwapGroup:
-                                    SwapEntitiesBetweenGroups(entitiesOperations[i].fromID.groupID, entitiesOperations[i].toID.groupID, profiler);
+                                    SwapEntitiesBetweenGroups(entitiesOperations[i].fromID.groupID,
+                                        entitiesOperations[i].toID.groupID, profiler);
                                     break;
                             }
                         }
@@ -81,7 +81,7 @@ namespace Svelto.ECS
 
             _groupedEntityToAdd.Swap();
 
-            if (_groupedEntityToAdd.otherEntitiesCreatedPerGroup.Count > 0)
+            if (_groupedEntityToAdd.otherEntitiesCreatedPerGroup.count > 0)
             {
                 using (profiler.Sample("Add operations"))
                 {
@@ -109,30 +109,21 @@ namespace Svelto.ECS
                 foreach (var groupOfEntitiesToSubmit in _groupedEntityToAdd.otherEntitiesCreatedPerGroup)
                 {
                     var groupID = groupOfEntitiesToSubmit.Key;
-
-                    //if the group doesn't exist in the current DB let's create it first
-                    if (_groupEntityViewsDB.TryGetValue(groupID, out FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary> groupDB) == false)
-                        groupDB = _groupEntityViewsDB[groupID] =
-                            new FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary>();
+                    
+                    FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary> groupDB = GetOrCreateGroup(groupID);
 
                     //add the entityViews in the group
                     foreach (var entityViewsToSubmit in _groupedEntityToAdd.other[groupID])
                     {
                         var type = entityViewsToSubmit.Key;
-                        var typeSafeDictionary = entityViewsToSubmit.Value;
-
+                        var targetTypeSafeDictionary = entityViewsToSubmit.Value;
                         var wrapper = new RefWrapper<Type>(type);
-                        if (groupDB.TryGetValue(wrapper, out ITypeSafeDictionary dbDic) == false)
-                            dbDic = groupDB[wrapper] = typeSafeDictionary.Create();
+
+                        ITypeSafeDictionary dbDic = GetOrCreateTypeSafeDictionary(groupID, groupDB, wrapper, 
+                            targetTypeSafeDictionary);
 
                         //Fill the DB with the entity views generate this frame.
-                        dbDic.AddEntitiesFromDictionary(typeSafeDictionary, groupID);
-
-                        if (_groupsPerEntity.TryGetValue(wrapper, out var groupedGroup) == false)
-                            groupedGroup = _groupsPerEntity[wrapper] =
-                                new FasterDictionary<uint, ITypeSafeDictionary>();
-
-                        groupedGroup[groupID] = dbDic;
+                        dbDic.AddEntitiesFromDictionary(targetTypeSafeDictionary, groupID);
                     }
                 }
             }
@@ -152,14 +143,14 @@ namespace Svelto.ECS
                         var realDic = groupDB[new RefWrapper<Type>(entityViewsToSubmit.Key)];
 
                         entityViewsToSubmit.Value.AddEntitiesToEngines(_reactiveEnginesAddRemove, realDic,
-                            new ExclusiveGroup.ExclusiveGroupStruct(groupToSubmit.Key), in profiler);
+                            new ExclusiveGroupStruct(groupToSubmit.Key), in profiler);
                     }
                 }
             }
         }
 
-        DoubleBufferedEntitiesToAdd                             _groupedEntityToAdd;
-        readonly IEntitySubmissionScheduler                     _scheduler;
+        DoubleBufferedEntitiesToAdd                                 _groupedEntityToAdd;
+        readonly IEntitySubmissionScheduler                         _scheduler;
         readonly ThreadSafeDictionary<ulong, EntitySubmitOperation> _entitiesOperations;
     }
 }

@@ -30,7 +30,7 @@ namespace Svelto.Tasks.Internal
             }    
 
             public bool MoveNext<PlatformProfiler>(bool immediate, in PlatformProfiler platformProfiler) 
-                where PlatformProfiler : IPlatformProfiler<DisposableSampler>
+                where PlatformProfiler : IPlatformProfiler
             {
                 if (_flushingOperation.kill) return false;
                 {
@@ -78,7 +78,8 @@ namespace Svelto.Tasks.Internal
 #endif
 #if TASKS_PROFILER_ENABLED
                         result =
-                            Profiler.TaskProfiler.MonitorUpdateDuration(ref coroutines[index], _info.runnerName, _profiler);
+                            Profiler.TaskProfiler.MonitorUpdateDuration(ref coroutines[index], _info.runnerName, 
+                                platformProfiler);
 #else
                         result = coroutines[index].MoveNext();
 #endif

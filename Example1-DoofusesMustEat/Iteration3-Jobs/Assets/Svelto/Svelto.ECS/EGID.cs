@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 #pragma warning disable 660,661
 
@@ -8,12 +9,13 @@ namespace Svelto.ECS
     //todo: add debug map
     [Serialization.DoNotSerialize]
     [Serializable]
+    [StructLayout(LayoutKind.Explicit, Size = 8)]
     public struct EGID:IEquatable<EGID>,IEqualityComparer<EGID>,IComparable<EGID>
     {
-        public uint entityID => (uint) (_GID & 0xFFFFFFFF);
-
-        public ExclusiveGroup.ExclusiveGroupStruct groupID => new ExclusiveGroup.ExclusiveGroupStruct((uint) (_GID >> 32));
-
+        [FieldOffset(0)] public readonly uint                 entityID;
+        [FieldOffset(4)] public readonly ExclusiveGroupStruct groupID;
+        [FieldOffset(0)]                 ulong                _GID;
+        
         public static bool operator ==(EGID obj1, EGID obj2)
         {
             return obj1._GID == obj2._GID;
@@ -24,7 +26,7 @@ namespace Svelto.ECS
             return obj1._GID != obj2._GID;
         }
 
-        public EGID(uint entityID, ExclusiveGroup.ExclusiveGroupStruct groupID) : this()
+        public EGID(uint entityID, ExclusiveGroupStruct groupID) : this()
         {
             _GID = MAKE_GLOBAL_ID(entityID, groupID);
         }
@@ -71,7 +73,5 @@ namespace Svelto.ECS
         {
             return "id ".FastConcat(entityID).FastConcat(" group ").FastConcat(groupID);
         }
-
-        readonly ulong _GID;
     }
 }

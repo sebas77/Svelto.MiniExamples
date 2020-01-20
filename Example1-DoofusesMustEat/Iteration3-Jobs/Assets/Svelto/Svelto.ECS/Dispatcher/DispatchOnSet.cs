@@ -22,12 +22,14 @@ namespace Svelto.ECS
         
         public void NotifyOnValueSet(Action<EGID, T> action)
         {
-            _subscribers += action;    
+            _subscribers = action;
+            _paused = false;
         }
 
-        public void StopNotify(Action<EGID, T> action)
+        public void StopNotify()
         {
-            _subscribers -= action;
+            _subscribers = null;
+            _paused = true;
         }
 
         public void PauseNotify() { _paused = true; }

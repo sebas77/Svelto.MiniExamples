@@ -73,7 +73,8 @@ namespace Svelto.ECS
         public void BuildEntityAndAddToList(ref ITypeSafeDictionary dictionary, EGID egid,
             IEnumerable<object> implementors)
         {
-            if (dictionary == null) dictionary = new TypeSafeDictionary<T>();
+            if (dictionary == null) 
+                dictionary = TypeSafeDictionaryFactory<T>.Create();
 
             var castedDic = dictionary as ITypeSafeDictionary<T>;
 
@@ -108,7 +109,7 @@ namespace Svelto.ECS
         static ITypeSafeDictionary Preallocate(ref ITypeSafeDictionary dictionary, uint size)
         {
             if (dictionary == null)
-                dictionary = new TypeSafeDictionary<T>(size);
+                dictionary = TypeSafeDictionaryFactory<T>.Create(size);
             else
                 dictionary.SetCapacity(size);
 

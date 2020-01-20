@@ -7,8 +7,7 @@ namespace Svelto.ECS.Internal
     static class EntityFactory
     {
         public static FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary> BuildGroupedEntities(EGID egid,
-            EnginesRoot.DoubleBufferedEntitiesToAdd groupEntitiesToAdd,
-            IEntityBuilder[] entitiesToBuild,
+            EnginesRoot.DoubleBufferedEntitiesToAdd groupEntitiesToAdd, IEntityBuilder[] entitiesToBuild,
             IEnumerable<object> implementors)
         {
             var group = FetchEntityGroup(egid.groupID, groupEntitiesToAdd);
@@ -43,20 +42,6 @@ namespace Svelto.ECS.Internal
 #if DEBUG && !PROFILER
             HashSet<Type> types = new HashSet<Type>();
 #endif
-            InternalBuild(entityID, group, entityBuilders, implementors
-#if DEBUG && !PROFILER
-                , types
-#endif
-            );
-        }
-
-        static void InternalBuild(EGID entityID, FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary> group,
-            IEntityBuilder[] entityBuilders, IEnumerable<object> implementors
-#if DEBUG && !PROFILER
-            , HashSet<Type> types
-#endif
-        )
-        {
             var count = entityBuilders.Length;
 #if DEBUG && !PROFILER
             for (var index = 0; index < count; ++index)
@@ -73,14 +58,14 @@ namespace Svelto.ECS.Internal
             for (var index = 0; index < count; ++index)
             {
                 var entityStructBuilder = entityBuilders[index];
-                var entityViewType = entityStructBuilder.GetEntityType();
+                var entityViewType      = entityStructBuilder.GetEntityType();
 
-                BuildEntity(entityID, group, entityViewType, entityStructBuilder, implementors);
+                BuildEntity(entityID, @group, entityViewType, entityStructBuilder, implementors);
             }
         }
 
         static void BuildEntity(EGID entityID, FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary> group,
-            Type entityViewType, IEntityBuilder entityBuilder, IEnumerable<object> implementors)
+                                Type entityViewType, IEntityBuilder entityBuilder, IEnumerable<object> implementors)
         {
             var entityViewsPoolWillBeCreated =
                 group.TryGetValue(new RefWrapper<Type>(entityViewType), out var safeDictionary) == false;

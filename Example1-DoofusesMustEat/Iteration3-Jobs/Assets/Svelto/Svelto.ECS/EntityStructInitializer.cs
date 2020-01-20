@@ -39,7 +39,7 @@ namespace Svelto.ECS
         public ref T GetOrCreate<T>() where T : struct, IEntityStruct
         {
             ref var entityDictionary = ref _group.GetOrCreate(new RefWrapper<Type>(EntityBuilder<T>.ENTITY_VIEW_TYPE)
-            , () => new TypeSafeDictionary<T>());
+            , () => TypeSafeDictionaryFactory<T>.Create());
             var dictionary = (ITypeSafeDictionary<T>) entityDictionary;
 
             return ref dictionary.GetOrCreate(_ID.entityID);

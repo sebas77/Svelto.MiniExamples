@@ -1,6 +1,6 @@
 using System;
 
-namespace Svelto.ECS.Internal
+namespace Svelto.Common
 {
     public class TypeCache<T>
     {

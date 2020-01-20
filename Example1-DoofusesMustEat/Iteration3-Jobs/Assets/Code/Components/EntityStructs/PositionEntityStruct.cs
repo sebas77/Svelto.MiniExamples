@@ -1,4 +1,3 @@
-using Svelto.ECS.Components;
 using Unity.Mathematics;
 
 namespace Svelto.ECS.EntityStructs

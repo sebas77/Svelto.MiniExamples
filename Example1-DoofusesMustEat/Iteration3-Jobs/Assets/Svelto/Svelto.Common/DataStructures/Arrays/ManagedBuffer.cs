@@ -115,12 +115,6 @@ namespace Svelto.DataStructures
             get => ref _buffer[index];
         }
 
-        public uint length
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => (uint) _buffer.Length;
-        }
-
         T[] _buffer;
     }
 }

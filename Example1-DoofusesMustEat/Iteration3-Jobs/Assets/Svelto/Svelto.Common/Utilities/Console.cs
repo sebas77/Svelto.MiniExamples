@@ -99,9 +99,11 @@ namespace Svelto
                 {
                     tracingE = tracingE.InnerException;
 
-                    Log(message, LogType.Exception, tracingE, extraData);
+                    Log(" ", LogType.Exception, tracingE);
                 }
             }
+            
+            LogError(message, extraData);
 
             throw exception;
         }
@@ -122,17 +124,13 @@ namespace Svelto
             Log(toPrint, LogType.Warning);
         }
 
-#if DISABLE_DEBUG
-		[Conditional("__NEVER_DEFINED__")]
-#endif
+		[Conditional("DEBUG")]
         public static void LogDebug(string txt)
         {
             Log("<i><color=teal> ".FastConcat(txt, "</color></i>"), LogType.Log);
         }
 
-#if DISABLE_DEBUG
-        [Conditional("__NEVER_DEFINED__")]
-#endif
+        [Conditional("DEBUG")]
         public static void LogDebug<T>(string txt, T extradebug)
         {
             Log("<i><color=teal> ".FastConcat(txt, " - ", extradebug.ToString(), "</color></i>"), LogType.Log);

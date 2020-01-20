@@ -18,7 +18,6 @@ namespace Svelto.DataStructures
         void CopyFrom(T[]              source, uint sourceStartIndex, uint destinationStartIndex, uint size);
         void CopyFrom(ICollection<T>   source);
         void CopyTo(T[]                destination, uint sourceStartIndex, uint destinationStartIndex, uint size);
-        uint length { get; }
         void Clear(uint startIndex, uint count);
         void Clear();
         void Insert(int   index, in T item, int count);

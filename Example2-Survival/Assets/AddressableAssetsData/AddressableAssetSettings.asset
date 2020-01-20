@@ -23,7 +23,6 @@ MonoBehaviour:
   m_overridePlayerVersion: 
   m_GroupAssets:
   - {fileID: 11400000, guid: 9cb7cbc3f37c13e4dad214389c9866c3, type: 2}
-  - {fileID: 11400000, guid: e9d6f1e03279ab84b8dd29c3d2a3a53e, type: 2}
   m_BuildSettings:
     m_CompileScriptsInVirtualMode: 0
     m_CleanupStreamingAssetsAfterBuilds: 1
@@ -67,7 +66,7 @@ MonoBehaviour:
     - default
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
-  - {fileID: 11400000, guid: 2ffebb212a1fa9f49a448c5f29a87987, type: 2}
+  - {fileID: 0}
   m_InitializationObjects: []
   m_CertificateHandlerType:
     m_AssemblyName: 

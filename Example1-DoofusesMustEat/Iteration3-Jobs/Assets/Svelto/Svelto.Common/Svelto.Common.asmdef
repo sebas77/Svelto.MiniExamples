@@ -1,6 +1,8 @@
 {
     "name": "Svelto.Common",
-    "references": [],
+    "references": [
+        "Unity.Collections"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": true,
@@ -10,6 +12,5 @@
     ],
     "autoReferenced": true,
     "defineConstraints": [],
-    "versionDefines": [],
-    "noEngineReferences": false
+    "versionDefines": []
 }

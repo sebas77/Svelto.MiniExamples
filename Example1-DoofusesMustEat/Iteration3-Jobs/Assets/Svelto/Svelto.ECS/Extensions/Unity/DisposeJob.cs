@@ -1,4 +1,4 @@
-#if UNITY_2019_3_OR_NEWER
+#if UNITY_2019_2_OR_NEWER
 using System;
 using Unity.Jobs;
 
@@ -11,7 +11,17 @@ namespace Svelto.ECS.Extensions.Unity
             _entityCollection = disposable;
         }
 
-        public void Execute() { _entityCollection.Dispose(); }
+        public void Execute()
+        {
+            try
+            {
+                _entityCollection.Dispose();
+            }
+            catch (Exception e)
+            {
+                Svelto.Console.LogException(typeof(T).ToString().FastConcat(" "), e);
+            }
+        }
         
         readonly T _entityCollection;
     }
