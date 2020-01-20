@@ -14,7 +14,11 @@ Article:
 
 http://www.sebaslab.com/svelto-mini-examples-doofuses-must-eat/
 
-* Goal of this example: show the simplest use of Svelto ECS (mixed versions), intoduce to the concept of entity descriptors, entity structs and groups. Show the integration with UnityECS, show the use of Svelto.Tasks 2.0 (alpha state), show integration with Unity Jobs and Burst
+Goal of this example: 
+* show the simplest use of Svelto ECS (mixed versions) 
+* intoduce to the concept of entity descriptors, entity structs and groups. 
+* Show the integration with UnityECS, show the use of Svelto.Tasks 2.0 (alpha state) 
+* show integration with Unity Jobs and Burst (using Svelto.ECS 3.0 (currently alpha state)
  * **Iteration 1**
    * Integration with UnityECS for rendering
    * Move the camera with arrows and mouse, left button to drop food
@@ -30,7 +34,10 @@ http://www.sebaslab.com/svelto-mini-examples-doofuses-must-eat/
 
 Basic integration with Unity GameObjects and Monobehaviours. Uses Svelto ECS 2.8 and Svelto Tasks 1.5
 
-* Goal of this example: show the integration with OOP platforms (Unity in this case) throught the use of Entity View Structs and implementors.
+Goal of this example: 
+
+* show the integration with OOP platforms (Unity in this case) throught the use of Entity View Structs and implementors.
+* Test webgl support
 
 Main Article: http://www.sebaslab.com/learning-svelto-ecs-by-example-the-survival-example/
 
@@ -42,7 +49,12 @@ Most of the source code has been rewritten to work with Svelto.ECS framework. Th
 
 Integration with Unity UI and Svelto entities.
 
-Goal of this example: show how EntityStreams work to publish data changes. Show how to enable databinding with ExclusiveGroups. Show how to setup a data oriented GUI with nested prefabs. Shows a basic usage of the Svelto.Services (https://github.com/sebas77/Svelto.Services)
+Goal of this example
+
+* Show how EntityStreams work to publish data changes. 
+* Show how to enable databinding with ExclusiveGroups. 
+* Show how to setup a data oriented GUI with nested prefabs. 
+* Show a basic usage of the Svelto.Services (https://github.com/sebas77/Svelto.Services)
 
 Main article: http://www.sebaslab.com/svelto-miniexamples-gui-and-services-layer/
 
