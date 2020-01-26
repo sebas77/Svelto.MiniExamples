@@ -10,7 +10,7 @@ namespace Svelto.Utilities
 {
     public static class FastInvoke<T> 
     {
-#if ENABLE_IL2CPP
+#if ENABLE_IL2CPP //Expression.Lambda may work now, it's something to test!
         public static ActionCast<T> MakeSetter(FieldInfo field)
         {
             if (field.FieldType.IsInterfaceEx() == true && field.FieldType.IsValueTypeEx() == false)
@@ -25,7 +25,7 @@ namespace Svelto.Utilities
                        };
             }
 
-            throw new ArgumentException("<color=orange>Svelto.ECS</color> unsupported field (must be an interface and a class)");
+            throw new ArgumentException("<color=teal>Svelto.ECS</color> unsupported field (must be an interface and a class)");
         }
 #elif !NETFX_CORE && !NET_STANDARD_2_0 && !UNITY_WSA_10_0 && !NETSTANDARD2_0 && !NET_4_6
         //https://stackoverflow.com/questions/1272454/generate-dynamic-method-to-set-a-field-of-a-struct-instead-of-using-reflection
@@ -51,7 +51,7 @@ namespace Svelto.Utilities
                 return (ActionCast<T>) setter.CreateDelegate(typeof(ActionCast<T>));
             }
             
-            throw new ArgumentException("<color=orange>Svelto.ECS</color> unsupported field (must be an interface and a class)");
+            throw new ArgumentException("<color=teal>Svelto.ECS</color> unsupported field (must be an interface and a class)");
         }
  
         class ILEmitter
@@ -142,7 +142,7 @@ namespace Svelto.Utilities
                 return setter; 
             }
 
-            throw new ArgumentException("<color=orange>Svelto.ECS</color> unsupported field (must be an interface and a class)");
+            throw new ArgumentException("<color=teal>Svelto.ECS</color> unsupported field (must be an interface and a class)");
         }
 #endif
     }

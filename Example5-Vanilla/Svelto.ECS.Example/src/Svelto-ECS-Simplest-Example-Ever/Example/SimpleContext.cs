@@ -96,19 +96,17 @@ namespace Svelto.ECS.Vanilla.Example
 
             public void Ready() { }
 
-            public void Add(ref EntityStruct entityView)
+            public void Add(ref EntityStruct entityView, EGID egid)
             {
                 _entityFunctions.SwapEntityGroup<SimpleEntityDescriptor>(entityView.ID, ExclusiveGroups.group1);
             }
 
-            public void Remove(ref EntityStruct entityView) { }
+            public void Remove(ref EntityStruct entityView, EGID egid) { }
             
-            public void MovedTo(ref EntityStruct entityView, ExclusiveGroup.ExclusiveGroupStruct previousGroup)
+            public void MovedTo(ref EntityStruct entityView, ExclusiveGroup.ExclusiveGroupStruct previousGroup, EGID egid)
             {
                 Console.Log("Swap happened");
             }
-
-            public void MovedFrom(ref EntityStruct entityView) { }
 
             public void Update()
             {

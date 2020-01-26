@@ -1,21 +1,64 @@
 using System;
+using System.Diagnostics;
 
-/// <summary>
-/// Murmur hash.
-/// 
-/// Creates an evenly destributed uint hash from a string.
-/// Very fast and fairly unique
-/// </summary>
 namespace Svelto.Utilities
 {
-    public class Murmur3
+    /// <summary>
+    /// Murmur hash.
+    ///
+    /// Creates an evenly destributed uint hash from a byte[].
+    /// Very fast and fairly unique
+    /// </summary>
+    public static class Murmur3
     {
-        static public uint MurmurHash3_x86_32(byte[] data, uint length, uint h1)
+        const uint C1 = 0xcc9e2d51;
+        const uint C2 = 0x1b873593;
+        const uint VERIFICATION = 0xB0F57EE3;
+
+        public static uint MurmurHash3_x86_32(byte[] data)
+        {
+            return MurmurHash3_x86_32(data, (uint) data.Length, 0x1337);
+        }
+
+        public static uint MurmurHash3_x86_32(byte[] data, uint h1)
+        {
+            return MurmurHash3_x86_32(data, (uint) data.Length, h1);
+        }
+
+        public static bool VerificationTest()
+        {
+            var key    = new byte[256];
+            var hashes = new byte[1024];
+
+            for (uint i = 0; i < 256; i++)
+            {
+                key[i] = (byte) i;
+
+                uint result = MurmurHash3_x86_32(key, i, 256 - i);
+
+                Buffer.BlockCopy(BitConverter.GetBytes(result), 0, hashes, (int) i * 4, 4);
+            }
+
+            // Then hash the result array
+
+            uint finalr = MurmurHash3_x86_32(hashes, 1024, 0);
+
+            //----------
+
+            if (VERIFICATION != finalr)
+            {
+                return false;
+            }
+
+            Debug.WriteLine("works");
+
+            return true;
+        }
+
+
+        static uint MurmurHash3_x86_32(byte[] data, uint length, uint h1)
         {
             uint nblocks = length >> 2;
-
-            const uint c1 = 0xcc9e2d51;
-            const uint c2 = 0x1b873593;
 
             //----------
             // body
@@ -26,9 +69,9 @@ namespace Svelto.Utilities
             {
                 uint k1l = BitConverter.ToUInt32(data, i);
 
-                k1l *= c1;
+                k1l *= C1;
                 k1l =  rotl32(k1l, 15);
-                k1l *= c2;
+                k1l *= C2;
 
                 h1 ^= k1l;
                 h1 =  rotl32(h1, 13);
@@ -53,9 +96,9 @@ namespace Svelto.Utilities
             if (tailLength >= 1)
             {
                 k1 ^= data[nblocks];
-                k1 *= c1;
+                k1 *= C1;
                 k1 =  rotl32(k1, 15);
-                k1 *= c2;
+                k1 *= C2;
                 h1 ^= k1;
             }
 
@@ -83,40 +126,6 @@ namespace Svelto.Utilities
         static uint rotl32(uint x, byte r)
         {
             return (x << r) | (x >> (32 - r));
-        }
-
-        static public bool VerificationTest()
-        {
-            byte[] key    = new byte[256];
-            byte[] hashes = new byte[1024];
-
-            for (uint i = 0; i < 256; i++)
-            {
-                key[i] = (byte) i;
-
-                uint result = MurmurHash3_x86_32(key, i, 256 - i);
-
-                Buffer.BlockCopy(BitConverter.GetBytes(result), 0, hashes, (int) i * 4, 4);
-            }
-
-            // Then hash the result array
-
-            uint finalr = MurmurHash3_x86_32(hashes, 1024, 0);
-
-            uint verification = 0xB0F57EE3;
-
-            //----------
-
-            if (verification != finalr)
-            {
-                return false;
-            }
-            else
-            {
-                System.Diagnostics.Debug.WriteLine("works");
-
-                return true;
-            }
         }
     }
 }
