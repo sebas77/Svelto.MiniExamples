@@ -37,8 +37,7 @@ namespace Svelto.ECS
         public NativeBuffer<NT> ToNativeBuffer<NT>(out uint length) where NT : unmanaged, T
         {
             length = _count;
-            return new NativeBuffer<NT>(GCHandle.Alloc(_buffer.ToManagedArray(),
-                GCHandleType.Pinned), _count);
+            return new NativeBuffer<NT>(Unsafe.As<NT[]>(_buffer.ToManagedArray()));
         }
         
         public EntityNativeIterator<NT> GetNativeEnumerator<NT>() where NT : unmanaged, T 
@@ -527,13 +526,13 @@ namespace Svelto.ECS
     {
         public readonly BufferT1 buffer1;
         public readonly BufferT2 buffer2;
-        public readonly uint     length;
+        public readonly uint count;
 
-        public BufferTuple(BufferT1 bufferT1, BufferT2 bufferT2, uint length) : this()
+        public BufferTuple(BufferT1 bufferT1, BufferT2 bufferT2, uint count) : this()
         {
             this.buffer1 = bufferT1;
             this.buffer2 = bufferT2;
-            this.length = length;
+            this.count = count;
         }
 
         public void Dispose()

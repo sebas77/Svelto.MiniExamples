@@ -52,7 +52,7 @@ namespace Svelto.ECS.Serialization
             var values = safeDictionary.unsafeValues;
             ref T val = ref values[(int) index];
 
-            serializationData.dataPos = (uint) serializationData.data.Count;
+            serializationData.dataPos = (uint) serializationData.data.count;
 
             serializationData.data.ExpandBy(serializer.size);
             serializer.SerializeSafe(val, serializationData);
@@ -87,7 +87,15 @@ namespace Svelto.ECS.Serialization
         public void CopySerializedEntityStructs(in EntityStructInitializer sourceInitializer,
             in EntityStructInitializer destinationInitializer, SerializationType serializationType)
         {
-            if ((_serializers[(int) serializationType] is DontSerialize<T>) == false)
+            if (_serializers[(int) serializationType] is PartialSerializer<T>)
+            {
+                var source = sourceInitializer.Get<T>();
+                var destination = destinationInitializer.Get<T>();
+
+                (_serializers[(int) serializationType] as PartialSerializer<T>).CopyFrom(source, ref destination);
+                destinationInitializer.Init(destination);
+            }
+            else if ((_serializers[(int) serializationType] is DontSerialize<T>) == false)
                 destinationInitializer.CopyFrom(sourceInitializer.Get<T>());
         }
 

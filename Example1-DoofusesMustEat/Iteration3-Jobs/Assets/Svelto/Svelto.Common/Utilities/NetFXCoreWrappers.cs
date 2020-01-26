@@ -144,7 +144,7 @@ public static class NetFXCoreWrappers
             contract = contract.GetBaseType();
         } while (contract != null);
 
-        if (propertyList.Count > 0)
+        if (propertyList.count > 0)
             return propertyList.ToArray();
 
         return null;

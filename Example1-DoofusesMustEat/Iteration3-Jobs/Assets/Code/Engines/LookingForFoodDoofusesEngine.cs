@@ -70,7 +70,7 @@ namespace Svelto.ECS.MiniExamples.Example1B
             ref var hungerEntityStruct   = ref _doofuses.buffer3[index];
             ref var positionEntityStruct = ref _doofuses.buffer1[index];
 
-            var foodcountLength = _foodcount.length;
+            var foodcountLength = _foodcount.count;
 
             float3 closerComputeDirection = default;
             for (int foodIndex = 0; foodIndex < foodcountLength; ++foodIndex)

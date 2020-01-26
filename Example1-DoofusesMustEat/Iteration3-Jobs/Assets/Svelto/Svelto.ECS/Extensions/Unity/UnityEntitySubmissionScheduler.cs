@@ -41,7 +41,10 @@ namespace Svelto.ECS.Schedulers.Unity
 
         public void Dispose()
         {
-            Object.Destroy(_scheduler.gameObject);
+            if (_scheduler != null && _scheduler.gameObject != null)
+            {
+                Object.Destroy(_scheduler.gameObject);
+            }
         }
         
         public EnginesRoot.EntitiesSubmitter onTick

@@ -12,22 +12,6 @@ namespace Svelto.DataStructures
             _buffer = array;
         }
 
-        public void Set<Buffer1>(Buffer1 array) where Buffer1 : IBuffer<T>
-        {
-            _buffer = array.ToManagedArray();
-        }
-
-        public void Set(GCHandle handle, uint count)
-        {
-            throw new NotImplementedException();
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Allocate(uint initialSize)
-        {
-            _buffer = new T[initialSize];
-        }
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void CopyFrom<TBuffer>(TBuffer array, uint startIndex, uint size) where TBuffer:IBuffer<T>
         {
@@ -63,23 +47,11 @@ namespace Svelto.DataStructures
         {
             Array.Clear(_buffer, (int) 0, (int) _buffer.Length);
         }
-        
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Resize(uint newSize)
-        {
-            Array.Resize(ref _buffer, (int) newSize);
-        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Insert(int index, in T item, int count)
+        public void UnorderedRemoveAt(int index)
         {
-            Array.Copy(_buffer, index, _buffer, index + 1, count - index);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void RemoveAt(int index, int count)
-        {
-            Array.Copy(_buffer, index + 1, _buffer, index, count - index);
+            throw new NotImplementedException();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

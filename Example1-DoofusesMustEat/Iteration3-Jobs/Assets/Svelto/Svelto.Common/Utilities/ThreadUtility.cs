@@ -16,6 +16,12 @@ namespace Svelto.Utilities
 #endif
         }
 
+        /// <summary>
+        /// The main difference between Yield and Sleep(0) is that Yield doesn't allow a switch of context
+        /// that is the core is given to a thread that is already running on that core. Sleep(0) may cause
+        /// a context switch
+        /// to another thread.  
+        /// </summary>
         public static void Yield()
         {
 #if NETFX_CORE && !NET_STANDARD_2_0 && !NETSTANDARD2_0
@@ -92,6 +98,17 @@ namespace Svelto.Utilities
 #endif
         }
         
+        public static uint VolatileRead(ref uint val)
+        {
+#if NET_4_6 || NET_STANDARD_2_0 || NETSTANDARD2_0
+            return Volatile.Read(ref val);
+#else
+            Thread.MemoryBarrier();
+
+            return val;
+#endif
+        }
+        
         public static float VolatileRead(ref float val)
         {
 #if NET_4_6 || NET_STANDARD_2_0 || NETSTANDARD2_0
@@ -104,6 +121,16 @@ namespace Svelto.Utilities
         }
 
         public static void VolatileWrite(ref bool var, bool val)
+        {
+#if NET_4_6 || NET_STANDARD_2_0 || NETSTANDARD2_0
+            Volatile.Write(ref var, val);
+#else
+            var = val;
+            Thread.MemoryBarrier();
+#endif
+        }
+        
+        public static void VolatileWrite(ref int var, int val)
         {
 #if NET_4_6 || NET_STANDARD_2_0 || NETSTANDARD2_0
             Volatile.Write(ref var, val);

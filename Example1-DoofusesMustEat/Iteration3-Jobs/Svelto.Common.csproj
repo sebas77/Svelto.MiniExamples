@@ -75,6 +75,7 @@
      <Compile Include="Assets\Svelto\Svelto.Common\DataStructures\Arrays\IBuffer.cs" />
      <Compile Include="Assets\Svelto\Svelto.Common\DataStructures\Arrays\ManagedBuffer.cs" />
      <Compile Include="Assets\Svelto\Svelto.Common\DataStructures\Arrays\NativeBuffer.cs" />
+     <Compile Include="Assets\Svelto\Svelto.Common\DataStructures\Arrays\NativeFasterList.cs" />
      <Compile Include="Assets\Svelto\Svelto.Common\DataStructures\Arrays\ThreadSafeFasterList.cs" />
      <Compile Include="Assets\Svelto\Svelto.Common\DataStructures\CircularBufferIndexer.cs" />
      <Compile Include="Assets\Svelto\Svelto.Common\DataStructures\Dictionaries\FasterDictionary.cs" />
@@ -309,6 +310,9 @@
  </Reference>
  <Reference Include="UnityEditor.WindowsStandalone.Extensions">
  <HintPath>C:/Program Files/Unity/Hub/Editor/2019.3.0f5/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEditor.WebGL.Extensions">
+ <HintPath>C:/Program Files/Unity/Hub/Editor/2019.3.0f5/Editor/Data/PlaybackEngines/WebGLSupport/UnityEditor.WebGL.Extensions.dll</HintPath>
  </Reference>
  <Reference Include="System.Runtime.CompilerServices.Unsafe">
  <HintPath>E:/Archive/Prgdir/Svelto/Svelto.MiniExamples/Example1-DoofusesMustEat/Iteration3-Jobs/Library/PackageCache/com.unity.collections@0.4.0-preview.6/System.Runtime.CompilerServices.Unsafe.dll</HintPath>

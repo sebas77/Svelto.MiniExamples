@@ -14,12 +14,13 @@ namespace Svelto.ECS
     /// one only
     /// - you want to communicate between EnginesRoots
     /// </summary>
-    
     class EntitiesStream : IDisposable
     {
-        internal Consumer<T> GenerateConsumer<T>(string name, uint capacity) where T : unmanaged, IEntityStruct
+        internal Consumer<T> GenerateConsumer<T>(string name, uint capacity)
+            where T : unmanaged, IEntityStruct
         {
-            if (_streams.ContainsKey(TypeRefWrapper<T>.wrapper) == false) _streams[TypeRefWrapper<T>.wrapper] = new EntityStream<T>();
+            if (_streams.ContainsKey(TypeRefWrapper<T>.wrapper) == false)
+                _streams[TypeRefWrapper<T>.wrapper] = new EntityStream<T>();
 
             return (_streams[TypeRefWrapper<T>.wrapper] as EntityStream<T>).GenerateConsumer(name, capacity);
         }
@@ -27,9 +28,11 @@ namespace Svelto.ECS
         public Consumer<T> GenerateConsumer<T>(ExclusiveGroup group, string name, uint capacity)
             where T : unmanaged, IEntityStruct
         {
-            if (_streams.ContainsKey(TypeRefWrapper<T>.wrapper) == false) _streams[TypeRefWrapper<T>.wrapper] = new EntityStream<T>();
+            if (_streams.ContainsKey(TypeRefWrapper<T>.wrapper) == false)
+                _streams[TypeRefWrapper<T>.wrapper] = new EntityStream<T>();
 
-            return (_streams[TypeRefWrapper<T>.wrapper] as EntityStream<T>).GenerateConsumer(group, name, capacity);
+            EntityStream<T> typeSafeStream = (EntityStream<T>) _streams[TypeRefWrapper<T>.wrapper];
+            return typeSafeStream.GenerateConsumer(group, name, capacity);
         }
 
         internal void PublishEntity<T>(ref T entity, EGID egid) where T : unmanaged, IEntityStruct
@@ -50,14 +53,25 @@ namespace Svelto.ECS
     }
 
     interface ITypeSafeStream
-    {}
+    { }
 
-    class EntityStream<T> : ITypeSafeStream where T : unmanaged, IEntityStruct
+    public class EntityStream<T> : ITypeSafeStream where T : unmanaged, IEntityStruct
     {
-        public void PublishEntity(ref T entity, EGID egid)
+        internal EntityStream()
+        {
+            _consumers = new ThreadSafeFasterList<Consumer<T>>();
+        }
+        
+        internal void PublishEntity(ref T entity, EGID egid)
         {
             for (int i = 0; i < _consumers.Count; i++)
             {
+                if (_consumers[i].mustBeDisposed)
+                {
+                    _consumers.UnorderedRemoveAt(i);
+                    --i;
+                }
+                
                 if (_consumers[i]._hasGroup)
                 {
                     if (egid.groupID == _consumers[i]._group)
@@ -72,16 +86,16 @@ namespace Svelto.ECS
             }
         }
 
-        public Consumer<T> GenerateConsumer(string name, uint capacity)
+        internal Consumer<T> GenerateConsumer(string name, uint capacity)
         {
-            var consumer = new Consumer<T>(name, capacity, this);
+            var consumer = new Consumer<T>(name, capacity);
 
             _consumers.Add(consumer);
 
             return consumer;
         }
 
-        public Consumer<T> GenerateConsumer(ExclusiveGroup group, string name, uint capacity)
+        internal Consumer<T> GenerateConsumer(ExclusiveGroup group, string name, uint capacity)
         {
             var consumer = new Consumer<T>(group, name, capacity, this);
 
@@ -90,17 +104,12 @@ namespace Svelto.ECS
             return consumer;
         }
 
-        public void RemoveConsumer(Consumer<T> consumer)
-        {
-            _consumers.UnorderedRemove(consumer);
-        }
-
-        readonly ThreadSafeFasterList<Consumer<T>> _consumers = new ThreadSafeFasterList<Consumer<T>>();
+        readonly ThreadSafeFasterList<Consumer<T>> _consumers;
     }
 
-    public struct Consumer<T> : IDisposable where T : unmanaged, IEntityStruct
+    public struct Consumer<T> :IDisposable where T : unmanaged, IEntityStruct
     {
-        internal Consumer(string name, uint capacity, EntityStream<T> stream):this()
+        internal Consumer(string name, uint capacity) : this()
         {
 #if DEBUG && !PROFILER
             _name = name;
@@ -111,15 +120,13 @@ namespace Svelto.ECS
 #else
                 string.Empty
 #endif
-                );
-
-            _stream = stream;
+            );
         }
 
         internal Consumer(ExclusiveGroup group, string name, uint capacity, EntityStream<T> stream) : this(name,
-            capacity, stream)
+            capacity)
         {
-            _group = group;
+            _group = @group;
             _hasGroup = true;
         }
 
@@ -146,15 +153,27 @@ namespace Svelto.ECS
 
             return tryDequeue;
         }
-        public void Flush() { _ringBuffer.Reset(); }
-        public void Dispose() { _stream.RemoveConsumer(this); }
-        public uint Count() { return (uint) _ringBuffer.Count; }
 
-        readonly          RingBuffer<ValueTuple<T, EGID>>   _ringBuffer;
-        readonly          EntityStream<T> _stream;
+        public void Flush()
+        {
+            _ringBuffer.Reset();
+        }
 
-        internal readonly ExclusiveGroup  _group;
-        internal readonly bool            _hasGroup;
+        public void Dispose()
+        {
+            mustBeDisposed = true;
+        }
+
+        public uint Count()
+        {
+            return (uint) _ringBuffer.Count;
+        }
+
+        readonly RingBuffer<ValueTuple<T, EGID>> _ringBuffer;
+
+        internal readonly ExclusiveGroup _group;
+        internal readonly bool           _hasGroup;
+        internal          bool           mustBeDisposed;
 
 #if DEBUG && !PROFILER
         readonly string _name;

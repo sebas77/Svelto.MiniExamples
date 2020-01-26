@@ -306,6 +306,9 @@
  <Reference Include="UnityEditor.WindowsStandalone.Extensions">
  <HintPath>C:/Program Files/Unity/Hub/Editor/2019.3.0f5/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll</HintPath>
  </Reference>
+ <Reference Include="UnityEditor.WebGL.Extensions">
+ <HintPath>C:/Program Files/Unity/Hub/Editor/2019.3.0f5/Editor/Data/PlaybackEngines/WebGLSupport/UnityEditor.WebGL.Extensions.dll</HintPath>
+ </Reference>
  <Reference Include="Unity.Burst.Unsafe">
  <HintPath>E:/Archive/Prgdir/Svelto/Svelto.MiniExamples/Example1-DoofusesMustEat/Iteration3-Jobs/Library/PackageCache/com.unity.burst@1.2.0-preview.11/Unity.Burst.Unsafe.dll</HintPath>
  </Reference>

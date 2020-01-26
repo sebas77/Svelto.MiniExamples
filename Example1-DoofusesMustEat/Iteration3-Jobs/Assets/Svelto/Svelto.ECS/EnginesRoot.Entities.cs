@@ -325,7 +325,7 @@ namespace Svelto.ECS
             return _entitiesStream.GenerateConsumer<T>(name, capacity);
         }
 
-        public Consumer<T> GenerateConsumer<T>(ExclusiveGroup group, string name, uint capacity)
+        internal Consumer<T> GenerateConsumer<T>(ExclusiveGroup group, string name, uint capacity)
             where T : unmanaged, IEntityStruct
         {
             return _entitiesStream.GenerateConsumer<T>(group, name, capacity);

@@ -7,7 +7,7 @@ namespace Svelto.DataStructures
         public static FasterReadOnlyList<T> DefaultEmptyList = new FasterReadOnlyList<T>(
             FasterList<T>.DefaultEmptyList);
 
-        public int  Count      => _list.Count;
+        public uint  Count      => _list.count;
         public bool IsReadOnly => true;
 
         public FasterReadOnlyList(FasterList<T> list)
@@ -31,18 +31,6 @@ namespace Svelto.DataStructures
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => ref _list[index];
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Contains(T item)
-        {
-            return _list.Contains(item);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int IndexOf(T item)
-        {
-            return _list.IndexOf(item);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

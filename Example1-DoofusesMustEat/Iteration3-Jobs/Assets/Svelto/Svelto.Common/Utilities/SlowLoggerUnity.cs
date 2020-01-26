@@ -46,7 +46,7 @@ namespace Svelto.Utilities
 #if !(!UNITY_EDITOR || PROFILER)
                     stack = ExtractFormattedStackTrace();
 
-                    Debug.LogWarning("<b><color=teal>".FastConcat(txt, "</color></b> ", Environment.NewLine, stack)
+                    Debug.Log("<b><color=yellow>".FastConcat(txt, "</color></b> ", Environment.NewLine, stack)
                         .FastConcat(Environment.NewLine, dataString));
 #else
                     Debug.LogWarning(txt);
@@ -64,8 +64,18 @@ namespace Svelto.Utilities
                     else
                         stack = ExtractFormattedStackTrace();
 
-                    Debug.LogError("<b><color=red> ".FastConcat(txt, "</color><b> ", Environment.NewLine, stack)
-                        .FastConcat(Environment.NewLine, dataString));
+#if UNITY_EDITOR                    
+                    var fastConcat = "<b><color=red>".FastConcat(txt, "</color></b> ", Environment.NewLine, stack)
+                        .FastConcat(Environment.NewLine, dataString);
+                    
+                    Debug.Log(fastConcat);
+#else
+                    if (type == LogType.Error)
+                        Debug.LogError(txt);
+                    else
+                    if (e != null)
+                        Debug.LogException(e);
+#endif
                     break;
                 }
             }
@@ -75,10 +85,8 @@ namespace Svelto.Utilities
         {
             projectFolder = Application.dataPath.Replace("Assets", "");
 
-#if !UNITY_EDITOR || PROFILER
             Application.SetStackTraceLogType(UnityEngine.LogType.Warning, StackTraceLogType.None);
             Application.SetStackTraceLogType(UnityEngine.LogType.Log, StackTraceLogType.None);
-#endif
 
             Console.Log("Slow Unity Logger added");
         }
@@ -92,7 +100,7 @@ namespace Svelto.Utilities
         {
             _stringBuilder.Value.Length = 0;
 
-            var frame = new StackTrace(3, true);
+            var frame = new StackTrace(4, true);
 
             for (var index1 = 0; index1 < stackTrace.FrameCount; ++index1)
             {
@@ -111,7 +119,7 @@ namespace Svelto.Utilities
         {
             _stringBuilder.Value.Length = 0;
 
-            var frame = new StackTrace(3, true);
+            var frame = new StackTrace(4, true);
 
             for (var index1 = 0; index1 < frame.FrameCount; ++index1)
             {

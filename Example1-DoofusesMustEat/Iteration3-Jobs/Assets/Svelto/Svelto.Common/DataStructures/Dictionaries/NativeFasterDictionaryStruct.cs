@@ -4,6 +4,11 @@ using System.Runtime.InteropServices;
 
 namespace Svelto.DataStructures
 {
+    /// <summary>
+    /// todo: while at the moment is not strictly necessary, I will probably need to redesign this struct so that it can be shared over the time, otherwise it should be used as a ref struct (which is not possible) 
+    /// </summary>
+    /// <typeparam name="TKey"></typeparam>
+    /// <typeparam name="TValue"></typeparam>
     public unsafe struct NativeFasterDictionaryStruct<TKey, TValue> : IDisposable
         where TKey : unmanaged, IEquatable<TKey> where TValue : unmanaged
     {
@@ -25,9 +30,12 @@ namespace Svelto.DataStructures
 
         public void Dispose()
         {
-            _values.Free();
-            _valuesInfo.Free();
-            _buckets.Free();
+            if (_values.IsAllocated)
+                _values.Free();
+            if (_valuesInfo.IsAllocated)
+                _valuesInfo.Free();
+            if (_buckets.IsAllocated)
+                _buckets.Free();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -154,7 +154,7 @@ namespace Svelto.ECS.Internal
 
             if (previousGroup == null)
             {
-                for (var i = 0; i < entityViewsEngines.Count; i++)
+                for (var i = 0; i < entityViewsEngines.count; i++)
                     try
                     {
                         using (profiler.Sample(entityViewsEngines[i], _typeName))
@@ -170,7 +170,7 @@ namespace Svelto.ECS.Internal
             }
             else
             {
-                for (var i = 0; i < entityViewsEngines.Count; i++)
+                for (var i = 0; i < entityViewsEngines.count; i++)
                     try
                     {
                         using (profiler.Sample(entityViewsEngines[i], _typeName))
@@ -198,7 +198,7 @@ namespace Svelto.ECS.Internal
 
             if (previousGroup == null)
             {
-                for (var i = 0; i < entityViewsEngines.Count; i++)
+                for (var i = 0; i < entityViewsEngines.count; i++)
                     try
                     {
                         using (profiler.Sample(entityViewsEngines[i], _typeName))

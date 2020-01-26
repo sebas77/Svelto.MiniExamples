@@ -8,7 +8,7 @@ namespace Svelto.ECS
     {
         internal readonly ITypeSafeDictionary<T> map;
         public uint Length => map.Count;
-        public readonly ExclusiveGroupStruct groupID;
+        public ExclusiveGroupStruct groupID { get; }
 
         public EGIDMapper(ExclusiveGroupStruct groupStructId, ITypeSafeDictionary<T> dic):this()
         {
@@ -61,9 +61,6 @@ namespace Svelto.ECS
             array = default;
             return false;
         }
-        
-        public void Dispose()
-        { }
     }
 }
 

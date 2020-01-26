@@ -30,9 +30,7 @@ namespace Svelto
 #else
             _standardLogger = new SimpleLogger();
 #endif
-            _standardLogger.OnLoggerAdded();
-
-            _loggers.Add(new DataStructures.WeakReference<ILogger>(_standardLogger));
+            AddLogger(_standardLogger);
         }
 
         public static void SetLogger(ILogger log)
@@ -47,23 +45,9 @@ namespace Svelto
             _loggers.Add(new DataStructures.WeakReference<ILogger>(log));
         }
 
-        static void Log(string txt, LogType type, Exception e = null, Dictionary<string, string> extraData = null)
-        {
-            for (int i = 0; i < _loggers.Count; i++)
-            {
-                if (_loggers[i].IsValid == true)
-                    _loggers[i].Target.Log(txt, type, e, extraData);
-                else
-                {
-                    _loggers.UnorderedRemoveAt(i);
-                    i--;
-                }
-            }
-        }
-
         public static void Log(string txt)
         {
-            Log(txt, LogType.Log);
+            InternalLog(txt, LogType.Log);
         }
 
         public static void LogError(string txt, Dictionary<string, string> extraData = null)
@@ -79,32 +63,41 @@ namespace Svelto
                 toPrint = _stringBuilder.ToString();
             }
 
-            Log(toPrint, LogType.Error, null, extraData);
+            InternalLog(toPrint, LogType.Error, null, extraData);
         }
 
-        public static void LogException(Exception e, Dictionary<string, string> extraData = null)
-        {
-            LogException(String.Empty, e, extraData);
-        }
-
-        public static void LogException(string message, Exception exception, Dictionary<string, string> extraData = null)
+        public static void LogException(Exception exception, string message = null,
+            Dictionary<string, string> extraData = null)
         {
             if (extraData == null)
                 extraData = new Dictionary<string, string>();
 
-            lock (_stringBuilder)
-            {
-                Exception tracingE = exception;
-                while (tracingE.InnerException != null)
-                {
-                    tracingE = tracingE.InnerException;
+            string toPrint = "-!!!!!!-> ";
 
-                    Log(" ", LogType.Exception, tracingE);
+            Exception tracingE = exception;
+            while (tracingE.InnerException != null)
+            {
+                tracingE = tracingE.InnerException;
+
+                InternalLog("-!!!!!!-> ", LogType.Error, tracingE);
+            }
+
+            if (message != null)
+            {
+                lock (_stringBuilder)
+                {
+                    _stringBuilder.Length = 0;
+                    _stringBuilder.Append(toPrint);
+                    _stringBuilder.Append(message);
+
+                    toPrint = _stringBuilder.ToString();
                 }
             }
-            
-            LogError(message, extraData);
 
+            //the goal of this is to show the stack from the real error
+            InternalLog(toPrint, LogType.Exception, exception, extraData);
+
+            //this is naturally an exception caught, so the stack will be from the caught, not from the real error 
             throw exception;
         }
 
@@ -121,19 +114,19 @@ namespace Svelto
                 toPrint = _stringBuilder.ToString();
             }
 
-            Log(toPrint, LogType.Warning);
+            InternalLog(toPrint, LogType.Warning);
         }
 
-		[Conditional("DEBUG")]
+        [Conditional("DEBUG")]
         public static void LogDebug(string txt)
         {
-            Log("<i><color=teal> ".FastConcat(txt, "</color></i>"), LogType.Log);
+            InternalLog(txt, LogType.Log);
         }
 
         [Conditional("DEBUG")]
         public static void LogDebug<T>(string txt, T extradebug)
         {
-            Log("<i><color=teal> ".FastConcat(txt, " - ", extradebug.ToString(), "</color></i>"), LogType.Log);
+            InternalLog(txt.FastConcat(Environment.NewLine, extradebug.ToString()), LogType.Log); 
         }
 
         /// <summary>
@@ -174,6 +167,29 @@ namespace Svelto
 #else
             UnityEngine.Debug.Log(toPrint);
 #endif
+        }
+
+        /// <summary>
+        /// this class methods can use only InternalLog to log and cannot use the public methods, otherwise the
+        /// stack depth will break 
+        /// </summary>
+        /// <param name="txt"></param>
+        /// <param name="type"></param>
+        /// <param name="e"></param>
+        /// <param name="extraData"></param>
+        static void InternalLog(string txt, LogType type, Exception e = null,
+            Dictionary<string, string> extraData = null)
+        {
+            for (int i = 0; i < _loggers.count; i++)
+            {
+                if (_loggers[i].IsValid == true)
+                    _loggers[i].Target.Log(txt, type, e, extraData);
+                else
+                {
+                    _loggers.UnorderedRemoveAt(i);
+                    i--;
+                }
+            }
         }
     }
 }

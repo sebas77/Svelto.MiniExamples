@@ -10,6 +10,6 @@ namespace Svelto.ECS
     /// </summary>
     public interface INeedEGID
     {
-        EGID ID { get; set; }
+        EGID ID { get; }
     }
 }

@@ -1,6 +1,5 @@
 using System;
 using System.Runtime.CompilerServices;
-using System.Threading;
 
 namespace Svelto.DataStructures
 {
@@ -19,7 +18,7 @@ namespace Svelto.DataStructures
             _lockQ = ReaderWriterLockSlimEx.Create();
         }
 
-        public int Count
+        public uint Count
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -27,7 +26,7 @@ namespace Svelto.DataStructures
                 _lockQ.EnterReadLock();
                 try
                 {
-                    return _list.Count;
+                    return _list.count;
                 }
                 finally
                 {
@@ -35,31 +34,16 @@ namespace Svelto.DataStructures
                 }
             }
         }
-        
-        public bool IsReadOnly => false;
 
-        public T this[int index]
+        public ref T this[int index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                _lockQ.EnterReadLock();
-                try
-                {
-                    return _list[index];
-                }
-                finally
-                {
-                    _lockQ.ExitReadLock();
-                }
-            }
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            set
-            {
                 _lockQ.EnterWriteLock();
                 try
                 {
-                    _list[index] = value;
+                    return ref _list[index];
                 }
                 finally
                 {
@@ -131,48 +115,6 @@ namespace Svelto.DataStructures
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Contains(T item)
-        {
-            _lockQ.EnterReadLock();
-            try
-            {
-                return _list.Contains(item);
-            }
-            finally
-            {
-                _lockQ.ExitReadLock();
-            }
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Remove(T item)
-        {
-            _lockQ.EnterWriteLock();
-            try
-            {
-                return _list.Remove(item);
-            }
-            finally
-            {
-                _lockQ.ExitWriteLock();
-            }
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int IndexOf(T item)
-        {
-            _lockQ.EnterReadLock();
-            try
-            {
-                return _list.IndexOf(item);
-            }
-            finally
-            {
-                _lockQ.ExitReadLock();
-            }
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Insert(int index, T item)
         {
             _lockQ.EnterWriteLock();
@@ -207,20 +149,6 @@ namespace Svelto.DataStructures
             try
             {
                 _list.UnorderedRemoveAt(index);
-            }
-            finally
-            {
-                _lockQ.ExitWriteLock();
-            }
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void UnorderedRemove(T value)
-        {
-            _lockQ.EnterWriteLock();
-            try
-            {
-                _list.UnorderedRemove(value);
             }
             finally
             {

@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿using System;
 using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.ECS.Internal;
@@ -39,7 +39,7 @@ namespace Svelto.ECS
                     _entitiesOperations.FastClear();
 
                     var entitiesOperations = _transientEntitiesOperations.ToArrayFast();
-                    for (var i = 0; i < _transientEntitiesOperations.Count; i++)
+                    for (var i = 0; i < _transientEntitiesOperations.count; i++)
                     {
                         try
                         {

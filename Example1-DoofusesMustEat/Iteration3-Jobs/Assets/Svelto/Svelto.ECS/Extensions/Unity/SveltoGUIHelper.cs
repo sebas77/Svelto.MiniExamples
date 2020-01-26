@@ -1,5 +1,4 @@
 #if UNITY_5 || UNITY_5_3_OR_NEWER
-using Svelto.ECS.Serialization;
 using UnityEngine;
 
 namespace Svelto.ECS.Extensions.Unity
@@ -19,12 +18,18 @@ namespace Svelto.ECS.Extensions.Unity
                     var monoBehaviour = child as MonoBehaviour;
                     var childImplementors = monoBehaviour.GetComponents<IImplementor>();
                     startIndex = InternalBuildAll(
-                        startIndex, child, factory, group, childImplementors, groupNamePostfix);
+                        startIndex,
+                        child,
+                        factory,
+                        group,
+                        childImplementors,
+                        groupNamePostfix);
                 }
             }
 
             return holder;
         }
+
 
         public static T Create<T>(EGID ID, Transform contextHolder, IEntityFactory factory)
             where T : MonoBehaviour, IEntityDescriptorHolder
@@ -73,8 +78,8 @@ namespace Svelto.ECS.Extensions.Unity
             if (string.IsNullOrEmpty(descriptorHolder.groupName) == false)
             {
                 realGroup = ExclusiveGroup.Search(!string.IsNullOrEmpty(groupNamePostfix)
-                                                      ? $"{descriptorHolder.groupName}{groupNamePostfix}"
-                                                      : descriptorHolder.groupName);
+                    ? $"{descriptorHolder.groupName}{groupNamePostfix}"
+                    : descriptorHolder.groupName);
             }
 
             EGID egid;
@@ -91,7 +96,7 @@ namespace Svelto.ECS.Extensions.Unity
             return startIndex;
         }
 
-        /// <summary>
+      /// <summary>
         /// Works like CreateAll but only builds entities with holders that have the same group specfied
         /// </summary>
         /// <param name="startId"></param>
@@ -117,7 +122,7 @@ namespace Svelto.ECS.Extensions.Unity
                 {
                     continue;
                 }
-                
+
                 var implementors = holder.GetComponents<IImplementor>();
 
                 startId = InternalBuildAll(startId, holder, factory, exclusiveGroup, implementors, null);

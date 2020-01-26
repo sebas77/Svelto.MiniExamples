@@ -7,38 +7,26 @@ namespace Svelto.DataStructures
 {
     public struct NativeBuffer<T>:IBuffer<T> where T:unmanaged
     {
+        public void Dispose()
+        {
+            if (_handle.IsAllocated)
+                _handle.Free();
+        }
+        
+        public unsafe NativeBuffer(T* array) : this()
+        {
+            _ptr = new IntPtr(array);
+        }
+
         public NativeBuffer(T[] array) : this()
         {
             Set(array);
-        }
-        
-        public NativeBuffer(GCHandle alloc, uint count):this()
-        {
-            Set(alloc, count);
         }
         
         public void Set(T[] array)
         {
             _handle = GCHandle.Alloc(array, GCHandleType.Pinned);
             _ptr = _handle.AddrOfPinnedObject();
-        }
-
-        public void Set<Buffer>(Buffer array) where Buffer : IBuffer<T>
-        {
-            _handle = array.Pin();
-            _ptr = _handle.AddrOfPinnedObject();
-        }
-
-        public void Set(GCHandle handle, uint count)
-        {
-            _handle = handle;
-            _ptr = _handle.AddrOfPinnedObject();
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Allocate(uint initialSize)
-        {
-            throw new NotImplementedException();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -76,21 +64,9 @@ namespace Svelto.DataStructures
         {
             throw new NotImplementedException();
         }
-        
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Resize(uint newSize)
-        {
-            throw new NotImplementedException();
-        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Insert(int index, in T item, int count)
-        {
-            throw new NotImplementedException();
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void RemoveAt(int index, int count)
+        public void UnorderedRemoveAt(int index)
         {
             throw new NotImplementedException();
         }
@@ -105,11 +81,6 @@ namespace Svelto.DataStructures
 
         public GCHandle Pin() { return _handle; }
 
-        public void Dispose()
-        {
-            _handle.Free();
-        }
-        
         public ref T this[uint index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]

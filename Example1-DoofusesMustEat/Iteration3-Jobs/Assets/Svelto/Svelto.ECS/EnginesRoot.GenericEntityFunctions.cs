@@ -88,8 +88,6 @@ namespace Svelto.ECS
                 SwapEntityGroup<T>(fromID, toID);
             }
 
-            public GenericEntityFunctionWrapper Pin() { return new GenericEntityFunctionWrapper(this); }
-
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public void SwapEntityGroup<T>(EGID fromID, EGID toID)
                 where T : IEntityDescriptor, new()

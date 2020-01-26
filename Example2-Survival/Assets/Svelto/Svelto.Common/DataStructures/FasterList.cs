@@ -992,14 +992,14 @@ namespace Svelto.DataStructures
                 _count = newSize;
         }
         
-        public uint Enqueue(in T item)
+        public uint Push(in T item)
         {
             Add(_count, item);
 
             return _count - 1;
         }
 
-        public ref readonly T Dequeue() { --_count;
+        public ref readonly T Pop() { --_count;
             return ref _buffer[_count];
         }
 

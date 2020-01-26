@@ -10,6 +10,7 @@ namespace Svelto.ECS
     {
         Network,
         Storage,
+        TweakUI,
 
         Length
     }

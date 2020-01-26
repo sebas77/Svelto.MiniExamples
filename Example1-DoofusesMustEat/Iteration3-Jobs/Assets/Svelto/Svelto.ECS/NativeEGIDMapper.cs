@@ -7,7 +7,7 @@ namespace Svelto.ECS
     public readonly struct NativeEGIDMapper<T>:IDisposable where T : unmanaged, IEntityStruct
     {
         readonly NativeFasterDictionaryStruct<uint, T> map;
-        public readonly ExclusiveGroupStruct groupID;
+        public ExclusiveGroupStruct groupID { get; }
 
         public NativeEGIDMapper(ExclusiveGroupStruct groupStructId, NativeFasterDictionaryStruct<uint, T> toNative):this()
         {
@@ -44,21 +44,21 @@ namespace Svelto.ECS
             return false;
         }
         
-        public unsafe T* GetArrayAndEntityIndex(uint entityID, out uint index)
+        public unsafe NativeBuffer<T>GetArrayAndEntityIndex(uint entityID, out uint index)
         {
             if (map.TryFindIndex(entityID, out index))
             {
-                return map.unsafeValues;
+                return new NativeBuffer<T>(map.unsafeValues);
             }
 
             throw new ECSException("Entity not found");
         }
         
-        public unsafe bool TryGetArrayAndEntityIndex(uint entityID, out uint index, out T* array)
+        public unsafe bool TryGetArrayAndEntityIndex(uint entityID, out uint index, out NativeBuffer<T> array)
         {
             if (map.TryFindIndex(entityID, out index))
             {
-                array =  map.unsafeValues;
+                array =  new NativeBuffer<T>(map.unsafeValues);
                 return true;
             }
 

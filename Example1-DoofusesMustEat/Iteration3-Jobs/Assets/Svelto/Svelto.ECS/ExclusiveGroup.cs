@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Reflection;
 using Svelto.DataStructures;
-using UnityEditor;
 
 #pragma warning disable 660,661
 

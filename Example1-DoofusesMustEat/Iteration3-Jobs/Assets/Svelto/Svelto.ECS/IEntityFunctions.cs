@@ -28,27 +28,5 @@ namespace Svelto.ECS
 
         void SwapEntityGroup<T>(EGID fromID, EGID toId, ExclusiveGroupStruct mustBeFromGroup)
             where T : IEntityDescriptor, new();
-
-        GenericEntityFunctionWrapper Pin();
-    }
-
-    public struct GenericEntityFunctionWrapper : IDisposable
-    {
-        GCHandle handle;
-
-        internal GenericEntityFunctionWrapper(in IEntityFunctions genericEntityFunctions)
-        {
-            handle = GCHandle.Alloc(genericEntityFunctions, GCHandleType.Pinned);
-        }
-
-        public void Dispose() { handle.Free(); }
-
-        public IEntityFunctions ToStruct()
-        {
-            unsafe
-            {
-                return Unsafe.AsRef<IEntityFunctions>((void*) handle.AddrOfPinnedObject());
-            }
-        }
     }
 }
