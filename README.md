@@ -47,6 +47,8 @@ Most of the source code has been rewritten to work with Svelto.ECS framework. Th
 
 ## Example 3: GUI and Service Layer (Hybrid ECS for GUI)
 
+![Image](https://i2.wp.com/www.sebaslab.com/wp-content/uploads/2019/07/image-2.png?w=701)
+
 Integration with Unity UI and Svelto entities.
 
 Goal of this example
