@@ -1,6 +1,4 @@
-#if UNITY_2019_2_OR_NEWER
 using Svelto.DataStructures;
-using Unity.Jobs;
 
 namespace Svelto.ECS.Extensions.Unity
 {
@@ -17,27 +15,6 @@ namespace Svelto.ECS.Extensions.Unity
             where T1 : unmanaged, IEntityStruct where T2 : unmanaged, IEntityStruct where T3 : unmanaged, IEntityStruct
         {
             return new NativeGroupEnumerable<T1, T2, T3>(db, groups);
-        }
-
-        public static JobHandle CombineDispose
-            <T1, T2>(this in BufferTuple<NativeBuffer<T1>, NativeBuffer<T2>> buffer, JobHandle combinedDependencies,
-                     JobHandle                                               inputDeps)
-            where T1 : unmanaged where T2 : unmanaged
-        {
-            return JobHandle.CombineDependencies(combinedDependencies,
-                                                 new DisposeJob<BufferTuple<NativeBuffer<T1>, NativeBuffer<T2>>>(buffer)
-                                                    .Schedule(inputDeps));
-        }
-
-        public static JobHandle CombineDispose
-            <T1, T2, T3>(this in BufferTuple<NativeBuffer<T1>, NativeBuffer<T2>, NativeBuffer<T3>> buffer,
-                         JobHandle                                                                 combinedDependencies,
-                         JobHandle                                                                 inputDeps)
-            where T1 : unmanaged where T2 : unmanaged where T3 : unmanaged
-        {
-            return JobHandle.CombineDependencies(combinedDependencies,
-                                                 new DisposeJob<BufferTuple<NativeBuffer<T1>, NativeBuffer<T2>,
-                                                     NativeBuffer<T3>>>(buffer).Schedule(inputDeps));
         }
     }
 
@@ -140,4 +117,3 @@ namespace Svelto.ECS.Extensions.Unity
         public NativeGroupIterator GetEnumerator() { return new NativeGroupIterator(_db, _groups); }
     }
 }
-#endif

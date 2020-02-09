@@ -98,11 +98,12 @@
      <Compile Include="Assets\Svelto\Svelto.ECS\ExclusiveGroup.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\ExclusiveGroupStruct.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\ExtendibleEntityDescriptor.cs" />
+     <Compile Include="Assets\Svelto\Svelto.ECS\Extensions\EntityDBExtensions.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\Extensions\Unity\DisposeJob.cs" />
-     <Compile Include="Assets\Svelto\Svelto.ECS\Extensions\Unity\EntityDBExtensions.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\Extensions\Unity\GenericEntityDescriptorHolder.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\Extensions\Unity\SveltoGUIHelper.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\Extensions\Unity\UECSSveltoEGID.cs" />
+     <Compile Include="Assets\Svelto\Svelto.ECS\Extensions\Unity\UnityEntityDBExtensions.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\Extensions\Unity\UnityEntitySubmissionScheduler.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\FastGroup.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\GenericEntityDescriptor.cs" />

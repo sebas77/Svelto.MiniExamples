@@ -63,8 +63,11 @@
      <Compile Include="Assets\Code\Components\Components\ECSVector3.cs" />
      <Compile Include="Assets\Code\Components\Components\ExtensionMethods.cs" />
      <Compile Include="Assets\Code\Components\Components\ExtensionMethodsUnity.cs" />
+     <Compile Include="Assets\Code\Components\EntityStructs\HungerEntityStruct.cs" />
+     <Compile Include="Assets\Code\Components\EntityStructs\MealEntityStruct.cs" />
      <Compile Include="Assets\Code\Components\EntityStructs\PositionEntityStruct.cs" />
      <Compile Include="Assets\Code\Components\EntityStructs\SpeedEntityStruct.cs" />
+     <Compile Include="Assets\Code\Components\EntityStructs\UnityECSEntityStruct.cs" />
      <Compile Include="Assets\Code\Components\EntityStructs\VelocityEntityStruct.cs" />
      <Compile Include="Assets\Code\DoofusEntityDescriptor.cs" />
      <Compile Include="Assets\Code\DoofusesStandardSchedulers.cs" />
@@ -77,11 +80,8 @@
      <Compile Include="Assets\Code\Engines\VelocityToPositionDoofusesEngine.cs" />
      <Compile Include="Assets\Code\FoodEntityDescriptor.cs" />
      <Compile Include="Assets\Code\GameGroups.cs" />
-     <Compile Include="Assets\Code\HungerEntityStruct.cs" />
-     <Compile Include="Assets\Code\MealEntityStruct.cs" />
      <Compile Include="Assets\Code\SveltoCompositionRoot.cs" />
      <Compile Include="Assets\Code\SveltoContext.cs" />
-     <Compile Include="Assets\Code\UnityECSEntityStruct.cs" />
      <Compile Include="Assets\Code\UnityFreeCamera.cs" />
      <Compile Include="Assets\Code\UnityUtilities.cs" />
      <None Include="Assets\Code\DoofusesBurstified.asmdef" />
@@ -291,9 +291,6 @@
  </Reference>
  <Reference Include="UnityEditor.WebGL.Extensions">
  <HintPath>C:/Program Files/Unity/Hub/Editor/2019.3.0f6/Editor/Data/PlaybackEngines/WebGLSupport/UnityEditor.WebGL.Extensions.dll</HintPath>
- </Reference>
- <Reference Include="System.Runtime.CompilerServices.Unsafe">
- <HintPath>E:/Archive/Prgdir/Svelto/Svelto.MiniExamples/Example1-DoofusesMustEat/Iteration3-Jobs/Library/PackageCache/com.unity.collections@0.5.1-preview.11/System.Runtime.CompilerServices.Unsafe.dll</HintPath>
  </Reference>
  <Reference Include="netstandard">
  <HintPath>C:/Program Files/Unity/Hub/Editor/2019.3.0f6/Editor/Data/NetStandard/ref/2.0.0/netstandard.dll</HintPath>
