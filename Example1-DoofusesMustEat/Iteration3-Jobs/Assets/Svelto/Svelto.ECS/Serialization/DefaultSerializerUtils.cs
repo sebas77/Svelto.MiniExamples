@@ -1,6 +1,5 @@
 using System;
 using Svelto.ECS;
-using Console = Svelto.Console;
 
 public static class DefaultSerializerUtils
 {

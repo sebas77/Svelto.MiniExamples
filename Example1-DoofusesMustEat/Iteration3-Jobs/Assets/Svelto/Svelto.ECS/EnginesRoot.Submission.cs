@@ -38,7 +38,7 @@ namespace Svelto.ECS
                     _entitiesOperations.CopyTo(_transientEntitiesOperations);
                     _entitiesOperations.FastClear();
 
-                    var entitiesOperations = _transientEntitiesOperations.ToArrayFast();
+                    var entitiesOperations = _transientEntitiesOperations.ToArrayFast(out _);
                     for (var i = 0; i < _transientEntitiesOperations.count; i++)
                     {
                         try

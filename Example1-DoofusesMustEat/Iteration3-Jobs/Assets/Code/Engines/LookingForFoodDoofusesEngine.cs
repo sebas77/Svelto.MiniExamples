@@ -18,34 +18,47 @@ namespace Svelto.ECS.MiniExamples.Example1B
 
         protected override JobHandle OnUpdate(JobHandle inputDeps)
         {
-            var foods = entitiesDB.QueryEntities<PositionEntityStruct, MealEntityStruct>(GameGroups.FOOD);
-            BufferTuple<NativeBuffer<PositionEntityStruct>, NativeBuffer<MealEntityStruct>> foodcount =
-                foods.ToNativeBuffers<PositionEntityStruct, MealEntityStruct>();
+            var handle1 = CreateJobForDoofusesAndFood(inputDeps, GroupCompound<GameGroups.FOOD, GameGroups.RED>.Groups,
+                                                      GroupCompound<GameGroups.DOOFUSES, GameGroups.RED>.Groups);
+            var handle2 = CreateJobForDoofusesAndFood(inputDeps, GroupCompound<GameGroups.FOOD, GameGroups.BLUE>.Groups,
+                                                      GroupCompound<GameGroups.DOOFUSES, GameGroups.BLUE>.Groups);
 
+            return JobHandle.CombineDependencies(handle1, handle2);
+        }
+
+        JobHandle CreateJobForDoofusesAndFood(JobHandle inputDeps, ExclusiveGroup[] foodGroups,
+                                              ExclusiveGroup[] doofusesGroups)
+        {
+            var foodEntityGroups = entitiesDB.GroupIterators<PositionEntityStruct, MealEntityStruct>(foodGroups);
+            var doofusesEntityGroups =
+                entitiesDB
+                   .GroupIterators<PositionEntityStruct, VelocityEntityStruct, HungerEntityStruct>(doofusesGroups);
+            
             JobHandle combinedDependencies = default;
-            foreach (var doofusGroup in GameGroups.DOOFUSES.Groups)
+
+            foreach (var foodBuffer in foodEntityGroups)
             {
-                var doofuses = entitiesDB
-                       .QueryEntities<PositionEntityStruct, VelocityEntityStruct, HungerEntityStruct>(doofusGroup);
-                BufferTuple<NativeBuffer<PositionEntityStruct>, NativeBuffer<VelocityEntityStruct>,
-                    NativeBuffer<HungerEntityStruct>> bufferTuple = doofuses
-                   .ToNativeBuffers<PositionEntityStruct, VelocityEntityStruct, HungerEntityStruct>();
+                foreach (var doofusesBuffer in doofusesEntityGroups)
+                {
+                    //schedule the job
+                    var deps =
+                        new LookingForFoodDoofusesJob(doofusesBuffer, foodBuffer).Schedule((int) doofusesBuffer.count,
+                                                                                           (int) (doofusesBuffer.count /
+                                                                                                  8), inputDeps);
 
-                var deps = new LookingForFoodDoofusesJob(bufferTuple, foodcount).Schedule((int) doofuses.length,
-                                                (int) (doofuses.length / 8), inputDeps);
+                    //Never forget to dispose the buffer (may change this in future)
+                    combinedDependencies = doofusesBuffer.CombineDispose(combinedDependencies, deps);
+                }
 
-                combinedDependencies = JobHandle.CombineDependencies(combinedDependencies,
-                            new DisposeJob<BufferTuple<NativeBuffer<PositionEntityStruct>,
-                                                       NativeBuffer<VelocityEntityStruct>,
-                                                       NativeBuffer<HungerEntityStruct>>>(bufferTuple).Schedule(deps));
+                //Never forget to dispose the buffer (may change this in future)
+                combinedDependencies = foodBuffer.CombineDispose(combinedDependencies, combinedDependencies);
             }
 
-            return new DisposeJob<BufferTuple<NativeBuffer<PositionEntityStruct>, NativeBuffer<MealEntityStruct>>
-                    >(foodcount).Schedule(combinedDependencies);
+            return combinedDependencies;
         }
     }
 
-    [BurstCompile(FloatPrecision.Medium, FloatMode.Fast)]
+    [BurstCompile]
     public struct LookingForFoodDoofusesJob : IJobParallelFor
     {
         readonly BufferTuple<NativeBuffer<PositionEntityStruct>, NativeBuffer<VelocityEntityStruct>,
@@ -105,64 +118,4 @@ namespace Svelto.ECS.MiniExamples.Example1B
             hungerEntityStruct.hunger++;
         }
     }
-#if noJobVersion
-    [BurstCompile]
-    public static class BurstIt
-    {
-        public delegate void LookingDelegate(in EntityCollection<PositionEntityStruct, VelocityEntityStruct, HungerEntityStruct> doofuses,
-                                             in EntityCollection<PositionEntityStruct, MealEntityStruct> foodcount);
-        
-        public static readonly LookingDelegate functionToCompile =
- BurstCompiler.CompileFunctionPointer<LookingDelegate>(Burst).Invoke;
-      //public static readonly LookingDelegate functionToCompile = Burst;
-        /// <summary>
-        /// Couldn't find a way to make it not unsafe yet
-        /// </summary>
-        [BurstCompile]
-        static void Burst(
-            in EntityCollection<PositionEntityStruct, VelocityEntityStruct, HungerEntityStruct> doofuses,
-            in EntityCollection<PositionEntityStruct, MealEntityStruct>                         foodcount)
-        {
-            var doofusesLength = doofuses.Length;
-            for (int doofusIndex = 0; doofusIndex < doofusesLength; ++doofusIndex)
-            {
-                float currentMin = float.MaxValue;
-                
-                ref var velocityEntityStruct = ref doofuses.Item2[doofusIndex];
-                ref var hungerEntityStruct = ref doofuses.Item3[doofusIndex];
-                ref var positionEntityStruct = ref doofuses.Item1[doofusIndex];
-
-                var foodcountLength = foodcount.Length;
-                for (int foodIndex = 0; foodIndex < foodcountLength; ++foodIndex)
-                {
-                    var computeDirection = foodcount.Item1[foodIndex].position - positionEntityStruct.position;
-                   
-                    var sqrModule = SqrMagnitude(computeDirection);
-
-                    if (currentMin > sqrModule)
-                    {
-                        currentMin = sqrModule;
-
-                        //food found
-                        if (sqrModule < 10)
-                        {
-                            hungerEntityStruct.hunger--;
-                            foodcount.Item2[foodIndex].eaters++;
-
-                            break; //close enough let's save some computations
-                        }
-                        //going toward food, not breaking as closer food can spawn
-                        velocityEntityStruct.velocity.x = computeDirection.x;
-                        velocityEntityStruct.velocity.z = computeDirection.z;
-                    }
-                }
-
-                hungerEntityStruct.hunger++;
-            }
-        }
-
-        static float SqrMagnitude(in float3 a) { return a.x * a.x + a.y * a.y + a.z * a.z; }
-        public static void WarmUp() { }
-    }
-#endif
 }

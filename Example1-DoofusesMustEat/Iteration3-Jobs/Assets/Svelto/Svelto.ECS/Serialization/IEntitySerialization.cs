@@ -65,5 +65,9 @@ namespace Svelto.ECS.Serialization
 
         void RegisterSerializationFactory<T>(IDeserializationFactory deserializationFactory)
             where T : ISerializableEntityDescriptor, new();
+
+        T DeserializeEntityStruct<T>(ISerializationData serializationData,
+            ISerializableEntityDescriptor entityDescriptor, SerializationType serializationType) 
+            where T : unmanaged, IEntityStruct;
     }
 }

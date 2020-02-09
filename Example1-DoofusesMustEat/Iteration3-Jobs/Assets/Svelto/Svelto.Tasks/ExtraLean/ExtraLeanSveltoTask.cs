@@ -22,7 +22,7 @@ namespace Svelto.Tasks.ExtraLean
             
             _threadSafeSveltoTaskStates.started = true;
 
-            runner.StartCoroutine(ref this/*, immediate*/);
+            runner.StartCoroutine(this/*, immediate*/);
         }
 
         public override string ToString()

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
+using Svelto.DataStructures;
 
-namespace Svelto.DataStructures
+namespace Svelto.Tasks.DataStructures
 {
     public class ThreadSafeQueue<T>
     {
@@ -46,7 +47,7 @@ namespace Svelto.DataStructures
                 
             list.ExpandBy((uint) _queue.Count);
             
-            var array = list.ToArrayFast();
+            var array = list.ToArrayFast(out _);
             
             _lockQ.EnterWriteLock();
             try

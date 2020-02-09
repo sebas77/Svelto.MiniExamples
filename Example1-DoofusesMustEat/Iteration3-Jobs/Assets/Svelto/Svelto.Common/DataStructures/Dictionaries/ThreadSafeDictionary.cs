@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Threading;
 
 namespace Svelto.DataStructures
 {
@@ -250,7 +248,7 @@ namespace Svelto.DataStructures
         public void CopyTo(FasterList<TValue> transientEntitiesOperations)
         {
             transientEntitiesOperations.ExpandTo(_dict.count);
-            CopyTo(transientEntitiesOperations.ToArrayFast());
+            CopyTo(transientEntitiesOperations.ToArrayFast(out _));
         }
         
         readonly FasterDictionary<TKey, TValue> _dict;

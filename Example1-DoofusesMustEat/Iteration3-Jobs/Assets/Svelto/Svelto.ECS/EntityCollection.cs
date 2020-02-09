@@ -1,9 +1,9 @@
 using System;
-using System.Collections;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Svelto.DataStructures;
+using Unity.Jobs;
 
 namespace Svelto.ECS
 {
@@ -21,7 +21,7 @@ namespace Svelto.ECS
             _count = count;
         }
 
-        public uint length => _count;
+        public uint count => _count;
 
         readonly ManagedBuffer<T> _buffer;
         readonly uint             _count;
@@ -34,9 +34,9 @@ namespace Svelto.ECS
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public NativeBuffer<NT> ToNativeBuffer<NT>(out uint length) where NT : unmanaged, T
+        public NativeBuffer<NT> ToNativeBuffer<NT>(out uint count) where NT : unmanaged, T
         {
-            length = _count;
+            count = _count;
             return new NativeBuffer<NT>(Unsafe.As<NT[]>(_buffer.ToManagedArray()));
         }
         
@@ -44,9 +44,9 @@ namespace Svelto.ECS
                     { return new EntityNativeIterator<NT>(ToNativeBuffer<NT>(out _)); }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ManagedBuffer<T> ToBuffer(out uint length)
+        public ManagedBuffer<T> ToBuffer(out uint count)
         {
-            length = _count;
+            count = _count;
             return _buffer;
         }
 
@@ -160,7 +160,7 @@ namespace Svelto.ECS
             _array2 = array2;
         }
 
-        public uint length => _array1.length;
+        public uint count => _array1.count;
 
         public EntityCollection<T2> Item2
         {
@@ -179,7 +179,7 @@ namespace Svelto.ECS
 
         public (T1[], T2[]) ToFastAccess(out uint count)
         {
-            count = length;
+            count = this.count;
 
             return (_array1.ToFastAccess(out _), _array2.ToFastAccess(out _));
         }
@@ -187,7 +187,7 @@ namespace Svelto.ECS
         public BufferTuple<ManagedBuffer<T1>, ManagedBuffer<T2>> ToBuffers()
         {
             var bufferTuple = new BufferTuple<ManagedBuffer<T1>, ManagedBuffer<T2>>
-                (_array1.ToBuffer(out _), _array2.ToBuffer(out _), length);
+                (_array1.ToBuffer(out _), _array2.ToBuffer(out _), count);
             return bufferTuple;
         }
 
@@ -195,7 +195,7 @@ namespace Svelto.ECS
             where NT2 : unmanaged, T2 where NT1 : unmanaged, T1
         {
             var bufferTuple = new BufferTuple<NativeBuffer<NT1>, NativeBuffer<NT2>>
-                (_array1.ToNativeBuffer<NT1>(out _), _array2.ToNativeBuffer<NT2>(out _), length);
+                (_array1.ToNativeBuffer<NT1>(out _), _array2.ToNativeBuffer<NT2>(out _), count);
 
             return bufferTuple;
         }
@@ -211,7 +211,7 @@ namespace Svelto.ECS
             public EntityIterator(in EntityCollection<T1, T2> array1) : this()
             {
                 _array1 = array1;
-                _count = array1.length;
+                _count = array1.count;
                 _index = -1;
             }
 
@@ -268,11 +268,11 @@ namespace Svelto.ECS
             get => _array3;
         }
 
-        public uint length => Item1.length;
+        public uint count => Item1.count;
 
         public (T1[], T2[], T3[]) ToFastAccess(out uint count)
         {
-            count = length;
+            count = this.count;
 
             return (_array1.ToFastAccess(out _), _array2.ToFastAccess(out _), _array3.ToFastAccess(out _));
         }
@@ -280,7 +280,7 @@ namespace Svelto.ECS
         public BufferTuple<ManagedBuffer<T1>, ManagedBuffer<T2>, ManagedBuffer<T3>> ToBuffers()
         {
             var bufferTuple = new BufferTuple<ManagedBuffer<T1>, ManagedBuffer<T2>, ManagedBuffer<T3>>
-                (_array1.ToBuffer(out _), _array2.ToBuffer(out _), _array3.ToBuffer(out _), length);
+                (_array1.ToBuffer(out _), _array2.ToBuffer(out _), _array3.ToBuffer(out _), count);
             return bufferTuple;
         }
 
@@ -289,7 +289,7 @@ namespace Svelto.ECS
         {
             var bufferTuple = new BufferTuple<NativeBuffer<NT1>, NativeBuffer<NT2>, NativeBuffer<NT3>>
             (_array1.ToNativeBuffer<NT1>(out _), _array2.ToNativeBuffer<NT2>(out _),
-                _array3.ToNativeBuffer<NT3>(out _), length);
+                _array3.ToNativeBuffer<NT3>(out _), count);
 
             return bufferTuple;
         }
@@ -333,7 +333,7 @@ namespace Svelto.ECS
                 {
                     _index = -1;
                     _array = _db.QueryEntities<T>(_groups[_indexGroup]);
-                    _count = _array.length;
+                    _count = _array.count;
                 }
 
                 return ++_index < _count;
@@ -389,13 +389,13 @@ namespace Svelto.ECS
             public bool MoveNext()
             {
                 //attention, the while is necessary to skip empty groups
-                while (_index + 1 >= _array1.length && ++_indexGroup < _groups.Length)
+                while (_index + 1 >= _array1.count && ++_indexGroup < _groups.Length)
                 {
                     _index = -1;
                     _array1 = _db.QueryEntities<T1, T2>(_groups[_indexGroup]);
                 }
 
-                return ++_index < _array1.length;
+                return ++_index < _array1.count;
             }
 
             public void Reset()
@@ -460,7 +460,7 @@ namespace Svelto.ECS
                 {
                     _index = -1;
                     _array1 = _db.QueryEntities<T1, T2, T3>(_groups[_indexGroup]);
-                    _count = _array1.length;
+                    _count = _array1.count;
 
                 }
 
@@ -473,7 +473,7 @@ namespace Svelto.ECS
                 _indexGroup = -1;
 
                 _array1 = _db.QueryEntities<T1, T2, T3>(_groups[0]);
-                _count = _array1.length;
+                _count = _array1.count;
             }
 
             public ValueRef<T1, T2, T3> Current

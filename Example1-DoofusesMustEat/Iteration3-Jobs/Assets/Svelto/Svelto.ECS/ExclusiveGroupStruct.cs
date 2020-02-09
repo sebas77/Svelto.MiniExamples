@@ -91,6 +91,11 @@ namespace Svelto.ECS
         {
             return groupStruct._id;
         }
+        
+        public static implicit operator InternalGroup(ExclusiveGroupStruct groupStruct)
+        {
+            return new InternalGroup(groupStruct);
+        }
 
         public static ExclusiveGroupStruct operator+(ExclusiveGroupStruct a, uint b)
         {

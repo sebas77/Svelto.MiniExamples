@@ -4,7 +4,5 @@ namespace Svelto.ECS.Serialization
     {
         uint                         hash                { get; }
         ISerializableEntityBuilder[] entitiesToSerialize { get; }
-        
-        void CopySerializedEntityStructs(in EntityStructInitializer sourceInitializer, in EntityStructInitializer destinationInitializer, SerializationType serializationType);
     }
 }

@@ -1,6 +1,3 @@
-using System;
-using Svelto.DataStructures;
-
 namespace Svelto.ECS
 {
     public delegate void ExecuteOnAllEntitiesAction<T, W>(T[] prefabStruct, ExclusiveGroupStruct group,

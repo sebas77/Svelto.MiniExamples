@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Svelto.DataStructures;
 
 #pragma warning disable 660,661
 
@@ -15,71 +14,12 @@ namespace Svelto.ECS
     /// <typeparam name="T"></typeparam>
     public abstract class NamedExclusiveGroup<T>:ExclusiveGroup
     {
-        public static ExclusiveGroup Group = new ExclusiveGroup();
+      //  public static ExclusiveGroup Group = new ExclusiveGroup();
         public static string         name  = typeof(T).FullName;
 
-        public NamedExclusiveGroup() { }
-        public NamedExclusiveGroup(string recognizeAs) : base(recognizeAs)  {}
-        public NamedExclusiveGroup(ushort range) : base(range) {}
-    }
-
-    public abstract class GroupCompound<T> where T:GroupCompound<T>
-    {
-        public static ExclusiveGroup[] Groups = new ExclusiveGroup[0];
-    }
-
-    public static class GroupCompound<G1, G2> where G1 : GroupCompound<G1> where G2: GroupCompound<G2>
-    {
-        public static ExclusiveGroup[] Groups = new ExclusiveGroup[1];
-
-        static GroupCompound()
-        {
-            Groups[0] = new ExclusiveGroup();
-            var Group = Groups[0];
-            
-            TypeGroupCache<G1>.Add(Group);  TypeGroupCache<G2>.Add(Group);
-            //GroupCompound<G2, G1>.Group = Group;
-        }
-
-        public static ExclusiveGroupStruct Group => Groups[0];
-    }
-    
-    public static class GroupCompound<G1, G2, G3> where G1 : GroupCompound<G1> where G2: GroupCompound<G2> where G3 : GroupCompound<G3>
-    {
-        public static ExclusiveGroup[] Groups = new ExclusiveGroup[1];
-
-        static GroupCompound()
-        {
-            var Group = new ExclusiveGroup();
-            Groups[0] = Group;
-            
-            TypeGroupCache<G1>.Add(Group);  TypeGroupCache<G2>.Add(Group); TypeGroupCache<G3>.Add(Group);
-//            TypeGroupCache<G1, G2>.Add(Group);  TypeGroupCache<G2, G1>.Add(Group);
-
-  //          GroupCompound<G3, G1, G2>.Group = Group;
-    //        GroupCompound<G2, G3, G1>.Group = Group;
-      //      GroupCompound<G3, G2, G1>.Group = Group;
-        ///    GroupCompound<G1, G3, G2>.Group = Group;
-           // GroupCompound<G2, G1, G3>.Group = Group;
-        }
-    }
-
-    static class TypeGroupCache<T> where T : GroupCompound<T>
-    {
-        public static void Add(ExclusiveGroup @group)
-        {
-                var type = typeof(GroupCompound<T>);
-                var fieldInfos = type.GetFields(BindingFlags.Public | BindingFlags.Static);
-                FieldInfo field = fieldInfos[0];
-
-                var _array = (ExclusiveGroup[]) field.GetValue(null);
-
-            Array.Resize(ref _array, _array.Length + 1);
-
-            _array[_array.Length - 1] = group;
-            
-            field.SetValue(null, _array);
-        }
+//        protected NamedExclusiveGroup() { }
+  //      protected NamedExclusiveGroup(string recognizeAs) : base(recognizeAs)  {}
+    //    protected NamedExclusiveGroup(ushort range) : base(range) {}
     }
 
     /// <summary>

@@ -13,7 +13,7 @@ namespace Svelto.ObjectPool
         poolDebugger.AddComponent<PoolDebugger>().SetPool(this);
     }
 #endif
-        override public void Dispose()
+        public override void Dispose()
         {
             for (var enumerator = _pools.GetEnumerator(); enumerator.MoveNext();)
                 foreach (var obj in enumerator.Current.Value)

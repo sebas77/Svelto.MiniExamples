@@ -1,5 +1,4 @@
 ﻿using System;
-using Svelto.Common;
 using Svelto.ECS.Internal;
 using Svelto.ECS.Serialization;
 
@@ -101,6 +100,27 @@ namespace Svelto.ECS
                     serializationData.BeginNextEntityStruct();
                     serializableEntityBuilder.Deserialize(serializationData, initializer, serializationType);
                 }
+            }
+            
+            public T DeserializeEntityStruct<T>(ISerializationData serializationData,
+                ISerializableEntityDescriptor entityDescriptor, SerializationType serializationType) where T : unmanaged, IEntityStruct
+            {
+                var readPos = serializationData.dataPos;
+                var entityStruct = new T();
+                foreach (var serializableEntityBuilder in entityDescriptor.entitiesToSerialize)
+                {
+                    var entityBuilder = serializableEntityBuilder as SerializableEntityBuilder<T>;
+                    if (entityBuilder == null)
+                    {
+                        continue;
+                    }
+
+                    entityBuilder.Deserialize(serializationData, ref entityStruct, serializationType);
+                    break;
+                }
+
+                serializationData.dataPos = readPos;
+                return entityStruct;
             }
 
             public void DeserializeEntityToSwap(EGID localEgid, EGID toEgid)

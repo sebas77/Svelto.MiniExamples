@@ -9,7 +9,7 @@ namespace Svelto.ECS
     //todo: add debug map
     [Serialization.DoNotSerialize]
     [Serializable]
-    [StructLayout(LayoutKind.Explicit, Size = 8)]
+    [StructLayout(LayoutKind.Explicit)]
     public struct EGID:IEquatable<EGID>,IEqualityComparer<EGID>,IComparable<EGID>
     {
         [FieldOffset(0)] public readonly uint                 entityID;

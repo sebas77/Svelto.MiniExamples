@@ -34,9 +34,9 @@ namespace Svelto.DataStructures
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public T[] ToArrayFast()
+        public T[] ToArrayFast(out uint count)
         {
-            return _list.ToArrayFast();
+            return _list.ToArrayFast(out count);
         }
 
         readonly FasterList<T> _list;

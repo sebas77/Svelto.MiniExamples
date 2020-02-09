@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace Svelto.Tasks
 {
     public class TaskRunner

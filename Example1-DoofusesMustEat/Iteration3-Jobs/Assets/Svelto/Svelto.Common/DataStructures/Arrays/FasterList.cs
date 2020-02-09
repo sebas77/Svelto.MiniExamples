@@ -133,6 +133,18 @@ namespace Svelto.DataStructures
         {
             AddRange(items, (uint) items.Length);
         }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Contains(T item)
+        {
+            var comp = EqualityComparer<T>.Default;
+
+            for (uint index = 0; index < _count; index++)
+                if (comp.Equals(_buffer[index], item))
+                    return true;
+
+            return false;
+        }
 
         /// <summary>
         /// Careful, you could keep on holding references you don't want to hold to anymore
@@ -297,12 +309,6 @@ namespace Svelto.DataStructures
         {
             count = _count;
 
-            return _buffer;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public T[] ToArrayFast()
-        {
             return _buffer;
         }
 

@@ -1,5 +1,3 @@
-
-using System;
 #if UNITY_5 || UNITY_5_3_OR_NEWER
 using System.Collections;
 using Svelto.Common;

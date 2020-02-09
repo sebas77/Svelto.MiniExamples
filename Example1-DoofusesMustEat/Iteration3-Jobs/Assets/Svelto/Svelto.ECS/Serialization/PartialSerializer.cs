@@ -44,7 +44,7 @@ namespace Svelto.ECS.Serialization
         {
             unsafe
             {
-                fixed (byte* dataptr = serializationData.data.ToArrayFast())
+                fixed (byte* dataptr = serializationData.data.ToArrayFast(out _))
                 {
                     var entityStruct = value;
                     foreach ((uint offset, uint size) offset in offsets)
@@ -66,7 +66,7 @@ namespace Svelto.ECS.Serialization
             unsafe
             {
                 T tempValue = value; //todo: temporary solution I want to get rid of this copy
-                fixed (byte* dataptr = serializationData.data.ToArrayFast())
+                fixed (byte* dataptr = serializationData.data.ToArrayFast(out _))
                     foreach ((uint offset, uint size) offset in offsets)
                     {
                         byte* dstPtr = (byte*) &tempValue + offset.offset;
@@ -79,27 +79,6 @@ namespace Svelto.ECS.Serialization
             }
 
             return true;
-        }
-
-        public void CopyFrom(in T sourceValue, ref T destinationValue)
-        {
-            unsafe
-            {
-                //todo: get rid of this copy
-                T tempSrc = sourceValue;
-                T tempDst = destinationValue;
-
-                byte* srcPtr = (byte*) &tempSrc;
-                byte* dstPtr = (byte*) &tempDst;
-
-                foreach ((uint offset, uint size) offset in offsets)
-                {
-                    //todo move to Unsafe Copy when available as it is faster
-                    Buffer.MemoryCopy(srcPtr + offset.offset, dstPtr + offset.offset, offset.size, offset.size);
-                }
-
-                destinationValue = tempDst; //todo: get rid of this copy
-            }
         }
 
         public uint size => totalSize;

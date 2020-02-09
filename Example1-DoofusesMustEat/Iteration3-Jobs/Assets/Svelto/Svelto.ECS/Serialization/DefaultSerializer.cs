@@ -1,5 +1,3 @@
-using Svelto.Common;
-
 namespace Svelto.ECS.Serialization
 {
     public class DefaultSerializer<T> : ISerializer<T> where T : unmanaged, IEntityStruct
@@ -24,7 +22,7 @@ namespace Svelto.ECS.Serialization
 
         public bool Serialize(in T value, ISerializationData serializationData)
         {
-            DefaultSerializerUtils.CopyToByteArray(value, serializationData.data.ToArrayFast(), serializationData.dataPos);
+            DefaultSerializerUtils.CopyToByteArray(value, serializationData.data.ToArrayFast(out _), serializationData.dataPos);
 
             serializationData.dataPos += SIZEOFT;
 
@@ -33,7 +31,7 @@ namespace Svelto.ECS.Serialization
 
         public bool Deserialize(ref T value, ISerializationData serializationData)
         {
-            value = DefaultSerializerUtils.CopyFromByteArray<T>(serializationData.data.ToArrayFast(), serializationData.dataPos);
+            value = DefaultSerializerUtils.CopyFromByteArray<T>(serializationData.data.ToArrayFast(out _), serializationData.dataPos);
 
             serializationData.dataPos += SIZEOFT;
 

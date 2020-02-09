@@ -1,5 +1,6 @@
 using System;
 using Svelto.Context;
+using Svelto.ECS.Extensions.Unity;
 using Svelto.ECS.Schedulers.Unity;
 using Svelto.Tasks;
 using Unity.Entities;
@@ -22,22 +23,21 @@ namespace Svelto.ECS.MiniExamples.Example1B
             //add the engines we are going to use
             var generateEntityFactory = _enginesRoot.GenerateEntityFactory();
 
-            var foodEntity = GameObjectConversionUtility.ConvertGameObjectHierarchy(Resources.Load("Sphere") as GameObject, _world);
-            _world.EntityManager.AddComponent<UnityECSFoodGroup>(foodEntity);
+            var redfoodEntity = GameObjectConversionUtility.ConvertGameObjectHierarchy(Resources.Load("Sphere") as GameObject, new GameObjectConversionSettings() {DestinationWorld =  _world});
+            var bluefoodEntity = GameObjectConversionUtility.ConvertGameObjectHierarchy(Resources.Load("Sphereblue") as GameObject, new GameObjectConversionSettings() {DestinationWorld =  _world});
+            var redDoofusEntity = GameObjectConversionUtility.ConvertGameObjectHierarchy(Resources.Load("RedCapsule") as GameObject, new GameObjectConversionSettings() {DestinationWorld =  _world});
+            var blueDoofusEntity = GameObjectConversionUtility.ConvertGameObjectHierarchy(Resources.Load("BlueCapsule") as GameObject, new GameObjectConversionSettings() {DestinationWorld =  _world});
             
-            var doofusEntity = GameObjectConversionUtility.ConvertGameObjectHierarchy(Resources.Load("Capsule") as GameObject, _world);
-            _world.EntityManager.AddComponent<UnityECSDoofusesGroup>(doofusEntity);
-            
-            _enginesRoot.AddEngine(new PlaceFoodOnClickEngine(foodEntity, generateEntityFactory));
-            _enginesRoot.AddEngine(new SpawningDoofusEngine(doofusEntity, generateEntityFactory));
-            AddEngine(new LookingForFoodDoofusesEngine());
+            _enginesRoot.AddEngine(new PlaceFoodOnClickEngine(redfoodEntity, bluefoodEntity, generateEntityFactory));
+            _enginesRoot.AddEngine(new SpawningDoofusEngine(redDoofusEntity, blueDoofusEntity, generateEntityFactory));
+            AddSveltoUECSEngine(new LookingForFoodDoofusesEngine());
             _enginesRoot.AddEngine(new SpawnUnityEntityOnSveltoEntityEngine(_world));
-            AddEngine(new VelocityToPositionDoofusesEngine());
+            AddSveltoUECSEngine(new VelocityToPositionDoofusesEngine());
             _enginesRoot.AddEngine(new ConsumingFoodEngine(_enginesRoot.GenerateEntityFunctions()));            
-            AddEngine(new RenderingDataSynchronizationEngine());
+            AddSveltoUECSEngine(new RenderingUECSDataSynchronizationEngine());
         }
 
-        void AddEngine<T>(T engine) where T : ComponentSystemBase, IEngine
+        void AddSveltoUECSEngine<T>(T engine) where T : ComponentSystemBase, IEngine
         {
              _world.AddSystem(engine);
             var simulationSystemGroup = _world.GetExistingSystem<SimulationSystemGroup>();

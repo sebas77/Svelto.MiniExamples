@@ -25,7 +25,7 @@ namespace Svelto.ECS
         ///  <typeparam name="T"></typeparam>
         ///  <param name="groupStructId"></param>
         ///  <param name="size"></param>
-        void PreallocateEntitySpace<T>(ExclusiveGroupStruct groupStructId, uint size)
+        void PreallocateEntitySpace<T>(InternalGroup groupStructId, uint size)
             where T : IEntityDescriptor, new();
 
         /// <summary>
@@ -42,12 +42,12 @@ namespace Svelto.ECS
         /// <param name="groupStructId"></param>
         /// <param name="ed"></param>
         /// <param name="implementors"></param>
-        EntityStructInitializer BuildEntity<T>(uint entityID, ExclusiveGroupStruct groupStructId,
-            IEnumerable<object> implementors = null)
+        EntityStructInitializer BuildEntity<T>(uint entityID, InternalGroup groupStructId,
+                                               IEnumerable<object> implementors = null)
             where T : IEntityDescriptor, new();
 
         EntityStructInitializer BuildEntity<T>(EGID egid, IEnumerable<object> implementors = null)
-            where T:IEntityDescriptor, new();
+            where T : IEntityDescriptor, new();
 
         /// <summary>
         ///     When the type of the entity is not known (this is a special case!) an EntityDescriptorInfo
@@ -57,8 +57,9 @@ namespace Svelto.ECS
         /// <param name="entityDescriptor"></param>
         /// <param name="implementors"></param>
         ///
-        EntityStructInitializer BuildEntity<T>(uint entityID, ExclusiveGroupStruct groupStructId,
-            T descriptorEntity, IEnumerable<object> implementors = null) where T : IEntityDescriptor;
+        EntityStructInitializer BuildEntity<T>(uint entityID, InternalGroup groupStructId,
+                                               T    descriptorEntity, IEnumerable<object>  implementors = null)
+            where T : IEntityDescriptor;
 
         EntityStructInitializer BuildEntity<T>(EGID egid, T entityDescriptor, IEnumerable<object> implementors = null)
             where T : IEntityDescriptor;

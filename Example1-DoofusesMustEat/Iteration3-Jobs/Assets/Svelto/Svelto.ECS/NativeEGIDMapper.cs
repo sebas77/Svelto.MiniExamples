@@ -70,5 +70,10 @@ namespace Svelto.ECS
         {
             map.Dispose();
         }
+
+        public bool Exists(uint idEntityId)
+        {
+            return map.Count > 0 && map.TryFindIndex(idEntityId, out _);
+        }
     }
 }

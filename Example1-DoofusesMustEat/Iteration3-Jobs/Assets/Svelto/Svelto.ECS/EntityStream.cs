@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.InteropServices;
 using Svelto.DataStructures;
 
 namespace Svelto.ECS
@@ -57,6 +58,12 @@ namespace Svelto.ECS
 
     public class EntityStream<T> : ITypeSafeStream where T : unmanaged, IEntityStruct
     {
+        ~EntityStream()
+        {
+            for (int i = 0; i < _consumers.Count; i++)
+                _consumers[i].Free();
+        }
+        
         internal EntityStream()
         {
             _consumers = new ThreadSafeFasterList<Consumer<T>>();
@@ -66,22 +73,27 @@ namespace Svelto.ECS
         {
             for (int i = 0; i < _consumers.Count; i++)
             {
-                if (_consumers[i].mustBeDisposed)
+                unsafe
                 {
-                    _consumers.UnorderedRemoveAt(i);
-                    --i;
-                }
+                    if (*(bool *)_consumers[i].mustBeDisposed)
+                    {
+                        _consumers[i].Free();
+                        _consumers.UnorderedRemoveAt(i);
+                        --i;
+                        continue;
+                    }
                 
-                if (_consumers[i]._hasGroup)
-                {
-                    if (egid.groupID == _consumers[i]._group)
+                    if (_consumers[i].hasGroup)
+                    {
+                        if (egid.groupID == _consumers[i].@group)
+                        {
+                            _consumers[i].Enqueue(entity, egid);
+                        }
+                    }
+                    else
                     {
                         _consumers[i].Enqueue(entity, egid);
                     }
-                }
-                else
-                {
-                    _consumers[i].Enqueue(entity, egid);
                 }
             }
         }
@@ -97,7 +109,7 @@ namespace Svelto.ECS
 
         internal Consumer<T> GenerateConsumer(ExclusiveGroup group, string name, uint capacity)
         {
-            var consumer = new Consumer<T>(group, name, capacity, this);
+            var consumer = new Consumer<T>(group, name, capacity);
 
             _consumers.Add(consumer);
 
@@ -111,23 +123,27 @@ namespace Svelto.ECS
     {
         internal Consumer(string name, uint capacity) : this()
         {
+            unsafe
+            {
 #if DEBUG && !PROFILER
-            _name = name;
+                _name = name;
 #endif
-            _ringBuffer = new RingBuffer<ValueTuple<T, EGID>>((int) capacity,
+                _ringBuffer = new RingBuffer<ValueTuple<T, EGID>>((int) capacity,
 #if DEBUG && !PROFILER
-                _name
+                    _name
 #else
                 string.Empty
 #endif
-            );
+                );
+                mustBeDisposed = Marshal.AllocHGlobal(sizeof(bool));
+                *((bool*) mustBeDisposed) = false;
+            }
         }
 
-        internal Consumer(ExclusiveGroup group, string name, uint capacity, EntityStream<T> stream) : this(name,
-            capacity)
+        internal Consumer(ExclusiveGroup group, string name, uint capacity) : this(name, capacity)
         {
-            _group = @group;
-            _hasGroup = true;
+            this.@group = @group;
+            hasGroup = true;
         }
 
         internal void Enqueue(in T entity, in EGID egid)
@@ -161,19 +177,27 @@ namespace Svelto.ECS
 
         public void Dispose()
         {
-            mustBeDisposed = true;
+            unsafe
+            {
+                *(bool *)mustBeDisposed = true;
+            }
         }
 
         public uint Count()
         {
             return (uint) _ringBuffer.Count;
         }
+        
+        public void Free()
+        {
+            Marshal.FreeHGlobal(mustBeDisposed);
+        }
 
         readonly RingBuffer<ValueTuple<T, EGID>> _ringBuffer;
 
-        internal readonly ExclusiveGroup _group;
-        internal readonly bool           _hasGroup;
-        internal          bool           mustBeDisposed;
+        internal readonly ExclusiveGroup @group;
+        internal readonly bool           hasGroup;
+        internal          IntPtr         mustBeDisposed;
 
 #if DEBUG && !PROFILER
         readonly string _name;

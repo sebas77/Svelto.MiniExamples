@@ -1,6 +1,7 @@
 using System;
 using Svelto.Common;
 using Svelto.DataStructures;
+using Svelto.Tasks.DataStructures;
 using Svelto.Tasks.Internal;
 
 namespace Svelto.Tasks
@@ -13,7 +14,7 @@ namespace Svelto.Tasks
     {
         public bool isStopping => _flushingOperation.stopping;
         public bool isKilled   => _flushingOperation.kill;
-        public bool hasTasks => numberOfProcessingTasks != 0;
+        public bool hasTasks   => numberOfProcessingTasks != 0;
 
         public uint numberOfRunningTasks    => _coroutines.count;
         public uint numberOfQueuedTasks     => _newTaskRoutines.Count;
@@ -71,12 +72,12 @@ namespace Svelto.Tasks
         /// </summary>
         public virtual void Stop()
         {
-            CoroutineRunner<T>.StopRoutines(_flushingOperation);
+            SveltoTaskRunner<T>.StopRoutines(_flushingOperation);
 
             _newTaskRoutines.Clear();
         }
 
-        void IRunner<T>.StartCoroutine(ref T task /*, bool immediate*/)
+        void IRunner<T>.StartCoroutine(in T task /*, bool immediate*/)
         {
             _newTaskRoutines.Enqueue(task);
 
@@ -88,7 +89,7 @@ namespace Svelto.Tasks
         {
             Stop();
 
-            CoroutineRunner<T>.KillProcess(_flushingOperation);
+            SveltoTaskRunner<T>.KillProcess(_flushingOperation);
 
             GC.SuppressFinalize(this);
         }
@@ -98,8 +99,8 @@ namespace Svelto.Tasks
         protected readonly ThreadSafeQueue<T> _newTaskRoutines;
         protected readonly FasterList<T>      _coroutines;
 
-        protected readonly CoroutineRunner<T>.FlushingOperation _flushingOperation =
-            new CoroutineRunner<T>.FlushingOperation();
+        protected readonly SveltoTaskRunner<T>.FlushingOperation _flushingOperation =
+            new SveltoTaskRunner<T>.FlushingOperation();
 
         readonly string _name;
 

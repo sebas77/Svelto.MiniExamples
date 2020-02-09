@@ -20,22 +20,22 @@ namespace Svelto.ECS.MiniExamples.Example1B
             foreach (var group in GameGroups.DOOFUSES.Groups)
             {
                 var doofuses = entitiesDB
-                              .QueryEntities<PositionEntityStruct, VelocityEntityStruct, SpeedEntityStruct
-                               >(group)
+                              .QueryEntities<PositionEntityStruct, VelocityEntityStruct, SpeedEntityStruct>(group)
                               .ToNativeBuffers<PositionEntityStruct, VelocityEntityStruct, SpeedEntityStruct>();
                 var dep = new ThisSystemJob(doofuses, Time.DeltaTime).Schedule((int) doofuses.count,
                                                                                (int) (doofuses.count / 8), inputDeps);
-                
-                combinedDependencies =
-                    JobHandle.CombineDependencies(combinedDependencies, 
-                                                  new DisposeJob<BufferTuple<NativeBuffer<PositionEntityStruct>, NativeBuffer<VelocityEntityStruct>,
-                    NativeBuffer<SpeedEntityStruct>>>(doofuses).Schedule(dep));
+
+                combinedDependencies = JobHandle.CombineDependencies(combinedDependencies,
+                                                                     new DisposeJob<BufferTuple<
+                                                                             NativeBuffer<PositionEntityStruct>,
+                                                                             NativeBuffer<VelocityEntityStruct>,
+                                                                             NativeBuffer<SpeedEntityStruct>>>(doofuses)
+                                                                        .Schedule(dep));
             }
 
             return combinedDependencies;
         }
 
-        [BurstCompile(FloatPrecision.Medium, FloatMode.Fast)]
         struct ThisSystemJob : IJobParallelFor
         {
             public ThisSystemJob(

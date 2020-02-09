@@ -31,7 +31,7 @@ namespace Svelto.Utilities
             {
                 case LogType.Log:
                 {
-#if !(!UNITY_EDITOR || PROFILER)
+#if UNITY_EDITOR
                     stack = ExtractFormattedStackTrace();
 
                     Debug.Log("<b><color=teal>".FastConcat(txt, "</color></b> ", Environment.NewLine, stack)
@@ -43,10 +43,10 @@ namespace Svelto.Utilities
                 }
                 case LogType.Warning:
                 {
-#if !(!UNITY_EDITOR || PROFILER)
+#if UNITY_EDITOR
                     stack = ExtractFormattedStackTrace();
 
-                    Debug.Log("<b><color=yellow>".FastConcat(txt, "</color></b> ", Environment.NewLine, stack)
+                    Debug.LogWarning("<b><color=yellow>".FastConcat(txt, "</color></b> ", Environment.NewLine, stack)
                         .FastConcat(Environment.NewLine, dataString));
 #else
                     Debug.LogWarning(txt);
@@ -68,7 +68,7 @@ namespace Svelto.Utilities
                     var fastConcat = "<b><color=red>".FastConcat(txt, "</color></b> ", Environment.NewLine, stack)
                         .FastConcat(Environment.NewLine, dataString);
                     
-                    Debug.Log(fastConcat);
+                    Debug.LogError(fastConcat);
 #else
                     if (type == LogType.Error)
                         Debug.LogError(txt);

@@ -1,6 +1,5 @@
 using System;
 using Svelto.Common;
-using Svelto.DataStructures;
 using Svelto.ECS.Internal;
 
 namespace Svelto.ECS.Serialization
@@ -12,15 +11,6 @@ namespace Svelto.ECS.Serialization
 
         static SerializableEntityBuilder()
         {}
-
-        public SerializableEntityBuilder()
-        {
-            _serializers = new ISerializer<T>[(int) SerializationType.Length];
-            for (int i = 0; i < (int) SerializationType.Length; i++)
-            {
-                _serializers[i] = new DefaultSerializer<T>();
-            }
-        }
 
         public SerializableEntityBuilder(params ValueTuple<SerializationType, ISerializer<T>>[] serializers)
         {
@@ -84,19 +74,10 @@ namespace Svelto.ECS.Serialization
             serializer.DeserializeSafe(ref initializer.GetOrCreate<T>(), serializationData);
         }
 
-        public void CopySerializedEntityStructs(in EntityStructInitializer sourceInitializer,
-            in EntityStructInitializer destinationInitializer, SerializationType serializationType)
+        public void Deserialize(ISerializationData serializationData, ref T entityStruct, SerializationType serializationType)
         {
-            if (_serializers[(int) serializationType] is PartialSerializer<T>)
-            {
-                var source = sourceInitializer.Get<T>();
-                var destination = destinationInitializer.Get<T>();
-
-                (_serializers[(int) serializationType] as PartialSerializer<T>).CopyFrom(source, ref destination);
-                destinationInitializer.Init(destination);
-            }
-            else if ((_serializers[(int) serializationType] is DontSerialize<T>) == false)
-                destinationInitializer.CopyFrom(sourceInitializer.Get<T>());
+            ISerializer<T> serializer = _serializers[(int) serializationType];
+            serializer.DeserializeSafe(ref entityStruct, serializationData);
         }
 
         readonly ISerializer<T>[] _serializers;

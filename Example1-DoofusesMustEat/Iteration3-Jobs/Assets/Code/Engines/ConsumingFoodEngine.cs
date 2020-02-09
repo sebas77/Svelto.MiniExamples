@@ -19,20 +19,23 @@ namespace Svelto.ECS.MiniExamples.Example1B
                 
             while (true)
             {
-                var mealStructs =
-                    entitiesDB.QueryEntities<MealEntityStruct>(GameGroups.FOOD);
-
-                var foodcount = mealStructs.length;
-
-                for (var j = 0; j < foodcount; j++)
+                foreach (var group in GameGroups.FOOD.Groups)
                 {
-                    mealStructs[j].mealLeft -= mealStructs[j].eaters;
-                    mealStructs[j].eaters = 0;
+                    var mealStructs =
+                        entitiesDB.QueryEntities<MealEntityStruct>(group);
+                    
+                    var foodcount = mealStructs.count;
 
-                    if (mealStructs[j].mealLeft <= 0)
-                        _entityFunctions.RemoveEntity<FoodEntityDescriptor>(mealStructs[j].ID);
+                    for (var j = 0; j < foodcount; j++)
+                    {
+                        mealStructs[j].mealLeft -= mealStructs[j].eaters;
+                        mealStructs[j].eaters   =  0;
+
+                        if (mealStructs[j].mealLeft <= 0)
+                            _entityFunctions.RemoveEntity<FoodEntityDescriptor>(mealStructs[j].ID);
+                    }
                 }
-                
+
                 while (wait.IsDone() == false) yield return Yield.It; 
             }
         }

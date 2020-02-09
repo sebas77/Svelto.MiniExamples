@@ -1,7 +1,3 @@
-using System;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-
 namespace Svelto.ECS
 {
     public interface IEntityFunctions

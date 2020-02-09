@@ -76,10 +76,10 @@ namespace Svelto.ECS.Internal
             var T1entities = QueryEntities<T1>(groupStruct);
             var T2entities = QueryEntities<T2>(groupStruct);
 
-            if (T1entities.length != T2entities.length)
+            if (T1entities.count != T2entities.count)
                 throw new ECSException("Entity views count do not match in group. Entity 1: ' count: "
-                    .FastConcat(T1entities.length).FastConcat(typeof(T1).ToString())
-                    .FastConcat("'. Entity 2: ' count: ".FastConcat(T2entities.length)
+                    .FastConcat(T1entities.count).FastConcat(typeof(T1).ToString())
+                    .FastConcat("'. Entity 2: ' count: ".FastConcat(T2entities.count)
                         .FastConcat(typeof(T2).ToString())
                         .FastConcat("'")));
 
@@ -94,15 +94,15 @@ namespace Svelto.ECS.Internal
             var T2entities = QueryEntities<T2>(groupStruct);
             var T3entities = QueryEntities<T3>(groupStruct);
 
-            if (T1entities.length != T2entities.length || T2entities.length != T3entities.length)
+            if (T1entities.count != T2entities.count || T2entities.count != T3entities.count)
                 throw new ECSException("Entity views count do not match in group. Entity 1: "
                     .FastConcat(typeof(T1).ToString()).FastConcat(" count: ")
-                    .FastConcat(T1entities.length)
+                    .FastConcat(T1entities.count)
                     .FastConcat(" Entity 2: "
                         .FastConcat(typeof(T2).ToString()).FastConcat(" count: ")
-                        .FastConcat(T2entities.length)
+                        .FastConcat(T2entities.count)
                         .FastConcat(" Entity 3: ".FastConcat(typeof(T3).ToString()))
-                        .FastConcat(" count: ").FastConcat(T3entities.length)));
+                        .FastConcat(" count: ").FastConcat(T3entities.count)));
 
             return new EntityCollection<T1, T2, T3>(T1entities,
                 T2entities, T3entities);
@@ -241,13 +241,13 @@ namespace Svelto.ECS.Internal
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool HasAny<T>(ExclusiveGroupStruct groupStruct) where T : struct, IEntityStruct
         {
-            return QueryEntities<T>(groupStruct).length > 0;
+            return QueryEntities<T>(groupStruct).count > 0;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public uint Count<T>(ExclusiveGroupStruct groupStruct) where T : struct, IEntityStruct
         {
-            return QueryEntities<T>(groupStruct).length;
+            return QueryEntities<T>(groupStruct).count;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

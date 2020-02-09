@@ -1,9 +1,10 @@
 using Svelto.Common;
 using Svelto.DataStructures;
+using Svelto.Tasks.DataStructures;
 
 namespace Svelto.Tasks.Internal
 {
-    public static class CoroutineRunner<T>  where T : ISveltoTask
+    public static class SveltoTaskRunner<T>  where T : ISveltoTask
     {
         public static void StopRoutines(FlushingOperation flushingOperation)
         {
@@ -17,11 +18,10 @@ namespace Svelto.Tasks.Internal
             flushingOperation.kill = true;
         }
 
-        public class Process<TRunningInfo> : IProcessSveltoTasks 
-            where TRunningInfo: IRunningTasksInfo
+        public class Process<TFlowModifier> : IProcessSveltoTasks where TFlowModifier: IFlowModifier
         {
             public Process( ThreadSafeQueue<T> newTaskRoutines, FasterList<T> coroutines,
-                            FlushingOperation flushingOperation, TRunningInfo info)
+                            FlushingOperation flushingOperation, TFlowModifier info)
             {
                 _newTaskRoutines   = newTaskRoutines;
                 _coroutines        = coroutines;
@@ -63,7 +63,7 @@ namespace Svelto.Tasks.Internal
 
                     bool mustExit;
                     
-                    var coroutines = _coroutines.ToArrayFast();
+                    var coroutines = _coroutines.ToArrayFast(out _);
                     
                     do
                     {
@@ -89,7 +89,7 @@ namespace Svelto.Tasks.Internal
                         //mean to add new coroutines. However I do not want to iterate over the new coroutines
                         //during this iteration, so I won't modify coroutinesCount avoid this complexity disabling run
                         //immediate
-                        //coroutines = _coroutines.ToArrayFast();
+                        //coroutines = _coroutines.ToArrayFast(out _);
                         
                         int previousIndex = index;
                         
@@ -116,7 +116,7 @@ namespace Svelto.Tasks.Internal
             readonly FasterList<T>      _coroutines;
             readonly FlushingOperation  _flushingOperation;
             
-            TRunningInfo _info;
+            TFlowModifier _info;
         }
         
         public class FlushingOperation
@@ -125,23 +125,5 @@ namespace Svelto.Tasks.Internal
             public bool stopping;
             public bool kill;
         }
-    }
-    
-    public struct StandardRunningTasksInfo:IRunningTasksInfo
-    {
-        public bool CanMoveNext<T>(ref int nextIndex, ref T currentResult, int coroutinesCount)
-        {
-            return true;
-        }
-
-        public bool CanProcessThis(ref int index)
-        {
-            return true;
-        }
-
-        public void Reset()
-        {}
-
-        public string runnerName { get; set; }
     }
 }

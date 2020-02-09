@@ -90,7 +90,7 @@ namespace Svelto.ECS
         }
 
         ///--------------------------------------------
-        void Preallocate<T>(uint groupID, uint size) where T : IEntityDescriptor, new()
+        void Preallocate<T>(ExclusiveGroupStruct groupID, uint size) where T : IEntityDescriptor, new()
         {
             var entityViewsToBuild = EntityDescriptorTemplate<T>.descriptor.entitiesToBuild;
             var numberOfEntityViews = entityViewsToBuild.Length;

@@ -1,5 +1,3 @@
-using Svelto.DataStructures;
-
 namespace Svelto.ECS
 {
     public partial class EnginesRoot
