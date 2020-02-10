@@ -137,7 +137,7 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
 
         static IEnumerator<JSonEnemySpawnData[]> ReadEnemySpawningDataServiceRequest()
         {
-            var json = Addressables.LoadAsset<TextAsset>("EnemySpawningData");
+            var json = Addressables.LoadAssetAsync<TextAsset>("EnemySpawningData");
 
             while (json.IsDone == false) yield return null;
             
@@ -148,7 +148,7 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
 
         static IEnumerator<JSonEnemyAttackData[]> ReadEnemyAttackDataServiceRequest()
         {
-            var json = Addressables.LoadAsset<TextAsset>("EnemyAttackData");
+            var json = Addressables.LoadAssetAsync<TextAsset>("EnemyAttackData");
             
             while (json.IsDone == false) yield return null;
 
