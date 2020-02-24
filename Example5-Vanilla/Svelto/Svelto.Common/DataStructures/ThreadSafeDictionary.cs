@@ -95,7 +95,7 @@ namespace Svelto.DataStructures
             }
         }
         
-        public void Add(TKey key, ref TValue value)
+        public void Add(TKey key, in TValue value)
         {
             LockQ.EnterWriteLock();
             try
@@ -196,7 +196,7 @@ namespace Svelto.DataStructures
         }
 
         // This is the internal dictionary that we are wrapping
-        public void Update(TKey key, ref TValue value)
+        public void Update(TKey key, in TValue value)
         {
             LockQ.EnterWriteLock();
             try
@@ -209,7 +209,7 @@ namespace Svelto.DataStructures
             }
         }
 
-        public void CopyTo(TValue[] tasks)
+        public void CopyValuesTo(TValue[] tasks)
         {
             LockQ.EnterReadLock();
             try

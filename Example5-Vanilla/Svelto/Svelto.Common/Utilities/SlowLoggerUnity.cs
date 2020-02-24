@@ -17,6 +17,16 @@ namespace Svelto.Utilities
 
             _stringBuilder = new ThreadLocal<StringBuilder>(ValueFactory);
         }
+        
+#if UNITY_2019_3_OR_NEWER
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+#else
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+#endif
+        static void Init()
+        {
+            Console.SetLogger(new SlowUnityLogger());
+        }
 
         public void Log(string txt, LogType type = LogType.Log, Exception e = null,
             Dictionary<string, string> data = null)

@@ -9,42 +9,40 @@ using Windows.System.Diagnostics;
 using System.Diagnostics;
 #endif
 using System.Text;
+using System.Threading;
 using Svelto.DataStructures;
 using Svelto.Utilities;
+using ILogger = Svelto.Utilities.ILogger;
+using LogType = Svelto.Utilities.LogType;
 
 namespace Svelto
 {
     public static class Console
     {
-        static readonly StringBuilder                                     _stringBuilder = new StringBuilder(256);
+        static readonly ThreadLocal<StringBuilder> _stringBuilder =
+            new ThreadLocal<StringBuilder>(() => new StringBuilder(256));
+
         static readonly FasterList<DataStructures.WeakReference<ILogger>> _loggers;
 
-        static readonly ILogger _standardLogger;
+        static ILogger _standardLogger;
 
         static Console()
         {
             _loggers = new FasterList<DataStructures.WeakReference<ILogger>>();
 
-#if UNITY_5_3_OR_NEWER || UNITY_5
-            _standardLogger = new SlowUnityLogger();
-#else
-            _standardLogger = new SimpleLogger();
-#endif
-            _standardLogger.OnLoggerAdded();
-
-            _loggers.Add(new DataStructures.WeakReference<ILogger>(_standardLogger));
+            AddLogger(new SimpleLogger());
         }
 
         public static void SetLogger(ILogger log)
         {
             _loggers[0] = new DataStructures.WeakReference<ILogger>(log);
+            log.OnLoggerAdded();
         }
 
         public static void AddLogger(ILogger log)
         {
-            log.OnLoggerAdded();
-
             _loggers.Add(new DataStructures.WeakReference<ILogger>(log));
+            log.OnLoggerAdded();
         }
 
         static void Log(string txt, LogType type, Exception e = null, Dictionary<string, string> extraData = null)
@@ -68,16 +66,11 @@ namespace Svelto
 
         public static void LogError(string txt, Dictionary<string, string> extraData = null)
         {
-            string toPrint;
+            _stringBuilder.Value.Length = 0;
+            _stringBuilder.Value.Append("-!!!!!!-> ");
+            _stringBuilder.Value.Append(txt);
 
-            lock (_stringBuilder)
-            {
-                _stringBuilder.Length = 0;
-                _stringBuilder.Append("-!!!!!!-> ");
-                _stringBuilder.Append(txt);
-
-                toPrint = _stringBuilder.ToString();
-            }
+            var toPrint = _stringBuilder.ToString();
 
             Log(toPrint, LogType.Error, null, extraData);
         }
@@ -87,20 +80,18 @@ namespace Svelto
             LogException(String.Empty, e, extraData);
         }
 
-        public static void LogException(string message, Exception exception, Dictionary<string, string> extraData = null)
+        public static void LogException(string message, Exception exception,
+            Dictionary<string, string> extraData = null)
         {
             if (extraData == null)
                 extraData = new Dictionary<string, string>();
 
-            lock (_stringBuilder)
+            Exception tracingE = exception;
+            while (tracingE.InnerException != null)
             {
-                Exception tracingE = exception;
-                while (tracingE.InnerException != null)
-                {
-                    tracingE = tracingE.InnerException;
+                tracingE = tracingE.InnerException;
 
-                    Log(message, LogType.Exception, tracingE, extraData);
-                }
+                Log(message, LogType.Exception, tracingE, extraData);
             }
 
             throw exception;
@@ -108,22 +99,17 @@ namespace Svelto
 
         public static void LogWarning(string txt)
         {
-            string toPrint;
+            _stringBuilder.Value.Length = 0;
+            _stringBuilder.Value.Append("------> ");
+            _stringBuilder.Value.Append(txt);
 
-            lock (_stringBuilder)
-            {
-                _stringBuilder.Length = 0;
-                _stringBuilder.Append("------> ");
-                _stringBuilder.Append(txt);
-
-                toPrint = _stringBuilder.ToString();
-            }
+            var toPrint = _stringBuilder.ToString();
 
             Log(toPrint, LogType.Warning);
         }
 
 #if DISABLE_DEBUG
-		[Conditional("__NEVER_DEFINED__")]
+        [Conditional("__NEVER_DEFINED__")]
 #endif
         public static void LogDebug(string txt)
         {
@@ -146,26 +132,24 @@ namespace Svelto
         {
             string toPrint;
 
-            lock (_stringBuilder)
-            {
 #if NETFX_CORE
                 string currentTimeString = DateTime.UtcNow.ToString("dd/mm/yy hh:ii:ss");
                 string processTimeString = (DateTime.UtcNow - ProcessDiagnosticInfo.
                                                 GetForCurrentProcess().ProcessStartTime.DateTime.ToUniversalTime()).ToString();
 #else
-                string currentTimeString = DateTime.UtcNow.ToLongTimeString(); //ensure includes seconds
-                string processTimeString =
-                    (DateTime.UtcNow - Process.GetCurrentProcess().StartTime.ToUniversalTime()).ToString();
+            string currentTimeString = DateTime.UtcNow.ToLongTimeString(); //ensure includes seconds
+            string processTimeString =
+                (DateTime.UtcNow - Process.GetCurrentProcess().StartTime.ToUniversalTime()).ToString();
 #endif
 
-                _stringBuilder.Length = 0;
-                _stringBuilder.Append("[").Append(currentTimeString);
-                _stringBuilder.Append("][").Append(processTimeString);
-                _stringBuilder.Length = _stringBuilder.Length - 3; //remove some precision that we don't need
-                _stringBuilder.Append("] ").AppendLine(txt);
+            _stringBuilder.Value.Length = 0;
+            _stringBuilder.Value.Append("[").Append(currentTimeString);
+            _stringBuilder.Value.Append("][").Append(processTimeString);
+            _stringBuilder.Value.Length =
+                _stringBuilder.Value.Length - 3; //remove some precision that we don't need
+            _stringBuilder.Value.Append("] ").AppendLine(txt);
 
-                toPrint = _stringBuilder.ToString();
-            }
+            toPrint = _stringBuilder.ToString();
 
 #if !UNITY_EDITOR
 #if !NETFX_CORE
