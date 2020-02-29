@@ -2,6 +2,8 @@ using System;
 using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.Tasks.DataStructures;
+using Svelto.Tasks.ExtraLean;
+using Svelto.Tasks.FlowModifiers;
 using Svelto.Tasks.Internal;
 
 namespace Svelto.Tasks
@@ -94,13 +96,20 @@ namespace Svelto.Tasks
             GC.SuppressFinalize(this);
         }
 
-        protected IProcessSveltoTasks _processEnumerator;
+        protected IProcessSveltoTasks InitializeRunner<TFlowModified>(TFlowModified modifier) where TFlowModified:IFlowModifier
+        {
+            _processEnumerator =
+                new SveltoTaskRunner<T>.Process<TFlowModified>
+                    (_newTaskRoutines, _coroutines, _flushingOperation, modifier);
 
-        protected readonly ThreadSafeQueue<T> _newTaskRoutines;
-        protected readonly FasterList<T>      _coroutines;
+            return _processEnumerator;
+        }
 
-        protected readonly SveltoTaskRunner<T>.FlushingOperation _flushingOperation =
-            new SveltoTaskRunner<T>.FlushingOperation();
+
+        IProcessSveltoTasks _processEnumerator;
+        readonly ThreadSafeQueue<T> _newTaskRoutines;
+        readonly FasterList<T>      _coroutines;
+        readonly SveltoTaskRunner<T>.FlushingOperation _flushingOperation = new SveltoTaskRunner<T>.FlushingOperation();
 
         readonly string _name;
 

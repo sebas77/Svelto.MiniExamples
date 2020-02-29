@@ -219,17 +219,23 @@ namespace Svelto.DataStructures
             }
         }
         
-        public void CopyTo(TValue[] tasks)
+        public void CopyValuesTo(TValue[] tasks, uint index)
         {
             _lockQ.EnterReadLock();
             try
             {
-                Array.Copy(_dict.unsafeValues, tasks, _dict.count);
+                _dict.CopyValuesTo(tasks, index);
             }
             finally
             {
                 _lockQ.ExitReadLock();
             }
+        }
+
+        public void CopyValuesTo(FasterList<TValue> values)
+        {
+            values.ExpandTo(_dict.count);
+            CopyValuesTo(values.ToArrayFast(out _), 0);
         }
 
         public void FastClear()
@@ -244,13 +250,7 @@ namespace Svelto.DataStructures
                 _lockQ.ExitWriteLock();
             }
         }
-        
-        public void CopyTo(FasterList<TValue> transientEntitiesOperations)
-        {
-            transientEntitiesOperations.ExpandTo(_dict.count);
-            CopyTo(transientEntitiesOperations.ToArrayFast(out _));
-        }
-        
+
         readonly FasterDictionary<TKey, TValue> _dict;
         readonly ReaderWriterLockSlimEx _lockQ = ReaderWriterLockSlimEx.Create();
     }

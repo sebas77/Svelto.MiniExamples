@@ -54,9 +54,7 @@ namespace Svelto.Tasks
             {
                 modifier.runnerName = name;
 
-                _processEnumerator =
-                    new SveltoTaskRunner<T>.Process<TFlowModifier>
-                        (_newTaskRoutines, _coroutines, _flushingOperation, modifier);
+                var _processEnumerator = InitializeRunner(modifier);
 
                 UnityCoroutineRunner.StartOnGuiCoroutine(_processEnumerator, runningOrder);
             }

@@ -59,23 +59,29 @@ namespace Svelto.Tasks.Lean
         {
             DBC.Tasks.Check.Require(_threadSafeSveltoTaskStates.completed == false, "impossible state");
             bool completed = false;
+#if !DEBUG            
             try
             {
+#endif                
                 if (_threadSafeSveltoTaskStates.explicitlyStopped == false)
                 {
                     completed = !_sveltoTask.MoveNext();
                 }
                 else
                     completed = true;
+#if !DEBUG                
             }
             finally
             {
+#endif
                 if (completed == true)
                 {
                     _continuationEnumerator.ce.ReturnToPool();
                     _threadSafeSveltoTaskStates.completed = true;
                 }
+#if !DEBUG                
             }
+#endif
 
             return !completed;
         }

@@ -82,7 +82,7 @@ namespace Svelto.ECS.MiniExamples.Example1B
             }
         }
 
-        public IEntitiesDB entitiesDB { private get; set; }
+        public EntitiesDB entitiesDB { private get; set; }
 
         public void Ready() { CheckClick().RunOn(DoofusesStandardSchedulers.UIInteraction); }
 

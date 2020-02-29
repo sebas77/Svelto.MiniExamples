@@ -1,127 +1,116 @@
 using System.Text;
+using System.Threading;
 
 public static class FastConcatUtility
 {
-#if DEBUG && !PROFILE    
-    static readonly StringBuilder _stringBuilder = new StringBuilder(256, 1024*1024);
-#else    
-    static readonly StringBuilder _stringBuilder = new StringBuilder(256);
-#endif
+    static readonly ThreadLocal<StringBuilder> _stringBuilder =
+        new ThreadLocal<StringBuilder>(() => new StringBuilder(256));
 
     public static string FastConcat(this string str1, string value)
     {
-        lock (_stringBuilder)
         {
-            _stringBuilder.Clear();
+            _stringBuilder.Value.Clear();
 
-            _stringBuilder.Append(str1).Append(value);
+            _stringBuilder.Value.Append(str1).Append(value);
 
-            return _stringBuilder.ToString();
+            return _stringBuilder.Value.ToString();
         }
     }
     public static string FastConcat(this string str1, int value)
     {
-        lock (_stringBuilder)
         {
-            _stringBuilder.Clear();
+            _stringBuilder.Value.Clear();
 
-            _stringBuilder.Append(str1).Append(value);
+            _stringBuilder.Value.Append(str1).Append(value);
 
-            return _stringBuilder.ToString();
+            return _stringBuilder.Value.ToString();
         }
     }
-    
+
     public static string FastConcat(this string str1, uint value)
     {
-        lock (_stringBuilder)
         {
-            _stringBuilder.Clear();
+            _stringBuilder.Value.Clear();
 
-            _stringBuilder.Append(str1).Append(value);
+            _stringBuilder.Value.Append(str1).Append(value);
 
-            return _stringBuilder.ToString();
+            return _stringBuilder.Value.ToString();
         }
     }
-    
+
     public static string FastConcat(this string str1, long value)
     {
-        lock (_stringBuilder)
         {
-            _stringBuilder.Clear();
+            _stringBuilder.Value.Clear();
 
-            _stringBuilder.Append(str1).Append(value);
+            _stringBuilder.Value.Append(str1).Append(value);
 
-            return _stringBuilder.ToString();
-        }
-    }    
-    
-    public static string FastConcat(this string str1, float value)
-    {
-        lock (_stringBuilder)
-        {
-            _stringBuilder.Clear();
-
-            _stringBuilder.Append(str1).Append(value);
-
-            return _stringBuilder.ToString();
+            return _stringBuilder.Value.ToString();
         }
     }
-    
+
+    public static string FastConcat(this string str1, float value)
+    {
+        {
+            _stringBuilder.Value.Clear();
+
+            _stringBuilder.Value.Append(str1).Append(value);
+
+            return _stringBuilder.Value.ToString();
+        }
+    }
+
     public static string FastConcat(this string str1, double value)
     {
-        lock (_stringBuilder)
         {
-            _stringBuilder.Clear();
+            _stringBuilder.Value.Clear();
 
-            _stringBuilder.Append(str1).Append(value);
+            _stringBuilder.Value.Append(str1).Append(value);
 
-            return _stringBuilder.ToString();
+            return _stringBuilder.Value.ToString();
         }
     }
 
     public static string FastConcat(this string str1, string str2, string str3)
     {
-        lock (_stringBuilder)
         {
-            _stringBuilder.Clear();
+            _stringBuilder.Value.Clear();
 
-            _stringBuilder.Append(str1);
-            _stringBuilder.Append(str2);
-            _stringBuilder.Append(str3);
+            _stringBuilder.Value.Append(str1);
+            _stringBuilder.Value.Append(str2);
+            _stringBuilder.Value.Append(str3);
 
-            return _stringBuilder.ToString();
+            return _stringBuilder.Value.ToString();
         }
     }
 
     public static string FastConcat(this string str1, string str2, string str3, string str4)
     {
-        lock (_stringBuilder)
         {
-            _stringBuilder.Clear();
+            _stringBuilder.Value.Clear();
 
-            _stringBuilder.Append(str1);
-            _stringBuilder.Append(str2);
-            _stringBuilder.Append(str3);
-            _stringBuilder.Append(str4);
+            _stringBuilder.Value.Append(str1);
+            _stringBuilder.Value.Append(str2);
+            _stringBuilder.Value.Append(str3);
+            _stringBuilder.Value.Append(str4);
 
 
-            return _stringBuilder.ToString();
+            return _stringBuilder.Value.ToString();
         }
     }
 
     public static string FastConcat(this string str1, string str2, string str3, string str4, string str5)
     {
-        lock (_stringBuilder)
         {
-            _stringBuilder.Clear();
+            _stringBuilder.Value.Clear();
 
-            _stringBuilder.Append(str1);
-            _stringBuilder.Append(str2);
-            _stringBuilder.Append(str3);
-            _stringBuilder.Append(str4);
-            _stringBuilder.Append(str5);
+            _stringBuilder.Value.Append(str1);
+            _stringBuilder.Value.Append(str2);
+            _stringBuilder.Value.Append(str3);
+            _stringBuilder.Value.Append(str4);
+            _stringBuilder.Value.Append(str5);
 
-            return _stringBuilder.ToString();
+            return _stringBuilder.Value.ToString();
         }
     }
 }

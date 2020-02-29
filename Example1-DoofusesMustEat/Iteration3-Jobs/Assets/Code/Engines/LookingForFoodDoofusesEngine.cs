@@ -10,30 +10,32 @@ using Unity.Mathematics;
 namespace Svelto.ECS.MiniExamples.Example1B
 {
     [DisableAutoCreation]
-    public class LookingForFoodDoofusesEngine : JobComponentSystem, IQueryingEntitiesEngine
+    public class LookingForFoodDoofusesEngine : SystemBase, IQueryingEntitiesEngine
     {
-        public void Ready() { }
-
-        public IEntitiesDB entitiesDB { private get; set; }
-
-        protected override JobHandle OnUpdate(JobHandle inputDeps)
+        public void Ready()
         {
-            var handle1 = CreateJobForDoofusesAndFood(inputDeps, GroupCompound<GameGroups.FOOD, GameGroups.RED>.Groups,
-                                                      GroupCompound<GameGroups.DOOFUSES, GameGroups.RED>.Groups);
-            var handle2 = CreateJobForDoofusesAndFood(inputDeps, GroupCompound<GameGroups.FOOD, GameGroups.BLUE>.Groups,
-                                                      GroupCompound<GameGroups.DOOFUSES, GameGroups.BLUE>.Groups);
+        }
 
-            return JobHandle.CombineDependencies(handle1, handle2);
+        public EntitiesDB entitiesDB { private get; set; }
+        
+        protected override void OnUpdate()
+        {
+            var handle1 = CreateJobForDoofusesAndFood(Dependency, GroupCompound<GameGroups.FOOD, GameGroups.RED>.Groups,
+                GroupCompound<GameGroups.DOOFUSES, GameGroups.RED, GameGroups.NOTEATING>.Groups);
+            var handle2 = CreateJobForDoofusesAndFood(Dependency, GroupCompound<GameGroups.FOOD, GameGroups.BLUE>.Groups,
+                GroupCompound<GameGroups.DOOFUSES, GameGroups.BLUE, GameGroups.NOTEATING>.Groups);
+            
+            this.Dependency = JobHandle.CombineDependencies(Dependency, handle1, handle2);
         }
 
         JobHandle CreateJobForDoofusesAndFood(JobHandle inputDeps, ExclusiveGroup[] foodGroups,
-                                              ExclusiveGroup[] doofusesGroups)
+            ExclusiveGroup[] doofusesGroups)
         {
-            var foodEntityGroups = entitiesDB.GroupIterators<PositionEntityStruct, MealEntityStruct>(foodGroups);
+            var foodEntityGroups = entitiesDB.GroupsIterator<PositionEntityStruct, MealEntityStruct>(foodGroups);
             var doofusesEntityGroups =
                 entitiesDB
-                   .GroupIterators<PositionEntityStruct, VelocityEntityStruct, HungerEntityStruct>(doofusesGroups);
-            
+                    .GroupsIterator<PositionEntityStruct, VelocityEntityStruct>(doofusesGroups);
+
             JobHandle combinedDependencies = default;
 
             foreach (var foodBuffer in foodEntityGroups)
@@ -43,8 +45,7 @@ namespace Svelto.ECS.MiniExamples.Example1B
                     //schedule the job
                     var deps =
                         new LookingForFoodDoofusesJob(doofusesBuffer, foodBuffer).Schedule((int) doofusesBuffer.count,
-                                                                                           (int) (doofusesBuffer.count /
-                                                                                                  8), inputDeps);
+                            (int) (doofusesBuffer.count / 8), inputDeps);
 
                     //Never forget to dispose the buffer (may change this in future)
                     combinedDependencies = doofusesBuffer.CombineDispose(combinedDependencies, deps);
@@ -61,18 +62,16 @@ namespace Svelto.ECS.MiniExamples.Example1B
     [BurstCompile]
     public struct LookingForFoodDoofusesJob : IJobParallelFor
     {
-        readonly BufferTuple<NativeBuffer<PositionEntityStruct>, NativeBuffer<VelocityEntityStruct>,
-            NativeBuffer<HungerEntityStruct>> _doofuses;
+        readonly BufferTuple<NativeBuffer<PositionEntityStruct>, NativeBuffer<VelocityEntityStruct>> _doofuses;
 
-        readonly BufferTuple<NativeBuffer<PositionEntityStruct>, NativeBuffer<MealEntityStruct>> _foodcount;
+        readonly BufferTuple<NativeBuffer<PositionEntityStruct>, NativeBuffer<MealEntityStruct>> _food;
 
         public LookingForFoodDoofusesJob(
-            in BufferTuple<NativeBuffer<PositionEntityStruct>, NativeBuffer<VelocityEntityStruct>,
-                NativeBuffer<HungerEntityStruct>> doofuses,
-            in BufferTuple<NativeBuffer<PositionEntityStruct>, NativeBuffer<MealEntityStruct>> foodcount)
+            in BufferTuple<NativeBuffer<PositionEntityStruct>, NativeBuffer<VelocityEntityStruct>> doofuses,
+            in BufferTuple<NativeBuffer<PositionEntityStruct>, NativeBuffer<MealEntityStruct>> food)
         {
-            _doofuses  = doofuses;
-            _foodcount = foodcount;
+            _doofuses = doofuses;
+            _food = food;
         }
 
         public void Execute(int index)
@@ -80,29 +79,27 @@ namespace Svelto.ECS.MiniExamples.Example1B
             float currentMin = float.MaxValue;
 
             ref var velocityEntityStruct = ref _doofuses.buffer2[index];
-            ref var hungerEntityStruct   = ref _doofuses.buffer3[index];
             ref var positionEntityStruct = ref _doofuses.buffer1[index];
 
-            var foodcountLength = _foodcount.count;
+            var foodcountLength = _food.count;
 
             float3 closerComputeDirection = default;
             for (int foodIndex = 0; foodIndex < foodcountLength; ++foodIndex)
             {
-                var computeDirection = _foodcount.buffer1[foodIndex].position - positionEntityStruct.position;
+                var computeDirection = _food.buffer1[foodIndex].position - positionEntityStruct.position;
 
                 var sqrModule = computeDirection.x * computeDirection.x + computeDirection.y * computeDirection.y +
                                 computeDirection.z * computeDirection.z;
 
                 if (currentMin > sqrModule)
                 {
-                    currentMin             = sqrModule;
+                    currentMin = sqrModule;
                     closerComputeDirection = computeDirection;
 
                     //food found
                     if (sqrModule < 2)
                     {
-                        hungerEntityStruct.hunger -= 2;
-                        Interlocked.Increment(ref _foodcount.buffer2[foodIndex].eaters);
+                        Interlocked.Increment(ref _food.buffer2[foodIndex].eaters);
 
                         closerComputeDirection = default;
 
@@ -114,8 +111,6 @@ namespace Svelto.ECS.MiniExamples.Example1B
             //going toward food, not breaking as closer food can spawn
             velocityEntityStruct.velocity.x = closerComputeDirection.x;
             velocityEntityStruct.velocity.z = closerComputeDirection.z;
-
-            hungerEntityStruct.hunger++;
         }
     }
 }

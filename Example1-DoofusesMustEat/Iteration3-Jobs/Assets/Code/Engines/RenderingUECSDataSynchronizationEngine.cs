@@ -8,15 +8,16 @@ using Unity.Transforms;
 namespace Svelto.ECS.MiniExamples.Example1B
 {
     [DisableAutoCreation]
-    public class RenderingUECSDataSynchronizationEngine : JobComponentSystem, IQueryingEntitiesEngine
+    public class RenderingUECSDataSynchronizationEngine : SystemBase, IQueryingEntitiesEngine
     {
-        public IEntitiesDB entitiesDB { get; set; }
+        public EntitiesDB entitiesDB { get; set; }
 
-        public void Ready() { }
-
-        protected override JobHandle OnUpdate(JobHandle inputDeps)
+        public void Ready()
         {
-            JobHandle combinedDependencies = default;
+        }
+
+        protected override void OnUpdate()
+        {
             foreach (var group in GameGroups.DOOFUSES.Groups)
             {
                 var collection = entitiesDB.QueryEntities<PositionEntityStruct>(group);
@@ -25,27 +26,20 @@ namespace Svelto.ECS.MiniExamples.Example1B
 
                 var entityCollection = collection.GetNativeEnumerator<PositionEntityStruct>();
 
-                inputDeps = Entities.ForEach((ref Translation translation) =>
-                                             {
-                                                 ref readonly var positionEntityStruct =
-                                                     ref entityCollection.threadSafeNext.position;
+                var deps = Entities.ForEach((ref Translation translation) =>
+                    {
+                        ref readonly var positionEntityStruct = ref entityCollection.threadSafeNext.position;
 
-                                                 translation.Value =
-                                                     new float3(positionEntityStruct.x, positionEntityStruct.y,
-                                                                positionEntityStruct.z);
-                                             }).WithBurst()
-                                     //In order to fetch the unity entities from the same group of the svelto entities we will set 
-                                     //the group as a filter
-                                    .WithSharedComponentFilter(new UECSSveltoGroupID((uint) @group)).Schedule(inputDeps);
+                        translation.Value =
+                            new float3(positionEntityStruct.x, positionEntityStruct.y, positionEntityStruct.z);
+                    }).WithBurst()
+                    //In order to fetch the unity entities from the same group of the svelto entities we will set 
+                    //the group as a filter
+                    .WithSharedComponentFilter(new UECSSveltoGroupID((uint) @group)).Schedule(Dependency);
 
-                combinedDependencies = JobHandle.CombineDependencies(combinedDependencies,
-                                                                     new DisposeJob<EntityCollection<
-                                                                             PositionEntityStruct>.EntityNativeIterator<
-                                                                             PositionEntityStruct>>(entityCollection)
-                                                                        .Schedule(inputDeps));
+                Dependency = new DisposeJob<EntityCollection<PositionEntityStruct>.EntityNativeIterator<
+                        PositionEntityStruct>>(entityCollection).Schedule(deps);
             }
-
-            return combinedDependencies;
         }
     }
 }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Svelto.ECS.Internal;
 
 namespace Svelto.ECS
 {

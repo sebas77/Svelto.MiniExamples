@@ -9,6 +9,7 @@ using Windows.System.Diagnostics;
 using System.Diagnostics;
 #endif
 using System.Text;
+using System.Threading;
 using Svelto.DataStructures;
 using Svelto.Utilities;
 
@@ -16,20 +17,23 @@ namespace Svelto
 {
     public static class Console
     {
-        static readonly StringBuilder                                     _stringBuilder = new StringBuilder(256);
-        static readonly FasterList<DataStructures.WeakReference<ILogger>> _loggers;
+        static readonly ThreadLocal<StringBuilder> _stringBuilder =
+            new ThreadLocal<StringBuilder>(() => new StringBuilder(256));
+        static FasterList<DataStructures.WeakReference<ILogger>> _loggers;
 
-        static readonly ILogger _standardLogger;
+        static ILogger _standardLogger;
 
         static Console()
         {
+            Init();
+        }
+
+        public static void Init()
+        {
             _loggers = new FasterList<DataStructures.WeakReference<ILogger>>();
 
-#if UNITY_5_3_OR_NEWER || UNITY_5
-            _standardLogger = new SlowUnityLogger();
-#else
             _standardLogger = new SimpleLogger();
-#endif
+
             AddLogger(_standardLogger);
         }
 
@@ -56,9 +60,8 @@ namespace Svelto
 
             lock (_stringBuilder)
             {
-                _stringBuilder.Length = 0;
-                _stringBuilder.Append("-!!!!!!-> ");
-                _stringBuilder.Append(txt);
+                _stringBuilder.Value.Length = 0;
+                _stringBuilder.Value.Append("-!!!!!!-> ").Append(txt);
 
                 toPrint = _stringBuilder.ToString();
             }
@@ -86,9 +89,8 @@ namespace Svelto
             {
                 lock (_stringBuilder)
                 {
-                    _stringBuilder.Length = 0;
-                    _stringBuilder.Append(toPrint);
-                    _stringBuilder.Append(message);
+                    _stringBuilder.Value.Length = 0;
+                    _stringBuilder.Value.Append(toPrint).Append(message);
 
                     toPrint = _stringBuilder.ToString();
                 }
@@ -107,9 +109,8 @@ namespace Svelto
 
             lock (_stringBuilder)
             {
-                _stringBuilder.Length = 0;
-                _stringBuilder.Append("------> ");
-                _stringBuilder.Append(txt);
+                _stringBuilder.Value.Length = 0;
+                _stringBuilder.Value.Append("------> ").Append(txt);
 
                 toPrint = _stringBuilder.ToString();
             }
@@ -149,11 +150,10 @@ namespace Svelto
                     (DateTime.UtcNow - Process.GetCurrentProcess().StartTime.ToUniversalTime()).ToString();
 #endif
 
-                _stringBuilder.Length = 0;
-                _stringBuilder.Append("[").Append(currentTimeString);
-                _stringBuilder.Append("][").Append(processTimeString);
-                _stringBuilder.Length = _stringBuilder.Length - 3; //remove some precision that we don't need
-                _stringBuilder.Append("] ").AppendLine(txt);
+                _stringBuilder.Value.Length = 0;
+                _stringBuilder.Value.Append("[").Append(currentTimeString).Append("][").Append(processTimeString);
+                _stringBuilder.Value.Length = _stringBuilder.Value.Length - 3; //remove some precision that we don't need
+                _stringBuilder.Value.Append("] ").AppendLine(txt);
 
                 toPrint = _stringBuilder.ToString();
             }

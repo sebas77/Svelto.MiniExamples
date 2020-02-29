@@ -35,7 +35,7 @@ namespace Svelto.ECS
                 using (profiler.Sample("Remove and Swap operations"))
                 {
                     _transientEntitiesOperations.FastClear();
-                    _entitiesOperations.CopyTo(_transientEntitiesOperations);
+                    _entitiesOperations.CopyValuesTo(_transientEntitiesOperations);
                     _entitiesOperations.FastClear();
 
                     var entitiesOperations = _transientEntitiesOperations.ToArrayFast(out _);

@@ -394,7 +394,8 @@ namespace Svelto.DataStructures
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         void AllocateMore()
         {
-            var newList = new T[(_buffer.Length + 1) << 1];
+            int newLength = (int) ((_buffer.Length + 1) * 1.5f);
+            var newList = new T[newLength];
             if (_count > 0) Array.Copy(_buffer, newList, _count);
             _buffer = newList;
         }
@@ -403,18 +404,15 @@ namespace Svelto.DataStructures
         void AllocateMore(uint newSize)
         {
             DBC.Common.Check.Require(newSize > _buffer.Length);
-            var newLength = Math.Max(_buffer.Length, 1);
-
-            while (newLength < newSize)
-                newLength <<= 1;
+            int newLength = (int) (newSize * 1.5f);
 
             var newList = new T[newLength];
             if (_count > 0) Array.Copy(_buffer, newList, _count);
             _buffer = newList;
         }
 
-        T[] _buffer;
-        uint    _count;
+        T[]  _buffer;
+        uint _count;
 
         public static class NoVirt
         {

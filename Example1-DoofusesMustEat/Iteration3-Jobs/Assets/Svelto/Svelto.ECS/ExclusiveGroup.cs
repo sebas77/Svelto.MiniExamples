@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Svelto.ECS.Internal;
 
 #pragma warning disable 660,661
 
@@ -12,9 +13,9 @@ namespace Svelto.ECS
     /// public class TriggersGroup : ExclusiveGroup<TriggersGroup> {}
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public abstract class NamedExclusiveGroup<T>:ExclusiveGroup
+    public abstract class NamedExclusiveGroup<T>
     {
-      //  public static ExclusiveGroup Group = new ExclusiveGroup();
+        public static ExclusiveGroup Group = new ExclusiveGroup();
         public static string         name  = typeof(T).FullName;
 
 //        protected NamedExclusiveGroup() { }
@@ -62,6 +63,11 @@ namespace Svelto.ECS
         {
             return group._group;
         }
+        
+        public static implicit operator InternalGroup(ExclusiveGroup group)
+        {
+            return new InternalGroup(group._group);
+        }
 
         public static explicit operator uint(ExclusiveGroup group)
         {
@@ -85,6 +91,11 @@ namespace Svelto.ECS
                 throw new Exception("Named Group Not Found ".FastConcat(holderGroupName));
 
             return _knownGroups[holderGroupName];
+        }
+
+        public override string ToString()
+        {
+            return _group.ToString();
         }
 
         static readonly Dictionary<string, ExclusiveGroupStruct> _knownGroups = new Dictionary<string,

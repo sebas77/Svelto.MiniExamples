@@ -161,7 +161,7 @@ namespace Svelto.ECS
         }
 
         public uint count => _array1.count;
-
+        
         public EntityCollection<T2> Item2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -301,7 +301,7 @@ namespace Svelto.ECS
 
     public ref struct EntityCollections<T> where T : struct, IEntityStruct
     {
-        public EntityCollections(IEntitiesDB db, ExclusiveGroup[] groups) : this()
+        public EntityCollections(EntitiesDB db, ExclusiveGroup[] groups) : this()
         {
             _db = db;
             _groups = groups;
@@ -313,12 +313,12 @@ namespace Svelto.ECS
             return new EntityGroupsIterator(_db, _groups);
         }
 
-        readonly IEntitiesDB      _db;
+        readonly EntitiesDB      _db;
         readonly ExclusiveGroup[] _groups;
 
         public ref struct EntityGroupsIterator
         {
-            public EntityGroupsIterator(IEntitiesDB db, ExclusiveGroup[] groups) : this()
+            public EntityGroupsIterator(EntitiesDB db, ExclusiveGroup[] groups) : this()
             {
                 _db = db;
                 _groups = groups;
@@ -348,7 +348,7 @@ namespace Svelto.ECS
 
             public ref T Current => ref _array[(uint) _index];
 
-            readonly IEntitiesDB      _db;
+            readonly EntitiesDB      _db;
             readonly ExclusiveGroup[] _groups;
 
             EntityCollection<T> _array;
@@ -361,7 +361,7 @@ namespace Svelto.ECS
     public ref struct EntityCollections<T1, T2>
         where T1 : struct, IEntityStruct where T2 : struct, IEntityStruct
     {
-        public EntityCollections(IEntitiesDB db, ExclusiveGroup[] groups) : this()
+        public EntityCollections(EntitiesDB db, ExclusiveGroup[] groups) : this()
         {
             _db = db;
             _groups = groups;
@@ -373,12 +373,12 @@ namespace Svelto.ECS
             return new EntityGroupsIterator(_db, _groups);
         }
 
-        readonly IEntitiesDB      _db;
+        readonly EntitiesDB      _db;
         readonly ExclusiveGroup[] _groups;
 
         public ref struct EntityGroupsIterator
         {
-            public EntityGroupsIterator(IEntitiesDB db, ExclusiveGroup[] groups) : this()
+            public EntityGroupsIterator(EntitiesDB db, ExclusiveGroup[] groups) : this()
             {
                 _db = db;
                 _groups = groups;
@@ -416,7 +416,7 @@ namespace Svelto.ECS
                 }
             }
 
-            readonly IEntitiesDB      _db;
+            readonly EntitiesDB      _db;
             readonly ExclusiveGroup[] _groups;
             int                       _index;
             int                       _indexGroup;
@@ -428,7 +428,7 @@ namespace Svelto.ECS
     public ref struct EntityCollections<T1, T2, T3>
         where T1 : struct, IEntityStruct where T2 : struct, IEntityStruct where T3 : struct, IEntityStruct
     {
-        public EntityCollections(IEntitiesDB db, ExclusiveGroup[] groups) : this()
+        public EntityCollections(EntitiesDB db, ExclusiveGroup[] groups) : this()
         {
             _db = db;
             _groups = groups;
@@ -440,12 +440,12 @@ namespace Svelto.ECS
             return new EntityGroupsIterator(_db, _groups);
         }
 
-        readonly IEntitiesDB      _db;
+        readonly EntitiesDB      _db;
         readonly ExclusiveGroup[] _groups;
 
         public ref struct EntityGroupsIterator
         {
-            public EntityGroupsIterator(IEntitiesDB db, ExclusiveGroup[] groups) : this()
+            public EntityGroupsIterator(EntitiesDB db, ExclusiveGroup[] groups) : this()
             {
                 _db = db;
                 _groups = groups;
@@ -486,7 +486,7 @@ namespace Svelto.ECS
                 }
             }
 
-            readonly IEntitiesDB      _db;
+            readonly EntitiesDB      _db;
             readonly ExclusiveGroup[] _groups;
             uint                      _count;
             int                       _index;

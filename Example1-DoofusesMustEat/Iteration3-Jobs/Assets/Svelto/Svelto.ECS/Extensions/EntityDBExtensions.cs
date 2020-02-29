@@ -1,119 +1,23 @@
-using Svelto.DataStructures;
-
-namespace Svelto.ECS.Extensions.Unity
+namespace Svelto.ECS
 {
     public static class EntityDBExtensions
     {
-        public static NativeGroupEnumerable<T1, T2> GroupIterators<T1, T2>(this IEntitiesDB db, ExclusiveGroup[] groups)
+        public static NativeGroupsEnumerable<T1, T2> GroupsIterator<T1, T2>(this EntitiesDB db, ExclusiveGroup[] groups)
             where T1 : unmanaged, IEntityStruct where T2 : unmanaged, IEntityStruct
         {
-            return new NativeGroupEnumerable<T1, T2>(db, groups);
+            return new NativeGroupsEnumerable<T1, T2>(db, groups);
         }
 
-        public static NativeGroupEnumerable<T1, T2, T3> GroupIterators
-            <T1, T2, T3>(this IEntitiesDB db, ExclusiveGroup[] groups)
+        public static NativeGroupsEnumerable<T1, T2, T3> GroupsIterator
+            <T1, T2, T3>(this EntitiesDB db, ExclusiveGroup[] groups)
             where T1 : unmanaged, IEntityStruct where T2 : unmanaged, IEntityStruct where T3 : unmanaged, IEntityStruct
         {
-            return new NativeGroupEnumerable<T1, T2, T3>(db, groups);
+            return new NativeGroupsEnumerable<T1, T2, T3>(db, groups);
         }
-    }
-
-    public struct NativeGroupEnumerable<T1, T2> where T1 : unmanaged, IEntityStruct where T2 : unmanaged, IEntityStruct
-    {
-        public NativeGroupEnumerable(IEntitiesDB db, ExclusiveGroup[] groups)
-        {
-            _db     = db;
-            _groups = groups;
-        }
-
-        public struct NativeGroupIterator
-        {
-            public NativeGroupIterator(IEntitiesDB db, ExclusiveGroup[] groups) : this()
-            {
-                _db         = db;
-                _groups     = groups;
-                _indexGroup = -1;
-            }
-
-            public bool MoveNext()
-            {
-                //attention, the while is necessary to skip empty groups
-                while (++_indexGroup < _groups.Length)
-                {
-                    var entityCollection = _db.QueryEntities<T1, T2>(_groups[_indexGroup]);
-                    if (entityCollection.count == 0) continue;
-
-                    _array = entityCollection.ToNativeBuffers<T1, T2>();
-                    break;
-                }
-
-                return _indexGroup < _groups.Length;
-            }
-
-            public void Reset() { _indexGroup = -1; }
-
-            public BufferTuple<NativeBuffer<T1>, NativeBuffer<T2>> Current => _array;
-
-            readonly IEntitiesDB      _db;
-            readonly ExclusiveGroup[] _groups;
-
-            int                                             _indexGroup;
-            BufferTuple<NativeBuffer<T1>, NativeBuffer<T2>> _array;
-        }
-
-        public NativeGroupIterator GetEnumerator() { return new NativeGroupIterator(_db, _groups); }
         
-        readonly IEntitiesDB      _db;
-        readonly ExclusiveGroup[] _groups;
-    }
-
-    public struct NativeGroupEnumerable<T1, T2, T3>
-        where T1 : unmanaged, IEntityStruct where T2 : unmanaged, IEntityStruct where T3 : unmanaged, IEntityStruct
-    {
-        readonly IEntitiesDB      _db;
-        readonly ExclusiveGroup[] _groups;
-
-        public NativeGroupEnumerable(IEntitiesDB db, ExclusiveGroup[] groups)
-        {
-            _db     = db;
-            _groups = groups;
-        }
-
-        public struct NativeGroupIterator
-        {
-            public NativeGroupIterator(IEntitiesDB db, ExclusiveGroup[] groups) : this()
-            {
-                _groups     = groups;
-                _indexGroup = -1;
-                _entitiesDB = db;
-            }
-
-            public bool MoveNext()
-            {
-                //attention, the while is necessary to skip empty groups
-                while (++_indexGroup < _groups.Length)
-                {
-                    var entityCollection = _entitiesDB.QueryEntities<T1, T2, T3>(_groups[_indexGroup]);
-                    if (entityCollection.count == 0) continue;
-
-                    _array = entityCollection.ToNativeBuffers<T1, T2, T3>();
-                    break;
-                }
-
-                return _indexGroup < _groups.Length;
-            }
-
-            public void Reset() { _indexGroup = -1; }
-
-            public BufferTuple<NativeBuffer<T1>, NativeBuffer<T2>, NativeBuffer<T3>> Current => _array;
-
-            readonly ExclusiveGroup[] _groups;
-
-            int                                                               _indexGroup;
-            BufferTuple<NativeBuffer<T1>, NativeBuffer<T2>, NativeBuffer<T3>> _array;
-            readonly IEntitiesDB                                              _entitiesDB;
-        }
-
-        public NativeGroupIterator GetEnumerator() { return new NativeGroupIterator(_db, _groups); }
+         public static NativeAllGroupsEnumerable<T1> GroupsIterator<T1>(this EntitiesDB db) where T1 : unmanaged, IEntityStruct
+         {
+             return new NativeAllGroupsEnumerable<T1>(db);
+         }
     }
 }

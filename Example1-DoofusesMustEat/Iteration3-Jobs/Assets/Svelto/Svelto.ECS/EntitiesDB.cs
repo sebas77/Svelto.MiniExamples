@@ -6,10 +6,11 @@ using System;
 using System.Runtime.CompilerServices;
 using Svelto.Common;
 using Svelto.DataStructures;
+using Svelto.ECS.Internal;
 
-namespace Svelto.ECS.Internal
+namespace Svelto.ECS
 {
-    class EntitiesDB : IEntitiesDB
+    public class EntitiesDB
     {
         internal EntitiesDB(
             FasterDictionary<uint, FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary>> groupEntityViewsDB,
@@ -51,6 +52,14 @@ namespace Svelto.ECS.Internal
             return ref QueryEntity<T>(new EGID(id, group));
         }
 
+        /// <summary>
+        /// The QueryEntities<T> follows the rule that entities could always be iterated regardless if they
+        /// are 0, 1 or N. In case of 0 it returns an empty array. This allows to use the same for iteration
+        /// regardless the number of entities built.
+        /// </summary>
+        /// <param name="groupStructId"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
         public EntityCollection<T> QueryEntities<T>(ExclusiveGroupStruct groupStructId)
             where T : struct, IEntityStruct
         {
@@ -335,7 +344,12 @@ namespace Svelto.ECS.Internal
         {
             internal static readonly T[] emptyArray = new T[0];
         }
-
+        
+        internal FasterDictionary<uint, ITypeSafeDictionary> FindGroups<T1>() where T1 : unmanaged, IEntityStruct
+        {
+            return _groupsPerEntity[TypeRefWrapper<T1>.wrapper];
+        }
+        
         readonly EntitiesStream _entityStream;
 
         //grouped set of entity views, this is the standard way to handle entity views entity views are grouped per

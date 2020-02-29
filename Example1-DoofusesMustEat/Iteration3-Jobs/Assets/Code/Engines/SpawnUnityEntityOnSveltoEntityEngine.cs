@@ -16,7 +16,7 @@ namespace Svelto.ECS.MiniExamples.Example1B
 
         public SpawnUnityEntityOnSveltoEntityEngine(World world) { _entityManager = world.EntityManager; }
 
-        public IEntitiesDB entitiesDB { get; set; }
+        public EntitiesDB entitiesDB { get; set; }
 
         public void Ready() { }
 

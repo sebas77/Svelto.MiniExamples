@@ -1,39 +1,33 @@
 using Svelto.DataStructures;
 using Svelto.ECS.EntityStructs;
 using Svelto.ECS.Extensions.Unity;
-using Unity.Burst;
 using Unity.Entities;
 using Unity.Jobs;
 
 namespace Svelto.ECS.MiniExamples.Example1B
 {
     [DisableAutoCreation]
-    public class VelocityToPositionDoofusesEngine : JobComponentSystem, IQueryingEntitiesEngine
+    public class VelocityToPositionDoofusesEngine : SystemBase, IQueryingEntitiesEngine
     {
-        public void Ready() { }
+        public void Ready()
+        { }
 
-        public IEntitiesDB entitiesDB { get; set; }
+        public EntitiesDB entitiesDB { get; set; }
 
-        protected override JobHandle OnUpdate(JobHandle inputDeps)
+        protected override void OnUpdate()
         {
-            JobHandle combinedDependencies = default;
             foreach (var group in GameGroups.DOOFUSES.Groups)
             {
                 var doofuses = entitiesDB
-                              .QueryEntities<PositionEntityStruct, VelocityEntityStruct, SpeedEntityStruct>(group)
-                              .ToNativeBuffers<PositionEntityStruct, VelocityEntityStruct, SpeedEntityStruct>();
+                    .QueryEntities<PositionEntityStruct, VelocityEntityStruct, SpeedEntityStruct>(group)
+                    .ToNativeBuffers<PositionEntityStruct, VelocityEntityStruct, SpeedEntityStruct>();
                 var dep = new ThisSystemJob(doofuses, Time.DeltaTime).Schedule((int) doofuses.count,
-                                                                               (int) (doofuses.count / 8), inputDeps);
+                    (int) (doofuses.count / 8), Dependency);
 
-                combinedDependencies = JobHandle.CombineDependencies(combinedDependencies,
-                                                                     new DisposeJob<BufferTuple<
-                                                                             NativeBuffer<PositionEntityStruct>,
-                                                                             NativeBuffer<VelocityEntityStruct>,
-                                                                             NativeBuffer<SpeedEntityStruct>>>(doofuses)
-                                                                        .Schedule(dep));
+                Dependency = new DisposeJob<BufferTuple<
+                        NativeBuffer<PositionEntityStruct>, NativeBuffer<VelocityEntityStruct>,
+                        NativeBuffer<SpeedEntityStruct>>>(doofuses).Schedule(dep);
             }
-
-            return combinedDependencies;
         }
 
         struct ThisSystemJob : IJobParallelFor
@@ -42,7 +36,7 @@ namespace Svelto.ECS.MiniExamples.Example1B
                 BufferTuple<NativeBuffer<PositionEntityStruct>, NativeBuffer<VelocityEntityStruct>,
                     NativeBuffer<SpeedEntityStruct>> doofuses, float deltaTime)
             {
-                _doofuses  = doofuses;
+                _doofuses = doofuses;
                 _deltaTime = deltaTime;
             }
 

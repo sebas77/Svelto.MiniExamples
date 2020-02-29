@@ -3,7 +3,7 @@ using Svelto.DataStructures;
 
 namespace Svelto.Tasks.DataStructures
 {
-    public class ThreadSafeQueue<T>
+    internal class ThreadSafeQueue<T>
     {
         public ThreadSafeQueue()
         {
@@ -45,11 +45,10 @@ namespace Svelto.Tasks.DataStructures
         {
             uint i = list.count;
                 
-            list.ExpandBy((uint) _queue.Count);
-            
-            var array = list.ToArrayFast(out _);
-            
             _lockQ.EnterWriteLock();
+            list.ExpandBy((uint) _queue.Count);
+
+            var array = list.ToArrayFast(out _);
             try
             {
                 while (_queue.Count > 0)

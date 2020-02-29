@@ -11,11 +11,19 @@ namespace Svelto.Utilities
 {
     public class SlowUnityLogger : ILogger
     {
-        public SlowUnityLogger()
+#if UNITY_2018_3_OR_NEWER
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+#else
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+#endif
+        static void Init()
         {
             StringBuilder ValueFactory() => new StringBuilder();
 
             _stringBuilder = new ThreadLocal<StringBuilder>(ValueFactory);
+
+            Console.Init();
+            Console.SetLogger(new SlowUnityLogger());
         }
 
         public void Log(string txt, LogType type = LogType.Log, Exception e = null,
@@ -193,7 +201,7 @@ namespace Svelto.Utilities
             }
         }
 
-        readonly ThreadLocal<StringBuilder> _stringBuilder;
+        static ThreadLocal<StringBuilder> _stringBuilder;
 
         static string projectFolder;
     }

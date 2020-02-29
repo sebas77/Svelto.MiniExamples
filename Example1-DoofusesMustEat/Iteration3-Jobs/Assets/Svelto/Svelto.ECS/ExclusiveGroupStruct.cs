@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using Svelto.ECS.Internal;
 
 namespace Svelto.ECS
 {
@@ -46,6 +47,11 @@ namespace Svelto.ECS
         public int GetHashCode(ExclusiveGroupStruct obj)
         {
             return _id.GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            return _id.ToString();
         }
 
         internal static ExclusiveGroupStruct Generate(byte bitmask = 0)

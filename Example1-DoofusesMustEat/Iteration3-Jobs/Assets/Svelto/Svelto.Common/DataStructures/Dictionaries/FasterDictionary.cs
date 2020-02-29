@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
  
@@ -29,6 +29,11 @@ using System.Runtime.InteropServices;
             _valuesInfo = new FasterDictionaryNode<TKey>[1];
             _values = new TValue[1];
             _buckets = new int[3];
+        }
+
+        public void CopyValuesTo(TValue[] tasks, uint index)
+        {
+            Array.Copy(_values, 0, tasks, index, count);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -123,7 +128,7 @@ using System.Runtime.InteropServices;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ref TValue GetOrCreate(TKey key, System.Func<TValue> builder)
+        public ref TValue GetOrCreate(TKey key, Func<TValue> builder)
         {
             if (TryFindIndex(key, out var findIndex) == true)
             {

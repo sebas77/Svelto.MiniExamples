@@ -61,8 +61,8 @@ namespace Svelto.ECS
                 if (factory == null)
                 {
                     var initializer = _enginesRoot.BuildEntity(egid,
-                        _enginesRoot._isDeserializationOnly
-                            ? entityDescriptor.entitiesToSerialize : entityDescriptor.entitiesToBuild);
+                        _enginesRoot._isDeserializationOnly ? entityDescriptor.entitiesToSerialize
+                            : entityDescriptor.entitiesToBuild);
 
                     DeserializeEntityStructs(serializationData, entityDescriptor, ref initializer, serializationType);
 
@@ -101,21 +101,19 @@ namespace Svelto.ECS
                     serializableEntityBuilder.Deserialize(serializationData, initializer, serializationType);
                 }
             }
-            
+
             public T DeserializeEntityStruct<T>(ISerializationData serializationData,
-                ISerializableEntityDescriptor entityDescriptor, SerializationType serializationType) where T : unmanaged, IEntityStruct
+                ISerializableEntityDescriptor entityDescriptor, SerializationType serializationType)
+                where T : unmanaged, IEntityStruct
             {
                 var readPos = serializationData.dataPos;
                 var entityStruct = new T();
                 foreach (var serializableEntityBuilder in entityDescriptor.entitiesToSerialize)
                 {
-                    var entityBuilder = serializableEntityBuilder as SerializableEntityBuilder<T>;
-                    if (entityBuilder == null)
+                    if (serializableEntityBuilder is SerializableEntityBuilder<T> entityBuilder)
                     {
-                        continue;
+                        entityBuilder.Deserialize(serializationData, ref entityStruct, serializationType);
                     }
-
-                    entityBuilder.Deserialize(serializationData, ref entityStruct, serializationType);
                     break;
                 }
 

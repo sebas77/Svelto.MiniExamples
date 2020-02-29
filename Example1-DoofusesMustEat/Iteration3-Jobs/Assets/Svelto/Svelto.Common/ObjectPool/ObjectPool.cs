@@ -21,11 +21,18 @@ namespace Svelto.ObjectPool
             alreadyRecycled.Clear();
 #endif
         }
+
+        public virtual void OnDispose()
+        { }
         
-        public virtual void Dispose()
+        public void Dispose()
         {
+            OnDispose();
+
             _pools.Clear();
             _namedPools.Clear();
+
+            _disposed = true;
         }
         
         public virtual void Recycle(T go, int pool)
@@ -105,8 +112,9 @@ namespace Svelto.ObjectPool
             return ret;
         }
 
-        protected void InternalRecycle(T obj, int pool)
+        private void InternalRecycle(T obj, int pool)
         {
+            if (_disposed) return;
 #if DEBUG && !PROFILE
             if (alreadyRecycled.Add(obj) == false)
                 throw new Exception("An object already Recycled in the pool has been Recycled again");
@@ -119,8 +127,9 @@ namespace Svelto.ObjectPool
             _objectsRecyled++;
         }
 
-        protected void InternalRecycle(T obj, string poolName)
+        private void InternalRecycle(T obj, string poolName)
         {
+            if (_disposed) return;
 #if DEBUG && !PROFILE
             if (alreadyRecycled.Add(obj) == false)
                 throw new Exception("An object already Recycled in the pool has been Recycled again");
@@ -206,6 +215,7 @@ namespace Svelto.ObjectPool
         int _objectsReused;
         int _objectsCreated;
         int _objectsRecyled;
+        bool _disposed;
 
 #if DEBUG && !PROFILE
         public List<ObjectPoolDebugStructureInt> DebugPoolInfo(List<ObjectPoolDebugStructureInt> debugInfo)

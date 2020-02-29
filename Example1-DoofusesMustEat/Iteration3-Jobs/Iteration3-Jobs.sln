@@ -11,8 +11,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DoofusesBurstified", "Doofu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.Services", "Svelto.Services.csproj", "{F4146FE1-7E0F-ADB1-693D-4211DAAD7748}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.Tasks.StopEditorThread", "Svelto.Tasks.StopEditorThread.csproj", "{19A073AC-927D-C796-4310-696D1D4DC1B2}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.Pool.Debugger", "Svelto.Pool.Debugger.csproj", "{CF5DAAB5-81E6-CD71-6F98-3969EFE6E13E}"
 EndProject
 Global
@@ -41,10 +39,6 @@ Global
 		{F4146FE1-7E0F-ADB1-693D-4211DAAD7748}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F4146FE1-7E0F-ADB1-693D-4211DAAD7748}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F4146FE1-7E0F-ADB1-693D-4211DAAD7748}.Release|Any CPU.Build.0 = Release|Any CPU
-		{19A073AC-927D-C796-4310-696D1D4DC1B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{19A073AC-927D-C796-4310-696D1D4DC1B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{19A073AC-927D-C796-4310-696D1D4DC1B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{19A073AC-927D-C796-4310-696D1D4DC1B2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CF5DAAB5-81E6-CD71-6F98-3969EFE6E13E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CF5DAAB5-81E6-CD71-6F98-3969EFE6E13E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CF5DAAB5-81E6-CD71-6F98-3969EFE6E13E}.Release|Any CPU.ActiveCfg = Release|Any CPU

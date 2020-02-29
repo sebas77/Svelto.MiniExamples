@@ -11,7 +11,7 @@ namespace Svelto.ECS.MiniExamples.Example1B
 
         public void Ready() { ConsumingFood().RunOn(DoofusesStandardSchedulers.foodScheduler); }
 
-        public IEntitiesDB entitiesDB { private get; set; }
+        public EntitiesDB entitiesDB { private get; set; }
 
         IEnumerator ConsumingFood()
         {

@@ -11,13 +11,13 @@ namespace Svelto.ECS
         }
 
         readonly IEntityFactory   _entityFactory;
-        readonly IEntitiesDB      _entitiesDB;
+        readonly EntitiesDB      _entitiesDB;
         readonly IEntityFunctions _entityFunctions;
 
         int                       _state;
 
         public WaitForSubmissionEnumerator(IEntityFunctions entityFunctions, IEntityFactory entityFactory,
-            IEntitiesDB entitiesDb)
+            EntitiesDB entitiesDb)
         {
             _entityFactory = entityFactory;
             _entityFunctions = entityFunctions;

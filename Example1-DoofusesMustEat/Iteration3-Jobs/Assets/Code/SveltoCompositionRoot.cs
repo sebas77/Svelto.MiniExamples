@@ -1,6 +1,5 @@
 using System;
 using Svelto.Context;
-using Svelto.ECS.Extensions.Unity;
 using Svelto.ECS.Schedulers.Unity;
 using Svelto.Tasks;
 using Unity.Entities;
@@ -61,8 +60,7 @@ namespace Svelto.ECS.MiniExamples.Example1B
         public void OnContextDestroyed()
         {
             DoofusesStandardSchedulers.StopAndCleanupAllDefaultSchedulers();
-            TaskRunner.Stop();
-
+            
             GC.Collect();
             GC.WaitForPendingFinalizers();
 
