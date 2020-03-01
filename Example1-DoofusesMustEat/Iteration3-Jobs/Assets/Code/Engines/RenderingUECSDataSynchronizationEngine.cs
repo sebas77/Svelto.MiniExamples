@@ -12,9 +12,7 @@ namespace Svelto.ECS.MiniExamples.Example1B
     {
         public EntitiesDB entitiesDB { get; set; }
 
-        public void Ready()
-        {
-        }
+        public void Ready() { }
 
         protected override void OnUpdate()
         {

@@ -25,8 +25,8 @@ namespace Svelto.ECS
                 {
                     foreach (Type type in GetTypesSafe(assembly))
                     {
-                        if (type != null && type.IsClass && type.GetConstructor(Type.EmptyTypes) != null &&
-                            typeof(ISerializableEntityDescriptor).IsAssignableFrom(type))
+                        if (type != null && type.IsClass && type.IsAbstract == false && type.BaseType != null && type.BaseType.IsGenericType &&
+                            type.BaseType.GetGenericTypeDefinition() == typeof(SerializableEntityDescriptor<>))
                         {
                             var descriptor = Activator.CreateInstance(type) as ISerializableEntityDescriptor;
 
@@ -100,6 +100,6 @@ namespace Svelto.ECS
         /// The map of serializable entity hashes to the serializable entity builders (to know the entity structs
         /// to serialize)
         /// </summary>
-        SerializationDescriptorMap serializationDescriptorMap { get; } = new SerializationDescriptorMap();
+        SerializationDescriptorMap serializationDescriptorMap { get; }
     }
 }
