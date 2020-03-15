@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -65,7 +66,7 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
                 //so the fastest solution is always to use custom enumerators. To be honest the hit is minimal
                 //but it's better to not abuse it.                
                 yield return _waitForSecondsEnumerator;
-
+                
                 //cycle around the enemies to spawn and check if it can be spawned
                 for (var i = enemiestoSpawn.Length - 1; i >= 0 && _numberOfEnemyToSpawn > 0; --i)
                 {

@@ -95,6 +95,7 @@ namespace Svelto.DataStructures
         }
         
         public bool Contains(KeyValuePair<TKey, TValue> item) { throw new NotImplementedException(); }
+        public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex){ throw new NotImplementedException(); }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool ContainsKey(TKey key)
@@ -107,7 +108,10 @@ namespace Svelto.DataStructures
             return false;
         }
 
-        public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex) { throw new NotImplementedException(); }
+        public void CopyValuesTo(TValue[] tasks, uint index)
+        {
+            Array.Copy(valuesArray,  0, tasks, index, Count);
+        }
 
         IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator()
         {
