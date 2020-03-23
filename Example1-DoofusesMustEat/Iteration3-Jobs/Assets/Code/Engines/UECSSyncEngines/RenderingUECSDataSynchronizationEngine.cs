@@ -5,7 +5,7 @@ using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Transforms;
 
-namespace Svelto.ECS.MiniExamples.Example1B
+namespace Svelto.ECS.MiniExamples.Example1C
 {
     [DisableAutoCreation]
     public class RenderingUECSDataSynchronizationEngine : SystemBase, IQueryingEntitiesEngine
@@ -22,8 +22,15 @@ namespace Svelto.ECS.MiniExamples.Example1B
 
                 if (collection.count == 0) continue;
 
+                //there are usually two ways to sync Svelto entities with UECS entities
+                //In some cases, like for the rendering, the 1:1 relationship is not necessary, hence UECS entities
+                //just become a pool of entities to fetch and assign values to. Of course we need to be sure that the
+                //entities are compatible, that's why we group the UECS entities like with do with the Svelto ones, using
+                //the UECS shared component UECSSveltoGroupID.
                 var entityCollection = collection.GetNativeEnumerator<PositionEntityStruct>();
 
+                //when it's time to sync, I have two options, iterate the svelto entities first or iterate the
+                //UECS entities first. 
                 var deps = Entities.ForEach((ref Translation translation) =>
                     {
                         ref readonly var positionEntityStruct = ref entityCollection.threadSafeNext.position;

@@ -8,7 +8,7 @@ using Unity.Mathematics;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace Svelto.ECS.MiniExamples.Example1B
+namespace Svelto.ECS.MiniExamples.Example1C
 {
     public class PlaceFoodOnClickEngine : IQueryingEntitiesEngine
     {

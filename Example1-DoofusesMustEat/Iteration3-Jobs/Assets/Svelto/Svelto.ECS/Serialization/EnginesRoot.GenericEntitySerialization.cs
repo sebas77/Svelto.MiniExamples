@@ -1,5 +1,4 @@
 ﻿using System;
-using Svelto.ECS.Internal;
 using Svelto.ECS.Serialization;
 
 namespace Svelto.ECS

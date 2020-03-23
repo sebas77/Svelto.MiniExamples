@@ -9,6 +9,7 @@ namespace Svelto.DataStructures
 
         public uint  Count      => _list.count;
         public bool IsReadOnly => true;
+        public uint Capacity => _list.capacity;
 
         public FasterReadOnlyList(FasterList<T> list)
         {

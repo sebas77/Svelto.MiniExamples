@@ -3,11 +3,10 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Svelto.DataStructures;
-using Unity.Jobs;
 
 namespace Svelto.ECS
 {
-    public ref struct EntityCollection<T> where T : IEntityStruct
+    public struct EntityCollection<T> where T : IEntityStruct
     {
         public EntityCollection(T[] array, uint count) : this()
         {
@@ -100,7 +99,7 @@ namespace Svelto.ECS
         /// thread will have it's own index which is not the goal of this enumerator.
         /// </summary>
         /// <typeparam name="NT"></typeparam>
-        public struct EntityNativeIterator<NT>:IDisposable where NT : unmanaged
+        public struct EntityNativeIterator<NT> where NT : unmanaged
         {
             public EntityNativeIterator(NativeBuffer<NT> array) : this()
             {
@@ -136,7 +135,8 @@ namespace Svelto.ECS
                 }
             }
 
-            public void Dispose() {
+            public void Dispose() 
+            {
                 unsafe
                 {
                     _array.Dispose(); Marshal.FreeHGlobal((IntPtr) _index);
@@ -151,7 +151,7 @@ namespace Svelto.ECS
         }
     }
 
-    public ref struct EntityCollection<T1, T2>
+    public struct EntityCollection<T1, T2>
         where T1 : IEntityStruct where T2 : IEntityStruct
     {
         public EntityCollection(in EntityCollection<T1> array1, in EntityCollection<T2> array2)
@@ -206,7 +206,7 @@ namespace Svelto.ECS
             return new EntityIterator(this);
         }
 
-        public ref struct EntityIterator
+        public struct EntityIterator
         {
             public EntityIterator(in EntityCollection<T1, T2> array1) : this()
             {
@@ -238,7 +238,7 @@ namespace Svelto.ECS
         }
     }
 
-    public ref struct EntityCollection<T1, T2, T3> 
+    public struct EntityCollection<T1, T2, T3> 
         where T3 : IEntityStruct where T2 : IEntityStruct where T1 : IEntityStruct
     {
         public EntityCollection(
@@ -299,7 +299,7 @@ namespace Svelto.ECS
         readonly EntityCollection<T3> _array3;
     }
 
-    public ref struct EntityCollections<T> where T : struct, IEntityStruct
+    public struct EntityCollections<T> where T : struct, IEntityStruct
     {
         public EntityCollections(EntitiesDB db, ExclusiveGroup[] groups) : this()
         {
@@ -316,7 +316,7 @@ namespace Svelto.ECS
         readonly EntitiesDB      _db;
         readonly ExclusiveGroup[] _groups;
 
-        public ref struct EntityGroupsIterator
+        public struct EntityGroupsIterator
         {
             public EntityGroupsIterator(EntitiesDB db, ExclusiveGroup[] groups) : this()
             {
@@ -358,7 +358,7 @@ namespace Svelto.ECS
         }
     }
 
-    public ref struct EntityCollections<T1, T2>
+    public struct EntityCollections<T1, T2>
         where T1 : struct, IEntityStruct where T2 : struct, IEntityStruct
     {
         public EntityCollections(EntitiesDB db, ExclusiveGroup[] groups) : this()
@@ -376,7 +376,7 @@ namespace Svelto.ECS
         readonly EntitiesDB      _db;
         readonly ExclusiveGroup[] _groups;
 
-        public ref struct EntityGroupsIterator
+        public struct EntityGroupsIterator
         {
             public EntityGroupsIterator(EntitiesDB db, ExclusiveGroup[] groups) : this()
             {
@@ -425,7 +425,7 @@ namespace Svelto.ECS
         }
     }
     
-    public ref struct EntityCollections<T1, T2, T3>
+    public struct EntityCollections<T1, T2, T3>
         where T1 : struct, IEntityStruct where T2 : struct, IEntityStruct where T3 : struct, IEntityStruct
     {
         public EntityCollections(EntitiesDB db, ExclusiveGroup[] groups) : this()
@@ -443,7 +443,7 @@ namespace Svelto.ECS
         readonly EntitiesDB      _db;
         readonly ExclusiveGroup[] _groups;
 
-        public ref struct EntityGroupsIterator
+        public struct EntityGroupsIterator
         {
             public EntityGroupsIterator(EntitiesDB db, ExclusiveGroup[] groups) : this()
             {

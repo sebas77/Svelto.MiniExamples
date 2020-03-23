@@ -1,6 +1,5 @@
 #if UNITY_2017_2_OR_NEWER
 using System;
-using System.Runtime.InteropServices;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 

@@ -22,7 +22,6 @@ namespace Svelto.Utilities
 
             _stringBuilder = new ThreadLocal<StringBuilder>(ValueFactory);
 
-            Console.Init();
             Console.SetLogger(new SlowUnityLogger());
         }
 

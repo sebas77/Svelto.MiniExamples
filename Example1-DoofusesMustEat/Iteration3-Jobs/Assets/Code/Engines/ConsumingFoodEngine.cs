@@ -3,13 +3,16 @@ using Svelto.Tasks;
 using Svelto.Tasks.Enumerators;
 using Svelto.Tasks.ExtraLean;
 
-namespace Svelto.ECS.MiniExamples.Example1B
+namespace Svelto.ECS.MiniExamples.Example1C
 {
     public class ConsumingFoodEngine : IQueryingEntitiesEngine
     {
         public ConsumingFoodEngine(IEntityFunctions entityFunctions) { _entityFunctions = entityFunctions; }
 
-        public void Ready() { ConsumingFood().RunOn(DoofusesStandardSchedulers.foodScheduler); }
+        public void Ready()
+        {
+            ConsumingFood().RunOn(DoofusesStandardSchedulers.foodScheduler);
+        }
 
         public EntitiesDB entitiesDB { private get; set; }
 

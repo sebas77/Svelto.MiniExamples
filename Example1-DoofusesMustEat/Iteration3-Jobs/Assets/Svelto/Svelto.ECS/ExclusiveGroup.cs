@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
 using Svelto.ECS.Internal;
 
 #pragma warning disable 660,661
@@ -35,6 +34,8 @@ namespace Svelto.ECS
     ///     public static ExclusiveGroup[] GroupOfGroups = { MyExclusiveGroup1, ...}; //for each on this!
     /// }
     /// </summary>
+    
+    ///To debug it use in your debug window: Svelto.ECS.Debugger.EGID.GetGroupNameFromId(groupID)
     public class ExclusiveGroup
     {
         public const uint MaxNumberOfExclusiveGroups = 2 << 20; 

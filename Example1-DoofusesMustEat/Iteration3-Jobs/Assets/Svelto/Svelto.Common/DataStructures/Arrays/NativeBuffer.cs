@@ -77,8 +77,10 @@ namespace Svelto.DataStructures
             throw new NotImplementedException();
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public IntPtr ToNativeArray() { return _ptr; }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public GCHandle Pin() { return _handle; }
 
         public ref T this[uint index]

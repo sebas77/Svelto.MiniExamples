@@ -11,7 +11,7 @@ namespace Svelto.ECS
         public readonly IEntityBuilder[]          builders;
         public readonly EGID                      fromID;
         public readonly EGID                      toID;
-#if DEBUG && !PROFILER
+#if DEBUG && !PROFILE_SVELTO
         public System.Diagnostics.StackFrame trace;
 #endif
 
@@ -22,7 +22,7 @@ namespace Svelto.ECS
             this.builders = builders;
             fromID        = from;
             toID          = to;
-#if DEBUG && !PROFILER
+#if DEBUG && !PROFILE_SVELTO
             trace = default;
 #endif
         }

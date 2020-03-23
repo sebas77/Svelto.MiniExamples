@@ -14,7 +14,7 @@ namespace Svelto.ECS
         {
             internal static readonly FasterList<KeyValuePair<Type, FastInvokeActionCast<T>>> cachedFields;
             internal static readonly Dictionary<Type, Type[]>                      cachedTypes;
-#if DEBUG && !PROFILER
+#if DEBUG && !PROFILE_SVELTO
             internal static readonly Dictionary<Type, ECSTuple<object, int>> implementorsByType;
 #else
             internal static readonly Dictionary<Type, object> implementorsByType;
@@ -39,7 +39,7 @@ namespace Svelto.ECS
 
                 cachedTypes = new Dictionary<Type, Type[]>();
 
-#if DEBUG && !PROFILER
+#if DEBUG && !PROFILE_SVELTO
                 implementorsByType = new Dictionary<Type, ECSTuple<object, int>>();
 #else
                 implementorsByType = new Dictionary<Type, object>();

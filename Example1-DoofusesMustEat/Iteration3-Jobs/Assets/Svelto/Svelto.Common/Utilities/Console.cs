@@ -1,4 +1,4 @@
-#if !DEBUG || PROFILER
+#if !DEBUG || PROFILE_SVELTO
 #define DISABLE_DEBUG
 #endif
 using System;
@@ -17,42 +17,30 @@ namespace Svelto
 {
     public static class Console
     {
-        static readonly ThreadLocal<StringBuilder> _stringBuilder =
-            new ThreadLocal<StringBuilder>(() => new StringBuilder(256));
-        static FasterList<DataStructures.WeakReference<ILogger>> _loggers;
+        static readonly ThreadLocal<StringBuilder> _stringBuilder = new ThreadLocal<StringBuilder>
+            (() => new StringBuilder(256));
 
-        static ILogger _standardLogger;
+        static readonly FasterList<ILogger> _loggers = new FasterList<ILogger>();
 
-        static Console()
-        {
-            Init();
-        }
+        static readonly ILogger _standardLogger = new SimpleLogger();
 
-        public static void Init()
-        {
-            _loggers = new FasterList<DataStructures.WeakReference<ILogger>>();
-
-            _standardLogger = new SimpleLogger();
-
-            AddLogger(_standardLogger);
-        }
+        static Console() { AddLogger(_standardLogger); }
 
         public static void SetLogger(ILogger log)
         {
-            _loggers[0] = new DataStructures.WeakReference<ILogger>(log);
+            _loggers[0] = log;
+
+            log.OnLoggerAdded();
         }
 
         public static void AddLogger(ILogger log)
         {
+            _loggers.Add(log);
+
             log.OnLoggerAdded();
-
-            _loggers.Add(new DataStructures.WeakReference<ILogger>(log));
         }
 
-        public static void Log(string txt)
-        {
-            InternalLog(txt, LogType.Log);
-        }
+        public static void Log(string txt) { InternalLog(txt, LogType.Log); }
 
         public static void LogError(string txt, Dictionary<string, string> extraData = null)
         {
@@ -69,8 +57,8 @@ namespace Svelto
             InternalLog(toPrint, LogType.Error, null, extraData);
         }
 
-        public static void LogException(Exception exception, string message = null,
-            Dictionary<string, string> extraData = null)
+        public static void LogException(Exception exception, string message = null
+                                      , Dictionary<string, string> extraData = null)
         {
             if (extraData == null)
                 extraData = new Dictionary<string, string>();
@@ -119,54 +107,12 @@ namespace Svelto
         }
 
         [Conditional("DEBUG")]
-        public static void LogDebug(string txt)
-        {
-            InternalLog(txt, LogType.Log);
-        }
+        public static void LogDebug(string txt) { InternalLog(txt, LogType.Log); }
 
         [Conditional("DEBUG")]
         public static void LogDebug<T>(string txt, T extradebug)
         {
-            InternalLog(txt.FastConcat(Environment.NewLine, extradebug.ToString()), LogType.Log); 
-        }
-
-        /// <summary>
-        /// Use this function if you don't want the message to be batched
-        /// </summary>
-        /// <param name="txt"></param>
-        public static void SystemLog(string txt)
-        {
-            string toPrint;
-
-            lock (_stringBuilder)
-            {
-#if NETFX_CORE
-                string currentTimeString = DateTime.UtcNow.ToString("dd/mm/yy hh:ii:ss");
-                string processTimeString = (DateTime.UtcNow - ProcessDiagnosticInfo.
-                                                GetForCurrentProcess().ProcessStartTime.DateTime.ToUniversalTime()).ToString();
-#else
-                string currentTimeString = DateTime.UtcNow.ToLongTimeString(); //ensure includes seconds
-                string processTimeString =
-                    (DateTime.UtcNow - Process.GetCurrentProcess().StartTime.ToUniversalTime()).ToString();
-#endif
-
-                _stringBuilder.Value.Length = 0;
-                _stringBuilder.Value.Append("[").Append(currentTimeString).Append("][").Append(processTimeString);
-                _stringBuilder.Value.Length = _stringBuilder.Value.Length - 3; //remove some precision that we don't need
-                _stringBuilder.Value.Append("] ").AppendLine(txt);
-
-                toPrint = _stringBuilder.ToString();
-            }
-
-#if !UNITY_EDITOR
-#if !NETFX_CORE
-            System.Console.WriteLine(toPrint);
-#else
-            //find a way to adopt a logger externally, if this is still needed
-#endif
-#else
-            UnityEngine.Debug.Log(toPrint);
-#endif
+            InternalLog(txt.FastConcat(Environment.NewLine, extradebug.ToString()), LogType.Log);
         }
 
         /// <summary>
@@ -177,18 +123,12 @@ namespace Svelto
         /// <param name="type"></param>
         /// <param name="e"></param>
         /// <param name="extraData"></param>
-        static void InternalLog(string txt, LogType type, Exception e = null,
-            Dictionary<string, string> extraData = null)
+        static void InternalLog(string txt, LogType type, Exception e = null
+                              , Dictionary<string, string> extraData = null)
         {
             for (int i = 0; i < _loggers.count; i++)
             {
-                if (_loggers[i].IsValid == true)
-                    _loggers[i].Target.Log(txt, type, e, extraData);
-                else
-                {
-                    _loggers.UnorderedRemoveAt(i);
-                    i--;
-                }
+                _loggers[i].Log(txt, type, e, extraData);
             }
         }
     }

@@ -5,7 +5,7 @@ public static class DefaultSerializerUtils
 {
     public static unsafe void CopyToByteArray<T>(in T src, byte[] data, uint offsetDst) where T : unmanaged, IEntityStruct
     {
-#if DEBUG && !PROFILER
+#if DEBUG && !PROFILE_SVELTO
         if (data.Length - offsetDst < sizeof(T))
         {
             throw new IndexOutOfRangeException(
@@ -33,7 +33,7 @@ public static class DefaultSerializerUtils
     {
         T dst = new T();
 
-#if DEBUG && !PROFILER
+#if DEBUG && !PROFILE_SVELTO
         if (data.Length - offsetSrc < sizeof(T))
         {
             throw new IndexOutOfRangeException(

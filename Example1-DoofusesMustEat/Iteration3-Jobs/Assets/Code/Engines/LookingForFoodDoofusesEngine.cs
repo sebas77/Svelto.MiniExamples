@@ -7,7 +7,7 @@ using Unity.Entities;
 using Unity.Jobs;
 using Unity.Mathematics;
 
-namespace Svelto.ECS.MiniExamples.Example1B
+namespace Svelto.ECS.MiniExamples.Example1C
 {
     [DisableAutoCreation]
     public class LookingForFoodDoofusesEngine : SystemBase, IQueryingEntitiesEngine
@@ -33,8 +33,7 @@ namespace Svelto.ECS.MiniExamples.Example1B
         {
             var foodEntityGroups = entitiesDB.GroupsIterator<PositionEntityStruct, MealEntityStruct>(foodGroups);
             var doofusesEntityGroups =
-                entitiesDB
-                    .GroupsIterator<PositionEntityStruct, VelocityEntityStruct>(doofusesGroups);
+                entitiesDB.GroupsIterator<PositionEntityStruct, VelocityEntityStruct>(doofusesGroups);
 
             JobHandle combinedDependencies = default;
 

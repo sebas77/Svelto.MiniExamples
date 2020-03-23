@@ -1,4 +1,4 @@
-namespace Svelto.ECS.MiniExamples.Example1B
+namespace Svelto.ECS.MiniExamples.Example1C
 {
     public struct MealEntityStruct : IEntityStruct, INeedEGID
     {

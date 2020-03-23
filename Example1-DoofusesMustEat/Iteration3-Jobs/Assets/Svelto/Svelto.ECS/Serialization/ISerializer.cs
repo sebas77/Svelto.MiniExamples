@@ -1,4 +1,4 @@
-#if DEBUG && !PROFILER
+#if DEBUG && !PROFILE_SVELTO
 using System;
 #endif
 
@@ -18,11 +18,11 @@ namespace Svelto.ECS.Serialization
         public static bool SerializeSafe<T>(this ISerializer<T> serializer, in T value, ISerializationData serializationData)
             where T : unmanaged, IEntityStruct
         {
-#if DEBUG && !PROFILER
+#if DEBUG && !PROFILE_SVELTO
             uint posBefore = serializationData.dataPos;
 #endif
             bool res = serializer.Serialize(value, serializationData);
-#if DEBUG && !PROFILER
+#if DEBUG && !PROFILE_SVELTO
             // size == 0 is a special case when we don't know the size in advance
             if (serializer.size != 0 && serializationData.dataPos != posBefore + serializer.size)
             {
@@ -37,11 +37,11 @@ namespace Svelto.ECS.Serialization
         public static bool DeserializeSafe<T>(this ISerializer<T> serializer, ref T value, ISerializationData serializationData)
             where T : unmanaged, IEntityStruct
         {
-#if DEBUG && !PROFILER
+#if DEBUG && !PROFILE_SVELTO
             uint posBefore = serializationData.dataPos;
 #endif
             bool res = serializer.Deserialize(ref value, serializationData);
-#if DEBUG && !PROFILER
+#if DEBUG && !PROFILE_SVELTO
             if (serializer.size != 0 && serializationData.dataPos != posBefore + serializer.size)
             {
                 throw new IndexOutOfRangeException(

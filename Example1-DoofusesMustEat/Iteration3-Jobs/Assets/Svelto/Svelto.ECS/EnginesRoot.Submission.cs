@@ -2,7 +2,6 @@
 using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.ECS.Internal;
-using Svelto.ECS.Schedulers;
 
 namespace Svelto.ECS
 {
@@ -21,7 +20,7 @@ namespace Svelto.ECS
                 } while ((_groupedEntityToAdd.currentEntitiesCreatedPerGroup.count > 0 ||
                           _entitiesOperations.Count > 0) && ++iterations < 5);
 
-#if DEBUG && !PROFILER
+#if DEBUG && !PROFILE_SVELTO
                 if (iterations == 5)
                     throw new ECSException("possible circular submission detected");
 #endif
@@ -70,7 +69,7 @@ namespace Svelto.ECS
                                 .FastConcat(entitiesOperations[i].type.ToString());
 
                             throw new ECSException(str.FastConcat(" ")
-#if DEBUG && !PROFILER
+#if DEBUG && !PROFILE_SVELTO
                                     .FastConcat(entitiesOperations[i].trace.ToString())
 #endif
                                 , e);
@@ -91,7 +90,7 @@ namespace Svelto.ECS
                     }
                     finally
                     {
-                        using (profiler.Sample("clear operates double buffering"))
+                        using (profiler.Sample("clear 6operates double buffering"))
                         {
                             //other can be cleared now, but let's avoid deleting the dictionary every time
                             _groupedEntityToAdd.ClearOther();
@@ -150,7 +149,6 @@ namespace Svelto.ECS
         }
 
         DoubleBufferedEntitiesToAdd                                 _groupedEntityToAdd;
-        readonly IEntitySubmissionScheduler                         _scheduler;
         readonly ThreadSafeDictionary<ulong, EntitySubmitOperation> _entitiesOperations;
     }
 }

@@ -16,7 +16,7 @@ namespace Svelto.DataStructures
         Volatile.PaddedLong _consumerCursor = new Volatile.PaddedLong();
         Volatile.PaddedLong _producerCursor = new Volatile.PaddedLong();
 
-#if DEBUG && !PROFILER
+#if DEBUG && !PROFILE_SVELTO
         readonly string _name;
 #endif
 
@@ -32,7 +32,7 @@ namespace Svelto.DataStructures
             capacity = NextPowerOfTwo(capacity);
             _modMask = capacity - 1;
             _entries = new T[capacity];
-#if DEBUG && !PROFILER
+#if DEBUG && !PROFILE_SVELTO
             _name = name;
 #endif
         }
@@ -61,7 +61,7 @@ namespace Svelto.DataStructures
             {
                 ThreadUtility.Wait(ref quickIterations, 16);
             }
-#if DEBUG && !PROFILER
+#if DEBUG && !PROFILE_SVELTO
             if (quickIterations >= _NUMBER_OF_ITERATIONS_BEFORE_STALL_DETECTED)
                 throw new RingBufferExceptionDequeue<T>(_name, next);
 #endif
@@ -118,7 +118,7 @@ namespace Svelto.DataStructures
 
             if (quickIterations >= _NUMBER_OF_ITERATIONS_BEFORE_STALL_DETECTED)
                 throw new RingBufferExceptionEnqueue<T>(
-#if DEBUG && !PROFILER
+#if DEBUG && !PROFILE_SVELTO
                     _name
 #else
                     "consumer"

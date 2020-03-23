@@ -20,14 +20,14 @@ namespace Svelto.Utilities
             switch (type)
             {
                 case LogType.Log:
-                    Console.SystemLog(txt);
+                    SystemLog(txt);
                     break;
                 case LogType.Warning:
-                    Console.SystemLog(txt);
+                    SystemLog(txt);
                     break;
                 case LogType.Error:
                 case LogType.Exception:
-                    Console.SystemLog(txt.FastConcat("</color> ", Environment.NewLine, stack)
+                    SystemLog(txt.FastConcat("</color> ", Environment.NewLine, stack)
                         .FastConcat(Environment.NewLine, dataString));
                     break;
             }
@@ -35,5 +35,10 @@ namespace Svelto.Utilities
 
         public void OnLoggerAdded()
         {}
+        
+        public static void SystemLog(string txt)
+        {
+            System.Console.WriteLine(txt);
+        }
     }
 }

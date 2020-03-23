@@ -41,8 +41,8 @@ namespace Svelto.ECS
 
                 _entitiesOperations.Clear();
                 _transientEntitiesOperations.Clear();
-                _scheduler.Dispose();
-#if DEBUG && !PROFILER
+                scheduler.Dispose();
+#if DEBUG && !PROFILE_SVELTO
                 _idCheckers.Clear();
 #endif
                 _groupedEntityToAdd = null;
@@ -172,7 +172,7 @@ namespace Svelto.ECS
 
             ITypeSafeDictionary fromTypeSafeDictionary = GetTypeSafeDictionary(entityGID.groupID, fromGroup, wrapper);
 
-#if DEBUG && !PROFILER
+#if DEBUG && !PROFILE_SVELTO
             if (fromTypeSafeDictionary.Has(entityGID.entityID) == false)
             {
                 throw new EntityNotFoundException(entityGID, entityViewType);
@@ -197,7 +197,7 @@ namespace Svelto.ECS
             if (toGroup != null)
                 toEntitiesDictionary = toGroup[refWrapper]; //this is guaranteed to exist by AddEntityToDictionary
 
-#if DEBUG && !PROFILER
+#if DEBUG && !PROFILE_SVELTO
             if (fromTypeSafeDictionary.Has(entityGID.entityID) == false)
                 throw new EntityNotFoundException(entityGID, entityViewType);
 #endif

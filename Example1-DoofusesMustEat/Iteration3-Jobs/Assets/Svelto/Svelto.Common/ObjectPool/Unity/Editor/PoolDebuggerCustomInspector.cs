@@ -1,4 +1,5 @@
 #if UNITY_EDITOR
+#if DEBUG && !PROFILE_SVELTO
 using UnityEngine;
 using UnityEditor;
 
@@ -29,4 +30,5 @@ namespace Svelto.ObjectPool
         }
     }
 }
+#endif
 #endif

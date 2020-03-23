@@ -39,11 +39,11 @@ namespace Svelto.ECS.Internal
             FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary> group,
             IEntityBuilder[] entityBuilders, IEnumerable<object> implementors)
         {
-#if DEBUG && !PROFILER
+#if DEBUG && !PROFILE_SVELTO
             HashSet<Type> types = new HashSet<Type>();
 #endif
             var count = entityBuilders.Length;
-#if DEBUG && !PROFILER
+#if DEBUG && !PROFILE_SVELTO
             for (var index = 0; index < count; ++index)
             {
                 var entityViewType = entityBuilders[index].GetEntityType();

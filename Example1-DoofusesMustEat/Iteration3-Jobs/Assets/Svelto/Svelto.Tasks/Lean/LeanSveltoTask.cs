@@ -1,9 +1,8 @@
-#if ENABLE_PLATFORM_PROFILER || TASKS_PROFILER_ENABLED || (DEBUG && !PROFILER)
+#if ENABLE_PLATFORM_PROFILER || TASKS_PROFILER_ENABLED || (DEBUG && !PROFILE_SVELTO)
 #define GENERATE_NAME
 #endif
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Svelto.Tasks.Enumerators;
 using Svelto.Tasks.Internal;
@@ -18,7 +17,7 @@ namespace Svelto.Tasks.Lean
             where TRunner : class, IRunner<LeanSveltoTask<TTask>>
         {
             _sveltoTask = new SveltoTaskWrapper<TTask, IRunner<LeanSveltoTask<TTask>>>(ref task, runner);
-#if DEBUG && !PROFILER
+#if DEBUG && !PROFILE_SVELTO
             DBC.Tasks.Check.Require(IS_TASK_STRUCT == true || task != null, 
                                     "A valid enumerator is required to enable a LeanSveltTask ".FastConcat(ToString()));
    
@@ -92,7 +91,7 @@ namespace Svelto.Tasks.Lean
 #if GENERATE_NAME
         string _name;
 #endif
-#if DEBUG && !PROFILER
+#if DEBUG && !PROFILE_SVELTO
         static readonly bool IS_TASK_STRUCT = typeof(TTask).IsValueType;
 #endif
     }

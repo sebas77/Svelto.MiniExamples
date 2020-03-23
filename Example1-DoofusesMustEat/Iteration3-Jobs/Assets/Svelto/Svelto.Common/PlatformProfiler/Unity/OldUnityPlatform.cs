@@ -80,7 +80,7 @@ namespace Svelto.Common
         
         public DisposableSampler Sample(string samplerName, string samplerInfo = null)
         {
-#if !PROFILER        
+#if !PROFILE_SVELTO        
             var name = samplerName.FastConcat("-", samplerInfo);
 #else
             var name = samplerName;
@@ -114,7 +114,7 @@ namespace Svelto.Common
         
         public DisposableSampler Sample(string samplerName, string samplerInfo = null)
         {
-#if !PROFILER                    
+#if !PROFILE_SVELTO                    
             var name = samplerName.FastConcat("-", samplerInfo);
 #else
             var name = samplerName;

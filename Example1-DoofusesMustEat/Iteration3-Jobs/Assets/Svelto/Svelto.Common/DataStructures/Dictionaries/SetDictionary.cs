@@ -256,7 +256,7 @@ namespace Svelto.DataStructures
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public bool MoveNext()
             {
-#if DEBUG && !PROFILER
+#if DEBUG && !PROFILE_SVELTO
                 if (_count != _dic.count)
                     throw new FasterDictionaryException("can't modify a dictionary during its iteration");
 #endif

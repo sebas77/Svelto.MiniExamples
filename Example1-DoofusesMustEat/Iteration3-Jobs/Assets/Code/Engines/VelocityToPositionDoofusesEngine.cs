@@ -4,7 +4,7 @@ using Svelto.ECS.Extensions.Unity;
 using Unity.Entities;
 using Unity.Jobs;
 
-namespace Svelto.ECS.MiniExamples.Example1B
+namespace Svelto.ECS.MiniExamples.Example1C
 {
     [DisableAutoCreation]
     public class VelocityToPositionDoofusesEngine : SystemBase, IQueryingEntitiesEngine

@@ -153,7 +153,7 @@ namespace Svelto.DataStructures
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void FastClear()
         {
-#if DEBUG && !PROFILER
+#if DEBUG && !PROFILE_SVELTO
             if (TypeCache<T>.type.IsClass)
                 Console.LogWarning(
                     "Warning: objects held by this list won't be garbage collected. Use ResetToReuse or Clear " +
@@ -190,7 +190,16 @@ namespace Svelto.DataStructures
 
             return list;
         }
+        
+        public static FasterList<T> PreInit(uint initialSize)
+        {
+            var list = new FasterList<T>(initialSize);
 
+            list._count = initialSize;
+
+            return list;
+        }
+        
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ResetToReuse()
         {

@@ -61,7 +61,7 @@ namespace Svelto.Common
 
         public DisposableSampler Sample(string samplerName, string samplerInfo = null)
         {
-#if !PROFILER
+#if !PROFILE_SVELTO
             var name = samplerInfo != null ? samplerName.FastConcat("-", samplerInfo) : samplerName;
 #else
             var name = samplerName;

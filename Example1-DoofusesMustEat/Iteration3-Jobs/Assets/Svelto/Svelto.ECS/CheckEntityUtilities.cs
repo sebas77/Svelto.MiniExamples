@@ -1,4 +1,4 @@
-﻿#if DEBUG && !PROFILER
+﻿#if DEBUG && !PROFILE_SVELTO
 using System.Collections.Generic;
 using Svelto.DataStructures;
 #else
@@ -13,7 +13,7 @@ namespace Svelto.ECS
     /// </summary>
     public partial class EnginesRoot
     {
-#if DEBUG && !PROFILER        
+#if DEBUG && !PROFILE_SVELTO        
         void CheckRemoveEntityID(EGID egid)
         {
      //       Console.LogError("<color=orange>removed</color>".FastConcat(egid.ToString()));

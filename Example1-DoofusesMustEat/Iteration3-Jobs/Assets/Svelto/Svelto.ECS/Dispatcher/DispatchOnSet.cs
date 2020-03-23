@@ -22,7 +22,7 @@ namespace Svelto.ECS
         
         public void NotifyOnValueSet(Action<EGID, T> action)
         {
-#if DEBUG && !PROFILER
+#if DEBUG && !PROFILE_SVELTO
             DBC.ECS.Check.Require(_subscriber == null, $"{this.GetType().Name}: listener already registered");            
 #endif
             _subscriber = action;

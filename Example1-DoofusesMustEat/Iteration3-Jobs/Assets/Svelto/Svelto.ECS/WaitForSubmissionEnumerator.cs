@@ -23,7 +23,7 @@ namespace Svelto.ECS
             _entityFunctions = entityFunctions;
             _entitiesDB = entitiesDb;
         }
-
+        
         public bool MoveNext()
         {
             switch (_state)

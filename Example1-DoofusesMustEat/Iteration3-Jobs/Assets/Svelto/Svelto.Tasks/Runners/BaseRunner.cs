@@ -2,8 +2,6 @@ using System;
 using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.Tasks.DataStructures;
-using Svelto.Tasks.ExtraLean;
-using Svelto.Tasks.FlowModifiers;
 using Svelto.Tasks.Internal;
 
 namespace Svelto.Tasks

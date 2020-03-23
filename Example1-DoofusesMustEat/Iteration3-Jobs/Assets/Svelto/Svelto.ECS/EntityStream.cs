@@ -125,11 +125,11 @@ namespace Svelto.ECS
         {
             unsafe
             {
-#if DEBUG && !PROFILER
+#if DEBUG && !PROFILE_SVELTO
                 _name = name;
 #endif
                 _ringBuffer = new RingBuffer<ValueTuple<T, EGID>>((int) capacity,
-#if DEBUG && !PROFILER
+#if DEBUG && !PROFILE_SVELTO
                     _name
 #else
                 string.Empty
@@ -199,7 +199,7 @@ namespace Svelto.ECS
         internal readonly bool           hasGroup;
         internal          IntPtr         mustBeDisposed;
 
-#if DEBUG && !PROFILER
+#if DEBUG && !PROFILE_SVELTO
         readonly string _name;
 #endif
     }

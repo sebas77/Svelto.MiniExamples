@@ -3,7 +3,7 @@ using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
 
-namespace Svelto.ECS.MiniExamples.Example1B
+namespace Svelto.ECS.MiniExamples.Example1C
 {
     /// <summary>
     /// In a Svelto<->UECS scenario, is common to have UECS entity created on creation of Svelto ones. Same for

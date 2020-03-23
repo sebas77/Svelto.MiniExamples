@@ -1,4 +1,4 @@
-#if DEBUG && !PROFILER
+#if DEBUG && !PROFILE_SVELTO
 #define ENABLE_DEBUG_FUNC
 #endif
 
@@ -27,7 +27,7 @@ namespace Svelto.ECS
         {
             var entities = QueryEntities<T>(group).ToFastAccess(out var count);
 
-#if DEBUG && !PROFILER
+#if DEBUG && !PROFILE_SVELTO
             if (count == 0)
                 throw new ECSException("Unique entity not found '".FastConcat(typeof(T).ToString()).FastConcat("'"));
             if (count != 1)

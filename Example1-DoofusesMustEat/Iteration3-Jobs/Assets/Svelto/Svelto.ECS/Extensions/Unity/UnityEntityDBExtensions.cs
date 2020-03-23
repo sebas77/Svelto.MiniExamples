@@ -26,6 +26,14 @@ namespace Svelto.ECS.Extensions.Unity
                                                  new DisposeJob<BufferTuple<NativeBuffer<T1>, NativeBuffer<T2>,
                                                      NativeBuffer<T3>>>(buffer).Schedule(inputDeps));
         }
+        
+        public static JobHandle CombineDispose<T1>(this in NativeEGIDMapper<T1> mapper, JobHandle combinedDependencies,
+                                                    JobHandle inputDeps)
+            where T1 : unmanaged, IEntityStruct
+        {
+            return JobHandle.CombineDependencies(combinedDependencies,
+                new DisposeJob<NativeEGIDMapper<T1>>(mapper).Schedule(inputDeps));
+        }
     }
 }
 #endif

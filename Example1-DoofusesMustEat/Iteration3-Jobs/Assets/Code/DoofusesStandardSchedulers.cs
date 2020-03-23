@@ -1,6 +1,6 @@
 using Svelto.Tasks.ExtraLean.Unity;
 
-namespace Svelto.ECS.MiniExamples.Example1B
+namespace Svelto.ECS.MiniExamples.Example1C
 {
     public static class DoofusesStandardSchedulers
     {

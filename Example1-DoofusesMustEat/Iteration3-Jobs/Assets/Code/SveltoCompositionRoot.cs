@@ -5,7 +5,7 @@ using Svelto.Tasks;
 using Unity.Entities;
 using UnityEngine;
 
-namespace Svelto.ECS.MiniExamples.Example1B
+namespace Svelto.ECS.MiniExamples.Example1C
 {
     public class SveltoCompositionRoot : ICompositionRoot, ICustomBootstrap
     {

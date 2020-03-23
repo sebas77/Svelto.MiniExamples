@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Svelto.DataStructures;
+using Svelto.ECS.Schedulers;
 
 namespace Svelto.ECS
 {
@@ -105,9 +106,11 @@ namespace Svelto.ECS
             readonly WeakReference<EnginesRoot> _enginesRoot;
         }
 
+        public IEntitySubmissionScheduler scheduler { get; }
+
         void QueueEntitySubmitOperation(EntitySubmitOperation entitySubmitOperation)
         {
-#if DEBUG && !PROFILER
+#if DEBUG && !PROFILE_SVELTO
             entitySubmitOperation.trace = new StackFrame(1, true);
 #endif
             _entitiesOperations.Add((ulong) entitySubmitOperation.fromID, entitySubmitOperation);
@@ -115,7 +118,7 @@ namespace Svelto.ECS
 
         void QueueEntitySubmitOperation<T>(EntitySubmitOperation entitySubmitOperation) where T : IEntityDescriptor
         {
-#if DEBUG && !PROFILER
+#if DEBUG && !PROFILE_SVELTO
             entitySubmitOperation.trace = new StackFrame(1, true);
 
             if (_entitiesOperations.TryGetValue((ulong) entitySubmitOperation.fromID, out var entitySubmitedOperation))

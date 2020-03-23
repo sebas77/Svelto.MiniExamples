@@ -1,7 +1,8 @@
-#if ENABLE_PLATFORM_PROFILER || TASKS_PROFILER_ENABLED || (DEBUG && !PROFILER)
+#if ENABLE_PLATFORM_PROFILER || TASKS_PROFILER_ENABLED || (DEBUG && !PROFILE_SVELTO)
 #define GENERATE_NAME
 #endif
 
+using System;
 using System.Collections;
 using DBC.Tasks;
 
@@ -14,7 +15,7 @@ namespace Svelto.Tasks.ExtraLean
         {
             _runningTask  = task;
             
-#if DEBUG && !PROFILER
+#if DEBUG && !PROFILE_SVELTO
             DBC.Tasks.Check.Require(IS_TASK_STRUCT == true || task != null, 
                 "A valid enumerator is required to enable an ExtraLeanSveltTask ".FastConcat(ToString()));
             Check.Require(runner != null, "The runner cannot be null ".FastConcat(ToString()));
@@ -57,7 +58,13 @@ namespace Svelto.Tasks.ExtraLean
 
             bool completed;
             if (_threadSafeSveltoTaskStates.explicitlyStopped == false)
+            {
                 completed = !_runningTask.MoveNext();
+#if DEBUG && !PROFILE_SVELTO                
+                if (_runningTask.Current != null)
+                    throw new Exception("ExtraLean runners cannot yield any other value than Yield.It");
+#endif
+            }
             else
                 completed = true;
 
@@ -77,7 +84,7 @@ namespace Svelto.Tasks.ExtraLean
 #if GENERATE_NAME
         string _name;
 #endif
-#if DEBUG && !PROFILER
+#if DEBUG && !PROFILE_SVELTO
         static readonly bool IS_TASK_STRUCT = typeof(TTask).IsValueType;
 #endif
     }

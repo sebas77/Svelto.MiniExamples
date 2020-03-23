@@ -5,7 +5,7 @@ using Svelto.Utilities;
 
 namespace Svelto.ECS
 {
-#if DEBUG && !PROFILER
+#if DEBUG && !PROFILE_SVELTO
     struct ECSTuple<T1, T2>
     {
         public readonly T1 implementorType;
@@ -27,7 +27,7 @@ namespace Svelto.ECS
                                            , FasterList<KeyValuePair<Type, FastInvokeActionCast<T>>>
                                                  entityViewBlazingFastReflection
                                            , IEnumerable<object> implementors,
-#if DEBUG && !PROFILER
+#if DEBUG && !PROFILE_SVELTO
                                              Dictionary<Type, ECSTuple<object, int>> implementorsByType
 #else
                                             Dictionary<Type, object> implementorsByType
@@ -51,7 +51,7 @@ namespace Svelto.ECS
                     for (var iindex = 0; iindex < interfaces.Length; iindex++)
                     {
                         var componentType = interfaces[iindex];
-#if DEBUG && !PROFILER
+#if DEBUG && !PROFILE_SVELTO
                         if (implementorsByType.TryGetValue(componentType, out var implementorData))
                         {
                             implementorData.numberOfImplementations++;
@@ -64,7 +64,7 @@ namespace Svelto.ECS
 #endif
                     }
                 }
-#if DEBUG && !PROFILER
+#if DEBUG && !PROFILE_SVELTO
                 else
                 {
                     Console.Log(NULL_IMPLEMENTOR_ERROR.FastConcat(" entityView ",
@@ -78,7 +78,7 @@ namespace Svelto.ECS
                 var fieldSetter = setters[i];
                 var fieldType   = fieldSetter.Key;
 
-#if DEBUG && !PROFILER
+#if DEBUG && !PROFILE_SVELTO
                 ECSTuple<object, int> component;
 #else
             object component;
@@ -91,7 +91,7 @@ namespace Svelto.ECS
 
                     throw e;
                 }
-#if DEBUG && !PROFILER
+#if DEBUG && !PROFILE_SVELTO
                 if (component.numberOfImplementations > 1)
                     throw new ECSException(DUPLICATE_IMPLEMENTOR_ERROR.FastConcat(
                                                                                   "Component Type: ", fieldType.Name,
@@ -101,7 +101,7 @@ namespace Svelto.ECS
                                            " - EntityView: "                                            +
                                            entityBuilder.GetEntityType().Name);
 #endif
-#if DEBUG && !PROFILER
+#if DEBUG && !PROFILE_SVELTO
                 fieldSetter.Value(ref entityView, component.implementorType);
 #else
             fieldSetter.Value(ref entityView, component);
