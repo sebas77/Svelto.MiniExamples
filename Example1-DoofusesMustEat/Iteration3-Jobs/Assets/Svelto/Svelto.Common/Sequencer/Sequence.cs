@@ -39,7 +39,7 @@ namespace Svelto.Common
     {
         public Sequence(FasterReadOnlyList<T> itemsToSort)
         {
-            _ordered = FasterList<T>.PreInit(itemsToSort.Count);
+            _ordered = FasterList<T>.PreInit((uint) SequenceCache<En>.cachedEnum.Count);
             int counted = 0;
             var cachedEnum = SequenceCache<En>.cachedEnum;
             foreach (T item in itemsToSort)
@@ -51,28 +51,28 @@ namespace Svelto.Common
                 string typeName = type.GetCustomAttribute<SequencedAttribute>().name;
                 DBC.Common.Check.Require(cachedEnum.ContainsKey(typeName) == true
                     , $"Sequenced item not contained in the sequence {type.Name}");
-                var index = cachedEnum[type.Name];
-                counted++;
-                _ordered[index] = item;
+                    var index = cachedEnum[type.Name];
+                    counted++;
+                    _ordered[index] = item;
             }
             
 #if DEBUG && !PROFILE_SVELTO
-                if (counted != cachedEnum.Count)
+            if (counted != cachedEnum.Count)
+            {
+                HashSet<string> debug = new HashSet<string>();
+
+                foreach (T debugItem in itemsToSort)
                 {
-                    HashSet<string> debug = new HashSet<string>();
-
-                    foreach (T debugItem in itemsToSort)
-                    {
-                        debug.Add(debugItem.GetType().Name);
-                    }
-
-                    foreach (var debugSequence in cachedEnum.Keys)
-                    {
-                        if (debug.Contains(debugSequence) == false)
-                            throw new Exception(
-                                $"The sequence {typeof(En).Name} wasn't fully satisfied, missing sequenced item {debugSequence}");
-                    }
+                    debug.Add(debugItem.GetType().Name);
                 }
+
+                foreach (var debugSequence in cachedEnum.Keys)
+                {
+                    if (debug.Contains(debugSequence) == false)
+                        throw new Exception(
+                            $"The sequence {typeof(En).Name} wasn't fully satisfied, missing sequenced item {debugSequence}");
+                }
+            }
 #endif
         }
 

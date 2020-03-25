@@ -1,7 +1,6 @@
 using Svelto.ECS.EntityStructs;
 using Svelto.ECS.Extensions.Unity;
 using Unity.Entities;
-using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Transforms;
 
@@ -42,8 +41,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
                     //the group as a filter
                     .WithSharedComponentFilter(new UECSSveltoGroupID((uint) @group)).Schedule(Dependency);
 
-                Dependency = new DisposeJob<EntityCollection<PositionEntityStruct>.EntityNativeIterator<
-                        PositionEntityStruct>>(entityCollection).Schedule(deps);
+                Dependency = entityCollection.CombineDispose(Dependency, deps);
             }
         }
     }

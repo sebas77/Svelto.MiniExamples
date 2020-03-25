@@ -48,7 +48,6 @@ namespace Svelto.ECS.MiniExamples.Example1C
             }
 
             readonly float _deltaTime;
-
             readonly BufferTuple<NativeBuffer<PositionEntityStruct>, NativeBuffer<VelocityEntityStruct>,
                 NativeBuffer<SpeedEntityStruct>> _doofuses;
         }

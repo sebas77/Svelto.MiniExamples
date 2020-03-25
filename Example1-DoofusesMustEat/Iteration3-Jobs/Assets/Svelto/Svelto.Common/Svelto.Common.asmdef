@@ -1,5 +1,5 @@
-﻿{
-    "name": "Svelto.Common",
+{
+    "name": "Svelto.Common_3",
     "references": [
         "Unity.Collections"
     ],
@@ -10,7 +10,8 @@
     "precompiledReferences": [
         "System.Runtime.CompilerServices.Unsafe.dll"
     ],
-    "autoReferenced": true,
+    "autoReferenced": false,
     "defineConstraints": [],
-    "versionDefines": []
+    "versionDefines": [],
+    "noEngineReferences": false
 }

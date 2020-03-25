@@ -1,6 +1,6 @@
 namespace Svelto.ECS.MiniExamples.Example1C
 {
-    public struct MealEntityStruct : IEntityStruct, INeedEGID
+    public struct MealEntityStruct : IEntityComponent, INeedEGID
     {
         public int mealLeft;
         public int eaters;

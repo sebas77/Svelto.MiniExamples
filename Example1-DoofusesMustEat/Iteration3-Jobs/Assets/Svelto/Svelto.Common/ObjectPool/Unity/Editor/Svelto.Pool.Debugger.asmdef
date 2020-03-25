@@ -1,12 +1,17 @@
 {
-    "name": "Svelto.Pool.Debugger",
+    "name": "Svelto.Pool.Debugger_3",
     "references": [
         "Svelto.Common"
     ],
-    "optionalUnityReferences": [],
     "includePlatforms": [
         "Editor"
     ],
     "excludePlatforms": [],
-    "allowUnsafeCode": false
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }

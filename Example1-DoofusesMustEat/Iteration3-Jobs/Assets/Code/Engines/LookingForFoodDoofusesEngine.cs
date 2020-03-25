@@ -31,9 +31,9 @@ namespace Svelto.ECS.MiniExamples.Example1C
         JobHandle CreateJobForDoofusesAndFood(JobHandle inputDeps, ExclusiveGroup[] foodGroups,
             ExclusiveGroup[] doofusesGroups)
         {
-            var foodEntityGroups = entitiesDB.GroupsIterator<PositionEntityStruct, MealEntityStruct>(foodGroups);
+            var foodEntityGroups = entitiesDB.NativeGroupsIterator<PositionEntityStruct, MealEntityStruct>(foodGroups);
             var doofusesEntityGroups =
-                entitiesDB.GroupsIterator<PositionEntityStruct, VelocityEntityStruct>(doofusesGroups);
+                entitiesDB.NativeGroupsIterator<PositionEntityStruct, VelocityEntityStruct>(doofusesGroups);
 
             JobHandle combinedDependencies = default;
 

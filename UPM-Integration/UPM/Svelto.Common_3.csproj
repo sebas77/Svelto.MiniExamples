@@ -12,10 +12,11 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{2268A9AD-7687-95BD-7C4B-A0BB999C0E9F}</ProjectGuid>
+    <ProjectGuid>{4f852ede-8976-0109-7600-b8f8f5216a43}</ProjectGuid>
+    <ProjectTypeGuids>{E097FAD1-6243-4DAD-9C02-E9B9EFC3FFC1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <AssemblyName>Svelto.ECS.Debugger</AssemblyName>
+    <AssemblyName>Svelto.Common_3</AssemblyName>
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <BaseDirectory>.</BaseDirectory>
@@ -24,12 +25,12 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>Temp\bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;UNITY_2019_3_6;UNITY_2019_3;UNITY_2019;UNITY_5_3_OR_NEWER;UNITY_5_4_OR_NEWER;UNITY_5_5_OR_NEWER;UNITY_5_6_OR_NEWER;UNITY_2017_1_OR_NEWER;UNITY_2017_2_OR_NEWER;UNITY_2017_3_OR_NEWER;UNITY_2017_4_OR_NEWER;UNITY_2018_1_OR_NEWER;UNITY_2018_2_OR_NEWER;UNITY_2018_3_OR_NEWER;UNITY_2018_4_OR_NEWER;UNITY_2019_1_OR_NEWER;UNITY_2019_2_OR_NEWER;UNITY_2019_3_OR_NEWER;PLATFORM_ARCH_64;UNITY_64;UNITY_INCLUDE_TESTS;ENABLE_AR;ENABLE_AUDIO;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_EVENT_QUEUE;ENABLE_MICROPHONE;ENABLE_MULTIPLE_DISPLAYS;ENABLE_PHYSICS;ENABLE_TEXTURE_STREAMING;ENABLE_UNET;ENABLE_LZMA;ENABLE_UNITYEVENTS;ENABLE_VR;ENABLE_WEBCAM;ENABLE_UNITYWEBREQUEST;ENABLE_WWW;ENABLE_CLOUD_SERVICES;ENABLE_CLOUD_SERVICES_COLLAB;ENABLE_CLOUD_SERVICES_COLLAB_SOFTLOCKS;ENABLE_CLOUD_SERVICES_ADS;ENABLE_CLOUD_SERVICES_USE_WEBREQUEST;ENABLE_CLOUD_SERVICES_CRASH_REPORTING;ENABLE_CLOUD_SERVICES_PURCHASING;ENABLE_CLOUD_SERVICES_ANALYTICS;ENABLE_CLOUD_SERVICES_UNET;ENABLE_CLOUD_SERVICES_BUILD;ENABLE_CLOUD_LICENSE;ENABLE_EDITOR_HUB_LICENSE;ENABLE_WEBSOCKET_CLIENT;ENABLE_DIRECTOR_AUDIO;ENABLE_DIRECTOR_TEXTURE;ENABLE_MANAGED_JOBS;ENABLE_MANAGED_TRANSFORM_JOBS;ENABLE_MANAGED_ANIMATION_JOBS;ENABLE_MANAGED_AUDIO_JOBS;INCLUDE_DYNAMIC_GI;ENABLE_MONO_BDWGC;ENABLE_SCRIPTING_GC_WBARRIERS;PLATFORM_SUPPORTS_MONO;RENDER_SOFTWARE_CURSOR;ENABLE_VIDEO;PLATFORM_STANDALONE;PLATFORM_STANDALONE_WIN;UNITY_STANDALONE_WIN;UNITY_STANDALONE;ENABLE_RUNTIME_GI;ENABLE_MOVIES;ENABLE_NETWORK;ENABLE_CRUNCH_TEXTURE_COMPRESSION;ENABLE_OUT_OF_PROCESS_CRASH_HANDLER;ENABLE_CLUSTER_SYNC;ENABLE_CLUSTERINPUT;ENABLE_WEBSOCKET_HOST;ENABLE_MONO;NET_STANDARD_2_0;DEVELOPMENT_BUILD;ENABLE_PROFILER;UNITY_ASSERTIONS;UNITY_EDITOR;UNITY_EDITOR_64;UNITY_EDITOR_WIN;ENABLE_UNITY_COLLECTIONS_CHECKS;ENABLE_BURST_AOT;UNITY_TEAM_LICENSE;UNITY_PRO_LICENSE;ENABLE_CUSTOM_RENDER_TEXTURE;ENABLE_DIRECTOR;ENABLE_LOCALIZATION;ENABLE_SPRITES;ENABLE_TERRAIN;ENABLE_TILEMAP;ENABLE_TIMELINE;ENABLE_LEGACY_INPUT_MANAGER;CSHARP_7_OR_LATER;CSHARP_7_3_OR_NEWER</DefineConstants>
+    <OutputPath>Temp\Bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;UNITY_2019_3_6;UNITY_2019_3;UNITY_2019;UNITY_5_3_OR_NEWER;UNITY_5_4_OR_NEWER;UNITY_5_5_OR_NEWER;UNITY_5_6_OR_NEWER;UNITY_2017_1_OR_NEWER;UNITY_2017_2_OR_NEWER;UNITY_2017_3_OR_NEWER;UNITY_2017_4_OR_NEWER;UNITY_2018_1_OR_NEWER;UNITY_2018_2_OR_NEWER;UNITY_2018_3_OR_NEWER;UNITY_2018_4_OR_NEWER;UNITY_2019_1_OR_NEWER;UNITY_2019_2_OR_NEWER;UNITY_2019_3_OR_NEWER;PLATFORM_ARCH_64;UNITY_64;UNITY_INCLUDE_TESTS;ENABLE_AR;ENABLE_AUDIO;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_EVENT_QUEUE;ENABLE_MICROPHONE;ENABLE_MULTIPLE_DISPLAYS;ENABLE_PHYSICS;ENABLE_TEXTURE_STREAMING;ENABLE_UNET;ENABLE_LZMA;ENABLE_UNITYEVENTS;ENABLE_VR;ENABLE_WEBCAM;ENABLE_UNITYWEBREQUEST;ENABLE_WWW;ENABLE_CLOUD_SERVICES;ENABLE_CLOUD_SERVICES_COLLAB;ENABLE_CLOUD_SERVICES_COLLAB_SOFTLOCKS;ENABLE_CLOUD_SERVICES_ADS;ENABLE_CLOUD_SERVICES_USE_WEBREQUEST;ENABLE_CLOUD_SERVICES_CRASH_REPORTING;ENABLE_CLOUD_SERVICES_PURCHASING;ENABLE_CLOUD_SERVICES_ANALYTICS;ENABLE_CLOUD_SERVICES_UNET;ENABLE_CLOUD_SERVICES_BUILD;ENABLE_CLOUD_LICENSE;ENABLE_EDITOR_HUB_LICENSE;ENABLE_WEBSOCKET_CLIENT;ENABLE_DIRECTOR_AUDIO;ENABLE_DIRECTOR_TEXTURE;ENABLE_MANAGED_JOBS;ENABLE_MANAGED_TRANSFORM_JOBS;ENABLE_MANAGED_ANIMATION_JOBS;ENABLE_MANAGED_AUDIO_JOBS;INCLUDE_DYNAMIC_GI;ENABLE_MONO_BDWGC;ENABLE_SCRIPTING_GC_WBARRIERS;PLATFORM_SUPPORTS_MONO;RENDER_SOFTWARE_CURSOR;ENABLE_VIDEO;PLATFORM_STANDALONE;PLATFORM_STANDALONE_WIN;UNITY_STANDALONE_WIN;UNITY_STANDALONE;ENABLE_RUNTIME_GI;ENABLE_MOVIES;ENABLE_NETWORK;ENABLE_CRUNCH_TEXTURE_COMPRESSION;ENABLE_OUT_OF_PROCESS_CRASH_HANDLER;ENABLE_CLUSTER_SYNC;ENABLE_CLUSTERINPUT;ENABLE_WEBSOCKET_HOST;ENABLE_MONO;NET_STANDARD_2_0;ENABLE_PROFILER;UNITY_ASSERTIONS;UNITY_EDITOR;UNITY_EDITOR_64;UNITY_EDITOR_WIN;ENABLE_UNITY_COLLECTIONS_CHECKS;ENABLE_BURST_AOT;UNITY_TEAM_LICENSE;UNITY_PRO_LICENSE;ENABLE_CUSTOM_RENDER_TEXTURE;ENABLE_DIRECTOR;ENABLE_LOCALIZATION;ENABLE_SPRITES;ENABLE_TERRAIN;ENABLE_TILEMAP;ENABLE_TIMELINE;ENABLE_LEGACY_INPUT_MANAGER;CSHARP_7_OR_LATER;CSHARP_7_3_OR_NEWER</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <NoWarn>0169</NoWarn>
-    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
+    <NoWarn></NoWarn>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -38,8 +39,8 @@
     <OutputPath>Temp\bin\Release\</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <NoWarn>0169</NoWarn>
-    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
+    <NoWarn></NoWarn>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup>
@@ -50,16 +51,72 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="UnityEngine">
-      <HintPath>C:\Program Files\Unity\Hub\Editor\2019.3.6f1\Editor\Data\Managed/UnityEngine/UnityEngine.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEditor">
-      <HintPath>C:\Program Files\Unity\Hub\Editor\2019.3.6f1\Editor\Data\Managed/UnityEditor.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
-     <Compile Include="Assets\Svelto\Svelto.ECS.Debugger\ExclusiveGroupDebugger.cs" />
-     <None Include="Assets\Svelto\Svelto.ECS.Debugger\Svelto.ECS.Debugger.asmdef" />
+     <Compile Include="Assets\Svelto.Common\Command\CommandFactory.cs" />
+     <Compile Include="Assets\Svelto.Common\Command\ICommand.cs" />
+     <Compile Include="Assets\Svelto.Common\Command\ICommandFactory.cs" />
+     <Compile Include="Assets\Svelto.Common\Command\IInjectableCommand.cs" />
+     <Compile Include="Assets\Svelto.Common\Context\ContextNotifier.cs" />
+     <Compile Include="Assets\Svelto.Common\Context\Extensions\Unity\UnityContext.cs" />
+     <Compile Include="Assets\Svelto.Common\Context\ICompositionRoot.cs" />
+     <Compile Include="Assets\Svelto.Common\Context\IContextNotifer.cs" />
+     <Compile Include="Assets\Svelto.Common\Context\IWaitForFrameworkDestruction.cs" />
+     <Compile Include="Assets\Svelto.Common\Context\IWaitForFrameworkInitialization.cs" />
+     <Compile Include="Assets\Svelto.Common\DBC.cs" />
+     <Compile Include="Assets\Svelto.Common\DataStructures\Arrays\FasterList.cs" />
+     <Compile Include="Assets\Svelto.Common\DataStructures\Arrays\FasterListEnumerator.cs" />
+     <Compile Include="Assets\Svelto.Common\DataStructures\Arrays\FasterReadOnlyList.cs" />
+     <Compile Include="Assets\Svelto.Common\DataStructures\Arrays\IBuffer.cs" />
+     <Compile Include="Assets\Svelto.Common\DataStructures\Arrays\ManagedBuffer.cs" />
+     <Compile Include="Assets\Svelto.Common\DataStructures\Arrays\NativeBuffer.cs" />
+     <Compile Include="Assets\Svelto.Common\DataStructures\Arrays\NativeFasterList.cs" />
+     <Compile Include="Assets\Svelto.Common\DataStructures\Arrays\ThreadSafeFasterList.cs" />
+     <Compile Include="Assets\Svelto.Common\DataStructures\CircularBufferIndexer.cs" />
+     <Compile Include="Assets\Svelto.Common\DataStructures\Dictionaries\FasterDictionary.cs" />
+     <Compile Include="Assets\Svelto.Common\DataStructures\Dictionaries\FasterDictionaryNode.cs" />
+     <Compile Include="Assets\Svelto.Common\DataStructures\Dictionaries\IFasterDictionary.cs" />
+     <Compile Include="Assets\Svelto.Common\DataStructures\Dictionaries\NativeFasterDictionaryStruct.cs" />
+     <Compile Include="Assets\Svelto.Common\DataStructures\Dictionaries\ReadOnlyDictionary.cs" />
+     <Compile Include="Assets\Svelto.Common\DataStructures\Dictionaries\SetDictionary.cs" />
+     <Compile Include="Assets\Svelto.Common\DataStructures\Dictionaries\ThreadSafeDictionary.cs" />
+     <Compile Include="Assets\Svelto.Common\DataStructures\FasterDenseList.cs" />
+     <Compile Include="Assets\Svelto.Common\DataStructures\FasterSparseList.cs" />
+     <Compile Include="Assets\Svelto.Common\DataStructures\HashHelpers.cs" />
+     <Compile Include="Assets\Svelto.Common\DataStructures\ReadOnlyCollectionStruct.cs" />
+     <Compile Include="Assets\Svelto.Common\DataStructures\RefWrapper.cs" />
+     <Compile Include="Assets\Svelto.Common\DataStructures\RingBuffer.cs" />
+     <Compile Include="Assets\Svelto.Common\DataStructures\TypeCache.cs" />
+     <Compile Include="Assets\Svelto.Common\DataStructures\WeakReference.cs" />
+     <Compile Include="Assets\Svelto.Common\DebugExtensions.cs" />
+     <Compile Include="Assets\Svelto.Common\ObjectPool\IObjectPool.cs" />
+     <Compile Include="Assets\Svelto.Common\ObjectPool\IObjectPoolDebug.cs" />
+     <Compile Include="Assets\Svelto.Common\ObjectPool\ObjectPool.cs" />
+     <Compile Include="Assets\Svelto.Common\ObjectPool\Unity\GameObjectPool.cs" />
+     <Compile Include="Assets\Svelto.Common\ObjectPool\Unity\MonoBehaviourPool.cs" />
+     <Compile Include="Assets\Svelto.Common\ObjectPool\Unity\PoolDebugger.cs" />
+     <Compile Include="Assets\Svelto.Common\Observer\Observable.cs" />
+     <Compile Include="Assets\Svelto.Common\Observer\Observer.cs" />
+     <Compile Include="Assets\Svelto.Common\PlatformProfiler\PlatformProfiler.cs" />
+     <Compile Include="Assets\Svelto.Common\PlatformProfiler\Unity\OldUnityPlatform.cs" />
+     <Compile Include="Assets\Svelto.Common\PlatformProfiler\Unity\UnityPlatform.cs" />
+     <Compile Include="Assets\Svelto.Common\Sequencer\Sequence.cs" />
+     <Compile Include="Assets\Svelto.Common\Utilities\ActionRef.cs" />
+     <Compile Include="Assets\Svelto.Common\Utilities\Console.cs" />
+     <Compile Include="Assets\Svelto.Common\Utilities\DataToString.cs" />
+     <Compile Include="Assets\Svelto.Common\Utilities\FastConcatUtility.cs" />
+     <Compile Include="Assets\Svelto.Common\Utilities\FastInvoke.cs" />
+     <Compile Include="Assets\Svelto.Common\Utilities\ILogger.cs" />
+     <Compile Include="Assets\Svelto.Common\Utilities\Murmur3.cs" />
+     <Compile Include="Assets\Svelto.Common\Utilities\NetFXCoreWrappers.cs" />
+     <Compile Include="Assets\Svelto.Common\Utilities\ReaderWriterLockSlimEx.cs" />
+     <Compile Include="Assets\Svelto.Common\Utilities\SimpleLogger.cs" />
+     <Compile Include="Assets\Svelto.Common\Utilities\SlowLoggerUnity.cs" />
+     <Compile Include="Assets\Svelto.Common\Utilities\ThreadUtility.cs" />
+     <Compile Include="Assets\Svelto.Common\Utilities\TypeToString.cs" />
+     <Compile Include="Assets\Svelto.Common\Utilities\xxHash.cs" />
+     <None Include="Assets\Svelto.Common\Svelto.Common.asmdef" />
+ <Reference Include="UnityEngine">
+ <HintPath>C:/Program Files/Unity/Hub/Editor/2019.3.6f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
+ </Reference>
  <Reference Include="UnityEngine.AIModule">
  <HintPath>C:/Program Files/Unity/Hub/Editor/2019.3.6f1/Editor/Data/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>
  </Reference>
@@ -237,6 +294,9 @@
  <Reference Include="UnityEngine.XRModule">
  <HintPath>C:/Program Files/Unity/Hub/Editor/2019.3.6f1/Editor/Data/Managed/UnityEngine/UnityEngine.XRModule.dll</HintPath>
  </Reference>
+ <Reference Include="UnityEditor">
+ <HintPath>C:/Program Files/Unity/Hub/Editor/2019.3.6f1/Editor/Data/Managed/UnityEditor.dll</HintPath>
+ </Reference>
  <Reference Include="UnityEditor.VR">
  <HintPath>C:/Program Files/Unity/Hub/Editor/2019.3.6f1/Editor/Data/UnityExtensions/Unity/UnityVR/Editor/UnityEditor.VR.dll</HintPath>
  </Reference>
@@ -246,14 +306,8 @@
  <Reference Include="UnityEditor.WindowsStandalone.Extensions">
  <HintPath>C:/Program Files/Unity/Hub/Editor/2019.3.6f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll</HintPath>
  </Reference>
- <Reference Include="Unity.Burst.Unsafe">
- <HintPath>C:/Prgdir/Svelto/Svelto.MiniExamples/Example1-DoofusesMustEat/Iteration3-Jobs/Library/PackageCache/com.unity.burst@1.3.0-preview.3/Unity.Burst.Unsafe.dll</HintPath>
- </Reference>
  <Reference Include="System.Runtime.CompilerServices.Unsafe">
- <HintPath>C:/Prgdir/Svelto/Svelto.MiniExamples/Example1-DoofusesMustEat/Iteration3-Jobs/Library/PackageCache/com.unity.collections@0.5.2-preview.8/System.Runtime.CompilerServices.Unsafe.dll</HintPath>
- </Reference>
- <Reference Include="Newtonsoft.Json">
- <HintPath>C:/Prgdir/Svelto/Svelto.MiniExamples/Example1-DoofusesMustEat/Iteration3-Jobs/Library/PackageCache/com.unity.nuget.newtonsoft-json@2.0.0-preview/Runtime/Newtonsoft.Json.dll</HintPath>
+ <HintPath>C:/Prgdir/Svelto/Svelto.MiniExamples/UPM-Integration/UPM/Library/PackageCache/com.unity.collections@0.7.0-preview.2/System.Runtime.CompilerServices.Unsafe.dll</HintPath>
  </Reference>
  <Reference Include="netstandard">
  <HintPath>C:/Program Files/Unity/Hub/Editor/2019.3.6f1/Editor/Data/NetStandard/ref/2.0.0/netstandard.dll</HintPath>
@@ -600,19 +654,20 @@
  <Reference Include="System.Xml.Serialization">
  <HintPath>C:/Program Files/Unity/Hub/Editor/2019.3.6f1/Editor/Data/NetStandard/compat/2.0.0/shims/netfx/System.Xml.Serialization.dll</HintPath>
  </Reference>
+ <Reference Include="Unity.Collections">
+ <HintPath>C:/Prgdir/Svelto/Svelto.MiniExamples/UPM-Integration/UPM/Library/ScriptAssemblies/Unity.Collections.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEditor.UI">
+ <HintPath>C:/Prgdir/Svelto/Svelto.MiniExamples/UPM-Integration/UPM/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.UI">
+ <HintPath>C:/Prgdir/Svelto/Svelto.MiniExamples/UPM-Integration/UPM/Library/ScriptAssemblies/UnityEngine.UI.dll</HintPath>
+ </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="Svelto.ECS.csproj">
-      <Project>{4E090A38-399E-05A1-43BF-71C646B6E92D}</Project>
-      <Name>Svelto.ECS</Name>
-    </ProjectReference>
-    <ProjectReference Include="Svelto.Common.csproj">
-      <Project>{2C275F67-4AB5-9F9C-D841-0992A1422317}</Project>
-      <Name>Svelto.Common</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
