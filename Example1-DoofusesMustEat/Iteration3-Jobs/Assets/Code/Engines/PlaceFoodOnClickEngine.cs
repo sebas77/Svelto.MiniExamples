@@ -10,7 +10,7 @@ using Random = UnityEngine.Random;
 
 namespace Svelto.ECS.MiniExamples.Example1C
 {
-    public class PlaceFoodOnClickEngine : IQueryingEntitiesEngine
+    public class PlaceFoodOnClickEngine : IQueryingEntitiesEngine, IJobifiableEngine
     {
         public PlaceFoodOnClickEngine(Entity redfood, Entity bluefood, IEntityFactory entityFactory)
         {

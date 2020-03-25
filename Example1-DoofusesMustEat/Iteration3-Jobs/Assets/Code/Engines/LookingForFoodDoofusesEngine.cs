@@ -9,8 +9,7 @@ using Unity.Mathematics;
 
 namespace Svelto.ECS.MiniExamples.Example1C
 {
-    [DisableAutoCreation]
-    public class LookingForFoodDoofusesEngine : SystemBase, IQueryingEntitiesEngine
+    public class LookingForFoodDoofusesEngine : IQueryingEntitiesEngine, IJobifiableEngine
     {
         public void Ready()
         {

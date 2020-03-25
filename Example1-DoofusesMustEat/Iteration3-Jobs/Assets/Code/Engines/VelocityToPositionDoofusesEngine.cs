@@ -7,7 +7,7 @@ using Unity.Jobs;
 namespace Svelto.ECS.MiniExamples.Example1C
 {
     [DisableAutoCreation]
-    public class VelocityToPositionDoofusesEngine : SystemBase, IQueryingEntitiesEngine
+    public class VelocityToPositionDoofusesEngine : IQueryingEntitiesEngine, IJobifiableEngine
     {
         public void Ready()
         { }

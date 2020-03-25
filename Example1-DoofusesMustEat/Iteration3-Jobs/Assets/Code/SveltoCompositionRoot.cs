@@ -1,23 +1,71 @@
 using System;
+using System.Collections;
+using Svelto.Common;
 using Svelto.Context;
-using Svelto.ECS.Schedulers.Unity;
+using Svelto.DataStructures;
+using Svelto.ECS.Internal;
 using Svelto.Tasks;
+using Svelto.Tasks.ExtraLean;
 using Unity.Entities;
+using Unity.Jobs;
 using UnityEngine;
 
 namespace Svelto.ECS.MiniExamples.Example1C
 {
+    public class EnginesExecutionOrder : JobifiableEnginesGroup<IJobifiableEngine, DoofusesEnginesOrder>
+    {
+        public EnginesExecutionOrder(FasterReadOnlyList<IJobifiableEngine> engines) : base(engines)
+        {
+        }
+    }
+
+    public struct DoofusesEnginesOrder : ISequenceOrder
+    {
+        public string[] enginesOrder => new string[] { };
+    }
+
     public class SveltoCompositionRoot : ICompositionRoot, ICustomBootstrap
     {
         static World _world;
 
         EnginesRoot _enginesRoot;
+        FasterList<IJobifiableEngine> _enginesToTick;
+        SimpleSubmissioncheduler _simpleSubmitScheduler;
+
+        void StartTicking(FasterList<IJobifiableEngine> engines)
+        {
+            MainThreadTick(engines).RunOn(DoofusesStandardSchedulers.mainThreadScheduler);
+        }
+
+        IEnumerator MainThreadTick(FasterList<IJobifiableEngine> engines)
+        {
+            EnginesExecutionOrder order = new EnginesExecutionOrder(new FasterReadOnlyList<IJobifiableEngine>(engines));
+
+            JobHandle jobs = default;
+            
+            while (true)
+            {
+                jobs.Complete();
+                
+                //Sync point on the mainthread:
+                //Svelto entities are added/removed/swapped
+                //callback functions are called (which may create UECS entities)
+                _simpleSubmitScheduler.SubmitEntities();
+
+                //schedule all jobs and let them run until next frame;
+                order.Execute(jobs);
+                
+                yield return Yield.It;
+            }
+        }
 
         public void OnContextInitialized<T>(T contextHolder)
         {
             QualitySettings.vSyncCount = -1;
 
-            _enginesRoot = new EnginesRoot(new UnityEntitySubmissionScheduler());
+            _simpleSubmitScheduler = new SimpleSubmissioncheduler();
+            _enginesRoot = new EnginesRoot(_simpleSubmitScheduler);
+            _enginesToTick = new FasterList<IJobifiableEngine>();
 
             //add the engines we are going to use
             var generateEntityFactory = _enginesRoot.GenerateEntityFactory();
@@ -39,14 +87,28 @@ namespace Svelto.ECS.MiniExamples.Example1C
                                                                        new GameObjectConversionSettings()
                                                                            {DestinationWorld = _world});
 
-            _enginesRoot.AddEngine(new PlaceFoodOnClickEngine(redfoodEntity, bluefoodEntity, generateEntityFactory));
-            _enginesRoot.AddEngine(new SpawningDoofusEngine(redDoofusEntity, blueDoofusEntity, generateEntityFactory));
-            _enginesRoot.AddEngine(new SpawnUnityEntityOnSveltoEntityEngine(_world));
-            _enginesRoot.AddEngine(new ConsumingFoodEngine(_enginesRoot.GenerateEntityFunctions()));
+            AddSveltoEngineToTick(new PlaceFoodOnClickEngine(redfoodEntity, bluefoodEntity, generateEntityFactory));
+            AddSveltoEngineToTick(new SpawningDoofusEngine(redDoofusEntity, blueDoofusEntity, generateEntityFactory));
+            AddSveltoEngineToTick(new ConsumingFoodEngine(_enginesRoot.GenerateEntityFunctions()));
+            AddSveltoEngineToTick(new LookingForFoodDoofusesEngine());
+            AddSveltoEngineToTick(new VelocityToPositionDoofusesEngine());
             
-            AddSveltoUECSEngine(new LookingForFoodDoofusesEngine());
-            AddSveltoUECSEngine(new VelocityToPositionDoofusesEngine());
+            AddSveltoCallbackEngine(new SpawnUnityEntityOnSveltoEntityEngine(_world));
+            
             AddSveltoUECSEngine(new RenderingUECSDataSynchronizationEngine());
+
+            StartTicking(_enginesToTick);
+        }
+
+        void AddSveltoCallbackEngine(IReactEngine engine)
+        {
+            _enginesRoot.AddEngine(engine);
+        }
+
+        void AddSveltoEngineToTick(IJobifiableEngine engine)
+        {
+            _enginesRoot.AddEngine(engine);
+            _enginesToTick.Add(engine);
         }
 
         void AddSveltoUECSEngine<T>(T engine) where T : ComponentSystemBase, IEngine
@@ -69,11 +131,6 @@ namespace Svelto.ECS.MiniExamples.Example1C
 
         public void OnContextCreated<T>(T contextHolder) { }
 
-        /// <summary>
-        /// A bit messy, it's not from UnityECS 0.2.0 and I will need to study it better
-        /// </summary>
-        /// <param name="defaultWorldName"></param>
-        /// <returns></returns>
         public bool Initialize(string defaultWorldName)
         {
             //            Physics.autoSimulation = false;

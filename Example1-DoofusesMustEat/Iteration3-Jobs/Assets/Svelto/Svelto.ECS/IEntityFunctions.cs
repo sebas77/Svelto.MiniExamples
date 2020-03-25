@@ -24,5 +24,15 @@ namespace Svelto.ECS
 
         void SwapEntityGroup<T>(EGID fromID, EGID toId, ExclusiveGroupStruct mustBeFromGroup)
             where T : IEntityDescriptor, new();
+
+        NativeEntityFunction ToNative<T>();
+    }
+
+    public struct NativeEntityFunction
+    {
+        public void RemoveEntity(EGID mealStructsId)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }
