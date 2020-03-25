@@ -1,15 +1,15 @@
 {
     "name": "DoofusesBurstified",
     "references": [
-        "GUID:1869b46461d119144a089fe5899ab312",
-        "GUID:7f15980cea481bf4fa7d92ddbc72e2ef",
-        "GUID:d8b63aba1907145bea998dd612889d6b",
-        "GUID:734d92eba21c94caba915361bd5ac177",
-        "GUID:2665a8d13d1b3f18800f46e256720795",
-        "GUID:8819f35a0fc84499b990e90a4ca1911f",
-        "GUID:e0cd26848372d4e5c891c569017e11f1",
-        "GUID:a5baed0c9693541a5bd947d336ec7659",
-        "GUID:b57d644f44ff36944b46b93c68dceb3c"
+        "Svelto.ECS",
+        "Svelto.Tasks",
+        "Unity.Mathematics",
+        "Unity.Entities",
+        "Unity.Burst",
+        "Unity.Entities.Hybrid",
+        "Unity.Collections",
+        "Unity.Transforms",
+        "Svelto.Common_3"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

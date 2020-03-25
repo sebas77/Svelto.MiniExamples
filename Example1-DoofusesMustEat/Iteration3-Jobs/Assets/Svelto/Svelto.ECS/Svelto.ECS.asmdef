@@ -1,8 +1,8 @@
 {
     "name": "Svelto.ECS",
     "references": [
-        "GUID:734d92eba21c94caba915361bd5ac177",
-        "GUID:b57d644f44ff36944b46b93c68dceb3c"
+        "Unity.Entities",
+        "Svelto.Common_3"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
