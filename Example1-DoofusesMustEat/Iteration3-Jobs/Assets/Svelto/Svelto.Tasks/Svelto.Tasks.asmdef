@@ -1,9 +1,8 @@
 {
     "name": "Svelto.Tasks",
     "references": [
-        "Svelto.Common"
+        "GUID:b57d644f44ff36944b46b93c68dceb3c"
     ],
-    "optionalUnityReferences": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
@@ -11,5 +10,6 @@
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [],
-    "versionDefines": []
+    "versionDefines": [],
+    "noEngineReferences": false
 }

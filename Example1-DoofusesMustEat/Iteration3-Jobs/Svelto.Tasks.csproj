@@ -665,9 +665,9 @@
  </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="Svelto.Common.csproj">
-      <Project>{2C275F67-4AB5-9F9C-D841-0992A1422317}</Project>
-      <Name>Svelto.Common</Name>
+    <ProjectReference Include="Svelto.Common_3.csproj">
+      <Project>{5352A049-119F-CBB4-25D0-0E1C917D8842}</Project>
+      <Name>Svelto.Common_3</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -4,9 +4,9 @@ using System.Reflection;
 
 namespace Svelto.ECS.Internal
 {
-    public delegate void SetEGIDWithoutBoxingActionCast<T>(ref T target, EGID egid) where T : struct, IEntityStruct;
+    public delegate void SetEGIDWithoutBoxingActionCast<T>(ref T target, EGID egid) where T : struct, IEntityComponent;
     
-    static class SetEGIDWithoutBoxing<T> where T : struct, IEntityStruct
+    static class SetEGIDWithoutBoxing<T> where T : struct, IEntityComponent
     {
         public static readonly SetEGIDWithoutBoxingActionCast<T> SetIDWithoutBoxing = MakeSetter();
 

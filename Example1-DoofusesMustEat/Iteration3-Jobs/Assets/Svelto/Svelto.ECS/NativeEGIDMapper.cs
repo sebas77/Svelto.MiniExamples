@@ -4,7 +4,7 @@ using Svelto.DataStructures;
 
 namespace Svelto.ECS
 {
-    public readonly struct NativeEGIDMapper<T>:IDisposable where T : unmanaged, IEntityStruct
+    public readonly struct NativeEGIDMapper<T>:IDisposable where T : unmanaged, IEntityComponent
     {
         readonly NativeFasterDictionaryStruct<uint, T> map;
         public ExclusiveGroupStruct groupID { get; }

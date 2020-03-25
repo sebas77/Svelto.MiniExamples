@@ -6,7 +6,7 @@ using Svelto.DataStructures;
 
 namespace Svelto.ECS
 {
-    public struct EntityCollection<T> where T : IEntityStruct
+    public struct EntityCollection<T> where T : IEntityComponent
     {
         public EntityCollection(T[] array, uint count) : this()
         {
@@ -99,7 +99,7 @@ namespace Svelto.ECS
         /// thread will have it's own index which is not the goal of this enumerator.
         /// </summary>
         /// <typeparam name="NT"></typeparam>
-        public struct EntityNativeIterator<NT> where NT : unmanaged
+        public struct EntityNativeIterator<NT> : IDisposable where NT : unmanaged
         {
             public EntityNativeIterator(NativeBuffer<NT> array) : this()
             {
@@ -152,7 +152,7 @@ namespace Svelto.ECS
     }
 
     public struct EntityCollection<T1, T2>
-        where T1 : IEntityStruct where T2 : IEntityStruct
+        where T1 : IEntityComponent where T2 : IEntityComponent
     {
         public EntityCollection(in EntityCollection<T1> array1, in EntityCollection<T2> array2)
         {
@@ -239,7 +239,7 @@ namespace Svelto.ECS
     }
 
     public struct EntityCollection<T1, T2, T3> 
-        where T3 : IEntityStruct where T2 : IEntityStruct where T1 : IEntityStruct
+        where T3 : IEntityComponent where T2 : IEntityComponent where T1 : IEntityComponent
     {
         public EntityCollection(
             in EntityCollection<T1> array1, in EntityCollection<T2> array2,
@@ -299,7 +299,7 @@ namespace Svelto.ECS
         readonly EntityCollection<T3> _array3;
     }
 
-    public struct EntityCollections<T> where T : struct, IEntityStruct
+    public struct EntityCollections<T> where T : struct, IEntityComponent
     {
         public EntityCollections(EntitiesDB db, ExclusiveGroup[] groups) : this()
         {
@@ -359,7 +359,7 @@ namespace Svelto.ECS
     }
 
     public struct EntityCollections<T1, T2>
-        where T1 : struct, IEntityStruct where T2 : struct, IEntityStruct
+        where T1 : struct, IEntityComponent where T2 : struct, IEntityComponent
     {
         public EntityCollections(EntitiesDB db, ExclusiveGroup[] groups) : this()
         {
@@ -426,7 +426,7 @@ namespace Svelto.ECS
     }
     
     public struct EntityCollections<T1, T2, T3>
-        where T1 : struct, IEntityStruct where T2 : struct, IEntityStruct where T3 : struct, IEntityStruct
+        where T1 : struct, IEntityComponent where T2 : struct, IEntityComponent where T3 : struct, IEntityComponent
     {
         public EntityCollections(EntitiesDB db, ExclusiveGroup[] groups) : this()
         {
@@ -542,7 +542,7 @@ namespace Svelto.ECS
         }
     }
 
-    public ref struct ValueRef<T1, T2> where T2 : IEntityStruct where T1 : IEntityStruct
+    public ref struct ValueRef<T1, T2> where T2 : IEntityComponent where T1 : IEntityComponent
     {
         readonly EntityCollection<T1, T2> array1;
 
@@ -568,7 +568,7 @@ namespace Svelto.ECS
     }
 
     public ref struct ValueRef<T1, T2, T3> 
-        where T2 : IEntityStruct where T1 : IEntityStruct where T3 : IEntityStruct
+        where T2 : IEntityComponent where T1 : IEntityComponent where T3 : IEntityComponent
     {
         readonly EntityCollection<T1, T2, T3> array1;
 

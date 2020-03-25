@@ -11,7 +11,7 @@ namespace Svelto.ECS.Serialization
     {}
 
     public class PartialSerializer<T> : ISerializer<T>
-        where T : unmanaged, IEntityStruct
+        where T : unmanaged, IEntityComponent
     {
         static PartialSerializer()
         {

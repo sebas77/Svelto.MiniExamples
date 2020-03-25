@@ -18,7 +18,7 @@ namespace Svelto.ECS
     class EntitiesStream : IDisposable
     {
         internal Consumer<T> GenerateConsumer<T>(string name, uint capacity)
-            where T : unmanaged, IEntityStruct
+            where T : unmanaged, IEntityComponent
         {
             if (_streams.ContainsKey(TypeRefWrapper<T>.wrapper) == false)
                 _streams[TypeRefWrapper<T>.wrapper] = new EntityStream<T>();
@@ -27,7 +27,7 @@ namespace Svelto.ECS
         }
 
         public Consumer<T> GenerateConsumer<T>(ExclusiveGroup group, string name, uint capacity)
-            where T : unmanaged, IEntityStruct
+            where T : unmanaged, IEntityComponent
         {
             if (_streams.ContainsKey(TypeRefWrapper<T>.wrapper) == false)
                 _streams[TypeRefWrapper<T>.wrapper] = new EntityStream<T>();
@@ -36,7 +36,7 @@ namespace Svelto.ECS
             return typeSafeStream.GenerateConsumer(group, name, capacity);
         }
 
-        internal void PublishEntity<T>(ref T entity, EGID egid) where T : unmanaged, IEntityStruct
+        internal void PublishEntity<T>(ref T entity, EGID egid) where T : unmanaged, IEntityComponent
         {
             if (_streams.TryGetValue(TypeRefWrapper<T>.wrapper, out var typeSafeStream))
                 (typeSafeStream as EntityStream<T>).PublishEntity(ref entity, egid);
@@ -56,7 +56,7 @@ namespace Svelto.ECS
     interface ITypeSafeStream
     { }
 
-    public class EntityStream<T> : ITypeSafeStream where T : unmanaged, IEntityStruct
+    public class EntityStream<T> : ITypeSafeStream where T : unmanaged, IEntityComponent
     {
         ~EntityStream()
         {
@@ -119,7 +119,7 @@ namespace Svelto.ECS
         readonly ThreadSafeFasterList<Consumer<T>> _consumers;
     }
 
-    public struct Consumer<T> :IDisposable where T : unmanaged, IEntityStruct
+    public struct Consumer<T> :IDisposable where T : unmanaged, IEntityComponent
     {
         internal Consumer(string name, uint capacity) : this()
         {

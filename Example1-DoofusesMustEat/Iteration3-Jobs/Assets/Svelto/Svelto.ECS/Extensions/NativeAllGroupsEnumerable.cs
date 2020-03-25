@@ -3,7 +3,7 @@ using Svelto.ECS.Internal;
 
 namespace Svelto.ECS
 {
-    public struct NativeAllGroupsEnumerable<T1> where T1 : unmanaged, IEntityStruct
+    public struct NativeAllGroupsEnumerable<T1> where T1 : unmanaged, IEntityComponent
     {
         public NativeAllGroupsEnumerable(EntitiesDB db)
         {

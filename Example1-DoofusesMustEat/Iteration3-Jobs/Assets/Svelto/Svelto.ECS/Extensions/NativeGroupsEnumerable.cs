@@ -3,7 +3,7 @@ using Svelto.DataStructures;
 namespace Svelto.ECS
 {
     public struct NativeGroupsEnumerable<T1, T2, T3>
-        where T1 : unmanaged, IEntityStruct where T2 : unmanaged, IEntityStruct where T3 : unmanaged, IEntityStruct
+        where T1 : unmanaged, IEntityComponent where T2 : unmanaged, IEntityComponent where T3 : unmanaged, IEntityComponent
     {
         readonly EntitiesDB       _db;
         readonly ExclusiveGroup[] _groups;
@@ -52,7 +52,7 @@ namespace Svelto.ECS
         public NativeGroupsIterator GetEnumerator() { return new NativeGroupsIterator(_db, _groups); }
     }
 
-    public struct NativeGroupsEnumerable<T1, T2> where T1 : unmanaged, IEntityStruct where T2 : unmanaged, IEntityStruct
+    public struct NativeGroupsEnumerable<T1, T2> where T1 : unmanaged, IEntityComponent where T2 : unmanaged, IEntityComponent
     {
         public NativeGroupsEnumerable(EntitiesDB db, ExclusiveGroup[] groups)
         {

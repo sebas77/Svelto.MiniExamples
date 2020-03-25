@@ -4,7 +4,7 @@ namespace Svelto.Common
 {
     public class UnsafeUtils
     {
-        public static uint SizeOf<T>() where T : unmanaged, IEntityStruct
+        public static uint SizeOf<T>() where T : unmanaged, IEntityComponent
         {
             unsafe
             {

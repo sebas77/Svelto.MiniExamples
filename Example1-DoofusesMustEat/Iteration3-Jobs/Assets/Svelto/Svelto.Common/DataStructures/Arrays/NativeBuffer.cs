@@ -29,56 +29,50 @@ namespace Svelto.DataStructures
             _ptr = _handle.AddrOfPinnedObject();
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void CopyFrom<TBuffer>(TBuffer array, uint startIndex, uint size) where TBuffer:IBuffer<T>
         {
             throw new NotImplementedException();
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void CopyFrom(T[] source, uint sourceStartIndex, uint destinationStartIndex, uint size)
         {
             throw new NotImplementedException();
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void CopyTo(T[] destination, uint sourceStartIndex, uint destinationStartIndex, uint size)
         {
             throw new NotImplementedException();
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void CopyFrom(ICollection<T> source)
         {
             throw new NotImplementedException(); 
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Clear(uint startIndex, uint count)
         {
             throw new NotImplementedException();
         }
         
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Clear()
         {
             throw new NotImplementedException();
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void UnorderedRemoveAt(int index)
         {
             throw new NotImplementedException();
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public T[] ToManagedArray()
         {
             throw new NotImplementedException();
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public IntPtr ToNativeArray() { return _ptr; }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public GCHandle Pin() { return _handle; }
 
         public ref T this[uint index]

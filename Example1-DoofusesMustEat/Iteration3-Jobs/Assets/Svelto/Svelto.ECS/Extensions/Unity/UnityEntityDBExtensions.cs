@@ -7,6 +7,15 @@ namespace Svelto.ECS.Extensions.Unity
     public static class UnityEntityDBExtensions
     {
         public static JobHandle CombineDispose
+            <T1>(this in EntityCollection<T1>.EntityNativeIterator<T1> entityCollection, JobHandle combinedDependencies,
+                JobHandle                                               inputDeps)
+            where T1 : unmanaged, IEntityComponent
+        {
+            return JobHandle.CombineDependencies(combinedDependencies,
+                new DisposeJob<EntityCollection<T1>.EntityNativeIterator<T1>>(entityCollection).Schedule(inputDeps));
+        }
+        
+        public static JobHandle CombineDispose
             <T1, T2>(this in BufferTuple<NativeBuffer<T1>, NativeBuffer<T2>> buffer, JobHandle combinedDependencies,
                      JobHandle                                               inputDeps)
             where T1 : unmanaged where T2 : unmanaged
@@ -29,7 +38,7 @@ namespace Svelto.ECS.Extensions.Unity
         
         public static JobHandle CombineDispose<T1>(this in NativeEGIDMapper<T1> mapper, JobHandle combinedDependencies,
                                                     JobHandle inputDeps)
-            where T1 : unmanaged, IEntityStruct
+            where T1 : unmanaged, IEntityComponent
         {
             return JobHandle.CombineDependencies(combinedDependencies,
                 new DisposeJob<NativeEGIDMapper<T1>>(mapper).Schedule(inputDeps));

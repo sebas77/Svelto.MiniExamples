@@ -5,7 +5,7 @@ using Svelto.ECS.Internal;
 namespace Svelto.ECS.Serialization
 {
     public class SerializableEntityBuilder<T> : EntityBuilder<T>, ISerializableEntityBuilder
-        where T : unmanaged, IEntityStruct
+        where T : unmanaged, IEntityComponent
     {
         public static readonly uint SIZE = UnsafeUtils.SizeOf<T>();
 

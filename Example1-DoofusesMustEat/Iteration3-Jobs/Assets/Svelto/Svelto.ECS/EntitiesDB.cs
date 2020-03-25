@@ -23,7 +23,7 @@ namespace Svelto.ECS
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ref T QueryUniqueEntity<T>(ExclusiveGroupStruct group) where T : struct, IEntityStruct
+        public ref T QueryUniqueEntity<T>(ExclusiveGroupStruct group) where T : struct, IEntityComponent
         {
             var entities = QueryEntities<T>(group).ToFastAccess(out var count);
 
@@ -38,7 +38,7 @@ namespace Svelto.ECS
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ref T QueryEntity<T>(EGID entityGID) where T : struct, IEntityStruct
+        public ref T QueryEntity<T>(EGID entityGID) where T : struct, IEntityComponent
         {
             T[] array;
             if ((array = QueryEntitiesAndIndexInternal<T>(entityGID, out var index)) != null)
@@ -47,7 +47,7 @@ namespace Svelto.ECS
             throw new EntityNotFoundException(entityGID, typeof(T));
         }
 
-        public ref T QueryEntity<T>(uint id, ExclusiveGroupStruct group) where T : struct, IEntityStruct
+        public ref T QueryEntity<T>(uint id, ExclusiveGroupStruct group) where T : struct, IEntityComponent
         {
             return ref QueryEntity<T>(new EGID(id, group));
         }
@@ -61,7 +61,7 @@ namespace Svelto.ECS
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         public EntityCollection<T> QueryEntities<T>(ExclusiveGroupStruct groupStructId)
-            where T : struct, IEntityStruct
+            where T : struct, IEntityComponent
         {
             T[] ret;
             uint count = 0;
@@ -80,7 +80,7 @@ namespace Svelto.ECS
 
         public EntityCollection<T1, T2> QueryEntities<T1, T2>(
             ExclusiveGroupStruct groupStruct)
-            where T1 : struct, IEntityStruct where T2 : struct, IEntityStruct
+            where T1 : struct, IEntityComponent where T2 : struct, IEntityComponent
         {
             var T1entities = QueryEntities<T1>(groupStruct);
             var T2entities = QueryEntities<T2>(groupStruct);
@@ -97,7 +97,7 @@ namespace Svelto.ECS
 
         public EntityCollection<T1, T2, T3>
             QueryEntities<T1, T2, T3>(ExclusiveGroupStruct groupStruct)
-            where T1 : struct, IEntityStruct where T2 : struct, IEntityStruct where T3 : struct, IEntityStruct
+            where T1 : struct, IEntityComponent where T2 : struct, IEntityComponent where T3 : struct, IEntityComponent
         {
             var T1entities = QueryEntities<T1>(groupStruct);
             var T2entities = QueryEntities<T2>(groupStruct);
@@ -117,26 +117,26 @@ namespace Svelto.ECS
                 T2entities, T3entities);
         }
 
-        public EntityCollections<T> QueryEntities<T>(ExclusiveGroup[] groups) where T : struct, IEntityStruct
+        public EntityCollections<T> QueryEntities<T>(ExclusiveGroup[] groups) where T : struct, IEntityComponent
         {
             return new EntityCollections<T>(this, groups);
         }
 
         public EntityCollections<T1, T2> QueryEntities<T1, T2>(ExclusiveGroup[] groups)
-            where T1 : struct, IEntityStruct where T2 : struct, IEntityStruct
+            where T1 : struct, IEntityComponent where T2 : struct, IEntityComponent
         {
             return new EntityCollections<T1, T2>(this, groups);
         }
         
         public EntityCollections<T1, T2, T3> QueryEntities<T1, T2, T3>(ExclusiveGroup[] groups)
-            where T1 : struct, IEntityStruct where T2 : struct, IEntityStruct where T3 : struct, IEntityStruct
+            where T1 : struct, IEntityComponent where T2 : struct, IEntityComponent where T3 : struct, IEntityComponent
         {
             return new EntityCollections<T1, T2, T3>(this, groups);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public EGIDMapper<T> QueryMappedEntities<T>(ExclusiveGroupStruct groupStructId)
-            where T : struct, IEntityStruct
+            where T : struct, IEntityComponent
         {
             if (SafeQueryEntityDictionary<T>(groupStructId, out var typeSafeDictionary) == false)
                 throw new EntityGroupNotFoundException(typeof(T));
@@ -146,7 +146,7 @@ namespace Svelto.ECS
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public NativeEGIDMapper<T> QueryNativeMappedEntities<T>(ExclusiveGroupStruct groupStructId)
-            where T : unmanaged, IEntityStruct
+            where T : unmanaged, IEntityComponent
         {
             if (SafeQueryEntityDictionary<T>(groupStructId, out var typeSafeDictionary) == false)
                 throw new EntityGroupNotFoundException(typeof(T));
@@ -157,7 +157,7 @@ namespace Svelto.ECS
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool TryQueryMappedEntities<T>(ExclusiveGroupStruct groupStructId,
             out EGIDMapper<T> mapper)
-            where T : struct, IEntityStruct
+            where T : struct, IEntityComponent
         {
             mapper = default;
             if (SafeQueryEntityDictionary<T>(groupStructId, out var typeSafeDictionary) == false ||
@@ -172,7 +172,7 @@ namespace Svelto.ECS
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool TryQueryNativeMappedEntities<T>(ExclusiveGroupStruct groupStructId,
             out NativeEGIDMapper<T> mapper)
-            where T : unmanaged, IEntityStruct
+            where T : unmanaged, IEntityComponent
         {
             mapper = default;
             if (SafeQueryEntityDictionary<T>(groupStructId, out var typeSafeDictionary) == false ||
@@ -185,7 +185,7 @@ namespace Svelto.ECS
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public T[] QueryEntitiesAndIndex<T>(EGID entityGID, out uint index) where T : struct, IEntityStruct
+        public T[] QueryEntitiesAndIndex<T>(EGID entityGID, out uint index) where T : struct, IEntityComponent
         {
             T[] array;
             if ((array = QueryEntitiesAndIndexInternal<T>(entityGID, out index)) != null)
@@ -196,7 +196,7 @@ namespace Svelto.ECS
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool TryQueryEntitiesAndIndex<T>(EGID entityGid, out uint index, out T[] array)
-            where T : struct, IEntityStruct
+            where T : struct, IEntityComponent
         {
             if ((array = QueryEntitiesAndIndexInternal<T>(entityGid, out index)) != null)
                 return true;
@@ -206,7 +206,7 @@ namespace Svelto.ECS
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public T[] QueryEntitiesAndIndex<T>(uint id, ExclusiveGroupStruct @group, out uint index)
-            where T : struct, IEntityStruct
+            where T : struct, IEntityComponent
         {
             return QueryEntitiesAndIndex<T>(new EGID(id, @group), out index);
         }
@@ -214,13 +214,13 @@ namespace Svelto.ECS
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool TryQueryEntitiesAndIndex
             <T>(uint id, ExclusiveGroupStruct group, out uint index, out T[] array)
-            where T : struct, IEntityStruct
+            where T : struct, IEntityComponent
         {
             return TryQueryEntitiesAndIndex(new EGID(id, @group), out index, out array);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Exists<T>(EGID entityGID) where T : struct, IEntityStruct
+        public bool Exists<T>(EGID entityGID) where T : struct, IEntityComponent
         {
             if (SafeQueryEntityDictionary<T>(entityGID.groupID, out var casted) == false) return false;
 
@@ -228,7 +228,7 @@ namespace Svelto.ECS
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Exists<T>(uint id, ExclusiveGroupStruct group) where T : struct, IEntityStruct
+        public bool Exists<T>(uint id, ExclusiveGroupStruct group) where T : struct, IEntityComponent
         {
             if (SafeQueryEntityDictionary<T>(group, out var casted) == false) return false;
 
@@ -248,24 +248,24 @@ namespace Svelto.ECS
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool HasAny<T>(ExclusiveGroupStruct groupStruct) where T : struct, IEntityStruct
+        public bool HasAny<T>(ExclusiveGroupStruct groupStruct) where T : struct, IEntityComponent
         {
             return QueryEntities<T>(groupStruct).count > 0;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public uint Count<T>(ExclusiveGroupStruct groupStruct) where T : struct, IEntityStruct
+        public uint Count<T>(ExclusiveGroupStruct groupStruct) where T : struct, IEntityComponent
         {
             return QueryEntities<T>(groupStruct).count;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void PublishEntityChange<T>(EGID egid) where T : unmanaged, IEntityStruct
+        public void PublishEntityChange<T>(EGID egid) where T : unmanaged, IEntityComponent
         {
             _entityStream.PublishEntity(ref QueryEntity<T>(egid), egid);
         }
 
-        public void ExecuteOnAllEntities<T>(ExecuteOnAllEntitiesAction<T> action) where T : struct, IEntityStruct
+        public void ExecuteOnAllEntities<T>(ExecuteOnAllEntitiesAction<T> action) where T : struct, IEntityComponent
         {
             if (_groupsPerEntity.TryGetValue(TypeRefWrapper<T>.wrapper, out var dictionary))
                 foreach (var pair in dictionary)
@@ -278,7 +278,7 @@ namespace Svelto.ECS
         }
 
         public void ExecuteOnAllEntities<T, W>(ref W value, ExecuteOnAllEntitiesAction<T, W> action)
-            where T : struct, IEntityStruct
+            where T : struct, IEntityComponent
         {
             if (_groupsPerEntity.TryGetValue(TypeRefWrapper<T>.wrapper, out var dic))
                 foreach (var pair in dic)
@@ -292,7 +292,7 @@ namespace Svelto.ECS
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        T[] QueryEntitiesAndIndexInternal<T>(EGID entityGID, out uint index) where T : struct, IEntityStruct
+        T[] QueryEntitiesAndIndexInternal<T>(EGID entityGID, out uint index) where T : struct, IEntityComponent
         {
             index = 0;
             if (SafeQueryEntityDictionary<T>(entityGID.groupID, out var safeDictionary) == false)
@@ -306,7 +306,7 @@ namespace Svelto.ECS
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         bool SafeQueryEntityDictionary<T>(uint group, out ITypeSafeDictionary typeSafeDictionary)
-            where T : struct, IEntityStruct
+            where T : struct, IEntityComponent
         {
             if (UnsafeQueryEntityDictionary(group, TypeCache<T>.type, out var safeDictionary) == false)
             {
@@ -345,7 +345,7 @@ namespace Svelto.ECS
             internal static readonly T[] emptyArray = new T[0];
         }
         
-        internal FasterDictionary<uint, ITypeSafeDictionary> FindGroups<T1>() where T1 : unmanaged, IEntityStruct
+        internal FasterDictionary<uint, ITypeSafeDictionary> FindGroups<T1>() where T1 : unmanaged, IEntityComponent
         {
             return _groupsPerEntity[TypeRefWrapper<T1>.wrapper];
         }

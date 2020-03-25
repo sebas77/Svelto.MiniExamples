@@ -1,12 +1,12 @@
 namespace Svelto.ECS
 {
-    ///<summary>EntityStruct MUST implement IEntityStruct</summary>
-    public interface IEntityStruct
+    ///<summary>EntityStruct MUST implement IEntityComponent</summary>
+    public interface IEntityComponent
     {
     }
 
     /// <summary>
-    /// use INeedEGID on an IEntityStruct only if you need the EGID
+    /// use INeedEGID on an IEntityComponent only if you need the EGID
     /// </summary>
     public interface INeedEGID
     {

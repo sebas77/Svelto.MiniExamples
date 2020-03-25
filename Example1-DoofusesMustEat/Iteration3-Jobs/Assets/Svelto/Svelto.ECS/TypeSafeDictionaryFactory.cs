@@ -2,7 +2,7 @@ using Svelto.ECS.Internal;
 
 namespace Svelto.ECS
 {
-    static class TypeSafeDictionaryFactory<T> where T : struct, IEntityStruct
+    static class TypeSafeDictionaryFactory<T> where T : struct, IEntityComponent
     {
         public static ITypeSafeDictionary Create()
         {

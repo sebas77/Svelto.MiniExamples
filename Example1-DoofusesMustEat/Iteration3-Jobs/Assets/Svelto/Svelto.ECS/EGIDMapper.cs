@@ -4,7 +4,7 @@ using Svelto.ECS.Internal;
 
 namespace Svelto.ECS
 {
-    public readonly struct EGIDMapper<T> where T : struct, IEntityStruct
+    public readonly struct EGIDMapper<T> where T : struct, IEntityComponent
     {
         internal readonly ITypeSafeDictionary<T> map;
         public uint Length => map.Count;

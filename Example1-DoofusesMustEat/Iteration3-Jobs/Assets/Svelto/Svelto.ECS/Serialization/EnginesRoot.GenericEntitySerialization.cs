@@ -103,7 +103,7 @@ namespace Svelto.ECS
 
             public T DeserializeEntityStruct<T>(ISerializationData serializationData,
                 ISerializableEntityDescriptor entityDescriptor, SerializationType serializationType)
-                where T : unmanaged, IEntityStruct
+                where T : unmanaged, IEntityComponent
             {
                 var readPos = serializationData.dataPos;
                 var entityStruct = new T();

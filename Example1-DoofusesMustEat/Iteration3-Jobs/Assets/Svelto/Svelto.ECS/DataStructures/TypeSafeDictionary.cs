@@ -5,7 +5,7 @@ using Svelto.DataStructures;
 
 namespace Svelto.ECS.Internal
 {
-    sealed class TypeSafeDictionary<TValue> : ITypeSafeDictionary<TValue> where TValue : struct, IEntityStruct
+    sealed class TypeSafeDictionary<TValue> : ITypeSafeDictionary<TValue> where TValue : struct, IEntityComponent
     {
         static readonly Type   _type     = typeof(TValue);
         static readonly string _typeName = _type.Name;

@@ -8,7 +8,7 @@ using Svelto.Utilities;
 
 namespace Svelto.ECS
 {
-    public class EntityBuilder<T> : IEntityBuilder where T : struct, IEntityStruct
+    public class EntityBuilder<T> : IEntityBuilder where T : struct, IEntityComponent
     {
         static class EntityView
         {
@@ -125,7 +125,7 @@ namespace Svelto.ECS
         {
             ENTITY_VIEW_TYPE = typeof(T);
             DEFAULT_IT = default;
-            NEEDS_REFLECTION = typeof(IEntityViewStruct).IsAssignableFrom(ENTITY_VIEW_TYPE);
+            NEEDS_REFLECTION = typeof(IEntityViewComponent).IsAssignableFrom(ENTITY_VIEW_TYPE);
             HAS_EGID = typeof(INeedEGID).IsAssignableFrom(ENTITY_VIEW_TYPE);
             ENTITY_VIEW_NAME = ENTITY_VIEW_TYPE.ToString();
             SetEGIDWithoutBoxing<T>.Warmup();

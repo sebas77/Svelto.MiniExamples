@@ -68,6 +68,6 @@ namespace Svelto.ECS.Serialization
 
         T DeserializeEntityStruct<T>(ISerializationData serializationData,
             ISerializableEntityDescriptor entityDescriptor, SerializationType serializationType) 
-            where T : unmanaged, IEntityStruct;
+            where T : unmanaged, IEntityComponent;
     }
 }

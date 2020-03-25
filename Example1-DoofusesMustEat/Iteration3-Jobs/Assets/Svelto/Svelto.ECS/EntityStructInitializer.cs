@@ -12,7 +12,7 @@ namespace Svelto.ECS
             _ID = id;
         }
 
-        public void Init<T>(T initializer) where T : struct, IEntityStruct
+        public void Init<T>(T initializer) where T : struct, IEntityComponent
         {
             if (_group.TryGetValue(new RefWrapper<Type>(EntityBuilder<T>.ENTITY_VIEW_TYPE),
                     out var typeSafeDictionary) == false) return;
@@ -26,7 +26,7 @@ namespace Svelto.ECS
                 dictionary.GetDirectValue(findElementIndex) = initializer;
         }
 
-        public ref T GetOrCreate<T>() where T : struct, IEntityStruct
+        public ref T GetOrCreate<T>() where T : struct, IEntityComponent
         {
             ref var entityDictionary = ref _group.GetOrCreate(new RefWrapper<Type>(EntityBuilder<T>.ENTITY_VIEW_TYPE)
             , () => TypeSafeDictionaryFactory<T>.Create());
@@ -35,12 +35,12 @@ namespace Svelto.ECS
             return ref dictionary.GetOrCreate(_ID.entityID);
         }
         
-        public T Get<T>() where T : struct, IEntityStruct
+        public T Get<T>() where T : struct, IEntityComponent
         {
             return (_group[new RefWrapper<Type>(EntityBuilder<T>.ENTITY_VIEW_TYPE)] as ITypeSafeDictionary<T>)[_ID.entityID];
         }
 
-        public bool Has<T>() where T : struct, IEntityStruct
+        public bool Has<T>() where T : struct, IEntityComponent
         {
             if (_group.TryGetValue(new RefWrapper<Type>(EntityBuilder<T>.ENTITY_VIEW_TYPE),
                 out var typeSafeDictionary))

@@ -1,11 +1,9 @@
 {
     "name": "Svelto.Services",
     "references": [
-        "Svelto.Common",
-        "Svelto.Tasks",
-        "Utf8Json"
+        "GUID:7f15980cea481bf4fa7d92ddbc72e2ef",
+        "GUID:b57d644f44ff36944b46b93c68dceb3c"
     ],
-    "optionalUnityReferences": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
@@ -13,5 +11,6 @@
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [],
-    "versionDefines": []
+    "versionDefines": [],
+    "noEngineReferences": false
 }

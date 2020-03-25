@@ -5,7 +5,7 @@ using System;
 namespace Svelto.ECS.Serialization
 {
     public interface ISerializer<T>
-        where T : unmanaged, IEntityStruct
+        where T : unmanaged, IEntityComponent
     {
         bool Serialize(in T value, ISerializationData serializationData);
         bool Deserialize(ref T value, ISerializationData serializationData);
@@ -16,7 +16,7 @@ namespace Svelto.ECS.Serialization
     public static class SerializerExt
     {
         public static bool SerializeSafe<T>(this ISerializer<T> serializer, in T value, ISerializationData serializationData)
-            where T : unmanaged, IEntityStruct
+            where T : unmanaged, IEntityComponent
         {
 #if DEBUG && !PROFILE_SVELTO
             uint posBefore = serializationData.dataPos;
@@ -35,7 +35,7 @@ namespace Svelto.ECS.Serialization
         }
 
         public static bool DeserializeSafe<T>(this ISerializer<T> serializer, ref T value, ISerializationData serializationData)
-            where T : unmanaged, IEntityStruct
+            where T : unmanaged, IEntityComponent
         {
 #if DEBUG && !PROFILE_SVELTO
             uint posBefore = serializationData.dataPos;

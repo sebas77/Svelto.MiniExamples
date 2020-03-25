@@ -3,7 +3,7 @@ using System;
 namespace Svelto.ECS.Serialization
 {
     public class ComposedSerializer<T, X, Y> : ISerializer<T>
-        where T : unmanaged, IEntityStruct
+        where T : unmanaged, IEntityComponent
         where X : class, ISerializer<T>, new()
         where Y : class, ISerializer<T>, new()
     {

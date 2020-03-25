@@ -1,10 +1,9 @@
 {
     "name": "Svelto.ECS.Debugger.Internal",
     "references": [
-        "Svelto.ECS",
-        "Svelto.Common"
+        "GUID:1869b46461d119144a089fe5899ab312",
+        "GUID:b57d644f44ff36944b46b93c68dceb3c"
     ],
-    "optionalUnityReferences": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
@@ -12,5 +11,6 @@
     "precompiledReferences": [],
     "autoReferenced": false,
     "defineConstraints": [],
-    "versionDefines": []
+    "versionDefines": [],
+    "noEngineReferences": false
 }

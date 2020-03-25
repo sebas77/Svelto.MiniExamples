@@ -55,7 +55,7 @@ namespace Svelto.ECS
 
         public object Current { get; }
 
-        struct SubmissionSignalStruct : IEntityStruct
+        struct SubmissionSignalStruct : IEntityComponent
         {}
 
         int        _counter;

@@ -4,7 +4,7 @@ using Svelto.DataStructures;
 
 namespace Svelto.ECS.Internal
 {
-    public interface ITypeSafeDictionary<TValue> : ITypeSafeDictionary where TValue : IEntityStruct
+    public interface ITypeSafeDictionary<TValue> : ITypeSafeDictionary where TValue : IEntityComponent
     {
         void Add(uint egidEntityId, in TValue entityView);
         ref TValue GetValueByRef(uint key);

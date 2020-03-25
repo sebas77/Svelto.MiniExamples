@@ -1,6 +1,6 @@
 namespace Svelto.ECS.Serialization
 {
-    public class DefaultSerializer<T> : ISerializer<T> where T : unmanaged, IEntityStruct
+    public class DefaultSerializer<T> : ISerializer<T> where T : unmanaged, IEntityComponent
     {
         static readonly uint SIZEOFT = SerializableEntityBuilder<T>.SIZE;
 
