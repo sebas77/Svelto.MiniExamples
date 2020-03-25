@@ -1,7 +1,7 @@
 {
     "name": "Svelto.Pool.Debugger_3",
     "references": [
-        "GUID:b57d644f44ff36944b46b93c68dceb3c"
+        "Svelto.Common_3"
     ],
     "includePlatforms": [
         "Editor"

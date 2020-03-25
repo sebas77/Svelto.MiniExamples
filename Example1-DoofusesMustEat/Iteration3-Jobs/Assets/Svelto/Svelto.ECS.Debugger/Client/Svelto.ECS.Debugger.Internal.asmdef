@@ -1,8 +1,8 @@
 {
     "name": "Svelto.ECS.Debugger.Internal",
     "references": [
-        "GUID:1869b46461d119144a089fe5899ab312",
-        "GUID:b57d644f44ff36944b46b93c68dceb3c"
+        "Svelto.ECS",
+        "Svelto.Common_3"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
