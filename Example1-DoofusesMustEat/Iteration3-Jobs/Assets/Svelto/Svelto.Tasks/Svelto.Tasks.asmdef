@@ -1,7 +1,7 @@
 {
     "name": "Svelto.Tasks",
     "references": [
-        "GUID:db74038efeaf4214283276da5b940ac9"
+        "Svelto.Common_3"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
