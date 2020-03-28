@@ -29,6 +29,11 @@ namespace Svelto.ECS
 
         void SingleSubmission(in PlatformProfiler profiler)
         {
+#if UNITY_ECS            
+            NativeOperationSubmission(profiler);
+            DisposeNativeOperations(profiler);
+#endif
+            
             if (_entitiesOperations.Count > 0)
             {
                 using (profiler.Sample("Remove and Swap operations"))
@@ -134,7 +139,6 @@ namespace Svelto.ECS
                 foreach (var groupToSubmit in _groupedEntityToAdd.otherEntitiesCreatedPerGroup)
                 {
                     var groupID = groupToSubmit.Key;
-
                     var groupDB = _groupEntityViewsDB[groupID];
 
                     foreach (var entityViewsToSubmit in _groupedEntityToAdd.other[groupID])

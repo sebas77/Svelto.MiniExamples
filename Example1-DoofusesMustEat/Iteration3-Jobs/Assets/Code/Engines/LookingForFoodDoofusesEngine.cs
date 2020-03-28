@@ -1,4 +1,5 @@
 using System.Threading;
+using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.ECS.EntityStructs;
 using Svelto.ECS.Extensions.Unity;
@@ -9,6 +10,7 @@ using Unity.Mathematics;
 
 namespace Svelto.ECS.MiniExamples.Example1C
 {
+    [Sequenced(nameof(DoofusesEngineNames.LookingForFoodDoofusesEngine))]
     public class LookingForFoodDoofusesEngine : IQueryingEntitiesEngine, IJobifiableEngine
     {
         public void Ready()
@@ -17,16 +19,6 @@ namespace Svelto.ECS.MiniExamples.Example1C
 
         public EntitiesDB entitiesDB { private get; set; }
         
-        protected override void OnUpdate()
-        {
-            var handle1 = CreateJobForDoofusesAndFood(Dependency, GroupCompound<GameGroups.FOOD, GameGroups.RED>.Groups,
-                GroupCompound<GameGroups.DOOFUSES, GameGroups.RED, GameGroups.NOTEATING>.Groups);
-            var handle2 = CreateJobForDoofusesAndFood(Dependency, GroupCompound<GameGroups.FOOD, GameGroups.BLUE>.Groups,
-                GroupCompound<GameGroups.DOOFUSES, GameGroups.BLUE, GameGroups.NOTEATING>.Groups);
-            
-            this.Dependency = JobHandle.CombineDependencies(Dependency, handle1, handle2);
-        }
-
         JobHandle CreateJobForDoofusesAndFood(JobHandle inputDeps, ExclusiveGroup[] foodGroups,
             ExclusiveGroup[] doofusesGroups)
         {
@@ -54,6 +46,16 @@ namespace Svelto.ECS.MiniExamples.Example1C
             }
 
             return combinedDependencies;
+        }
+
+        public JobHandle Execute(JobHandle _jobHandle)
+        {
+            var handle1 = CreateJobForDoofusesAndFood(_jobHandle, GroupCompound<GameGroups.FOOD, GameGroups.RED>.Groups,
+                GroupCompound<GameGroups.DOOFUSES, GameGroups.RED, GameGroups.NOTEATING>.Groups);
+            var handle2 = CreateJobForDoofusesAndFood(_jobHandle, GroupCompound<GameGroups.FOOD, GameGroups.BLUE>.Groups,
+                GroupCompound<GameGroups.DOOFUSES, GameGroups.BLUE, GameGroups.NOTEATING>.Groups);
+            
+            return JobHandle.CombineDependencies(_jobHandle, handle1, handle2);
         }
     }
 

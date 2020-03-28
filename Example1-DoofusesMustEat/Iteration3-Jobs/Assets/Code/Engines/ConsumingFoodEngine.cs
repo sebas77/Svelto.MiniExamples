@@ -1,40 +1,44 @@
+using Svelto.Common;
 using Svelto.DataStructures;
+using Svelto.ECS.Extensions.Unity;
 using Svelto.Tasks.Enumerators;
 using Unity.Burst;
+using Unity.Collections;
 using Unity.Jobs;
 
 namespace Svelto.ECS.MiniExamples.Example1C
 {
+    [Sequenced(nameof(DoofusesEngineNames.ConsumingFoodEngine))]
     public class ConsumingFoodEngine : IQueryingEntitiesEngine, IJobifiableEngine
     {
-        public ConsumingFoodEngine(IEntityFunctions entityFunctions)
-        {
-            _entityFunctions = entityFunctions;
-        }
+        public ConsumingFoodEngine(IEntityFunctions entityFunctions) { _entityFunctions = entityFunctions; }
 
         public EntitiesDB entitiesDB { private get; set; }
 
         public void Ready() { }
 
-        readonly IEntityFunctions _entityFunctions;
         ReusableWaitForSecondsEnumerator _wait = new ReusableWaitForSecondsEnumerator(0.1f);
+        readonly IEntityFunctions        _entityFunctions;
 
         public JobHandle Execute(JobHandle _jobHandle)
         {
-            while (_wait.IsDone() == false) return _jobHandle;
+            while (_wait.IsDone() == false)
+                return _jobHandle;
 
-            NativeEntityFunction entityRemover = _entityFunctions.ToNative<FoodEntityDescriptor>();
+            NativeEntityOperations _nativeEntityOperations =
+                _entityFunctions.ToNative<FoodEntityDescriptor>(Allocator.TempJob);
 
             foreach (var group in GameGroups.FOOD.Groups)
             {
                 NativeBuffer<MealEntityStruct> buffer =
                     entitiesDB.NativeEntitiesBuffer<MealEntityStruct>(group, out uint count);
 
-                _jobHandle =
-                    JobHandle.CombineDependencies(_jobHandle,new ParallelJob(buffer, entityRemover).Schedule((int) count,
-                    (int) (count / 8), _jobHandle));
+                _jobHandle = JobHandle.CombineDependencies(
+                    _jobHandle
+                  , new ParallelJob(buffer, _nativeEntityOperations).Schedule(
+                        (int) count, ProcessorCount.Batch(count)));
 
-                _jobHandle = buffer.CombinedDispose(_jobHandle, _jobHandle);
+                _jobHandle = buffer.CombineDispose(_jobHandle, _jobHandle);
             }
 
             return _jobHandle;
@@ -44,10 +48,11 @@ namespace Svelto.ECS.MiniExamples.Example1C
     [BurstCompile]
     struct ParallelJob : IJobParallelFor
     {
-        public ParallelJob(in NativeBuffer<MealEntityStruct> buffers, NativeEntityFunction nativeEntityFunction)
+        public ParallelJob
+            (in NativeBuffer<MealEntityStruct> buffers, NativeEntityOperations nativeEntityOperations) : this()
         {
-            _buffers = buffers;
-            _nativeEntityFunction = nativeEntityFunction;
+            _buffers                = buffers;
+            _nativeEntityOperations = nativeEntityOperations;
         }
 
         public void Execute(int index)
@@ -55,12 +60,13 @@ namespace Svelto.ECS.MiniExamples.Example1C
             ref var mealStructs = ref _buffers[index];
 
             mealStructs.mealLeft -= mealStructs.eaters;
-            mealStructs.eaters = 0;
+            mealStructs.eaters   =  0;
 
-            if (mealStructs.mealLeft <= 0) _nativeEntityFunction.RemoveEntity(mealStructs.ID);
+            if (mealStructs.mealLeft <= 0)
+                _nativeEntityOperations.RemoveEntity(mealStructs.ID);
         }
 
         NativeBuffer<MealEntityStruct> _buffers;
-        NativeEntityFunction _nativeEntityFunction;
+        NativeEntityOperations         _nativeEntityOperations;
     }
 }

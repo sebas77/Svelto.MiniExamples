@@ -1,15 +1,18 @@
 using System.Collections;
+using Svelto.Common;
 using Svelto.ECS.EntityStructs;
 using Svelto.Tasks;
 using Svelto.Tasks.Enumerators;
 using Svelto.Tasks.ExtraLean;
 using Unity.Entities;
+using Unity.Jobs;
 using Unity.Mathematics;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace Svelto.ECS.MiniExamples.Example1C
 {
+    [Sequenced(nameof(DoofusesEngineNames.PlaceFoodOnClickEngine))]
     public class PlaceFoodOnClickEngine : IQueryingEntitiesEngine, IJobifiableEngine
     {
         public PlaceFoodOnClickEngine(Entity redfood, Entity bluefood, IEntityFactory entityFactory)
@@ -84,13 +87,21 @@ namespace Svelto.ECS.MiniExamples.Example1C
 
         public EntitiesDB entitiesDB { private get; set; }
 
-        public void Ready() { CheckClick().RunOn(DoofusesStandardSchedulers.UIInteraction); }
+        public void Ready() { CheckClick().RunOn(UIInteractionRunner); }
+        
+        public static readonly SteppableRunner UIInteractionRunner = new SteppableRunner("UIInteraction");
 
         readonly IEntityFactory _entityFactory;
         readonly Entity         _redfood;
         readonly Entity _bluefood;
 
         uint _foodPlaced;
-        
+
+        public JobHandle Execute(JobHandle _jobHandle)
+        {
+            UIInteractionRunner.Step();
+
+            return _jobHandle;
+        }
     }
 }

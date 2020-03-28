@@ -1,13 +1,14 @@
 using Svelto.ECS.EntityStructs;
 using Svelto.ECS.Extensions.Unity;
 using Unity.Entities;
+using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Transforms;
 
 namespace Svelto.ECS.MiniExamples.Example1C
 {
     [DisableAutoCreation]
-    public class RenderingUECSDataSynchronizationEngine : SystemBase, IQueryingEntitiesEngine
+    public class RenderingUECSDataSynchronizationEngine : SystemBase, IQueryingEntitiesEngine, ICopySveltoToUECSEngine
     {
         public EntitiesDB entitiesDB { get; set; }
 
@@ -20,6 +21,8 @@ namespace Svelto.ECS.MiniExamples.Example1C
                 var collection = entitiesDB.QueryEntities<PositionEntityStruct>(group);
 
                 if (collection.count == 0) continue;
+                
+                Dependency = JobHandle.CombineDependencies(jobHandle, Dependency);
 
                 //there are usually two ways to sync Svelto entities with UECS entities
                 //In some cases, like for the rendering, the 1:1 relationship is not necessary, hence UECS entities
@@ -44,5 +47,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
                 Dependency = entityCollection.CombineDispose(Dependency, deps);
             }
         }
+
+        public JobHandle jobHandle { private get; set; }
     }
 }

@@ -1,5 +1,3 @@
-using Svelto.Tasks;
-using Svelto.Tasks.ExtraLean;
 using Svelto.Tasks.ExtraLean.Unity;
 
 namespace Svelto.ECS.MiniExamples.Example1C

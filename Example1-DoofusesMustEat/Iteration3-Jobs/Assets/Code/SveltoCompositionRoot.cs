@@ -1,8 +1,8 @@
 using System;
 using System.Collections;
-using Svelto.Common;
 using Svelto.Context;
 using Svelto.DataStructures;
+using Svelto.ECS.Extensions.Unity;
 using Svelto.ECS.Internal;
 using Svelto.Tasks;
 using Svelto.Tasks.ExtraLean;
@@ -12,18 +12,6 @@ using UnityEngine;
 
 namespace Svelto.ECS.MiniExamples.Example1C
 {
-    public class EnginesExecutionOrder : JobifiableEnginesGroup<IJobifiableEngine, DoofusesEnginesOrder>
-    {
-        public EnginesExecutionOrder(FasterReadOnlyList<IJobifiableEngine> engines) : base(engines)
-        {
-        }
-    }
-
-    public struct DoofusesEnginesOrder : ISequenceOrder
-    {
-        public string[] enginesOrder => new string[] { };
-    }
-
     public class SveltoCompositionRoot : ICompositionRoot, ICustomBootstrap
     {
         static World _world;
@@ -60,13 +48,69 @@ namespace Svelto.ECS.MiniExamples.Example1C
         }
 
         public void OnContextInitialized<T>(T contextHolder)
+        { }
+
+        void AddSveltoCallbackEngine(IReactEngine engine)
         {
+            _enginesRoot.AddEngine(engine);
+        }
+
+        void AddSveltoEngineToTick(IJobifiableEngine engine)
+        {
+            _enginesRoot.AddEngine(engine);
+            _enginesToTick.Add(engine);
+        }
+
+        void AddSveltoUECSEngine<T>(T engine) where T : ComponentSystemBase, ICopySveltoToUECSEngine
+        {
+            //it's a Svelto Engine/UECS SystemBase so it must be added in the UECS world AND svelto enginesRoot
+            _world.AddSystem(engine);
+            _enginesRoot.AddEngine(engine);
+            
+            //We assume that the UECS/Svelto engines are to be added in teh SimulationSystemGroup
+            var copySveltoToUecsEnginesGroup = _world.GetExistingSystem<CopySveltoToUECSEnginesGroup>();
+            //Svelto will tick the UECS group that will tick the System, this because we still rely on the UECS
+            //dependency tracking for the UECS components too
+            copySveltoToUecsEnginesGroup.AddSystemToUpdateList(engine);
+        }
+
+        public void OnContextDestroyed()
+        {
+            DoofusesStandardSchedulers.StopAndCleanupAllDefaultSchedulers();
+            
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+
+            _enginesRoot?.Dispose();
+        }
+
+        public void OnContextCreated<T>(T contextHolder) { }
+
+        public bool Initialize(string defaultWorldName)
+        {
+            //            Physics.autoSimulation = false;
             QualitySettings.vSyncCount = -1;
 
             _simpleSubmitScheduler = new SimpleSubmissioncheduler();
             _enginesRoot = new EnginesRoot(_simpleSubmitScheduler);
             _enginesToTick = new FasterList<IJobifiableEngine>();
 
+            _world = new World("Custom world");
+
+            World.DefaultGameObjectInjectionWorld = _world;
+            var systems = DefaultWorldInitialization.GetAllSystems(WorldSystemFilterFlags.Default);
+            DefaultWorldInitialization.AddSystemsToRootLevelSystemGroups(_world, systems);
+
+            var copySveltoToUecsEnginesGroup = new CopySveltoToUECSEnginesGroup();
+            _world.AddSystem(copySveltoToUecsEnginesGroup);
+            AddSveltoEngineToTick(copySveltoToUecsEnginesGroup);
+            
+            var tickUECSSystemsGroup = new PureUECSSystemsGroup(_world);
+            AddSveltoEngineToTick(tickUECSSystemsGroup);
+            
+            ///Svelto will tick the UECS engines, We need control over everything
+            //ScriptBehaviourUpdateOrder.UpdatePlayerLoop(_world);
+            
             //add the engines we are going to use
             var generateEntityFactory = _enginesRoot.GenerateEntityFactory();
 
@@ -96,50 +140,8 @@ namespace Svelto.ECS.MiniExamples.Example1C
             AddSveltoCallbackEngine(new SpawnUnityEntityOnSveltoEntityEngine(_world));
             
             AddSveltoUECSEngine(new RenderingUECSDataSynchronizationEngine());
-
-            StartTicking(_enginesToTick);
-        }
-
-        void AddSveltoCallbackEngine(IReactEngine engine)
-        {
-            _enginesRoot.AddEngine(engine);
-        }
-
-        void AddSveltoEngineToTick(IJobifiableEngine engine)
-        {
-            _enginesRoot.AddEngine(engine);
-            _enginesToTick.Add(engine);
-        }
-
-        void AddSveltoUECSEngine<T>(T engine) where T : ComponentSystemBase, IEngine
-        {
-            _world.AddSystem(engine);
-            var simulationSystemGroup = _world.GetExistingSystem<SimulationSystemGroup>();
-            simulationSystemGroup.AddSystemToUpdateList(engine);
-            _enginesRoot.AddEngine(engine);
-        }
-
-        public void OnContextDestroyed()
-        {
-            DoofusesStandardSchedulers.StopAndCleanupAllDefaultSchedulers();
             
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-
-            _enginesRoot?.Dispose();
-        }
-
-        public void OnContextCreated<T>(T contextHolder) { }
-
-        public bool Initialize(string defaultWorldName)
-        {
-            //            Physics.autoSimulation = false;
-            _world = new World("Custom world");
-
-            World.DefaultGameObjectInjectionWorld = _world;
-            var systems = DefaultWorldInitialization.GetAllSystems(WorldSystemFilterFlags.Default);
-            DefaultWorldInitialization.AddSystemsToRootLevelSystemGroups(_world, systems);
-            ScriptBehaviourUpdateOrder.UpdatePlayerLoop(_world);
+            StartTicking(_enginesToTick);
 
             return true;
         }

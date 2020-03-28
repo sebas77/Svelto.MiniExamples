@@ -5,7 +5,7 @@
         static readonly IEntityBuilder[] _entityBuilders;
         static GenericEntityDescriptor() { _entityBuilders = new IEntityBuilder[] {new EntityBuilder<T>()}; }
 
-        public IEntityBuilder[] entitiesToBuild => _entityBuilders;
+        public IEntityBuilder[] entityComponentsToBuild => _entityBuilders;
     }
 
     public abstract class GenericEntityDescriptor<T, U> : IEntityDescriptor
@@ -18,7 +18,7 @@
             _entityBuilders = new IEntityBuilder[] {new EntityBuilder<T>(), new EntityBuilder<U>()};
         }
 
-        public IEntityBuilder[] entitiesToBuild => _entityBuilders;
+        public IEntityBuilder[] entityComponentsToBuild => _entityBuilders;
     }
 
     public abstract class GenericEntityDescriptor<T, U, V> : IEntityDescriptor
@@ -36,7 +36,7 @@
             };
         }
 
-        public IEntityBuilder[] entitiesToBuild => _entityBuilders;
+        public IEntityBuilder[] entityComponentsToBuild => _entityBuilders;
     }
 
     public abstract class GenericEntityDescriptor<T, U, V, W> : IEntityDescriptor
@@ -56,7 +56,7 @@
             };
         }
 
-        public IEntityBuilder[] entitiesToBuild => _entityBuilders;
+        public IEntityBuilder[] entityComponentsToBuild => _entityBuilders;
     }
 
     public abstract class GenericEntityDescriptor<T, U, V, W, X> : IEntityDescriptor
@@ -77,7 +77,7 @@
             };
         }
 
-        public IEntityBuilder[] entitiesToBuild => _entityBuilders;
+        public IEntityBuilder[] entityComponentsToBuild => _entityBuilders;
     }
 
     public abstract class GenericEntityDescriptor<T, U, V, W, X, Y> : IEntityDescriptor
@@ -99,6 +99,6 @@
             };
         }
 
-        public IEntityBuilder[] entitiesToBuild => _entityBuilders;
+        public IEntityBuilder[] entityComponentsToBuild => _entityBuilders;
     }
 }

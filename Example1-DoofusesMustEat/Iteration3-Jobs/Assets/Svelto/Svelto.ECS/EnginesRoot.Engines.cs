@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.ECS.Internal;
 using Svelto.ECS.Schedulers;
@@ -23,6 +24,9 @@ namespace Svelto.ECS
 
             readonly DataStructures.WeakReference<EnginesRoot> _weakReference;
         }
+        
+        public IEntitySubmissionScheduler scheduler { get; }
+
         /// <summary>
         /// Engines root contextualize your engines and entities. You don't need to limit yourself to one EngineRoot
         /// as multiple engines root could promote separation of scopes. The EntitySubmissionScheduler checks
@@ -51,12 +55,67 @@ namespace Svelto.ECS
 
             scheduler = entityViewScheduler;
             scheduler.onTick = new EntitiesSubmitter(this);
+#if UNITY_ECS            
+            AllocateNativeOperations();
+#endif
         }
         
         public EnginesRoot(IEntitySubmissionScheduler entityViewScheduler, bool isDeserializationOnly):this(entityViewScheduler)
         {
             _isDeserializationOnly = isDeserializationOnly;
         }
+        
+        /// <summary>
+        /// Dispose an EngineRoot once not used anymore, so that all the
+        /// engines are notified with the entities removed.
+        /// It's a clean up process.
+        /// </summary>
+        public void Dispose()
+        {
+            using (var profiler = new PlatformProfiler("Final Dispose"))
+            {
+                foreach (var groups in _groupEntityViewsDB)
+                {
+                    foreach (var entityList in groups.Value)
+                    {
+                        entityList.Value.RemoveEntitiesFromEngines(_reactiveEnginesAddRemove, profiler,
+                                                                   new ExclusiveGroupStruct(groups.Key));
+                    }
+                }
+
+                _groupEntityViewsDB.Clear();
+                _groupsPerEntity.Clear();
+
+                foreach (var engine in _disposableEngines)
+                    engine.Dispose();
+
+                _disposableEngines.Clear();
+                _enginesSet.Clear();
+                _enginesTypeSet.Clear();
+                _reactiveEnginesSwap.Clear();
+                _reactiveEnginesAddRemove.Clear();
+
+                _entitiesOperations.Clear();
+                _transientEntitiesOperations.Clear();
+                scheduler.Dispose();
+#if DEBUG && !PROFILE_SVELTO
+                _idCheckers.Clear();
+#endif
+                _groupedEntityToAdd = null;
+
+                _entitiesStream.Dispose();
+            }
+
+            GC.SuppressFinalize(this);
+        }
+
+        ~EnginesRoot()
+        {
+            Console.LogWarning("Engines Root has been garbage collected, don't forget to call Dispose()!");
+
+            Dispose();
+        }
+
 
         public void AddEngine(IEngine engine)
         {
@@ -138,8 +197,7 @@ namespace Svelto.ECS
         readonly FasterDictionary<RefWrapper<Type>, FasterList<IEngine>> _reactiveEnginesAddRemove;
         readonly FasterDictionary<RefWrapper<Type>, FasterList<IEngine>> _reactiveEnginesSwap;
         readonly FasterList<IDisposable>                                 _disposableEngines;
-        
-        readonly FasterList<IEngine> _enginesSet;
-        readonly HashSet<Type>       _enginesTypeSet;
+        readonly FasterList<IEngine>                                     _enginesSet;
+        readonly HashSet<Type>                                           _enginesTypeSet;
     }
 }

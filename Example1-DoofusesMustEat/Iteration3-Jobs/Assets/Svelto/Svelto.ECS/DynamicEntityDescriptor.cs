@@ -13,7 +13,7 @@ namespace Svelto.ECS
     {
         internal DynamicEntityDescriptor(bool isExtendible) : this()
         {
-            var defaultEntities = EntityDescriptorTemplate<TType>.descriptor.entitiesToBuild;
+            var defaultEntities = EntityDescriptorTemplate<TType>.descriptor.entityComponentsToBuild;
             var length = defaultEntities.Length;
 
             _entitiesToBuild = new IEntityBuilder[length + 1];
@@ -36,7 +36,7 @@ namespace Svelto.ECS
             var extraEntitiesLength = extraEntityBuilders.Length;
 
             _entitiesToBuild = Construct(extraEntitiesLength, extraEntityBuilders,
-                EntityDescriptorTemplate<TType>.descriptor.entitiesToBuild);
+                EntityDescriptorTemplate<TType>.descriptor.entityComponentsToBuild);
         }
 
         public DynamicEntityDescriptor(FasterList<IEntityBuilder> extraEntityBuilders) : this()
@@ -45,12 +45,12 @@ namespace Svelto.ECS
             var extraEntitiesLength = extraEntityBuilders.count;
 
             _entitiesToBuild = Construct((int) extraEntitiesLength, extraEntities,
-                EntityDescriptorTemplate<TType>.descriptor.entitiesToBuild);
+                EntityDescriptorTemplate<TType>.descriptor.entityComponentsToBuild);
         }
 
         public void ExtendWith<T>() where T : IEntityDescriptor, new()
         {
-            var newEntitiesToBuild = EntityDescriptorTemplate<T>.descriptor.entitiesToBuild;
+            var newEntitiesToBuild = EntityDescriptorTemplate<T>.descriptor.entityComponentsToBuild;
 
             _entitiesToBuild = Construct(newEntitiesToBuild.Length, newEntitiesToBuild, _entitiesToBuild);
         }
@@ -121,7 +121,7 @@ namespace Svelto.ECS
         }
 
 
-        public IEntityBuilder[] entitiesToBuild => _entitiesToBuild;
+        public IEntityBuilder[] entityComponentsToBuild => _entitiesToBuild;
 
         IEntityBuilder[] _entitiesToBuild;
     }

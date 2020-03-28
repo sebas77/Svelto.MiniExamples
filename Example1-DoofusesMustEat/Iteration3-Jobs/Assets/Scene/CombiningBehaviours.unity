@@ -94,8 +94,9 @@ LightmapSettings:
     m_PVRFilteringAtrousPositionSigmaDirect: 0.5
     m_PVRFilteringAtrousPositionSigmaIndirect: 2
     m_PVRFilteringAtrousPositionSigmaAO: 1
-    m_ShowResolutionOverlay: 1
     m_ExportTrainingData: 0
+    m_TrainingDataDestination: TrainingData
+    m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
   m_UseShadowmask: 1
 --- !u!196 &4
@@ -145,8 +146,9 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 170076733}
   m_Enabled: 1
-  serializedVersion: 9
+  serializedVersion: 10
   m_Type: 1
+  m_Shape: 0
   m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
   m_Intensity: 1
   m_Range: 10
@@ -385,6 +387,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -396,6 +399,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -430,6 +434,75 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &1221677989
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 682977448313023505, guid: 3c07b514dd3c4dd29c90a6a979eaa3a4,
+        type: 3}
+      propertyPath: m_Name
+      value: BlueCapsule
+      objectReference: {fileID: 0}
+    - target: {fileID: 682977448313023509, guid: 3c07b514dd3c4dd29c90a6a979eaa3a4,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 682977448313023509, guid: 3c07b514dd3c4dd29c90a6a979eaa3a4,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 682977448313023509, guid: 3c07b514dd3c4dd29c90a6a979eaa3a4,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 682977448313023509, guid: 3c07b514dd3c4dd29c90a6a979eaa3a4,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 682977448313023509, guid: 3c07b514dd3c4dd29c90a6a979eaa3a4,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 682977448313023509, guid: 3c07b514dd3c4dd29c90a6a979eaa3a4,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 682977448313023509, guid: 3c07b514dd3c4dd29c90a6a979eaa3a4,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 682977448313023509, guid: 3c07b514dd3c4dd29c90a6a979eaa3a4,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 682977448313023509, guid: 3c07b514dd3c4dd29c90a6a979eaa3a4,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 682977448313023509, guid: 3c07b514dd3c4dd29c90a6a979eaa3a4,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 682977448313023509, guid: 3c07b514dd3c4dd29c90a6a979eaa3a4,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 3c07b514dd3c4dd29c90a6a979eaa3a4, type: 3}
 --- !u!1 &1610887901
 GameObject:
   m_ObjectHideFlags: 0
@@ -459,8 +532,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a8d39b3c6620dc04fa9fde33905dae81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  capsule: {fileID: 682977448313023505, guid: a8e40f79a5c858a488d350d7c02435f1, type: 3}
-  food: {fileID: 6904254650914295564, guid: 11dbd3286c2fd1a4d93929c0293ba66d, type: 3}
   Notes: 
 --- !u!4 &1610887903
 Transform:

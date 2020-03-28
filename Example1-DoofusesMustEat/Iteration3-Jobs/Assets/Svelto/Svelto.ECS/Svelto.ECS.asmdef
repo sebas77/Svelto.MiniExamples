@@ -2,6 +2,7 @@
     "name": "Svelto.ECS",
     "references": [
         "Unity.Entities",
+        "Unity.Collections",
         "Svelto.Common_3"
     ],
     "includePlatforms": [],

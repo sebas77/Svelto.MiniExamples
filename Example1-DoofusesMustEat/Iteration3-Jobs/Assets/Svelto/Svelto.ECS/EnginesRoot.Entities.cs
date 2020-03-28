@@ -4,62 +4,12 @@ using System.Runtime.CompilerServices;
 using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.ECS.Internal;
+using Svelto.ECS.Schedulers;
 
 namespace Svelto.ECS
 {
     public partial class EnginesRoot : IDisposable
     {
-        /// <summary>
-        /// Dispose an EngineRoot once not used anymore, so that all the
-        /// engines are notified with the entities removed.
-        /// It's a clean up process.
-        /// </summary>
-        public void Dispose()
-        {
-            using (var profiler = new PlatformProfiler("Final Dispose"))
-            {
-                foreach (var groups in _groupEntityViewsDB)
-                {
-                    foreach (var entityList in groups.Value)
-                    {
-                        entityList.Value.RemoveEntitiesFromEngines(_reactiveEnginesAddRemove, profiler,
-                            new ExclusiveGroupStruct(groups.Key));
-                    }
-                }
-
-                _groupEntityViewsDB.Clear();
-                _groupsPerEntity.Clear();
-
-                foreach (var engine in _disposableEngines)
-                    engine.Dispose();
-
-                _disposableEngines.Clear();
-                _enginesSet.Clear();
-                _enginesTypeSet.Clear();
-                _reactiveEnginesSwap.Clear();
-                _reactiveEnginesAddRemove.Clear();
-
-                _entitiesOperations.Clear();
-                _transientEntitiesOperations.Clear();
-                scheduler.Dispose();
-#if DEBUG && !PROFILE_SVELTO
-                _idCheckers.Clear();
-#endif
-                _groupedEntityToAdd = null;
-
-                _entitiesStream.Dispose();
-            }
-
-            GC.SuppressFinalize(this);
-        }
-
-        ~EnginesRoot()
-        {
-            Console.LogWarning("Engines Root has been garbage collected, don't forget to call Dispose()!");
-
-            Dispose();
-        }
-
         ///--------------------------------------------
         ///
         public IEntityStreamConsumerFactory GenerateConsumerFactory()
@@ -92,7 +42,7 @@ namespace Svelto.ECS
         ///--------------------------------------------
         void Preallocate<T>(ExclusiveGroupStruct groupID, uint size) where T : IEntityDescriptor, new()
         {
-            var entityViewsToBuild = EntityDescriptorTemplate<T>.descriptor.entitiesToBuild;
+            var entityViewsToBuild = EntityDescriptorTemplate<T>.descriptor.entityComponentsToBuild;
             var numberOfEntityViews = entityViewsToBuild.Length;
 
             FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary> group = GetOrCreateGroup(groupID);

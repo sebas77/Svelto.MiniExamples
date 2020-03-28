@@ -61,7 +61,7 @@ namespace Svelto.ECS
                 {
                     var initializer = _enginesRoot.BuildEntity(egid,
                         _enginesRoot._isDeserializationOnly ? entityDescriptor.entitiesToSerialize
-                            : entityDescriptor.entitiesToBuild);
+                            : entityDescriptor.entityComponentsToBuild);
 
                     DeserializeEntityStructs(serializationData, entityDescriptor, ref initializer, serializationType);
 
@@ -133,7 +133,7 @@ namespace Svelto.ECS
                     EntitySubmitOperationType.Swap,
                     localEgid,
                     toEgid,
-                    entityDescriptor.entitiesToBuild);
+                    entityDescriptor.entityComponentsToBuild);
 
                 _enginesRoot.CheckRemoveEntityID(localEgid);
                 _enginesRoot.CheckAddEntityID(toEgid);
@@ -156,7 +156,7 @@ namespace Svelto.ECS
                     EntitySubmitOperationType.Remove,
                     egid,
                     egid,
-                    entityDescriptor.entitiesToBuild);
+                    entityDescriptor.entityComponentsToBuild);
 
                 _enginesRoot.QueueEntitySubmitOperation(entitySubmitOperation);
             }

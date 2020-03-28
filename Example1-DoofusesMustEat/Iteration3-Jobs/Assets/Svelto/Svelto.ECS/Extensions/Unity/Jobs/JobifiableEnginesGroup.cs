@@ -19,8 +19,9 @@ namespace Svelto.ECS
             {
                 var engine = fasterReadOnlyList[index];
                 combinedHandles = engine.Execute(combinedHandles);
+                combinedHandles.Complete();
             }
-
+            
             return combinedHandles;
         }
 

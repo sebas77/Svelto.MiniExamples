@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Svelto.DataStructures;
-using Svelto.ECS.Schedulers;
 
 namespace Svelto.ECS
 {
@@ -32,7 +31,7 @@ namespace Svelto.ECS
 
                 _enginesRoot.Target.QueueEntitySubmitOperation<T>(
                     new EntitySubmitOperation(EntitySubmitOperationType.Remove, entityEGID, entityEGID,
-                        EntityDescriptorTemplate<T>.descriptor.entitiesToBuild));
+                        EntityDescriptorTemplate<T>.descriptor.entityComponentsToBuild));
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -46,10 +45,11 @@ namespace Svelto.ECS
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public void SwapEntitiesInGroup<T>(ExclusiveGroupStruct fromGroupID,
-                                               ExclusiveGroupStruct toGroupID)
+                ExclusiveGroupStruct toGroupID)
             {
                 _enginesRoot.Target.QueueEntitySubmitOperation(
-                        new EntitySubmitOperation(EntitySubmitOperationType.SwapGroup, new EGID(0, fromGroupID), new EGID(0, toGroupID)));
+                    new EntitySubmitOperation(EntitySubmitOperationType.SwapGroup, new EGID(0, fromGroupID),
+                        new EGID(0, toGroupID)));
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -89,6 +89,13 @@ namespace Svelto.ECS
                 SwapEntityGroup<T>(fromID, toID);
             }
 
+#if UNITY_ECS
+            public NativeEntityOperations ToNative<T>(Unity.Collections.Allocator allocator) where T : IEntityDescriptor, new()
+            {
+                return _enginesRoot.Target.ProvideNativeEntityRemoveQueue<T>(allocator);
+            }
+#endif            
+
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public void SwapEntityGroup<T>(EGID fromID, EGID toID)
                 where T : IEntityDescriptor, new()
@@ -98,15 +105,13 @@ namespace Svelto.ECS
 
                 _enginesRoot.Target.QueueEntitySubmitOperation<T>(
                     new EntitySubmitOperation(EntitySubmitOperationType.Swap,
-                        fromID, toID, EntityDescriptorTemplate<T>.descriptor.entitiesToBuild));
+                        fromID, toID, EntityDescriptorTemplate<T>.descriptor.entityComponentsToBuild));
             }
-            
+
             //enginesRoot is a weakreference because GenericEntityStreamConsumerFactory can be injected inside
 //engines of other enginesRoot
             readonly WeakReference<EnginesRoot> _enginesRoot;
         }
-
-        public IEntitySubmissionScheduler scheduler { get; }
 
         void QueueEntitySubmitOperation(EntitySubmitOperation entitySubmitOperation)
         {
@@ -135,7 +140,7 @@ namespace Svelto.ECS
             }
             else
 #endif
-            _entitiesOperations.Set((ulong) entitySubmitOperation.fromID, entitySubmitOperation);
+                _entitiesOperations.Set((ulong) entitySubmitOperation.fromID, entitySubmitOperation);
         }
     }
 }

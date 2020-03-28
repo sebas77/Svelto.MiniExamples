@@ -630,7 +630,7 @@ PlayerSettings:
   webGLThreadsSupport: 0
   webGLWasmStreaming: 0
   scriptingDefineSymbols:
-    1: ENABLE_HYBRID_RENDERER_V2
+    1: 
   platformArchitecture: {}
   scriptingBackend:
     Standalone: 0

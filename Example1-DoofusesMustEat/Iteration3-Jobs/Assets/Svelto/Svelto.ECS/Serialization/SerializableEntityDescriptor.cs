@@ -16,7 +16,7 @@ namespace Svelto.ECS.Serialization
     {
         static SerializableEntityDescriptor()
         {
-            IEntityBuilder[] defaultEntities = EntityDescriptorTemplate<TType>.descriptor.entitiesToBuild;
+            IEntityBuilder[] defaultEntities = EntityDescriptorTemplate<TType>.descriptor.entityComponentsToBuild;
 
             var hashNameAttribute = _type.GetCustomAttribute<HashNameAttribute>();
             if (hashNameAttribute == null)
@@ -99,7 +99,7 @@ namespace Svelto.ECS.Serialization
             return (indexSerial, indexDynamic);
         }
 
-        public IEntityBuilder[]             entitiesToBuild     => _entitiesToBuild;
+        public IEntityBuilder[]             entityComponentsToBuild     => _entitiesToBuild;
         public uint                         hash                => _hash;
         public ISerializableEntityBuilder[] entitiesToSerialize => _entitiesToSerialize;
 

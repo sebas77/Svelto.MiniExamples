@@ -41,7 +41,7 @@ namespace Svelto.ECS
             return this;
         }
 
-        public IEntityBuilder[] entitiesToBuild => _dynamicDescriptor.entitiesToBuild;
+        public IEntityBuilder[] entityComponentsToBuild => _dynamicDescriptor.entityComponentsToBuild;
 
         DynamicEntityDescriptor<TType> _dynamicDescriptor;
     }

@@ -1,5 +1,6 @@
-#if UNITY_2017_2_OR_NEWER
+#if UNITY_ECS
 using System;
+using System.Runtime.CompilerServices;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 
@@ -7,46 +8,126 @@ namespace Svelto.DataStructures
 {
     public struct SimpleNativeArray : IDisposable
     {
-        IntPtr _ptr;
-        public uint length;
-
-        public void Alloc<T>(uint newLength) where T : unmanaged
-        {
-            unsafe
-            {
-#if DEBUG
-                if(_ptr != default) throw new Exception("SimpleNativeArray: Alloc called twice");
+        [NativeDisableUnsafePtrRestriction] unsafe UnsafeList* _list;
+#if DEBUG && !PROFILE_SVELTO
+        int hashType;
 #endif
-                int elemSize = UnsafeUtility.SizeOf<T>();
-                int elemAlign = UnsafeUtility.AlignOf<T>();
-                _ptr = (IntPtr)UnsafeUtility.Malloc(newLength * elemSize, elemAlign, Allocator.Persistent);
-                length = newLength;
+
+        public uint count
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                unsafe
+                {
+                    return (uint) _list->Length;
+                }
             }
         }
 
+        public static SimpleNativeArray Alloc<T>(Allocator allocator, uint newLength = 0) where T : unmanaged
+        {
+            unsafe
+            {
+                var rtnStruc = new SimpleNativeArray();
+#if DEBUG && !PROFILE_SVELTO
+                rtnStruc.hashType = typeof(T).GetHashCode();
+#endif
+                rtnStruc._list = UnsafeList.Create(UnsafeUtility.SizeOf<T>(), UnsafeUtility.AlignOf<T>()
+                                                 , (int) newLength, allocator);
+
+                return rtnStruc;
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref T Get<T>(uint index) where T : unmanaged
         {
             unsafe
             {
-#if DEBUG
-                if (_ptr == IntPtr.Zero) throw new Exception("SimpleNativeArray: null-access");
-                if(index >= length) throw new Exception("SimpleNativeArray: out of bound index");
+#if DEBUG && !PROFILE_SVELTO
+                if (hashType != typeof(T).GetHashCode())
+                    throw new Exception("SimpleNativeArray: not except type used");
+                if (_list == null)
+                    throw new Exception("SimpleNativeArray: null-access");
+                if (index >= _list->Length)
+                    throw new Exception($"SimpleNativeArray: out of bound access, index {index} count {count}");
 #endif
-                return ref ((T *)_ptr)[index];
+                T* buffer = (T*) _list->Ptr;
+                return ref buffer[index];
             }
         }
 
-        public void Set<T>(uint index, in T value) where T : unmanaged
-        {
-            Get<T>(index) = value;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Set<T>(uint index, in T value) where T : unmanaged => Get<T>(index) = value;
 
         public unsafe void Dispose()
         {
-            if (_ptr != IntPtr.Zero)
+            if (_list != null)
             {
-                UnsafeUtility.Free((void*)_ptr, Allocator.Persistent);
-                _ptr = IntPtr.Zero;
+                UnsafeList.Destroy(_list);
+                _list = null;
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Add<T>(in T item) where T : unmanaged
+        {
+            unsafe
+            {
+#if DEBUG && !PROFILE_SVELTO
+                if (hashType != typeof(T).GetHashCode())
+                    throw new Exception("SimpleNativeArray: not except type used");
+                if (_list == null)
+                    throw new Exception("SimpleNativeArray: null-access");
+#endif
+                if (_list->Length == _list->Capacity)
+                    Realloc(UnsafeUtility.SizeOf<T>(), UnsafeUtility.AlignOf<T>(), (int) ((_list->Capacity + 1) * 1.5f)
+                          , _list->Allocator);
+
+                T* buffer = (T*) _list->Ptr;
+                buffer[_list->Length] = item;
+                _list->Length         = _list->Length + 1;
+            }
+        }
+
+        void Realloc(int sizeOf, int alignOf, int capacity, Allocator allocator)
+        {
+            unsafe
+            {
+                void* newPointer = null;
+
+                if (capacity > 0)
+                {
+                    var bytesToMalloc = sizeOf * capacity;
+                    newPointer = UnsafeUtility.Malloc(bytesToMalloc, alignOf, allocator);
+
+                    if (_list->Length > 0)
+                    {
+                        var itemsToCopy = capacity > _list->Length ? _list->Length : capacity;
+                        var bytesToCopy = itemsToCopy * sizeOf;
+                        UnsafeUtility.MemCpy(newPointer, _list->Ptr, bytesToCopy);
+                    }
+                }
+
+                UnsafeUtility.Free(_list->Ptr, allocator);
+
+                _list->Ptr      = newPointer;
+                _list->Capacity = capacity;
+                _list->Length   = capacity > _list->Length ? _list->Length : capacity;
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Clear()
+        {
+            unsafe
+            {
+#if DEBUG && !PROFILE_SVELTO
+                if (_list == null)
+                    throw new Exception("SimpleNativeArray: null-access");
+#endif
+                _list->Clear();
             }
         }
     }

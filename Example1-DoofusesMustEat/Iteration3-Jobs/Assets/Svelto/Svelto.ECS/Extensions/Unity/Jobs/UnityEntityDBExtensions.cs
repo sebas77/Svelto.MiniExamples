@@ -7,9 +7,9 @@ namespace Svelto.ECS.Extensions.Unity
     public static class UnityEntityDBExtensions
     {
         public static JobHandle CombineDispose
-            <T1, T2>(this in NativeBuffer<T1> buffer, JobHandle combinedDependencies,
+            <T1>(this in NativeBuffer<T1> buffer, JobHandle combinedDependencies,
                 JobHandle                                               inputDeps)
-            where T1 : unmanaged where T2 : unmanaged
+            where T1 : unmanaged 
         {
             return JobHandle.CombineDependencies(combinedDependencies,
                 new DisposeJob<NativeBuffer<T1>>(buffer)

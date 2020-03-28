@@ -1,14 +1,16 @@
 using System;
 using System.Collections;
+using Svelto.Common;
 using Svelto.ECS.EntityStructs;
 using Svelto.Tasks.ExtraLean;
-using Svelto.Tasks.ExtraLean.Unity;
 using Unity.Entities;
+using Unity.Jobs;
 using Unity.Mathematics;
 using Random = UnityEngine.Random;
 
 namespace Svelto.ECS.MiniExamples.Example1C
 {
+    [Sequenced(nameof(DoofusesEngineNames.SpawningDoofusEngine))]
     public class SpawningDoofusEngine : IQueryingEntitiesEngine, IDisposable, IJobifiableEngine
     {
         public SpawningDoofusEngine(Entity redCapsule, Entity blueCapsule, IEntityFactory factory)
@@ -16,7 +18,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
             _redCapsule = redCapsule;
             _blueCapsule = blueCapsule;
             _factory = factory;
-            _runner = new UpdateMonoRunner("SpawningDoofusEngine");
+            _runner = new SteppableRunner("SpawningDoofusEngine");
         }
 
         public EntitiesDB entitiesDB { get; set; }
@@ -94,6 +96,13 @@ namespace Svelto.ECS.MiniExamples.Example1C
 
         const int MaxNumberOfDoofuses = 10000;
 
-        readonly UpdateMonoRunner _runner;
+        readonly SteppableRunner _runner;
+        
+        public JobHandle Execute(JobHandle _jobHandle)
+        {
+            _runner.Step();
+
+            return _jobHandle;
+        }
     }
 }
