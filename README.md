@@ -27,7 +27,7 @@ Goal of this example:
    * Integration with Burst for better performance
    * Move the camera with arrows and mouse, left button to drop 100 random food only once
  ###  **Iteration 3:**
-   * Full code jobification with Svelto ECS 3.0 alpha
+   * Full jobificatied code with Svelto ECS 3.0
   
 ## Example 2: The classic Survival demo (Hybrid ECS)
 
