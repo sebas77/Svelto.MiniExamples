@@ -19,13 +19,14 @@ Goal of this example:
 * intoduce to the concept of entity descriptors, entity structs and groups. 
 * Show the integration with UnityECS, show the use of Svelto.Tasks 2.0 (alpha state) 
 * show integration with Unity Jobs and Burst (using Svelto.ECS 3.0 (currently alpha state)
- * **Iteration 1**
+ 
+ ### **Iteration 1**
    * Integration with UnityECS for rendering
    * Move the camera with arrows and mouse, left button to drop food
- * **Iteration 2:**
+ ###  **Iteration 2:**
    * Integration with Burst for better performance
    * Move the camera with arrows and mouse, left button to drop 100 random food only once
- * **Iteration 3:**
+ ###  **Iteration 3:**
    * Full code jobification with Svelto ECS 3.0 alpha
   
 ## Example 2: The classic Survival demo (Hybrid ECS)
