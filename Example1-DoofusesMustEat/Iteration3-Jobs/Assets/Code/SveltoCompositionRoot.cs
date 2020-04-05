@@ -41,7 +41,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
                 _simpleSubmitScheduler.SubmitEntities();
 
                 //schedule all jobs and let them run until next frame;
-                order.Execute(jobs);
+                jobs = order.Execute(jobs);
                 
                 yield return Yield.It;
             }
@@ -97,9 +97,10 @@ namespace Svelto.ECS.MiniExamples.Example1C
 
             _world = new World("Custom world");
 
-            World.DefaultGameObjectInjectionWorld = _world;
             var systems = DefaultWorldInitialization.GetAllSystems(WorldSystemFilterFlags.Default);
             DefaultWorldInitialization.AddSystemsToRootLevelSystemGroups(_world, systems);
+
+            World.DefaultGameObjectInjectionWorld = _world;
 
             var copySveltoToUecsEnginesGroup = new CopySveltoToUECSEnginesGroup();
             _world.AddSystem(copySveltoToUecsEnginesGroup);
@@ -133,7 +134,8 @@ namespace Svelto.ECS.MiniExamples.Example1C
 
             AddSveltoEngineToTick(new PlaceFoodOnClickEngine(redfoodEntity, bluefoodEntity, generateEntityFactory));
             AddSveltoEngineToTick(new SpawningDoofusEngine(redDoofusEntity, blueDoofusEntity, generateEntityFactory));
-            AddSveltoEngineToTick(new ConsumingFoodEngine(_enginesRoot.GenerateEntityFunctions()));
+            var generateEntityFunctions = _enginesRoot.GenerateEntityFunctions();
+            AddSveltoEngineToTick(new ConsumingFoodEngine(generateEntityFunctions));
             AddSveltoEngineToTick(new LookingForFoodDoofusesEngine());
             AddSveltoEngineToTick(new VelocityToPositionDoofusesEngine());
             

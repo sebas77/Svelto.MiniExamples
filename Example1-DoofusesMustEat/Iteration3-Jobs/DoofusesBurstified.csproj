@@ -66,7 +66,7 @@
      <Compile Include="Assets\Code\Components\EntityStructs\MealEntityStruct.cs" />
      <Compile Include="Assets\Code\Components\EntityStructs\PositionEntityStruct.cs" />
      <Compile Include="Assets\Code\Components\EntityStructs\SpeedEntityStruct.cs" />
-     <Compile Include="Assets\Code\Components\EntityStructs\UnityECSEntityStruct.cs" />
+     <Compile Include="Assets\Code\Components\EntityStructs\UnityEcsEntityComponent.cs" />
      <Compile Include="Assets\Code\Components\EntityStructs\VelocityEntityStruct.cs" />
      <Compile Include="Assets\Code\DoofusEntityDescriptor.cs" />
      <Compile Include="Assets\Code\DoofusesEnginesOrder.cs" />
@@ -103,6 +103,12 @@
  </Reference>
  <Reference Include="Unity.Transforms">
  <HintPath>C:/Prgdir/Svelto/Svelto.MiniExamples/Example1-DoofusesMustEat/Iteration3-Jobs/Library/ScriptAssemblies/Unity.Transforms.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEditor.UI">
+ <HintPath>C:/Prgdir/Svelto/Svelto.MiniExamples/Example1-DoofusesMustEat/Iteration3-Jobs/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.UI">
+ <HintPath>C:/Prgdir/Svelto/Svelto.MiniExamples/Example1-DoofusesMustEat/Iteration3-Jobs/Library/ScriptAssemblies/UnityEngine.UI.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.AIModule">
  <HintPath>C:/Program Files/Unity/Hub/Editor/2019.3.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>

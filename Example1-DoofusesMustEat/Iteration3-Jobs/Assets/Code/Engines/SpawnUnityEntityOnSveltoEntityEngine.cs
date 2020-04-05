@@ -1,4 +1,3 @@
-using Svelto.Common;
 using Svelto.ECS.Extensions.Unity;
 using Unity.Entities;
 using Unity.Mathematics;
@@ -11,7 +10,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
     /// destruction.
     /// </summary>
     public class SpawnUnityEntityOnSveltoEntityEngine
-        : IReactOnAddAndRemove<UnityEcsEntityStruct>, IQueryingEntitiesEngine
+        : IReactOnAddAndRemove<UnityEcsEntityComponent>, IQueryingEntitiesEngine
     {
         readonly EntityManager _entityManager;
 
@@ -21,28 +20,28 @@ namespace Svelto.ECS.MiniExamples.Example1C
 
         public void Ready() { }
 
-        public void Add(ref UnityEcsEntityStruct entityView, EGID egid) { SpawnUnityEntities(entityView, egid); }
-        public void Remove(ref UnityEcsEntityStruct entityView, EGID egid) { DestroyEntity(entityView); }
+        public void Add(ref UnityEcsEntityComponent entityComponent, EGID egid) { SpawnUnityEntities(entityComponent, egid); }
+        public void Remove(ref UnityEcsEntityComponent entityComponent, EGID egid) { DestroyEntity(entityComponent); }
 
-        void DestroyEntity(in UnityEcsEntityStruct entityView)
+        void DestroyEntity(in UnityEcsEntityComponent entityComponent)
         {
             if (_entityManager.IsCreated)
-                _entityManager.DestroyEntity(entityView.uecsEntity);
+                _entityManager.DestroyEntity(entityComponent.uecsEntity);
         }
 
-        void SpawnUnityEntities(in UnityEcsEntityStruct unityEcsEntityStruct, in EGID egid)
+        void SpawnUnityEntities(in UnityEcsEntityComponent unityEcsEntityComponent, in EGID egid)
         {
-            var uecsEntity = _entityManager.Instantiate(unityEcsEntityStruct.uecsEntity);
+            var uecsEntity = _entityManager.Instantiate(unityEcsEntityComponent.uecsEntity);
 
-            entitiesDB.QueryEntity<UnityEcsEntityStruct>(unityEcsEntityStruct.ID).uecsEntity = uecsEntity;
+            entitiesDB.QueryEntity<UnityEcsEntityComponent>(egid).uecsEntity = uecsEntity;
 
             //SharedComponentData can be used to group the UECS entities exactly like the Svelto ones
             _entityManager.AddSharedComponentData(uecsEntity, new UECSSveltoGroupID(egid.groupID));
             _entityManager.AddComponentData(uecsEntity, new Translation
             {
-                Value = new float3(unityEcsEntityStruct.spawnPosition.x,
-                                   unityEcsEntityStruct.spawnPosition.y,
-                                   unityEcsEntityStruct.spawnPosition.z)
+                Value = new float3(unityEcsEntityComponent.spawnPosition.x,
+                                   unityEcsEntityComponent.spawnPosition.y,
+                                   unityEcsEntityComponent.spawnPosition.z)
             });
         }
     }

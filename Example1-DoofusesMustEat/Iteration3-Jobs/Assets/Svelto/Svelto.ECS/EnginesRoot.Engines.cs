@@ -13,16 +13,16 @@ namespace Svelto.ECS
         {
             public EntitiesSubmitter(EnginesRoot enginesRoot)
             {
-                _weakReference = new DataStructures.WeakReference<EnginesRoot>(enginesRoot);
+                _weakReference = new Svelto.DataStructures.WeakReference<EnginesRoot>(enginesRoot);
             }
 
             public void Invoke()
             {
                 if (_weakReference.IsValid)
-                    _weakReference.Target.SubmitEntityViews();
+                    _weakReference.Target.SubmitEntityComponents();
             }
 
-            readonly DataStructures.WeakReference<EnginesRoot> _weakReference;
+            readonly Svelto.DataStructures.WeakReference<EnginesRoot> _weakReference;
         }
         
         public IEntitySubmissionScheduler scheduler { get; }
@@ -35,7 +35,7 @@ namespace Svelto.ECS
         /// The EntitySubmissionScheduler cannot hold an EnginesRoot reference, that's why
         /// it must receive a weak reference of the EnginesRoot callback.
         /// </summary>
-        public EnginesRoot(IEntitySubmissionScheduler entityViewScheduler)
+        public EnginesRoot(IEntitySubmissionScheduler entityComponentScheduler)
         {
             _entitiesOperations = new ThreadSafeDictionary<ulong, EntitySubmitOperation>();
             serializationDescriptorMap = new SerializationDescriptorMap();
@@ -46,21 +46,21 @@ namespace Svelto.ECS
             _disposableEngines = new FasterList<IDisposable>();
             _transientEntitiesOperations = new FasterList<EntitySubmitOperation>();
 
-            _groupEntityViewsDB = new FasterDictionary<uint, FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary>>();
+            _groupEntityComponentsDB = new FasterDictionary<uint, FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary>>();
             _groupsPerEntity = new FasterDictionary<RefWrapper<Type>, FasterDictionary<uint, ITypeSafeDictionary>>();
             _groupedEntityToAdd = new DoubleBufferedEntitiesToAdd();
 
             _entitiesStream = new EntitiesStream();
-            _entitiesDB = new EntitiesDB(_groupEntityViewsDB, _groupsPerEntity, _entitiesStream);
+            _entitiesDB = new EntitiesDB(_groupEntityComponentsDB, _groupsPerEntity, _entitiesStream);
 
-            scheduler = entityViewScheduler;
+            scheduler = entityComponentScheduler;
             scheduler.onTick = new EntitiesSubmitter(this);
 #if UNITY_ECS            
             AllocateNativeOperations();
 #endif
         }
         
-        public EnginesRoot(IEntitySubmissionScheduler entityViewScheduler, bool isDeserializationOnly):this(entityViewScheduler)
+        public EnginesRoot(IEntitySubmissionScheduler entityComponentScheduler, bool isDeserializationOnly):this(entityComponentScheduler)
         {
             _isDeserializationOnly = isDeserializationOnly;
         }
@@ -74,7 +74,7 @@ namespace Svelto.ECS
         {
             using (var profiler = new PlatformProfiler("Final Dispose"))
             {
-                foreach (var groups in _groupEntityViewsDB)
+                foreach (var groups in _groupEntityComponentsDB)
                 {
                     foreach (var entityList in groups.Value)
                     {
@@ -83,7 +83,7 @@ namespace Svelto.ECS
                     }
                 }
 
-                _groupEntityViewsDB.Clear();
+                _groupEntityComponentsDB.Clear();
                 _groupsPerEntity.Clear();
 
                 foreach (var engine in _disposableEngines)
@@ -130,10 +130,10 @@ namespace Svelto.ECS
             try
             {
                 if (engine is IReactOnAddAndRemove viewEngine)
-                    CheckEntityViewsEngine(viewEngine, _reactiveEnginesAddRemove);
+                    CheckEntityComponentsEngine(viewEngine, _reactiveEnginesAddRemove);
 
                 if (engine is IReactOnSwap viewEngineSwap)
-                    CheckEntityViewsEngine(viewEngineSwap, _reactiveEnginesSwap);
+                    CheckEntityComponentsEngine(viewEngineSwap, _reactiveEnginesSwap);
 
                 _enginesTypeSet.Add(refWrapper);
                 _enginesSet.Add(engine);
@@ -141,10 +141,10 @@ namespace Svelto.ECS
                 if (engine is IDisposable)
                     _disposableEngines.Add(engine as IDisposable);
 
-                if (engine is IQueryingEntitiesEngine queryableEntityViewEngine)
+                if (engine is IQueryingEntitiesEngine queryableEntityComponentEngine)
                 {
-                    queryableEntityViewEngine.entitiesDB = _entitiesDB;
-                    queryableEntityViewEngine.Ready();
+                    queryableEntityComponentEngine.entitiesDB = _entitiesDB;
+                    queryableEntityComponentEngine.Ready();
                 }
             }
             catch (Exception e)
@@ -153,7 +153,7 @@ namespace Svelto.ECS
             }
         }
 
-        void CheckEntityViewsEngine<T>(T engine, FasterDictionary<RefWrapper<Type>, FasterList<IEngine>> engines)
+        void CheckEntityComponentsEngine<T>(T engine, FasterDictionary<RefWrapper<Type>, FasterList<IEngine>> engines)
             where T : class, IEngine
         {
             var interfaces = engine.GetType().GetInterfaces();
@@ -169,13 +169,13 @@ namespace Svelto.ECS
             }
         }
 
-        static void AddEngine<T>(T engine, Type[] entityViewTypes,
+        static void AddEngine<T>(T engine, Type[] entityComponentTypes,
             FasterDictionary<RefWrapper<Type>, FasterList<IEngine>> engines) 
             where T : class, IEngine
         {
-            for (var i = 0; i < entityViewTypes.Length; i++)
+            for (var i = 0; i < entityComponentTypes.Length; i++)
             {
-                var type = entityViewTypes[i];
+                var type = entityComponentTypes[i];
 
                 AddEngine(engine, engines, type);
             }

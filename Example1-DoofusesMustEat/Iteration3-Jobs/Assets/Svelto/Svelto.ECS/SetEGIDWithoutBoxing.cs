@@ -12,7 +12,7 @@ namespace Svelto.ECS.Internal
 
         static SetEGIDWithoutBoxingActionCast<T> MakeSetter()
         {
-            if (EntityBuilder<T>.HAS_EGID)
+            if (ComponentBuilder<T>.HAS_EGID)
             {
 #if !ENABLE_IL2CPP
 //not working in .net standard 2.0 on client, bug?

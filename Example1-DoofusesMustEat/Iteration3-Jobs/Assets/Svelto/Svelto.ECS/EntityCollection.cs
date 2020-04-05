@@ -554,13 +554,13 @@ namespace Svelto.ECS
             index = i;
         }
 
-        public ref T1 entityStructA
+        public ref T1 entityComponentA
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => ref array1.Item1[index];
         }
 
-        public ref T2 entityStructB
+        public ref T2 entityComponentB
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => ref array1.Item2[index];
@@ -580,19 +580,19 @@ namespace Svelto.ECS
             index  = i;
         }
 
-        public ref T1 entityStructA
+        public ref T1 entityComponentA
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => ref array1.Item1[index];
         }
 
-        public ref T2 entityStructB
+        public ref T2 entityComponentB
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => ref array1.Item2[index];
         }
         
-        public ref T3 entityStructC
+        public ref T3 entityComponentC
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => ref array1.Item3[index];

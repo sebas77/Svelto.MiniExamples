@@ -399,12 +399,6 @@ using System.Runtime.InteropServices;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ref TValue GetDirectValue(uint index)
-        {
-            return ref _values[(int) index];
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public uint GetIndex(TKey key)
         {
             if (TryFindIndex(key, out var findIndex)) return findIndex;

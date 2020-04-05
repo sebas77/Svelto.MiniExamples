@@ -70,11 +70,11 @@ namespace Svelto.ECS
             internal FasterDictionary<uint, FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary>> other;
 
             readonly FasterDictionary<uint, FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary>>
-                _entityViewsToAddBufferA =
+                _entityComponentsToAddBufferA =
                     new FasterDictionary<uint, FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary>>();
 
             readonly FasterDictionary<uint, FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary>>
-                _entityViewsToAddBufferB =
+                _entityComponentsToAddBufferB =
                     new FasterDictionary<uint, FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary>>();
 
             readonly FasterDictionary<uint, uint> _entitiesCreatedPerGroupA = new FasterDictionary<uint, uint>();
@@ -85,8 +85,8 @@ namespace Svelto.ECS
                 currentEntitiesCreatedPerGroup = _entitiesCreatedPerGroupA;
                 otherEntitiesCreatedPerGroup = _entitiesCreatedPerGroupB;
 
-                current = _entityViewsToAddBufferA;
-                other = _entityViewsToAddBufferB;
+                current = _entityComponentsToAddBufferA;
+                other = _entityComponentsToAddBufferB;
             }
         }
     }

@@ -1,6 +1,6 @@
 namespace Svelto.ECS.MiniExamples.Example1C
 {
-    struct SpeedEntityStruct : IEntityComponent
+    struct SpeedEntityComponent : IEntityComponent
     {
         public float speed;
     }

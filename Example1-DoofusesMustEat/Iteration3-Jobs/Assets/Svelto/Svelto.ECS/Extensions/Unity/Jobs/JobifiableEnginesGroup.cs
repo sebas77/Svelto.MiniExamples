@@ -3,7 +3,7 @@ using Svelto.DataStructures;
 using Unity.Jobs;
 using Svelto.Common;
 
-namespace Svelto.ECS
+namespace Svelto.ECS.Extensions.Unity
 {
     public abstract class JobifiableEnginesGroup<T, En>  where En:struct, ISequenceOrder where T: class, IJobifiableEngine
     {
@@ -18,8 +18,7 @@ namespace Svelto.ECS
             for (var index = 0; index < fasterReadOnlyList.Count; index++)
             {
                 var engine = fasterReadOnlyList[index];
-                combinedHandles = engine.Execute(combinedHandles);
-                combinedHandles.Complete();
+                combinedHandles = JobHandle.CombineDependencies(combinedHandles, engine.Execute(combinedHandles));
             }
             
             return combinedHandles;

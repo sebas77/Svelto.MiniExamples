@@ -1,8 +1,8 @@
 using Unity.Mathematics;
 
-namespace Svelto.ECS.EntityStructs
+namespace Svelto.ECS.EntityComponents
 {
-    public struct PositionEntityStruct : IEntityComponent
+    public struct PositionEntityComponent : IEntityComponent
     {
         public float3 position;
     }

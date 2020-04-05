@@ -16,99 +16,94 @@ namespace Svelto.ECS.Serialization
     {
         static SerializableEntityDescriptor()
         {
-            IEntityBuilder[] defaultEntities = EntityDescriptorTemplate<TType>.descriptor.entityComponentsToBuild;
+            IEntityComponentBuilder[] defaultEntities = EntityDescriptorTemplate<TType>.descriptor.componentsToBuild;
 
             var hashNameAttribute = _type.GetCustomAttribute<HashNameAttribute>();
             if (hashNameAttribute == null)
             {
-                throw new Exception("HashName attribute not found on the serializable type ".FastConcat(_type.FullName));
+                throw new Exception(
+                    "HashName attribute not found on the serializable type ".FastConcat(_type.FullName));
             }
 
             _hash = DesignatedHash.Hash(Encoding.ASCII.GetBytes(hashNameAttribute._name));
 
-            var (index, dynamicIndex) = SetupSpecialEntityStruct(defaultEntities, out _entitiesToBuild);
+            var (index, dynamicIndex) = SetupSpecialEntityComponent(defaultEntities, out ComponentsToBuild);
             if (index == -1)
             {
-                index = _entitiesToBuild.Length - 1;
+                index = ComponentsToBuild.Length - 1;
             }
 
             // Stores the hash of this EntityDescriptor
-            _entitiesToBuild[index] = new EntityBuilder<SerializableEntityStruct>
-            (
-                new SerializableEntityStruct
-                {
-                    descriptorHash = _hash
-                }
-            );
+            ComponentsToBuild[index] = new ComponentBuilder<SerializableEntityComponent>(new SerializableEntityComponent
+            {
+                descriptorHash = _hash
+            });
 
             // If the current serializable is an ExtendibleDescriptor, I have to update it.
             if (dynamicIndex != -1)
             {
-                _entitiesToBuild[dynamicIndex] = new EntityBuilder<EntityStructInfoView>
-                (
-                    new EntityStructInfoView
-                    {
-                        entitiesToBuild = _entitiesToBuild
-                    }
-                );
+                ComponentsToBuild[dynamicIndex] = new ComponentBuilder<EntityInfoComponentView>(new EntityInfoComponentView
+                {
+                    componentsToBuild = ComponentsToBuild
+                });
             }
 
             /////
-            var entitiesToSerialize = new FasterList<ISerializableEntityBuilder>();
-            _entitiesToSerializeMap = new FasterDictionary<RefWrapper<Type>, ISerializableEntityBuilder>();
-            foreach (IEntityBuilder e in defaultEntities)
+            var entitiesToSerialize = new FasterList<ISerializableEntityComponentBuilder>();
+            _entityComponentsToSerializeMap = new FasterDictionary<RefWrapper<Type>, ISerializableEntityComponentBuilder>();
+            foreach (IEntityComponentBuilder e in defaultEntities)
             {
-                if (e is ISerializableEntityBuilder serializableEntityBuilder)
+                if (e is ISerializableEntityComponentBuilder serializableEntityBuilder)
                 {
-                    var entityType = serializableEntityBuilder.GetEntityType();
-                    _entitiesToSerializeMap[new RefWrapper<Type>(entityType)] = serializableEntityBuilder;
+                    var entityType = serializableEntityBuilder.GetEntityComponentType();
+                    _entityComponentsToSerializeMap[new RefWrapper<Type>(entityType)] = serializableEntityBuilder;
                     entitiesToSerialize.Add(serializableEntityBuilder);
                 }
             }
-            
+
             _entitiesToSerialize = entitiesToSerialize.ToArray();
         }
 
-        static (int indexSerial, int indexDynamic) SetupSpecialEntityStruct(IEntityBuilder[] defaultEntities,
-            out IEntityBuilder[] entitiesToBuild)
+        static (int indexSerial, int indexDynamic) SetupSpecialEntityComponent
+            (IEntityComponentBuilder[] defaultEntities, out IEntityComponentBuilder[] componentsToBuild)
         {
-            int length = defaultEntities.Length;
+            int length    = defaultEntities.Length;
             int newLenght = length + 1;
 
-            int indexSerial = -1;
+            int indexSerial  = -1;
             int indexDynamic = -1;
 
             for (var i = 0; i < length; ++i)
             {
-                if (defaultEntities[i].GetEntityType() == _serializableStructType)
+                if (defaultEntities[i].GetEntityComponentType() == _serializableStructType)
                 {
                     indexSerial = i;
                     --newLenght;
                 }
 
-                if (defaultEntities[i].GetEntityType() == EntityBuilderUtilities.ENTITY_STRUCT_INFO_VIEW)
+                if (defaultEntities[i].GetEntityComponentType() == EntityBuilderUtilities.ENTITY_STRUCT_INFO_VIEW)
                 {
                     indexDynamic = i;
                 }
             }
 
-            entitiesToBuild = new IEntityBuilder[newLenght];
+            componentsToBuild = new IEntityComponentBuilder[newLenght];
 
-            Array.Copy(defaultEntities, 0, entitiesToBuild, 0, length);
+            Array.Copy(defaultEntities, 0, componentsToBuild, 0, length);
 
             return (indexSerial, indexDynamic);
         }
 
-        public IEntityBuilder[]             entityComponentsToBuild     => _entitiesToBuild;
-        public uint                         hash                => _hash;
-        public ISerializableEntityBuilder[] entitiesToSerialize => _entitiesToSerialize;
+        public IEntityComponentBuilder[]             componentsToBuild => ComponentsToBuild;
+        public uint                         hash                    => _hash;
+        public ISerializableEntityComponentBuilder[] entitiesToSerialize     => _entitiesToSerialize;
 
-        static readonly IEntityBuilder[]                                               _entitiesToBuild;
-        static readonly FasterDictionary<RefWrapper<Type>, ISerializableEntityBuilder> _entitiesToSerializeMap;
-        static readonly ISerializableEntityBuilder[]                                   _entitiesToSerialize;
+        static readonly IEntityComponentBuilder[]                                               ComponentsToBuild;
+        static readonly FasterDictionary<RefWrapper<Type>, ISerializableEntityComponentBuilder> _entityComponentsToSerializeMap;
+        static readonly ISerializableEntityComponentBuilder[]                                   _entitiesToSerialize;
 
         static readonly uint _hash;
-        static readonly Type _serializableStructType = typeof(SerializableEntityStruct);
+        static readonly Type _serializableStructType = typeof(SerializableEntityComponent);
         static readonly Type _type                   = typeof(TType);
     }
 }

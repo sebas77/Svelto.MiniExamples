@@ -32,7 +32,7 @@ namespace Svelto.ECS
         {
             if (map.TryFindIndex(entityID, out var index))
             {
-                value = map.GetDirectValue(index);
+                value = map.unsafeValues[index];
                 return true;
             }
 

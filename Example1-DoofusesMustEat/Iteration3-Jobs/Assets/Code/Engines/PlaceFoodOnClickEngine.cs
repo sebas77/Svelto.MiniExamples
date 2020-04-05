@@ -1,6 +1,7 @@
 using System.Collections;
 using Svelto.Common;
-using Svelto.ECS.EntityStructs;
+using Svelto.ECS.EntityComponents;
+using Svelto.ECS.Extensions.Unity;
 using Svelto.Tasks;
 using Svelto.Tasks.Enumerators;
 using Svelto.Tasks.ExtraLean;
@@ -38,7 +39,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
                         //entity that will be built.
                         for (int i = 0; i < 100; i++)
                         {
-                            EntityStructInitializer init;
+                            EntityComponentInitializer init;
 
                             var newposition = new float3(position.x + Random.Range(-10, 10), position.y,
                                                          position.z + Random.Range(-10, 10));
@@ -63,13 +64,13 @@ namespace Svelto.ECS.MiniExamples.Example1C
                                 isRed = false;
                             }
 
-                            init.Init(new MealEntityStruct(1000));
-                            init.Init(new PositionEntityStruct
+                            init.Init(new MealEntityComponent(1000));
+                            init.Init(new PositionEntityComponent
                             {
                                 position = newposition
                             });
                             //these structs are used for ReactOnAdd callback to create unity Entities later
-                            init.Init(new UnityEcsEntityStruct
+                            init.Init(new UnityEcsEntityComponent
                             {
                                 uecsEntity    = isRed ? _redfood : _bluefood,
                                 spawnPosition = newposition,

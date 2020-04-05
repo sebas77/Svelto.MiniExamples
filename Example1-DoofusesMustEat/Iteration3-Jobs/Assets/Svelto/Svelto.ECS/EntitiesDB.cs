@@ -13,11 +13,11 @@ namespace Svelto.ECS
     public class EntitiesDB
     {
         internal EntitiesDB(
-            FasterDictionary<uint, FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary>> groupEntityViewsDB,
+            FasterDictionary<uint, FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary>> groupEntityComponentsDB,
             FasterDictionary<RefWrapper<Type>, FasterDictionary<uint, ITypeSafeDictionary>> groupsPerEntity,
             EntitiesStream entityStream)
         {
-            _groupEntityViewsDB = groupEntityViewsDB;
+            _groupEntityComponentsDB = groupEntityComponentsDB;
             _groupsPerEntity = groupsPerEntity;
             _entityStream = entityStream;
         }
@@ -67,7 +67,7 @@ namespace Svelto.ECS
             uint count = 0;
             //object sentinel = default;
             if (SafeQueryEntityDictionary<T>(groupStructId, out var typeSafeDictionary) == false)
-                ret = RetrieveEmptyEntityViewArray<T>();
+                ret = RetrieveEmptyEntityComponentArray<T>();
             else
             {
                 var safeDictionary = (typeSafeDictionary as ITypeSafeDictionary<T>);
@@ -238,7 +238,7 @@ namespace Svelto.ECS
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool ExistsAndIsNotEmpty(ExclusiveGroupStruct gid)
         {
-            if (_groupEntityViewsDB.TryGetValue(gid,
+            if (_groupEntityComponentsDB.TryGetValue(gid,
                     out FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary> group) == true)
             {
                 return group.count > 0;
@@ -324,7 +324,7 @@ namespace Svelto.ECS
         internal bool UnsafeQueryEntityDictionary(uint group, Type type, out ITypeSafeDictionary typeSafeDictionary)
         {
             //search for the group
-            if (_groupEntityViewsDB.TryGetValue(group, out var entitiesInGroupPerType) == false)
+            if (_groupEntityComponentsDB.TryGetValue(group, out var entitiesInGroupPerType) == false)
             {
                 typeSafeDictionary = null;
                 return false;
@@ -335,7 +335,7 @@ namespace Svelto.ECS
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static T[] RetrieveEmptyEntityViewArray<T>()
+        static T[] RetrieveEmptyEntityComponentArray<T>()
         {
             return EmptyList<T>.emptyArray;
         }
@@ -356,7 +356,7 @@ namespace Svelto.ECS
         //group, then indexable per type, then indexable per EGID. however the TypeSafeDictionary can return an array of
         //values directly, that can be iterated over, so that is possible to iterate over all the entity views of
         //a specific type inside a specific group.
-        readonly FasterDictionary<uint, FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary>> _groupEntityViewsDB;
+        readonly FasterDictionary<uint, FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary>> _groupEntityComponentsDB;
 
         //needed to be able to track in which groups a specific entity type can be found.
         //may change in future as it could be expanded to support queries

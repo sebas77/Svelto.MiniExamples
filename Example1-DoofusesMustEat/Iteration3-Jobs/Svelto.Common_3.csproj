@@ -112,6 +112,7 @@
      <Compile Include="Assets\Svelto\Svelto.Common\Utilities\FastConcatUtility.cs" />
      <Compile Include="Assets\Svelto\Svelto.Common\Utilities\FastInvoke.cs" />
      <Compile Include="Assets\Svelto\Svelto.Common\Utilities\ILogger.cs" />
+     <Compile Include="Assets\Svelto\Svelto.Common\Utilities\MemoryUtilities.cs" />
      <Compile Include="Assets\Svelto\Svelto.Common\Utilities\Murmur3.cs" />
      <Compile Include="Assets\Svelto\Svelto.Common\Utilities\NetFXCoreWrappers.cs" />
      <Compile Include="Assets\Svelto\Svelto.Common\Utilities\ProcessorCount.cs" />
@@ -120,10 +121,17 @@
      <Compile Include="Assets\Svelto\Svelto.Common\Utilities\SlowLoggerUnity.cs" />
      <Compile Include="Assets\Svelto\Svelto.Common\Utilities\ThreadUtility.cs" />
      <Compile Include="Assets\Svelto\Svelto.Common\Utilities\TypeToString.cs" />
+     <Compile Include="Assets\Svelto\Svelto.Common\Utilities\Unsafe.cs" />
      <Compile Include="Assets\Svelto\Svelto.Common\Utilities\xxHash.cs" />
      <None Include="Assets\Svelto\Svelto.Common\Svelto.Common.asmdef" />
  <Reference Include="Unity.Collections">
  <HintPath>C:/Prgdir/Svelto/Svelto.MiniExamples/Example1-DoofusesMustEat/Iteration3-Jobs/Library/ScriptAssemblies/Unity.Collections.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEditor.UI">
+ <HintPath>C:/Prgdir/Svelto/Svelto.MiniExamples/Example1-DoofusesMustEat/Iteration3-Jobs/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.UI">
+ <HintPath>C:/Prgdir/Svelto/Svelto.MiniExamples/Example1-DoofusesMustEat/Iteration3-Jobs/Library/ScriptAssemblies/UnityEngine.UI.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.AIModule">
  <HintPath>C:/Program Files/Unity/Hub/Editor/2019.3.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>

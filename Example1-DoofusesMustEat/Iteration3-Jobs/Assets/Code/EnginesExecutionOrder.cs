@@ -1,4 +1,5 @@
 using Svelto.DataStructures;
+using Svelto.ECS.Extensions.Unity;
 
 namespace Svelto.ECS.MiniExamples.Example1C
 {

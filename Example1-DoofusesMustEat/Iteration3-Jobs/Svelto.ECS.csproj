@@ -60,13 +60,17 @@
   <ItemGroup>
      <Compile Include="Assets\Svelto\Svelto.ECS\AllowMultipleAttribute.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\CheckEntityUtilities.cs" />
+     <Compile Include="Assets\Svelto\Svelto.ECS\ComponentBuilder.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\DBC.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\DataStructures\FastTypeSafeDictionary.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\DataStructures\ITypeSafeDictionary.cs" />
+     <Compile Include="Assets\Svelto\Svelto.ECS\DataStructures\MultiAppendBuffer.cs" />
+     <Compile Include="Assets\Svelto\Svelto.ECS\DataStructures\SimpleNativeArray.cs" />
+     <Compile Include="Assets\Svelto\Svelto.ECS\DataStructures\SimpleNativeBag.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\DataStructures\TypeSafeDictionary.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\DataStructures\TypeSafeDictionaryException.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\DataStructures\TypeSafeDictionaryUtilities.cs" />
-     <Compile Include="Assets\Svelto\Svelto.ECS\DataStructures\Unity\SimpleNativeArray.cs" />
+     <Compile Include="Assets\Svelto\Svelto.ECS\DataStructures\UnsafeArray.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\Dispatcher\DispatchOnChange.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\Dispatcher\DispatchOnSet.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\DynamicEntityDescriptor.cs" />
@@ -74,26 +78,25 @@
      <Compile Include="Assets\Svelto\Svelto.ECS\ECSResources\ECSResources.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\ECSResources\ECSString.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\EGID.cs" />
+     <Compile Include="Assets\Svelto\Svelto.ECS\EGIDComponent.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\EGIDMapper.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\EnginesRoot.DoubleBufferedEntityViews.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\EnginesRoot.Engines.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\EnginesRoot.Entities.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\EnginesRoot.GenericEntityFactory.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\EnginesRoot.GenericEntityFunctions.cs" />
-     <Compile Include="Assets\Svelto\Svelto.ECS\EnginesRoot.NativeOperation.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\EnginesRoot.Submission.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\EntitiesDB.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\EntityBuilder.CheckFields.cs" />
-     <Compile Include="Assets\Svelto\Svelto.ECS\EntityBuilder.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\EntityCollection.cs" />
+     <Compile Include="Assets\Svelto\Svelto.ECS\EntityComponentInitializer.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\EntityDescriptorTemplate.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\EntityFactory.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\EntityGroupNotFoundException.cs" />
-     <Compile Include="Assets\Svelto\Svelto.ECS\EntityHierarchyStruct.cs" />
+     <Compile Include="Assets\Svelto\Svelto.ECS\EntityHierarchyComponent.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\EntityInfoView.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\EntityNotFoundException.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\EntityStream.cs" />
-     <Compile Include="Assets\Svelto\Svelto.ECS\EntityStructInitializer.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\EntitySubmissionScheduler.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\EntitySubmitOperation.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\EntityViewUtility.cs" />
@@ -109,6 +112,7 @@
      <Compile Include="Assets\Svelto\Svelto.ECS\Extensions\Unity\Jobs\UnityEntityDBExtensions.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\Extensions\Unity\SveltoGUIHelper.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\Extensions\Unity\UECS\CopySveltoToUECSEnginesGroup.cs" />
+     <Compile Include="Assets\Svelto\Svelto.ECS\Extensions\Unity\UECS\EnginesRoot.NativeOperation.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\Extensions\Unity\UECS\JobifiedSveltoEngines.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\Extensions\Unity\UECS\PureUECSSystemsGroup.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\Extensions\Unity\UECS\UECSSveltoEGID.cs" />
@@ -116,13 +120,14 @@
      <Compile Include="Assets\Svelto\Svelto.ECS\FastGroup.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\GenericEntityDescriptor.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\GenericentityStreamConsumerFactory.cs" />
+     <Compile Include="Assets\Svelto\Svelto.ECS\GlobalTypeID.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\GroupCompound.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\Hybrid\IEntityViewComponent.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\Hybrid\IImplementor.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\IEngine.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\IEntitiesDB.cs" />
-     <Compile Include="Assets\Svelto\Svelto.ECS\IEntityBuilder.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\IEntityComponent.cs" />
+     <Compile Include="Assets\Svelto\Svelto.ECS\IEntityComponentBuilder.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\IEntityDescriptorHolder.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\IEntityFactory.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\IEntityFunctions.cs" />
@@ -131,7 +136,7 @@
      <Compile Include="Assets\Svelto\Svelto.ECS\IReactOnSwap.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\InternalGroup.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\NativeEGIDMapper.cs" />
-     <Compile Include="Assets\Svelto\Svelto.ECS\Serialization\ComposedSerializer.cs" />
+     <Compile Include="Assets\Svelto\Svelto.ECS\Serialization\ComposedComponentSerializer.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\Serialization\DefaultSerializer.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\Serialization\DefaultSerializerUtils.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\Serialization\DefaultVersioningFactory.cs" />
@@ -141,19 +146,19 @@
      <Compile Include="Assets\Svelto\Svelto.ECS\Serialization\EnginesRoot.SerializableEntityHeader.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\Serialization\EntitiesDB.DescriptorMap.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\Serialization\HashNameAttribute.cs" />
+     <Compile Include="Assets\Svelto\Svelto.ECS\Serialization\IComponentSerializer.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\Serialization\IDeserializationFactory.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\Serialization\IEntitySerialization.cs" />
-     <Compile Include="Assets\Svelto\Svelto.ECS\Serialization\ISerializableEntityBuilder.cs" />
+     <Compile Include="Assets\Svelto\Svelto.ECS\Serialization\ISerializableEntityComponentBuilder.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\Serialization\ISerializableEntityDescriptor.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\Serialization\ISerializationData.cs" />
-     <Compile Include="Assets\Svelto\Svelto.ECS\Serialization\ISerializer.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\Serialization\PartialSerializer.cs" />
-     <Compile Include="Assets\Svelto\Svelto.ECS\Serialization\SerializableEntityBuilder.cs" />
+     <Compile Include="Assets\Svelto\Svelto.ECS\Serialization\SerializableComponentBuilder.cs" />
+     <Compile Include="Assets\Svelto\Svelto.ECS\Serialization\SerializableEntityComponent.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\Serialization\SerializableEntityDescriptor.cs" />
-     <Compile Include="Assets\Svelto\Svelto.ECS\Serialization\SerializableEntityStruct.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\Serialization\SerializationEntityDescriptorTemplate.cs" />
+     <Compile Include="Assets\Svelto\Svelto.ECS\Serialization\SerializerExt.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\Serialization\SimpleSerializationData.cs" />
-     <Compile Include="Assets\Svelto\Svelto.ECS\Serialization\Unsafe.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\SetEGIDWithoutBoxing.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\SimpleSubmissioncheduler.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\TypeSafeDictionaryFactory.cs" />
@@ -164,6 +169,15 @@
  </Reference>
  <Reference Include="Unity.Collections">
  <HintPath>C:/Prgdir/Svelto/Svelto.MiniExamples/Example1-DoofusesMustEat/Iteration3-Jobs/Library/ScriptAssemblies/Unity.Collections.dll</HintPath>
+ </Reference>
+ <Reference Include="Unity.Burst">
+ <HintPath>C:/Prgdir/Svelto/Svelto.MiniExamples/Example1-DoofusesMustEat/Iteration3-Jobs/Library/ScriptAssemblies/Unity.Burst.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEditor.UI">
+ <HintPath>C:/Prgdir/Svelto/Svelto.MiniExamples/Example1-DoofusesMustEat/Iteration3-Jobs/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.UI">
+ <HintPath>C:/Prgdir/Svelto/Svelto.MiniExamples/Example1-DoofusesMustEat/Iteration3-Jobs/Library/ScriptAssemblies/UnityEngine.UI.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.AIModule">
  <HintPath>C:/Program Files/Unity/Hub/Editor/2019.3.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>

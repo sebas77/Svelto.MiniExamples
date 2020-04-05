@@ -6,11 +6,10 @@ namespace Svelto.ECS.Internal
 {
     public interface ITypeSafeDictionary<TValue> : ITypeSafeDictionary where TValue : IEntityComponent
     {
-        void Add(uint egidEntityId, in TValue entityView);
+        void Add(uint egidEntityId, in TValue entityComponent);
         ref TValue GetValueByRef(uint key);
-        TValue this[uint idEntityId] { get; set; }
+        ref TValue this[uint idEntityId] { get; }
         bool TryGetValue(uint entityId, out TValue item);
-        ref TValue GetDirectValue(uint findElementIndex);
         ref TValue GetOrCreate(uint idEntityId);
 
         TValue[] GetValuesArray(out uint count);
@@ -23,10 +22,10 @@ namespace Svelto.ECS.Internal
         uint Count { get; }
         ITypeSafeDictionary Create();
 
-        void AddEntitiesToEngines(FasterDictionary<RefWrapper<Type>, FasterList<IEngine>> entityViewEnginesDb,
+        void AddEntitiesToEngines(FasterDictionary<RefWrapper<Type>, FasterList<IEngine>> entityComponentEnginesDb,
             ITypeSafeDictionary realDic, ExclusiveGroupStruct @group, in PlatformProfiler profiler);
 
-        void RemoveEntitiesFromEngines(FasterDictionary<RefWrapper<Type>, FasterList<IEngine>> entityViewEnginesDB,
+        void RemoveEntitiesFromEngines(FasterDictionary<RefWrapper<Type>, FasterList<IEngine>> entityComponentEnginesDB,
             in PlatformProfiler profiler, ExclusiveGroupStruct @group);
 
         void AddEntitiesFromDictionary(ITypeSafeDictionary entitiesToSubmit, uint groupId);

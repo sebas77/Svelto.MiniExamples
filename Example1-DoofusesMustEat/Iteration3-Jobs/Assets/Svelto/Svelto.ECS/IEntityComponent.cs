@@ -1,6 +1,6 @@
 namespace Svelto.ECS
 {
-    ///<summary>EntityStruct MUST implement IEntityComponent</summary>
+    ///<summary>EntityComponent MUST implement IEntityComponent</summary>
     public interface IEntityComponent
     {
     }

@@ -9,7 +9,7 @@ namespace Svelto.ECS
     {
         readonly FasterList<EntitySubmitOperation> _transientEntitiesOperations;
 
-        void SubmitEntityViews()
+        void SubmitEntityComponents()
         {
             using (var profiler = new PlatformProfiler("Svelto.ECS - Entities Submission"))
             {
@@ -31,7 +31,6 @@ namespace Svelto.ECS
         {
 #if UNITY_ECS            
             NativeOperationSubmission(profiler);
-            DisposeNativeOperations(profiler);
 #endif
             
             if (_entitiesOperations.Count > 0)
@@ -91,7 +90,7 @@ namespace Svelto.ECS
                 {
                     try
                     {
-                        AddEntityViewsToTheDBAndSuitableEngines(profiler);
+                        AddEntityComponentsToTheDBAndSuitableEngines(profiler);
                     }
                     finally
                     {
@@ -105,7 +104,7 @@ namespace Svelto.ECS
             }
         }
 
-        void AddEntityViewsToTheDBAndSuitableEngines(in PlatformProfiler profiler)
+        void AddEntityComponentsToTheDBAndSuitableEngines(in PlatformProfiler profiler)
         {
             using (profiler.Sample("Add entities to database"))
             {
@@ -116,11 +115,11 @@ namespace Svelto.ECS
                     
                     FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary> groupDB = GetOrCreateGroup(groupID);
 
-                    //add the entityViews in the group
-                    foreach (var entityViewsToSubmit in _groupedEntityToAdd.other[groupID])
+                    //add the entityComponents in the group
+                    foreach (var entityComponentsToSubmit in _groupedEntityToAdd.other[groupID])
                     {
-                        var type = entityViewsToSubmit.Key;
-                        var targetTypeSafeDictionary = entityViewsToSubmit.Value;
+                        var type = entityComponentsToSubmit.Key;
+                        var targetTypeSafeDictionary = entityComponentsToSubmit.Value;
                         var wrapper = new RefWrapper<Type>(type);
 
                         ITypeSafeDictionary dbDic = GetOrCreateTypeSafeDictionary(groupID, groupDB, wrapper, 
@@ -139,13 +138,13 @@ namespace Svelto.ECS
                 foreach (var groupToSubmit in _groupedEntityToAdd.otherEntitiesCreatedPerGroup)
                 {
                     var groupID = groupToSubmit.Key;
-                    var groupDB = _groupEntityViewsDB[groupID];
+                    var groupDB = _groupEntityComponentsDB[groupID];
 
-                    foreach (var entityViewsToSubmit in _groupedEntityToAdd.other[groupID])
+                    foreach (var entityComponentsToSubmit in _groupedEntityToAdd.other[groupID])
                     {
-                        var realDic = groupDB[new RefWrapper<Type>(entityViewsToSubmit.Key)];
+                        var realDic = groupDB[new RefWrapper<Type>(entityComponentsToSubmit.Key)];
 
-                        entityViewsToSubmit.Value.AddEntitiesToEngines(_reactiveEnginesAddRemove, realDic,
+                        entityComponentsToSubmit.Value.AddEntitiesToEngines(_reactiveEnginesAddRemove, realDic,
                             new ExclusiveGroupStruct(groupToSubmit.Key), in profiler);
                     }
                 }

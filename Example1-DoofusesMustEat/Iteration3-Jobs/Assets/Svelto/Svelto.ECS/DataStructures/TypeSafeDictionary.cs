@@ -43,7 +43,7 @@ namespace Svelto.ECS.Internal
                 catch (Exception e)
                 {
                     throw new
-                        TypeSafeDictionaryException("trying to add an EntityView with the same ID more than once Entity: ".FastConcat(typeof(TValue).ToString()).FastConcat(", group ").FastConcat(groupId).FastConcat(", id ").FastConcat(tuple.Key),
+                        TypeSafeDictionaryException("trying to add an EntityComponent with the same ID more than once Entity: ".FastConcat(typeof(TValue).ToString()).FastConcat(", group ").FastConcat(groupId).FastConcat(", id ").FastConcat(tuple.Key),
                                                     e);
                 }
             }
@@ -64,7 +64,7 @@ namespace Svelto.ECS.Internal
             }
         }
 
-        public void AddEntitiesToEngines(FasterDictionary<RefWrapper<Type>, FasterList<IEngine>> entityViewEnginesDB,
+        public void AddEntitiesToEngines(FasterDictionary<RefWrapper<Type>, FasterList<IEngine>> entityComponentEnginesDB,
                                          ITypeSafeDictionary                                     realDic,
                                          ExclusiveGroupStruct                     @group,
                                          in PlatformProfiler profiler)
@@ -73,16 +73,16 @@ namespace Svelto.ECS.Internal
 
             //this can be optimized, should pass all the entities and not restart the process for each one
             foreach (var value in _implementation)
-                AddEntityViewToEngines(entityViewEnginesDB, ref typeSafeDictionary.GetValueByRef(value.Key), null,
+                AddEntityComponentToEngines(entityComponentEnginesDB, ref typeSafeDictionary.GetValueByRef(value.Key), null,
                                        in profiler, new EGID(value.Key, group));
         }
 
         public void RemoveEntitiesFromEngines(
-            FasterDictionary<RefWrapper<Type>, FasterList<IEngine>> entityViewEnginesDB, in PlatformProfiler profiler,
+            FasterDictionary<RefWrapper<Type>, FasterList<IEngine>> entityComponentEnginesDB, in PlatformProfiler profiler,
             ExclusiveGroupStruct                     @group)
         {
             foreach (var value in _implementation)
-                RemoveEntityViewFromEngines(entityViewEnginesDB, ref _implementation.GetValueByRef(value.Key), null,
+                RemoveEntityComponentFromEngines(entityComponentEnginesDB, ref _implementation.GetValueByRef(value.Key), null,
                                             in profiler, new EGID(value.Key, group));
         }
 
@@ -118,7 +118,7 @@ namespace Svelto.ECS.Internal
 
             if (toGroup != null)
             {
-                RemoveEntityViewFromEngines(engines, ref entity, fromEntityGid.groupID, in profiler, fromEntityGid);
+                RemoveEntityComponentFromEngines(engines, ref entity, fromEntityGid.groupID, in profiler, fromEntityGid);
 
                 var toGroupCasted = toGroup as ITypeSafeDictionary<TValue>;
                 var previousGroup = fromEntityGid.groupID;
@@ -127,11 +127,11 @@ namespace Svelto.ECS.Internal
 
                 var index = toGroupCasted.GetIndex(toEntityID.Value.entityID);
 
-                AddEntityViewToEngines(engines, ref toGroupCasted.unsafeValues[(int) index], previousGroup, in profiler,
+                AddEntityComponentToEngines(engines, ref toGroupCasted.unsafeValues[(int) index], previousGroup, in profiler,
                                        toEntityID.Value);
             }
             else
-                RemoveEntityViewFromEngines(engines, ref entity, null, in profiler, fromEntityGid);
+                RemoveEntityComponentFromEngines(engines, ref entity, null, in profiler, fromEntityGid);
         }
 
         public uint Count
@@ -143,23 +143,23 @@ namespace Svelto.ECS.Internal
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ITypeSafeDictionary Create() { return new TypeSafeDictionary<TValue>(); }
 
-        void AddEntityViewToEngines(FasterDictionary<RefWrapper<Type>, FasterList<IEngine>> entityViewEnginesDB,
+        void AddEntityComponentToEngines(FasterDictionary<RefWrapper<Type>, FasterList<IEngine>> entityComponentEnginesDB,
                                     ref TValue                                              entity,
                                     ExclusiveGroupStruct?                    previousGroup,
                                     in PlatformProfiler                                     profiler,
                                     EGID                                                    egid)
         {
             //get all the engines linked to TValue
-            if (!entityViewEnginesDB.TryGetValue(new RefWrapper<Type>(_type), out var entityViewsEngines)) return;
+            if (!entityComponentEnginesDB.TryGetValue(new RefWrapper<Type>(_type), out var entityComponentsEngines)) return;
 
             if (previousGroup == null)
             {
-                for (var i = 0; i < entityViewsEngines.count; i++)
+                for (var i = 0; i < entityComponentsEngines.count; i++)
                     try
                     {
-                        using (profiler.Sample(entityViewsEngines[i], _typeName))
+                        using (profiler.Sample(entityComponentsEngines[i], _typeName))
                         {
-                            (entityViewsEngines[i] as IReactOnAddAndRemove<TValue>).Add(ref entity, egid);
+                            (entityComponentsEngines[i] as IReactOnAddAndRemove<TValue>).Add(ref entity, egid);
                         }
                     }
                     catch (Exception e)
@@ -170,12 +170,12 @@ namespace Svelto.ECS.Internal
             }
             else
             {
-                for (var i = 0; i < entityViewsEngines.count; i++)
+                for (var i = 0; i < entityComponentsEngines.count; i++)
                     try
                     {
-                        using (profiler.Sample(entityViewsEngines[i], _typeName))
+                        using (profiler.Sample(entityComponentsEngines[i], _typeName))
                         {
-                            (entityViewsEngines[i] as IReactOnSwap<TValue>).MovedTo(ref entity, previousGroup.Value,
+                            (entityComponentsEngines[i] as IReactOnSwap<TValue>).MovedTo(ref entity, previousGroup.Value,
                                                                                     egid);
                         }
                     }
@@ -188,21 +188,21 @@ namespace Svelto.ECS.Internal
             }
         }
 
-        static void RemoveEntityViewFromEngines(FasterDictionary<RefWrapper<Type>, FasterList<IEngine>> @group,
+        static void RemoveEntityComponentFromEngines(FasterDictionary<RefWrapper<Type>, FasterList<IEngine>> @group,
                                                 ref TValue                                              entity,
                                                 uint?                    previousGroup,
                                                 in PlatformProfiler                                     profiler,
                                                 EGID                                                    egid)
         {
-            if (!@group.TryGetValue(new RefWrapper<Type>(_type), out var entityViewsEngines)) return;
+            if (!@group.TryGetValue(new RefWrapper<Type>(_type), out var entityComponentsEngines)) return;
 
             if (previousGroup == null)
             {
-                for (var i = 0; i < entityViewsEngines.count; i++)
+                for (var i = 0; i < entityComponentsEngines.count; i++)
                     try
                     {
-                        using (profiler.Sample(entityViewsEngines[i], _typeName))
-                            (entityViewsEngines[i] as IReactOnAddAndRemove<TValue>).Remove(ref entity, egid);
+                        using (profiler.Sample(entityComponentsEngines[i], _typeName))
+                            (entityComponentsEngines[i] as IReactOnAddAndRemove<TValue>).Remove(ref entity, egid);
                     }
                     catch (Exception e)
                     {
@@ -214,11 +214,11 @@ namespace Svelto.ECS.Internal
 #if SEEMS_UNNECESSARY
             else
             {
-                for (var i = 0; i < entityViewsEngines.Count; i++)
+                for (var i = 0; i < entityComponentsEngines.Count; i++)
                     try
                     {
-                        using (profiler.Sample(entityViewsEngines[i], _typeName))
-                            (entityViewsEngines[i] as IReactOnSwap<TValue>).MovedFrom(ref entity, egid);
+                        using (profiler.Sample(entityComponentsEngines[i], _typeName))
+                            (entityComponentsEngines[i] as IReactOnSwap<TValue>).MovedFrom(ref entity, egid);
                     }
                     catch (Exception e)
                     {
@@ -240,7 +240,7 @@ namespace Svelto.ECS.Internal
         public bool ContainsKey(uint egidEntityId) { return _implementation.ContainsKey(egidEntityId); }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Add(uint egidEntityId, in TValue entityView) { _implementation.Add(egidEntityId, entityView); }
+        public void Add(uint egidEntityId, in TValue entityComponent) { _implementation.Add(egidEntityId, entityComponent); }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public FasterDictionary<uint, TValue>.FasterDictionaryKeyValueEnumerator GetEnumerator()
@@ -251,12 +251,10 @@ namespace Svelto.ECS.Internal
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref TValue GetValueByRef(uint key) { return ref _implementation.GetValueByRef(key); }
 
-        public TValue this[uint idEntityId]
+        public ref TValue this[uint idEntityId]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => _implementation[idEntityId];
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            set => _implementation[idEntityId] = value;
+            get => ref _implementation.GetValueByRef(idEntityId);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -282,12 +280,6 @@ namespace Svelto.ECS.Internal
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool TryFindIndex(uint entityId, out uint index) { return _implementation.TryFindIndex(entityId, out index); }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ref TValue GetDirectValue(uint findElementIndex)
-        {
-            return ref _implementation.GetDirectValue(findElementIndex);
-        }
-        
         internal FasterDictionary<uint, TValue> implementation => _implementation;
         
         readonly FasterDictionary<uint, TValue> _implementation;

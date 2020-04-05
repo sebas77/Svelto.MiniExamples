@@ -4,6 +4,6 @@ namespace Svelto.Common
 {
     public class TypeCache<T>
     {
-        public static Type type = typeof(T);
+        public static readonly Type type = typeof(T);
     }
 }

@@ -3,6 +3,7 @@
     "references": [
         "Unity.Entities",
         "Unity.Collections",
+        "Unity.Burst",
         "Svelto.Common_3"
     ],
     "includePlatforms": [],

@@ -1,4 +1,4 @@
-using Svelto.ECS.EntityStructs;
+using Svelto.ECS.EntityComponents;
 using Svelto.ECS.Extensions.Unity;
 using Unity.Entities;
 using Unity.Jobs;
@@ -18,7 +18,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
         {
             foreach (var group in GameGroups.DOOFUSES.Groups)
             {
-                var collection = entitiesDB.QueryEntities<PositionEntityStruct>(group);
+                var collection = entitiesDB.QueryEntities<PositionEntityComponent>(group);
 
                 if (collection.count == 0) continue;
                 
@@ -29,16 +29,16 @@ namespace Svelto.ECS.MiniExamples.Example1C
                 //just become a pool of entities to fetch and assign values to. Of course we need to be sure that the
                 //entities are compatible, that's why we group the UECS entities like with do with the Svelto ones, using
                 //the UECS shared component UECSSveltoGroupID.
-                var entityCollection = collection.GetNativeEnumerator<PositionEntityStruct>();
+                var entityCollection = collection.GetNativeEnumerator<PositionEntityComponent>();
 
                 //when it's time to sync, I have two options, iterate the svelto entities first or iterate the
                 //UECS entities first. 
                 var deps = Entities.ForEach((ref Translation translation) =>
                     {
-                        ref readonly var positionEntityStruct = ref entityCollection.threadSafeNext.position;
+                        ref readonly var positionEntityComponent = ref entityCollection.threadSafeNext.position;
 
                         translation.Value =
-                            new float3(positionEntityStruct.x, positionEntityStruct.y, positionEntityStruct.z);
+                            new float3(positionEntityComponent.x, positionEntityComponent.y, positionEntityComponent.z);
                     }).WithBurst()
                     //In order to fetch the unity entities from the same group of the svelto entities we will set 
                     //the group as a filter

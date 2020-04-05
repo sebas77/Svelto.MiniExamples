@@ -1,6 +1,6 @@
 using Svelto.Common;
 using Svelto.DataStructures;
-using Svelto.ECS.EntityStructs;
+using Svelto.ECS.EntityComponents;
 using Svelto.ECS.Extensions.Unity;
 using Unity.Jobs;
 using UnityEngine;
@@ -20,24 +20,24 @@ namespace Svelto.ECS.MiniExamples.Example1C
             foreach (var group in GameGroups.DOOFUSES.Groups)
             {
                 var doofuses = entitiesDB
-                    .QueryEntities<PositionEntityStruct, VelocityEntityStruct, SpeedEntityStruct>(group)
-                    .ToNativeBuffers<PositionEntityStruct, VelocityEntityStruct, SpeedEntityStruct>();
+                    .QueryEntities<PositionEntityComponent, VelocityEntityComponent, SpeedEntityComponent>(group)
+                    .ToNativeBuffers<PositionEntityComponent, VelocityEntityComponent, SpeedEntityComponent>();
                 var dep = new ThisSystemJob(doofuses, Time.deltaTime).Schedule((int) doofuses.count,
                     (int) (doofuses.count / 8), _jobHandle);
 
                 _jobHandle = new DisposeJob<BufferTuple<
-                    NativeBuffer<PositionEntityStruct>, NativeBuffer<VelocityEntityStruct>,
-                    NativeBuffer<SpeedEntityStruct>>>(doofuses).Schedule(dep);
+                    NativeBuffer<PositionEntityComponent>, NativeBuffer<VelocityEntityComponent>,
+                    NativeBuffer<SpeedEntityComponent>>>(doofuses).Schedule(dep);
             }
 
             return _jobHandle;
         }
 
-        struct ThisSystemJob : IJobParallelFor
+        readonly struct ThisSystemJob : IJobParallelFor
         {
             public ThisSystemJob(
-                BufferTuple<NativeBuffer<PositionEntityStruct>, NativeBuffer<VelocityEntityStruct>,
-                    NativeBuffer<SpeedEntityStruct>> doofuses, float deltaTime)
+                BufferTuple<NativeBuffer<PositionEntityComponent>, NativeBuffer<VelocityEntityComponent>,
+                    NativeBuffer<SpeedEntityComponent>> doofuses, float deltaTime)
             {
                 _doofuses = doofuses;
                 _deltaTime = deltaTime;
@@ -51,8 +51,8 @@ namespace Svelto.ECS.MiniExamples.Example1C
             }
 
             readonly float _deltaTime;
-            readonly BufferTuple<NativeBuffer<PositionEntityStruct>, NativeBuffer<VelocityEntityStruct>,
-                NativeBuffer<SpeedEntityStruct>> _doofuses;
+            readonly BufferTuple<NativeBuffer<PositionEntityComponent>, NativeBuffer<VelocityEntityComponent>,
+                NativeBuffer<SpeedEntityComponent>> _doofuses;
         }
     }
 }

@@ -14,7 +14,7 @@ namespace Svelto.ECS.Debugger.Editor.EntityInspector
         //public EntityContainer Container { get; private set; }
         public EntitySelectionGetter Entity { get; private set; }
         [SerializeField] int entityIndex;
-        //[SerializeField] public List<object> EntityStructs;
+        //[SerializeField] public List<object> EntityComponents;
         public bool Exists => true;
 
         public void OnEntityControlDoubleClick(DebugEntity entity)
@@ -25,7 +25,7 @@ namespace Svelto.ECS.Debugger.Editor.EntityInspector
         public void SetEntity(EntitySelectionGetter getter)
         {
             this.Entity = getter;
-            //EntityStructs = () => entity.DebugStructs.Select(s => s.Value).ToList());
+            //EntityComponents = () => entity.DebugStructs.Select(s => s.Value).ToList());
             EditorUtility.SetDirty(this);
         }
     }

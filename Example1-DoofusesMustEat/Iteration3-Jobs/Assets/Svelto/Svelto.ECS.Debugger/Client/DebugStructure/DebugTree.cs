@@ -52,7 +52,7 @@ namespace Svelto.ECS.Debugger.DebugStructure
         {
             var typeFields = typeof(EnginesRoot).GetAllFields().ToList();
             EnginesField = typeFields.First(f => f.Name == "_enginesSet");
-            EntityDBField = typeFields.First(f => f.Name == "_groupEntityViewsDB");
+            EntityDBField = typeFields.First(f => f.Name == "_groupEntityComponentsDB");
         }
 
         #endregion
@@ -100,10 +100,10 @@ namespace Svelto.ECS.Debugger.DebugStructure
 
         public void Process()
         {
-            foreach (var entityStructs in GroupDB)
+            foreach (var entityComponents in GroupDB)
             {
-                var type = entityStructs.Key;
-                var valTypeSafe = entityStructs.Value;
+                var type = entityComponents.Key;
+                var valTypeSafe = entityComponents.Value;
                             
                 var fields = valTypeSafe.GetType().GetAllFields();
                 var valuesField = fields.First(s => s.Name == "_values");

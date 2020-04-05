@@ -1,8 +1,8 @@
 namespace Svelto.ECS.Serialization
 {
-    public class DefaultSerializer<T> : ISerializer<T> where T : unmanaged, IEntityComponent
+    public class DefaultSerializer<T> : IComponentSerializer<T> where T : unmanaged, IEntityComponent
     {
-        static readonly uint SIZEOFT = SerializableEntityBuilder<T>.SIZE;
+        static readonly uint SIZEOFT = SerializableComponentBuilder<T>.SIZE;
 
         static DefaultSerializer()
         {
@@ -13,7 +13,7 @@ namespace Svelto.ECS.Serialization
                     field.IsPrivate == false)
                     throw new ECSException("field cannot be serialised ".FastConcat(_type.FullName));
 
-            if (_type.GetProperties().Length > (EntityBuilder<T>.HAS_EGID ? 1 : 0))
+            if (_type.GetProperties().Length > (ComponentBuilder<T>.HAS_EGID ? 1 : 0))
                 throw new ECSException("serializable entity struct must be property less ".FastConcat(_type.FullName));
         }
 

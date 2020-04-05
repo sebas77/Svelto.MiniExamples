@@ -428,13 +428,13 @@ namespace Svelto.DataStructures
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public static uint Count(FasterList<T> fasterList)
             {
-                return (uint) fasterList._count;
+                return fasterList._count;
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public static T[] ToArrayFast(FasterList<T> fasterList, out uint count)
             {
-                count = (uint) fasterList._count;
+                count = fasterList._count;
 
                 return fasterList._buffer;
             }

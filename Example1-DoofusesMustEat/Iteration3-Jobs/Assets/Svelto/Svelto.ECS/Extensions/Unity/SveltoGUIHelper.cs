@@ -46,7 +46,7 @@ namespace Svelto.ECS.Extensions.Unity
             return holder;
         }
 
-        public static EntityStructInitializer CreateWithEntity<T>(EGID ID, Transform contextHolder,
+        public static EntityComponentInitializer CreateWithEntity<T>(EGID ID, Transform contextHolder,
             IEntityFactory factory, out T holder)
             where T : MonoBehaviour, IEntityDescriptorHolder
         {
@@ -92,7 +92,7 @@ namespace Svelto.ECS.Extensions.Unity
 
             var init = factory.BuildEntity(egid, descriptorHolder.GetDescriptor(), implementors);
 
-            init.Init(new EntityHierarchyStruct(group));
+            init.Init(new EntityHierarchyComponent(group));
 
             return startIndex;
         }

@@ -1,24 +1,14 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.Common_3", "Svelto.Common_3.csproj", "{4f852ede-8976-0109-7600-b8f8f5216a43}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.Pool.Debugger_3", "Svelto.Pool.Debugger_3.csproj", "{eb690895-377f-eb70-601d-ea3b58052101}"
-EndProject
+
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{4f852ede-8976-0109-7600-b8f8f5216a43}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4f852ede-8976-0109-7600-b8f8f5216a43}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4f852ede-8976-0109-7600-b8f8f5216a43}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4f852ede-8976-0109-7600-b8f8f5216a43}.Release|Any CPU.Build.0 = Release|Any CPU
-		{eb690895-377f-eb70-601d-ea3b58052101}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{eb690895-377f-eb70-601d-ea3b58052101}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{eb690895-377f-eb70-601d-ea3b58052101}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{eb690895-377f-eb70-601d-ea3b58052101}.Release|Any CPU.Build.0 = Release|Any CPU
+
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

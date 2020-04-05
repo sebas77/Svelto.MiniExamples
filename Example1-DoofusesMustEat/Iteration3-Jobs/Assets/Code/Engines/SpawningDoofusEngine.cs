@@ -1,108 +1,127 @@
-using System;
-using System.Collections;
 using Svelto.Common;
-using Svelto.ECS.EntityStructs;
-using Svelto.Tasks.ExtraLean;
+using Svelto.ECS.EntityComponents;
+using Svelto.ECS.Extensions.Unity;
+using Svelto.ECS.Internal;
+using Unity.Burst;
+using Unity.Collections.LowLevel.Unsafe;
 using Unity.Entities;
 using Unity.Jobs;
 using Unity.Mathematics;
-using Random = UnityEngine.Random;
+using Allocator = Unity.Collections.Allocator;
 
 namespace Svelto.ECS.MiniExamples.Example1C
 {
     [Sequenced(nameof(DoofusesEngineNames.SpawningDoofusEngine))]
-    public class SpawningDoofusEngine : IQueryingEntitiesEngine, IDisposable, IJobifiableEngine
+    public class SpawningDoofusEngine : IQueryingEntitiesEngine, IJobifiableEngine
     {
         public SpawningDoofusEngine(Entity redCapsule, Entity blueCapsule, IEntityFactory factory)
         {
-            _redCapsule = redCapsule;
+            _redCapsule  = redCapsule;
             _blueCapsule = blueCapsule;
-            _factory = factory;
-            _runner = new SteppableRunner("SpawningDoofusEngine");
+            _factory     = factory.ToNative<DoofusEntityDescriptor>(Allocator.Persistent);
         }
 
         public EntitiesDB entitiesDB { get; set; }
 
-        public void Ready()
-        {
-            SpawningDoofuses().RunOn(_runner);
-        }
+        public void Ready() { }
 
-        IEnumerator SpawningDoofuses()
-        {
-            //not really needed, can be useful to avoid run time allocations
-            _factory
-                .PreallocateEntitySpace<DoofusEntityDescriptor
-                >(GroupCompound<GameGroups.DOOFUSES, GameGroups.RED>.BuildGroup, MaxNumberOfDoofuses);
-            _factory
-                .PreallocateEntitySpace<DoofusEntityDescriptor
-                >(GroupCompound<GameGroups.DOOFUSES, GameGroups.BLUE>.BuildGroup, MaxNumberOfDoofuses);
-
-            while (_numberOfDoofuses < MaxNumberOfDoofuses)
-            {
-                EntityStructInitializer init;
-                PositionEntityStruct positionEntityStruct;
-                if (Random.value > 0.5)
-                {
-                    init = _factory.BuildEntity<DoofusEntityDescriptor>(_numberOfDoofuses,
-                        GroupCompound<GameGroups.DOOFUSES,
-                            GameGroups.RED, GameGroups.NOTEATING>.BuildGroup);
-                    positionEntityStruct = new PositionEntityStruct
-                    {
-                        position = new float3(Random.value * 40, 0, Random.value * 40)
-                    };
-                    //these structs are used for ReactOnAdd callback to create unity Entities later
-                    init.Init(new UnityEcsEntityStruct
-                    {
-                        uecsEntity = _redCapsule,
-                        spawnPosition = positionEntityStruct.position,
-                    });
-                }
-                else
-                {
-                    positionEntityStruct = new PositionEntityStruct
-                    {
-                        position = new float3(Random.value * 40, 0, Random.value * 40)
-                    };
-                    init = _factory.BuildEntity<DoofusEntityDescriptor>(_numberOfDoofuses,
-                        GroupCompound<GameGroups.DOOFUSES,
-                            GameGroups.BLUE, GameGroups.NOTEATING>.BuildGroup);
-                    //these structs are used for ReactOnAdd callback to create unity Entities later
-                    init.Init(new UnityEcsEntityStruct
-                    {
-                        uecsEntity = _blueCapsule,
-                        spawnPosition = positionEntityStruct.position,
-                    });
-                }
-
-                init.Init(positionEntityStruct);
-
-                init.Init(new SpeedEntityStruct {speed = Random.Range(1, 10) / 10.0f});
-
-                _numberOfDoofuses++;
-            }
-
-            yield break;
-        }
-
-        public void Dispose()
-        {
-            _runner?.Dispose();
-        }
-
-        readonly IEntityFactory _factory;
-        readonly Entity _redCapsule, _blueCapsule;
-        uint _numberOfDoofuses;
+        readonly NativeEntityFactory _factory;
+        readonly Entity         _redCapsule, _blueCapsule;
 
         const int MaxNumberOfDoofuses = 10000;
 
-        readonly SteppableRunner _runner;
-        
+        readonly InternalGroup blueDoofusesNotEating =
+            GroupCompound<GameGroups.DOOFUSES, GameGroups.BLUE, GameGroups.NOTEATING>.BuildGroup;
+
+        readonly InternalGroup redDoofusesNotEating =
+            GroupCompound<GameGroups.DOOFUSES, GameGroups.RED, GameGroups.NOTEATING>.BuildGroup;
+
+        bool _done;
+
         public JobHandle Execute(JobHandle _jobHandle)
         {
-            _runner.Step();
+            if (_done == true)
+                return _jobHandle;
+            
+            new SpawningJob(blueDoofusesNotEating, redDoofusesNotEating
+                          , _factory, _redCapsule, _blueCapsule)
+               .Schedule(MaxNumberOfDoofuses, ProcessorCount.Batch(MaxNumberOfDoofuses), _jobHandle);
+
+            _done = true;
 
             return _jobHandle;
+        }
+
+        [BurstCompile]
+        struct SpawningJob: IJobParallelFor
+        {
+            readonly NativeEntityFactory _factory;
+            readonly Entity              _redCapsule;
+            readonly Entity              _blueCapsule;
+            readonly InternalGroup       _blueDoofusesNotEating;
+            readonly InternalGroup       _redDoofusesNotEating;
+            
+            Random     _random;
+
+#pragma warning disable 649
+            [NativeSetThreadIndex] int _threadIndex;
+#pragma warning restore 649
+
+            public SpawningJob
+            (InternalGroup blueDoofusesGroup, InternalGroup redDoofusesGroup, NativeEntityFactory nativeFactor
+           , Entity red, Entity blue):this()
+            {
+                _random = new Random(1234567);
+                _blueDoofusesNotEating = blueDoofusesGroup;
+                _redDoofusesNotEating  = redDoofusesGroup;
+                _factory               = nativeFactor;
+                _redCapsule            = red;
+                _blueCapsule           = blue;
+            }
+
+            public void Execute(int index)
+            {
+                NativeEntityComponentInitializer init;
+                PositionEntityComponent          positionEntityComponent;
+                UnityEcsEntityComponent          uecsComponent;
+
+                if (_random.NextFloat(0.0f, 1.0f) > 0.5)
+                {
+                    positionEntityComponent = new PositionEntityComponent
+                    {
+                        position = new float3(_random.NextFloat(0.0f, 40.0f), 0, _random.NextFloat(0.0f, 40.0f))
+                    };
+                    //these structs are used for ReactOnAdd callback to create unity Entities later
+                    uecsComponent = new UnityEcsEntityComponent
+                    {
+                        uecsEntity = _redCapsule, spawnPosition = positionEntityComponent.position
+                    };
+
+                    init = _factory.BuildEntity((uint) index, _redDoofusesNotEating, _threadIndex);
+
+                }
+                else
+                {
+                    positionEntityComponent = new PositionEntityComponent
+                    {
+                        position = new float3(_random.NextFloat(0.0f, 40.0f), 0, _random.NextFloat(0.0f, 40.0f))
+                    };
+                    //these structs are used for ReactOnAdd callback to create unity Entities later
+                    uecsComponent = new UnityEcsEntityComponent
+                    {
+                        uecsEntity = _blueCapsule, spawnPosition = positionEntityComponent.position
+                    };
+
+                    init = _factory.BuildEntity((uint) index, _blueDoofusesNotEating, _threadIndex);
+                }
+
+                init.Init(uecsComponent);
+                init.Init(positionEntityComponent);
+                init.Init(new SpeedEntityComponent
+                {
+                    speed = _random.NextFloat(0.1f, 1.0f)
+                });
+            }
         }
     }
 }

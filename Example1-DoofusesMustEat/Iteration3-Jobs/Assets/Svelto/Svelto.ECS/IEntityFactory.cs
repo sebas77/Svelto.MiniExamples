@@ -31,23 +31,23 @@ namespace Svelto.ECS
 
         /// <summary>
         ///     The EntityDescriptor doesn't need to be ever instantiated. It just describes the Entity
-        ///     itself in terms of EntityViews to build. The Implementors are passed to fill the
-        ///     references of the EntityViews components. Please read the articles on my blog
+        ///     itself in terms of EntityComponents to build. The Implementors are passed to fill the
+        ///     references of the EntityComponents components. Please read the articles on my blog
         ///     to understand better the terminologies
         ///     Using this function is like building a normal entity, but the entity views
         ///     are grouped by groupID to be more efficiently processed inside engines and
-        ///     improve cache locality. Either class entityViews and struct entityViews can be
+        ///     improve cache locality. Either class entityComponents and struct entityComponents can be
         ///     grouped.
         /// </summary>
         /// <param name="entityID"></param>
         /// <param name="groupStructId"></param>
         /// <param name="ed"></param>
         /// <param name="implementors"></param>
-        EntityStructInitializer BuildEntity<T>(uint entityID, InternalGroup groupStructId,
+        EntityComponentInitializer BuildEntity<T>(uint entityID, InternalGroup groupStructId,
                                                IEnumerable<object> implementors = null)
             where T : IEntityDescriptor, new();
 
-        EntityStructInitializer BuildEntity<T>(EGID egid, IEnumerable<object> implementors = null)
+        EntityComponentInitializer BuildEntity<T>(EGID egid, IEnumerable<object> implementors = null)
             where T : IEntityDescriptor, new();
 
         /// <summary>
@@ -58,11 +58,15 @@ namespace Svelto.ECS
         /// <param name="entityDescriptor"></param>
         /// <param name="implementors"></param>
         ///
-        EntityStructInitializer BuildEntity<T>(uint entityID, InternalGroup groupStructId,
+        EntityComponentInitializer BuildEntity<T>(uint entityID, InternalGroup groupStructId,
                                                T    descriptorEntity, IEnumerable<object>  implementors = null)
             where T : IEntityDescriptor;
 
-        EntityStructInitializer BuildEntity<T>(EGID egid, T entityDescriptor, IEnumerable<object> implementors = null)
+        EntityComponentInitializer BuildEntity<T>(EGID egid, T entityDescriptor, IEnumerable<object> implementors = null)
             where T : IEntityDescriptor;
+
+#if UNITY_ECS
+        NativeEntityFactory ToNative<T>(Unity.Collections.Allocator allocator) where T : IEntityDescriptor, new();
+#endif        
     }
 }

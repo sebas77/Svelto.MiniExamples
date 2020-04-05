@@ -39,7 +39,6 @@ namespace Svelto.DataStructures
         bool       Remove(TKey key);
         void       Trim();
         bool       TryFindIndex(TKey   key, out uint findIndex);
-        ref TValue GetDirectValue(uint index);
         uint       GetIndex(TKey       key);
     }
 }

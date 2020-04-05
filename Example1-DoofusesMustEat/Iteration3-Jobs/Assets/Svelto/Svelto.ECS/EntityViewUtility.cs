@@ -19,14 +19,12 @@ namespace Svelto.ECS
     }
 #endif
 
-    static class EntityViewUtility
+    static class EntityComponentUtility
     {
 
-        public static void FillEntityView<T>(this IEntityBuilder entityBuilder
-                                           , ref  T              entityView
+        public static void FillEntityComponent<T>(this IEntityComponentBuilder entityComponentBuilder, ref  T entityComponent
                                            , FasterList<KeyValuePair<Type, FastInvokeActionCast<T>>>
-                                                 entityViewBlazingFastReflection
-                                           , IEnumerable<object> implementors,
+                                                 entityComponentBlazingFastReflection, IEnumerable<object> implementors,
 #if DEBUG && !PROFILE_SVELTO
                                              Dictionary<Type, ECSTuple<object, int>> implementorsByType
 #else
@@ -35,9 +33,9 @@ namespace Svelto.ECS
                                            , Dictionary<Type, Type[]> cachedTypes
         )
         {
-            //efficient way to collect the fields of every EntityViewType
+            //efficient way to collect the fields of every EntityComponentType
             var setters =
-                FasterList<KeyValuePair<Type, FastInvokeActionCast<T>>>.NoVirt.ToArrayFast(entityViewBlazingFastReflection, out var count);
+                FasterList<KeyValuePair<Type, FastInvokeActionCast<T>>>.NoVirt.ToArrayFast(entityComponentBlazingFastReflection, out var count);
 
             foreach (var implementor in implementors)
             {
@@ -67,8 +65,8 @@ namespace Svelto.ECS
 #if DEBUG && !PROFILE_SVELTO
                 else
                 {
-                    Console.Log(NULL_IMPLEMENTOR_ERROR.FastConcat(" entityView ",
-                                                                         entityBuilder.GetEntityType().ToString()));
+                    Console.Log(NULL_IMPLEMENTOR_ERROR.FastConcat(" entityComponent ",
+                            entityComponentBuilder.GetEntityComponentType().ToString()));
                 }
 #endif
             }
@@ -81,30 +79,26 @@ namespace Svelto.ECS
 #if DEBUG && !PROFILE_SVELTO
                 ECSTuple<object, int> component;
 #else
-            object component;
+                object component;
 #endif
 
                 if (implementorsByType.TryGetValue(fieldType, out component) == false)
                 {
                     var e = new ECSException(NOT_FOUND_EXCEPTION + " Component Type: " + fieldType.Name +
-                                             " - EntityView: "   + entityBuilder.GetEntityType().Name);
+                                             " - EntityComponent: "   + entityComponentBuilder.GetEntityComponentType().Name);
 
                     throw e;
                 }
 #if DEBUG && !PROFILE_SVELTO
                 if (component.numberOfImplementations > 1)
                     throw new ECSException(DUPLICATE_IMPLEMENTOR_ERROR.FastConcat(
-                                                                                  "Component Type: ", fieldType.Name,
-                                                                                  " implementor: ",
-                                                                                  component.implementorType
-                                                                                           .ToString()) +
-                                           " - EntityView: "                                            +
-                                           entityBuilder.GetEntityType().Name);
+                        "Component Type: ", fieldType.Name, " implementor: ", component.implementorType.ToString()) +
+                                           " - EntityComponent: " + entityComponentBuilder.GetEntityComponentType().Name);
 #endif
 #if DEBUG && !PROFILE_SVELTO
-                fieldSetter.Value(ref entityView, component.implementorType);
+                fieldSetter.Value(ref entityComponent, component.implementorType);
 #else
-            fieldSetter.Value(ref entityView, component);
+                fieldSetter.Value(ref entityComponent, component);
 #endif
             }
 
@@ -119,6 +113,6 @@ namespace Svelto.ECS
             "<color=teal>Svelto.ECS</color> Null implementor, please be careful about the implementors passed to avoid " +
             "performance loss ";
 
-        const string NOT_FOUND_EXCEPTION = "<color=teal>Svelto.ECS</color> Implementor not found for an EntityView. ";
+        const string NOT_FOUND_EXCEPTION = "<color=teal>Svelto.ECS</color> Implementor not found for an EntityComponent. ";
     }
 }

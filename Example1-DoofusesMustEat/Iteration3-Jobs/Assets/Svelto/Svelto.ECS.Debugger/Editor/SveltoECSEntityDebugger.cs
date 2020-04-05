@@ -13,7 +13,7 @@ namespace Svelto.ECS.Debugger.Editor
     {
         const float kSystemListWidth = 150f;
 
-        float CurrentEntityViewWidth =>
+        float CurrentEntityComponentWidth =>
             Mathf.Max(100f, position.width - kSystemListWidth);
 
         [MenuItem("Window/Analysis/Svelto.ECS Debugger", false)]
@@ -249,7 +249,7 @@ namespace Svelto.ECS.Debugger.Editor
         {
             if (RootSelection != null || RootSelection != null)
             {
-                var rect = new Rect(kSystemListWidth, 3f, CurrentEntityViewWidth, kLineHeight);
+                var rect = new Rect(kSystemListWidth, 3f, CurrentEntityComponentWidth, kLineHeight);
                 if (GroupSelectionId == null)
                 {
                     GUI.Label(rect, "All Entities", EditorStyles.boldLabel);
@@ -281,7 +281,7 @@ namespace Svelto.ECS.Debugger.Editor
 
             EntityHeader();
 
-            GUILayout.BeginArea(new Rect(kSystemListWidth, kLineHeight, CurrentEntityViewWidth, position.height - kLineHeight));
+            GUILayout.BeginArea(new Rect(kSystemListWidth, kLineHeight, CurrentEntityComponentWidth, position.height - kLineHeight));
             EntityList();
             GUILayout.EndArea();
 
