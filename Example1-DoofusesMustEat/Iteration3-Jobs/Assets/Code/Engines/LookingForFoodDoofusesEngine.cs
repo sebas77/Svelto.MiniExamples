@@ -1,11 +1,9 @@
-using System;
 using System.Threading;
 using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.ECS.EntityComponents;
 using Svelto.ECS.Extensions.Unity;
 using Unity.Burst;
-using Unity.Collections.LowLevel.Unsafe;
 using Unity.Jobs;
 using Unity.Mathematics;
 
@@ -28,6 +26,16 @@ namespace Svelto.ECS.MiniExamples.Example1C
                     doofusesGroups);
 
             JobHandle combinedDependencies = default;
+            
+            foreach (var doofusesBuffer in doofusesEntityGroups)
+            {
+                //schedule the job
+                var deps = new ResetVelocity(doofusesBuffer).Schedule(
+                    (int) doofusesBuffer.count, ProcessorCount.Batch(doofusesBuffer.count), inputDeps);
+
+                //Never forget to dispose the buffer (may change this in future)
+                combinedDependencies = doofusesBuffer.CombineDispose(combinedDependencies, deps);
+            }
 
             foreach (var foodBuffer in foodEntityGroups)
             {
@@ -51,26 +59,38 @@ namespace Svelto.ECS.MiniExamples.Example1C
         public JobHandle Execute(JobHandle _jobHandle)
         {
             var handle1 = CreateJobForDoofusesAndFood(_jobHandle, GroupCompound<GameGroups.FOOD, GameGroups.RED>.Groups
-                                                    , GroupCompound<GameGroups.DOOFUSES, GameGroups.RED,
-                                                          GameGroups.NOTEATING>.Groups);
+                                     , GroupCompound<GameGroups.DOOFUSES, GameGroups.RED, GameGroups.NOTEATING>.Groups);
             var handle2 = CreateJobForDoofusesAndFood(_jobHandle, GroupCompound<GameGroups.FOOD, GameGroups.BLUE>.Groups
-                                                    , GroupCompound<GameGroups.DOOFUSES, GameGroups.BLUE,
-                                                          GameGroups.NOTEATING>.Groups);
+                                    , GroupCompound<GameGroups.DOOFUSES, GameGroups.BLUE, GameGroups.NOTEATING>.Groups);
 
             return JobHandle.CombineDependencies(handle1, handle2);
         }
     }
 
     [BurstCompile]
-    public struct LookingForFoodDoofusesJob : IJobParallelFor
+    public readonly struct ResetVelocity : IJobParallelFor
+    {
+        readonly BufferTuple<NativeBuffer<PositionEntityComponent>, NativeBuffer<VelocityEntityComponent>, NativeBuffer<EGIDComponent>> _doofusesBuffer;
+        
+        public ResetVelocity(in BufferTuple<NativeBuffer<PositionEntityComponent>,NativeBuffer<VelocityEntityComponent>,NativeBuffer<EGIDComponent>> doofusesBuffer)
+        {
+            _doofusesBuffer = doofusesBuffer;
+        }
+
+        public void Execute(int index)
+        {
+            _doofusesBuffer.buffer2[index].velocity = float3.zero;
+        }
+    }
+
+    [BurstCompile]
+    public readonly struct LookingForFoodDoofusesJob : IJobParallelFor
     {
         readonly BufferTuple<NativeBuffer<PositionEntityComponent>, NativeBuffer<VelocityEntityComponent>,
             NativeBuffer<EGIDComponent>> _doofuses;
-
         readonly BufferTuple<NativeBuffer<PositionEntityComponent>, NativeBuffer<MealEntityComponent>> _food;
 
-        readonly NativeEntityRemove
-            _nativeRemove;
+        readonly NativeEntityRemove _nativeRemove;
 
         public LookingForFoodDoofusesJob
         (in BufferTuple<NativeBuffer<PositionEntityComponent>, NativeBuffer<VelocityEntityComponent>,
@@ -110,9 +130,9 @@ namespace Svelto.ECS.MiniExamples.Example1C
                     {
                         Interlocked.Increment(ref mealInfos[foodIndex].eaters);
 
-                        closerComputeDirection = default;
-
-                        break; //close enough let's save some computations
+                        //closerComputeDirection = default;
+                        
+                        return; //close enough let's save some computations
                     }
                 }
             }

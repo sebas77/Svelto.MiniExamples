@@ -65,8 +65,8 @@
      <Compile Include="Assets\Svelto\Svelto.ECS\DataStructures\FastTypeSafeDictionary.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\DataStructures\ITypeSafeDictionary.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\DataStructures\MultiAppendBuffer.cs" />
+     <Compile Include="Assets\Svelto\Svelto.ECS\DataStructures\NativeRingBuffer.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\DataStructures\SimpleNativeArray.cs" />
-     <Compile Include="Assets\Svelto\Svelto.ECS\DataStructures\SimpleNativeBag.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\DataStructures\TypeSafeDictionary.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\DataStructures\TypeSafeDictionaryException.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\DataStructures\TypeSafeDictionaryUtilities.cs" />

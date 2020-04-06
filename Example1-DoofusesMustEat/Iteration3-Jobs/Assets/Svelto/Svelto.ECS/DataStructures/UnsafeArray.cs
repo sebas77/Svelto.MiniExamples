@@ -57,7 +57,9 @@ namespace Svelto.ECS.DataStructures
                 //copy with wrap
                 {
                     var byteCount = capacity - pointer;
-                    void* asPointer = Unsafe.AsPointer(ref Unsafe.AsRef(item));
+                    //need a copy to be sure that the GC won't move the data around
+                    T copyItem = item; 
+                    void* asPointer = Unsafe.AsPointer(ref copyItem);
                     Unsafe.CopyBlock(ptr + pointer, asPointer, byteCount);
                     var restCount = structSize - byteCount;
                     Unsafe.CopyBlock(ptr, (byte *)asPointer + byteCount, restCount);
@@ -87,7 +89,8 @@ namespace Svelto.ECS.DataStructures
                 else
                 {
                     var byteCount = capacity - pointer;
-                    var asPointer = Unsafe.AsPointer(ref Unsafe.AsRef(item));
+                    T copyItem = item;
+                    var asPointer = Unsafe.AsPointer(ref copyItem);
                     Unsafe.CopyBlock(ptr + pointer, asPointer, byteCount);
                     var restCount = structSize - byteCount;
                     Unsafe.CopyBlock(ptr, (byte *)asPointer + byteCount, restCount);
@@ -112,9 +115,10 @@ namespace Svelto.ECS.DataStructures
                 byte* addr = ptr + pointer;
                 
                 readPointer += structSize;
-                
+#if DEBUG && !PROFILE_SVELTO                            
                 if (readPointer > writePointer)
                     throw new Exception("unexpected read");
+#endif               
                 
                 if (pointer + structSize <= capacity)
                     return Unsafe.Read<T>(addr);
@@ -122,7 +126,7 @@ namespace Svelto.ECS.DataStructures
                 {
                     T item = default;
                     var byteCount = capacity - pointer;
-                    var asPointer = Unsafe.AsPointer(ref Unsafe.AsRef(item));
+                    var asPointer = Unsafe.AsPointer(ref item);
                     Unsafe.CopyBlock(asPointer, ptr + pointer, byteCount);
                     var restCount = structSize - byteCount;
                     Unsafe.CopyBlock((byte *)asPointer + byteCount, ptr, restCount);
@@ -158,11 +162,11 @@ namespace Svelto.ECS.DataStructures
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal ref T AccessReserve<T>(UnsafeArrayIndex index) where T : unmanaged
+        internal ref T AccessReserved<T>(UnsafeArrayIndex index) where T : unmanaged
         {
             unsafe
             {
-#if DEBUG && !PROFILE_SVELTO                
+#if DEBUG && !PROFILE_SVELTO
                 if (index.writerPointer >= capacity) throw new Exception($"SimpleNativeArray: out of bound access, index {index} capacity {capacity}");
                 if (index.writerPointer < readPointer) throw new Exception($"SimpleNativeArray: out of bound access, index {index} count {readPointer % capacity}");
 #endif                

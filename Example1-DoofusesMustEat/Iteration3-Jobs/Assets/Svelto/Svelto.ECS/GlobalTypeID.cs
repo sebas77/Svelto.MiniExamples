@@ -37,12 +37,12 @@ namespace Svelto.ECS
     
     interface IFiller 
     {
-        void FillFromByteArray(EntityComponentInitializer init, SimpleNativeBag buffer);
+        void FillFromByteArray(EntityComponentInitializer init, NativeRingBuffer buffer);
     }
 
     class Filler<T>: IFiller where T : struct, IEntityComponent
     {
-        void IFiller.FillFromByteArray(EntityComponentInitializer init, SimpleNativeBag buffer)
+        void IFiller.FillFromByteArray(EntityComponentInitializer init, NativeRingBuffer buffer)
         {
             var component = buffer.Dequeue<T>();
 

@@ -57,7 +57,9 @@ namespace Svelto.ECS
                     while (buffer.IsEmpty() == false)
                     {
                         var componentsIndex = buffer.Dequeue<uint>();
+                        Svelto.Console.Log("dequeue " + componentsIndex);
                         var entityEGID = buffer.Dequeue<EGID>();
+                        Svelto.Console.Log("dequeue " + entityEGID);
                         CheckRemoveEntityID(entityEGID);
                         QueueEntitySubmitOperation(new EntitySubmitOperation(
                                                        EntitySubmitOperationType.Remove, entityEGID, entityEGID
@@ -149,7 +151,9 @@ namespace Svelto.ECS
         public void RemoveEntity(EGID egid, int threadIndex)
         {
             var simpleNativeBag = _removeQueue.GetBuffer(threadIndex);
+            Svelto.Console.Log("<color=red>remove index</color> " + _indexRemove);
             simpleNativeBag.Enqueue(_indexRemove);
+            Svelto.Console.Log("<color=yellow>remove EGID</color> " + egid.ToString());
             simpleNativeBag.Enqueue(egid);
         }
     }
@@ -194,7 +198,7 @@ namespace Svelto.ECS
         public NativeEntityComponentInitializer BuildEntity
             (uint eindex, ExclusiveGroupStruct buildGroup, int threadIndex)
         {
-            SimpleNativeBag unsafeBuffer = _addOperationQueue.GetBuffer(threadIndex + 1);
+            NativeRingBuffer unsafeBuffer = _addOperationQueue.GetBuffer(threadIndex + 1);
 
             unsafeBuffer.Enqueue(_index);
             unsafeBuffer.Enqueue(new EGID(eindex, buildGroup));
@@ -206,10 +210,10 @@ namespace Svelto.ECS
 
     public readonly ref struct NativeEntityComponentInitializer
     {
-        readonly SimpleNativeBag  _unsafeBuffer;
+        readonly NativeRingBuffer  _unsafeBuffer;
         readonly UnsafeArrayIndex _index;
 
-        public NativeEntityComponentInitializer(in SimpleNativeBag unsafeBuffer, UnsafeArrayIndex index)
+        public NativeEntityComponentInitializer(in NativeRingBuffer unsafeBuffer, UnsafeArrayIndex index)
         {
             _unsafeBuffer = unsafeBuffer;
             _index        = index;

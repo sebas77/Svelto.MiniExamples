@@ -260,6 +260,9 @@
  <Reference Include="UnityEditor.WebGL.Extensions">
  <HintPath>C:/Program Files/Unity/Hub/Editor/2019.3.7f1/Editor/Data/PlaybackEngines/WebGLSupport/UnityEditor.WebGL.Extensions.dll</HintPath>
  </Reference>
+ <Reference Include="ConsolePro.Editor">
+ <HintPath>C:/Prgdir/Svelto/Svelto.MiniExamples/Example1-DoofusesMustEat/Iteration3-Jobs/Assets/ConsolePro/Editor/ConsolePro.Editor.dll</HintPath>
+ </Reference>
  <Reference Include="Unity.Burst.Unsafe">
  <HintPath>C:/Prgdir/Svelto/Svelto.MiniExamples/Example1-DoofusesMustEat/Iteration3-Jobs/Library/PackageCache/com.unity.burst@1.3.0-preview.9/Unity.Burst.Unsafe.dll</HintPath>
  </Reference>
@@ -271,9 +274,6 @@
  </Reference>
  <Reference Include="ICSharpCode.NRefactory">
  <HintPath>C:/Prgdir/Svelto/Svelto.MiniExamples/Example1-DoofusesMustEat/Iteration3-Jobs/Library/PackageCache/com.unity.render-pipelines.core@7.1.8/Editor/ShaderGenerator/ICSharpCode.NRefactory.dll</HintPath>
- </Reference>
- <Reference Include="ConsolePro.Editor">
- <HintPath>C:/Prgdir/Svelto/Svelto.MiniExamples/Example1-DoofusesMustEat/Iteration3-Jobs/Assets/ConsolePro/Editor/ConsolePro.Editor.dll</HintPath>
  </Reference>
  <Reference Include="mscorlib">
  <HintPath>C:/Program Files/Unity/Hub/Editor/2019.3.7f1/Editor/Data/MonoBleedingEdge/lib/mono/4.7.1-api/mscorlib.dll</HintPath>
