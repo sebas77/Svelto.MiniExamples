@@ -10,14 +10,14 @@ namespace Svelto.ECS
     public partial class EnginesRoot
     {
         //todo: I very likely don't need to create one for each native entity factory, the same can be reused
-        readonly MultiAppendBuffer _addOperationQueue =
-            new MultiAppendBuffer(Common.Allocator.Persistent, JobsUtility.MaxJobThreadCount + 1);
+        readonly AtomicRingBuffers _addOperationQueue =
+            new AtomicRingBuffers(Common.Allocator.Persistent, JobsUtility.MaxJobThreadCount + 1);
 
-        readonly MultiAppendBuffer _removeOperationQueue =
-            new MultiAppendBuffer(Common.Allocator.Persistent, JobsUtility.MaxJobThreadCount + 1);
+        readonly AtomicRingBuffers _removeOperationQueue =
+            new AtomicRingBuffers(Common.Allocator.Persistent, JobsUtility.MaxJobThreadCount + 1);
 
-        readonly MultiAppendBuffer _swapOperationQueue =
-            new MultiAppendBuffer(Common.Allocator.Persistent, JobsUtility.MaxJobThreadCount + 1);
+        readonly AtomicRingBuffers _swapOperationQueue =
+            new AtomicRingBuffers(Common.Allocator.Persistent, JobsUtility.MaxJobThreadCount + 1);
 
         NativeEntityRemove ProvideNativeEntityRemoveQueue<T>() where T : IEntityDescriptor, new()
         {
@@ -139,10 +139,10 @@ namespace Svelto.ECS
 
     public readonly struct NativeEntityRemove
     {
-        readonly MultiAppendBuffer _removeQueue;
+        readonly AtomicRingBuffers _removeQueue;
         readonly uint              _indexRemove;
 
-        internal NativeEntityRemove(MultiAppendBuffer EGIDsToRemove, uint indexRemove)
+        internal NativeEntityRemove(AtomicRingBuffers EGIDsToRemove, uint indexRemove)
         {
             _removeQueue = EGIDsToRemove;
             _indexRemove = indexRemove;
@@ -160,10 +160,10 @@ namespace Svelto.ECS
     
     public readonly struct NativeEntitySwap
     {
-        readonly MultiAppendBuffer _swapQueue;
+        readonly AtomicRingBuffers _swapQueue;
         readonly uint              _indexSwap;
 
-        internal NativeEntitySwap(MultiAppendBuffer EGIDsToSwap, uint indexSwap)
+        internal NativeEntitySwap(AtomicRingBuffers EGIDsToSwap, uint indexSwap)
         {
             _swapQueue   = EGIDsToSwap;
             _indexSwap   = indexSwap;
@@ -186,10 +186,10 @@ namespace Svelto.ECS
 
     public readonly struct NativeEntityFactory
     {
-        readonly MultiAppendBuffer _addOperationQueue;
+        readonly AtomicRingBuffers _addOperationQueue;
         readonly uint              _index;
 
-        internal NativeEntityFactory(MultiAppendBuffer addOperationQueue, uint index)
+        internal NativeEntityFactory(AtomicRingBuffers addOperationQueue, uint index)
         {
             _index             = index;
             _addOperationQueue = addOperationQueue;

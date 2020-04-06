@@ -62,9 +62,9 @@
      <Compile Include="Assets\Svelto\Svelto.ECS\CheckEntityUtilities.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\ComponentBuilder.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\DBC.cs" />
+     <Compile Include="Assets\Svelto\Svelto.ECS\DataStructures\AtomicRingBuffers.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\DataStructures\FastTypeSafeDictionary.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\DataStructures\ITypeSafeDictionary.cs" />
-     <Compile Include="Assets\Svelto\Svelto.ECS\DataStructures\MultiAppendBuffer.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\DataStructures\NativeRingBuffer.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\DataStructures\SimpleNativeArray.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\DataStructures\TypeSafeDictionary.cs" />
