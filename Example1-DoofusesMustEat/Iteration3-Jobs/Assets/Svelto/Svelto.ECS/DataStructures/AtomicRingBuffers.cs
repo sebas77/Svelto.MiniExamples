@@ -39,7 +39,7 @@ namespace Svelto.ECS.DataStructures.Unity
             for (int i = 0; i < bufferCount; i++)
             {
                 var bufferPtr = (NativeRingBuffer*)(ptr + bufferSize * i);
-                var buffer = new NativeRingBuffer(allocator);
+                var buffer = new NativeRingBuffer(allocator, (uint) i);
                 MemoryUtilities.CopyStructureToPtr(ref buffer, (IntPtr) bufferPtr);
             }
 

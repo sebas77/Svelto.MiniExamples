@@ -10,7 +10,7 @@ namespace Svelto.ECS.DataStructures
 #if ENABLE_BURST_AOT        
         [global::Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction]
 #endif
-        unsafe UnsafeArray* _list;
+        unsafe UnsafeBlob* _list;
 #if DEBUG && !PROFILE_SVELTO
         int hashType;
 #endif
@@ -35,10 +35,10 @@ namespace Svelto.ECS.DataStructures
                 var sizeOf  = MemoryUtilities.SizeOf<T>();
                 var alignOf = MemoryUtilities.AlignOf<T>();
 
-                UnsafeArray* listData =
-                    (UnsafeArray*) MemoryUtilities.Alloc(MemoryUtilities.SizeOf<UnsafeArray>()
-                                                        , MemoryUtilities.AlignOf<UnsafeArray>(), allocator);
-                MemoryUtilities.MemClear((IntPtr) listData, MemoryUtilities.SizeOf<UnsafeArray>());
+                UnsafeBlob* listData =
+                    (UnsafeBlob*) MemoryUtilities.Alloc(MemoryUtilities.SizeOf<UnsafeBlob>()
+                                                        , MemoryUtilities.AlignOf<UnsafeBlob>(), allocator);
+                MemoryUtilities.MemClear((IntPtr) listData, MemoryUtilities.SizeOf<UnsafeBlob>());
 
                 listData->allocator = allocator;
 

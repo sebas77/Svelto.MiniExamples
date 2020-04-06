@@ -8,7 +8,7 @@ namespace Svelto.ECS.DataStructures
     /// Burst friendly RingBuffer on steroid:
     /// it can: Enqueue/Dequeue, it wraps if there is enough space after dequeuing
     /// It resizes if there isn't enough space left.
-    /// It's a "bag, you can queue and dequeue any T. Just be sure that you dequeue what you queue! No check on type
+    /// It's a "bag", you can queue and dequeue any T. Just be sure that you dequeue what you queue! No check on type
     /// is done.
     /// You can reserve a position in the queue to update it later.
     /// The datastructure is a struct and it's "copyable" 
@@ -18,7 +18,7 @@ namespace Svelto.ECS.DataStructures
 #if ENABLE_BURST_AOT        
         [global::Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction]
 #endif
-        unsafe UnsafeArray* _list;
+        unsafe UnsafeBlob* _list;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool IsEmpty()
@@ -66,16 +66,17 @@ namespace Svelto.ECS.DataStructures
             }
         }
 
-        public NativeRingBuffer(Common.Allocator allocator)
+        public NativeRingBuffer(Common.Allocator allocator, uint id)
         {
             unsafe 
             {
-                UnsafeArray* listData =
-                    (UnsafeArray*) MemoryUtilities.Alloc(MemoryUtilities.SizeOf<UnsafeArray>()
-                                                       , MemoryUtilities.AlignOf<UnsafeArray>(), allocator);
-                MemoryUtilities.MemClear((IntPtr) listData, MemoryUtilities.SizeOf<UnsafeArray>());
+                UnsafeBlob* listData =
+                    (UnsafeBlob*) MemoryUtilities.Alloc(MemoryUtilities.SizeOf<UnsafeBlob>()
+                                                       , MemoryUtilities.AlignOf<UnsafeBlob>(), allocator);
+                MemoryUtilities.MemClear((IntPtr) listData, MemoryUtilities.SizeOf<UnsafeBlob>());
 
                 listData->allocator = allocator;
+                listData->id = id;
 
                 _list = listData;
             }

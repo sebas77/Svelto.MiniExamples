@@ -43,8 +43,8 @@ namespace Svelto.ECS.MiniExamples.Example1C
             if (_done == true)
                 return _jobHandle;
             
-            new SpawningJob(blueDoofusesNotEating, redDoofusesNotEating
-                          , _factory, _redCapsule, _blueCapsule)
+            _jobHandle = new SpawningJob(blueDoofusesNotEating, redDoofusesNotEating
+                                    , _factory, _redCapsule, _blueCapsule)
                .Schedule(MaxNumberOfDoofuses, ProcessorCount.Batch(MaxNumberOfDoofuses), _jobHandle);
 
             _done = true;
@@ -98,7 +98,6 @@ namespace Svelto.ECS.MiniExamples.Example1C
                     };
 
                     init = _factory.BuildEntity((uint) index, _redDoofusesNotEating, _threadIndex);
-
                 }
                 else
                 {

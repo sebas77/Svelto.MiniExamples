@@ -45,7 +45,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
         }
     }
 
-   // [BurstCompile]
+    [BurstCompile]
     struct ParallelJob : IJobParallelFor
     {
 #pragma warning disable 649

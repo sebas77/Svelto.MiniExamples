@@ -8,6 +8,7 @@ using Svelto.Tasks;
 using Svelto.Tasks.ExtraLean;
 using Unity.Entities;
 using Unity.Jobs;
+using Unity.Jobs.LowLevel.Unsafe;
 using UnityEngine;
 
 namespace Svelto.ECS.MiniExamples.Example1C

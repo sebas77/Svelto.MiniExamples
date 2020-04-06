@@ -57,11 +57,7 @@ namespace Svelto.Common
         {
             unsafe 
             {
-#if ENABLE_BURST_AOT
-                Unity.Collections.LowLevel.Unsafe.UnsafeUtility.MemCpy((void*) newPointer, (void*) head, currentSize);
-#else
                 Unsafe.CopyBlock((void*) newPointer, (void*) head, currentSize);
-#endif
             }
         }
 
@@ -84,7 +80,7 @@ namespace Svelto.Common
             unsafe 
             {
 #if ENABLE_BURST_AOT
-                Unity.Collections.LowLevel.Unsafe.UnsafeUtility.MemClear((void*) listData, sizeOf);
+               Unity.Collections.LowLevel.Unsafe.UnsafeUtility.MemClear((void*) listData, sizeOf);
 #else
                Unsafe.InitBlock((void*) listData, 0, sizeOf);
 #endif

@@ -30,11 +30,8 @@ namespace Svelto.ECS.MiniExamples.Example1C
             foreach (var doofusesBuffer in doofusesEntityGroups)
             {
                 //schedule the job
-                var deps = new ResetVelocity(doofusesBuffer).Schedule(
-                    (int) doofusesBuffer.count, ProcessorCount.Batch(doofusesBuffer.count), inputDeps);
-
-                //Never forget to dispose the buffer (may change this in future)
-                combinedDependencies = doofusesBuffer.CombineDispose(combinedDependencies, deps);
+                inputDeps = JobHandle.CombineDependencies(inputDeps, new ResetVelocity(doofusesBuffer).Schedule(
+                    (int) doofusesBuffer.count, ProcessorCount.Batch(doofusesBuffer.count), inputDeps));
             }
 
             foreach (var foodBuffer in foodEntityGroups)
@@ -132,7 +129,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
 
                         //closerComputeDirection = default;
                         
-                        return; //close enough let's save some computations
+                        break; //close enough let's save some computations
                     }
                 }
             }

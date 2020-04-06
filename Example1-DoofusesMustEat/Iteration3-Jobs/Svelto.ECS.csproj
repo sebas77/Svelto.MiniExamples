@@ -70,7 +70,7 @@
      <Compile Include="Assets\Svelto\Svelto.ECS\DataStructures\TypeSafeDictionary.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\DataStructures\TypeSafeDictionaryException.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\DataStructures\TypeSafeDictionaryUtilities.cs" />
-     <Compile Include="Assets\Svelto\Svelto.ECS\DataStructures\UnsafeArray.cs" />
+     <Compile Include="Assets\Svelto\Svelto.ECS\DataStructures\UnsafeBlob.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\Dispatcher\DispatchOnChange.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\Dispatcher\DispatchOnSet.cs" />
      <Compile Include="Assets\Svelto\Svelto.ECS\DynamicEntityDescriptor.cs" />

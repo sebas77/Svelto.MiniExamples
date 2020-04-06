@@ -57,9 +57,7 @@ namespace Svelto.ECS
                     while (buffer.IsEmpty() == false)
                     {
                         var componentsIndex = buffer.Dequeue<uint>();
-                        Svelto.Console.Log("dequeue " + componentsIndex);
                         var entityEGID = buffer.Dequeue<EGID>();
-                        Svelto.Console.Log("dequeue " + entityEGID);
                         CheckRemoveEntityID(entityEGID);
                         QueueEntitySubmitOperation(new EntitySubmitOperation(
                                                        EntitySubmitOperationType.Remove, entityEGID, entityEGID
@@ -82,13 +80,13 @@ namespace Svelto.ECS
                     }
                 }
             }
-
+            
             using (profiler.Sample("Native Add Operations"))
             {
                 for (int i = 0; i < _addOperationQueue.count; i++)
                 {
                     ref var buffer = ref _addOperationQueue.GetBuffer(i);
-
+                    
                     while (buffer.IsEmpty() == false)
                     {
                         var componentsIndex = buffer.Dequeue<uint>();
@@ -151,9 +149,8 @@ namespace Svelto.ECS
         public void RemoveEntity(EGID egid, int threadIndex)
         {
             var simpleNativeBag = _removeQueue.GetBuffer(threadIndex);
-            Svelto.Console.Log("<color=red>remove index</color> " + _indexRemove);
+            
             simpleNativeBag.Enqueue(_indexRemove);
-            Svelto.Console.Log("<color=yellow>remove EGID</color> " + egid.ToString());
             simpleNativeBag.Enqueue(egid);
         }
     }
