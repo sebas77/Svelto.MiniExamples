@@ -636,7 +636,7 @@ PlayerSettings:
   webGLThreadsSupport: 0
   webGLDecompressionFallback: 0
   scriptingDefineSymbols:
-    1: PROFILE_SVELTO;ENABLE_HYBRID_RENDERER_V2
+    1: PROFILE_SVELTO
   platformArchitecture: {}
   scriptingBackend:
     Standalone: 0
