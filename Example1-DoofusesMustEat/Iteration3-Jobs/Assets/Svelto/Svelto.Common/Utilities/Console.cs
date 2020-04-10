@@ -86,9 +86,6 @@ namespace Svelto
 
             //the goal of this is to show the stack from the real error
             InternalLog(toPrint, LogType.Exception, exception, extraData);
-
-            //this is naturally an exception caught, so the stack will be from the caught, not from the real error 
-            throw exception;
         }
 
         public static void LogWarning(string txt)

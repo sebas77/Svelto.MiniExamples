@@ -65,6 +65,8 @@ namespace Svelto.ECS
 
             return groupStruct;
         }
+        
+        internal ExclusiveGroupStruct(ExclusiveGroupStruct @group):this() { this = group; }
 
         /// <summary>
         /// Use this constructor to reserve N groups
@@ -98,11 +100,6 @@ namespace Svelto.ECS
             return groupStruct._id;
         }
         
-        public static implicit operator InternalGroup(ExclusiveGroupStruct groupStruct)
-        {
-            return new InternalGroup(groupStruct);
-        }
-
         public static ExclusiveGroupStruct operator+(ExclusiveGroupStruct a, uint b)
         {
             var group = new ExclusiveGroupStruct {_id = a._id + b};

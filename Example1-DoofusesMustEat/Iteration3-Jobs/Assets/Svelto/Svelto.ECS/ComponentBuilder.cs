@@ -8,7 +8,7 @@ using Svelto.Utilities;
 
 namespace Svelto.ECS
 {
-    public class ComponentBuilder<T> : IEntityComponentBuilder where T : struct, IEntityComponent
+    public class ComponentBuilder<T> : IComponentBuilder where T : struct, IEntityComponent
     {
         public ComponentBuilder()
         {
@@ -56,7 +56,7 @@ namespace Svelto.ECS
             }
         }
 
-        ITypeSafeDictionary IEntityComponentBuilder.Preallocate(ref ITypeSafeDictionary dictionary, uint size)
+        ITypeSafeDictionary IComponentBuilder.Preallocate(ref ITypeSafeDictionary dictionary, uint size)
         {
             return Preallocate(ref dictionary, size);
         }

@@ -14,7 +14,7 @@ namespace Svelto.ECS
             }
 
             public EntityComponentInitializer BuildEntity<T>
-                (uint entityID, InternalGroup groupStructId, IEnumerable<object> implementors = null)
+                (uint entityID, ExclusiveGroupStruct groupStructId, IEnumerable<object> implementors = null)
                 where T : IEntityDescriptor, new()
             {
                 return _enginesRoot.Target.BuildEntity(new EGID(entityID, groupStructId)
@@ -42,14 +42,14 @@ namespace Svelto.ECS
             }
 #endif            
             public EntityComponentInitializer BuildEntity<T>
-                (uint entityID, InternalGroup groupStructId, T descriptorEntity, IEnumerable<object> implementors)
+                (uint entityID, ExclusiveGroupStruct groupStructId, T descriptorEntity, IEnumerable<object> implementors)
                 where T : IEntityDescriptor
             {
                 return _enginesRoot.Target.BuildEntity(new EGID(entityID, groupStructId)
                                                      , descriptorEntity.componentsToBuild, implementors);
             }
 
-            public void PreallocateEntitySpace<T>(InternalGroup groupStructId, uint size)
+            public void PreallocateEntitySpace<T>(ExclusiveGroupStruct groupStructId, uint size)
                 where T : IEntityDescriptor, new()
             {
                 _enginesRoot.Target.Preallocate<T>(groupStructId, size);

@@ -22,6 +22,7 @@ namespace Svelto.ECS
         NativeEntityRemove ProvideNativeEntityRemoveQueue<T>() where T : IEntityDescriptor, new()
         {
             //todo: remove operation array and store entity descriptor hash in the return value
+            //todo I maybe able to provide a  _nativeSwap.SwapEntity<entityDescriptor> 
             _nativeRemoveOperations.Add(
                 new NativeOperationRemove(EntityDescriptorTemplate<T>.descriptor.componentsToBuild));
 
@@ -58,7 +59,7 @@ namespace Svelto.ECS
                     {
                         var componentsIndex = buffer.Dequeue<uint>();
                         var entityEGID = buffer.Dequeue<EGID>();
-                        CheckRemoveEntityID(entityEGID);
+                        CheckRemoveEntityID(entityEGID); 
                         QueueEntitySubmitOperation(new EntitySubmitOperation(
                                                        EntitySubmitOperationType.Remove, entityEGID, entityEGID
                                                      , _nativeRemoveOperations[componentsIndex].entityComponents));
@@ -73,6 +74,9 @@ namespace Svelto.ECS
                     {
                         var     componentsIndex = buffer.Dequeue<uint>();
                         var entityEGID      = buffer.Dequeue<DoubleEGID>();
+                        
+                        CheckRemoveEntityID(entityEGID.@from);
+                        CheckAddEntityID(entityEGID.to); 
                         
                         QueueEntitySubmitOperation(new EntitySubmitOperation(
                                                        EntitySubmitOperationType.Swap, entityEGID.@from, entityEGID.to
@@ -92,6 +96,7 @@ namespace Svelto.ECS
                         var componentsIndex = buffer.Dequeue<uint>();
                         var egid            = buffer.Dequeue<EGID>();
                         var componentCounts = buffer.Dequeue<uint>();
+                        
                         EntityComponentInitializer init =
                             BuildEntity(egid, _nativeAddOperations[componentsIndex].components);
 
@@ -218,7 +223,7 @@ namespace Svelto.ECS
 
         public void Init<T>(in T component) where T : unmanaged, IEntityComponent
         {
-            uint id = EntityComponentIDMap.GetIDFromType<T>();
+            uint id = EntityComponentID<T>.ID.Data;
 
             _unsafeBuffer.AccessReserved<uint>(_index)++;
 
@@ -229,9 +234,9 @@ namespace Svelto.ECS
 
     struct NativeOperationBuild
     {
-        internal readonly IEntityComponentBuilder[] components;
+        internal readonly IComponentBuilder[] components;
 
-        public NativeOperationBuild(IEntityComponentBuilder[] descriptorEntityComponentsToBuild)
+        public NativeOperationBuild(IComponentBuilder[] descriptorEntityComponentsToBuild)
         {
             components = descriptorEntityComponentsToBuild;
         }
@@ -239,9 +244,9 @@ namespace Svelto.ECS
 
     readonly struct NativeOperationRemove
     {
-        internal readonly IEntityComponentBuilder[] entityComponents;
+        internal readonly IComponentBuilder[] entityComponents;
 
-        public NativeOperationRemove(IEntityComponentBuilder[] descriptorEntitiesToBuild)
+        public NativeOperationRemove(IComponentBuilder[] descriptorEntitiesToBuild)
         {
             entityComponents = descriptorEntitiesToBuild;
         }
@@ -249,9 +254,9 @@ namespace Svelto.ECS
 
     readonly struct NativeOperationSwap
     {
-        internal readonly IEntityComponentBuilder[] entityComponents;
+        internal readonly IComponentBuilder[] entityComponents;
 
-        public NativeOperationSwap(IEntityComponentBuilder[] descriptorEntitiesToBuild)
+        public NativeOperationSwap(IComponentBuilder[] descriptorEntitiesToBuild)
         {
             entityComponents = descriptorEntitiesToBuild;
         }

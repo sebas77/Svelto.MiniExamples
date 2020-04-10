@@ -7,7 +7,7 @@ namespace Svelto.ECS.Internal
     static class EntityFactory
     {
         public static FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary> BuildGroupedEntities(EGID egid,
-            EnginesRoot.DoubleBufferedEntitiesToAdd groupEntitiesToAdd, IEntityComponentBuilder[] componentsToBuild,
+            EnginesRoot.DoubleBufferedEntitiesToAdd groupEntitiesToAdd, IComponentBuilder[] componentsToBuild,
             IEnumerable<object> implementors)
         {
             var group = FetchEntityGroup(egid.groupID, groupEntitiesToAdd);
@@ -37,7 +37,7 @@ namespace Svelto.ECS.Internal
 
         static void BuildEntitiesAndAddToGroup(EGID entityID,
             FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary> group,
-            IEntityComponentBuilder[] entityBuilders, IEnumerable<object> implementors)
+            IComponentBuilder[] entityBuilders, IEnumerable<object> implementors)
         {
 #if DEBUG && !PROFILE_SVELTO
             HashSet<Type> types = new HashSet<Type>();
@@ -65,7 +65,7 @@ namespace Svelto.ECS.Internal
         }
 
         static void BuildEntity(EGID entityID, FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary> group,
-                                Type entityComponentType, IEntityComponentBuilder entityComponentBuilder, IEnumerable<object> implementors)
+                                Type entityComponentType, IComponentBuilder componentBuilder, IEnumerable<object> implementors)
         {
             var entityComponentsPoolWillBeCreated =
                 group.TryGetValue(new RefWrapper<Type>(entityComponentType), out var safeDictionary) == false;
@@ -73,7 +73,7 @@ namespace Svelto.ECS.Internal
             //passing the undefined entityComponentsByType inside the entityComponentBuilder will allow it to be created with the
             //correct type and casted back to the undefined list. that's how the list will be eventually of the target
             //type.
-            entityComponentBuilder.BuildEntityAndAddToList(ref safeDictionary, entityID, implementors);
+            componentBuilder.BuildEntityAndAddToList(ref safeDictionary, entityID, implementors);
 
             if (entityComponentsPoolWillBeCreated)
                 group.Add(new RefWrapper<Type>(entityComponentType), safeDictionary);

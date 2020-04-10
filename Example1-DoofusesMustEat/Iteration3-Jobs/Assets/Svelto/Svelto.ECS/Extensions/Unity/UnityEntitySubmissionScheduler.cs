@@ -7,7 +7,7 @@ namespace Svelto.ECS.Schedulers.Unity
 {
     //The EntitySubmissionScheduler has been introduced to make the entity views submission logic platform independent
     //You can customize the scheduler if you wish
-    public class UnityEntitySubmissionScheduler : IEntitySubmissionScheduler
+    public class UnityEntitiesSubmissionScheduler : IEntitiesSubmissionScheduler
     {
         class Scheduler : MonoBehaviour
         {
@@ -37,7 +37,7 @@ namespace Svelto.ECS.Schedulers.Unity
             public EnginesRoot.EntitiesSubmitter onTick;
         }
         
-        public UnityEntitySubmissionScheduler(string name = "ECSScheduler") { _name = name; }
+        public UnityEntitiesSubmissionScheduler(string name = "ECSScheduler") { _name = name; }
 
         public void Dispose()
         {

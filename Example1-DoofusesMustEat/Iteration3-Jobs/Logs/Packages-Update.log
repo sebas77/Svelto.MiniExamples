@@ -6,3 +6,30 @@ Update Mode: updateDependencies
 
 The following packages were updated:
   com.unity.burst from version 1.2.2 to 1.2.3
+
+=== Tue Apr  7 16:35:38 2020
+
+Packages were changed.
+Update Mode: updateDependencies
+
+The following packages were updated:
+  com.unity.render-pipelines.universal from version 7.1.8 to 7.3.1
+
+=== Fri Apr 10 11:55:55 2020
+
+Packages were changed.
+Update Mode: updateDependencies
+
+The following packages were added:
+  com.unity.ide.visualstudio@2.0.0
+The following packages were updated:
+  com.unity.ide.rider from version 1.1.4 to 1.2.1
+  com.unity.render-pipelines.universal from version 7.3.1 to 8.0.1
+
+=== Fri Apr 10 16:37:11 2020
+
+Packages were changed.
+Update Mode: updateDependencies
+
+The following packages were updated:
+  com.unity.render-pipelines.universal from version 7.3.1 to 8.0.1

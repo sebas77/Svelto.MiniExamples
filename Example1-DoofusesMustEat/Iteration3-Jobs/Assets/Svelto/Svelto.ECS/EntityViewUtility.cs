@@ -22,7 +22,7 @@ namespace Svelto.ECS
     static class EntityComponentUtility
     {
 
-        public static void FillEntityComponent<T>(this IEntityComponentBuilder entityComponentBuilder, ref  T entityComponent
+        public static void FillEntityComponent<T>(this IComponentBuilder componentBuilder, ref T entityComponent
                                            , FasterList<KeyValuePair<Type, FastInvokeActionCast<T>>>
                                                  entityComponentBlazingFastReflection, IEnumerable<object> implementors,
 #if DEBUG && !PROFILE_SVELTO
@@ -66,7 +66,7 @@ namespace Svelto.ECS
                 else
                 {
                     Console.Log(NULL_IMPLEMENTOR_ERROR.FastConcat(" entityComponent ",
-                            entityComponentBuilder.GetEntityComponentType().ToString()));
+                            componentBuilder.GetEntityComponentType().ToString()));
                 }
 #endif
             }
@@ -85,7 +85,7 @@ namespace Svelto.ECS
                 if (implementorsByType.TryGetValue(fieldType, out component) == false)
                 {
                     var e = new ECSException(NOT_FOUND_EXCEPTION + " Component Type: " + fieldType.Name +
-                                             " - EntityComponent: "   + entityComponentBuilder.GetEntityComponentType().Name);
+                                             " - EntityComponent: "   + componentBuilder.GetEntityComponentType().Name);
 
                     throw e;
                 }
@@ -93,7 +93,7 @@ namespace Svelto.ECS
                 if (component.numberOfImplementations > 1)
                     throw new ECSException(DUPLICATE_IMPLEMENTOR_ERROR.FastConcat(
                         "Component Type: ", fieldType.Name, " implementor: ", component.implementorType.ToString()) +
-                                           " - EntityComponent: " + entityComponentBuilder.GetEntityComponentType().Name);
+                                           " - EntityComponent: " + componentBuilder.GetEntityComponentType().Name);
 #endif
 #if DEBUG && !PROFILE_SVELTO
                 fieldSetter.Value(ref entityComponent, component.implementorType);

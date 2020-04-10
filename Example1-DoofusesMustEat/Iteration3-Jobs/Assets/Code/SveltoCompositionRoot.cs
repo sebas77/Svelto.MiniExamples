@@ -6,9 +6,9 @@ using Svelto.ECS.Extensions.Unity;
 using Svelto.ECS.Internal;
 using Svelto.Tasks;
 using Svelto.Tasks.ExtraLean;
+using Unity.Collections.LowLevel.Unsafe;
 using Unity.Entities;
 using Unity.Jobs;
-using Unity.Jobs.LowLevel.Unsafe;
 using UnityEngine;
 
 namespace Svelto.ECS.MiniExamples.Example1C
@@ -19,7 +19,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
 
         EnginesRoot _enginesRoot;
         FasterList<IJobifiableEngine> _enginesToTick;
-        SimpleSubmissioncheduler _simpleSubmitScheduler;
+        SimpleEntitiesSubmissionScheduler _simpleSubmitScheduler;
 
         void StartTicking(FasterList<IJobifiableEngine> engines)
         {
@@ -85,14 +85,15 @@ namespace Svelto.ECS.MiniExamples.Example1C
             _enginesRoot?.Dispose();
         }
 
-        public void OnContextCreated<T>(T contextHolder) { }
+        public void OnContextCreated<T>(T contextHolder)
+        { }
 
         public bool Initialize(string defaultWorldName)
         {
             //            Physics.autoSimulation = false;
             QualitySettings.vSyncCount = -1;
 
-            _simpleSubmitScheduler = new SimpleSubmissioncheduler();
+            _simpleSubmitScheduler = new SimpleEntitiesSubmissionScheduler();
             _enginesRoot = new EnginesRoot(_simpleSubmitScheduler);
             _enginesToTick = new FasterList<IJobifiableEngine>();
 
@@ -137,7 +138,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
             AddSveltoEngineToTick(new SpawningDoofusEngine(redDoofusEntity, blueDoofusEntity, generateEntityFactory));
             var generateEntityFunctions = _enginesRoot.GenerateEntityFunctions();
             AddSveltoEngineToTick(new ConsumingFoodEngine(generateEntityFunctions));
-            AddSveltoEngineToTick(new LookingForFoodDoofusesEngine());
+            AddSveltoEngineToTick(new LookingForFoodDoofusesEngine(generateEntityFunctions));
             AddSveltoEngineToTick(new VelocityToPositionDoofusesEngine());
             
             AddSveltoCallbackEngine(new SpawnUnityEntityOnSveltoEntityEngine(_world));

@@ -158,7 +158,7 @@ namespace Svelto.DataStructures
         {}
     }
 
-    public static class Volatile
+    static class Volatile
     {
         public struct PaddedLong
         {

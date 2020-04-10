@@ -25,7 +25,7 @@ namespace Svelto.ECS
             readonly Svelto.DataStructures.WeakReference<EnginesRoot> _weakReference;
         }
         
-        public IEntitySubmissionScheduler scheduler { get; }
+        public IEntitiesSubmissionScheduler scheduler { get; }
 
         /// <summary>
         /// Engines root contextualize your engines and entities. You don't need to limit yourself to one EngineRoot
@@ -35,7 +35,7 @@ namespace Svelto.ECS
         /// The EntitySubmissionScheduler cannot hold an EnginesRoot reference, that's why
         /// it must receive a weak reference of the EnginesRoot callback.
         /// </summary>
-        public EnginesRoot(IEntitySubmissionScheduler entityComponentScheduler)
+        public EnginesRoot(IEntitiesSubmissionScheduler entitiesComponentScheduler)
         {
             _entitiesOperations = new ThreadSafeDictionary<ulong, EntitySubmitOperation>();
             serializationDescriptorMap = new SerializationDescriptorMap();
@@ -53,14 +53,14 @@ namespace Svelto.ECS
             _entitiesStream = new EntitiesStream();
             _entitiesDB = new EntitiesDB(_groupEntityComponentsDB, _groupsPerEntity, _entitiesStream);
 
-            scheduler = entityComponentScheduler;
+            scheduler = entitiesComponentScheduler;
             scheduler.onTick = new EntitiesSubmitter(this);
 #if UNITY_ECS            
             AllocateNativeOperations();
 #endif
         }
         
-        public EnginesRoot(IEntitySubmissionScheduler entityComponentScheduler, bool isDeserializationOnly):this(entityComponentScheduler)
+        public EnginesRoot(IEntitiesSubmissionScheduler entitiesComponentScheduler, bool isDeserializationOnly):this(entitiesComponentScheduler)
         {
             _isDeserializationOnly = isDeserializationOnly;
         }

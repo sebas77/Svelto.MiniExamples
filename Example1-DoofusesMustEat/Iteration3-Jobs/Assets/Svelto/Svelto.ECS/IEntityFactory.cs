@@ -26,7 +26,7 @@ namespace Svelto.ECS
         ///  <typeparam name="T"></typeparam>
         ///  <param name="groupStructId"></param>
         ///  <param name="size"></param>
-        void PreallocateEntitySpace<T>(InternalGroup groupStructId, uint size)
+        void PreallocateEntitySpace<T>(ExclusiveGroupStruct groupStructId, uint size)
             where T : IEntityDescriptor, new();
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace Svelto.ECS
         /// <param name="groupStructId"></param>
         /// <param name="ed"></param>
         /// <param name="implementors"></param>
-        EntityComponentInitializer BuildEntity<T>(uint entityID, InternalGroup groupStructId,
+        EntityComponentInitializer BuildEntity<T>(uint entityID, ExclusiveGroupStruct groupStructId,
                                                IEnumerable<object> implementors = null)
             where T : IEntityDescriptor, new();
 
@@ -58,7 +58,7 @@ namespace Svelto.ECS
         /// <param name="entityDescriptor"></param>
         /// <param name="implementors"></param>
         ///
-        EntityComponentInitializer BuildEntity<T>(uint entityID, InternalGroup groupStructId,
+        EntityComponentInitializer BuildEntity<T>(uint entityID, ExclusiveGroupStruct groupStructId,
                                                T    descriptorEntity, IEnumerable<object>  implementors = null)
             where T : IEntityDescriptor;
 

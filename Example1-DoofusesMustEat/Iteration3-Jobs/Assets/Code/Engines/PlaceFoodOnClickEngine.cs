@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Svelto.Common;
 using Svelto.ECS.EntityComponents;
@@ -9,7 +10,7 @@ using Unity.Entities;
 using Unity.Jobs;
 using Unity.Mathematics;
 using UnityEngine;
-using Random = UnityEngine.Random;
+using Random = Unity.Mathematics.Random;
 
 namespace Svelto.ECS.MiniExamples.Example1C
 {
@@ -31,40 +32,37 @@ namespace Svelto.ECS.MiniExamples.Example1C
             {
                 if (Input.GetMouseButton(0) || Input.GetMouseButton(1) == true)
                 {
+                    var _random = new Random((uint) DateTime.Now.Ticks);
                     //I am cheating a bit with the MouseToPosition function, but for the purposes of this demo
                     //creating a Camera Entity was an overkill
                     if (UnityUtilities.MouseToPosition(out Vector3 position))
                     {
                         //BuildEntity returns an EntityInitialized that is used to set the default values of the
                         //entity that will be built.
-                        for (int i = 0; i < 100; i++)
+                        for (int i = 0; i < 500; i++)
                         {
                             EntityComponentInitializer init;
 
-                            var newposition = new float3(position.x + Random.Range(-10, 10), position.y,
-                                                         position.z + Random.Range(-10, 10));
+                            var newposition = new float3(position.x + _random.NextFloat(-50, 50), position.y,
+                                                         position.z + _random.NextFloat(-50, 50));
 
                             bool isRed;
 
                             if (Input.GetMouseButton(0))
                             {
                                 init = _entityFactory.BuildEntity<FoodEntityDescriptor>(_foodPlaced++,
-                                                                                        GroupCompound<GameGroups.FOOD,
-                                                                                            GameGroups.RED>.BuildGroup);
+                                                        GroupCompound<GameGroups.FOOD, GameGroups.RED, GameGroups.NOTEATING>.BuildGroup);
 
                                 isRed = true;
                             }
                             else
                             {
                                 init = _entityFactory.BuildEntity<FoodEntityDescriptor>(_foodPlaced++,
-                                                                                        GroupCompound<GameGroups.FOOD,
-                                                                                                GameGroups.BLUE>
-                                                                                           .BuildGroup);
+                                                         GroupCompound<GameGroups.FOOD, GameGroups.BLUE, GameGroups.NOTEATING>.BuildGroup);
 
                                 isRed = false;
                             }
 
-                            init.Init(new MealEntityComponent(1000));
                             init.Init(new PositionEntityComponent
                             {
                                 position = newposition

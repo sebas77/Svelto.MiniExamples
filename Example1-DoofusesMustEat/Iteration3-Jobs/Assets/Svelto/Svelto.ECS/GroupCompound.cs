@@ -6,51 +6,63 @@ namespace Svelto.ECS
     public static class GroupCompound<G1, G2, G3>
         where G1 : GroupTag<G1> where G2 : GroupTag<G2> where G3 : GroupTag<G3>
     {
-        public static ExclusiveGroup[] Groups = new ExclusiveGroup[1];
+        public static readonly ExclusiveGroup[] Groups;
 
         static GroupCompound()
         {
-            var Group = new ExclusiveGroup();
-            Groups[0] = Group;
+            if ((Groups = GroupCompound<G3, G1, G2>.Groups) == null)
+            if ((Groups = GroupCompound<G2, G3, G1>.Groups) == null)
+            if ((Groups = GroupCompound<G3, G2, G1>.Groups) == null)
+            if ((Groups = GroupCompound<G1, G3, G2>.Groups) == null)
+            if ((Groups = GroupCompound<G2, G1, G3>.Groups) == null)
+            {
+                Groups = new ExclusiveGroup[1];
 
-            GroupTag<G1>.Add(Group);
-            GroupTag<G2>.Add(Group);
-            GroupTag<G3>.Add(Group);
-
-            GroupCompound<G1, G2>.Add(Group);
-            GroupCompound<G2, G1>.Add(Group);
-
-            GroupCompound<G3, G1, G2>.Groups = Groups;
-            GroupCompound<G2, G3, G1>.Groups = Groups;
-            GroupCompound<G3, G2, G1>.Groups = Groups;
-            GroupCompound<G1, G3, G2>.Groups = Groups;
-            GroupCompound<G2, G1, G3>.Groups = Groups;
+                var Group = new ExclusiveGroup();
+                Groups[0] = Group;
+                    
+                Console.LogDebug("<color=orange>".FastConcat(typeof(G1).ToString().FastConcat("-", typeof(G2).ToString(), "-").FastConcat(typeof(G3).ToString(), "- Initialized ", Groups[0].ToString()), "</color>"));
+                    
+                GroupCompound<G1, G2>.Add(Group); //<G1/G2> and <G2/G1> must share the same array
+                GroupCompound<G1, G3>.Add(Group);
+                GroupCompound<G2, G3>.Add(Group);
+                    
+                GroupTag<G1>.Add(Group);
+                GroupTag<G2>.Add(Group);
+                GroupTag<G3>.Add(Group);
+            }
+            else
+                Console.LogDebug(typeof(G1).ToString().FastConcat("-", typeof(G2).ToString(), "-").FastConcat(typeof(G3).ToString(), "-", Groups[0].ToString()));
         }
 
-        public static InternalGroup BuildGroup => new InternalGroup(Groups[0]);
+        public static ExclusiveGroupStruct BuildGroup => new ExclusiveGroupStruct(Groups[0]);
     }
 
     public static class GroupCompound<G1, G2> where G1 : GroupTag<G1> where G2 : GroupTag<G2>
     {
-        public static ExclusiveGroup[] Groups;
+        public static ExclusiveGroup[] Groups; 
 
         static GroupCompound()
         {
-            //reserve immediately a group for this specialized compound
-            Groups = new ExclusiveGroup[1];
-            Groups[0] = new ExclusiveGroup();
+            Groups = GroupCompound<G2, G1>.Groups;
+            
+            if (Groups == null)
+            {
+                Groups = new ExclusiveGroup[1];
+                var Group = new ExclusiveGroup();
+                Groups[0] = Group;
+                
+                Console.LogDebug("<color=orange>".FastConcat(typeof(G1).ToString().FastConcat("-", typeof(G2).ToString(), "- initialized ", Groups[0].ToString()), "</color>"));
 
-            Console.Log(typeof(G1).ToString().FastConcat("-", typeof(G2).ToString(), "-",
-                Groups[0].ToString()));
+                //every abstract group preemptively adds this group, it may or may not be empty in future
+                GroupTag<G1>.Add(Group);
+                GroupTag<G2>.Add(Group);
+            }
+            else
+                Console.LogDebug(typeof(G1).ToString().FastConcat("-", typeof(G2).ToString(), "-", Groups[0].ToString()));
+        } 
 
-            //every abstract group preemptively adds this group, it may or may not be empty in future
-            GroupTag<G1>.Add(Groups[0]);
-            GroupTag<G2>.Add(Groups[0]);
-
-            GroupCompound<G2, G1>.Groups = Groups;
-        }
-
-        public static InternalGroup BuildGroup => new InternalGroup(Groups[0]);
+        public static ExclusiveGroupStruct BuildGroup => new ExclusiveGroupStruct(Groups[0]);
 
         public static void Add(ExclusiveGroup @group)
         {
@@ -61,6 +73,10 @@ namespace Svelto.ECS
             Array.Resize(ref Groups, Groups.Length + 1);
 
             Groups[Groups.Length - 1] = group;
+            
+            GroupCompound<G2, G1>.Groups = Groups;
+            
+            Console.LogDebug(typeof(G1).ToString().FastConcat("-", typeof(G2).ToString(), "- Add ", group.ToString()));
         }
     }
 
@@ -75,6 +91,8 @@ namespace Svelto.ECS
         static GroupTag()
         {
             Groups[0] = new ExclusiveGroup();
+            
+            Console.LogDebug(typeof(T).ToString() + "-" + Groups[0].ToString());
         }
 
         //Each time a new combination of group tags is found a new group is added.
@@ -87,6 +105,8 @@ namespace Svelto.ECS
             Array.Resize(ref Groups, Groups.Length + 1);
 
             Groups[Groups.Length - 1] = group;
+            
+            Console.LogDebug(typeof(T).ToString().FastConcat("- Add ", group.ToString()));
         }
     }
 }

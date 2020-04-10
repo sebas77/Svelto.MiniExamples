@@ -41,8 +41,8 @@ namespace Svelto.ECS
                     _entitiesOperations.CopyValuesTo(_transientEntitiesOperations);
                     _entitiesOperations.FastClear();
 
-                    var entitiesOperations = _transientEntitiesOperations.ToArrayFast(out _);
-                    for (var i = 0; i < _transientEntitiesOperations.count; i++)
+                    EntitySubmitOperation[] entitiesOperations = _transientEntitiesOperations.ToArrayFast(out var count);
+                    for (var i = 0; i < count; i++)
                     {
                         try
                         {
@@ -50,8 +50,7 @@ namespace Svelto.ECS
                             {
                                 case EntitySubmitOperationType.Swap:
                                     MoveEntityFromAndToEngines(entitiesOperations[i].builders,
-                                        entitiesOperations[i].fromID,
-                                        entitiesOperations[i].toID);
+                                        entitiesOperations[i].fromID, entitiesOperations[i].toID);
                                     break;
                                 case EntitySubmitOperationType.Remove:
                                     MoveEntityFromAndToEngines(entitiesOperations[i].builders,

@@ -14,7 +14,7 @@ namespace Svelto.ECS.DataStructures.Unity
         public const int DefaultThreadIndex = -1;
         public const int MinThreadIndex = DefaultThreadIndex;
 
-#if ENABLE_BURST_AOT        
+#if UNITY_ECS        
         [global::Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction]
 #endif
         NativeRingBuffer* _data;
@@ -33,13 +33,13 @@ namespace Svelto.ECS.DataStructures.Unity
             var bufferCount = _threadsCount;
             var allocationSize = bufferSize * bufferCount;
 
-            var ptr = (byte*)MemoryUtilities.Alloc(allocationSize, MemoryUtilities.AlignOf<int>(), allocator);
-            MemoryUtilities.MemClear((IntPtr) ptr, allocationSize);
+            var ptr = (byte*)MemoryUtilities.Alloc((uint) allocationSize, (uint) MemoryUtilities.AlignOf<int>(), allocator);
+            MemoryUtilities.MemClear((IntPtr) ptr, (uint) allocationSize);
 
             for (int i = 0; i < bufferCount; i++)
             {
                 var bufferPtr = (NativeRingBuffer*)(ptr + bufferSize * i);
-                var buffer = new NativeRingBuffer(allocator, (uint) i);
+                var buffer = new NativeRingBuffer((uint) i, allocator);
                 MemoryUtilities.CopyStructureToPtr(ref buffer, (IntPtr) bufferPtr);
             }
 

@@ -2,37 +2,28 @@
 using System.Threading;
 using Svelto.DataStructures;
 using Svelto.ECS.DataStructures;
+using Unity.Burst;
 
 namespace Svelto.ECS
 {
-    class GlobalTypeID
+    public class GlobalTypeID
     {
         internal static uint NextID<T>()
         {
-            //todo: this is not guaranteed to be unique, I must swap back to the increment!
-            return (uint) Unity.Burst.BurstRuntime.GetHashCode32<T>();
-#pragma warning disable 162
-            return (uint) (Interlocked.Increment(ref value.Data) - 1);
-#pragma warning restore 162
+            return (uint) (Interlocked.Increment(ref value) - 1);
         }
 
         static GlobalTypeID()
         {
-            value.Data = 0;
+            value = 0;
         }
 
-        static readonly Unity.Burst.SharedStatic<int> value =
-            Unity.Burst.SharedStatic<int>.GetOrCreate<int, GlobalTypeID>();
+        static int value;
     }
     
     static class EntityComponentID<T>
     {
-        public static readonly uint ID;
-
-        static EntityComponentID()
-        {
-            ID = GlobalTypeID.NextID<T>();
-        }
+        internal static readonly SharedStatic<uint> ID = SharedStatic<uint>.GetOrCreate<GlobalTypeID, T>();
     }
     
     interface IFiller 
@@ -52,19 +43,14 @@ namespace Svelto.ECS
 
     static class EntityComponentIDMap
     {
-        static readonly FasterDictionary<uint, IFiller> TYPE_IDS = new FasterDictionary<uint, IFiller>();
+        static readonly FasterList<IFiller> TYPE_IDS = new FasterList<IFiller>();
 
         internal static void Register<T>(IFiller entityBuilder) where T : struct, IEntityComponent
         {
-            var location2 = EntityComponentID<T>.ID;
-            TYPE_IDS.Add(location2, entityBuilder);
+            var location = EntityComponentID<T>.ID.Data = GlobalTypeID.NextID<T>();
+            TYPE_IDS.Add(location, entityBuilder);
         }
         
-        internal static uint GetIDFromType<T>()
-        {
-            return EntityComponentID<T>.ID;
-        }
-
         internal static IFiller GetTypeFromID(uint typeId)
         {
             return TYPE_IDS[typeId];

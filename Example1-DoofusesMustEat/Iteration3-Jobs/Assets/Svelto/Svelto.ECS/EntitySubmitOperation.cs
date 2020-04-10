@@ -8,7 +8,7 @@ namespace Svelto.ECS
         : IEquatable<EntitySubmitOperation>
     {
         public readonly EntitySubmitOperationType type;
-        public readonly IEntityComponentBuilder[]          builders;
+        public readonly IComponentBuilder[]          builders;
         public readonly EGID                      fromID;
         public readonly EGID                      toID;
 #if DEBUG && !PROFILE_SVELTO
@@ -16,7 +16,7 @@ namespace Svelto.ECS
 #endif
 
         public EntitySubmitOperation(EntitySubmitOperationType operation, EGID from, EGID to,
-                                     IEntityComponentBuilder[]          builders         = null)
+                                     IComponentBuilder[]          builders         = null)
         {
             type          = operation;
             this.builders = builders;

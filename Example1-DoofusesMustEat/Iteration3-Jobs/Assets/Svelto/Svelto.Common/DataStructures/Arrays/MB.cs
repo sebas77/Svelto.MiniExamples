@@ -5,7 +5,11 @@ using System.Runtime.InteropServices;
 
 namespace Svelto.DataStructures
 {
-    public struct ManagedBuffer<T>:IBuffer<T> 
+    /// <summary>
+    /// MB stands for ManagedBuffer
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public struct MB<T>:IBuffer<T> 
     {
         public void Set(T[] array)
         {
@@ -65,9 +69,16 @@ namespace Svelto.DataStructures
             throw new NotImplementedException();
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public GCHandle Pin()
         {
             return GCHandle.Alloc(_buffer, GCHandleType.Pinned);
+        }
+
+        public uint count
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => (uint) _buffer.Length;
         }
 
         public void Dispose()

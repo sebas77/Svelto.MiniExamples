@@ -29,7 +29,7 @@ namespace Svelto.ECS
 
         ///--------------------------------------------
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        EntityComponentInitializer BuildEntity(EGID entityID, IEntityComponentBuilder[] componentsToBuild,
+        EntityComponentInitializer BuildEntity(EGID entityID, IComponentBuilder[] componentsToBuild,
             IEnumerable<object> implementors = null)
         {
             CheckAddEntityID(entityID);
@@ -67,7 +67,7 @@ namespace Svelto.ECS
 
         ///--------------------------------------------
         ///
-        void MoveEntityFromAndToEngines(IEntityComponentBuilder[] entityBuilders, EGID fromEntityGID, EGID? toEntityGID)
+        void MoveEntityFromAndToEngines(IComponentBuilder[] entityBuilders, EGID fromEntityGID, EGID? toEntityGID)
         {
             using (var sampler = new PlatformProfiler("Move Entity From Engines"))
             {
@@ -85,7 +85,7 @@ namespace Svelto.ECS
             }
         }
 
-        void MoveEntityComponents(EGID fromEntityGID, EGID? toEntityGID, IEntityComponentBuilder[] entitiesToMove,
+        void MoveEntityComponents(EGID fromEntityGID, EGID? toEntityGID, IComponentBuilder[] entitiesToMove,
             FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary> fromGroup,
             PlatformProfiler sampler)
         {

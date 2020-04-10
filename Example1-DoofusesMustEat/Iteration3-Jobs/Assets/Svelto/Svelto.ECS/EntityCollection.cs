@@ -14,7 +14,7 @@ namespace Svelto.ECS
             _count = count;
         }
 
-        public EntityCollection(ManagedBuffer<T> buffer, uint count)
+        public EntityCollection(MB<T> buffer, uint count)
         {
             _buffer = buffer;
             _count = count;
@@ -22,7 +22,7 @@ namespace Svelto.ECS
 
         public uint count => _count;
 
-        readonly ManagedBuffer<T> _buffer;
+        readonly MB<T> _buffer;
         readonly uint             _count;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -33,17 +33,16 @@ namespace Svelto.ECS
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public NativeBuffer<NT> ToNativeBuffer<NT>(out uint count) where NT : unmanaged, T
+        public NB<NT> ToNativeBuffer<NT>() where NT : unmanaged, T
         {
-            count = _count;
-            return new NativeBuffer<NT>(Unsafe.As<NT[]>(_buffer.ToManagedArray()));
+            return new NB<NT>(Unsafe.As<NT[]>(_buffer.ToManagedArray()), _count);
         }
         
         public EntityNativeIterator<NT> GetNativeEnumerator<NT>() where NT : unmanaged, T 
-                    { return new EntityNativeIterator<NT>(ToNativeBuffer<NT>(out _)); }
+                    { return new EntityNativeIterator<NT>(ToNativeBuffer<NT>()); }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ManagedBuffer<T> ToBuffer(out uint count)
+        public MB<T> ToBuffer(out uint count)
         {
             count = _count;
             return _buffer;
@@ -69,7 +68,7 @@ namespace Svelto.ECS
 
         public struct EntityIterator
         {
-            public EntityIterator(ManagedBuffer<T> array, uint count) : this()
+            public EntityIterator(MB<T> array, uint count) : this()
             {
                 _array = array.ToManagedArray();
                 _count = count;
@@ -101,7 +100,7 @@ namespace Svelto.ECS
         /// <typeparam name="NT"></typeparam>
         public struct EntityNativeIterator<NT> : IDisposable where NT : unmanaged
         {
-            public EntityNativeIterator(NativeBuffer<NT> array) : this()
+            public EntityNativeIterator(NB<NT> array) : this()
             {
                 unsafe
                 {
@@ -143,8 +142,8 @@ namespace Svelto.ECS
                 }
             }
 
-            readonly NativeBuffer<NT> _array;
-#if ENABLE_BURST_AOT        
+            readonly NB<NT> _array;
+#if UNITY_ECS        
             [Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction]
 #endif
             readonly unsafe int *          _index;
@@ -184,18 +183,18 @@ namespace Svelto.ECS
             return (_array1.ToFastAccess(out _), _array2.ToFastAccess(out _));
         }
 
-        public BufferTuple<ManagedBuffer<T1>, ManagedBuffer<T2>> ToBuffers()
+        public BT<MB<T1>, MB<T2>> ToBuffers()
         {
-            var bufferTuple = new BufferTuple<ManagedBuffer<T1>, ManagedBuffer<T2>>
+            var bufferTuple = new BT<MB<T1>, MB<T2>>
                 (_array1.ToBuffer(out _), _array2.ToBuffer(out _), count);
             return bufferTuple;
         }
 
-        public BufferTuple<NativeBuffer<NT1>, NativeBuffer<NT2>> ToNativeBuffers<NT1, NT2>()
+        public BT<NB<NT1>, NB<NT2>> ToNativeBuffers<NT1, NT2>()
             where NT2 : unmanaged, T2 where NT1 : unmanaged, T1
         {
-            var bufferTuple = new BufferTuple<NativeBuffer<NT1>, NativeBuffer<NT2>>
-                (_array1.ToNativeBuffer<NT1>(out _), _array2.ToNativeBuffer<NT2>(out _), count);
+            var bufferTuple = new BT<NB<NT1>, NB<NT2>>
+                (_array1.ToNativeBuffer<NT1>(), _array2.ToNativeBuffer<NT2>(), count);
 
             return bufferTuple;
         }
@@ -277,19 +276,18 @@ namespace Svelto.ECS
             return (_array1.ToFastAccess(out _), _array2.ToFastAccess(out _), _array3.ToFastAccess(out _));
         }
 
-        public BufferTuple<ManagedBuffer<T1>, ManagedBuffer<T2>, ManagedBuffer<T3>> ToBuffers()
+        public BT<MB<T1>, MB<T2>, MB<T3>> ToBuffers()
         {
-            var bufferTuple = new BufferTuple<ManagedBuffer<T1>, ManagedBuffer<T2>, ManagedBuffer<T3>>
+            var bufferTuple = new BT<MB<T1>, MB<T2>, MB<T3>>
                 (_array1.ToBuffer(out _), _array2.ToBuffer(out _), _array3.ToBuffer(out _), count);
             return bufferTuple;
         }
 
-        public BufferTuple<NativeBuffer<NT1>, NativeBuffer<NT2>, NativeBuffer<NT3>> ToNativeBuffers<NT1, NT2, NT3>()
+        public BT<NB<NT1>, NB<NT2>, NB<NT3>> ToNativeBuffers<NT1, NT2, NT3>()
             where NT2 : unmanaged, T2 where NT1 : unmanaged, T1 where NT3 : unmanaged, T3
         {
-            var bufferTuple = new BufferTuple<NativeBuffer<NT1>, NativeBuffer<NT2>, NativeBuffer<NT3>>
-            (_array1.ToNativeBuffer<NT1>(out _), _array2.ToNativeBuffer<NT2>(out _),
-                _array3.ToNativeBuffer<NT3>(out _), count);
+            var bufferTuple = new BT<NB<NT1>, NB<NT2>, NB<NT3>>
+            (_array1.ToNativeBuffer<NT1>(), _array2.ToNativeBuffer<NT2>(), _array3.ToNativeBuffer<NT3>(), count);
 
             return bufferTuple;
         }
@@ -495,8 +493,37 @@ namespace Svelto.ECS
             EntityCollection<T1, T2, T3> _array1;
         }
     }
+    
+    public readonly struct BT<BufferT1, BufferT2, BufferT3, BufferT4> : IDisposable where BufferT1 : IDisposable
+                                                                          where BufferT2 : IDisposable
+                                                                          where BufferT3 : IDisposable
+                                                                          where BufferT4 : IDisposable
+    {
+        public readonly BufferT1 buffer1;
+        public readonly BufferT2 buffer2;
+        public readonly BufferT3 buffer3;
+        public readonly BufferT4 buffer4;
+        public readonly uint     count;
 
-    public readonly struct BufferTuple<BufferT1, BufferT2, BufferT3> : IDisposable where BufferT1 : IDisposable
+        public BT(BufferT1 bufferT1, BufferT2 bufferT2, BufferT3 bufferT3, BufferT4 bufferT4, uint count) : this()
+        {
+            this.buffer1 = bufferT1;
+            this.buffer2 = bufferT2;
+            this.buffer3 = bufferT3;
+            this.buffer4 = bufferT4;
+            this.count   = count;
+        }
+
+        public void Dispose()
+        {
+            buffer1.Dispose();
+            buffer2.Dispose();
+            buffer3.Dispose();
+            buffer4.Dispose();
+        }
+    }
+
+    public readonly struct BT<BufferT1, BufferT2, BufferT3> : IDisposable where BufferT1 : IDisposable
                                                                                    where BufferT2 : IDisposable
                                                                                    where BufferT3 : IDisposable
     {
@@ -505,7 +532,7 @@ namespace Svelto.ECS
         public readonly BufferT3 buffer3;
         public readonly uint     count;
 
-        public BufferTuple(BufferT1 bufferT1, BufferT2 bufferT2, BufferT3 bufferT3, uint count) : this()
+        public BT(BufferT1 bufferT1, BufferT2 bufferT2, BufferT3 bufferT3, uint count) : this()
         {
             this.buffer1 = bufferT1;
             this.buffer2 = bufferT2;
@@ -521,14 +548,14 @@ namespace Svelto.ECS
         }
     }
 
-    public readonly struct BufferTuple<BufferT1, BufferT2> : IDisposable
+    public readonly struct BT<BufferT1, BufferT2> : IDisposable
         where BufferT1 : IDisposable where BufferT2 : IDisposable
     {
         public readonly BufferT1 buffer1;
         public readonly BufferT2 buffer2;
         public readonly uint count;
 
-        public BufferTuple(BufferT1 bufferT1, BufferT2 bufferT2, uint count) : this()
+        public BT(BufferT1 bufferT1, BufferT2 bufferT2, uint count) : this()
         {
             this.buffer1 = bufferT1;
             this.buffer2 = bufferT2;

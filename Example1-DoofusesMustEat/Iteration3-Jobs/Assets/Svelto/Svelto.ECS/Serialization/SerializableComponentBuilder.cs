@@ -11,8 +11,7 @@ namespace Svelto.ECS.Serialization
         static readonly int length = Enum.GetNames(typeof(SerializationEnum)).Length;
     }
 
-    public class
-        SerializableComponentBuilder<T> : ComponentBuilder<T>, ISerializableEntityComponentBuilder
+    public class SerializableComponentBuilder<T> : ComponentBuilder<T>, ISerializableComponentBuilder
         where T : unmanaged, IEntityComponent
     {
         public static readonly uint SIZE = UnsafeUtils.SizeOf<T>();

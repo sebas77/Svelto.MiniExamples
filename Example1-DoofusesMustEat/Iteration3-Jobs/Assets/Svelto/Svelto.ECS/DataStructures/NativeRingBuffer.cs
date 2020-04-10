@@ -1,31 +1,32 @@
 using System;
 using System.Runtime.CompilerServices;
 using Svelto.Common;
+using Unity.Collections.LowLevel.Unsafe;
 
 namespace Svelto.ECS.DataStructures
 {
     /// <summary>
-    /// Burst friendly RingBuffer on steroid:
-    /// it can: Enqueue/Dequeue, it wraps if there is enough space after dequeuing
-    /// It resizes if there isn't enough space left.
-    /// It's a "bag", you can queue and dequeue any T. Just be sure that you dequeue what you queue! No check on type
-    /// is done.
-    /// You can reserve a position in the queue to update it later.
-    /// The datastructure is a struct and it's "copyable" 
+    ///     Burst friendly RingBuffer on steroid:
+    ///     it can: Enqueue/Dequeue, it wraps if there is enough space after dequeuing
+    ///     It resizes if there isn't enough space left.
+    ///     It's a "bag", you can queue and dequeue any T. Just be sure that you dequeue what you queue! No check on type
+    ///     is done.
+    ///     You can reserve a position in the queue to update it later.
+    ///     The datastructure is a struct and it's "copyable"
     /// </summary>
     public struct NativeRingBuffer : IDisposable
     {
-#if ENABLE_BURST_AOT        
-        [global::Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction]
+#if UNITY_ECS
+        [NativeDisableUnsafePtrRestriction]
 #endif
-        unsafe UnsafeBlob* _list;
+        unsafe UnsafeBlob* _queue;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool IsEmpty()
         {
             unsafe
             {
-                if (_list == null || _list->ptr == null)
+                if (_queue == null || _queue->ptr == null)
                     return true;
             }
 
@@ -40,11 +41,11 @@ namespace Svelto.ECS.DataStructures
                 unsafe
                 {
 #if DEBUG && !PROFILE_SVELTO
-                    if (_list == null)
+                    if (_queue == null)
                         throw new Exception("SimpleNativeArray: null-access");
 #endif
-                    
-                    return _list->size;
+
+                    return _queue->size;
                 }
             }
         }
@@ -57,54 +58,77 @@ namespace Svelto.ECS.DataStructures
                 unsafe
                 {
 #if DEBUG && !PROFILE_SVELTO
-                    if (_list == null)
+                    if (_queue == null)
                         throw new Exception("SimpleNativeArray: null-access");
 #endif
 
-                    return _list->capacity;
+                    return _queue->capacity;
                 }
             }
         }
 
-        public NativeRingBuffer(Common.Allocator allocator, uint id)
+        public NativeRingBuffer(Allocator allocator)
         {
-            unsafe 
+            unsafe
             {
-                UnsafeBlob* listData =
-                    (UnsafeBlob*) MemoryUtilities.Alloc(MemoryUtilities.SizeOf<UnsafeBlob>()
-                                                       , MemoryUtilities.AlignOf<UnsafeBlob>(), allocator);
-                MemoryUtilities.MemClear((IntPtr) listData, MemoryUtilities.SizeOf<UnsafeBlob>());
+                var sizeOf = MemoryUtilities.SizeOf<UnsafeBlob>();
+                var listData = (UnsafeBlob*) MemoryUtilities.Alloc((uint) sizeOf
+                                                                 , (uint) MemoryUtilities.AlignOf<UnsafeBlob>()
+                                                                 , allocator);
 
+                //clear to nullify the pointers
+                MemoryUtilities.MemClear((IntPtr) listData, (uint) sizeOf);
                 listData->allocator = allocator;
-                listData->id = id;
+#if DEBUG && !PROFILE_SVELTO
+                listData->id = 0xDEADBEEF;
+#endif
+                _queue = listData;
+            }
+        }
 
-                _list = listData;
+        public NativeRingBuffer(uint bufferID, Allocator allocator)
+        {
+            unsafe
+            {
+                var sizeOf = MemoryUtilities.SizeOf<UnsafeBlob>();
+                var listData = (UnsafeBlob*) MemoryUtilities.Alloc((uint) sizeOf
+                                                                 , (uint) MemoryUtilities.AlignOf<UnsafeBlob>()
+                                                                 , allocator);
+
+                //clear to nullify the pointers
+                MemoryUtilities.MemClear((IntPtr) listData, (uint) sizeOf);
+                listData->allocator = allocator;
+#if DEBUG && !PROFILE_SVELTO
+                listData->id = bufferID;
+#endif
+                _queue = listData;
             }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe void Dispose()
         {
-            if (_list != null)
+            if (_queue != null)
             {
-                _list->Dispose();
-                _list = null;
+                _queue->Dispose();
+                _queue = null;
             }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ref T ReserveEnqueue<T>(out UnsafeArrayIndex index) where T:unmanaged
+        public ref T ReserveEnqueue<T>(out UnsafeArrayIndex index) where T : unmanaged
         {
             unsafe
             {
 #if DEBUG && !PROFILE_SVELTO
-                if (_list == null)
+                if (_queue == null)
                     throw new Exception("SimpleNativeArray: null-access");
 #endif
-                if (_list->space - sizeof(T) < 0)
-                    _list->Realloc(MemoryUtilities.AlignOf<int>(), (uint) ((_list->capacity + sizeof(T)) * 1.5f));
-                
-                return ref _list->Reserve<T>(out index);
+                var sizeOf = MemoryUtilities.SizeOf<T>();
+                if (_queue->space - sizeOf < 0)
+                    _queue->Realloc((uint) MemoryUtilities.AlignOf<int>(), (uint) ((_queue->capacity + sizeOf) * 1.5f));
+
+                return ref _queue->Reserve<T>(out index);
             }
         }
 
@@ -114,14 +138,14 @@ namespace Svelto.ECS.DataStructures
             unsafe
             {
 #if DEBUG && !PROFILE_SVELTO
-                if (_list == null)
+                if (_queue == null)
                     throw new Exception("SimpleNativeArray: null-access");
 #endif
-                var sizeOf = Unsafe.SizeOf<T>();
-                if (_list->space - sizeOf < 0)
-                    _list->Realloc(MemoryUtilities.AlignOf<int>(), (uint) ((_list->capacity + sizeOf) * 1.5f));
+                var sizeOf = MemoryUtilities.SizeOf<T>();
+                if (_queue->space - sizeOf < 0)
+                    _queue->Realloc((uint) MemoryUtilities.AlignOf<int>(), (uint) ((_queue->capacity + sizeOf) * 1.5f));
 
-                _list->Write(item);
+                _queue->Write(item);
             }
         }
 
@@ -131,18 +155,18 @@ namespace Svelto.ECS.DataStructures
             unsafe
             {
 #if DEBUG && !PROFILE_SVELTO
-                if (_list == null)
+                if (_queue == null)
                     throw new Exception("SimpleNativeArray: null-access");
 #endif
-                _list->Clear();
+                _queue->Clear();
             }
         }
 
         public T Dequeue<T>() where T : struct
         {
-            unsafe 
+            unsafe
             {
-                return _list->Read<T>();
+                return _queue->Read<T>();
             }
         }
 
@@ -151,10 +175,10 @@ namespace Svelto.ECS.DataStructures
             unsafe
             {
 #if DEBUG && !PROFILE_SVELTO
-                if (_list == null)
+                if (_queue == null)
                     throw new Exception("SimpleNativeArray: null-access");
 #endif
-                return ref _list->AccessReserved<T>(reserverIndex);
+                return ref _queue->AccessReserved<T>(reserverIndex);
             }
         }
     }

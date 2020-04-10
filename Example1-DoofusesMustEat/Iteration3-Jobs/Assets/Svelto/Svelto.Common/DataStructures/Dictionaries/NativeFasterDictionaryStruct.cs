@@ -156,15 +156,15 @@ namespace Svelto.DataStructures
             return x;
         }
 
-#if ENABLE_BURST_AOT        
+#if UNITY_COLLECTIONS        
         [Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction]
 #endif
         readonly IntPtr        _valuesPointer;
-#if ENABLE_BURST_AOT        
+#if UNITY_COLLECTIONS        
         [Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction]
 #endif
         readonly IntPtr        _valuesInfoPointer;
-#if ENABLE_BURST_AOT        
+#if UNITY_COLLECTIONS        
         [Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction]
 #endif
         readonly IntPtr _bucketsPointer;

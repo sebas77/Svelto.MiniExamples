@@ -6,9 +6,14 @@ namespace Svelto.Common
     {
         static readonly int processorCount = Environment.ProcessorCount;
 
-        public static int Batch(uint length)
+        public static int BatchSize(uint totalIterations)
         {
-            return (int) Math.Max((int) (length / (processorCount)), 1);
+            var iterationsPerBatch = totalIterations / processorCount;
+
+            if (iterationsPerBatch < 16)
+                return 16;
+            
+            return (int) iterationsPerBatch;
         }
     }
 }

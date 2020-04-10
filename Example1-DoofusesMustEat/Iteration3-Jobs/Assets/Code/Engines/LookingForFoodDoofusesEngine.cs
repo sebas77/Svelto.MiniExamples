@@ -1,9 +1,9 @@
-using System.Threading;
 using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.ECS.EntityComponents;
 using Svelto.ECS.Extensions.Unity;
 using Unity.Burst;
+using Unity.Collections.LowLevel.Unsafe;
 using Unity.Jobs;
 using Unity.Mathematics;
 
@@ -14,129 +14,95 @@ namespace Svelto.ECS.MiniExamples.Example1C
     {
         public void Ready() { }
 
-        public EntitiesDB entitiesDB { private get; set; }
-
-        JobHandle CreateJobForDoofusesAndFood
-            (JobHandle inputDeps, ExclusiveGroup[] foodGroups, ExclusiveGroup[] doofusesGroups)
+        public LookingForFoodDoofusesEngine(IEntityFunctions nativeSwap)
         {
-            var foodEntityGroups =
-                entitiesDB.NativeGroupsIterator<PositionEntityComponent, MealEntityComponent>(foodGroups);
-            var doofusesEntityGroups =
-                entitiesDB.NativeGroupsIterator<PositionEntityComponent, VelocityEntityComponent, EGIDComponent>(
-                    doofusesGroups);
-
-            JobHandle combinedDependencies = default;
-            
-            foreach (var doofusesBuffer in doofusesEntityGroups)
-            {
-                //schedule the job
-                inputDeps = JobHandle.CombineDependencies(inputDeps, new ResetVelocity(doofusesBuffer).Schedule(
-                    (int) doofusesBuffer.count, ProcessorCount.Batch(doofusesBuffer.count), inputDeps));
-            }
-
-            foreach (var foodBuffer in foodEntityGroups)
-            {
-                foreach (var doofusesBuffer in doofusesEntityGroups)
-                {
-                    //schedule the job
-                    var deps = new LookingForFoodDoofusesJob(doofusesBuffer, foodBuffer).Schedule(
-                        (int) doofusesBuffer.count, ProcessorCount.Batch(doofusesBuffer.count), inputDeps);
-
-                    //Never forget to dispose the buffer (may change this in future)
-                    combinedDependencies = doofusesBuffer.CombineDispose(combinedDependencies, deps);
-                }
-
-                //Never forget to dispose the buffer (may change this in future)
-                combinedDependencies = foodBuffer.CombineDispose(combinedDependencies, combinedDependencies);
-            }
-
-            return combinedDependencies;
+            _nativeDoofusesSwap = nativeSwap.ToNativeSwap<DoofusEntityDescriptor>();
+            _nativeFoodSwap = nativeSwap.ToNativeSwap<FoodEntityDescriptor>();
         }
 
         public JobHandle Execute(JobHandle _jobHandle)
         {
-            var handle1 = CreateJobForDoofusesAndFood(_jobHandle, GroupCompound<GameGroups.FOOD, GameGroups.RED>.Groups
-                                     , GroupCompound<GameGroups.DOOFUSES, GameGroups.RED, GameGroups.NOTEATING>.Groups);
-            var handle2 = CreateJobForDoofusesAndFood(_jobHandle, GroupCompound<GameGroups.FOOD, GameGroups.BLUE>.Groups
-                                    , GroupCompound<GameGroups.DOOFUSES, GameGroups.BLUE, GameGroups.NOTEATING>.Groups);
+            //Iterate NOEATING RED doofuses to look for RED food and MOVE them to EATING state if food is found
+            var handle1 = CreateJobForDoofusesAndFood(_jobHandle
+                 , GroupCompound<GameGroups.FOOD, GameGroups.RED, GameGroups.NOTEATING>.Groups
+                 , GroupCompound<GameGroups.DOOFUSES, GameGroups.RED, GameGroups.NOTEATING>.Groups
+                                                      
+                 , GroupCompound<GameGroups.DOOFUSES, GameGroups.RED, GameGroups.EATING>.BuildGroup
+                 , GroupCompound<GameGroups.FOOD, GameGroups.RED, GameGroups.EATING>.BuildGroup);
+            
+            
+            //Iterate NOEATING BLUE doofuses to look for BLUE food and MOVE them to EATING state if food is found
+            var handle2 = CreateJobForDoofusesAndFood(_jobHandle
+                , GroupCompound<GameGroups.FOOD, GameGroups.BLUE, GameGroups.NOTEATING>.Groups
+                , GroupCompound<GameGroups.DOOFUSES, GameGroups.BLUE, GameGroups.NOTEATING>.Groups
+                                                      
+                , GroupCompound<GameGroups.DOOFUSES, GameGroups.BLUE, GameGroups.EATING>.BuildGroup
+                , GroupCompound<GameGroups.FOOD, GameGroups.BLUE, GameGroups.EATING>.BuildGroup);
 
+            //can run in parallel
             return JobHandle.CombineDependencies(handle1, handle2);
         }
-    }
 
-    [BurstCompile]
-    public readonly struct ResetVelocity : IJobParallelFor
-    {
-        readonly BufferTuple<NativeBuffer<PositionEntityComponent>, NativeBuffer<VelocityEntityComponent>, NativeBuffer<EGIDComponent>> _doofusesBuffer;
-        
-        public ResetVelocity(in BufferTuple<NativeBuffer<PositionEntityComponent>,NativeBuffer<VelocityEntityComponent>,NativeBuffer<EGIDComponent>> doofusesBuffer)
+        JobHandle CreateJobForDoofusesAndFood(JobHandle inputDeps, ExclusiveGroup[] foodGroups, ExclusiveGroup[] doofusesGroups
+                                            , ExclusiveGroupStruct swapDoofuseGroup, ExclusiveGroupStruct swapFoodGroup)
         {
-            _doofusesBuffer = doofusesBuffer;
-        }
+            var foodBuffer = entitiesDB.NativeEntitiesBuffer<EGIDComponent, PositionEntityComponent>(foodGroups[0]);
+            var doofusesBuffer = entitiesDB.NativeEntitiesBuffer<MealInfoComponent, EGIDComponent>(doofusesGroups[0]);
 
-        public void Execute(int index)
-        {
-            _doofusesBuffer.buffer2[index].velocity = float3.zero;
-        }
-    }
+            var doofusesCount = doofusesBuffer.count;
+            var foodCount = foodBuffer.count;
 
-    [BurstCompile]
-    public readonly struct LookingForFoodDoofusesJob : IJobParallelFor
-    {
-        readonly BufferTuple<NativeBuffer<PositionEntityComponent>, NativeBuffer<VelocityEntityComponent>,
-            NativeBuffer<EGIDComponent>> _doofuses;
-        readonly BufferTuple<NativeBuffer<PositionEntityComponent>, NativeBuffer<MealEntityComponent>> _food;
+            if (foodCount == 0 || doofusesCount == 0)
+                return inputDeps;
+            
+            JobHandle innerCombinedDependencies = default;
 
-        readonly NativeEntityRemove _nativeRemove;
+            var willEatDoofuses = math.min(foodCount, doofusesCount);
 
-        public LookingForFoodDoofusesJob
-        (in BufferTuple<NativeBuffer<PositionEntityComponent>, NativeBuffer<VelocityEntityComponent>,
-             NativeBuffer<EGIDComponent>> doofuses
-       , in BufferTuple<NativeBuffer<PositionEntityComponent>, NativeBuffer<MealEntityComponent>> food) : this()
-        {
-            _doofuses         = doofuses;
-            _food             = food;
-        }
-
-        public void Execute(int index)
-        {
-            float currentMin = float.MaxValue;
-
-            ref var velocityEntityComponent = ref _doofuses.buffer2[index];
-            ref var positionEntityComponent = ref _doofuses.buffer1[index];
-
-            var foodcountLength = _food.count;
-            var foodPositions   = _food.buffer1;
-            var mealInfos       = _food.buffer2;
-
-            float3 closerComputeDirection = default;
-            for (int foodIndex = 0; foodIndex < foodcountLength; ++foodIndex)
+            //schedule the job
+            var deps = new LookingForFoodDoofusesJob()
             {
-                var computeDirection = foodPositions[foodIndex].position - positionEntityComponent.position;
+                _doofuses = doofusesBuffer, _food = foodBuffer, _nativeDoofusesSwap = _nativeDoofusesSwap,
+                _nativeFoodSwap  = _nativeFoodSwap, _doofuseMealLockedGroup = swapDoofuseGroup,
+                _lockedFood = swapFoodGroup
+            }.ScheduleParallel(willEatDoofuses, inputDeps);
 
-                var sqrModule = computeDirection.x * computeDirection.x + computeDirection.y * computeDirection.y
-                                                                        + computeDirection.z * computeDirection.z;
+            //Never forget to dispose the buffer (may change this in future)
+            innerCombinedDependencies = doofusesBuffer.CombineDispose(foodBuffer, innerCombinedDependencies, deps);
 
-                if (currentMin > sqrModule)
-                {
-                    currentMin             = sqrModule;
-                    closerComputeDirection = computeDirection;
+            return innerCombinedDependencies;
+        }
 
-                    //food found
-                    if (sqrModule < 2)
-                    {
-                        Interlocked.Increment(ref mealInfos[foodIndex].eaters);
+        readonly NativeEntitySwap _nativeDoofusesSwap;
+        readonly NativeEntitySwap _nativeFoodSwap;
 
-                        //closerComputeDirection = default;
-                        
-                        break; //close enough let's save some computations
-                    }
-                }
+        public EntitiesDB entitiesDB { private get; set; }
+
+        [BurstCompile]
+        struct LookingForFoodDoofusesJob : IJobParallelFor
+        {
+            public BT<NB<MealInfoComponent>, NB<EGIDComponent>>       _doofuses;
+            public BT<NB<EGIDComponent>, NB<PositionEntityComponent>> _food;
+            public NativeEntitySwap                                   _nativeDoofusesSwap;
+            public NativeEntitySwap                                   _nativeFoodSwap;
+            public ExclusiveGroupStruct                               _doofuseMealLockedGroup;
+            public ExclusiveGroupStruct                               _lockedFood;
+
+            [NativeSetThreadIndex] readonly int                  _threadIndex;
+
+            public void Execute(int index)
+            {
+                var targetMeal = _food.buffer1[(uint) index].ID;
+               _doofuses.buffer1[index].targetMeal = new EGID(targetMeal.entityID, _lockedFood);
+
+                _nativeDoofusesSwap.SwapEntity(_doofuses.buffer2[index].ID, _doofuseMealLockedGroup, _threadIndex);
+                _nativeFoodSwap.SwapEntity(targetMeal, _lockedFood, _threadIndex);
             }
 
-            //going toward food, not breaking as closer food can spawn
-            velocityEntityComponent.velocity.x = closerComputeDirection.x;
-            velocityEntityComponent.velocity.z = closerComputeDirection.z;
+            public void Execute(int startIndex, int count)
+            {
+                throw new System.NotImplementedException();
+            }
         }
     }
 }

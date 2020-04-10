@@ -65,11 +65,6 @@ namespace Svelto.ECS
             return group._group;
         }
         
-        public static implicit operator InternalGroup(ExclusiveGroup group)
-        {
-            return new InternalGroup(group._group);
-        }
-
         public static explicit operator uint(ExclusiveGroup group)
         {
             return group._group;

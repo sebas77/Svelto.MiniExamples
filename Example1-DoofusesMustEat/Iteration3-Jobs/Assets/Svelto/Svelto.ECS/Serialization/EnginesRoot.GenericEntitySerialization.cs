@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿using System;
 using Svelto.ECS.Serialization;
 
 namespace Svelto.ECS
@@ -164,18 +164,18 @@ namespace Svelto.ECS
                 _enginesRoot = enginesRoot;
             }
 
-            void SerializeEntityComponent(EGID entityGID, ISerializableEntityComponentBuilder entityComponentBuilder,
+            void SerializeEntityComponent(EGID entityGID, ISerializableComponentBuilder componentBuilder,
                 ISerializationData serializationData, int serializationType)
             {
                 uint groupId = entityGID.groupID;
-                Type entityType = entityComponentBuilder.GetEntityComponentType();
+                Type entityType = componentBuilder.GetEntityComponentType();
                 if (!_enginesRoot._entitiesDB.UnsafeQueryEntityDictionary(groupId, entityType,
                     out var safeDictionary))
                 {
                     throw new Exception("Entity Serialization failed");
                 }
 
-                entityComponentBuilder.Serialize(entityGID.entityID, safeDictionary, serializationData, serializationType);
+                componentBuilder.Serialize(entityGID.entityID, safeDictionary, serializationData, serializationType);
             }
 
             void DeserializeEntityInternal(ISerializationData serializationData, EGID egid,

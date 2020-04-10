@@ -15,7 +15,7 @@ namespace Svelto.ECS
             map = toNative;
         }
 
-        public uint Length => map.Count;
+        public uint Count => map.Count;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref T Entity(uint entityID)
@@ -44,21 +44,21 @@ namespace Svelto.ECS
             return false;
         }
         
-        public unsafe NativeBuffer<T>GetArrayAndEntityIndex(uint entityID, out uint index)
+        public unsafe NB<T>GetArrayAndEntityIndex(uint entityID, out uint index)
         {
             if (map.TryFindIndex(entityID, out index))
             {
-                return new NativeBuffer<T>(map.unsafeValues);
+                return new NB<T>(map.unsafeValues, map.Count);
             }
 
             throw new ECSException("Entity not found");
         }
         
-        public unsafe bool TryGetArrayAndEntityIndex(uint entityID, out uint index, out NativeBuffer<T> array)
+        public unsafe bool TryGetArrayAndEntityIndex(uint entityID, out uint index, out NB<T> array)
         {
             if (map.TryFindIndex(entityID, out index))
             {
-                array =  new NativeBuffer<T>(map.unsafeValues);
+                array =  new NB<T>(map.unsafeValues, map.Count);
                 return true;
             }
 

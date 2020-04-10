@@ -9,7 +9,6 @@ namespace Svelto.DataStructures
         ref T this[uint index] { get; }
         ref T this[int index] { get; }
         
-        void Set(T[]                   array);
         void CopyFrom<TBuffer>(TBuffer array,  uint startIndex,       uint size) where TBuffer : IBuffer<T>;
         void CopyFrom(T[]              source, uint sourceStartIndex, uint destinationStartIndex, uint size);
         void CopyFrom(ICollection<T>   source);
@@ -20,5 +19,7 @@ namespace Svelto.DataStructures
         T[]  ToManagedArray();
         IntPtr ToNativeArray();
         GCHandle Pin();
+
+        uint count { get; }
     }
 }

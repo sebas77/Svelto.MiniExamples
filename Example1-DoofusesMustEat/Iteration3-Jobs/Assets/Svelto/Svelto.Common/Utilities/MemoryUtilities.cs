@@ -1,17 +1,18 @@
 using System;
 using System.Runtime.CompilerServices;
-
-#if !ENABLE_BURST_AOT
-using System.Runtime.CompilerServices;
+#if !UNITY_COLLECTIONS
 using System.Runtime.InteropServices;
 #endif
-
 namespace Svelto.Common
 {
-#if !ENABLE_BURST_AOT
+#if !UNITY_COLLECTIONS
     public enum Allocator
     {
-        
+        Invalid ,
+        None,
+        Temp,
+        TempJob,
+        Persistent
     }
 #else    
     public enum Allocator
@@ -41,18 +42,19 @@ namespace Svelto.Common
 
     public static class MemoryUtilities
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Free(IntPtr ptr, Allocator allocator)
         {
             unsafe
             {
-#if ENABLE_BURST_AOT
+#if UNITY_COLLECTIONS
                 Unity.Collections.LowLevel.Unsafe.UnsafeUtility.Free((void*) ptr, (Unity.Collections.Allocator) allocator);
 #else
                 Marshal.FreeHGlobal((IntPtr) ptr);
 #endif
             }
         }
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void MemCpy(IntPtr newPointer, IntPtr head, uint currentSize)
         {
             unsafe 
@@ -60,12 +62,12 @@ namespace Svelto.Common
                 Unsafe.CopyBlock((void*) newPointer, (void*) head, currentSize);
             }
         }
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static IntPtr Alloc(uint newCapacity, uint alignOf, Allocator allocator)
         {
             unsafe
             {
-#if ENABLE_BURST_AOT
+#if UNITY_COLLECTIONS
                 var newPointer =
                     (void*) Unity.Collections.LowLevel.Unsafe.UnsafeUtility.Malloc(newCapacity, (int) alignOf, (Unity.Collections.Allocator) allocator);
 #else
@@ -74,26 +76,26 @@ namespace Svelto.Common
                 return (IntPtr) newPointer;
             }
         }
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void MemClear(IntPtr listData, uint sizeOf)
         {
             unsafe 
             {
-#if ENABLE_BURST_AOT
+#if UNITY_COLLECTIONS
                Unity.Collections.LowLevel.Unsafe.UnsafeUtility.MemClear((void*) listData, sizeOf);
 #else
                Unsafe.InitBlock((void*) listData, 0, sizeOf);
 #endif
             }
         }
-
-        public static uint SizeOf<T>() where T : struct
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int SizeOf<T>() where T : struct
         {
-            return (uint) Unsafe.SizeOf<T>();
+            return Unsafe.SizeOf<T>();
         }
-
-        public static uint AlignOf<T>() { return 4; }
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int AlignOf<T>() { return 4; }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void CopyStructureToPtr<T>(ref T buffer, IntPtr bufferPtr) where T : struct
         {
             unsafe 
@@ -101,7 +103,7 @@ namespace Svelto.Common
                 Unsafe.Write((void*) bufferPtr, buffer);
             }
         }
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ref T ArrayElementAsRef<T>(IntPtr data, int threadIndex) where T : struct
         {
             unsafe

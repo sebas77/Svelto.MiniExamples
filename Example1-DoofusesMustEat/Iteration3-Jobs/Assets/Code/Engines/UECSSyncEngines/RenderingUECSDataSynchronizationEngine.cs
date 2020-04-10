@@ -36,14 +36,13 @@ namespace Svelto.ECS.MiniExamples.Example1C
                 var deps = Entities.ForEach((ref Translation translation) =>
                     {
                         ref readonly var positionEntityComponent = ref entityCollection.threadSafeNext.position;
-
-                        translation.Value =
-                            new float3(positionEntityComponent.x, positionEntityComponent.y, positionEntityComponent.z);
+                        
+                        translation.Value = positionEntityComponent;
                     }).WithBurst()
                     //In order to fetch the unity entities from the same group of the svelto entities we will set 
                     //the group as a filter
                     .WithSharedComponentFilter(new UECSSveltoGroupID((uint) @group)).Schedule(Dependency);
-
+                
                 Dependency = entityCollection.CombineDispose(Dependency, deps);
             }
         }

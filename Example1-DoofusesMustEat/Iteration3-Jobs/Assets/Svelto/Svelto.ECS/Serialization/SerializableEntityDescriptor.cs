@@ -16,7 +16,7 @@ namespace Svelto.ECS.Serialization
     {
         static SerializableEntityDescriptor()
         {
-            IEntityComponentBuilder[] defaultEntities = EntityDescriptorTemplate<TType>.descriptor.componentsToBuild;
+            IComponentBuilder[] defaultEntities = EntityDescriptorTemplate<TType>.descriptor.componentsToBuild;
 
             var hashNameAttribute = _type.GetCustomAttribute<HashNameAttribute>();
             if (hashNameAttribute == null)
@@ -49,11 +49,11 @@ namespace Svelto.ECS.Serialization
             }
 
             /////
-            var entitiesToSerialize = new FasterList<ISerializableEntityComponentBuilder>();
-            _entityComponentsToSerializeMap = new FasterDictionary<RefWrapper<Type>, ISerializableEntityComponentBuilder>();
-            foreach (IEntityComponentBuilder e in defaultEntities)
+            var entitiesToSerialize = new FasterList<ISerializableComponentBuilder>();
+            _entityComponentsToSerializeMap = new FasterDictionary<RefWrapper<Type>, ISerializableComponentBuilder>();
+            foreach (IComponentBuilder e in defaultEntities)
             {
-                if (e is ISerializableEntityComponentBuilder serializableEntityBuilder)
+                if (e is ISerializableComponentBuilder serializableEntityBuilder)
                 {
                     var entityType = serializableEntityBuilder.GetEntityComponentType();
                     _entityComponentsToSerializeMap[new RefWrapper<Type>(entityType)] = serializableEntityBuilder;
@@ -65,7 +65,7 @@ namespace Svelto.ECS.Serialization
         }
 
         static (int indexSerial, int indexDynamic) SetupSpecialEntityComponent
-            (IEntityComponentBuilder[] defaultEntities, out IEntityComponentBuilder[] componentsToBuild)
+            (IComponentBuilder[] defaultEntities, out IComponentBuilder[] componentsToBuild)
         {
             int length    = defaultEntities.Length;
             int newLenght = length + 1;
@@ -87,20 +87,20 @@ namespace Svelto.ECS.Serialization
                 }
             }
 
-            componentsToBuild = new IEntityComponentBuilder[newLenght];
+            componentsToBuild = new IComponentBuilder[newLenght];
 
             Array.Copy(defaultEntities, 0, componentsToBuild, 0, length);
 
             return (indexSerial, indexDynamic);
         }
 
-        public IEntityComponentBuilder[]             componentsToBuild => ComponentsToBuild;
+        public IComponentBuilder[]             componentsToBuild => ComponentsToBuild;
         public uint                         hash                    => _hash;
-        public ISerializableEntityComponentBuilder[] entitiesToSerialize     => _entitiesToSerialize;
+        public ISerializableComponentBuilder[] entitiesToSerialize     => _entitiesToSerialize;
 
-        static readonly IEntityComponentBuilder[]                                               ComponentsToBuild;
-        static readonly FasterDictionary<RefWrapper<Type>, ISerializableEntityComponentBuilder> _entityComponentsToSerializeMap;
-        static readonly ISerializableEntityComponentBuilder[]                                   _entitiesToSerialize;
+        static readonly IComponentBuilder[]                                               ComponentsToBuild;
+        static readonly FasterDictionary<RefWrapper<Type>, ISerializableComponentBuilder> _entityComponentsToSerializeMap;
+        static readonly ISerializableComponentBuilder[]                                   _entitiesToSerialize;
 
         static readonly uint _hash;
         static readonly Type _serializableStructType = typeof(SerializableEntityComponent);

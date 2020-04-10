@@ -26,18 +26,20 @@ namespace Svelto.ECS.DataStructures
         /// <summary>
         /// </summary>
         internal Allocator allocator;
+#if DEBUG && !PROFILE_SVELTO        
         internal uint id;
+#endif        
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal void Write<T>(in T item) where T : struct
         {
             unsafe
             {
-                var structSize = (uint) Unsafe.SizeOf<T>();
+                var structSize = (uint) MemoryUtilities.SizeOf<T>();
             
                 //the idea is, considering the wrap, a read pointer must always be behind a writer pointer
 #if DEBUG && !PROFILE_SVELTO                
-                if (space - structSize < 0)
+                if (space - (int)structSize < 0)
                     throw new Exception("no writing authorized");
 #endif
                 var head = _writeIndex % capacity;
@@ -61,9 +63,6 @@ namespace Svelto.ECS.DataStructures
 
                 uint paddedStructSize = (uint) Align4(structSize);
                 
-                if (paddedStructSize != structSize)
-                    throw new Exception("da levare");
-                
                 _writeIndex += paddedStructSize;
             }
         }
@@ -73,11 +72,11 @@ namespace Svelto.ECS.DataStructures
         {
             unsafe
             {
-                uint structSize = (uint) Unsafe.SizeOf<T>();
+                uint structSize = (uint) MemoryUtilities.SizeOf<T>();
             
                 //the idea is, considering the wrap, a read pointer must always be behind a writer pointer
 #if DEBUG && !PROFILE_SVELTO                
-                if (space - structSize < 0)
+                if (space - (int)structSize < 0)
                     throw new Exception("no writing authorized");
 #endif
                 var pointer = _writeIndex % capacity;
@@ -103,7 +102,7 @@ namespace Svelto.ECS.DataStructures
         {
             unsafe
             {
-                var structSize = (uint) Unsafe.SizeOf<T>();
+                var structSize = (uint) MemoryUtilities.SizeOf<T>();
                 
 #if DEBUG && !PROFILE_SVELTO            
                 if (size < structSize) //are there enough bytes to read?
@@ -123,9 +122,6 @@ namespace Svelto.ECS.DataStructures
                     _writeIndex = 0;
                     _readIndex  = 0;
                 }
-
-                if (paddedStructSize != structSize)
-                    throw new Exception("da levare");
 
                 if (head + paddedStructSize <= capacity)
                 {
@@ -151,7 +147,7 @@ namespace Svelto.ECS.DataStructures
         {
             unsafe
             {
-                var sizeOf = (uint) Unsafe.SizeOf<T>();
+                var sizeOf = (uint) MemoryUtilities.SizeOf<T>();
                 
                 T*  buffer = (T *)(byte*) (ptr + _writeIndex);
 #if DEBUG && !PROFILE_SVELTO
@@ -177,7 +173,7 @@ namespace Svelto.ECS.DataStructures
             unsafe
             {
 #if DEBUG && !PROFILE_SVELTO
-                var size = Unsafe.SizeOf<T>();
+                var size = MemoryUtilities.SizeOf<T>();
                 if (index.index + size > capacity) throw new Exception($"out of bound access, index {index.index} size {size} capacity {capacity}");
 #endif                
                 T* buffer = (T*) (byte*)(ptr + index.index);
@@ -209,8 +205,6 @@ namespace Svelto.ECS.DataStructures
 
                         if (readerHead < writerHead)
                         {
-                            if (_writeIndex - _readIndex != Math.Abs(writerHead - readerHead))
-                                throw new Exception("what");
                             //copy to the new pointer, from th reader position
                             MemoryUtilities.MemCpy((IntPtr) newPointer, (IntPtr) (ptr + readerHead), _writeIndex - _readIndex);
                         }
@@ -264,11 +258,10 @@ namespace Svelto.ECS.DataStructures
             return (uint)(Math.Ceiling(input / 4.0) * 4);            
         }
         
-#if ENABLE_BURST_AOT
+#if UNITY_ECS
         [global::Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction]
 #endif
         unsafe byte* _ptr;
         uint _writeIndex, _readIndex;
-
     }
 }

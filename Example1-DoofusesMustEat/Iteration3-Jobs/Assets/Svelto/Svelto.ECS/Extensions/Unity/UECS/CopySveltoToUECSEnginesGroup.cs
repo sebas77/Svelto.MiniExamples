@@ -15,7 +15,7 @@ namespace Svelto.ECS.Extensions.Unity
                 (engine as ICopySveltoToUECSEngine).jobHandle = _jobHandle;
             
             Update();
-
+            
             return _jobHandle;
         }
 

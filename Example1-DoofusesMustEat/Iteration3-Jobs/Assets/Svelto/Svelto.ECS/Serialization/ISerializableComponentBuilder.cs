@@ -2,7 +2,7 @@ using Svelto.ECS.Internal;
 
 namespace Svelto.ECS.Serialization
 {
-    public interface ISerializableEntityComponentBuilder : IEntityComponentBuilder
+    public interface ISerializableComponentBuilder : IComponentBuilder
     {
         void Serialize(uint id, ITypeSafeDictionary dictionary, ISerializationData serializationData
                      , int serializationType);

@@ -4,7 +4,7 @@ using Svelto.ECS.Internal;
 
 namespace Svelto.ECS
 {
-    public interface IEntityComponentBuilder
+    public interface IComponentBuilder
     {
         void BuildEntityAndAddToList(ref ITypeSafeDictionary dictionary, EGID egid,
             IEnumerable<object> implementors);

@@ -1,13 +1,14 @@
+using System;
 using Svelto.Common;
 using Svelto.ECS.EntityComponents;
 using Svelto.ECS.Extensions.Unity;
-using Svelto.ECS.Internal;
 using Unity.Burst;
 using Unity.Collections.LowLevel.Unsafe;
 using Unity.Entities;
 using Unity.Jobs;
 using Unity.Mathematics;
 using Allocator = Unity.Collections.Allocator;
+using Random = Unity.Mathematics.Random;
 
 namespace Svelto.ECS.MiniExamples.Example1C
 {
@@ -30,10 +31,10 @@ namespace Svelto.ECS.MiniExamples.Example1C
 
         const int MaxNumberOfDoofuses = 10000;
 
-        readonly InternalGroup blueDoofusesNotEating =
+        readonly ExclusiveGroupStruct blueDoofusesNotEating =
             GroupCompound<GameGroups.DOOFUSES, GameGroups.BLUE, GameGroups.NOTEATING>.BuildGroup;
 
-        readonly InternalGroup redDoofusesNotEating =
+        readonly ExclusiveGroupStruct redDoofusesNotEating =
             GroupCompound<GameGroups.DOOFUSES, GameGroups.RED, GameGroups.NOTEATING>.BuildGroup;
 
         bool _done;
@@ -43,76 +44,53 @@ namespace Svelto.ECS.MiniExamples.Example1C
             if (_done == true)
                 return _jobHandle;
             
-            _jobHandle = new SpawningJob(blueDoofusesNotEating, redDoofusesNotEating
-                                    , _factory, _redCapsule, _blueCapsule)
-               .Schedule(MaxNumberOfDoofuses, ProcessorCount.Batch(MaxNumberOfDoofuses), _jobHandle);
-
+            var spawnRed = new SpawningJob()
+            {
+                _group = redDoofusesNotEating, 
+                _factory = _factory,
+                _entity = _redCapsule,
+                _random = new Random(1234567)
+            }.ScheduleParallel(MaxNumberOfDoofuses, _jobHandle);
+            
+            var spawnBlue = new SpawningJob()
+            {
+                _group   = blueDoofusesNotEating, 
+                _factory = _factory,
+                _entity  = _blueCapsule,
+                _random = new Random(7654321)
+            }.ScheduleParallel(MaxNumberOfDoofuses, _jobHandle);
+            
+            //Yeah this shouldn't be solved like this, but I keep it in this way for simplicity sake 
             _done = true;
 
-            return _jobHandle;
+            return JobHandle.CombineDependencies(spawnBlue, spawnRed);
         }
 
         [BurstCompile]
         struct SpawningJob: IJobParallelFor
         {
-            readonly NativeEntityFactory _factory;
-            readonly Entity              _redCapsule;
-            readonly Entity              _blueCapsule;
-            readonly InternalGroup       _blueDoofusesNotEating;
-            readonly InternalGroup       _redDoofusesNotEating;
-            
-            Random     _random;
+            internal NativeEntityFactory  _factory;
+            internal Entity               _entity;
+            internal ExclusiveGroupStruct _group;
+            internal Random     _random;
 
 #pragma warning disable 649
             [NativeSetThreadIndex] int _threadIndex;
 #pragma warning restore 649
 
-            public SpawningJob
-            (InternalGroup blueDoofusesGroup, InternalGroup redDoofusesGroup, NativeEntityFactory nativeFactor
-           , Entity red, Entity blue):this()
-            {
-                _random = new Random(1234567);
-                _blueDoofusesNotEating = blueDoofusesGroup;
-                _redDoofusesNotEating  = redDoofusesGroup;
-                _factory               = nativeFactor;
-                _redCapsule            = red;
-                _blueCapsule           = blue;
-            }
-
             public void Execute(int index)
             {
-                NativeEntityComponentInitializer init;
-                PositionEntityComponent          positionEntityComponent;
-                UnityEcsEntityComponent          uecsComponent;
-
-                if (_random.NextFloat(0.0f, 1.0f) > 0.5)
+                var positionEntityComponent = new PositionEntityComponent
                 {
-                    positionEntityComponent = new PositionEntityComponent
-                    {
-                        position = new float3(_random.NextFloat(0.0f, 40.0f), 0, _random.NextFloat(0.0f, 40.0f))
-                    };
-                    //these structs are used for ReactOnAdd callback to create unity Entities later
-                    uecsComponent = new UnityEcsEntityComponent
-                    {
-                        uecsEntity = _redCapsule, spawnPosition = positionEntityComponent.position
-                    };
-
-                    init = _factory.BuildEntity((uint) index, _redDoofusesNotEating, _threadIndex);
-                }
-                else
+                    position = new float3(_random.NextFloat(0.0f, 40.0f), 0, _random.NextFloat(0.0f, 40.0f))
+                };
+                //these structs are used for ReactOnAdd callback to create unity Entities later
+                var uecsComponent = new UnityEcsEntityComponent
                 {
-                    positionEntityComponent = new PositionEntityComponent
-                    {
-                        position = new float3(_random.NextFloat(0.0f, 40.0f), 0, _random.NextFloat(0.0f, 40.0f))
-                    };
-                    //these structs are used for ReactOnAdd callback to create unity Entities later
-                    uecsComponent = new UnityEcsEntityComponent
-                    {
-                        uecsEntity = _blueCapsule, spawnPosition = positionEntityComponent.position
-                    };
+                    uecsEntity = _entity, spawnPosition = positionEntityComponent.position
+                };
 
-                    init = _factory.BuildEntity((uint) index, _blueDoofusesNotEating, _threadIndex);
-                }
+                var init = _factory.BuildEntity((uint) index, _group, _threadIndex);
 
                 init.Init(uecsComponent);
                 init.Init(positionEntityComponent);

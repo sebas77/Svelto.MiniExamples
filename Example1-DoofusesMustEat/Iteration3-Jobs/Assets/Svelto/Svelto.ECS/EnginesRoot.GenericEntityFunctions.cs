@@ -1,6 +1,6 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using Svelto.DataStructures;
 
 namespace Svelto.ECS
 {
@@ -14,7 +14,7 @@ namespace Svelto.ECS
         {
             internal GenericEntityFunctions(EnginesRoot weakReference)
             {
-                _enginesRoot = new WeakReference<EnginesRoot>(weakReference);
+                _enginesRoot = new Svelto.DataStructures.WeakReference<EnginesRoot>(weakReference);
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -44,10 +44,9 @@ namespace Svelto.ECS
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public void SwapEntitiesInGroup<T>(ExclusiveGroupStruct fromGroupID,
-                ExclusiveGroupStruct toGroupID)
+            public void SwapEntitiesInGroup<T>(ExclusiveGroupStruct fromGroupID, ExclusiveGroupStruct toGroupID)
             {
-                //todo add checks
+                throw new NotImplementedException("can't run this until I add the checks!");
                 
                 _enginesRoot.Target.QueueEntitySubmitOperation(
                     new EntitySubmitOperation(EntitySubmitOperationType.SwapGroup, new EGID(0, fromGroupID),
@@ -55,8 +54,7 @@ namespace Svelto.ECS
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public void SwapEntityGroup<T>(uint entityID, ExclusiveGroupStruct fromGroupID,
-                ExclusiveGroupStruct toGroupID)
+            public void SwapEntityGroup<T>(uint entityID, ExclusiveGroupStruct fromGroupID, ExclusiveGroupStruct toGroupID)
                 where T : IEntityDescriptor, new()
             {
                 SwapEntityGroup<T>(new EGID(entityID, fromGroupID), toGroupID);
@@ -117,7 +115,7 @@ namespace Svelto.ECS
 
             //enginesRoot is a weakreference because GenericEntityStreamConsumerFactory can be injected inside
 //engines of other enginesRoot
-            readonly WeakReference<EnginesRoot> _enginesRoot;
+            readonly Svelto.DataStructures.WeakReference<EnginesRoot> _enginesRoot;
         }
 
         void QueueEntitySubmitOperation(EntitySubmitOperation entitySubmitOperation)

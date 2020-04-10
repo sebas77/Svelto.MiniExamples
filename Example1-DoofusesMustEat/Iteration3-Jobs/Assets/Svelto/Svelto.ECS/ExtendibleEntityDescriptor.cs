@@ -17,7 +17,7 @@ namespace Svelto.ECS
                     $"SerializableEntityDescriptors cannot be used as base entity descriptor: {typeof(TType)}");
         }
 
-        public ExtendibleEntityDescriptor(IEntityComponentBuilder[] extraEntities)
+        public ExtendibleEntityDescriptor(IComponentBuilder[] extraEntities)
         {
             _dynamicDescriptor = new DynamicEntityDescriptor<TType>(extraEntities);
         }
@@ -34,14 +34,14 @@ namespace Svelto.ECS
             return this;
         }
 
-        public ExtendibleEntityDescriptor<TType> ExtendWith(IEntityComponentBuilder[] extraEntities)
+        public ExtendibleEntityDescriptor<TType> ExtendWith(IComponentBuilder[] extraEntities)
         {
             _dynamicDescriptor.ExtendWith(extraEntities);
 
             return this;
         }
 
-        public IEntityComponentBuilder[] componentsToBuild => _dynamicDescriptor.componentsToBuild;
+        public IComponentBuilder[] componentsToBuild => _dynamicDescriptor.componentsToBuild;
 
         DynamicEntityDescriptor<TType> _dynamicDescriptor;
     }

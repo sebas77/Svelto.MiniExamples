@@ -22,7 +22,7 @@ namespace Svelto.ECS.Serialization
                     return true;
             }
 
-            throw new Exception($"ComposedSerializer for {typeof(T)} did not serialize any data!");
+            throw new Exception($"ComposedComponentSerializer for {typeof(T)} did not serialize any data!");
         }
 
         public bool Deserialize(ref T value, ISerializationData serializationData)
@@ -33,7 +33,7 @@ namespace Svelto.ECS.Serialization
                     return true;
             }
 
-            throw new Exception($"ComposedSerializer for {typeof(T)} did not deserialize any data!");
+            throw new Exception($"ComposedComponentSerializer for {typeof(T)} did not deserialize any data!");
         }
 
         public uint size => 0;

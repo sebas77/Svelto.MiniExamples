@@ -29,7 +29,7 @@ namespace Svelto.ECS
                     if (typeSafeDictionary.Count == 0) continue;
                     
                     _array = new EntityCollection<T1>(typeSafeDictionary.GetValuesArray(out var count), count)
-                        .ToNativeBuffer<T1>(out _);
+                        .ToNativeBuffer<T1>();
 
                     return true;
                 }
@@ -41,11 +41,11 @@ namespace Svelto.ECS
             {
             }
 
-            public NativeBuffer<T1> Current => _array;
+            public NB<T1> Current => _array;
 
             readonly FasterDictionary<uint, ITypeSafeDictionary>.FasterDictionaryKeyValueEnumerator _db;
 
-            NativeBuffer<T1> _array;
+            NB<T1> _array;
         }
 
         public NativeGroupsIterator GetEnumerator()

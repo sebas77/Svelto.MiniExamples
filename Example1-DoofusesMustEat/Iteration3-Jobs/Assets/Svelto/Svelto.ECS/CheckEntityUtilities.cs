@@ -55,7 +55,7 @@ namespace Svelto.ECS
                         .FastConcat(egid.groupID) 
                         .FastConcat("'"));
             }
-
+            
             hash.Add(egid.entityID);
         }
         
