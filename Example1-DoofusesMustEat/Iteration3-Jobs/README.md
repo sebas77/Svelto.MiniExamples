@@ -12,3 +12,5 @@ Object-less pure ECS example that shows the basics of Svelto.ECS and Svelto.Task
 
  ###  **Iteration 3:**
    * Full jobified/burstified code with Svelto ECS 3.0
+   * Shows how to handle states in Svelto.ECS
+   * Use WASD and mouse to move, left/right click to place food.
