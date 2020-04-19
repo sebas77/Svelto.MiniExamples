@@ -7,7 +7,7 @@ namespace Svelto.ECS.Extensions.Unity
 {
     [Sequenced(nameof(JobifiedSveltoEngines.CopySveltoToUECSEnginesGroup))]
     [DisableAutoCreation]
-    public class CopySveltoToUECSEnginesGroup : ComponentSystemGroup, IJobifiableEngine
+    public class CopySveltoToUECSEnginesGroup : ComponentSystemGroup, IJobifiedEngine
     {
         public JobHandle Execute(JobHandle _jobHandle)
         {

@@ -5,11 +5,13 @@ using Svelto.Common;
 
 namespace Svelto.ECS.Extensions.Unity
 {
-    public abstract class JobifiableEnginesGroup<T, En>  where En:struct, ISequenceOrder where T: class, IJobifiableEngine
+    public abstract class SortedJobifedEnginesGroup<Interface, SequenceOrder>
+        where SequenceOrder : struct, ISequenceOrder where Interface : class, IJobifiedEngine
     {
-        public JobifiableEnginesGroup(FasterReadOnlyList<T> engines)
+        protected SortedJobifedEnginesGroup(FasterReadOnlyList<Interface> engines, bool completeEachJob = false)
         {
-            _instancedSequence = new Sequence<T, En>(engines);
+            _completeEachJob = completeEachJob;
+            _instancedSequence = new Sequence<Interface, SequenceOrder>(engines);
         }
 
         public JobHandle Execute(JobHandle combinedHandles)
@@ -19,17 +21,16 @@ namespace Svelto.ECS.Extensions.Unity
             {
                 var engine = fasterReadOnlyList[index];
                 combinedHandles = JobHandle.CombineDependencies(combinedHandles, engine.Execute(combinedHandles));
+                
+                if (_completeEachJob) combinedHandles.Complete();
             }
-            
+
             return combinedHandles;
         }
 
-        readonly Sequence<T, En> _instancedSequence;
-    }
 
-    public interface IJobifiableEngine:IEngine
-    {
-        JobHandle Execute(JobHandle _jobHandle);
+        readonly bool _completeEachJob;
+        readonly Sequence<Interface, SequenceOrder> _instancedSequence;
     }
 }
 #endif

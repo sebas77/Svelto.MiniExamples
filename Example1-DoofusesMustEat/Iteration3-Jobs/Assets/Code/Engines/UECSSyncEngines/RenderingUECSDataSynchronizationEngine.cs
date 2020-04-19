@@ -22,8 +22,6 @@ namespace Svelto.ECS.MiniExamples.Example1C
 
                 if (collection.count == 0) continue;
                 
-                Dependency = JobHandle.CombineDependencies(jobHandle, Dependency);
-
                 //there are usually two ways to sync Svelto entities with UECS entities
                 //In some cases, like for the rendering, the 1:1 relationship is not necessary, hence UECS entities
                 //just become a pool of entities to fetch and assign values to. Of course we need to be sure that the
@@ -43,7 +41,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
                     //the group as a filter
                     .WithSharedComponentFilter(new UECSSveltoGroupID((uint) @group)).Schedule(Dependency);
                 
-                Dependency = entityCollection.CombineDispose(Dependency, deps);
+                entityCollection.ScheduleDispose(deps);
             }
         }
 

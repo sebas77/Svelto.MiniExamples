@@ -18,17 +18,17 @@ namespace Svelto.ECS.MiniExamples.Example1C
         static World _world;
 
         EnginesRoot _enginesRoot;
-        FasterList<IJobifiableEngine> _enginesToTick;
+        FasterList<IJobifiedEngine> _enginesToTick;
         SimpleEntitiesSubmissionScheduler _simpleSubmitScheduler;
 
-        void StartTicking(FasterList<IJobifiableEngine> engines)
+        void StartTicking(FasterList<IJobifiedEngine> engines)
         {
             MainThreadTick(engines).RunOn(DoofusesStandardSchedulers.mainThreadScheduler);
         }
 
-        IEnumerator MainThreadTick(FasterList<IJobifiableEngine> engines)
+        IEnumerator MainThreadTick(FasterList<IJobifiedEngine> engines)
         {
-            EnginesExecutionOrder order = new EnginesExecutionOrder(new FasterReadOnlyList<IJobifiableEngine>(engines));
+            EnginesExecutionOrder order = new EnginesExecutionOrder(new FasterReadOnlyList<IJobifiedEngine>(engines));
 
             JobHandle jobs = default;
             
@@ -56,7 +56,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
             _enginesRoot.AddEngine(engine);
         }
 
-        void AddSveltoEngineToTick(IJobifiableEngine engine)
+        void AddSveltoEngineToTick(IJobifiedEngine engine)
         {
             _enginesRoot.AddEngine(engine);
             _enginesToTick.Add(engine);
@@ -95,7 +95,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
 
             _simpleSubmitScheduler = new SimpleEntitiesSubmissionScheduler();
             _enginesRoot = new EnginesRoot(_simpleSubmitScheduler);
-            _enginesToTick = new FasterList<IJobifiableEngine>();
+            _enginesToTick = new FasterList<IJobifiedEngine>();
 
             _world = new World("Custom world");
 

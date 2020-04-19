@@ -1,7 +1,6 @@
 using System;
 using System.Runtime.CompilerServices;
 using Svelto.Common;
-using Unity.Collections.LowLevel.Unsafe;
 
 namespace Svelto.ECS.DataStructures
 {
@@ -13,11 +12,13 @@ namespace Svelto.ECS.DataStructures
     ///     is done.
     ///     You can reserve a position in the queue to update it later.
     ///     The datastructure is a struct and it's "copyable"
+    ///     I eventually decided to call it NativeBag and not NativeRingBuffer because it can also be used as
+    ///     a preallocated memory pool where any kind of T can be stored as long as T is unmanaged
     /// </summary>
-    public struct NativeRingBuffer : IDisposable
+    public struct NativeBag : IDisposable
     {
 #if UNITY_ECS
-        [NativeDisableUnsafePtrRestriction]
+        [global::Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction]
 #endif
         unsafe UnsafeBlob* _queue;
 
@@ -67,7 +68,7 @@ namespace Svelto.ECS.DataStructures
             }
         }
 
-        public NativeRingBuffer(Allocator allocator)
+        public NativeBag(Allocator allocator)
         {
             unsafe
             {
@@ -86,7 +87,7 @@ namespace Svelto.ECS.DataStructures
             }
         }
 
-        public NativeRingBuffer(uint bufferID, Allocator allocator)
+        public NativeBag(uint bufferID, Allocator allocator)
         {
             unsafe
             {

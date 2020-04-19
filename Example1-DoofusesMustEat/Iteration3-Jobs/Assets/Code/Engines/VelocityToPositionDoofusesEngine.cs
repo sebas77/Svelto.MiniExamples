@@ -3,13 +3,12 @@ using Svelto.DataStructures;
 using Svelto.ECS.EntityComponents;
 using Svelto.ECS.Extensions.Unity;
 using Unity.Jobs;
-using Unity.Mathematics;
 using UnityEngine;
 
 namespace Svelto.ECS.MiniExamples.Example1C
 {
     [Sequenced(nameof(DoofusesEngineNames.VelocityToPositionDoofusesEngine))]
-    public class VelocityToPositionDoofusesEngine : IQueryingEntitiesEngine, IJobifiableEngine
+    public class VelocityToPositionDoofusesEngine : IQueryingEntitiesEngine, IJobifiedEngine
     {
         public void Ready()
         { }
@@ -23,28 +22,16 @@ namespace Svelto.ECS.MiniExamples.Example1C
             var doofusesEntityGroups =
                 entitiesDB.NativeGroupsIterator<PositionEntityComponent, VelocityEntityComponent, SpeedEntityComponent>(
                     groupsToUpdate);
-#if !OLD
+
             foreach (var doofuses in doofusesEntityGroups)    
             {
-                var dep = new ComputePostionFromVelocityJob(doofuses, Time.deltaTime).Schedule((int) doofuses.count, 
-                                                                    ProcessorCount.BatchSize(doofuses.count), _jobHandle);
+                var dep = new ComputePostionFromVelocityJob(doofuses, Time.deltaTime).ScheduleParallel(doofuses.count, _jobHandle);
 
-                _jobHandle = doofuses.CombineDispose(dep, _jobHandle);
+                doofuses.ScheduleDispose(dep);
+                
+                _jobHandle = JobHandle.CombineDependencies(_jobHandle, dep);
             }
-#else            
-            foreach (var group in groupsToUpdate)
-            {
-                var doofuses = entitiesDB
-                    .QueryEntities<PositionEntityComponent, VelocityEntityComponent, SpeedEntityComponent>(group)
-                    .ToNativeBuffers<PositionEntityComponent, VelocityEntityComponent, SpeedEntityComponent>();
-                var dep = new ThisSystemJob(doofuses, Time.deltaTime).Schedule((int) doofuses.count,
-                    ProcessorCount.Batch(doofuses.count), _jobHandle);
 
-                _jobHandle = new DisposeJob<BT<
-                    NB<PositionEntityComponent>, NB<VelocityEntityComponent>,
-                    NB<SpeedEntityComponent>>>(doofuses).Schedule(dep);
-            }
-#endif
             return _jobHandle;
         }
 

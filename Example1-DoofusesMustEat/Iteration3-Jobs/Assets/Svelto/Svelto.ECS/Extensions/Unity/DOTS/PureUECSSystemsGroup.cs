@@ -7,7 +7,7 @@ namespace Svelto.ECS.Extensions.Unity
 {
     [Sequenced(nameof(JobifiedSveltoEngines.PureUECSSystemsGroup))]
     [DisableAutoCreation]
-    public class PureUECSSystemsGroup : IJobifiableEngine
+    public class PureUECSSystemsGroup : IJobifiedEngine
     {
         public PureUECSSystemsGroup(World world)
         {

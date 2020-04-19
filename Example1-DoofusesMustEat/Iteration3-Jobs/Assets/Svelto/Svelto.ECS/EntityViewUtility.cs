@@ -8,12 +8,12 @@ namespace Svelto.ECS
 #if DEBUG && !PROFILE_SVELTO
     struct ECSTuple<T1, T2>
     {
-        public readonly T1 implementorType;
+        public readonly T1 instance;
         public          T2 numberOfImplementations;
 
         public ECSTuple(T1 implementor, T2 v)
         {
-            implementorType         = implementor;
+            instance = implementor;
             numberOfImplementations = v;
         }
     }
@@ -21,30 +21,41 @@ namespace Svelto.ECS
 
     static class EntityComponentUtility
     {
+        const string DUPLICATE_IMPLEMENTOR_ERROR =
+            "<color=teal>Svelto.ECS</color> the same component is implemented with more than one implementor. This is "
+          + "considered an error and MUST be fixed. ";
 
-        public static void FillEntityComponent<T>(this IComponentBuilder componentBuilder, ref T entityComponent
-                                           , FasterList<KeyValuePair<Type, FastInvokeActionCast<T>>>
-                                                 entityComponentBlazingFastReflection, IEnumerable<object> implementors,
+        const string NULL_IMPLEMENTOR_ERROR =
+            "<color=teal>Svelto.ECS</color> Null implementor, please be careful about the implementors passed to avoid "
+          + "performance loss ";
+
+        const string NOT_FOUND_EXCEPTION =
+            "<color=teal>Svelto.ECS</color> Implementor not found for an EntityComponent. ";
+
+        public static void FillEntityComponent<T>
+        (this IComponentBuilder componentBuilder, ref T entityComponent
+       , FasterList<KeyValuePair<Type, FastInvokeActionCast<T>>> entityComponentBlazingFastReflection
+       , IEnumerable<object> implementors
 #if DEBUG && !PROFILE_SVELTO
-                                             Dictionary<Type, ECSTuple<object, int>> implementorsByType
+      ,Dictionary<Type, ECSTuple<object, int>> implementorsByType
 #else
-                                            Dictionary<Type, object> implementorsByType
+      ,  Dictionary<Type, object> implementorsByType
 #endif
-                                           , Dictionary<Type, Type[]> cachedTypes
-        )
+       , Dictionary<Type, Type[]> cachedTypeInterfaces)
         {
             //efficient way to collect the fields of every EntityComponentType
-            var setters =
-                FasterList<KeyValuePair<Type, FastInvokeActionCast<T>>>.NoVirt.ToArrayFast(entityComponentBlazingFastReflection, out var count);
+            var setters = FasterList<KeyValuePair<Type, FastInvokeActionCast<T>>>.NoVirt.ToArrayFast(
+                    entityComponentBlazingFastReflection, out var count);
 
+            //todo this should happen once per T, not once per Build<T>
             foreach (var implementor in implementors)
             {
                 if (implementor != null)
                 {
                     var type = implementor.GetType();
 
-                    if (cachedTypes.TryGetValue(type, out var interfaces) == false)
-                        interfaces = cachedTypes[type] = type.GetInterfacesEx();
+                    if (cachedTypeInterfaces.TryGetValue(type, out var interfaces) == false)
+                        interfaces = cachedTypeInterfaces[type] = type.GetInterfacesEx();
 
                     for (var iindex = 0; iindex < interfaces.Length; iindex++)
                     {
@@ -77,42 +88,32 @@ namespace Svelto.ECS
                 var fieldType   = fieldSetter.Key;
 
 #if DEBUG && !PROFILE_SVELTO
-                ECSTuple<object, int> component;
+                ECSTuple<object, int> implementor;
 #else
-                object component;
+                object implementor;
 #endif
 
-                if (implementorsByType.TryGetValue(fieldType, out component) == false)
+                if (implementorsByType.TryGetValue(fieldType, out implementor) == false)
                 {
-                    var e = new ECSException(NOT_FOUND_EXCEPTION + " Component Type: " + fieldType.Name +
-                                             " - EntityComponent: "   + componentBuilder.GetEntityComponentType().Name);
+                    var e = new ECSException(NOT_FOUND_EXCEPTION + " Component Type: " + fieldType.Name
+                                           + " - EntityComponent: " + componentBuilder.GetEntityComponentType().Name);
 
                     throw e;
                 }
 #if DEBUG && !PROFILE_SVELTO
-                if (component.numberOfImplementations > 1)
+                if (implementor.numberOfImplementations > 1)
                     throw new ECSException(DUPLICATE_IMPLEMENTOR_ERROR.FastConcat(
-                        "Component Type: ", fieldType.Name, " implementor: ", component.implementorType.ToString()) +
+                        "Component Type: ", fieldType.Name, " implementor: ", implementor.instance.ToString()) +
                                            " - EntityComponent: " + componentBuilder.GetEntityComponentType().Name);
 #endif
 #if DEBUG && !PROFILE_SVELTO
-                fieldSetter.Value(ref entityComponent, component.implementorType);
+                fieldSetter.Value(ref entityComponent, implementor.instance);
 #else
-                fieldSetter.Value(ref entityComponent, component);
+                fieldSetter.Value(ref entityComponent, implementor);
 #endif
             }
 
             implementorsByType.Clear();
         }
-
-        const string DUPLICATE_IMPLEMENTOR_ERROR =
-            "<color=teal>Svelto.ECS</color> the same component is implemented with more than one implementor. This is " +
-            "considered an error and MUST be fixed. ";
-
-        const string NULL_IMPLEMENTOR_ERROR =
-            "<color=teal>Svelto.ECS</color> Null implementor, please be careful about the implementors passed to avoid " +
-            "performance loss ";
-
-        const string NOT_FOUND_EXCEPTION = "<color=teal>Svelto.ECS</color> Implementor not found for an EntityComponent. ";
     }
 }

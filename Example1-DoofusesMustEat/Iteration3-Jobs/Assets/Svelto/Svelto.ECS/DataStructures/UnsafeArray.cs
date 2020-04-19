@@ -31,7 +31,7 @@ namespace Svelto.ECS.DataStructures
                 T* buffer = (T*) ptr;
                 return ref buffer[index];
             }
-        }
+        }    
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Set<T>(uint index, in T value) where T : unmanaged
@@ -77,10 +77,10 @@ namespace Svelto.ECS.DataStructures
             {
                 byte* newPointer = null;
 #if DEBUG && !PROFILE_SVELTO            
-                if (newCapacity <= capacity)
+                if (capacity > 0 && newCapacity <= capacity)
                     throw new Exception("new capacity must be bigger than current");
 #endif                
-                if (newCapacity > 0)
+                if (newCapacity >= 0)
                 {
                     newPointer = (byte*) MemoryUtilities.Alloc(newCapacity, alignOf, allocator);
                     if (count > 0)

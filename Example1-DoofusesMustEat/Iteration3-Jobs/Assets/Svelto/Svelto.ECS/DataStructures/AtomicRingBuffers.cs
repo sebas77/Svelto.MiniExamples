@@ -6,10 +6,10 @@ using Allocator = Svelto.Common.Allocator;
 namespace Svelto.ECS.DataStructures.Unity
 {
     /// <summary>
-    /// A collection of <see cref="NativeRingBuffer"/> intended to allow one buffer per thread.
+    /// A collection of <see cref="NativeBag"/> intended to allow one buffer per thread.
     /// from: https://github.com/jeffvella/UnityEcsEvents/blob/develop/Runtime/MultiAppendBuffer.cs
     /// </summary>
-    unsafe struct AtomicRingBuffers:IDisposable
+    public unsafe struct AtomicRingBuffers:IDisposable
     {
         public const int DefaultThreadIndex = -1;
         public const int MinThreadIndex = DefaultThreadIndex;
@@ -17,7 +17,7 @@ namespace Svelto.ECS.DataStructures.Unity
 #if UNITY_ECS        
         [global::Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction]
 #endif
-        NativeRingBuffer* _data;
+        NativeBag* _data;
         public readonly Allocator Allocator;
         readonly uint _threadsCount;
 
@@ -29,7 +29,7 @@ namespace Svelto.ECS.DataStructures.Unity
             Allocator = allocator;
             _threadsCount = threadsCount;
 
-            var bufferSize = MemoryUtilities.SizeOf<NativeRingBuffer>();
+            var bufferSize = MemoryUtilities.SizeOf<NativeBag>();
             var bufferCount = _threadsCount;
             var allocationSize = bufferSize * bufferCount;
 
@@ -38,18 +38,18 @@ namespace Svelto.ECS.DataStructures.Unity
 
             for (int i = 0; i < bufferCount; i++)
             {
-                var bufferPtr = (NativeRingBuffer*)(ptr + bufferSize * i);
-                var buffer = new NativeRingBuffer((uint) i, allocator);
+                var bufferPtr = (NativeBag*)(ptr + bufferSize * i);
+                var buffer = new NativeBag((uint) i, allocator);
                 MemoryUtilities.CopyStructureToPtr(ref buffer, (IntPtr) bufferPtr);
             }
 
-            _data = (NativeRingBuffer*)ptr;
+            _data = (NativeBag*)ptr;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ref NativeRingBuffer GetBuffer(int index)
+        public ref NativeBag GetBuffer(int index)
         {
-            return ref MemoryUtilities.ArrayElementAsRef<NativeRingBuffer>((IntPtr) _data, index);
+            return ref MemoryUtilities.ArrayElementAsRef<NativeBag>((IntPtr) _data, index);
         }
 
         public uint count => _threadsCount;

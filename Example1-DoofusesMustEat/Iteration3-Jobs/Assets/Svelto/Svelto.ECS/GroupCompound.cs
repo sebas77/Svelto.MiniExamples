@@ -6,7 +6,7 @@ namespace Svelto.ECS
     public static class GroupCompound<G1, G2, G3>
         where G1 : GroupTag<G1> where G2 : GroupTag<G2> where G3 : GroupTag<G3>
     {
-        public static readonly ExclusiveGroup[] Groups;
+        public static readonly ExclusiveGroupStruct[] Groups;
 
         static GroupCompound()
         {
@@ -16,7 +16,7 @@ namespace Svelto.ECS
             if ((Groups = GroupCompound<G1, G3, G2>.Groups) == null)
             if ((Groups = GroupCompound<G2, G1, G3>.Groups) == null)
             {
-                Groups = new ExclusiveGroup[1];
+                Groups = new ExclusiveGroupStruct[1];
 
                 var Group = new ExclusiveGroup();
                 Groups[0] = Group;
@@ -40,7 +40,7 @@ namespace Svelto.ECS
 
     public static class GroupCompound<G1, G2> where G1 : GroupTag<G1> where G2 : GroupTag<G2>
     {
-        public static ExclusiveGroup[] Groups; 
+        public static ExclusiveGroupStruct[] Groups; 
 
         static GroupCompound()
         {
@@ -48,7 +48,7 @@ namespace Svelto.ECS
             
             if (Groups == null)
             {
-                Groups = new ExclusiveGroup[1];
+                Groups = new ExclusiveGroupStruct[1];
                 var Group = new ExclusiveGroup();
                 Groups[0] = Group;
                 
@@ -64,7 +64,7 @@ namespace Svelto.ECS
 
         public static ExclusiveGroupStruct BuildGroup => new ExclusiveGroupStruct(Groups[0]);
 
-        public static void Add(ExclusiveGroup @group)
+        public static void Add(ExclusiveGroupStruct @group)
         {
             for (int i = 0; i < Groups.Length; ++i)
                 if (Groups[i] == group)
@@ -86,7 +86,7 @@ namespace Svelto.ECS
     //groups with the same adjective, a group tag needs to hold all the groups sharing it.
     public abstract class GroupTag<T> where T : GroupTag<T>
     {
-        public static ExclusiveGroup[] Groups = new ExclusiveGroup[1];
+        public static ExclusiveGroupStruct[] Groups = new ExclusiveGroupStruct[1];
 
         static GroupTag()
         {

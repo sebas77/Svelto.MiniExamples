@@ -31,7 +31,7 @@ public static class DefaultSerializerUtils
 
     public static unsafe T CopyFromByteArray<T>(byte[] data, uint offsetSrc) where T : unmanaged, IEntityComponent
     {
-        T dst = new T();
+        T dst = default;
 
 #if DEBUG && !PROFILE_SVELTO
         if (data.Length - offsetSrc < sizeof(T))

@@ -7,6 +7,9 @@ namespace Svelto.ECS
         //the entity from the special standard group.
         void RemoveEntity<T>(uint entityID, ExclusiveGroupStruct groupID) where T : IEntityDescriptor, new();
         void RemoveEntity<T>(EGID entityegid) where T : IEntityDescriptor, new();
+        
+        void RemoveAllEntities<T>(ExclusiveGroupStruct group) where T : IEntityDescriptor, new();
+        void RemoveAllEntities<T>() where T : IEntityDescriptor, new();
 
         void RemoveGroupAndEntities(ExclusiveGroupStruct groupID);
 

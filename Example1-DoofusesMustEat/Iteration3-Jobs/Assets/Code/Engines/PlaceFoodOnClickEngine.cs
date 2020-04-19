@@ -15,7 +15,7 @@ using Random = Unity.Mathematics.Random;
 namespace Svelto.ECS.MiniExamples.Example1C
 {
     [Sequenced(nameof(DoofusesEngineNames.PlaceFoodOnClickEngine))]
-    public class PlaceFoodOnClickEngine : IQueryingEntitiesEngine, IJobifiableEngine
+    public class PlaceFoodOnClickEngine : IQueryingEntitiesEngine, IJobifiedEngine
     {
         public PlaceFoodOnClickEngine(Entity redfood, Entity bluefood, IEntityFactory entityFactory)
         {

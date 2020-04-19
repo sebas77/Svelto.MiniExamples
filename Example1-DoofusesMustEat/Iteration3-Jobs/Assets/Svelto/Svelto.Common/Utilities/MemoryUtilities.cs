@@ -1,5 +1,9 @@
 using System;
+using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+using Unity.Collections.LowLevel.Unsafe;
+
 #if !UNITY_COLLECTIONS
 using System.Runtime.InteropServices;
 #endif
@@ -42,6 +46,13 @@ namespace Svelto.Common
 
     public static class MemoryUtilities
     {
+#if UNITY_5_3_OR_NEWER && !UNITY_COLLECTIONS        
+        static MemoryUtilities()
+        {
+            throw new Exception("Svelto.Common MemoryUtilities needs the Unity Collection package");      
+        }
+#endif
+        
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Free(IntPtr ptr, Allocator allocator)
         {
@@ -110,6 +121,18 @@ namespace Svelto.Common
             {
                 return ref Unsafe.AsRef<T>(Unsafe.Add<T>((void*) data, threadIndex));
             }
+        }
+        
+        public static int GetFieldOffset(RuntimeFieldHandle h) => 
+            Marshal.ReadInt32(h.Value + (4 + IntPtr.Size)) & 0xFFFFFF;
+
+        public static int GetFieldOffset(FieldInfo field)
+        {
+#if UNITY_COLLECTIONS
+            return UnsafeUtility.GetFieldOffset(field);
+#else
+            return GetFieldOffset(field.name);
+#endif
         }
     }
 }

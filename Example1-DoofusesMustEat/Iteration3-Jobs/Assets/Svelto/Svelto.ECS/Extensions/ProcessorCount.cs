@@ -1,8 +1,8 @@
 using System;
 
-namespace Svelto.Common
+namespace Svelto.ECS
 {
-    public static class ProcessorCount
+    internal static class ProcessorCount
     {
         static readonly int processorCount = Environment.ProcessorCount;
 

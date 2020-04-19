@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using Svelto.Common;
 using Allocator = Svelto.Common.Allocator;
 
@@ -68,8 +69,7 @@ namespace Svelto.ECS.DataStructures
 
                 listData->allocator = allocator;
 
-                if (newLength > 0)
-                    listData->Realloc((uint) alignOf, (uint) (newLength * sizeOf));
+                listData->Realloc((uint) alignOf, (uint) (newLength * sizeOf));
 
                 rtnStruc._list = listData;
 
@@ -130,7 +130,6 @@ namespace Svelto.ECS.DataStructures
                     throw new Exception("SimpleNativeArray: null-access");
                 if (hashType != Svelto.Common.TypeHash<T>.hash)
                     throw new Exception("SimpleNativeArray: not excepted type used");
-
 #endif
                 var structSize = (uint) MemoryUtilities.SizeOf<T>();
                 
@@ -156,6 +155,64 @@ namespace Svelto.ECS.DataStructures
                     throw new Exception("SimpleNativeArray: null-access");
 #endif
                 _list->Clear();
+            }
+        }
+
+        public unsafe T* ToPTR<T>() where T : unmanaged
+        {
+#if DEBUG && !PROFILE_SVELTO
+            if (_list == null)
+                throw new Exception("SimpleNativeArray: null-access");
+            if (hashType != Svelto.Common.TypeHash<T>.hash)
+                throw new Exception("SimpleNativeArray: not excepted type used");
+
+#endif
+            return (T*) _list->ptr;
+        }
+
+        public T[] ToManagedArray<T>() where T : unmanaged
+        {
+            unsafe
+            {
+#if DEBUG && !PROFILE_SVELTO
+                if (_list == null)
+                    throw new Exception("SimpleNativeArray: null-access");
+                if (hashType != Svelto.Common.TypeHash<T>.hash)
+                    throw new Exception("SimpleNativeArray: not excepted type used");
+
+#endif
+                var ret = new T[Count<T>()];
+
+                var handle = GCHandle.Alloc(ret, GCHandleType.Pinned);
+            
+                Buffer.MemoryCopy(_list->ptr, (void*) handle.AddrOfPinnedObject(), _list->count, _list->count);
+                
+                handle.Free();
+
+                return ret;
+            }
+        }
+        
+        public T[] ToManagedArrayUntrimmed<T>() where T : unmanaged
+        {
+            unsafe
+            {
+#if DEBUG && !PROFILE_SVELTO
+                if (_list == null)
+                    throw new Exception("SimpleNativeArray: null-access");
+                if (hashType != Svelto.Common.TypeHash<T>.hash)
+                    throw new Exception("SimpleNativeArray: not excepted type used");
+
+#endif
+                var ret = new T[Capacity<T>()];
+
+                var handle = GCHandle.Alloc(ret, GCHandleType.Pinned);
+            
+                Buffer.MemoryCopy(_list->ptr, (void*) handle.AddrOfPinnedObject(), _list->capacity, _list->capacity);
+                
+                handle.Free();
+
+                return ret;
             }
         }
     }

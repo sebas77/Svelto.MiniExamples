@@ -200,7 +200,7 @@ namespace Svelto.ECS
         public NativeEntityComponentInitializer BuildEntity
             (uint eindex, ExclusiveGroupStruct buildGroup, int threadIndex)
         {
-            NativeRingBuffer unsafeBuffer = _addOperationQueue.GetBuffer(threadIndex + 1);
+            NativeBag unsafeBuffer = _addOperationQueue.GetBuffer(threadIndex + 1);
 
             unsafeBuffer.Enqueue(_index);
             unsafeBuffer.Enqueue(new EGID(eindex, buildGroup));
@@ -212,10 +212,10 @@ namespace Svelto.ECS
 
     public readonly ref struct NativeEntityComponentInitializer
     {
-        readonly NativeRingBuffer  _unsafeBuffer;
+        readonly NativeBag  _unsafeBuffer;
         readonly UnsafeArrayIndex _index;
 
-        public NativeEntityComponentInitializer(in NativeRingBuffer unsafeBuffer, UnsafeArrayIndex index)
+        public NativeEntityComponentInitializer(in NativeBag unsafeBuffer, UnsafeArrayIndex index)
         {
             _unsafeBuffer = unsafeBuffer;
             _index        = index;

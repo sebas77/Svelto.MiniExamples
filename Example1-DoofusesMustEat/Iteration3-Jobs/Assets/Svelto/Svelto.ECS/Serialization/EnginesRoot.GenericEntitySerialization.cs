@@ -97,7 +97,7 @@ namespace Svelto.ECS
                 where T : unmanaged, IEntityComponent
             {
                 var readPos = serializationData.dataPos;
-                var entityComponent = new T();
+                T entityComponent = default;
                 foreach (var serializableEntityBuilder in entityDescriptor.entitiesToSerialize)
                 {
                     if (serializableEntityBuilder is SerializableComponentBuilder<T> entityBuilder)

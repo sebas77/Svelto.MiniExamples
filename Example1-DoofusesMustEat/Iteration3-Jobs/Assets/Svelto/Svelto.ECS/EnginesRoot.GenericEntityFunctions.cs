@@ -33,6 +33,18 @@ namespace Svelto.ECS
                     new EntitySubmitOperation(EntitySubmitOperationType.Remove, entityEGID, entityEGID,
                         EntityDescriptorTemplate<T>.descriptor.componentsToBuild));
             }
+            
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public void RemoveAllEntities<T>(ExclusiveGroupStruct group) where T : IEntityDescriptor, new()
+            {
+                throw new NotImplementedException();
+            }
+            
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public void RemoveAllEntities<T>() where T : IEntityDescriptor, new()
+            {
+                throw new NotImplementedException();
+            }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public void RemoveGroupAndEntities(ExclusiveGroupStruct groupID)

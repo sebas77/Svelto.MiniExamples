@@ -9,8 +9,8 @@ using Unity.Mathematics;
 
 namespace Svelto.ECS.MiniExamples.Example1C
 {
-    [Sequenced(nameof(DoofusesEngineNames.LookingForFoodDoofusesEngine))]
-    public class ConsumingFoodEngine : IQueryingEntitiesEngine, IJobifiableEngine
+    [Sequenced(nameof(DoofusesEngineNames.ConsumingFoodEngine))]
+    public class ConsumingFoodEngine : IQueryingEntitiesEngine, IJobifiedEngine
     {
         public void Ready() { }
 
@@ -40,7 +40,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
         }
 
         JobHandle CreateJobForDoofusesAndFood
-        (JobHandle inputDeps, ExclusiveGroup[] doofusesGroups, ExclusiveGroupStruct swapGroup
+        (JobHandle inputDeps, ExclusiveGroupStruct[] doofusesGroups, ExclusiveGroupStruct swapGroup
        , ExclusiveGroupStruct foodGroup)
         {
             if (entitiesDB.TryQueryNativeMappedEntities<PositionEntityComponent>(foodGroup, out var foodPositionMapper)
@@ -50,24 +50,22 @@ namespace Svelto.ECS.MiniExamples.Example1C
                    .NativeGroupsIterator<PositionEntityComponent, VelocityEntityComponent, MealInfoComponent,
                         EGIDComponent>(doofusesGroups);
 
-            JobHandle combinedDependencies = default;
-            inputDeps = combinedDependencies;
-
             //against all the doofuses
             foreach (var doofusesBuffer in doofusesEntityGroups)
             {
                 var doofusesCount = doofusesBuffer.count;
 
                 //schedule the job
-                var deps =
-                    new LookingForFoodDoofusesJob(doofusesBuffer, foodPositionMapper, _nativeSwap, _nativeRemove, swapGroup)
-                       .Schedule((int) doofusesCount, ProcessorCount.BatchSize(doofusesCount), inputDeps);
-
+                var deps = new LookingForFoodDoofusesJob(doofusesBuffer, foodPositionMapper, _nativeSwap, _nativeRemove, swapGroup)
+                       .ScheduleParallel(doofusesCount, inputDeps);
+                
                 //Never forget to dispose the buffer (may change this in future)
-                combinedDependencies = doofusesBuffer.CombineDispose(combinedDependencies, deps);
+                doofusesBuffer.ScheduleDispose(deps);
+                
+                inputDeps = JobHandle.CombineDependencies(deps, inputDeps);
             }
 
-            return combinedDependencies;
+            return inputDeps;
         }
 
         readonly NativeEntitySwap _nativeSwap;

@@ -13,7 +13,7 @@ using Random = Unity.Mathematics.Random;
 namespace Svelto.ECS.MiniExamples.Example1C
 {
     [Sequenced(nameof(DoofusesEngineNames.SpawningDoofusEngine))]
-    public class SpawningDoofusEngine : IQueryingEntitiesEngine, IJobifiableEngine
+    public class SpawningDoofusEngine : IQueryingEntitiesEngine, IJobifiedEngine
     {
         public SpawningDoofusEngine(Entity redCapsule, Entity blueCapsule, IEntityFactory factory)
         {

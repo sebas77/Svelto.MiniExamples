@@ -10,14 +10,16 @@ namespace Svelto.Common
         string[] enginesOrder { get; }
     }
     
-    static class SequenceCache<En> where En : struct, ISequenceOrder
+    static class SequenceCache<SequenceOrder> where SequenceOrder : struct, ISequenceOrder
     {
         static SequenceCache()
         {
             cachedEnum = new Dictionary<string, int>();
 
-            string[] values  = new En().enginesOrder;
+            string[] values  = new SequenceOrder().enginesOrder;
             int counter = 0;
+            
+            DBC.Common.Check.Require(values != null, $"The sequence array {typeof(SequenceOrder).Name} hasn't been properly setup");            
 
             foreach (var name in values)
             {
@@ -27,7 +29,7 @@ namespace Svelto.Common
                 }
                 catch
                 {
-                    throw new Exception($"Order Sequence {typeof(En).Name} has duplicate entry {name}");
+                    throw new Exception($"Order Sequence {typeof(SequenceOrder).Name} has duplicated entry {name}");
                 }
             }
         }
@@ -50,10 +52,11 @@ namespace Svelto.Common
                         , $"Sequenced item not tagged as Sequenced {type.Name}");
                 string typeName = type.GetCustomAttribute<SequencedAttribute>().name;
                 DBC.Common.Check.Require(cachedEnum.ContainsKey(typeName) == true
-                    , $"Sequenced item not contained in the sequence {type.Name}");
-                    var index = cachedEnum[type.Name];
+                    , $"Sequenced item not contained in the sequence {typeName}");
+                    var index = cachedEnum[typeName];
                     counted++;
-                    _ordered[index] = item;
+                DBC.Common.Check.Require(_ordered[index] == null, $"Items to sequence contains duplicate, {typeName} (wrong sequenced attribute name?)");
+                _ordered[index] = item;
             }
             
 #if DEBUG && !PROFILE_SVELTO
