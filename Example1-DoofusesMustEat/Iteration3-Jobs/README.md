@@ -11,4 +11,4 @@ Warning: these examples may use using unofficial versions of Svelto that you won
 Object-less pure ECS example that shows the basics of Svelto.ECS and Svelto.Tasks.
 
  ###  **Iteration 3:**
-   * Full jobified code with Svelto ECS 3.0
+   * Full jobified/burstified code with Svelto ECS 3.0
