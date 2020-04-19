@@ -5,9 +5,9 @@ namespace Svelto.ECS.MiniExamples.Example1C
 {
     public enum DoofusesEngineNames
     {
+        SpawningDoofusEngine,
         PlaceFoodOnClickEngine,
         LookingForFoodDoofusesEngine,
-        SpawningDoofusEngine,
         VelocityToPositionDoofusesEngine,
         ConsumingFoodEngine
     }

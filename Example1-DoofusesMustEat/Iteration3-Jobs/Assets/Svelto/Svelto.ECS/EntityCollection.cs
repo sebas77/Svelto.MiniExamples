@@ -17,13 +17,13 @@ namespace Svelto.ECS
         public EntityCollection(MB<T> buffer, uint count)
         {
             _buffer = buffer;
-            _count = count;
+            _count  = count;
         }
 
         public uint count => _count;
 
         readonly MB<T> _buffer;
-        readonly uint             _count;
+        readonly uint  _count;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public T[] ToFastAccess(out uint actualCount)
@@ -37,9 +37,6 @@ namespace Svelto.ECS
         {
             return new NB<NT>(Unsafe.As<NT[]>(_buffer.ToManagedArray()), _count);
         }
-        
-        public EntityNativeIterator<NT> GetNativeEnumerator<NT>() where NT : unmanaged, T 
-                    { return new EntityNativeIterator<NT>(ToNativeBuffer<NT>()); }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public MB<T> ToBuffer(out uint count)
@@ -61,10 +58,7 @@ namespace Svelto.ECS
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public EntityIterator GetEnumerator()
-        {
-            return new EntityIterator(_buffer, _count);
-        }
+        public EntityIterator GetEnumerator() { return new EntityIterator(_buffer, _count); }
 
         public struct EntityIterator
         {
@@ -76,10 +70,7 @@ namespace Svelto.ECS
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public bool MoveNext()
-            {
-                return ++_index < _count;
-            }
+            public bool MoveNext() { return ++_index < _count; }
 
             public ref T Current
             {
@@ -90,63 +81,6 @@ namespace Svelto.ECS
             readonly T[]  _array;
             readonly uint _count;
             int           _index;
-        }
-        
-        /// <summary>
-        /// Note: this Enumerator is designed to work in a multithreaded parallel environment. The enumerator
-        /// can then be copied over several threads, that's why it must operate on pointers, otherwise each
-        /// thread will have it's own index which is not the goal of this enumerator.
-        /// </summary>
-        /// <typeparam name="NT"></typeparam>
-        public struct EntityNativeIterator<NT> : IDisposable where NT : unmanaged
-        {
-            public EntityNativeIterator(NB<NT> array) : this()
-            {
-                unsafe
-                {
-                    _array = array;
-                    _index = (int*) Marshal.AllocHGlobal(sizeof(int));
-                    *_index = -1;
-                }
-            }
-
-            public ref NT threadSafeNext
-            {
-                [MethodImpl(MethodImplOptions.AggressiveInlining)]
-                get
-                {
-                    unsafe
-                    {
-                        return ref ((NT*) _array.ToNativeArray())[Interlocked.Increment(ref *_index)];
-                    }
-                }
-            }
-
-            public ref readonly NT current
-            {
-                [MethodImpl(MethodImplOptions.AggressiveInlining)]
-                get
-                {
-                    unsafe
-                    {
-                        return ref ((NT*) _array.ToNativeArray())[*_index];
-                    }
-                }
-            }
-
-            public void Dispose() 
-            {
-                unsafe
-                {
-                    _array.Dispose(); Marshal.FreeHGlobal((IntPtr) _index);
-                }
-            }
-
-            readonly NB<NT> _array;
-#if UNITY_ECS        
-            [Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction]
-#endif
-            readonly unsafe int *          _index;
         }
     }
 

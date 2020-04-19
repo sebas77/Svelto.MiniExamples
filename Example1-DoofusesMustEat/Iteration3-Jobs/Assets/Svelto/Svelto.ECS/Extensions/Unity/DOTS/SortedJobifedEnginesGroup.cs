@@ -8,9 +8,8 @@ namespace Svelto.ECS.Extensions.Unity
     public abstract class SortedJobifedEnginesGroup<Interface, SequenceOrder>
         where SequenceOrder : struct, ISequenceOrder where Interface : class, IJobifiedEngine
     {
-        protected SortedJobifedEnginesGroup(FasterReadOnlyList<Interface> engines, bool completeEachJob = false)
+        protected SortedJobifedEnginesGroup(FasterReadOnlyList<Interface> engines)
         {
-            _completeEachJob = completeEachJob;
             _instancedSequence = new Sequence<Interface, SequenceOrder>(engines);
         }
 
@@ -21,15 +20,11 @@ namespace Svelto.ECS.Extensions.Unity
             {
                 var engine = fasterReadOnlyList[index];
                 combinedHandles = JobHandle.CombineDependencies(combinedHandles, engine.Execute(combinedHandles));
-                
-                if (_completeEachJob) combinedHandles.Complete();
             }
 
             return combinedHandles;
         }
 
-
-        readonly bool _completeEachJob;
         readonly Sequence<Interface, SequenceOrder> _instancedSequence;
     }
 }

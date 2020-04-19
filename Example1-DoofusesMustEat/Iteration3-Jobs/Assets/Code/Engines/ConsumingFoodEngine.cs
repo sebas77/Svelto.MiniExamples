@@ -56,7 +56,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
                 var doofusesCount = doofusesBuffer.count;
 
                 //schedule the job
-                var deps = new LookingForFoodDoofusesJob(doofusesBuffer, foodPositionMapper, _nativeSwap, _nativeRemove, swapGroup)
+                var deps = new ConsumingFoodJob(doofusesBuffer, foodPositionMapper, _nativeSwap, _nativeRemove, swapGroup)
                        .ScheduleParallel(doofusesCount, inputDeps);
                 
                 //Never forget to dispose the buffer (may change this in future)
@@ -75,7 +75,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
     }
 
     [BurstCompile]
-    public readonly struct LookingForFoodDoofusesJob : IJobParallelFor
+    public readonly struct ConsumingFoodJob : IJobParallelFor
     {
         readonly BT<NB<PositionEntityComponent>, NB<VelocityEntityComponent>, NB<MealInfoComponent>, NB<EGIDComponent>>
             _doofuses;
@@ -87,7 +87,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
         [NativeSetThreadIndex] readonly int                  _threadIndex;
         readonly                        ExclusiveGroupStruct _doofuseMealLockedGroup;
 
-        public LookingForFoodDoofusesJob
+        public ConsumingFoodJob
         (in BT<NB<PositionEntityComponent>, NB<VelocityEntityComponent>, NB<MealInfoComponent>, NB<EGIDComponent>>
              doofuses, NativeEGIDMapper<PositionEntityComponent> foodPosition, NativeEntitySwap swap
        , NativeEntityRemove nativeRemove, ExclusiveGroupStruct doofuseMealLockedGroup) : this()
