@@ -18,21 +18,38 @@ namespace Svelto.DataStructures
     {
         public void Dispose()
         {
-            if (_handle.IsAllocated)
-                _handle.Free();
+#if DEBUG && !PROFILE_SVELTO
+            if ((IntPtr)_handle == IntPtr.Zero)
+                throw new Exception("disposing an already disposed buffer");
+#endif 
+            
+            _handle.Free();
         }
         
-        public unsafe NB(T* array, uint count) : this()
+        public unsafe NB(T* array, uint count, uint capacity) : this()
         {
+#if DEBUG && !PROFILE_SVELTO
+            if (count > capacity)
+                throw new Exception("count can't be more than capacity");
+#endif 
+
             _ptr = new IntPtr(array);
+            _capacity = capacity;
             _count = count;
         }
 
-        public NB(T[] array, uint count) : this()
+        public NB(GCHandle array, uint count, uint capacity) : this()
         {
-            _handle = GCHandle.Alloc(array, GCHandleType.Pinned);
-            _ptr    = _handle.AddrOfPinnedObject();
-            
+#if DEBUG && !PROFILE_SVELTO
+            if (count > capacity)
+                throw new Exception("count can't be more than capacity");
+            if ((IntPtr)array == IntPtr.Zero)
+                throw new Exception("not pinned handle is used");
+#endif             
+            _handle = array;
+            _ptr    = array.AddrOfPinnedObject();
+
+            _capacity = capacity;
             _count = count;
         }
 
@@ -82,6 +99,11 @@ namespace Svelto.DataStructures
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public GCHandle Pin() { return _handle; }
 
+        public uint capacity
+        {
+            get => _capacity;
+        }
+
         public uint count
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -124,8 +146,11 @@ namespace Svelto.DataStructures
         }
 
         GCHandle _handle;
-        uint _count;
-#if UNITY_COLLECTIONS        
+        readonly uint _count;
+        readonly uint _capacity;
+#if UNITY_COLLECTIONS
+        //todo can I remove this from here? it should be used outside
+        [Unity.Burst.NoAlias]
         [Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction]
 #endif
         readonly IntPtr _ptr;

@@ -78,7 +78,7 @@ namespace Svelto.DataStructures
             _lockQ.EnterWriteLock();
             try
             {
-                _list.Add(location, item);
+                _list.AddAt(location, item);
             }
             finally
             {

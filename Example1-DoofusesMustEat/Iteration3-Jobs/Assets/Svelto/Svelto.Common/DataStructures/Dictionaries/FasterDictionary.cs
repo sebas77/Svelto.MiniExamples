@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
- 
- namespace Svelto.DataStructures
+
+namespace Svelto.DataStructures
 {
     /// <summary>
     /// This dictionary has been created for just one reason: I needed a dictionary that would have let me iterate
@@ -433,10 +432,10 @@ using System.Runtime.InteropServices;
                 valuesInfo[previous].next = next;
         }
         
-        public NativeFasterDictionaryStruct<TK, TV> ToNative<TK, TV>() where TK : unmanaged, TKey, IEquatable<TK> 
+        public NativeFasterDictionary<TK, TV> ToNative<TK, TV>() where TK : unmanaged, TKey, IEquatable<TK> 
             where TV : unmanaged, TValue
         {
-            return new NativeFasterDictionaryStruct<TK, TV>(_buckets, _values as TV[], _valuesInfo as FasterDictionaryNode<TK>[], new GCHandle());
+            return new NativeFasterDictionary<TK, TV>(_buckets, _values as TV[], _valuesInfo as FasterDictionaryNode<TK>[], _freeValueCellIndex);
         }
         
         public struct FasterDictionaryKeyValueEnumerator

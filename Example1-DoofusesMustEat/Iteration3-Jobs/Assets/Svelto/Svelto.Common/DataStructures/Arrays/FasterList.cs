@@ -92,7 +92,7 @@ namespace Svelto.DataStructures
                 return ref _buffer[index];
             }
         }
-
+        
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Add(in T item)
         {
@@ -103,11 +103,22 @@ namespace Svelto.DataStructures
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Add(uint location, in T item)
+        public void AddAt(uint location, in T item)
         {
             ExpandTo(location + 1);
 
             _buffer[location] = item;
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ref T CreateOrGetAt(uint location)
+        {
+            if (location < count)
+                return ref _buffer[location];
+
+            ExpandTo(location + 1);
+
+            return ref _buffer[location];
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -377,7 +388,7 @@ namespace Svelto.DataStructures
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public uint Push(in T item)
         {
-            Add(_count, item);
+            AddAt(_count, item);
 
             return _count - 1;
         }

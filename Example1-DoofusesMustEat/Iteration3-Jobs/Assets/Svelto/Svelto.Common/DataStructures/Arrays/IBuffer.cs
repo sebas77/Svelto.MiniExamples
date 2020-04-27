@@ -20,6 +20,7 @@ namespace Svelto.DataStructures
         IntPtr ToNativeArray();
         GCHandle Pin();
 
+        uint capacity { get; }
         uint count { get; }
     }
 }

@@ -11,8 +11,9 @@ namespace Svelto.DataStructures
     /// <typeparam name="T"></typeparam>
     public struct MB<T>:IBuffer<T> 
     {
-        public void Set(T[] array)
+        public void Set(T[] array, uint count)
         {
+            _count = count;
             _buffer = array;
         }
 
@@ -75,10 +76,16 @@ namespace Svelto.DataStructures
             return GCHandle.Alloc(_buffer, GCHandleType.Pinned);
         }
 
-        public uint count
+        public uint capacity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => (uint) _buffer.Length;
+        }
+        
+        public uint count
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => _count;
         }
 
         public void Dispose()
@@ -99,5 +106,6 @@ namespace Svelto.DataStructures
         }
 
         T[] _buffer;
+        uint _count;
     }
 }

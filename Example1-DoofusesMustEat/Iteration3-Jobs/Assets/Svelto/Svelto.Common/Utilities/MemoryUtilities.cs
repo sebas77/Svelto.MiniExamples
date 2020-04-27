@@ -2,10 +2,11 @@ using System;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using Unity.Collections.LowLevel.Unsafe;
 
 #if !UNITY_COLLECTIONS
 using System.Runtime.InteropServices;
+#else
+using Unity.Collections.LowLevel.Unsafe;
 #endif
 namespace Svelto.Common
 {
@@ -59,28 +60,21 @@ namespace Svelto.Common
             unsafe
             {
 #if UNITY_COLLECTIONS
-                Unity.Collections.LowLevel.Unsafe.UnsafeUtility.Free((void*) ptr, (Unity.Collections.Allocator) allocator);
+                UnsafeUtility.Free((void*) ptr, (Unity.Collections.Allocator) allocator);
 #else
                 Marshal.FreeHGlobal((IntPtr) ptr);
 #endif
             }
         }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void MemCpy(IntPtr newPointer, IntPtr head, uint currentSize)
-        {
-            unsafe 
-            {
-                Unsafe.CopyBlock((void*) newPointer, (void*) head, currentSize);
-            }
-        }
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static IntPtr Alloc(uint newCapacity, uint alignOf, Allocator allocator)
+        public static IntPtr Alloc<T>(uint newCapacity, Allocator allocator) where T : struct
         {
             unsafe
             {
 #if UNITY_COLLECTIONS
                 var newPointer =
-                    (void*) Unity.Collections.LowLevel.Unsafe.UnsafeUtility.Malloc(newCapacity, (int) alignOf, (Unity.Collections.Allocator) allocator);
+                    UnsafeUtility.Malloc(newCapacity, (int) UnsafeUtility.AlignOf<T>(), (Unity.Collections.Allocator) allocator);
 #else
                 var newPointer = Marshal.AllocHGlobal((int) newCapacity);
 #endif
@@ -93,19 +87,24 @@ namespace Svelto.Common
             unsafe 
             {
 #if UNITY_COLLECTIONS
-               Unity.Collections.LowLevel.Unsafe.UnsafeUtility.MemClear((void*) listData, sizeOf);
+               UnsafeUtility.MemClear((void*) listData, sizeOf);
 #else
                Unsafe.InitBlock((void*) listData, 0, sizeOf);
 #endif
             }
         }
+
+        static class CachedSize<T> where T : struct
+        {
+            public static readonly int cachedSize = Unsafe.SizeOf<T>();
+        }
+        
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int SizeOf<T>() where T : struct
         {
-            return Unsafe.SizeOf<T>();
+            return CachedSize<T>.cachedSize;
         }
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int AlignOf<T>() { return 4; }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void CopyStructureToPtr<T>(ref T buffer, IntPtr bufferPtr) where T : struct
         {

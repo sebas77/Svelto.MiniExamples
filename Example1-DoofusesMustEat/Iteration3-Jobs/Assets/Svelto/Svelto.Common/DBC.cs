@@ -64,14 +64,9 @@ namespace DBC.Common
 #endif
 		public static void Require(bool assertion, string message)
 		{
-			if (UseExceptions) 
 			{
 				if (!assertion)	
 					throw new PreconditionException(message);
-			}
-			else
-			{
-				Trace.Assert(assertion, "Precondition: " + message);
 			}
 		}
 
@@ -84,14 +79,9 @@ namespace DBC.Common
 #endif
 		public static void Require(bool assertion, string message, Exception inner)
 		{
-			if (UseExceptions) 
 			{
 				if (!assertion)	
 					throw new PreconditionException(message, inner);
-			}
-			else
-			{
-				Trace.Assert(assertion, "Precondition: " + message);
 			}
 		}
 
@@ -104,14 +94,9 @@ namespace DBC.Common
 #endif
 		public static void Require(bool assertion)
 		{
-			if (UseExceptions) 
 			{
 				if (!assertion)
 					throw new PreconditionException("Precondition failed.");
-			}
-			else
-			{
-				Trace.Assert(assertion, "Precondition failed.");
 			}
 		}
 		
@@ -124,14 +109,9 @@ namespace DBC.Common
 #endif
 		public static void Ensure(bool assertion, string message)
 		{
-			if (UseExceptions) 
 			{
 				if (!assertion)	
 					throw new PostconditionException(message);
-			}
-			else
-			{
-				Trace.Assert(assertion, "Postcondition: " + message);
 			}
 		}
 
@@ -144,14 +124,9 @@ namespace DBC.Common
 #endif
 		public static void Ensure(bool assertion, string message, Exception inner)
 		{
-			if (UseExceptions) 
 			{
 				if (!assertion)	
 					throw new PostconditionException(message, inner);
-			}
-			else
-			{
-				Trace.Assert(assertion, "Postcondition: " + message);
 			}
 		}
 
@@ -164,14 +139,9 @@ namespace DBC.Common
 #endif
 		public static void Ensure(bool assertion)
 		{
-			if (UseExceptions) 
 			{
 				if (!assertion)	
 					throw new PostconditionException("Postcondition failed.");
-			}
-			else
-			{
-				Trace.Assert(assertion, "Postcondition failed.");
 			}
 		}
 		
@@ -184,14 +154,9 @@ namespace DBC.Common
 #endif
 		public static void Invariant(bool assertion, string message)
 		{
-			if (UseExceptions) 
 			{
 				if (!assertion)	
 					throw new InvariantException(message);
-			}
-			else
-			{
-				Trace.Assert(assertion, "Invariant: " + message);
 			}
 		}
 
@@ -204,14 +169,9 @@ namespace DBC.Common
 #endif
 		public static void Invariant(bool assertion, string message, Exception inner)
 		{
-			if (UseExceptions) 
 			{
 				if (!assertion)	
 					throw new InvariantException(message, inner);
-			}
-			else
-			{
-				Trace.Assert(assertion, "Invariant: " + message);
 			}
 		}
 
@@ -224,14 +184,9 @@ namespace DBC.Common
 #endif
 		public static void Invariant(bool assertion)
 		{
-			if (UseExceptions) 
 			{
 				if (!assertion)	
 					throw new InvariantException("Invariant failed.");
-			}
-			else
-			{
-				Trace.Assert(assertion, "Invariant failed.");
 			}
 		}
 
@@ -243,14 +198,9 @@ namespace DBC.Common
 #endif
 		public static void Assert(bool assertion, string message)
 		{
-			if (UseExceptions) 
 			{
 				if (!assertion)	
 					throw new AssertionException(message);
-			}
-			else
-			{
-				Trace.Assert(assertion, "Assertion: " + message);
 			}
 		}
 
@@ -263,14 +213,9 @@ namespace DBC.Common
 #endif
 		public static void Assert(bool assertion, string message, Exception inner)
 		{
-			if (UseExceptions) 
 			{
 				if (!assertion)	
 					throw new AssertionException(message, inner);
-			}
-			else
-			{
-				Trace.Assert(assertion, "Assertion: " + message);
 			}
 		}
 
@@ -283,14 +228,9 @@ namespace DBC.Common
 #endif
 		public static void Assert(bool assertion)
 		{
-			if (UseExceptions) 
 			{
 				if (!assertion)
 					throw new AssertionException("Assertion failed.");
-			}
-			else
-			{
-				Trace.Assert(assertion, "Assertion failed.");
 			}
 		}
 
@@ -315,7 +255,6 @@ namespace DBC.Common
 		/// <summary>
 		/// Is exception handling being used?
 		/// </summary>
-		private static bool UseExceptions => !useAssertions;
 
 		// Are trace assertion statements being used? 
 		// Default is to use exception handling.
@@ -324,18 +263,6 @@ namespace DBC.Common
 		#endregion // Implementation
 
 	} // End Check
-
-    class Trace
-    {
-        internal static void Assert(bool assertion, string v)
-        {
-#if NETFX_CORE
-            System.Diagnostics.Contracts.Contract.Assert(assertion, v);
-#else
-            System.Diagnostics.Trace.Assert(assertion, v);
-#endif      
-        }
-    }
 
     #region Exceptions
 

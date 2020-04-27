@@ -1,6 +1,7 @@
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using Svelto.DataStructures;
 
 namespace Svelto.DataStructures
 {
@@ -9,15 +10,14 @@ namespace Svelto.DataStructures
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
-    public unsafe struct NativeFasterDictionaryStruct<TKey, TValue> : IDisposable
+    public readonly unsafe struct NativeFasterDictionary<TKey, TValue> : IDisposable
         where TKey : unmanaged, IEquatable<TKey> where TValue : unmanaged
     {
-        internal NativeFasterDictionaryStruct(int[] bufferBuckets, 
-                                              TValue[] bufferValue, FasterDictionaryNode<TKey>[] bufferNode,
-                                              GCHandle sentinel) : this()
+        internal NativeFasterDictionary(int[] bufferBuckets, 
+                                              TValue[] bufferValues, FasterDictionaryNode<TKey>[] bufferNodes, uint count) : this()
         {
-            _valuesInfo = GCHandle.Alloc(bufferNode, GCHandleType.Pinned);
-            _values = GCHandle.Alloc(bufferValue, GCHandleType.Pinned);
+            _valuesInfo = GCHandle.Alloc(bufferNodes, GCHandleType.Pinned);
+            _values = GCHandle.Alloc(bufferValues, GCHandleType.Pinned);
             _buckets = GCHandle.Alloc(bufferBuckets, GCHandleType.Pinned);
 
             _valuesPointer = _values.AddrOfPinnedObject();
@@ -25,23 +25,25 @@ namespace Svelto.DataStructures
             _bucketsPointer = _buckets.AddrOfPinnedObject();
 
             _bucketsSize = bufferBuckets.Length;
-            _freeValueCellIndex = (uint) bufferValue.Length;
+            _count = count;
+            _capacity = (uint) bufferValues.Length;
         }
 
         public void Dispose()
         {
-            if (_values.IsAllocated)
-                _values.Free();
-            if (_valuesInfo.IsAllocated)
-                _valuesInfo.Free();
-            if (_buckets.IsAllocated)
-                _buckets.Free();
+#if DEBUG && !PROFILE_SVELTO
+            if ((IntPtr)_values == IntPtr.Zero)
+                throw new Exception("disposing an already disposed NativeFasterDictionary");
+#endif 
+            _values.Free();
+            _valuesInfo.Free();
+            _buckets.Free();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public TValue* GetValuesArray(out uint count)
         {
-            count = _freeValueCellIndex;
+            count = _count;
 
             return (TValue*) _valuesPointer;
         }
@@ -52,7 +54,8 @@ namespace Svelto.DataStructures
             get => (TValue*) _valuesPointer;
         }
 
-        public uint Count => _freeValueCellIndex;
+        public uint count => _count;
+        public uint capacity => _capacity;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool ContainsKey(TKey key)
@@ -172,6 +175,7 @@ namespace Svelto.DataStructures
         readonly GCHandle _valuesInfo;
         readonly GCHandle _buckets;
         readonly int      _bucketsSize;
-        readonly uint     _freeValueCellIndex;
+        readonly uint     _count;
+        readonly uint      _capacity;
     }
 }
