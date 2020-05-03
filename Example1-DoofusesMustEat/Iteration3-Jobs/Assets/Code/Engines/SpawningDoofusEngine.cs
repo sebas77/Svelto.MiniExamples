@@ -1,4 +1,3 @@
-using System;
 using Svelto.Common;
 using Svelto.ECS.EntityComponents;
 using Svelto.ECS.Extensions.Unity;
@@ -7,7 +6,6 @@ using Unity.Collections.LowLevel.Unsafe;
 using Unity.Entities;
 using Unity.Jobs;
 using Unity.Mathematics;
-using Allocator = Unity.Collections.Allocator;
 using Random = Unity.Mathematics.Random;
 
 namespace Svelto.ECS.MiniExamples.Example1C
@@ -19,7 +17,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
         {
             _redCapsule  = redCapsule;
             _blueCapsule = blueCapsule;
-            _factory     = factory.ToNative<DoofusEntityDescriptor>(Allocator.Persistent);
+            _factory     = factory.ToNative<DoofusEntityDescriptor>();
         }
 
         public EntitiesDB entitiesDB { get; set; }

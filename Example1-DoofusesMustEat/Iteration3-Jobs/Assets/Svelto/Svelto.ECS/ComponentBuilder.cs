@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Svelto.DataStructures;
@@ -18,6 +18,11 @@ namespace Svelto.ECS
 
             if (IS_ENTITY_VIEW_COMPONENT)
                 EntityViewComponentCache.InitCache();
+            else
+            {
+                if (ENTITY_COMPONENT_TYPE != EntityBuilderUtilities.ENTITY_STRUCT_INFO_VIEW &&  ENTITY_COMPONENT_TYPE.IsUnmanaged() == false)
+                    throw new Exception($"Entity Component check failed, unexpected struct type (must be unmanaged) {ENTITY_COMPONENT_TYPE}");
+            }
         }
 
         public ComponentBuilder(in T initializer) : this()
@@ -82,21 +87,22 @@ namespace Svelto.ECS
             IS_ENTITY_VIEW_COMPONENT = typeof(IEntityViewComponent).IsAssignableFrom(ENTITY_COMPONENT_TYPE);
             HAS_EGID = typeof(INeedEGID).IsAssignableFrom(ENTITY_COMPONENT_TYPE);
             ENTITY_COMPONENT_NAME = ENTITY_COMPONENT_TYPE.ToString();
-#if UNITY_ECS            
+            
             EntityComponentIDMap.Register<T>(new Filler<T>());
-#endif            
             SetEGIDWithoutBoxing<T>.Warmup();
+            IS_UNMANAGED = ENTITY_COMPONENT_TYPE.IsUnmanaged() && ENTITY_COMPONENT_TYPE != EntityBuilderUtilities.ENTITY_STRUCT_INFO_VIEW;
         }
 
         readonly T                        _initializer;
 
         internal static readonly Type ENTITY_COMPONENT_TYPE;
-        public static readonly bool HAS_EGID;
+        internal static readonly bool HAS_EGID;
+        internal static readonly bool IS_ENTITY_VIEW_COMPONENT;
 
         static readonly T      DEFAULT_IT;
-        static readonly bool   IS_ENTITY_VIEW_COMPONENT;
         static readonly string ENTITY_COMPONENT_NAME;
-        
+        internal static readonly bool IS_UNMANAGED;
+
         static class EntityViewComponentCache
         {
             internal static readonly FasterList<KeyValuePair<Type, FastInvokeActionCast<T>>> cachedFields;

@@ -6,21 +6,14 @@ namespace Svelto.ECS
     public static class EntityDBExtensions
     {
         public static NativeGroupsEnumerable<T1, T2> NativeGroupsIterator<T1, T2>(this EntitiesDB db,
-                                                                                  ExclusiveGroupStruct[] groups)
-            where T1 : unmanaged, IEntityComponent where T2 : unmanaged, IEntityComponent
-        {
-            return new NativeGroupsEnumerable<T1, T2>(db, groups, (uint)groups.Length);
-        }
-        
-        public static NativeGroupsEnumerable<T1, T2> NativeGroupsIterator<T1, T2>(this EntitiesDB db,
                                                                                   FasterList<ExclusiveGroupStruct> groups)
             where T1 : unmanaged, IEntityComponent where T2 : unmanaged, IEntityComponent
         {
-            return new NativeGroupsEnumerable<T1, T2>(db, groups, groups.count);
+            return new NativeGroupsEnumerable<T1, T2>(db, groups);
         }
-
+        
         public static NativeGroupsEnumerable<T1, T2, T3> NativeGroupsIterator
-            <T1, T2, T3>(this EntitiesDB db, ExclusiveGroupStruct[] groups)
+            <T1, T2, T3>(this EntitiesDB db, FasterList<ExclusiveGroupStruct> groups)
             where T1 : unmanaged, IEntityComponent where T2 : unmanaged, IEntityComponent
             where T3 : unmanaged, IEntityComponent
         {
@@ -28,14 +21,14 @@ namespace Svelto.ECS
         }
         
         public static NativeGroupsEnumerable<T1, T2, T3, T4> NativeGroupsIterator
-            <T1, T2, T3, T4>(this EntitiesDB db, ExclusiveGroupStruct[] groups)
+            <T1, T2, T3, T4>(this EntitiesDB db, FasterList<ExclusiveGroupStruct> groups)
             where T1 : unmanaged, IEntityComponent where T2 : unmanaged, IEntityComponent
             where T3 : unmanaged, IEntityComponent where T4 : unmanaged, IEntityComponent
         {
             return new NativeGroupsEnumerable<T1, T2, T3, T4>(db, groups);
         }
         
-        public static NativeGroupsEnumerable<T1> NativeGroupsIterator<T1>(this EntitiesDB db, ExclusiveGroupStruct[] groups)
+        public static NativeGroupsEnumerable<T1> NativeGroupsIterator<T1>(this EntitiesDB db, FasterList<ExclusiveGroupStruct> groups)
             where T1 : unmanaged, IEntityComponent
         {
             return new NativeGroupsEnumerable<T1>(db, groups);

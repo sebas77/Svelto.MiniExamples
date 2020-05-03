@@ -66,7 +66,7 @@ namespace Svelto.ECS
             where T : IEntityDescriptor;
 
 #if UNITY_ECS
-        NativeEntityFactory ToNative<T>(Unity.Collections.Allocator allocator) where T : IEntityDescriptor, new();
+        NativeEntityFactory ToNative<T>() where T : IEntityDescriptor, new();
 #endif        
     }
 }

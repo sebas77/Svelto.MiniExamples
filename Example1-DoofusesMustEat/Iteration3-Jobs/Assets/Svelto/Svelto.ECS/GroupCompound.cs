@@ -1,12 +1,12 @@
 using System;
-using Svelto.ECS.Internal;
+using Svelto.DataStructures;
 
 namespace Svelto.ECS
 {
     public static class GroupCompound<G1, G2, G3>
         where G1 : GroupTag<G1> where G2 : GroupTag<G2> where G3 : GroupTag<G3>
     {
-        public static readonly ExclusiveGroupStruct[] Groups;
+        public static readonly FasterList<ExclusiveGroupStruct> Groups;
 
         static GroupCompound()
         {
@@ -16,10 +16,10 @@ namespace Svelto.ECS
             if ((Groups = GroupCompound<G1, G3, G2>.Groups) == null)
             if ((Groups = GroupCompound<G2, G1, G3>.Groups) == null)
             {
-                Groups = new ExclusiveGroupStruct[1];
+                Groups = new FasterList<ExclusiveGroupStruct>(1);
 
                 var Group = new ExclusiveGroup();
-                Groups[0] = Group;
+                Groups.Add(Group);
                     
                 Console.LogDebug("<color=orange>".FastConcat(typeof(G1).ToString().FastConcat("-", typeof(G2).ToString(), "-").FastConcat(typeof(G3).ToString(), "- Initialized ", Groups[0].ToString()), "</color>"));
                     
@@ -40,7 +40,7 @@ namespace Svelto.ECS
 
     public static class GroupCompound<G1, G2> where G1 : GroupTag<G1> where G2 : GroupTag<G2>
     {
-        public static ExclusiveGroupStruct[] Groups; 
+        public static FasterList<ExclusiveGroupStruct> Groups; 
 
         static GroupCompound()
         {
@@ -48,9 +48,9 @@ namespace Svelto.ECS
             
             if (Groups == null)
             {
-                Groups = new ExclusiveGroupStruct[1];
+                Groups = new FasterList<ExclusiveGroupStruct>(1);
                 var Group = new ExclusiveGroup();
-                Groups[0] = Group;
+                Groups.Add(Group);
                 
                 Console.LogDebug("<color=orange>".FastConcat(typeof(G1).ToString().FastConcat("-", typeof(G2).ToString(), "- initialized ", Groups[0].ToString()), "</color>"));
 
@@ -66,13 +66,11 @@ namespace Svelto.ECS
 
         public static void Add(ExclusiveGroupStruct @group)
         {
-            for (int i = 0; i < Groups.Length; ++i)
+            for (int i = 0; i < Groups.count; ++i)
                 if (Groups[i] == group)
                     throw new Exception("temporary must be transformed in unit test");
-
-            Array.Resize(ref Groups, Groups.Length + 1);
-
-            Groups[Groups.Length - 1] = group;
+            
+            Groups.Add(group);
             
             GroupCompound<G2, G1>.Groups = Groups;
             
@@ -86,11 +84,11 @@ namespace Svelto.ECS
     //groups with the same adjective, a group tag needs to hold all the groups sharing it.
     public abstract class GroupTag<T> where T : GroupTag<T>
     {
-        public static ExclusiveGroupStruct[] Groups = new ExclusiveGroupStruct[1];
+        public static FasterList<ExclusiveGroupStruct> Groups = new FasterList<ExclusiveGroupStruct>(1);
 
         static GroupTag()
         {
-            Groups[0] = new ExclusiveGroup();
+            Groups.Add(new ExclusiveGroup());
             
             Console.LogDebug(typeof(T).ToString() + "-" + Groups[0].ToString());
         }
@@ -98,13 +96,11 @@ namespace Svelto.ECS
         //Each time a new combination of group tags is found a new group is added.
         internal static void Add(ExclusiveGroup @group)
         {
-            for (int i = 0; i < Groups.Length; ++i)
+            for (int i = 0; i < Groups.count; ++i)
                 if (Groups[i] == group)
                     throw new Exception("temporary must be transformed in unit test");
 
-            Array.Resize(ref Groups, Groups.Length + 1);
-
-            Groups[Groups.Length - 1] = group;
+            Groups.Add(group);
             
             Console.LogDebug(typeof(T).ToString().FastConcat("- Add ", group.ToString()));
         }

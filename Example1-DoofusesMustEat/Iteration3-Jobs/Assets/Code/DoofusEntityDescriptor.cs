@@ -1,5 +1,4 @@
 using Svelto.ECS.EntityComponents;
-using Unity.Mathematics;
 
 namespace Svelto.ECS.MiniExamples.Example1C
 {

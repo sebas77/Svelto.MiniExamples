@@ -9,9 +9,9 @@ namespace Svelto.ECS
                                                                   where T4 : unmanaged, IEntityComponent
     {
         readonly EntitiesDB             _db;
-        readonly ExclusiveGroupStruct[] _groups;
+        readonly FasterList<ExclusiveGroupStruct> _groups;
 
-        public NativeGroupsEnumerable(EntitiesDB db, ExclusiveGroupStruct[] groups)
+        public NativeGroupsEnumerable(EntitiesDB db, FasterList<ExclusiveGroupStruct> groups)
         {
             _db     = db;
             _groups = groups;
@@ -19,7 +19,7 @@ namespace Svelto.ECS
 
         public struct NativeGroupsIterator
         {
-            public NativeGroupsIterator(EntitiesDB db, ExclusiveGroupStruct[] groups) : this()
+            public NativeGroupsIterator(EntitiesDB db, FasterList<ExclusiveGroupStruct> groups) : this()
             {
                 _groups     = groups;
                 _indexGroup = -1;
@@ -29,7 +29,7 @@ namespace Svelto.ECS
             public bool MoveNext()
             {
                 //attention, the while is necessary to skip empty groups
-                while (++_indexGroup < _groups.Length)
+                while (++_indexGroup < _groups.count)
                 {
                     var entityCollection1 = _entitiesDB.QueryEntities<T1, T2, T3>(_groups[_indexGroup]);
                     if (entityCollection1.count == 0)
@@ -48,14 +48,14 @@ namespace Svelto.ECS
                     break;
                 }
 
-                return _indexGroup < _groups.Length;
+                return _indexGroup < _groups.count;
             }
 
             public void Reset() { _indexGroup = -1; }
 
             public BT<NB<T1>, NB<T2>, NB<T3>, NB<T4>> Current => _array;
 
-            readonly ExclusiveGroupStruct[] _groups;
+            readonly FasterList<ExclusiveGroupStruct> _groups;
 
             int                                _indexGroup;
             BT<NB<T1>, NB<T2>, NB<T3>, NB<T4>> _array;
@@ -70,9 +70,9 @@ namespace Svelto.ECS
                                                               where T3 : unmanaged, IEntityComponent
     {
         readonly EntitiesDB             _db;
-        readonly ExclusiveGroupStruct[] _groups;
+        readonly FasterList<ExclusiveGroupStruct> _groups;
 
-        public NativeGroupsEnumerable(EntitiesDB db, ExclusiveGroupStruct[] groups)
+        public NativeGroupsEnumerable(EntitiesDB db, FasterList<ExclusiveGroupStruct> groups)
         {
             _db     = db;
             _groups = groups;
@@ -80,7 +80,7 @@ namespace Svelto.ECS
 
         public struct NativeGroupsIterator
         {
-            public NativeGroupsIterator(EntitiesDB db, ExclusiveGroupStruct[] groups) : this()
+            public NativeGroupsIterator(EntitiesDB db, FasterList<ExclusiveGroupStruct> groups) : this()
             {
                 _groups     = groups;
                 _indexGroup = -1;
@@ -90,7 +90,7 @@ namespace Svelto.ECS
             public bool MoveNext()
             {
                 //attention, the while is necessary to skip empty groups
-                while (++_indexGroup < _groups.Length)
+                while (++_indexGroup < _groups.count)
                 {
                     var entityCollection = _entitiesDB.QueryEntities<T1, T2, T3>(_groups[_indexGroup]);
                     if (entityCollection.count == 0)
@@ -100,14 +100,14 @@ namespace Svelto.ECS
                     break;
                 }
 
-                return _indexGroup < _groups.Length;
+                return _indexGroup < _groups.count;
             }
 
             public void Reset() { _indexGroup = -1; }
 
             public BT<NB<T1>, NB<T2>, NB<T3>> Current => _array;
 
-            readonly ExclusiveGroupStruct[] _groups;
+            readonly FasterList<ExclusiveGroupStruct> _groups;
 
             int                        _indexGroup;
             BT<NB<T1>, NB<T2>, NB<T3>> _array;
@@ -120,23 +120,15 @@ namespace Svelto.ECS
     public struct NativeGroupsEnumerable<T1, T2> where T1 : unmanaged, IEntityComponent
                                                  where T2 : unmanaged, IEntityComponent
     {
-        public NativeGroupsEnumerable(EntitiesDB db, ExclusiveGroupStruct[] groups, uint groupsLength)
+        public NativeGroupsEnumerable(EntitiesDB db, FasterList<ExclusiveGroupStruct> groups)
         {
             _db     = db;
             _groups = groups;
-            _groupsLength = groupsLength;
-        }
-
-        public NativeGroupsEnumerable(EntitiesDB db, FasterList<ExclusiveGroupStruct> groups, uint groupsLength)
-        {
-            _db           = db;
-            _groups       = groups.ToArrayFast(out _);
-            _groupsLength = groupsLength;
         }
 
         public struct NativeGroupsIterator
         {
-            public NativeGroupsIterator(EntitiesDB db, ExclusiveGroupStruct[] groups) : this()
+            public NativeGroupsIterator(EntitiesDB db, FasterList<ExclusiveGroupStruct> groups) : this()
             {
                 _db         = db;
                 _groups     = groups;
@@ -146,7 +138,7 @@ namespace Svelto.ECS
             public bool MoveNext()
             {
                 //attention, the while is necessary to skip empty groups
-                while (++_indexGroup < _groups.Length)
+                while (++_indexGroup < _groups.count)
                 {
                     var entityCollection = _db.QueryEntities<T1, T2>(_groups[_indexGroup]);
                     if (entityCollection.count == 0)
@@ -156,7 +148,7 @@ namespace Svelto.ECS
                     break;
                 }
 
-                return _indexGroup < _groups.Length;
+                return _indexGroup < _groups.count;
             }
 
             public void Reset() { _indexGroup = -1; }
@@ -164,7 +156,7 @@ namespace Svelto.ECS
             public BT<NB<T1>, NB<T2>> Current => _array;
 
             readonly EntitiesDB             _db;
-            readonly ExclusiveGroupStruct[] _groups;
+            readonly FasterList<ExclusiveGroupStruct> _groups;
 
             int                _indexGroup;
             BT<NB<T1>, NB<T2>> _array;
@@ -173,13 +165,12 @@ namespace Svelto.ECS
         public NativeGroupsIterator GetEnumerator() { return new NativeGroupsIterator(_db, _groups); }
 
         readonly EntitiesDB             _db;
-        readonly ExclusiveGroupStruct[] _groups;
-        readonly uint _groupsLength;
+        readonly FasterList<ExclusiveGroupStruct> _groups;
     }
 
     public struct NativeGroupsEnumerable<T1> where T1 : unmanaged, IEntityComponent
     {
-        public NativeGroupsEnumerable(EntitiesDB db, ExclusiveGroupStruct[] groups)
+        public NativeGroupsEnumerable(EntitiesDB db, FasterList<ExclusiveGroupStruct> groups)
         {
             _db     = db;
             _groups = groups;
@@ -187,7 +178,7 @@ namespace Svelto.ECS
 
         public struct NativeGroupsIterator
         {
-            public NativeGroupsIterator(EntitiesDB db, ExclusiveGroupStruct[] groups) : this()
+            public NativeGroupsIterator(EntitiesDB db, FasterList<ExclusiveGroupStruct> groups) : this()
             {
                 _db         = db;
                 _groups     = groups;
@@ -197,7 +188,7 @@ namespace Svelto.ECS
             public bool MoveNext()
             {
                 //attention, the while is necessary to skip empty groups
-                while (++_indexGroup < _groups.Length)
+                while (++_indexGroup < _groups.count)
                 {
                     var entityCollection = _db.QueryEntities<T1>(_groups[_indexGroup]);
                     if (entityCollection.count == 0)
@@ -207,7 +198,7 @@ namespace Svelto.ECS
                     break;
                 }
 
-                return _indexGroup < _groups.Length;
+                return _indexGroup < _groups.count;
             }
 
             public void Reset() { _indexGroup = -1; }
@@ -215,7 +206,7 @@ namespace Svelto.ECS
             public NB<T1> Current => _array;
 
             readonly EntitiesDB             _db;
-            readonly ExclusiveGroupStruct[] _groups;
+            readonly FasterList<ExclusiveGroupStruct> _groups;
 
             int    _indexGroup;
             NB<T1> _array;
@@ -224,6 +215,6 @@ namespace Svelto.ECS
         public NativeGroupsIterator GetEnumerator() { return new NativeGroupsIterator(_db, _groups); }
 
         readonly EntitiesDB             _db;
-        readonly ExclusiveGroupStruct[] _groups;
+        readonly FasterList<ExclusiveGroupStruct> _groups;
     }
 }

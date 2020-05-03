@@ -12,7 +12,7 @@ namespace Svelto.ECS.DataStructures
     ///     is done.
     ///     You can reserve a position in the queue to update it later.
     ///     The datastructure is a struct and it's "copyable"
-    ///     I eventually decided to call it NativeBag and not NativeRingBuffer because it can also be used as
+    ///     I eventually decided to call it NativeBag and not NativeBag because it can also be used as
     ///     a preallocated memory pool where any kind of T can be stored as long as T is unmanaged
     /// </summary>
     public struct NativeBag : IDisposable
@@ -73,31 +73,11 @@ namespace Svelto.ECS.DataStructures
             unsafe
             {
                 var sizeOf = MemoryUtilities.SizeOf<UnsafeBlob>();
-                var listData = (UnsafeBlob*) MemoryUtilities.Alloc<UnsafeBlob>((uint) sizeOf, allocator);
+                var listData = (UnsafeBlob*) MemoryUtilities.Alloc((uint) sizeOf, allocator);
 
                 //clear to nullify the pointers
                 MemoryUtilities.MemClear((IntPtr) listData, (uint) sizeOf);
                 listData->allocator = allocator;
-#if DEBUG && !PROFILE_SVELTO
-                listData->id = 0xDEADBEEF;
-#endif
-                _queue = listData;
-            }
-        }
-
-        public NativeBag(uint bufferID, Allocator allocator)
-        {
-            unsafe
-            {
-                var sizeOf = MemoryUtilities.SizeOf<UnsafeBlob>();
-                var listData = (UnsafeBlob*) MemoryUtilities.Alloc<UnsafeBlob>((uint) sizeOf, allocator);
-
-                //clear to nullify the pointers
-                MemoryUtilities.MemClear((IntPtr) listData, (uint) sizeOf);
-                listData->allocator = allocator;
-#if DEBUG && !PROFILE_SVELTO
-                listData->id = bufferID;
-#endif
                 _queue = listData;
             }
         }
@@ -123,7 +103,7 @@ namespace Svelto.ECS.DataStructures
 #endif
                 var sizeOf = MemoryUtilities.SizeOf<T>();
                 if (_queue->space - sizeOf < 0)
-                    _queue->Realloc<int>((uint) ((_queue->capacity + sizeOf) * 1.5f));
+                    _queue->Realloc((uint) ((_queue->capacity + sizeOf) * 1.5f));
 
                 return ref _queue->Reserve<T>(out index);
             }
@@ -140,7 +120,7 @@ namespace Svelto.ECS.DataStructures
 #endif
                 var sizeOf = MemoryUtilities.SizeOf<T>();
                 if (_queue->space - sizeOf < 0)
-                    _queue->Realloc<int>((uint) ((_queue->capacity + sizeOf) * 1.5f));
+                    _queue->Realloc((uint) ((_queue->capacity + sizeOf) * 1.5f));
 
                 _queue->Write(item);
             }

@@ -120,7 +120,7 @@ namespace Svelto.ECS
         static readonly Type SERIALIZABLE_ENTITY_STRUCT = typeof(SerializableEntityComponent);
         static readonly Type STRINGTYPE                 = typeof(string);
 
-        internal static readonly Type ENTITY_STRUCT_INFO_VIEW = typeof(EntityInfoComponentView);
+        internal static readonly Type ENTITY_STRUCT_INFO_VIEW = typeof(EntityInfoViewComponent);
     }
 
     public class EntityComponentException : Exception

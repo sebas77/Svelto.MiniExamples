@@ -10,25 +10,24 @@ namespace Svelto.ECS.MiniExamples.Example1C
     [Sequenced(nameof(DoofusesEngineNames.VelocityToPositionDoofusesEngine))]
     public class VelocityToPositionDoofusesEngine : IQueryingEntitiesEngine, IJobifiedEngine
     {
-        public void Ready()
-        { }
+        public void Ready() { }
 
         public EntitiesDB entitiesDB { get; set; }
 
         public JobHandle Execute(JobHandle _jobHandle)
         {
-            var groupsToUpdate = GroupCompound<GameGroups.DOOFUSES, GameGroups.EATING>.Groups;
+            FasterList<ExclusiveGroupStruct> groupsToUpdate =
+                GroupCompound<GameGroups.DOOFUSES, GameGroups.EATING>.Groups;
 
             var doofusesEntityGroups =
                 entitiesDB.NativeGroupsIterator<PositionEntityComponent, VelocityEntityComponent, SpeedEntityComponent>(
                     groupsToUpdate);
 
-            foreach (var doofuses in doofusesEntityGroups)    
+            foreach (var doofuses in doofusesEntityGroups)
             {
-                var dep = new ComputePostionFromVelocityJob(doofuses, Time.deltaTime).ScheduleParallel(doofuses.count, _jobHandle);
+                var dep = new ComputePostionFromVelocityJob(doofuses, Time.deltaTime).ScheduleParallel(
+                        doofuses.count, _jobHandle);
 
-                doofuses.ScheduleDispose(dep);
-                
                 _jobHandle = JobHandle.CombineDependencies(_jobHandle, dep);
             }
 
@@ -37,21 +36,21 @@ namespace Svelto.ECS.MiniExamples.Example1C
 
         readonly struct ComputePostionFromVelocityJob : IJobParallelFor
         {
-            public ComputePostionFromVelocityJob(BT<NB<PositionEntityComponent>, NB<VelocityEntityComponent>,
+            public ComputePostionFromVelocityJob(BT<NB<PositionEntityComponent>, NB<VelocityEntityComponent>, 
                                                      NB<SpeedEntityComponent>> doofuses, float deltaTime)
             {
-                _doofuses = doofuses;
+                _doofuses  = doofuses;
                 _deltaTime = deltaTime;
             }
 
             public void Execute(int index)
             {
                 var ecsVector3 = _doofuses.buffer2[index].velocity;
-                
+
                 _doofuses.buffer1[index].position += (ecsVector3 * (_deltaTime * _doofuses.buffer3[index].speed));
             }
 
-            readonly float _deltaTime;
+            readonly float                                                                                  _deltaTime;
             readonly BT<NB<PositionEntityComponent>, NB<VelocityEntityComponent>, NB<SpeedEntityComponent>> _doofuses;
         }
     }

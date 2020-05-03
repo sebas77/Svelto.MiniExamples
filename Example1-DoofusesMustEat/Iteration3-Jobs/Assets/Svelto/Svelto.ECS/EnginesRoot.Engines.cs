@@ -74,12 +74,13 @@ namespace Svelto.ECS
         {
             using (var profiler = new PlatformProfiler("Final Dispose"))
             {
-                foreach (var groups in _groupEntityComponentsDB)
+                foreach (FasterDictionary<uint, FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary>>.KeyValuePairFast groups in _groupEntityComponentsDB)
                 {
-                    foreach (var entityList in groups.Value)
+                    foreach (FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary>.KeyValuePairFast entityList in groups.Value)
                     {
                         entityList.Value.RemoveEntitiesFromEngines(_reactiveEnginesAddRemove, profiler,
                                                                    new ExclusiveGroupStruct(groups.Key));
+                        entityList.Value.Dispose();
                     }
                 }
 

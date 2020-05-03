@@ -40,7 +40,7 @@ namespace Svelto.ECS.DataStructures
         {
             unsafe
             {
-                int sizeOf = MemoryUtilities.SizeOf<T>();
+                uint sizeOf = (uint) MemoryUtilities.SizeOf<T>();
                 uint writeIndex = (uint) (index * sizeOf);
                 
 #if DEBUG && !PROFILE_SVELTO                
@@ -84,7 +84,7 @@ namespace Svelto.ECS.DataStructures
 #endif                
                 if (newCapacity >= 0)
                 {
-                    newPointer = (byte*) MemoryUtilities.Alloc<T>(newCapacity, allocator);
+                    newPointer = (byte*) MemoryUtilities.Alloc(newCapacity, allocator);
                     if (count > 0)
                         Unsafe.CopyBlock(newPointer, ptr, count);
                 }

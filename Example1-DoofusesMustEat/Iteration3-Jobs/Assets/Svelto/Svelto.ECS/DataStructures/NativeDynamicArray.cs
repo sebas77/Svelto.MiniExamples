@@ -59,7 +59,7 @@ namespace Svelto.ECS.DataStructures
 
                 uint pointerSize = (uint) MemoryUtilities.SizeOf<UnsafeArray>();
                 UnsafeArray* listData =
-                    (UnsafeArray*) MemoryUtilities.Alloc<UnsafeArray>(pointerSize, allocator);
+                    (UnsafeArray*) MemoryUtilities.Alloc(pointerSize, allocator);
                 
                 //clear to nullify the pointers
                 MemoryUtilities.MemClear((IntPtr) listData, pointerSize);
@@ -180,6 +180,21 @@ namespace Svelto.ECS.DataStructures
 
 #endif
             return (T*) _list->ptr;
+        }
+        
+        public IntPtr ToIntPTR<T>() where T : unmanaged
+        {
+            unsafe
+            {
+#if DEBUG && !PROFILE_SVELTO
+            if (_list == null)
+                throw new Exception("NativeDynamicArray: null-access");
+            if (hashType != TypeHash<T>.hash)
+                throw new Exception("NativeDynamicArray: not excepted type used");
+
+#endif
+                return (IntPtr) _list->ptr;
+            }
         }
 
         public T[] ToManagedArray<T>() where T : unmanaged

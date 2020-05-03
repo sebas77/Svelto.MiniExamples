@@ -22,9 +22,9 @@ namespace Svelto.ECS
 
             //assign it after otherwise the previous copy will overwrite the value in case the item
             //is already present
-            ComponentsToBuild[length] = new ComponentBuilder<EntityInfoComponentView>
+            ComponentsToBuild[length] = new ComponentBuilder<EntityInfoViewComponent>
             (
-                new EntityInfoComponentView
+                new EntityInfoViewComponent
                 {
                     componentsToBuild = ComponentsToBuild
                 }
@@ -80,9 +80,9 @@ namespace Svelto.ECS
 
             //assign it after otherwise the previous copy will overwrite the value in case the item
             //is already present
-            localEntitiesToBuild[index] = new ComponentBuilder<EntityInfoComponentView>
+            localEntitiesToBuild[index] = new ComponentBuilder<EntityInfoViewComponent>
             (
-                new EntityInfoComponentView
+                new EntityInfoViewComponent
                 {
                     componentsToBuild = localEntitiesToBuild
                 }

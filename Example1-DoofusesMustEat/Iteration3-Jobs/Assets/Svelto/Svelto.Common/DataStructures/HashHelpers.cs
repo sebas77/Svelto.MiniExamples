@@ -79,6 +79,8 @@ namespace Svelto.DataStructures
         // Returns size of hashtable to grow to.
         public static int ExpandPrime(int oldSize)
         {
+            DBC.Common.Check.Require(oldSize > 0, "can't expand 0");
+            
             int newSize = 2 * oldSize;
 
             // Allow the hashtables to grow to maximum possible size (~2G elements) before encoutering capacity overflow.

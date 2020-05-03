@@ -6,12 +6,12 @@ namespace Svelto.ECS
     {
         public static ITypeSafeDictionary Create()
         {
-            return new TypeSafeDictionary<T>();
+            return new TypeSafeDictionary<T>(1, ComponentBuilder<T>.IS_UNMANAGED);
         }
-
+        
         public static ITypeSafeDictionary Create(uint size)
         {
-            return new TypeSafeDictionary<T>(size);
+            return new TypeSafeDictionary<T>(size, ComponentBuilder<T>.IS_UNMANAGED);
         }
     }
 }

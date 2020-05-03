@@ -3,9 +3,11 @@ using Svelto.DataStructures;
 using Svelto.ECS.EntityComponents;
 using Svelto.ECS.Extensions.Unity;
 using Unity.Burst;
+using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 using Unity.Jobs;
 using Unity.Mathematics;
+using UnityEngine;
 
 namespace Svelto.ECS.MiniExamples.Example1C
 {
@@ -40,7 +42,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
         }
 
         JobHandle CreateJobForDoofusesAndFood
-        (JobHandle inputDeps, ExclusiveGroupStruct[] doofusesGroups, ExclusiveGroupStruct swapGroup
+        (JobHandle inputDeps, FasterList<ExclusiveGroupStruct> doofusesGroups, ExclusiveGroupStruct swapGroup
        , ExclusiveGroupStruct foodGroup)
         {
             if (entitiesDB.TryQueryNativeMappedEntities<PositionEntityComponent>(foodGroup, out var foodPositionMapper)
@@ -58,9 +60,6 @@ namespace Svelto.ECS.MiniExamples.Example1C
                 //schedule the job
                 var deps = new ConsumingFoodJob(doofusesBuffer, foodPositionMapper, _nativeSwap, _nativeRemove, swapGroup)
                        .ScheduleParallel(doofusesCount, inputDeps);
-                
-                //Never forget to dispose the buffer (may change this in future)
-                doofusesBuffer.ScheduleDispose(deps);
                 
                 inputDeps = JobHandle.CombineDependencies(deps, inputDeps);
             }
@@ -102,11 +101,11 @@ namespace Svelto.ECS.MiniExamples.Example1C
 
         public void Execute(int index)
         {
-            ref var    mealInfoComponent = ref _doofuses.buffer3[index];
-            EGID       lockedFood        = mealInfoComponent.targetMeal;
-            ref float3 foodPosition      = ref _foodPosition.Entity(lockedFood.entityID).position;
-            ref float3 doofusPosition    = ref _doofuses.buffer1[index].position;
-            ref var    velocity          = ref _doofuses.buffer2[index].velocity;
+            ref EGID   mealInfoComponent = ref _doofuses.buffer3[index].targetMeal;
+            ref float3 doofusPosition = ref _doofuses.buffer1[index].position;
+            ref float3 velocity       = ref _doofuses.buffer2[index].velocity;
+            
+            ref float3 foodPosition      = ref _foodPosition.Entity(mealInfoComponent.entityID).position;
             
             var computeDirection = foodPosition - doofusPosition;
             var sqrModule = computeDirection.x * computeDirection.x + computeDirection.z * computeDirection.z;
@@ -120,8 +119,8 @@ namespace Svelto.ECS.MiniExamples.Example1C
                 //Change Doofuses State
                 _nativeSwap.SwapEntity(_doofuses.buffer4[index].ID, _doofuseMealLockedGroup, _threadIndex);
                 //Remove Eaten Food
-                _nativeRemove.RemoveEntity(lockedFood, _threadIndex);
-
+                _nativeRemove.RemoveEntity(mealInfoComponent, _threadIndex);
+            
                 return;
             }
 

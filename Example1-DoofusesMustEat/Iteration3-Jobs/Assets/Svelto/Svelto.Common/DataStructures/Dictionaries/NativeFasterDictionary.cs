@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Svelto.DataStructures;
 
-namespace Svelto.DataStructures
+namespace Svelto.DataStructures.Internal
 {
     /// <summary>
     /// todo: while at the moment is not strictly necessary, I will probably need to redesign this struct so that it can be shared over the time, otherwise it should be used as a ref struct (which is not possible) 
@@ -14,28 +14,26 @@ namespace Svelto.DataStructures
         where TKey : unmanaged, IEquatable<TKey> where TValue : unmanaged
     {
         internal NativeFasterDictionary(int[] bufferBuckets, 
-                                              TValue[] bufferValues, FasterDictionaryNode<TKey>[] bufferNodes, uint count) : this()
+                                              IBuffer<TValue> bufferValues, FasterDictionaryNode<TKey>[] bufferNodes, uint count) : this()
         {
             _valuesInfo = GCHandle.Alloc(bufferNodes, GCHandleType.Pinned);
-            _values = GCHandle.Alloc(bufferValues, GCHandleType.Pinned);
+            _valuesPointer = bufferValues.ToNativeArray();
             _buckets = GCHandle.Alloc(bufferBuckets, GCHandleType.Pinned);
 
-            _valuesPointer = _values.AddrOfPinnedObject();
             _valuesInfoPointer = _valuesInfo.AddrOfPinnedObject();
             _bucketsPointer = _buckets.AddrOfPinnedObject();
 
             _bucketsSize = bufferBuckets.Length;
             _count = count;
-            _capacity = (uint) bufferValues.Length;
+            _capacity = (uint) bufferValues.capacity;
         }
 
         public void Dispose()
         {
 #if DEBUG && !PROFILE_SVELTO
-            if ((IntPtr)_values == IntPtr.Zero)
+            if ((IntPtr)_valuesPointer == IntPtr.Zero)
                 throw new Exception("disposing an already disposed NativeFasterDictionary");
 #endif 
-            _values.Free();
             _valuesInfo.Free();
             _buckets.Free();
         }
@@ -162,16 +160,15 @@ namespace Svelto.DataStructures
 #if UNITY_COLLECTIONS        
         [Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction]
 #endif
-        readonly IntPtr        _valuesPointer;
-#if UNITY_COLLECTIONS        
-        [Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction]
-#endif
         readonly IntPtr        _valuesInfoPointer;
 #if UNITY_COLLECTIONS        
         [Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction]
 #endif
         readonly IntPtr _bucketsPointer;
-        readonly GCHandle _values;
+#if UNITY_COLLECTIONS        
+        [Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction]
+#endif
+        readonly IntPtr _valuesPointer;
         readonly GCHandle _valuesInfo;
         readonly GCHandle _buckets;
         readonly int      _bucketsSize;

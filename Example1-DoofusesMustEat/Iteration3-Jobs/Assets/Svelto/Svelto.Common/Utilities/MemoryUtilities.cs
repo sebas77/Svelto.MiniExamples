@@ -68,19 +68,42 @@ namespace Svelto.Common
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static IntPtr Alloc<T>(uint newCapacity, Allocator allocator) where T : struct
+        public static IntPtr Alloc(uint newCapacity, Allocator allocator)
         {
             unsafe
             {
 #if UNITY_COLLECTIONS
                 var newPointer =
-                    UnsafeUtility.Malloc(newCapacity, (int) UnsafeUtility.AlignOf<T>(), (Unity.Collections.Allocator) allocator);
+                    UnsafeUtility.Malloc(newCapacity, (int) OptimalAlignment.alignment, (Unity.Collections.Allocator) allocator);
 #else
                 var newPointer = Marshal.AllocHGlobal((int) newCapacity);
 #endif
                 return (IntPtr) newPointer;
             }
         }
+        
+        public static void Realloc(ref IntPtr realBuffer, uint oldSize , uint newSize, Allocator allocator)
+        {
+            unsafe
+            {
+#if DEBUG && !PROFILE_SVELTO            
+                if (newSize <= 0)
+                    throw new Exception("new size must be greater than 0");
+                if (newSize <= oldSize)
+                    throw new Exception("new size must be greater than oldsize");
+#endif                
+#if UNITY_COLLECTIONS
+                IntPtr newPointer =
+                    (IntPtr)UnsafeUtility.Malloc((long) newSize  , (int) OptimalAlignment.alignment, (Unity.Collections.Allocator) allocator);
+                UnsafeUtility.MemCpy((void*) newPointer, (void*) realBuffer, oldSize);
+                Free(realBuffer, allocator);
+#else
+                var newPointer = Marshal.ReAllocHGlobal(realBuffer, (IntPtr) (newSize));
+#endif
+                realBuffer = newPointer;
+            }
+        }
+        
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void MemClear(IntPtr listData, uint sizeOf)
         {
@@ -94,15 +117,27 @@ namespace Svelto.Common
             }
         }
 
+        static class OptimalAlignment
+        {
+            internal static readonly uint alignment;
+
+            static OptimalAlignment()
+            {
+                alignment = (uint) (Environment.Is64BitProcess ? 16 : 8);
+            }
+        }
+
         static class CachedSize<T> where T : struct
         {
-            public static readonly int cachedSize = Unsafe.SizeOf<T>();
+            public static readonly uint cachedSize = (uint) Unsafe.SizeOf<T>();
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        //THIS MUST STAY INT. THE REASON WHY EVERYTHING IS INT AND NOT UINT IS BECAUSE YOU CAN END UP
+        //DOING SUBTRACT OPERATION EXPECTING TO BE < 0 AND THEY WON'T BE
         public static int SizeOf<T>() where T : struct
         {
-            return CachedSize<T>.cachedSize;
+            return (int) CachedSize<T>.cachedSize;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -121,16 +156,16 @@ namespace Svelto.Common
                 return ref Unsafe.AsRef<T>(Unsafe.Add<T>((void*) data, threadIndex));
             }
         }
-        
-        public static int GetFieldOffset(RuntimeFieldHandle h) => 
-            Marshal.ReadInt32(h.Value + (4 + IntPtr.Size)) & 0xFFFFFF;
 
         public static int GetFieldOffset(FieldInfo field)
         {
 #if UNITY_COLLECTIONS
             return UnsafeUtility.GetFieldOffset(field);
 #else
-            return GetFieldOffset(field.name);
+            int GetFieldOffset(RuntimeFieldHandle h) => 
+                Marshal.ReadInt32(h.Value + (4 + IntPtr.Size)) & 0xFFFFFF;
+
+            return GetFieldOffset(field.FieldHandle);
 #endif
         }
     }

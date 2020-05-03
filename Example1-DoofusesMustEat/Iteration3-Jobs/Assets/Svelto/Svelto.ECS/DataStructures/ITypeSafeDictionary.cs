@@ -12,29 +12,24 @@ namespace Svelto.ECS.Internal
         bool TryGetValue(uint entityId, out TValue item);
         ref TValue GetOrCreate(uint idEntityId);
 
-        TValue[] GetValuesArray(out uint count);
-        TValue[] unsafeValues { get; }
+        IBuffer<TValue> GetValuesArray(out uint count);
+        IBuffer<TValue> unsafeValues { get; }
         object GenerateSentinel();
     }
 
-    public interface ITypeSafeDictionary
+    public interface ITypeSafeDictionary:IDisposable
     {
         uint Count { get; }
         ITypeSafeDictionary Create();
 
         void AddEntitiesToEngines(FasterDictionary<RefWrapper<Type>, FasterList<IEngine>> entityComponentEnginesDb,
             ITypeSafeDictionary realDic, ExclusiveGroupStruct @group, in PlatformProfiler profiler);
-
         void RemoveEntitiesFromEngines(FasterDictionary<RefWrapper<Type>, FasterList<IEngine>> entityComponentEnginesDB,
             in PlatformProfiler profiler, ExclusiveGroupStruct @group);
-
         void AddEntitiesFromDictionary(ITypeSafeDictionary entitiesToSubmit, uint groupId);
-
         void MoveEntityFromEngines(EGID fromEntityGid, EGID? toEntityID, ITypeSafeDictionary toGroup,
             FasterDictionary<RefWrapper<Type>, FasterList<IEngine>> engines, in PlatformProfiler profiler);
-
         void AddEntityToDictionary(EGID fromEntityGid, EGID toEntityID, ITypeSafeDictionary toGroup);
-
         void RemoveEntityFromDictionary(EGID fromEntityGid);
 
         void SetCapacity(uint size);

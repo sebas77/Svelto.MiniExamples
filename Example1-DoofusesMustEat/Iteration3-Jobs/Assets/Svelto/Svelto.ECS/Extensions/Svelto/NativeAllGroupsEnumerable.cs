@@ -13,15 +13,10 @@ namespace Svelto.ECS
         
         public struct NativeGroupsIterator
         {
-            public struct CurrentGroup: IDisposable
+            public struct CurrentGroup
             {
                 public NB<T1> buffer;
                 public ExclusiveGroupStruct group;
-
-                public void Dispose()
-                {
-                    buffer.Dispose();
-                }
             }
             
             public NativeGroupsIterator(EntitiesDB db) : this()

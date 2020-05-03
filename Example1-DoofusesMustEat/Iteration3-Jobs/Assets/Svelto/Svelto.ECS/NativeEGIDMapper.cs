@@ -1,6 +1,7 @@
 using System;
 using System.Runtime.CompilerServices;
 using Svelto.DataStructures;
+using Svelto.DataStructures.Internal;
 
 namespace Svelto.ECS
 {
@@ -48,7 +49,7 @@ namespace Svelto.ECS
         {
             if (map.TryFindIndex(entityID, out index))
             {
-                return new NB<T>(map.unsafeValues, map.count, map.capacity);
+                return new NB<T>((IntPtr) map.unsafeValues, map.count, map.capacity);
             }
 
             throw new ECSException("Entity not found");
@@ -58,7 +59,7 @@ namespace Svelto.ECS
         {
             if (map.TryFindIndex(entityID, out index))
             {
-                array =  new NB<T>(map.unsafeValues, map.count, map.capacity);
+                array =  new NB<T>((IntPtr) map.unsafeValues, map.count, map.capacity);
                 return true;
             }
 

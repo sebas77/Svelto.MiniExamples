@@ -62,14 +62,14 @@ namespace Svelto.ECS.MiniExamples.Example1C
             _enginesToTick.Add(engine);
         }
 
-        void AddSveltoUECSEngine<T>(T engine) where T : ComponentSystemBase, ICopySveltoToUECSEngine
+        void AddSveltoUECSEngine<T>(T engine) where T : SyncSveltoToUECSEngine
         {
             //it's a Svelto Engine/UECS SystemBase so it must be added in the UECS world AND svelto enginesRoot
             _world.AddSystem(engine);
             _enginesRoot.AddEngine(engine);
             
             //We assume that the UECS/Svelto engines are to be added in teh SimulationSystemGroup
-            var copySveltoToUecsEnginesGroup = _world.GetExistingSystem<CopySveltoToUECSEnginesGroup>();
+            var copySveltoToUecsEnginesGroup = _world.GetExistingSystem<SyncSveltoToUECSGroup>();
             //Svelto will tick the UECS group that will tick the System, this because we still rely on the UECS
             //dependency tracking for the UECS components too
             copySveltoToUecsEnginesGroup.AddSystemToUpdateList(engine);
@@ -104,7 +104,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
 
             World.DefaultGameObjectInjectionWorld = _world;
 
-            var copySveltoToUecsEnginesGroup = new CopySveltoToUECSEnginesGroup();
+            var copySveltoToUecsEnginesGroup = new SyncSveltoToUECSGroup();
             _world.AddSystem(copySveltoToUecsEnginesGroup);
             AddSveltoEngineToTick(copySveltoToUecsEnginesGroup);
             

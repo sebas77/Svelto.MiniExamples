@@ -1,3 +1,4 @@
+#if UNITY_2019_2_OR_NEWER
 using Svelto.DataStructures;
 using Unity.Jobs;
 
@@ -29,3 +30,4 @@ namespace Svelto.ECS.Extensions.Unity
         readonly bool                          _completeEachJob;
     }
 }
+#endif

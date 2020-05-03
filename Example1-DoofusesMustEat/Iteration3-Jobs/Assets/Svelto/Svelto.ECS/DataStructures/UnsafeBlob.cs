@@ -1,7 +1,6 @@
 using System;
 using System.Runtime.CompilerServices;
 using Svelto.Common;
-using Unity.Collections.LowLevel.Unsafe;
 
 namespace Svelto.ECS.DataStructures
 {
@@ -28,9 +27,6 @@ namespace Svelto.ECS.DataStructures
         /// <summary>
         /// </summary>
         internal Allocator allocator;
-#if DEBUG && !PROFILE_SVELTO        
-        internal uint id;
-#endif        
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal void Write<T>(in T item) where T : unmanaged
@@ -191,7 +187,7 @@ namespace Svelto.ECS.DataStructures
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal void Realloc<T>(uint newCapacity) where T : unmanaged
+        internal void Realloc(uint newCapacity)
         {
             unsafe
             {
@@ -205,7 +201,7 @@ namespace Svelto.ECS.DataStructures
 #endif                
                 if (newCapacity > 0)
                 {
-                    newPointer = (byte*) MemoryUtilities.Alloc<T>(newCapacity, allocator);
+                    newPointer = (byte*) MemoryUtilities.Alloc(newCapacity, allocator);
                     if (size > 0)
                     {
                         var readerHead = _readIndex % capacity;
@@ -267,9 +263,6 @@ namespace Svelto.ECS.DataStructures
             return (uint)(Math.Ceiling(input / 4.0) * 4);            
         }
         
-#if UNITY_ECS
-        [NativeDisableUnsafePtrRestriction]
-#endif
         unsafe byte* _ptr;
         uint _writeIndex, _readIndex;
     }

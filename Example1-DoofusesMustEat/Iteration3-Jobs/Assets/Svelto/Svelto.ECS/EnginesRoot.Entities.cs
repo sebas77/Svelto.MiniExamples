@@ -76,7 +76,7 @@ namespace Svelto.ECS
                 //Check if there is an EntityInfoView linked to this entity, if so it's a DynamicEntityDescriptor!
                 if (fromGroup.TryGetValue(new RefWrapper<Type>(EntityBuilderUtilities.ENTITY_STRUCT_INFO_VIEW),
                         out var entityInfoViewDic) &&
-                    (entityInfoViewDic as ITypeSafeDictionary<EntityInfoComponentView>).TryGetValue(fromEntityGID.entityID,
+                    (entityInfoViewDic as ITypeSafeDictionary<EntityInfoViewComponent>).TryGetValue(fromEntityGID.entityID,
                         out var entityInfoView))
                     MoveEntityComponents(fromEntityGID, toEntityGID, entityInfoView.componentsToBuild, fromGroup, sampler);
                 //otherwise it's a normal static entity descriptor

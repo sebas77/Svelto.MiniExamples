@@ -7,12 +7,12 @@ namespace Svelto.ECS.Extensions.Unity
 {
     [Sequenced(nameof(JobifiedSveltoEngines.CopySveltoToUECSEnginesGroup))]
     [DisableAutoCreation]
-    public class CopySveltoToUECSEnginesGroup : ComponentSystemGroup, IJobifiedEngine
+    public class SyncSveltoToUECSGroup : ComponentSystemGroup, IJobifiedEngine
     {
         public JobHandle Execute(JobHandle _jobHandle)
         {
             foreach (var engine in Systems)
-                (engine as ICopySveltoToUECSEngine).jobHandle = _jobHandle;
+                (engine as SyncSveltoToUECSEngine).externalHandle = _jobHandle;
             
             Update();
             
@@ -21,10 +21,17 @@ namespace Svelto.ECS.Extensions.Unity
 
         readonly SimulationSystemGroup _simulationSystemGroup;
     }
-
-    public interface ICopySveltoToUECSEngine:IEngine
+    
+    public abstract class SyncSveltoToUECSEngine : SystemBase, IEngine
     {
-        JobHandle jobHandle { set; }
+        internal JobHandle externalHandle;
+        protected abstract void Execute();
+
+        protected sealed override void OnUpdate()
+        {
+            Dependency = JobHandle.CombineDependencies(Dependency, externalHandle);
+            Execute();
+        }
     }
 }
 #endif

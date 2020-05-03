@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.CompilerServices;
+using Svelto.DataStructures;
 using Svelto.ECS.Internal;
 
 namespace Svelto.ECS
@@ -40,7 +41,7 @@ namespace Svelto.ECS
             return false;
         }
         
-        public T[] GetArrayAndEntityIndex(uint entityID, out uint index)
+        public IBuffer<T> GetArrayAndEntityIndex(uint entityID, out uint index)
         {
             if (map.TryFindIndex(entityID, out index))
             {
@@ -50,7 +51,7 @@ namespace Svelto.ECS
             throw new ECSException("Entity not found");
         }
         
-        public bool TryGetArrayAndEntityIndex(uint entityID, out uint index, out T[] array)
+        public bool TryGetArrayAndEntityIndex(uint entityID, out uint index, out IBuffer<T> array)
         {
             if (map.TryFindIndex(entityID, out index))
             {

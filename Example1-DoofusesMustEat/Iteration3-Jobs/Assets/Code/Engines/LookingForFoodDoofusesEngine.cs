@@ -49,10 +49,10 @@ namespace Svelto.ECS.MiniExamples.Example1C
         }
 
         JobHandle CreateJobForDoofusesAndFood
-        (JobHandle inputDeps, ExclusiveGroupStruct[] foodGroups, ExclusiveGroupStruct[] doofusesGroups
+        (JobHandle inputDeps, FasterList<ExclusiveGroupStruct> foodGroups, FasterList<ExclusiveGroupStruct> doofusesGroups
        , ExclusiveGroupStruct swapDoofuseGroup, ExclusiveGroupStruct swapFoodGroup)
         {
-            var foodBuffer     = entitiesDB.NativeEntitiesBuffer<EGIDComponent, PositionEntityComponent>(foodGroups[0]);
+            var foodBuffer     = entitiesDB.NativeEntitiesBuffer<EGIDComponent>(foodGroups[0]);
             var doofusesBuffer = entitiesDB.NativeEntitiesBuffer<MealInfoComponent, EGIDComponent>(doofusesGroups[0]);
 
             var doofusesCount = doofusesBuffer.count;
@@ -74,9 +74,6 @@ namespace Svelto.ECS.MiniExamples.Example1C
               , _lockedFood             = swapFoodGroup
             }.ScheduleParallel(willEatDoofuses, inputDeps);
 
-            //Never forget to dispose the buffer (may change this in future)
-            doofusesBuffer.ScheduleDispose(foodBuffer, deps);
-
             return deps;
         }
 
@@ -88,12 +85,12 @@ namespace Svelto.ECS.MiniExamples.Example1C
         [BurstCompile]
         struct LookingForFoodDoofusesJob : IJobParallelFor
         {
-            public BT<NB<MealInfoComponent>, NB<EGIDComponent>>       _doofuses;
-            public BT<NB<EGIDComponent>, NB<PositionEntityComponent>> _food;
-            public NativeEntitySwap                                   _nativeDoofusesSwap;
-            public NativeEntitySwap                                   _nativeFoodSwap;
-            public ExclusiveGroupStruct                               _doofuseMealLockedGroup;
-            public ExclusiveGroupStruct                               _lockedFood;
+            public BT<NB<MealInfoComponent>, NB<EGIDComponent>> _doofuses;
+            public NB<EGIDComponent>                            _food;
+            public NativeEntitySwap                             _nativeDoofusesSwap;
+            public NativeEntitySwap                             _nativeFoodSwap;
+            public ExclusiveGroupStruct                         _doofuseMealLockedGroup;
+            public ExclusiveGroupStruct                         _lockedFood;
 
 #pragma warning disable 649
             [NativeSetThreadIndex] readonly int _threadIndex;
@@ -101,14 +98,12 @@ namespace Svelto.ECS.MiniExamples.Example1C
 
             public void Execute(int index)
             {
-                var targetMeal = _food.buffer1[(uint) index].ID;
+                var targetMeal = _food[(uint) index].ID;
                 _doofuses.buffer1[index].targetMeal = new EGID(targetMeal.entityID, _lockedFood);
 
                 _nativeDoofusesSwap.SwapEntity(_doofuses.buffer2[index].ID, _doofuseMealLockedGroup, _threadIndex);
                 _nativeFoodSwap.SwapEntity(targetMeal, _lockedFood, _threadIndex);
             }
-
-            public void Execute(int startIndex, int count) { throw new System.NotImplementedException(); }
         }
     }
 }

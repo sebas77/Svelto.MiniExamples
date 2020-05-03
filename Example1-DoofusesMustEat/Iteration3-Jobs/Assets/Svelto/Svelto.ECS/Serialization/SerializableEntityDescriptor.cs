@@ -42,7 +42,7 @@ namespace Svelto.ECS.Serialization
             // If the current serializable is an ExtendibleDescriptor, I have to update it.
             if (dynamicIndex != -1)
             {
-                ComponentsToBuild[dynamicIndex] = new ComponentBuilder<EntityInfoComponentView>(new EntityInfoComponentView
+                ComponentsToBuild[dynamicIndex] = new ComponentBuilder<EntityInfoViewComponent>(new EntityInfoViewComponent
                 {
                     componentsToBuild = ComponentsToBuild
                 });

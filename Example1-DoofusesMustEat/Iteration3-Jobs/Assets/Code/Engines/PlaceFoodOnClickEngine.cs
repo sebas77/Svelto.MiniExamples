@@ -17,6 +17,8 @@ namespace Svelto.ECS.MiniExamples.Example1C
     [Sequenced(nameof(DoofusesEngineNames.PlaceFoodOnClickEngine))]
     public class PlaceFoodOnClickEngine : IQueryingEntitiesEngine, IJobifiedEngine
     {
+        const int MaxMeals = 500;
+
         public PlaceFoodOnClickEngine(Entity redfood, Entity bluefood, IEntityFactory entityFactory)
         {
             _entityFactory = entityFactory;
@@ -39,26 +41,29 @@ namespace Svelto.ECS.MiniExamples.Example1C
                     {
                         //BuildEntity returns an EntityInitialized that is used to set the default values of the
                         //entity that will be built.
-                        for (int i = 0; i < 500; i++)
+                        for (int i = 0; i < MaxMeals; i++)
                         {
                             EntityComponentInitializer init;
 
-                            var newposition = new float3(position.x + _random.NextFloat(-50, 50), position.y,
-                                                         position.z + _random.NextFloat(-50, 50));
+                            var randX = position.x + _random.NextFloat(-50, 50);
+                            var randZ = position.z + _random.NextFloat(-50, 50);
+                            var newposition = new float3(randX, position.y, randZ);
 
                             bool isRed;
 
                             if (Input.GetMouseButton(0))
                             {
                                 init = _entityFactory.BuildEntity<FoodEntityDescriptor>(_foodPlaced++,
-                                                        GroupCompound<GameGroups.FOOD, GameGroups.RED, GameGroups.NOTEATING>.BuildGroup);
+                                                        GroupCompound<GameGroups.FOOD, GameGroups.RED,
+                                                            GameGroups.NOTEATING>.BuildGroup);
 
                                 isRed = true;
                             }
                             else
                             {
                                 init = _entityFactory.BuildEntity<FoodEntityDescriptor>(_foodPlaced++,
-                                                         GroupCompound<GameGroups.FOOD, GameGroups.BLUE, GameGroups.NOTEATING>.BuildGroup);
+                                                         GroupCompound<GameGroups.FOOD, GameGroups.BLUE,
+                                                             GameGroups.NOTEATING>.BuildGroup);
 
                                 isRed = false;
                             }
