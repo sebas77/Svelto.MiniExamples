@@ -43,7 +43,7 @@ namespace Svelto.ECS
 
                     var array  = entityCollection1.ToNativeBuffers<T1, T2, T3>();
                     var array2 = entityCollection2.ToNativeBuffer<T4>();
-                    _array = new BT<NB<T1>, NB<T2>, NB<T3>, NB<T4>>(array.buffer1, array.buffer2, array.buffer3, array2
+                    _buffers = new BT<NB<T1>, NB<T2>, NB<T3>, NB<T4>>(array.buffer1, array.buffer2, array.buffer3, array2.buffer
                                                                   , entityCollection1.count);
                     break;
                 }
@@ -53,12 +53,12 @@ namespace Svelto.ECS
 
             public void Reset() { _indexGroup = -1; }
 
-            public BT<NB<T1>, NB<T2>, NB<T3>, NB<T4>> Current => _array;
+            public BT<NB<T1>, NB<T2>, NB<T3>, NB<T4>> Current => _buffers;
 
             readonly FasterList<ExclusiveGroupStruct> _groups;
 
             int                                _indexGroup;
-            BT<NB<T1>, NB<T2>, NB<T3>, NB<T4>> _array;
+            BT<NB<T1>, NB<T2>, NB<T3>, NB<T4>> _buffers;
             readonly EntitiesDB                _entitiesDB;
         }
 
@@ -96,7 +96,7 @@ namespace Svelto.ECS
                     if (entityCollection.count == 0)
                         continue;
 
-                    _array = entityCollection.ToNativeBuffers<T1, T2, T3>();
+                    _buffers = entityCollection.ToNativeBuffers<T1, T2, T3>();
                     break;
                 }
 
@@ -105,12 +105,12 @@ namespace Svelto.ECS
 
             public void Reset() { _indexGroup = -1; }
 
-            public BT<NB<T1>, NB<T2>, NB<T3>> Current => _array;
+            public BT<NB<T1>, NB<T2>, NB<T3>> Current => _buffers;
 
             readonly FasterList<ExclusiveGroupStruct> _groups;
 
             int                        _indexGroup;
-            BT<NB<T1>, NB<T2>, NB<T3>> _array;
+            BT<NB<T1>, NB<T2>, NB<T3>> _buffers;
             readonly EntitiesDB        _entitiesDB;
         }
 
@@ -144,7 +144,7 @@ namespace Svelto.ECS
                     if (entityCollection.count == 0)
                         continue;
 
-                    _array = entityCollection.ToNativeBuffers<T1, T2>();
+                    _buffers = entityCollection.ToNativeBuffers<T1, T2>();
                     break;
                 }
 
@@ -153,13 +153,13 @@ namespace Svelto.ECS
 
             public void Reset() { _indexGroup = -1; }
 
-            public BT<NB<T1>, NB<T2>> Current => _array;
+            public BT<NB<T1>, NB<T2>> Current => _buffers;
 
             readonly EntitiesDB             _db;
             readonly FasterList<ExclusiveGroupStruct> _groups;
 
             int                _indexGroup;
-            BT<NB<T1>, NB<T2>> _array;
+            BT<NB<T1>, NB<T2>> _buffers;
         }
 
         public NativeGroupsIterator GetEnumerator() { return new NativeGroupsIterator(_db, _groups); }
@@ -194,7 +194,7 @@ namespace Svelto.ECS
                     if (entityCollection.count == 0)
                         continue;
 
-                    _array = entityCollection.ToNativeBuffer<T1>();
+                    _buffer = entityCollection.ToNativeBuffer<T1>().buffer;
                     break;
                 }
 
@@ -203,13 +203,13 @@ namespace Svelto.ECS
 
             public void Reset() { _indexGroup = -1; }
 
-            public NB<T1> Current => _array;
+            public NB<T1> Current => _buffer;
 
             readonly EntitiesDB             _db;
             readonly FasterList<ExclusiveGroupStruct> _groups;
 
             int    _indexGroup;
-            NB<T1> _array;
+            NB<T1> _buffer;
         }
 
         public NativeGroupsIterator GetEnumerator() { return new NativeGroupsIterator(_db, _groups); }

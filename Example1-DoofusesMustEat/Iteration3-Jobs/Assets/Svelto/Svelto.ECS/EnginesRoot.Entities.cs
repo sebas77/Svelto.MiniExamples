@@ -4,7 +4,6 @@ using System.Runtime.CompilerServices;
 using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.ECS.Internal;
-using Svelto.ECS.Schedulers;
 
 namespace Svelto.ECS
 {
@@ -67,21 +66,21 @@ namespace Svelto.ECS
 
         ///--------------------------------------------
         ///
-        void MoveEntityFromAndToEngines(IComponentBuilder[] entityBuilders, EGID fromEntityGID, EGID? toEntityGID)
+        void MoveEntityFromAndToEngines(IComponentBuilder[] componentBuilders, EGID fromEntityGID, EGID? toEntityGID)
         {
             using (var sampler = new PlatformProfiler("Move Entity From Engines"))
             {
                 var fromGroup = GetGroup(fromEntityGID.groupID);
 
                 //Check if there is an EntityInfoView linked to this entity, if so it's a DynamicEntityDescriptor!
-                if (fromGroup.TryGetValue(new RefWrapper<Type>(EntityBuilderUtilities.ENTITY_STRUCT_INFO_VIEW),
+                if (fromGroup.TryGetValue(new RefWrapper<Type>(ComponentBuilderUtilities.ENTITY_STRUCT_INFO_VIEW),
                         out var entityInfoViewDic) &&
                     (entityInfoViewDic as ITypeSafeDictionary<EntityInfoViewComponent>).TryGetValue(fromEntityGID.entityID,
                         out var entityInfoView))
                     MoveEntityComponents(fromEntityGID, toEntityGID, entityInfoView.componentsToBuild, fromGroup, sampler);
                 //otherwise it's a normal static entity descriptor
                 else
-                    MoveEntityComponents(fromEntityGID, toEntityGID, entityBuilders, fromGroup, sampler);
+                    MoveEntityComponents(fromEntityGID, toEntityGID, componentBuilders, fromGroup, sampler);
             }
         }
 

@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Svelto.DataStructures;
 
 namespace Svelto.ECS
@@ -46,7 +45,7 @@ namespace Svelto.ECS
             return new NativeAllGroupsEnumerable<T1, T2>(db);
         }
 #endif
-        public static NB<T> NativeEntitiesBuffer<T>(this EntitiesDB db, ExclusiveGroupStruct @group)
+        public static BT<NB<T>> NativeEntitiesBuffer<T>(this EntitiesDB db, ExclusiveGroupStruct @group)
             where T : unmanaged, IEntityComponent
         {
             return db.QueryEntities<T>(group).ToNativeBuffer<T>();

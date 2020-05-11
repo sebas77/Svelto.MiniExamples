@@ -6,7 +6,6 @@ using Svelto.ECS.Extensions.Unity;
 using Svelto.ECS.Internal;
 using Svelto.Tasks;
 using Svelto.Tasks.ExtraLean;
-using Unity.Collections.LowLevel.Unsafe;
 using Unity.Entities;
 using Unity.Jobs;
 using UnityEngine;
@@ -28,7 +27,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
 
         IEnumerator MainThreadTick(FasterList<IJobifiedEngine> engines)
         {
-            EnginesExecutionOrder order = new EnginesExecutionOrder(new FasterReadOnlyList<IJobifiedEngine>(engines));
+            EnginesExecutionOrderGroup orderGroup = new EnginesExecutionOrderGroup(new FasterReadOnlyList<IJobifiedEngine>(engines));
 
             JobHandle jobs = default;
             
@@ -42,7 +41,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
                 _simpleSubmitScheduler.SubmitEntities();
 
                 //schedule all jobs and let them run until next frame;
-                jobs = order.Execute(jobs);
+                jobs = orderGroup.Execute(jobs);
                 
                 yield return Yield.It;
             }

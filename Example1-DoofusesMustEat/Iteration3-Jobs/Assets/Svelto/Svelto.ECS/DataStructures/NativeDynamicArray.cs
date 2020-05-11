@@ -7,7 +7,7 @@ namespace Svelto.ECS.DataStructures
 {
     public struct NativeDynamicArray : IDisposable
     {
-#if UNITY_ECS        
+#if UNITY_BURST      
         [global::Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction]
 #endif
         unsafe UnsafeArray* _list;
@@ -16,7 +16,7 @@ namespace Svelto.ECS.DataStructures
 #endif
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public uint Count<T>() where T:unmanaged
+        public int Count<T>() where T:unmanaged
         {
             unsafe
             {
@@ -27,12 +27,12 @@ namespace Svelto.ECS.DataStructures
                     throw new Exception("NativeDynamicArray: not excepted type used");
 
 #endif            
-                return (uint) (_list->count / MemoryUtilities.SizeOf<T>());
+                return (_list->count / MemoryUtilities.SizeOf<T>());
             }
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public uint Capacity<T>() where T:unmanaged
+        public int Capacity<T>() where T:unmanaged
         {
             unsafe
             {
@@ -43,7 +43,7 @@ namespace Svelto.ECS.DataStructures
                     throw new Exception("NativeDynamicArray: not excepted type used");
 
 #endif            
-                return (uint) (_list->capacity / MemoryUtilities.SizeOf<T>());
+                return (_list->capacity / MemoryUtilities.SizeOf<T>());
             }
         }
 
@@ -65,7 +65,7 @@ namespace Svelto.ECS.DataStructures
                 MemoryUtilities.MemClear((IntPtr) listData, pointerSize);
 
                 listData->allocator = allocator;
-                listData->Realloc<T>((uint) (newLength * sizeOf));
+                listData->Realloc((uint) (newLength * sizeOf));
 
                 rtnStruc._list = listData;
 
@@ -131,7 +131,7 @@ namespace Svelto.ECS.DataStructures
                 var structSize = (uint) MemoryUtilities.SizeOf<T>();
                 
                 if (_list->space -  (int)structSize <  0)
-                    _list->Realloc<T>((uint) ((Count<T>() + 1) * structSize * 1.5f));
+                    _list->Realloc((uint) (((uint)((Count<T>() + 1) * 1.5f) * (float)structSize)));
            
                 _list->Add(item);
             }
@@ -208,11 +208,13 @@ namespace Svelto.ECS.DataStructures
                     throw new Exception("NativeDynamicArray: not excepted type used");
 
 #endif
-                var ret = new T[Count<T>()];
+                var count               = Count<T>();
+                var ret                 = new T[count];
+                var lengthToCopyInBytes = count * MemoryUtilities.SizeOf<T>();
 
                 fixed (void * handle = ret)
                 {
-                    Buffer.MemoryCopy(_list->ptr, handle, _list->count, _list->count);
+                    Unsafe.CopyBlock(handle, _list->ptr, (uint) lengthToCopyInBytes);
                 }
 
                 return ret;
@@ -230,11 +232,13 @@ namespace Svelto.ECS.DataStructures
                     throw new Exception("NativeDynamicArray: not excepted type used");
 
 #endif
-                var ret = new T[Capacity<T>()];
+                var capacity            = Capacity<T>();
+                var lengthToCopyInBytes = capacity * MemoryUtilities.SizeOf<T>();
+                var ret                 = new T[capacity];
 
                 fixed (void * handle = ret)
                 {
-                    Buffer.MemoryCopy(_list->ptr, handle, _list->capacity, _list->capacity);
+                    Unsafe.CopyBlock(handle, _list->ptr, (uint) lengthToCopyInBytes);
                 }
 
                 return ret;

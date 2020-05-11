@@ -9,12 +9,13 @@ namespace Svelto.ECS.DataStructures
         internal unsafe byte* ptr => _ptr;
 
         //expressed in bytes
-        internal uint capacity => _capacity;
+        internal int capacity => (int) _capacity;
 
         //expressed in bytes
-        internal uint count => _writeIndex;
+        internal int count => (int) _writeIndex;
+
         //expressed in bytes
-        internal uint space => capacity - count;
+        internal int space => capacity - count;
 
         /// <summary>
         /// </summary>
@@ -73,7 +74,7 @@ namespace Svelto.ECS.DataStructures
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal void Realloc<T>(uint newCapacity) where T : unmanaged
+        internal void Realloc(uint newCapacity)
         {
             unsafe
             {
@@ -86,7 +87,7 @@ namespace Svelto.ECS.DataStructures
                 {
                     newPointer = (byte*) MemoryUtilities.Alloc(newCapacity, allocator);
                     if (count > 0)
-                        Unsafe.CopyBlock(newPointer, ptr, count);
+                        Unsafe.CopyBlock(newPointer, ptr, (uint) count);
                 }
 
                 if (ptr != null)
@@ -117,10 +118,11 @@ namespace Svelto.ECS.DataStructures
             _writeIndex = 0;
         }
         
-#if UNITY_ECS
+#if UNITY_BURST
         [global::Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction]
 #endif
         unsafe byte* _ptr;
+        
         uint _writeIndex;
         uint _capacity;
     }

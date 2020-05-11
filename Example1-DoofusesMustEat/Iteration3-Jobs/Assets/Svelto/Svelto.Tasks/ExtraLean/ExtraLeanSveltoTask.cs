@@ -2,7 +2,6 @@
 #define GENERATE_NAME
 #endif
 
-using System;
 using System.Collections;
 using DBC.Tasks;
 
@@ -62,7 +61,7 @@ namespace Svelto.Tasks.ExtraLean
                 completed = !_runningTask.MoveNext();
 #if DEBUG && !PROFILE_SVELTO                
                 if (_runningTask.Current != null)
-                    throw new Exception("ExtraLean runners cannot yield any other value than Yield.It");
+                    throw new System.Exception("ExtraLean runners cannot yield any other value than Yield.It");
 #endif
             }
             else

@@ -55,7 +55,7 @@ namespace Svelto.ECS
 
             scheduler = entitiesComponentScheduler;
             scheduler.onTick = new EntitiesSubmitter(this);
-#if UNITY_ECS            
+#if UNITY_BURST        
             AllocateNativeOperations();
 #endif
         }

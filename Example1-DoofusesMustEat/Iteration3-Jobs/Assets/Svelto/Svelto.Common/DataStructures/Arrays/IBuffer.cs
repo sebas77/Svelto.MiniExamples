@@ -11,9 +11,8 @@ namespace Svelto.DataStructures
         void Clear();
         
         T[]  ToManagedArray();
-        IntPtr ToNativeArray();
+        IntPtr ToNativeArray(out int capacity);
 
-        uint capacity { get; }
-        uint count { get; }
+        int capacity { get; }
     }
 }

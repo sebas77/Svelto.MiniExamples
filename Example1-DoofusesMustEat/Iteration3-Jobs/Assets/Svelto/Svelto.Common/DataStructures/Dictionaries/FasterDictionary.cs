@@ -1,8 +1,7 @@
-﻿﻿﻿﻿using System;
+﻿﻿﻿﻿﻿using System;
 using System.Runtime.CompilerServices;
-   using Svelto.DataStructures.Internal;
 
-   namespace Svelto.DataStructures
+namespace Svelto.DataStructures
 {
     /// <summary>
     /// This dictionary has been created for just one reason: I needed a dictionary that would have let me iterate
@@ -15,172 +14,155 @@ using System.Runtime.CompilerServices;
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
-    public interface IAccess<T>: IDisposable
+    public sealed class FasterDictionary<TKey, TValue>  where TKey : IEquatable<TKey>
     {
-        void Alloc(uint size);
-        IBuffer<T> values { get; }
-        uint capacity { get; }
-        void Resize(uint size);
-    }
-    
-    public class FasterDictionary<TKey, TValue> : IFasterDictionary<TKey, TValue>, IDisposable where TKey : IEquatable<TKey>
-    {
-        readonly IAccess<TValue> _values;
-        
-        public FasterDictionary():this(1)
-        { }
-        
         public FasterDictionary(uint size)
         {
             _valuesInfo = new FasterDictionaryNode<TKey>[size];
-            _values     = new ManagedAllocationStrategy<TValue>();
-            _values.Alloc(size);
-            DBC.Common.Check.Ensure(_values.capacity == _valuesInfo.Length, "invalid buffer size");
+            _values = new TValue[size];
             _buckets = new int[HashHelpers.GetPrime((int) size)];
         }
         
-        public FasterDictionary(uint size, IAccess<TValue> allocationStrategy)
+        public FasterDictionary()
         {
-            _valuesInfo = new FasterDictionaryNode<TKey>[size];
-            _values = allocationStrategy;
-            _values.Alloc(size);
-            DBC.Common.Check.Ensure(_values.capacity == _valuesInfo.Length, "invalid buffer size");
-            _buckets = new int[HashHelpers.GetPrime((int) size)];
+            _valuesInfo = new FasterDictionaryNode<TKey>[1];
+            _values = new TValue[1];
+            _buckets = new int[3];
         }
-        
+
         public void CopyValuesTo(TValue[] tasks, uint index)
         {
-            _values.values.CopyTo(0, tasks, index, count);
+            Array.Copy(_values, 0, tasks, index, count);
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IBuffer<TValue> GetValuesArray(out uint count)
+        public TValue[] GetValuesArray(out uint count)
         {
             count = _freeValueCellIndex;
-        
-            return _values.values;
+
+            return _values;
         }
-        
-        public IBuffer<TValue> unsafeValues
+
+        public TValue[] unsafeValues
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => _values.values;
+            get => _values;
         }
-        
+
         public uint count => _freeValueCellIndex;
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Add(TKey key, in TValue value)
         {
             if (AddValue(key, in value, out _) == false)
                 throw new FasterDictionaryException("Key already present");
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Set(TKey key, in TValue value)
         {
             AddValue(key, in value, out _);
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Clear()
         {
             if (_freeValueCellIndex == 0) return;
-        
+
             _freeValueCellIndex = 0;
-        
+
             Array.Clear(_buckets, 0, _buckets.Length);
-            _values.values.Clear();
+            Array.Clear(_values, 0, _values.Length);
             Array.Clear(_valuesInfo, 0, _valuesInfo.Length);
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void FastClear()
         {
             if (_freeValueCellIndex == 0) return;
-        
+
             _freeValueCellIndex = 0;
-        
+
             Array.Clear(_buckets, 0, _buckets.Length);
             Array.Clear(_valuesInfo, 0, _valuesInfo.Length);
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool ContainsKey(TKey key)
         {
             return TryFindIndex(key, out _);
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public FasterDictionaryKeyValueEnumerator GetEnumerator()
         {
             return new FasterDictionaryKeyValueEnumerator(this);
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool TryGetValue(TKey key, out TValue result)
         {
             if (TryFindIndex(key, out var findIndex) == true)
             {
-                result = _values.values[(int) findIndex];
+                result = _values[(int) findIndex];
                 return true;
             }
-        
+
             result = default;
             return false;
         }
-        
+
         //todo: can be optimized
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref TValue GetOrCreate(TKey key)
         {
             if (TryFindIndex(key, out var findIndex) == true)
             {
-                return ref _values.values[(int) findIndex];
+                return ref _values[(int) findIndex];
             }
-        
+
             AddValue(key, default, out findIndex);
-        
-            return ref _values.values[(int) findIndex];
+
+            return ref _values[(int) findIndex];
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref TValue GetOrCreate(TKey key, Func<TValue> builder)
         {
             if (TryFindIndex(key, out var findIndex) == true)
             {
-                return ref _values.values[(int) findIndex];
+                return ref _values[(int) findIndex];
             }
-        
+
             AddValue(key, builder(), out findIndex);
-        
-            return ref _values.values[(int) findIndex];
+
+            return ref _values[(int) findIndex];
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref TValue GetValueByRef(TKey key)
         {
             if (TryFindIndex(key, out var findIndex) == true)
             {
-                return ref _values.values[(int) findIndex];
+                return ref _values[(int) findIndex];
             }
-        
+
             throw new FasterDictionaryException("Key not found");
         }
-        
+
         public void SetCapacity(uint size)
         {
-            if (_values.capacity < size)
+            if (_values.Length < size)
             {
-                _values.Resize(size);
+                Array.Resize(ref _values, (int) size);
                 Array.Resize(ref _valuesInfo, (int) size);
             }
         }
-        
+
         public TValue this[TKey key]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => _values.values[(int) GetIndex(key)];
+            get => _values[(int) GetIndex(key)];
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set => AddValue(key, in value, out _);
         }
@@ -190,14 +172,12 @@ using System.Runtime.CompilerServices;
             int hash = key.GetHashCode();
             uint bucketIndex = Reduce((uint) hash, (uint) _buckets.Length);
 
-            if (_freeValueCellIndex == _values.capacity)
+            if (_freeValueCellIndex == _values.Length)
             {
                 var expandPrime = HashHelpers.ExpandPrime((int) _freeValueCellIndex);
 
-                _values.Resize((uint) expandPrime);
+                Array.Resize(ref _values, expandPrime);
                 Array.Resize(ref _valuesInfo, expandPrime);
-                
-                DBC.Common.Check.Ensure(_values.capacity == _valuesInfo.Length, "invalid buffer resize");
             }
 
             //buckets value -1 means it's empty
@@ -218,7 +198,7 @@ using System.Runtime.CompilerServices;
                         fasterDictionaryNode.key.Equals(key) == true)
                     {
                         //the key already exists, simply replace the value!
-                        _values.values[currentValueIndex] = value;
+                        _values[currentValueIndex] = value;
                         indexSet = (uint) currentValueIndex;
                         return false;
                     }
@@ -243,7 +223,7 @@ using System.Runtime.CompilerServices;
             //I wouldn't need to update the bucket here. Small optimization but important
             _buckets[bucketIndex] = (int) (_freeValueCellIndex + 1);
 
-            _values.values[(int) _freeValueCellIndex] = value;
+            _values[(int) _freeValueCellIndex] = value;
             indexSet = _freeValueCellIndex;
 
             _freeValueCellIndex++;
@@ -380,7 +360,7 @@ using System.Runtime.CompilerServices;
 
                 //finally, actually move the values
                 _valuesInfo[indexToValueToRemove] = _valuesInfo[_freeValueCellIndex];
-                _values.values[indexToValueToRemove] = _values.values[(int) _freeValueCellIndex];
+                _values[indexToValueToRemove] = _values[(int) _freeValueCellIndex];
             }
 
             return true;
@@ -388,8 +368,8 @@ using System.Runtime.CompilerServices;
 
         public void Trim()
         {
-            _values.Resize(_freeValueCellIndex);
-            Array.Resize(ref _valuesInfo, (int) _freeValueCellIndex);
+            Array.Resize(ref _values, (int) Math.Max(_freeValueCellIndex, 1));
+            Array.Resize(ref _valuesInfo, (int) Math.Max(_freeValueCellIndex, 1));
         }
 
         //I store all the index with an offset + 1, so that in the bucket list 0 means actually not existing.
@@ -455,12 +435,6 @@ using System.Runtime.CompilerServices;
                 valuesInfo[previous].next = next;
         }
         
-        public NativeFasterDictionary<TK, TV> ToNative<TK, TV>() where TK : unmanaged, TKey, IEquatable<TK> 
-                                                                 where TV : unmanaged, TValue
-        {
-            return new NativeFasterDictionary<TK, TV>(_buckets, _values.values as IBuffer<TV>, _valuesInfo as FasterDictionaryNode<TK>[], _freeValueCellIndex);
-        }
-        
         public struct FasterDictionaryKeyValueEnumerator
         {
             public FasterDictionaryKeyValueEnumerator(FasterDictionary<TKey, TValue> dic) : this()
@@ -486,7 +460,7 @@ using System.Runtime.CompilerServices;
                 return false;
             }
 
-            public KeyValuePairFast Current => new KeyValuePairFast(_dic._valuesInfo[_index].key, _dic._values, _index);
+            public KeyValuePairFast Current => new KeyValuePairFast(_dic._valuesInfo[_index].key, _dic.unsafeValues, _index);
 
             readonly FasterDictionary<TKey, TValue> _dic;
             readonly int                            _count;
@@ -498,11 +472,11 @@ using System.Runtime.CompilerServices;
         /// </summary>
         public readonly ref struct KeyValuePairFast
         {
-            readonly IAccess<TValue> _dicValues;
+            readonly TValue[] _dicValues;
             readonly TKey     key;
             readonly int      _index;
 
-            public KeyValuePairFast(TKey keys, IAccess<TValue> dicValues, int index)
+            public KeyValuePairFast(TKey keys, TValue[] dicValues, int index)
             {
                 _dicValues = dicValues;
                 _index     = index;
@@ -510,40 +484,18 @@ using System.Runtime.CompilerServices;
             }
 
             public TKey Key   => key;
-            public ref TValue Value => ref _dicValues.values[_index];
-        }
-        
-        /// <summary>
-        /// Note: I am still not 100% sure if it should be the FasterDictionary responsibility to dispose the allocation
-        /// strategy. 
-        /// </summary>
-        void ReleaseUnmanagedResources()
-        {
-            // TODO release unmanaged resources here
+            public ref TValue Value => ref _dicValues[_index];
         }
 
-        void Dispose(bool disposing)
-        {
-            ReleaseUnmanagedResources();
-            if (disposing)
-            {
-                _values?.Dispose();
-            }
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        ~FasterDictionary() {
-            Dispose(false);
-        }
-        
+        TValue[]                     _values;
         FasterDictionaryNode<TKey>[] _valuesInfo;
         int[]                        _buckets;
         uint                         _freeValueCellIndex;
         uint                         _collisions;
+    }
+
+    public class FasterDictionaryException : Exception
+    {
+        public FasterDictionaryException(string keyAlreadyExisting) : base(keyAlreadyExisting) { }
     }
 }

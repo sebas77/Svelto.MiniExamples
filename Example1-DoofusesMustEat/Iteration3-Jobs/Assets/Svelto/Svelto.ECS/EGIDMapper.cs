@@ -1,4 +1,3 @@
-using System;
 using System.Runtime.CompilerServices;
 using Svelto.DataStructures;
 using Svelto.ECS.Internal;
@@ -8,7 +7,7 @@ namespace Svelto.ECS
     public readonly struct EGIDMapper<T> where T : struct, IEntityComponent
     {
         internal readonly ITypeSafeDictionary<T> map;
-        public uint Length => map.Count;
+        public uint Length => map.count;
         public ExclusiveGroupStruct groupID { get; }
 
         public EGIDMapper(ExclusiveGroupStruct groupStructId, ITypeSafeDictionary<T> dic):this()
@@ -22,7 +21,7 @@ namespace Svelto.ECS
         {
 #if DEBUG && !PROFILE_SVELTO
                 if (map.TryFindIndex(entityID, out var findIndex) == false)
-                    throw new Exception("Entity not found in this group ".FastConcat(typeof(T).ToString()));
+                    throw new System.Exception("Entity not found in this group ".FastConcat(typeof(T).ToString()));
 #else
                 map.TryFindIndex(entityID, out var findIndex);
 #endif

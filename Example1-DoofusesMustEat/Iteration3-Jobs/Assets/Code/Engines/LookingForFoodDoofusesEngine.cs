@@ -1,6 +1,5 @@
 using Svelto.Common;
 using Svelto.DataStructures;
-using Svelto.ECS.EntityComponents;
 using Svelto.ECS.Extensions.Unity;
 using Unity.Burst;
 using Unity.Collections.LowLevel.Unsafe;
@@ -86,7 +85,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
         struct LookingForFoodDoofusesJob : IJobParallelFor
         {
             public BT<NB<MealInfoComponent>, NB<EGIDComponent>> _doofuses;
-            public NB<EGIDComponent>                            _food;
+            public BT<NB<EGIDComponent>>                        _food;
             public NativeEntitySwap                             _nativeDoofusesSwap;
             public NativeEntitySwap                             _nativeFoodSwap;
             public ExclusiveGroupStruct                         _doofuseMealLockedGroup;
@@ -98,10 +97,11 @@ namespace Svelto.ECS.MiniExamples.Example1C
 
             public void Execute(int index)
             {
-                var targetMeal = _food[(uint) index].ID;
+                var targetMeal = _food.buffer[(uint) index].ID;
                 _doofuses.buffer1[index].targetMeal = new EGID(targetMeal.entityID, _lockedFood);
 
-                _nativeDoofusesSwap.SwapEntity(_doofuses.buffer2[index].ID, _doofuseMealLockedGroup, _threadIndex);
+                var @from = _doofuses.buffer2[index].ID;
+                _nativeDoofusesSwap.SwapEntity(@from, _doofuseMealLockedGroup, _threadIndex);
                 _nativeFoodSwap.SwapEntity(targetMeal, _lockedFood, _threadIndex);
             }
         }

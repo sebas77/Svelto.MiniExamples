@@ -100,7 +100,7 @@ namespace Svelto.ECS
             for (var i = 0; i < length; i++)
             {
                 //the special entity already exists
-                if (defaultEntities[i].GetEntityComponentType() == EntityBuilderUtilities.ENTITY_STRUCT_INFO_VIEW)
+                if (defaultEntities[i].GetEntityComponentType() == ComponentBuilderUtilities.ENTITY_STRUCT_INFO_VIEW)
                 {
                     index = i;
                     break;

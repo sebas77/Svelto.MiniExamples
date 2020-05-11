@@ -3,11 +3,9 @@ using Svelto.DataStructures;
 using Svelto.ECS.EntityComponents;
 using Svelto.ECS.Extensions.Unity;
 using Unity.Burst;
-using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 using Unity.Jobs;
 using Unity.Mathematics;
-using UnityEngine;
 
 namespace Svelto.ECS.MiniExamples.Example1C
 {

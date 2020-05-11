@@ -19,7 +19,7 @@ namespace Svelto.ECS.Internal
 
     public interface ITypeSafeDictionary:IDisposable
     {
-        uint Count { get; }
+        uint count { get; }
         ITypeSafeDictionary Create();
 
         void AddEntitiesToEngines(FasterDictionary<RefWrapper<Type>, FasterList<IEngine>> entityComponentEnginesDb,

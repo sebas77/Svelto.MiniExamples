@@ -14,7 +14,7 @@ namespace Svelto.ECS.DataStructures.Unity
         public const int DefaultThreadIndex = -1;
         const int MinThreadIndex = DefaultThreadIndex;
 
-#if UNITY_ECS        
+#if UNITY_BURST        
         [global::Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction]
 #endif
         readonly NativeBag* _data;

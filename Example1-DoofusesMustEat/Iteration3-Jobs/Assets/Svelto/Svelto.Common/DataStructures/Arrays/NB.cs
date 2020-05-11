@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using Svelto.Common;
 
 namespace Svelto.DataStructures
@@ -12,63 +10,41 @@ namespace Svelto.DataStructures
     /// but do not track it. Hence it's meant to be used temporary and locally as the array can become invalid
     /// after a submission of entities.
     ///
-    /// NB are wrappers of arrays. Are not meant to resize or free
+    /// NB are wrappers of native arrays. Are not meant to resize or free
+    ///
+    /// NBs cannot have a count, because a count of the meaningful number of items is not tracked.
+    /// Example: an MB could be initialized with a size 10 and count 0. Then the buffer is used to fill entities
+    /// but the count will stay zero. It's not the MB responsibility to track the count
     /// 
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public struct NB<T>:IBuffer<T> where T:unmanaged
+    public struct NB<T>:IBuffer<T> where T:struct
     {
-        public NB(IntPtr array, uint count, uint capacity) : this()
+        static NB()
         {
-#if DEBUG && !PROFILE_SVELTO
-            if (count > capacity)
-                throw new Exception("count can't be more than capacity");
-#endif 
+            //if (UnmanagedTypeExtensions.IsUnmanaged<T>() == false)
+              //  throw new Exception("NativeBuffer (NB) supports only unmanaged types");
+        }
+        
+        public NB(IntPtr array, uint capacity) : this()
+        {
             _ptr = array;
             _capacity = capacity;
-            _count = count;
         }
 
-        public void Set(IntPtr array, uint count, uint capacity)
+        public void Set(IntPtr array, uint capacity)
         {
             _ptr      = array;
             _capacity = capacity;
-            _count    = count;
         }
 
-        public void CopyFrom<TBuffer>(TBuffer array, uint startIndex, uint size) where TBuffer:IBuffer<T>
-        {
-            throw new NotImplementedException();
-        }
-
-        public void CopyFrom(T[] source, uint sourceStartIndex, uint destinationStartIndex, uint size)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void CopyTo(uint sourceStartIndex, T[] destination, uint destinationStartIndex, uint size)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void CopyFrom(ICollection<T> source)
-        {
-            throw new NotImplementedException(); 
-        }
-
-        public void Clear(uint startIndex, uint count)
-        {
-            throw new NotImplementedException();
-        }
-        
+        public void CopyTo(uint sourceStartIndex, T[] destination, uint destinationStartIndex, uint size) { throw new NotImplementedException(); }
         public void Clear()
         {
-            throw new NotImplementedException();
-        }
-
-        public void UnorderedRemoveAt(int index)
-        {
-            throw new NotImplementedException();
+            unsafe
+            {
+                Unsafe.InitBlock((void *)_ptr, 0, (uint) (_capacity * MemoryUtilities.SizeOf<T>()));
+            }
         }
 
         public T[] ToManagedArray()
@@ -77,17 +53,15 @@ namespace Svelto.DataStructures
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IntPtr ToNativeArray() { return _ptr; }
-
-        public uint capacity
+        public IntPtr ToNativeArray(out int capacity)
         {
-            get => _capacity;
+            capacity = (int) _capacity; return _ptr; 
         }
 
-        public uint count
+        public int capacity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => _count;
+            get => (int) _capacity;
         }
 
         public ref T this[uint index]
@@ -98,11 +72,10 @@ namespace Svelto.DataStructures
                 unsafe
                 {
 #if DEBUG && !PROFILE_SVELTO
-                    if (index >= _count)
+                    if (index >= _capacity)
                         throw new Exception("NativeBuffer - out of bound access");
 #endif                    
-                    return ref ((T*) _ptr)[index];
-                    //return ref Unsafe.AsRef<T>(Unsafe.Add<T>((void*) _ptr, (int) index));
+                    return ref Unsafe.AsRef<T>(Unsafe.Add<T>((void*) _ptr, (int) index));
                 }
             }
         }
@@ -115,17 +88,15 @@ namespace Svelto.DataStructures
                 unsafe
                 {
 #if DEBUG && !PROFILE_SVELTO
-                    if (index >= _count)
+                    if (index >= _capacity)
                         throw new Exception("NativeBuffer - out of bound access");
 #endif                    
                     
-                    return ref ((T*) _ptr)[index];
-                    //return ref Unsafe.AsRef<T>(Unsafe.Add<T>((void*) _ptr, (int) index));
+                    return ref Unsafe.AsRef<T>(Unsafe.Add<T>((void*) _ptr, (int) index));
                 }
             }
         }
 
-        uint _count;
         uint _capacity;
 #if UNITY_COLLECTIONS
         //todo can I remove this from here? it should be used outside

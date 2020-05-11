@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Svelto.DataStructures;
-using Svelto.ECS.Internal;
 
 namespace Svelto.ECS
 {
@@ -35,7 +34,7 @@ namespace Svelto.ECS
             {
                 return _enginesRoot.Target.BuildEntity(egid, entityDescriptor.componentsToBuild, implementors);
             }
-#if UNITY_ECS
+#if UNITY_BURST
             public NativeEntityFactory ToNative<T>() where T : IEntityDescriptor, new()
             {
                 return _enginesRoot.Target.ProvideNativeEntityFactoryQueue<T>();

@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 
 namespace Svelto.DataStructures
 {
@@ -9,13 +7,20 @@ namespace Svelto.DataStructures
     /// MB stands for ManagedBuffer
     ///
     /// MB are wrappers of arrays. Are not meant to resize or free
+    /// MBs cannot have a count, because a count of the meaningful number of items is not tracked.
+    /// Example: an MB could be initialized with a size 10 and count 0. Then the buffer is used to fill entities
+    /// but the count will stay zero. It's not the MB responsibility to track the count
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public struct MB<T>:IBuffer<T> 
     {
-        public void Set(T[] array, uint count)
+        public MB(T[]  array) : this()
         {
-            _count = count;
+            _buffer = array;
+        }
+        
+        public void Set(T[] array)
+        {
             _buffer = array;
         }
 
@@ -37,23 +42,17 @@ namespace Svelto.DataStructures
             return _buffer;
         }
 
-        public IntPtr ToNativeArray()
+        public IntPtr ToNativeArray(out int capacity)
         {
             throw new NotImplementedException();
         }
 
-        public uint capacity
+        public int capacity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => (uint) _buffer.Length;
+            get => _buffer.Length;
         }
         
-        public uint count
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => _count;
-        }
-
         public ref T this[uint index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -67,6 +66,5 @@ namespace Svelto.DataStructures
         }
 
         T[] _buffer;
-        uint _count;
     }
 }

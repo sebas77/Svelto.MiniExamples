@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using Svelto.ECS.Internal;
 
 namespace Svelto.ECS
 {

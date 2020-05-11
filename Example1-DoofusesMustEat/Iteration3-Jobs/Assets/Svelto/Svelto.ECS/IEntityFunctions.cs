@@ -27,7 +27,7 @@ namespace Svelto.ECS
 
         void SwapEntityGroup<T>(EGID fromID, EGID toId, ExclusiveGroupStruct mustBeFromGroup)
             where T : IEntityDescriptor, new();
-#if UNITY_ECS
+#if UNITY_BURST
         NativeEntityRemove ToNativeRemove<T>()  where T : IEntityDescriptor, new();
         NativeEntitySwap ToNativeSwap<T>()  where T : IEntityDescriptor, new();
 #endif        

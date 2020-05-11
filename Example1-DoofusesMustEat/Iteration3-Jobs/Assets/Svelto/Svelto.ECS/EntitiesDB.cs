@@ -65,14 +65,13 @@ namespace Svelto.ECS
         {
             IBuffer<T> ret;
             uint count = 0;
-            //object sentinel = default;
+
             if (SafeQueryEntityDictionary<T>(groupStructId, out var typeSafeDictionary) == false)
                 ret = RetrieveEmptyEntityComponentArray<T>();
             else
             {
                 var safeDictionary = (typeSafeDictionary as ITypeSafeDictionary<T>);
                 ret = safeDictionary.GetValuesArray(out count);
-              //  sentinel = safeDictionary.GenerateSentinel();
             }
 
             return new EntityCollection<T>(ret, count);
@@ -161,7 +160,7 @@ namespace Svelto.ECS
         {
             mapper = default;
             if (SafeQueryEntityDictionary<T>(groupStructId, out var typeSafeDictionary) == false ||
-                typeSafeDictionary.Count == 0)
+                typeSafeDictionary.count == 0)
                 return false;
 
             mapper = (typeSafeDictionary as ITypeSafeDictionary<T>).ToEGIDMapper(groupStructId);
@@ -176,7 +175,7 @@ namespace Svelto.ECS
         {
             mapper = default;
             if (SafeQueryEntityDictionary<T>(groupStructId, out var typeSafeDictionary) == false ||
-                typeSafeDictionary.Count == 0)
+                typeSafeDictionary.count == 0)
                 return false;
 
             mapper = (typeSafeDictionary as TypeSafeDictionary<T>).ToNativeEGIDMapper(groupStructId);
@@ -364,7 +363,7 @@ namespace Svelto.ECS
                 }
                 else
                 {
-                    IBuffer<T> b = ConvertStructToUnmanaged<T>.createFromNBStruct(); 
+                    NB<T> b = default; 
                     
                     emptyArray = b;
                 }

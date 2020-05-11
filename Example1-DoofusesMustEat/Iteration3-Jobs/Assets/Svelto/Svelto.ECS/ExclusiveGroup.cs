@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Svelto.ECS.Internal;
 
 #pragma warning disable 660,661
 

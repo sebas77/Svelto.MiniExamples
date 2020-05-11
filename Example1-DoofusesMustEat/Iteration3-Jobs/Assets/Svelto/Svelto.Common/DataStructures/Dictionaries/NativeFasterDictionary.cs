@@ -1,7 +1,6 @@
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using Svelto.DataStructures;
 
 namespace Svelto.DataStructures.Internal
 {
@@ -14,13 +13,12 @@ namespace Svelto.DataStructures.Internal
         where TKey : unmanaged, IEquatable<TKey> where TValue : unmanaged
     {
         internal NativeFasterDictionary(int[] bufferBuckets, 
-                                              IBuffer<TValue> bufferValues, FasterDictionaryNode<TKey>[] bufferNodes, uint count) : this()
+                                        IBuffer<TValue> bufferValues, IntPtr bufferNodes, uint count) : this()
         {
-            _valuesInfo = GCHandle.Alloc(bufferNodes, GCHandleType.Pinned);
-            _valuesPointer = bufferValues.ToNativeArray();
+            _valuesPointer = bufferValues.ToNativeArray(out _);
             _buckets = GCHandle.Alloc(bufferBuckets, GCHandleType.Pinned);
 
-            _valuesInfoPointer = _valuesInfo.AddrOfPinnedObject();
+            _valuesInfoPointer = bufferNodes;
             _bucketsPointer = _buckets.AddrOfPinnedObject();
 
             _bucketsSize = bufferBuckets.Length;
@@ -34,16 +32,7 @@ namespace Svelto.DataStructures.Internal
             if ((IntPtr)_valuesPointer == IntPtr.Zero)
                 throw new Exception("disposing an already disposed NativeFasterDictionary");
 #endif 
-            _valuesInfo.Free();
             _buckets.Free();
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public TValue* GetValuesArray(out uint count)
-        {
-            count = _count;
-
-            return (TValue*) _valuesPointer;
         }
 
         public TValue* unsafeValues
@@ -55,58 +44,20 @@ namespace Svelto.DataStructures.Internal
         public uint count => _count;
         public uint capacity => _capacity;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool ContainsKey(TKey key)
-        {
-            if (TryFindIndex(key, out _))
-            {
-                return true;
-            }
-
-            return false;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool TryGetValue(TKey key, out TValue result)
-        {
-            if (TryFindIndex(key, out var findIndex))
-            {
-                result = unsafeValues[(int) findIndex];
-                return true;
-            }
-
-            result = default;
-            return false;
-        }
-        
         public ref TValue GetDirectValue(uint findIndex)
         {
             return ref ((TValue *)_valuesPointer)[findIndex];
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ref TValue GetValueByRef(TKey key)
-        {
-            if (TryFindIndex(key, out var findIndex))
-            {
-                return ref unsafeValues[(int) findIndex];
-            }
-
-            throw new FasterDictionaryException("Key not found");
-        }
-
-        public ref TValue this[TKey key]
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => ref unsafeValues[(int) GetIndex(key)];
-        }
-
         //I store all the index with an offset + 1, so that in the bucket list 0 means actually not existing.
+
         //When read the offset must be offset by -1 again to be the real one. In this way
+
         //I avoid to initialize the array to -1
+
         public bool TryFindIndex(TKey key, out uint findIndex)
         {
-            int hash = Hash(key);
+            int hash =  Unsafe.As<TKey, int>(ref key);
             int* gcHandle = (int*) _bucketsPointer;
             uint bucketIndex = Reduce((uint) hash, (uint) _bucketsSize);
 
@@ -135,20 +86,6 @@ namespace Svelto.DataStructures.Internal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        uint GetIndex(TKey key)
-        {
-            if (TryFindIndex(key, out var findIndex)) return findIndex;
-
-            throw new FasterDictionaryException("Key not found");
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static int Hash(TKey key)
-        {
-            return key.GetHashCode();
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         static uint Reduce(uint x, uint N)
         {
             if (x >= N)
@@ -157,19 +94,20 @@ namespace Svelto.DataStructures.Internal
             return x;
         }
 
-#if UNITY_COLLECTIONS        
+#if UNITY_COLLECTIONS
         [Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction]
 #endif
         readonly IntPtr        _valuesInfoPointer;
-#if UNITY_COLLECTIONS        
+#if UNITY_COLLECTIONS
         [Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction]
 #endif
         readonly IntPtr _bucketsPointer;
-#if UNITY_COLLECTIONS        
+#if UNITY_COLLECTIONS
+
         [Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction]
 #endif
         readonly IntPtr _valuesPointer;
-        readonly GCHandle _valuesInfo;
+
         readonly GCHandle _buckets;
         readonly int      _bucketsSize;
         readonly uint     _count;

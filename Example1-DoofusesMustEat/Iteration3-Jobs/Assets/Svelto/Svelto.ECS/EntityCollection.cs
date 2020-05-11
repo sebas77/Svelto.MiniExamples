@@ -3,6 +3,7 @@ using Svelto.DataStructures;
 
 namespace Svelto.ECS
 {
+    //can this be readonly?
     public struct EntityCollection<T> where T : IEntityComponent
     {
         public EntityCollection(IBuffer<T> buffer, uint count)
@@ -17,9 +18,9 @@ namespace Svelto.ECS
         readonly uint  _count;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public NB<NT> ToNativeBuffer<NT>() where NT : unmanaged, T
+        public BT<NB<NT>> ToNativeBuffer<NT>() where NT : unmanaged, T
         {
-            return new NB<NT>(_buffer.ToNativeArray(), _count, _buffer.capacity);
+            return new BT<NB<NT>>(NativeBuffer<NT>(), (uint) count);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -42,6 +43,11 @@ namespace Svelto.ECS
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public EntityIterator GetEnumerator() { return new EntityIterator(_buffer, _count); }
+        
+        internal NB<NT> NativeBuffer<NT>() where NT : unmanaged, T
+        {
+            return new NB<NT>(_buffer.ToNativeArray(out _), (uint) count);
+        }
 
         public struct EntityIterator
         {
@@ -99,11 +105,10 @@ namespace Svelto.ECS
             return bufferTuple;
         }
 
-        public BT<NB<NT1>, NB<NT2>> ToNativeBuffers<NT1, NT2>()
-            where NT2 : unmanaged, T2 where NT1 : unmanaged, T1
+        public BT<NB<NT1>, NB<NT2>> ToNativeBuffers<NT1, NT2>() where NT2 : unmanaged, T2 where NT1 : unmanaged, T1
         {
             var bufferTuple = new BT<NB<NT1>, NB<NT2>>
-                (_array1.ToNativeBuffer<NT1>(), _array2.ToNativeBuffer<NT2>(), count);
+                (_array1.NativeBuffer<NT1>(), _array2.NativeBuffer<NT2>(), count);
 
             return bufferTuple;
         }
@@ -188,7 +193,7 @@ namespace Svelto.ECS
             where NT2 : unmanaged, T2 where NT1 : unmanaged, T1 where NT3 : unmanaged, T3
         {
             var bufferTuple = new BT<NB<NT1>, NB<NT2>, NB<NT3>>
-            (_array1.ToNativeBuffer<NT1>(), _array2.ToNativeBuffer<NT2>(), _array3.ToNativeBuffer<NT3>(), count);
+            (_array1.NativeBuffer<NT1>(), _array2.NativeBuffer<NT2>(), _array3.NativeBuffer<NT3>(), count);
 
             return bufferTuple;
         }
@@ -426,6 +431,18 @@ namespace Svelto.ECS
             this.buffer2 = bufferT2;
             this.buffer3 = bufferT3;
             this.count = count;
+        }
+    }
+    
+    public readonly struct BT<BufferT1>
+    {
+        public readonly BufferT1 buffer;
+        public readonly uint     count;
+
+        public BT(BufferT1 bufferT1, uint count) : this()
+        {
+            this.buffer = bufferT1;
+            this.count   = count;
         }
     }
 

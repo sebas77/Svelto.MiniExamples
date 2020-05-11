@@ -2,7 +2,6 @@ using Svelto.DataStructures;
 using Svelto.ECS.EntityComponents;
 using Svelto.ECS.Extensions.Unity;
 using Unity.Entities;
-using Unity.Jobs;
 using Unity.Transforms;
 
 namespace Svelto.ECS.MiniExamples.Example1C
@@ -29,7 +28,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
                 //just become a pool of entities to fetch and assign values to. Of course we need to be sure that the
                 //entities are compatible, that's why we group the UECS entities like with do with the Svelto ones, using
                 //the UECS shared component UECSSveltoGroupID.
-                NB<PositionEntityComponent> entityCollection = collection.ToNativeBuffer<PositionEntityComponent>();
+                NB<PositionEntityComponent> entityCollection = collection.ToNativeBuffer<PositionEntityComponent>().buffer;
 
                 //when it's time to sync, I have two options, iterate the svelto entities first or iterate the
                 //UECS entities first. 

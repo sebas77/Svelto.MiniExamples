@@ -5,40 +5,6 @@ using Svelto.DataStructures;
 
 namespace Svelto.ECS.Internal
 {
-    delegate FasterDictionary<uint, T> ForceUnmanagedCast<T>(uint size) where T : IEntityComponent;
-    delegate IBuffer<T> NBCast<T>() where T : IEntityComponent;
-
-    static class ConvertStructToUnmanaged<T>  where T : IEntityComponent
-    {
-        internal static readonly ForceUnmanagedCast<T> create;
-        internal static readonly NBCast<T> createFromNBStruct;
-
-        static ConvertStructToUnmanaged()
-        {
-            var method = typeof(Trick).GetMethod(nameof(Trick.ForceUnmanaged)).MakeGenericMethod(typeof(T));
-            create = (ForceUnmanagedCast<T>) Delegate.CreateDelegate(typeof(ForceUnmanagedCast<T>), method);
-            
-            var method2 = typeof(Trick).GetMethod(nameof(Trick.CreateFromNBStruct)).MakeGenericMethod(typeof(T));
-            createFromNBStruct = (NBCast<T>) Delegate.CreateDelegate(typeof(NBCast<T>), method2);
-        }
-        
-        static class Trick
-        {    
-            public static FasterDictionary<uint, U> ForceUnmanaged<U>(uint size) where U : unmanaged, T, IEntityComponent
-            {
-                return new FasterDictionary<uint,U>(size, new NativeAllocationStrategy<U>());
-            }
-            
-            public static IBuffer<U> CreateFromNBStruct<U>() where U : unmanaged, T, IEntityComponent
-            {
-                unsafe
-                {
-                    return new NB<U>(new IntPtr(null), 0, 0);
-                }
-            }
-        }
-    }
-    
     sealed class TypeSafeDictionary<TValue> : ITypeSafeDictionary<TValue> where TValue : struct, IEntityComponent
     {
         static readonly Type   _type     = typeof(TValue);
@@ -47,15 +13,20 @@ namespace Svelto.ECS.Internal
 
         public TypeSafeDictionary(uint size, bool IsUnmanaged)
         {
-            _isUnmanaged = IsUnmanaged;
             if (IsUnmanaged == false)
-                _implementation = new FasterDictionary<uint, TValue>(size, new ManagedAllocationStrategy<TValue>());
+                implementation = new SveltoDictionary<uint, TValue>(size, new ManagedStrategy<TValue>());
             else
-                _implementation = ConvertStructToUnmanaged<TValue>.create(size);
+                implementation = new SveltoDictionary<uint, TValue>(size, new NativeStrategy<TValue>());
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Add(uint egidEntityId, in TValue entityComponent)
+        {
+            implementation.Add(egidEntityId, entityComponent);
         }
 
         /// <summary>
-        /// Add entities from external typeSafeDictionary
+        ///     Add entities from external typeSafeDictionary
         /// </summary>
         /// <param name="entitiesToSubmit"></param>
         /// <param name="groupId"></param>
@@ -65,32 +36,44 @@ namespace Svelto.ECS.Internal
             var typeSafeDictionary = entitiesToSubmit as TypeSafeDictionary<TValue>;
 
             foreach (var tuple in typeSafeDictionary)
-            {
                 try
                 {
                     if (_hasEgid)
                         SetEGIDWithoutBoxing<TValue>.SetIDWithoutBoxing(ref tuple.Value, new EGID(tuple.Key, groupId));
 
-                    _implementation.Add(tuple.Key, tuple.Value);
+                    implementation.Add(tuple.Key, tuple.Value);
                 }
                 catch (Exception e)
                 {
-                    Svelto.Console.LogException(
-                        e, "trying to add an EntityComponent with the same ID more than once Entity: ".FastConcat(typeof(TValue).ToString()).FastConcat(", group ").FastConcat(groupId).FastConcat(", id ").FastConcat(tuple.Key));
+                    Console.LogException(
+                        e, "trying to add an EntityComponent with the same ID more than once Entity: ".
+                           FastConcat(typeof(TValue).ToString()).FastConcat(", group ").
+                           FastConcat(groupId).FastConcat(", id ").FastConcat(tuple.Key));
 
                     throw;
                 }
-            }
+        }
+
+        public void AddEntitiesToEngines
+        (FasterDictionary<RefWrapper<Type>, FasterList<IEngine>> entityComponentEnginesDB
+       , ITypeSafeDictionary realDic, ExclusiveGroupStruct group, in PlatformProfiler profiler)
+        {
+            var typeSafeDictionary = realDic as ITypeSafeDictionary<TValue>;
+
+            //this can be optimized, should pass all the entities and not restart the process for each one
+            foreach (var value in implementation)
+                AddEntityComponentToEngines(entityComponentEnginesDB, ref typeSafeDictionary.GetValueByRef(value.Key)
+                                          , null, in profiler, new EGID(value.Key, group));
         }
 
         public void AddEntityToDictionary(EGID fromEntityGid, EGID toEntityID, ITypeSafeDictionary toGroup)
         {
-            var valueIndex = _implementation.GetIndex(fromEntityGid.entityID);
+            var valueIndex = implementation.GetIndex(fromEntityGid.entityID);
 
             if (toGroup != null)
             {
                 var     toGroupCasted = toGroup as ITypeSafeDictionary<TValue>;
-                ref var entity        = ref _implementation.unsafeValues[(int) valueIndex];
+                ref var entity        = ref implementation.unsafeValues[(int) valueIndex];
 
                 if (_hasEgid)
                     SetEGIDWithoutBoxing<TValue>.SetIDWithoutBoxing(ref entity, toEntityID);
@@ -99,52 +82,59 @@ namespace Svelto.ECS.Internal
             }
         }
 
-        public void AddEntitiesToEngines
-        (FasterDictionary<RefWrapper<Type>, FasterList<IEngine>> entityComponentEnginesDB
-       , ITypeSafeDictionary realDic, ExclusiveGroupStruct @group, in PlatformProfiler profiler)
-        {
-            var typeSafeDictionary = realDic as ITypeSafeDictionary<TValue>;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Clear() { implementation.Clear(); }
 
-            //this can be optimized, should pass all the entities and not restart the process for each one
-            foreach (var value in _implementation)
-                AddEntityComponentToEngines(entityComponentEnginesDB, ref typeSafeDictionary.GetValueByRef(value.Key)
-                                          , null, in profiler, new EGID(value.Key, group));
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool ContainsKey(uint egidEntityId) { return implementation.ContainsKey(egidEntityId); }
 
-        public void RemoveEntitiesFromEngines
-        (FasterDictionary<RefWrapper<Type>, FasterList<IEngine>> entityComponentEnginesDB
-       , in PlatformProfiler profiler, ExclusiveGroupStruct @group)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ITypeSafeDictionary Create() { return TypeSafeDictionaryFactory<TValue>.Create(1); }
+
+        public void Dispose()
         {
-            foreach (var value in _implementation)
-                RemoveEntityComponentFromEngines(entityComponentEnginesDB, ref _implementation.GetValueByRef(value.Key)
-                                               , null, in profiler, new EGID(value.Key, group));
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void FastClear() { _implementation.FastClear(); }
+        public void FastClear() { implementation.FastClear(); }
+
+        public object GenerateSentinel() { return default; }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Has(uint key) { return _implementation.ContainsKey(key); }
+        public SveltoDictionary<uint, TValue>.SveltoDictionaryKeyValueEnumerator GetEnumerator()
+        {
+            return implementation.GetEnumerator();
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void RemoveEntityFromDictionary(EGID fromEntityGid) { _implementation.Remove(fromEntityGid.entityID); }
+        public uint GetIndex(uint valueEntityId) { return implementation.GetIndex(valueEntityId); }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void SetCapacity(uint size) { _implementation.SetCapacity(size); }
+        public ref TValue GetOrCreate(uint idEntityId) { return ref implementation.GetOrCreate(idEntityId); }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Trim() { _implementation.Trim(); }
+        public ref TValue GetValueByRef(uint key) { return ref implementation.GetValueByRef(key); }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Clear() { _implementation.Clear(); }
+        public IBuffer<TValue> GetValuesArray(out uint count)
+        {
+            var managedBuffer = implementation.unsafeValues;
+            count = this.count;
+            return managedBuffer;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Has(uint key) { return implementation.ContainsKey(key); }
 
         public void MoveEntityFromEngines
         (EGID fromEntityGid, EGID? toEntityID, ITypeSafeDictionary toGroup
        , FasterDictionary<RefWrapper<Type>, FasterList<IEngine>> engines, in PlatformProfiler profiler)
         {
-            var valueIndex = _implementation.GetIndex(fromEntityGid.entityID);
+            var valueIndex = implementation.GetIndex(fromEntityGid.entityID);
 
-            ref var entity = ref _implementation.unsafeValues[(int) valueIndex];
+            ref var entity = ref implementation.unsafeValues[(int) valueIndex];
 
             if (toGroup != null)
             {
@@ -163,28 +153,93 @@ namespace Svelto.ECS.Internal
                                           , in profiler, toEntityID.Value);
             }
             else
+            {
                 RemoveEntityComponentFromEngines(engines, ref entity, null, in profiler, fromEntityGid);
+            }
         }
 
-        public uint Count
+        public void RemoveEntitiesFromEngines
+        (FasterDictionary<RefWrapper<Type>, FasterList<IEngine>> engines
+       , in PlatformProfiler profiler, ExclusiveGroupStruct group)
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => _implementation.count;
+            foreach (var value in implementation)
+                RemoveEntityComponentFromEngines(engines, ref implementation.GetValueByRef(value.Key)
+                                               , null, in profiler, new EGID(value.Key, group));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ITypeSafeDictionary Create() { return  TypeSafeDictionaryFactory<TValue>.Create(1); }
+        public void RemoveEntityFromDictionary(EGID fromEntityGid) { implementation.Remove(fromEntityGid.entityID); }
 
-        void AddEntityComponentToEngines
-        (FasterDictionary<RefWrapper<Type>, FasterList<IEngine>> entityComponentEnginesDB, ref TValue entity
-       , ExclusiveGroupStruct? previousGroup, in PlatformProfiler profiler, EGID egid)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void SetCapacity(uint size) { implementation.SetCapacity(size); }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Trim() { implementation.Trim(); }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool TryFindIndex(uint entityId, out uint index)
         {
-            //get all the engines linked to TValue
-            if (!entityComponentEnginesDB.TryGetValue(new RefWrapper<Type>(_type), out var entityComponentsEngines))
+            return implementation.TryFindIndex(entityId, out index);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool TryGetValue(uint entityId, out TValue item)
+        {
+            return implementation.TryGetValue(entityId, out item);
+        }
+
+        internal SveltoDictionary<uint, TValue> implementation { get; }
+
+        public uint count
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => implementation.count;
+        }
+
+        public ref TValue this[uint idEntityId]
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => ref implementation.GetValueByRef(idEntityId);
+        }
+
+        public IBuffer<TValue> unsafeValues
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => implementation.unsafeValues;
+        }
+
+        static void RemoveEntityComponentFromEngines
+        (FasterDictionary<RefWrapper<Type>, FasterList<IEngine>> engines, ref TValue entity, uint? previousGroup
+       , in PlatformProfiler profiler, EGID egid)
+        {
+            if (!engines.TryGetValue(new RefWrapper<Type>(_type), out var entityComponentsEngines))
                 return;
 
             if (previousGroup == null)
-            {
+                for (var i = 0; i < entityComponentsEngines.count; i++)
+                    try
+                    {
+                        using (profiler.Sample(entityComponentsEngines[i], _typeName))
+                        {
+                            (entityComponentsEngines[i] as IReactOnAddAndRemove<TValue>).Remove(ref entity, egid);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        throw new ECSException(
+                            "Code crashed inside Remove callback ".FastConcat(typeof(TValue).ToString()), e);
+                    }
+        }
+
+        void AddEntityComponentToEngines
+        (FasterDictionary<RefWrapper<Type>, FasterList<IEngine>> engines, ref TValue entity
+       , ExclusiveGroupStruct? previousGroup, in PlatformProfiler profiler, EGID egid)
+        {
+            //get all the engines linked to TValue
+            if (!engines.TryGetValue(new RefWrapper<Type>(_type), out var entityComponentsEngines))
+                return;
+
+            if (previousGroup == null)
                 for (var i = 0; i < entityComponentsEngines.count; i++)
                     try
                     {
@@ -193,14 +248,13 @@ namespace Svelto.ECS.Internal
                             (entityComponentsEngines[i] as IReactOnAddAndRemove<TValue>).Add(ref entity, egid);
                         }
                     }
-                    catch (Exception e)
+                    catch (Exception)
                     {
-                        throw new ECSException("Code crashed inside Add callback ".FastConcat(typeof(TValue).ToString())
-                                             , e);
+                        Svelto.Console.LogError("Code crashed inside Add callback ".FastConcat(typeof(TValue).ToString()));
+
+                        throw;
                     }
-            }
             else
-            {
                 for (var i = 0; i < entityComponentsEngines.count; i++)
                     try
                     {
@@ -210,113 +264,13 @@ namespace Svelto.ECS.Internal
                                 ref entity, previousGroup.Value, egid);
                         }
                     }
-                    catch (Exception e)
+                    catch (Exception)
                     {
-                        throw new ECSException(
-                            "Code crashed inside MovedTo callback ".FastConcat(typeof(TValue).ToString()), e);
+                        Svelto.Console.LogError("Code crashed inside MoveTo callback ".FastConcat(typeof(TValue).ToString()));
+
+                        throw;
                     }
-            }
         }
-
-        static void RemoveEntityComponentFromEngines
-        (FasterDictionary<RefWrapper<Type>, FasterList<IEngine>> @group, ref TValue entity, uint? previousGroup
-       , in PlatformProfiler profiler, EGID egid)
-        {
-            if (!@group.TryGetValue(new RefWrapper<Type>(_type), out var entityComponentsEngines))
-                return;
-
-            if (previousGroup == null)
-            {
-                for (var i = 0; i < entityComponentsEngines.count; i++)
-                    try
-                    {
-                        using (profiler.Sample(entityComponentsEngines[i], _typeName))
-                            (entityComponentsEngines[i] as IReactOnAddAndRemove<TValue>).Remove(ref entity, egid);
-                    }
-                    catch (Exception e)
-                    {
-                        throw new ECSException(
-                            "Code crashed inside Remove callback ".FastConcat(typeof(TValue).ToString()), e);
-                    }
-            }
-#if SEEMS_UNNECESSARY
-            else
-            {
-                for (var i = 0; i < entityComponentsEngines.Count; i++)
-                    try
-                    {
-                        using (profiler.Sample(entityComponentsEngines[i], _typeName))
-                            (entityComponentsEngines[i] as IReactOnSwap<TValue>).MovedFrom(ref entity, egid);
-                    }
-                    catch (Exception e)
-                    {
-                        throw new ECSException(
-                            "Code crashed inside Remove callback ".FastConcat(typeof(TValue).ToString()), e);
-                    }
-            }
-#endif
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IBuffer<TValue> GetValuesArray(out uint count)
-        {
-            IBuffer<TValue> managedBuffer = _implementation.GetValuesArray(out count);
-            return managedBuffer;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool ContainsKey(uint egidEntityId) { return _implementation.ContainsKey(egidEntityId); }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Add(uint egidEntityId, in TValue entityComponent)
-        {
-            _implementation.Add(egidEntityId, entityComponent);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public FasterDictionary<uint, TValue>.FasterDictionaryKeyValueEnumerator GetEnumerator()
-        {
-            return _implementation.GetEnumerator();
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ref TValue GetValueByRef(uint key) { return ref _implementation.GetValueByRef(key); }
-
-        public ref TValue this[uint idEntityId]
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => ref _implementation.GetValueByRef(idEntityId);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public uint GetIndex(uint valueEntityId) { return _implementation.GetIndex(valueEntityId); }
-
-        public IBuffer<TValue> unsafeValues
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => _implementation.unsafeValues;
-        }
-
-        public object GenerateSentinel() { return default; }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool TryGetValue(uint entityId, out TValue item)
-        {
-            return _implementation.TryGetValue(entityId, out item);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ref TValue GetOrCreate(uint idEntityId) { return ref _implementation.GetOrCreate(idEntityId); }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool TryFindIndex(uint entityId, out uint index)
-        {
-            return _implementation.TryFindIndex(entityId, out index);
-        }
-
-        internal FasterDictionary<uint, TValue> implementation => _implementation;
-        readonly FasterDictionary<uint, TValue> _implementation;
-        bool _isUnmanaged;
 
         void ReleaseUnmanagedResources()
         {
@@ -327,19 +281,9 @@ namespace Svelto.ECS.Internal
         {
             ReleaseUnmanagedResources();
             if (disposing)
-            {
-                _implementation?.Dispose();
-            }
+                implementation?.Dispose();
         }
 
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        ~TypeSafeDictionary() {
-            Dispose(false);
-        }
+        ~TypeSafeDictionary() { Dispose(false); }
     }
 }

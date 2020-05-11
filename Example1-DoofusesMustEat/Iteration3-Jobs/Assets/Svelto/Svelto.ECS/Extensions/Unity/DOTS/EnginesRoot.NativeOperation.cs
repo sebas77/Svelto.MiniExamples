@@ -1,7 +1,6 @@
-#if UNITY_ECS
+#if UNITY_BURST
 using Svelto.Common;
 using Svelto.DataStructures;
-using Svelto.ECS.DataStructures;
 using Svelto.ECS.DataStructures.Unity;
 using Unity.Jobs.LowLevel.Unsafe;
 
@@ -62,7 +61,7 @@ namespace Svelto.ECS
                         CheckRemoveEntityID(entityEGID); 
                         QueueEntitySubmitOperation(new EntitySubmitOperation(
                                                        EntitySubmitOperationType.Remove, entityEGID, entityEGID
-                                                     , _nativeRemoveOperations[componentsIndex].entityComponents));
+                                                     , _nativeRemoveOperations[componentsIndex].ComponentComponents));
                     }
                 }
 
@@ -80,7 +79,7 @@ namespace Svelto.ECS
                         
                         QueueEntitySubmitOperation(new EntitySubmitOperation(
                                                        EntitySubmitOperationType.Swap, entityEGID.@from, entityEGID.to
-                                                     , _nativeSwapOperations[componentsIndex].entityComponents));
+                                                     , _nativeSwapOperations[componentsIndex].ComponentComponents));
                     }
                 }
             }
@@ -100,6 +99,7 @@ namespace Svelto.ECS
                         EntityComponentInitializer init =
                             BuildEntity(egid, _nativeAddOperations[componentsIndex].components);
 
+                        //only called if Init is called on the initialized (there is something to init)
                         while (componentCounts > 0)
                         {
                             componentCounts--;
@@ -140,125 +140,51 @@ namespace Svelto.ECS
         }
     }
 
-    public readonly struct NativeEntityRemove
-    {
-        readonly AtomicNativeBags _removeQueue;
-        readonly uint              _indexRemove;
-
-        internal NativeEntityRemove(AtomicNativeBags EGIDsToRemove, uint indexRemove)
-        {
-            _removeQueue = EGIDsToRemove;
-            _indexRemove = indexRemove;
-        }
-
-        public void RemoveEntity(EGID egid, int threadIndex)
-        {
-            var simpleNativeBag = _removeQueue.GetBuffer(threadIndex);
-            
-            simpleNativeBag.Enqueue(_indexRemove);
-            simpleNativeBag.Enqueue(egid);
-        }
-    }
-    
-    public readonly struct NativeEntitySwap
-    {
-        readonly AtomicNativeBags _swapQueue;
-        readonly uint              _indexSwap;
-
-        internal NativeEntitySwap(AtomicNativeBags EGIDsToSwap, uint indexSwap)
-        {
-            _swapQueue   = EGIDsToSwap;
-            _indexSwap   = indexSwap;
-        }
-
-        public void SwapEntity(EGID from, EGID to, int threadIndex)
-        {
-            var simpleNativeBag = _swapQueue.GetBuffer(threadIndex);
-            simpleNativeBag.Enqueue(_indexSwap);
-            simpleNativeBag.Enqueue(new DoubleEGID(from, to));
-        }
-
-        public void SwapEntity(EGID from, ExclusiveGroupStruct to, int threadIndex)
-        {
-            var simpleNativeBag = _swapQueue.GetBuffer(threadIndex);
-            simpleNativeBag.Enqueue(_indexSwap);
-            simpleNativeBag.Enqueue(new DoubleEGID(from, new EGID(from.entityID, to)));
-        }
-    }
-
-    public readonly struct NativeEntityFactory
-    {
-        readonly AtomicNativeBags _addOperationQueue;
-        readonly uint              _index;
-
-        internal NativeEntityFactory(AtomicNativeBags addOperationQueue, uint index)
-        {
-            _index             = index;
-            _addOperationQueue = addOperationQueue;
-        }
-
-        public NativeEntityComponentInitializer BuildEntity
-            (uint eindex, ExclusiveGroupStruct buildGroup, int threadIndex)
-        {
-            NativeBag unsafeBuffer = _addOperationQueue.GetBuffer(threadIndex + 1);
-
-            unsafeBuffer.Enqueue(_index);
-            unsafeBuffer.Enqueue(new EGID(eindex, buildGroup));
-            unsafeBuffer.ReserveEnqueue<uint>(out var index) = 0;
-
-            return new NativeEntityComponentInitializer(unsafeBuffer, index);
-        }
-    }
-
-    public readonly ref struct NativeEntityComponentInitializer
-    {
-        readonly NativeBag  _unsafeBuffer;
-        readonly UnsafeArrayIndex _index;
-
-        public NativeEntityComponentInitializer(in NativeBag unsafeBuffer, UnsafeArrayIndex index)
-        {
-            _unsafeBuffer = unsafeBuffer;
-            _index        = index;
-        }
-
-        public void Init<T>(in T component) where T : unmanaged, IEntityComponent
-        {
-            uint id = EntityComponentID<T>.ID.Data;
-
-            _unsafeBuffer.AccessReserved<uint>(_index)++;
-
-            _unsafeBuffer.Enqueue(id);
-            _unsafeBuffer.Enqueue(component);
-        }
-    }
-
-    struct NativeOperationBuild
+    readonly struct NativeOperationBuild
     {
         internal readonly IComponentBuilder[] components;
 
-        public NativeOperationBuild(IComponentBuilder[] descriptorEntityComponentsToBuild)
+        public NativeOperationBuild(IComponentBuilder[] descriptorComponentsToBuild)
         {
-            components = descriptorEntityComponentsToBuild;
+#if DEBUG && !PROFILE_SVELTO            
+            for (int i = 0; i < descriptorComponentsToBuild.Length; ++i)
+                if (descriptorComponentsToBuild[i].IsUnmanaged == false)
+                    throw new System.NotSupportedException();
+#endif
+            
+            components = descriptorComponentsToBuild;
         }
     }
 
     readonly struct NativeOperationRemove
     {
-        internal readonly IComponentBuilder[] entityComponents;
+        internal readonly IComponentBuilder[] ComponentComponents;
 
-        public NativeOperationRemove(IComponentBuilder[] descriptorEntitiesToBuild)
+        public NativeOperationRemove(IComponentBuilder[] descriptorComponentsToRemove)
         {
-            entityComponents = descriptorEntitiesToBuild;
+#if DEBUG && !PROFILE_SVELTO            
+            for (int i = 0; i < descriptorComponentsToRemove.Length; ++i)
+                if (descriptorComponentsToRemove[i].IsUnmanaged == false)
+                    throw new System.NotSupportedException();
+#endif
+            
+            ComponentComponents = descriptorComponentsToRemove;
         }
     }
 
     readonly struct NativeOperationSwap
     {
-        internal readonly IComponentBuilder[] entityComponents;
+        internal readonly IComponentBuilder[] ComponentComponents;
 
-        public NativeOperationSwap(IComponentBuilder[] descriptorEntitiesToBuild)
+        public NativeOperationSwap(IComponentBuilder[] descriptorComponentsToSwap)
         {
-            entityComponents = descriptorEntitiesToBuild;
+#if DEBUG && !PROFILE_SVELTO            
+            for (int i = 0; i < descriptorComponentsToSwap.Length; ++i)
+                if (descriptorComponentsToSwap[i].IsUnmanaged == false)
+                    throw new System.NotSupportedException();
+#endif
+            
+            ComponentComponents = descriptorComponentsToSwap;
         }
     }
 }

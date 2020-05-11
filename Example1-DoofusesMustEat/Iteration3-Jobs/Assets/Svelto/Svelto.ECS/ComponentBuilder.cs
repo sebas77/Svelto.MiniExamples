@@ -1,6 +1,7 @@
 ﻿﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.ECS.Hybrid;
 using Svelto.ECS.Internal;
@@ -13,16 +14,6 @@ namespace Svelto.ECS
         public ComponentBuilder()
         {
             _initializer = DEFAULT_IT;
-
-            EntityBuilderUtilities.CheckFields(ENTITY_COMPONENT_TYPE, IS_ENTITY_VIEW_COMPONENT);
-
-            if (IS_ENTITY_VIEW_COMPONENT)
-                EntityViewComponentCache.InitCache();
-            else
-            {
-                if (ENTITY_COMPONENT_TYPE != EntityBuilderUtilities.ENTITY_STRUCT_INFO_VIEW &&  ENTITY_COMPONENT_TYPE.IsUnmanaged() == false)
-                    throw new Exception($"Entity Component check failed, unexpected struct type (must be unmanaged) {ENTITY_COMPONENT_TYPE}");
-            }
         }
 
         public ComponentBuilder(in T initializer) : this()
@@ -80,6 +71,8 @@ namespace Svelto.ECS
             return ENTITY_COMPONENT_TYPE;
         }
 
+        public bool IsUnmanaged => IS_UNMANAGED;
+
         static ComponentBuilder()
         {
             ENTITY_COMPONENT_TYPE = typeof(T);
@@ -87,11 +80,24 @@ namespace Svelto.ECS
             IS_ENTITY_VIEW_COMPONENT = typeof(IEntityViewComponent).IsAssignableFrom(ENTITY_COMPONENT_TYPE);
             HAS_EGID = typeof(INeedEGID).IsAssignableFrom(ENTITY_COMPONENT_TYPE);
             ENTITY_COMPONENT_NAME = ENTITY_COMPONENT_TYPE.ToString();
+            IS_UNMANAGED = ENTITY_COMPONENT_TYPE.IsUnmanaged() && ENTITY_COMPONENT_TYPE != ComponentBuilderUtilities.ENTITY_STRUCT_INFO_VIEW;
+
+            if (IS_UNMANAGED)
+                EntityComponentIDMap.Register<T>(new Filler<T>());
             
-            EntityComponentIDMap.Register<T>(new Filler<T>());
             SetEGIDWithoutBoxing<T>.Warmup();
-            IS_UNMANAGED = ENTITY_COMPONENT_TYPE.IsUnmanaged() && ENTITY_COMPONENT_TYPE != EntityBuilderUtilities.ENTITY_STRUCT_INFO_VIEW;
+            
+            ComponentBuilderUtilities.CheckFields(ENTITY_COMPONENT_TYPE, IS_ENTITY_VIEW_COMPONENT);
+
+            if (IS_ENTITY_VIEW_COMPONENT)
+                EntityViewComponentCache.InitCache();
+            else
+            {
+                if (ENTITY_COMPONENT_TYPE != ComponentBuilderUtilities.ENTITY_STRUCT_INFO_VIEW &&  ENTITY_COMPONENT_TYPE.IsUnmanaged() == false)
+                    throw new Exception($"Entity Component check failed, unexpected struct type (must be unmanaged) {ENTITY_COMPONENT_TYPE}");
+            }
         }
+
 
         readonly T                        _initializer;
 

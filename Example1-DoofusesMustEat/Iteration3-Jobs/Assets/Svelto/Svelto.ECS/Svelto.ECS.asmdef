@@ -20,6 +20,11 @@
             "name": "com.unity.entities",
             "expression": "",
             "define": "UNITY_ECS"
+        },
+        {
+            "name": "com.unity.burst",
+            "expression": "",
+            "define": "UNITY_BURST"
         }
     ],
     "noEngineReferences": false

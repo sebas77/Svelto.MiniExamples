@@ -81,7 +81,7 @@ namespace Svelto.ECS.Serialization
                     --newLenght;
                 }
 
-                if (defaultEntities[i].GetEntityComponentType() == EntityBuilderUtilities.ENTITY_STRUCT_INFO_VIEW)
+                if (defaultEntities[i].GetEntityComponentType() == ComponentBuilderUtilities.ENTITY_STRUCT_INFO_VIEW)
                 {
                     indexDynamic = i;
                 }

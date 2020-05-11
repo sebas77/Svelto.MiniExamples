@@ -1,4 +1,3 @@
-using System;
 using Svelto.DataStructures;
 using Svelto.ECS.Internal;
 
@@ -33,10 +32,9 @@ namespace Svelto.ECS
 
                     ITypeSafeDictionary<T1> typeSafeDictionary = @group.Value as ITypeSafeDictionary<T1>;
                     
-                    if (typeSafeDictionary.Count == 0) continue;
+                    if (typeSafeDictionary.count == 0) continue;
                     
-                    _array.buffer = new EntityCollection<T1>(typeSafeDictionary.GetValuesArray(out var count), count)
-                        .ToNativeBuffer<T1>();
+                    _array.buffer = new EntityCollection<T1>(typeSafeDictionary.GetValuesArray(out var count), count).ToNativeBuffer<T1>().buffer;
                     _array.@group = new ExclusiveGroupStruct(group.Key);
 
                     return true;

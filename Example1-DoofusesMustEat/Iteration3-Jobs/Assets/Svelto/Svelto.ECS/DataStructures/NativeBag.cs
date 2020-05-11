@@ -17,7 +17,7 @@ namespace Svelto.ECS.DataStructures
     /// </summary>
     public struct NativeBag : IDisposable
     {
-#if UNITY_ECS
+#if UNITY_BURST
         [global::Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction]
 #endif
         unsafe UnsafeBlob* _queue;
@@ -93,7 +93,7 @@ namespace Svelto.ECS.DataStructures
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ref T ReserveEnqueue<T>(out UnsafeArrayIndex index) where T : unmanaged
+        public ref T ReserveEnqueue<T>(out UnsafeArrayIndex index) where T : struct
         {
             unsafe
             {
@@ -103,14 +103,14 @@ namespace Svelto.ECS.DataStructures
 #endif
                 var sizeOf = MemoryUtilities.SizeOf<T>();
                 if (_queue->space - sizeOf < 0)
-                    _queue->Realloc((uint) ((_queue->capacity + sizeOf) * 1.5f));
+                    _queue->Realloc((uint) ((_queue->capacity + sizeOf) * 2.0f));
 
                 return ref _queue->Reserve<T>(out index);
             }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Enqueue<T>(in T item) where T : unmanaged
+        public void Enqueue<T>(in T item) where T : struct
         {
             unsafe
             {
@@ -120,7 +120,7 @@ namespace Svelto.ECS.DataStructures
 #endif
                 var sizeOf = MemoryUtilities.SizeOf<T>();
                 if (_queue->space - sizeOf < 0)
-                    _queue->Realloc((uint) ((_queue->capacity + sizeOf) * 1.5f));
+                    _queue->Realloc((uint) ((_queue->capacity + MemoryUtilities.Align4((uint) sizeOf)) * 2.0f));
 
                 _queue->Write(item);
             }
@@ -139,7 +139,7 @@ namespace Svelto.ECS.DataStructures
             }
         }
 
-        public T Dequeue<T>() where T : unmanaged
+        public T Dequeue<T>() where T : struct
         {
             unsafe
             {
@@ -147,7 +147,7 @@ namespace Svelto.ECS.DataStructures
             }
         }
 
-        public ref T AccessReserved<T>(UnsafeArrayIndex reserverIndex) where T : unmanaged
+        public ref T AccessReserved<T>(UnsafeArrayIndex reserverIndex) where T : struct
         {
             unsafe
             {

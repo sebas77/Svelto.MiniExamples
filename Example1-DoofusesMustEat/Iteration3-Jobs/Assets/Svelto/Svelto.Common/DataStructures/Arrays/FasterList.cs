@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using Svelto.Common;
 
 namespace Svelto.DataStructures
 {
@@ -165,7 +164,7 @@ namespace Svelto.DataStructures
         public void FastClear()
         {
 #if DEBUG && !PROFILE_SVELTO
-            if (TypeCache<T>.type.IsClass)
+            if (Svelto.Common.TypeCache<T>.type.IsClass)
                 Console.LogWarning(
                     "Warning: objects held by this list won't be garbage collected. Use ResetToReuse or Clear " +
                     "to avoid this warning");

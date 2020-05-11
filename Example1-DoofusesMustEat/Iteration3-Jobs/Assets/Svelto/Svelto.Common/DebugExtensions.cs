@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-
 namespace Svelto.Common.Internal
 {
     public static class DebugExtensions
@@ -21,7 +18,7 @@ namespace Svelto.Common.Internal
 #endif
         }
 #if DEBUG && !PROFILE_SVELTO          
-        static readonly Dictionary<Type, string> _names = new Dictionary<Type, string>();
+        static readonly System.Collections.Generic.Dictionary<System.Type, string> _names = new System.Collections.Generic.Dictionary<System.Type, string>();
 #endif
     }
 }

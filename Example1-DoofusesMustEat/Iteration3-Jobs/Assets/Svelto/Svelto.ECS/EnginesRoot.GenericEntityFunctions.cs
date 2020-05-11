@@ -1,6 +1,5 @@
 ﻿﻿using System;
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
+ using System.Runtime.CompilerServices;
 
 namespace Svelto.ECS
 {
@@ -103,7 +102,7 @@ namespace Svelto.ECS
                 SwapEntityGroup<T>(fromID, toID);
             }
 
-#if UNITY_ECS
+#if UNITY_BURST
             public NativeEntityRemove ToNativeRemove<T>() where T : IEntityDescriptor, new()
             {
                 return _enginesRoot.Target.ProvideNativeEntityRemoveQueue<T>();
@@ -135,7 +134,7 @@ namespace Svelto.ECS
         void QueueEntitySubmitOperation(EntitySubmitOperation entitySubmitOperation)
         {
 #if DEBUG && !PROFILE_SVELTO
-            entitySubmitOperation.trace = new StackFrame(1, true);
+            entitySubmitOperation.trace = new System.Diagnostics.StackFrame(1, true);
 #endif
             _entitiesOperations.Add((ulong) entitySubmitOperation.fromID, entitySubmitOperation);
         }
@@ -143,7 +142,7 @@ namespace Svelto.ECS
         void QueueEntitySubmitOperation<T>(EntitySubmitOperation entitySubmitOperation) where T : IEntityDescriptor
         {
 #if DEBUG && !PROFILE_SVELTO
-            entitySubmitOperation.trace = new StackFrame(1, true);
+            entitySubmitOperation.trace = new System.Diagnostics.StackFrame(1, true);
 
             if (_entitiesOperations.TryGetValue((ulong) entitySubmitOperation.fromID, out var entitySubmitedOperation))
             {

@@ -49,7 +49,7 @@ namespace Svelto.ECS
         {
             if (map.TryFindIndex(entityID, out index))
             {
-                return new NB<T>((IntPtr) map.unsafeValues, map.count, map.capacity);
+                return new NB<T>((IntPtr) map.unsafeValues, map.capacity);
             }
 
             throw new ECSException("Entity not found");
@@ -59,7 +59,7 @@ namespace Svelto.ECS
         {
             if (map.TryFindIndex(entityID, out index))
             {
-                array =  new NB<T>((IntPtr) map.unsafeValues, map.count, map.capacity);
+                array =  new NB<T>((IntPtr) map.unsafeValues, map.capacity);
                 return true;
             }
 

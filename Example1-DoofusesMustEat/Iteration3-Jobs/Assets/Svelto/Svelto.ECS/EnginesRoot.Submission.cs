@@ -29,7 +29,7 @@ namespace Svelto.ECS
 
         void SingleSubmission(in PlatformProfiler profiler)
         {
-#if UNITY_ECS            
+#if UNITY_BURST          
             NativeOperationSubmission(profiler);
 #endif
             
