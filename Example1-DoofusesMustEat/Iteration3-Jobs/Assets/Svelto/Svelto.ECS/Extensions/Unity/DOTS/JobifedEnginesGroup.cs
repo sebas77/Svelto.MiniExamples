@@ -16,7 +16,7 @@ namespace Svelto.ECS.Extensions.Unity
         public JobHandle Execute(JobHandle combinedHandles)
         {
             var fasterReadOnlyList = _engines;
-            for (var index = 0; index < fasterReadOnlyList.Count; index++)
+            for (var index = 0; index < fasterReadOnlyList.count; index++)
             {
                 var engine = fasterReadOnlyList[index];
                 combinedHandles = JobHandle.CombineDependencies(combinedHandles, engine.Execute(combinedHandles));

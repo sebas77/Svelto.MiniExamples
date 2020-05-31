@@ -503,7 +503,7 @@ namespace Svelto.DataStructures
         void Dispose(bool disposing)
         {
             if (disposing == false && UnmanagedTypeExtensions.IsUnmanaged<TValue>() == true)
-                Svelto.Console.LogWarning("Svelto Dictionary has been disposed through finalizer. Should be disposed manually when native memory is used");
+                Console.LogDebugWarning($"Svelto Dictionary has been disposed through finalizer. Should be disposed manually when native memory is used. Type held: {typeof(TValue)}");
 
             _valuesInfo.Dispose();
             _values.Dispose();

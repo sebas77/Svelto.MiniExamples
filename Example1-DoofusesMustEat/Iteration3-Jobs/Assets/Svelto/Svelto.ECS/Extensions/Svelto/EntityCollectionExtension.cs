@@ -77,9 +77,25 @@ namespace Svelto.ECS
             return (ec.Item1.ToBuffer().ToFast(), ec.Item2.ToBuffer().ToFast(), ec.Item3.ToBuffer().ToFast(), ec.count);
         }
     }
+    
 
-    public static class BTExtensions
+    public static class BTExtensionsA
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static BT<NB<T1>> ToFast<T1>(in this BT<IBuffer<T1>> bt)
+            where T1 : unmanaged, IEntityComponent
+        {
+            return new BT<NB<T1>>(bt.buffer.ToFast(), bt.count);
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static BT<NB<T1>, NB<T2>> ToFast<T1, T2>(in this BT<IBuffer<T1>, IBuffer<T2>> bt)
+            where T2 : unmanaged, IEntityComponent
+            where T1 : unmanaged, IEntityComponent
+        {
+            return new BT<NB<T1>, NB<T2>>(bt.buffer1.ToFast(), bt.buffer2.ToFast(), bt.count);
+        }
+        
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static BT<NB<T1>, NB<T2>, NB<T3>> ToFast<T1, T2, T3>
             (in this BT<IBuffer<T1>, IBuffer<T2>, IBuffer<T3>> bt)
@@ -101,6 +117,20 @@ namespace Svelto.ECS
         {
             return new BT<NB<T1>, NB<T2>, NB<T3>, NB<T4>>(bt.buffer1.ToFast(), bt.buffer2.ToFast(), bt.buffer3.ToFast()
                                                         , bt.buffer4.ToFast(), bt.count);
+        }
+    }
+    
+    public static class BTExtensionsB
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static BT<NB<T1>, NB<T2>, MB<T3>> ToFast<T1, T2, T3>
+            (in this BT<IBuffer<T1>, IBuffer<T2>, IBuffer<T3>> bt)
+            where T2 : unmanaged, IEntityComponent
+            where T1 : unmanaged, IEntityComponent
+            where T3 : struct, IEntityViewComponent
+        {
+            return new BT<NB<T1>, NB<T2>, MB<T3>>(bt.buffer1.ToFast(), bt.buffer2.ToFast(), bt.buffer3.ToFast()
+                                                , bt.count);
         }
     }
 }

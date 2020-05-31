@@ -51,27 +51,32 @@ namespace Svelto.ECS.MiniExamples.Example1C
         (JobHandle inputDeps, FasterList<ExclusiveGroupStruct> foodGroups, FasterList<ExclusiveGroupStruct> doofusesGroups
        , ExclusiveGroupStruct swapDoofuseGroup, ExclusiveGroupStruct swapFoodGroup)
         {
-            var foodBuffer     = entitiesDB.QueryEntities<EGIDComponent>(foodGroups[0]);
-            var doofusesBuffer = entitiesDB.QueryEntities<MealInfoComponent, EGIDComponent>(doofusesGroups[0]);
-
-            var doofusesCount = doofusesBuffer.count;
-            var foodCount     = foodBuffer.count;
-
-            if (foodCount == 0 || doofusesCount == 0)
-                return inputDeps;
-
-            var willEatDoofuses = math.min(foodCount, doofusesCount);
-
-            //schedule the job
-            var deps = new LookingForFoodDoofusesJob()
+            JobHandle deps = inputDeps;
+            
+            foreach (var foodgroup in entitiesDB.QueryEntities<EGIDComponent>(foodGroups).groups)
             {
-                _doofuses               = doofusesBuffer.ToBuffers()
-              , _food                   = foodBuffer.ToBuffer()
-              , _nativeDoofusesSwap     = _nativeDoofusesSwap
-              , _nativeFoodSwap         = _nativeFoodSwap
-              , _doofuseMealLockedGroup = swapDoofuseGroup
-              , _lockedFood             = swapFoodGroup
-            }.ScheduleParallel(willEatDoofuses, inputDeps);
+                foreach (var doofusesGroup in entitiesDB.QueryEntities<MealInfoComponent, EGIDComponent>(doofusesGroups).groups)
+                {
+                    var doofusesCount = doofusesGroup.count;
+                    var foodCount     = foodgroup.count;
+
+                    if (foodCount == 0 || doofusesCount == 0)
+                        return inputDeps;
+
+                    var willEatDoofuses = math.min(foodCount, doofusesCount);
+
+                    //schedule the job
+                    deps = new LookingForFoodDoofusesJob()
+                    {
+                        _doofuses               = doofusesGroup.ToFast()
+                      , _food                   = foodgroup.ToFast()
+                      , _nativeDoofusesSwap     = _nativeDoofusesSwap
+                      , _nativeFoodSwap         = _nativeFoodSwap
+                      , _doofuseMealLockedGroup = swapDoofuseGroup
+                      , _lockedFood             = swapFoodGroup
+                    }.ScheduleParallel(willEatDoofuses, deps);
+                }
+            }
 
             return deps;
         }

@@ -112,6 +112,11 @@ namespace Svelto
             InternalLog(txt.FastConcat(extradebug.ToString()), LogType.Log);
         }
 
+        public static void LogDebugWarning(string txt)
+        {
+            InternalLog(txt, LogType.Warning); 
+        }
+
         /// <summary>
         /// this class methods can use only InternalLog to log and cannot use the public methods, otherwise the
         /// stack depth will break 

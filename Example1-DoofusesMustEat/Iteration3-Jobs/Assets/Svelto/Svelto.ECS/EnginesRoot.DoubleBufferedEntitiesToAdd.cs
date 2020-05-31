@@ -29,31 +29,54 @@ namespace Svelto.ECS
                 var otherCount = other.count;
                 if (otherCount > MaximumNumberOfItemsPerFrameBeforeToClear)
                 {
+                    FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary>[] otherValuesArray = other.unsafeValues;
+                    for (int i = 0; i < otherCount; ++i)
+                    {
+                        var                   safeDictionariesCount = otherValuesArray[i].count;
+                        ITypeSafeDictionary[] safeDictionaries      = otherValuesArray[i].unsafeValues;
+                        {
+                            for (int j = 0; j < safeDictionariesCount; ++j)
+                            {
+                                //clear the dictionary of entities create do far (it won't allocate though)
+                                safeDictionaries[j].Dispose();
+                            }
+                        }
+                    }
+                    
                     otherEntitiesCreatedPerGroup.FastClear();
                     other.FastClear();
                     return;
                 }
-                var otherValuesArray = other.unsafeValues;
-                for (int i = 0; i < otherCount; ++i)
+
                 {
-                    var safeDictionariesCount = otherValuesArray[i].count;
-                    var safeDictionaries = otherValuesArray[i].unsafeValues;
-                    //do not remove the dictionaries of entities per type created so far, they will be reused
-                    if (safeDictionariesCount <= MaximumNumberOfItemsPerFrameBeforeToClear)
+                    FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary>[] otherValuesArray = other.unsafeValues;
+                    for (int i = 0; i < otherCount; ++i)
                     {
-                        for (int j = 0; j < safeDictionariesCount; ++j)
+                        var                   safeDictionariesCount = otherValuesArray[i].count;
+                        ITypeSafeDictionary[] safeDictionaries      = otherValuesArray[i].unsafeValues;
+                        //do not remove the dictionaries of entities per type created so far, they will be reused
+                        if (safeDictionariesCount <= MaximumNumberOfItemsPerFrameBeforeToClear)
                         {
-                            //clear the dictionary of entities create do far (it won't allocate though)
-                            safeDictionaries[j].FastClear();
+                            for (int j = 0; j < safeDictionariesCount; ++j)
+                            {
+                                //clear the dictionary of entities create do far (it won't allocate though)
+                                safeDictionaries[j].FastClear();
+                            }
+                        }
+                        else
+                        {
+                            for (int j = 0; j < safeDictionariesCount; ++j)
+                            {
+                                //clear the dictionary of entities create do far (it won't allocate though)
+                                safeDictionaries[j].Dispose();
+                            }
+
+                            otherValuesArray[i].FastClear();
                         }
                     }
-                    else
-                    {
-                        otherValuesArray[i].FastClear();
-                    }
-                }
 
-                otherEntitiesCreatedPerGroup.FastClear();
+                    otherEntitiesCreatedPerGroup.FastClear();
+                }
             }
 
             /// <summary>

@@ -5,6 +5,23 @@ using Svelto.DataStructures;
 
 namespace Svelto.ECS.Internal
 {
+#if DEBUG && !PROFILE_SVELTO
+    // static class CheckProperDisposing
+    // {
+    //     public static ThreadSafeFasterList<IDisposable> ToDispose = new ThreadSafeFasterList<IDisposable>();
+    //
+    //     public static void CheckWhatIsLeft()
+    //     {
+    //         for (int i = 0; i < ToDispose.Count; i++)
+    //             Console.LogDebug($"Attention: this group has not been disposed by Svelto: {ToDispose[i]}");
+    //         
+    //         ToDispose.Clear();
+    //         
+    //         GC.Collect();
+    //         GC.WaitForPendingFinalizers();
+    //     }
+    // }
+#endif    
     sealed class TypeSafeDictionary<TValue> : ITypeSafeDictionary<TValue> where TValue : struct, IEntityComponent
     {
         static readonly Type   _type     = typeof(TValue);
@@ -16,7 +33,13 @@ namespace Svelto.ECS.Internal
             if (IsUnmanaged == false)
                 implementation = new SveltoDictionary<uint, TValue>(size, new ManagedStrategy<TValue>());
             else
+            {
                 implementation = new SveltoDictionary<uint, TValue>(size, new NativeStrategy<TValue>());
+                
+#if DEBUG && !PROFILE_SVELTO
+                //CheckProperDisposing.ToDispose.Add(implementation);
+#endif            
+            }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -267,6 +290,15 @@ namespace Svelto.ECS.Internal
 
         void Dispose(bool disposing)
         {
+#if DEBUG && !PROFILE_SVELTO
+            // for (int i = 0; i < CheckProperDisposing.ToDispose.Count; i++)
+            //     if (CheckProperDisposing.ToDispose[i] == implementation)
+            //     {
+            //         CheckProperDisposing.ToDispose.RemoveAt(i);
+            //         break;
+            //     }
+#endif            
+            
             implementation?.Dispose();
         }
 

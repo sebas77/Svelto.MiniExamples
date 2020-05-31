@@ -64,12 +64,13 @@ namespace Svelto.DataStructures
                 MemoryUtilities.Free(buffer.ToNativeArray(out _), Allocator.Persistent);
             else
                 if (buffer == null)
-                    Svelto.Console.LogWarning("trying to dispose a never allocated buffer");
+                    Svelto.Console.LogWarning($"trying to dispose a never allocated buffer. Type held: {typeof(T)}");
                 else
                    if (buffer.ToNativeArray(out _) != IntPtr.Zero)
-                       Svelto.Console.LogWarning("trying to dispose disposed buffer");
-
-            buffer = default;
+                       Svelto.Console.LogWarning($"trying to dispose disposed buffer. Type held: {typeof(T)}");
+            
+            realBuffer = default;
+            buffer = realBuffer;
         }
     }
 }

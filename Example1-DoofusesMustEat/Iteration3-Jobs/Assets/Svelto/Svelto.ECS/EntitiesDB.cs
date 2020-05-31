@@ -113,24 +113,24 @@ namespace Svelto.ECS
             return new EntityCollection<T1, T2, T3>(T1entities, T2entities, T3entities);
         }
 
-        public (EntityCollections<T> entities, GroupsEnumerable<T> groups) QueryEntities<T>(FasterList<ExclusiveGroupStruct> groups) where T : struct, IEntityComponent
+        public (EntityCollections<T> entities, GroupsEnumerable<T> groups) QueryEntities<T>(FasterReadOnlyList<ExclusiveGroupStruct> groups) where T : struct, IEntityComponent
         {
             return (new EntityCollections<T>(this, groups), new GroupsEnumerable<T>(this, groups));
         }
 
-        public (EntityCollections<T1, T2> entities, GroupsEnumerable<T1, T2> groups) QueryEntities<T1, T2>(FasterList<ExclusiveGroupStruct> groups)
+        public (EntityCollections<T1, T2> entities, GroupsEnumerable<T1, T2> groups) QueryEntities<T1, T2>(FasterReadOnlyList<ExclusiveGroupStruct> groups)
             where T1 : struct, IEntityComponent where T2 : struct, IEntityComponent
         {
             return (new EntityCollections<T1, T2>(this, groups), new GroupsEnumerable<T1, T2>(this, groups));
         }
         
-        public (EntityCollections<T1, T2, T3> entities, GroupsEnumerable<T1, T2, T3> groups)  QueryEntities<T1, T2, T3>(FasterList<ExclusiveGroupStruct> groups)
+        public (EntityCollections<T1, T2, T3> entities, GroupsEnumerable<T1, T2, T3> groups)  QueryEntities<T1, T2, T3>(FasterReadOnlyList<ExclusiveGroupStruct> groups)
             where T1 : struct, IEntityComponent where T2 : struct, IEntityComponent where T3 : struct, IEntityComponent
         {
             return (new EntityCollections<T1, T2, T3>(this, groups), new GroupsEnumerable<T1, T2, T3>(this, groups));
         }
         
-        public (EntityCollections<T1, T2, T3, T4> entities, GroupsEnumerable<T1, T2, T3, T4> groups)  QueryEntities<T1, T2, T3, T4>(FasterList<ExclusiveGroupStruct> groups)
+        public (EntityCollections<T1, T2, T3, T4> entities, GroupsEnumerable<T1, T2, T3, T4> groups)  QueryEntities<T1, T2, T3, T4>(FasterReadOnlyList<ExclusiveGroupStruct> groups)
             where T1 : struct, IEntityComponent where T2 : struct, IEntityComponent where T3 : struct, IEntityComponent  where T4 : struct, IEntityComponent
         {
             return (new EntityCollections<T1, T2, T3, T4>(this, groups), new GroupsEnumerable<T1, T2, T3, T4>(this, groups));
@@ -375,12 +375,57 @@ namespace Svelto.ECS
             }
         }
 
-        internal FasterDictionary<uint, ITypeSafeDictionary> FindGroups<T1>() where T1 : IEntityComponent
+        public FasterDictionary<uint, ITypeSafeDictionary> FindGroups<T1>() where T1 : IEntityComponent
         {
             if (_groupsPerEntity.ContainsKey(TypeRefWrapper<T1>.wrapper) == false)
                 return _emptyDictionary;
             
             return _groupsPerEntity[TypeRefWrapper<T1>.wrapper];
+        }
+
+        public FasterReadOnlyList<ExclusiveGroupStruct> FindGroups<T1, T2, T3>
+            (FasterList<ExclusiveGroupStruct> startingSet) 
+            where T1 : IEntityComponent
+            where T2 : IEntityComponent
+            where T3 : IEntityComponent
+        {
+            throw new Exception();
+        }
+
+        public FasterReadOnlyList<ExclusiveGroupStruct> FindGroups<T1, T2, T3>() 
+            where T1 : IEntityComponent
+            where T2 : IEntityComponent
+            where T3 : IEntityComponent
+        {
+            if (_groupsPerEntity.TryGetValue(TypeRefWrapper<T1>.wrapper, out var result1) == false)
+                return FasterReadOnlyList<ExclusiveGroupStruct>.DefaultEmptyList;
+            if (_groupsPerEntity.TryGetValue(TypeRefWrapper<T2>.wrapper,out var result2) == false)
+                return FasterReadOnlyList<ExclusiveGroupStruct>.DefaultEmptyList;
+            if (_groupsPerEntity.TryGetValue(TypeRefWrapper<T3>.wrapper, out var result3) == false)
+                return FasterReadOnlyList<ExclusiveGroupStruct>.DefaultEmptyList;
+
+            FasterList<uint> set = new FasterList<uint>(result1.count);
+
+            foreach (var keyvalue2 in result2)
+            {
+                foreach (var keyvalue1 in result1)
+                    if (keyvalue2.Key == (uint) keyvalue1.Key)
+                        set.Add(keyvalue2.Key);
+            }
+            
+            if (set.count == 0)
+                return FasterReadOnlyList<ExclusiveGroupStruct>.DefaultEmptyList;
+            
+            FasterList<ExclusiveGroupStruct> set2 = new FasterList<ExclusiveGroupStruct>(set.count);
+            
+            foreach (var keyvalue in result3)
+            {
+                foreach (var key in set)
+                    if (keyvalue.Key == (uint) key)
+                        set2.Add(new ExclusiveGroupStruct(key));
+            }
+            
+            return new FasterReadOnlyList<ExclusiveGroupStruct>(set2);
         }
 
         readonly FasterDictionary<uint, ITypeSafeDictionary> _emptyDictionary = new FasterDictionary<uint, ITypeSafeDictionary>(); 

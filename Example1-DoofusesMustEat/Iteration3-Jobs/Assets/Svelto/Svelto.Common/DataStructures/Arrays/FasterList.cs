@@ -76,6 +76,11 @@ namespace Svelto.DataStructures
 
             _count = (uint) source.count;
         }
+        
+        public static implicit operator FasterReadOnlyList<T>(FasterList<T> list)
+        {
+            return new FasterReadOnlyList<T>(list);
+        }
 
         public ref T this[int index]
         {

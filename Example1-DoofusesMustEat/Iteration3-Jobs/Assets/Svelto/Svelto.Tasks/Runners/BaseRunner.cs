@@ -84,8 +84,13 @@ namespace Svelto.Tasks
 
         public virtual void Dispose()
         {
-            DBC.Tasks.Check.Require(_newTaskRoutines != null, $"disposing an already disposed runner?! {_name}");
-            
+            if (_newTaskRoutines == null)
+            {
+                Svelto.Console.LogDebugWarning($"disposing an already disposed runner?! {_name}");
+
+                return;
+            }
+
             Stop();
 
             SveltoTaskRunner<T>.KillProcess(_flushingOperation);

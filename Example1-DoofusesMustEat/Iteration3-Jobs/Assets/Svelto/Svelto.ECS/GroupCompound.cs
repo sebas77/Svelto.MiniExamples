@@ -104,5 +104,7 @@ namespace Svelto.ECS
             
             Console.LogDebug(typeof(T).ToString().FastConcat("- Add ", group.ToString()));
         }
+        
+        public static ExclusiveGroupStruct BuildGroup => new ExclusiveGroupStruct(Groups[0]);
     }
 }
