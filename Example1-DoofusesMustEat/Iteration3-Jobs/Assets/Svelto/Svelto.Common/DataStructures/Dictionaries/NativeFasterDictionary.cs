@@ -9,36 +9,39 @@ namespace Svelto.DataStructures.Internal
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
-    public readonly unsafe struct NativeFasterDictionary<TKey, TValue> : IDisposable
+
+    //Todo: this must be internal
+    public unsafe struct NativeFasterDictionary<TKey, TValue> : IDisposable
         where TKey : unmanaged, IEquatable<TKey> where TValue : unmanaged
     {
         internal NativeFasterDictionary(int[] bufferBuckets, 
-                                        IBuffer<TValue> bufferValues, IntPtr bufferNodes, uint count) : this()
+                                       IntPtr bufferValues, IntPtr bufferNodes, uint count, uint capacity) : this()
         {
-            _valuesPointer = bufferValues.ToNativeArray(out _);
+            _values = bufferValues;
             _buckets = GCHandle.Alloc(bufferBuckets, GCHandleType.Pinned);
 
-            _valuesInfoPointer = bufferNodes;
+            _valuesInfo = bufferNodes;
             _bucketsPointer = _buckets.AddrOfPinnedObject();
 
             _bucketsSize = bufferBuckets.Length;
             _count = count;
-            _capacity = (uint) bufferValues.capacity;
+            _capacity = capacity;
         }
 
         public void Dispose()
         {
 #if DEBUG && !PROFILE_SVELTO
-            if ((IntPtr)_valuesPointer == IntPtr.Zero)
+            if ((IntPtr)_bucketsPointer == IntPtr.Zero)
                 throw new Exception("disposing an already disposed NativeFasterDictionary");
 #endif 
             _buckets.Free();
+            _bucketsPointer = IntPtr.Zero;
         }
 
         public TValue* unsafeValues
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => (TValue*) _valuesPointer;
+            get => (TValue*) _values;
         }
 
         public uint count => _count;
@@ -46,7 +49,7 @@ namespace Svelto.DataStructures.Internal
 
         public ref TValue GetDirectValue(uint findIndex)
         {
-            return ref ((TValue *)_valuesPointer)[findIndex];
+            return ref ((TValue *)_values)[findIndex];
         }
 
         //I store all the index with an offset + 1, so that in the bucket list 0 means actually not existing.
@@ -62,7 +65,7 @@ namespace Svelto.DataStructures.Internal
             uint bucketIndex = Reduce((uint) hash, (uint) _bucketsSize);
 
             int valueIndex = gcHandle[bucketIndex] - 1;
-            void* valuesInfo = (void*) _valuesInfoPointer;
+            void* valuesInfo = (void*) _valuesInfo;
 
             //even if we found an existing value we need to be sure it's the one we requested
             while (valueIndex != -1)
@@ -97,16 +100,16 @@ namespace Svelto.DataStructures.Internal
 #if UNITY_COLLECTIONS
         [Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction]
 #endif
-        readonly IntPtr        _valuesInfoPointer;
+        readonly IntPtr        _valuesInfo;
 #if UNITY_COLLECTIONS
         [Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction]
 #endif
-        readonly IntPtr _bucketsPointer;
+        IntPtr _bucketsPointer;
 #if UNITY_COLLECTIONS
 
         [Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction]
 #endif
-        readonly IntPtr _valuesPointer;
+        readonly IntPtr _values;
 
         readonly GCHandle _buckets;
         readonly int      _bucketsSize;

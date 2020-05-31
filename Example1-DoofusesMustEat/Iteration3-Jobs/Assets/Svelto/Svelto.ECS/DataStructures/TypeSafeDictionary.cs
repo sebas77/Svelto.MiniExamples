@@ -62,7 +62,7 @@ namespace Svelto.ECS.Internal
 
             //this can be optimized, should pass all the entities and not restart the process for each one
             foreach (var value in implementation)
-                AddEntityComponentToEngines(entityComponentEnginesDB, ref typeSafeDictionary.GetValueByRef(value.Key)
+                AddEntityComponentToEngines(entityComponentEnginesDB, ref typeSafeDictionary[value.Key]
                                           , null, in profiler, new EGID(value.Key, group));
         }
 
@@ -70,10 +70,10 @@ namespace Svelto.ECS.Internal
         {
             var valueIndex = implementation.GetIndex(fromEntityGid.entityID);
 
-            if (toGroup != null)
+            DBC.ECS.Check.Require(toGroup != null, "Invalid To Group"); //todo check this, if it's right merge GetIndex
             {
                 var     toGroupCasted = toGroup as ITypeSafeDictionary<TValue>;
-                ref var entity        = ref implementation.unsafeValues[(int) valueIndex];
+                ref var entity        = ref implementation.GetDirectValueByRef(valueIndex);
 
                 if (_hasEgid)
                     SetEGIDWithoutBoxing<TValue>.SetIDWithoutBoxing(ref entity, toEntityID);
@@ -91,16 +91,8 @@ namespace Svelto.ECS.Internal
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ITypeSafeDictionary Create() { return TypeSafeDictionaryFactory<TValue>.Create(1); }
 
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void FastClear() { implementation.FastClear(); }
-
-        public object GenerateSentinel() { return default; }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public SveltoDictionary<uint, TValue>.SveltoDictionaryKeyValueEnumerator GetEnumerator()
@@ -115,14 +107,15 @@ namespace Svelto.ECS.Internal
         public ref TValue GetOrCreate(uint idEntityId) { return ref implementation.GetOrCreate(idEntityId); }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ref TValue GetValueByRef(uint key) { return ref implementation.GetValueByRef(key); }
+        public IBuffer<TValue> GetValues(out uint count)
+        {
+            return implementation.GetValues(out count);
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IBuffer<TValue> GetValuesArray(out uint count)
+        public ref TValue GetDirectValueByRef(uint key)
         {
-            var managedBuffer = implementation.unsafeValues;
-            count = this.count;
-            return managedBuffer;
+            return ref implementation.GetDirectValueByRef(key);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -134,7 +127,7 @@ namespace Svelto.ECS.Internal
         {
             var valueIndex = implementation.GetIndex(fromEntityGid.entityID);
 
-            ref var entity = ref implementation.unsafeValues[(int) valueIndex];
+            ref var entity = ref implementation.GetDirectValueByRef(valueIndex);
 
             if (toGroup != null)
             {
@@ -149,7 +142,7 @@ namespace Svelto.ECS.Internal
 
                 var index = toGroupCasted.GetIndex(toEntityID.Value.entityID);
 
-                AddEntityComponentToEngines(engines, ref toGroupCasted.unsafeValues[(int) index], previousGroup
+                AddEntityComponentToEngines(engines, ref toGroupCasted.GetDirectValueByRef(index), previousGroup
                                           , in profiler, toEntityID.Value);
             }
             else
@@ -158,17 +151,19 @@ namespace Svelto.ECS.Internal
             }
         }
 
-        public void RemoveEntitiesFromEngines
-        (FasterDictionary<RefWrapper<Type>, FasterList<IEngine>> engines
-       , in PlatformProfiler profiler, ExclusiveGroupStruct group)
+        public void RemoveEntitiesFromEngines(FasterDictionary<RefWrapper<Type>, FasterList<IEngine>> engines
+                                            , in PlatformProfiler profiler, ExclusiveGroupStruct group)
         {
-            foreach (var value in implementation)
+            foreach (SveltoDictionary<uint, TValue>.KeyValuePairFast value in implementation)
                 RemoveEntityComponentFromEngines(engines, ref implementation.GetValueByRef(value.Key)
                                                , null, in profiler, new EGID(value.Key, group));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void RemoveEntityFromDictionary(EGID fromEntityGid) { implementation.Remove(fromEntityGid.entityID); }
+        public void RemoveEntityFromDictionary(EGID fromEntityGid)
+        {
+            implementation.Remove(fromEntityGid.entityID);
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetCapacity(uint size) { implementation.SetCapacity(size); }
@@ -200,12 +195,6 @@ namespace Svelto.ECS.Internal
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => ref implementation.GetValueByRef(idEntityId);
-        }
-
-        public IBuffer<TValue> unsafeValues
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => implementation.unsafeValues;
         }
 
         static void RemoveEntityComponentFromEngines
@@ -240,6 +229,7 @@ namespace Svelto.ECS.Internal
                 return;
 
             if (previousGroup == null)
+            {
                 for (var i = 0; i < entityComponentsEngines.count; i++)
                     try
                     {
@@ -254,7 +244,9 @@ namespace Svelto.ECS.Internal
 
                         throw;
                     }
+            }
             else
+            {
                 for (var i = 0; i < entityComponentsEngines.count; i++)
                     try
                     {
@@ -270,20 +262,20 @@ namespace Svelto.ECS.Internal
 
                         throw;
                     }
-        }
-
-        void ReleaseUnmanagedResources()
-        {
-            // TODO release unmanaged resources here
+            }
         }
 
         void Dispose(bool disposing)
         {
-            ReleaseUnmanagedResources();
-            if (disposing)
-                implementation?.Dispose();
+            implementation?.Dispose();
         }
 
         ~TypeSafeDictionary() { Dispose(false); }
+        
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
     }
 }

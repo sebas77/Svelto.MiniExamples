@@ -113,6 +113,8 @@ PlayerSettings:
   switchNVNShaderPoolsGranularity: 33554432
   switchNVNDefaultPoolsGranularity: 16777216
   switchNVNOtherPoolsGranularity: 16777216
+  stadiaPresentMode: 0
+  stadiaTargetFramerate: 0
   vulkanNumSwapchainBuffers: 3
   vulkanEnableSetSRGBWrite: 0
   m_SupportedAspectRatios:
@@ -620,7 +622,7 @@ PlayerSettings:
   webGLThreadsSupport: 0
   webGLDecompressionFallback: 0
   scriptingDefineSymbols:
-    1: 
+    1: ENABLE_HYBRID_RENDERER_V2;PROFILE_SVELTO
   platformArchitecture: {}
   scriptingBackend:
     Standalone: 1

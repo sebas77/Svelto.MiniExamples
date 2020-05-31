@@ -62,7 +62,7 @@ namespace Svelto.Tasks
         {
             using (var platform = new PlatformProfiler(this._name))
             {
-                _processEnumerator.MoveNext(false, platform);
+                _processEnumerator.MoveNext(platform);
             }
         }
 
@@ -77,21 +77,22 @@ namespace Svelto.Tasks
             _newTaskRoutines.Clear();
         }
 
-        void IRunner<T>.StartCoroutine(in T task /*, bool immediate*/)
+        public void StartCoroutine(in T task)
         {
             _newTaskRoutines.Enqueue(task);
-
-            //if (immediate)
-            //  _processEnumerator.MoveNext(true);
         }
 
         public virtual void Dispose()
         {
+            DBC.Tasks.Check.Require(_newTaskRoutines != null, $"disposing an already disposed runner?! {_name}");
+            
             Stop();
 
             SveltoTaskRunner<T>.KillProcess(_flushingOperation);
 
             GC.SuppressFinalize(this);
+
+            _newTaskRoutines = null;
         }
 
         protected IProcessSveltoTasks InitializeRunner<TFlowModified>(TFlowModified modifier) where TFlowModified:IFlowModifier
@@ -103,9 +104,8 @@ namespace Svelto.Tasks
             return _processEnumerator;
         }
 
-
         IProcessSveltoTasks _processEnumerator;
-        readonly ThreadSafeQueue<T> _newTaskRoutines;
+        ThreadSafeQueue<T> _newTaskRoutines;
         readonly FasterList<T>      _coroutines;
         readonly SveltoTaskRunner<T>.FlushingOperation _flushingOperation = new SveltoTaskRunner<T>.FlushingOperation();
 

@@ -27,17 +27,16 @@ namespace Svelto.ECS.DataStructures
 #endif        
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ref T Get<T>(uint index) where T : unmanaged
+        public ref T Get<T>(uint index) where T : struct
         {
             unsafe
             {
-                T* buffer = (T*) ptr;
-                return ref buffer[index];
+                return ref Unsafe.AsRef<T>(Unsafe.Add<T>(ptr, (int) index));
             }
         }    
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Set<T>(uint index, in T value) where T : unmanaged
+        public void Set<T>(uint index, in T value) where T : struct
         {
             unsafe
             {
@@ -47,9 +46,8 @@ namespace Svelto.ECS.DataStructures
 #if DEBUG && !PROFILE_SVELTO                
                 if (_capacity < writeIndex + sizeOf)
                     throw new Exception("no writing authorized");
-#endif                 
-                T* buffer = (T*) ptr;
-                buffer[index] = value;
+#endif
+                Unsafe.AsRef<T>(Unsafe.Add<T>(_ptr, (int) index)) = value;
 
                 if (_writeIndex <  writeIndex + sizeOf)
                     _writeIndex = (uint) (writeIndex + sizeOf);
@@ -57,7 +55,7 @@ namespace Svelto.ECS.DataStructures
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Add<T>(in T value) where T : unmanaged
+        public void Add<T>(in T value) where T : struct
         {
             unsafe
             {
@@ -71,6 +69,14 @@ namespace Svelto.ECS.DataStructures
 
                 _writeIndex += (uint)structSize;
             }
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Pop<T>() where T : struct
+        {
+            var structSize = MemoryUtilities.SizeOf<T>();
+                
+            _writeIndex -= (uint)structSize;
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -118,7 +124,7 @@ namespace Svelto.ECS.DataStructures
             _writeIndex = 0;
         }
         
-#if UNITY_BURST
+#if UNITY_COLLECTIONS
         [global::Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction]
 #endif
         unsafe byte* _ptr;

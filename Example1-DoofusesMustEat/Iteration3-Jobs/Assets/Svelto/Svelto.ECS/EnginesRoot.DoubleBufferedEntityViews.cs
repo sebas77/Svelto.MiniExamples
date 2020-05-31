@@ -88,6 +88,38 @@ namespace Svelto.ECS
                 current = _entityComponentsToAddBufferA;
                 other = _entityComponentsToAddBufferB;
             }
+
+            public void Dispose()
+            {
+                {
+                    var otherValuesArray = other.unsafeValues;
+                    for (int i = 0; i < other.count; ++i)
+                    {
+                        var safeDictionariesCount = otherValuesArray[i].count;
+                        var safeDictionaries      = otherValuesArray[i].unsafeValues;
+                        //do not remove the dictionaries of entities per type created so far, they will be reused
+                        for (int j = 0; j < safeDictionariesCount; ++j)
+                        {
+                            //clear the dictionary of entities create do far (it won't allocate though)
+                            safeDictionaries[j].Dispose();
+                        }
+                    }
+                }
+                {
+                    var currentValuesArray = current.unsafeValues;
+                    for (int i = 0; i < current.count; ++i)
+                    {
+                        var safeDictionariesCount = currentValuesArray[i].count;
+                        var safeDictionaries      = currentValuesArray[i].unsafeValues;
+                        //do not remove the dictionaries of entities per type created so far, they will be reused
+                        for (int j = 0; j < safeDictionariesCount; ++j)
+                        {
+                            //clear the dictionary of entities create do far (it won't allocate though)
+                            safeDictionaries[j].Dispose();
+                        }
+                    }
+                }
+            }
         }
     }
 }

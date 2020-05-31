@@ -20,12 +20,12 @@ namespace Svelto.ECS.MiniExamples.Example1C
                 GroupCompound<GameGroups.DOOFUSES, GameGroups.EATING>.Groups;
 
             var doofusesEntityGroups =
-                entitiesDB.NativeGroupsIterator<PositionEntityComponent, VelocityEntityComponent, SpeedEntityComponent>(
+                entitiesDB.QueryEntities<PositionEntityComponent, VelocityEntityComponent, SpeedEntityComponent>(
                     groupsToUpdate);
 
-            foreach (var doofuses in doofusesEntityGroups)
+            foreach (var doofuses in doofusesEntityGroups.groups)
             {
-                var dep = new ComputePostionFromVelocityJob(doofuses, Time.deltaTime).ScheduleParallel(
+                var dep = new ComputePostionFromVelocityJob(doofuses.ToFast(), Time.deltaTime).ScheduleParallel(
                         doofuses.count, _jobHandle);
 
                 _jobHandle = JobHandle.CombineDependencies(_jobHandle, dep);

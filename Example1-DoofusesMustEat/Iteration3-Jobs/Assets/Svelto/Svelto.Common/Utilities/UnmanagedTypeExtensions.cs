@@ -18,14 +18,26 @@ namespace Svelto.Common
             
             if (cachedTypes.ContainsKey(t))
                 return cachedTypes[t];
+            
             if (t.IsPrimitive || t.IsPointer || t.IsEnum)
                 result = true;
-            else if (t.IsGenericType || !t.IsValueType)
-                    result = false;
+            else
+                if (t.IsValueType && t.IsGenericType)
+                {
+                    var areGenericTypesAllBlittable = t.GenericTypeArguments.All(x => IsUnmanaged(x));
+                    if (areGenericTypesAllBlittable)
+                        result = t.GetFields(BindingFlags.Public | 
+                                             BindingFlags.NonPublic | BindingFlags.Instance)
+                                  .All(x => IsUnmanaged(x.FieldType));
+                    else
+                        return false;
+                }
                 else
+                if (t.IsValueType)
                     result = t.GetFields(BindingFlags.Public | 
                                          BindingFlags.NonPublic | BindingFlags.Instance)
                               .All(x => IsUnmanaged(x.FieldType));
+
             cachedTypes.Add(t, result);
             return result;
         }

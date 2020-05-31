@@ -2,6 +2,7 @@
 #define GENERATE_NAME
 #endif
 
+using System;
 using System.Collections;
 using DBC.Tasks;
 
@@ -9,7 +10,7 @@ namespace Svelto.Tasks.ExtraLean
 {
     public struct ExtraLeanSveltoTask<TTask> : ISveltoTask where TTask : IEnumerator
     {
-        internal void Run<TRunner>(TRunner runner, ref TTask task/* , bool immediate*/)
+        internal void Run<TRunner>(TRunner runner, ref TTask task)
             where TRunner : class, IRunner<ExtraLeanSveltoTask<TTask>>
         {
             _runningTask  = task;
@@ -22,7 +23,7 @@ namespace Svelto.Tasks.ExtraLean
             
             _threadSafeSveltoTaskStates.started = true;
 
-            runner.StartCoroutine(this/*, immediate*/);
+            runner.StartCoroutine(this);
         }
 
         public override string ToString()
@@ -59,9 +60,11 @@ namespace Svelto.Tasks.ExtraLean
             if (_threadSafeSveltoTaskStates.explicitlyStopped == false)
             {
                 completed = !_runningTask.MoveNext();
-#if DEBUG && !PROFILE_SVELTO                
+#if DEBUG && !PROFILE_SVELTO
+                if (IS_TASK_STRUCT == false && _runningTask == null)
+                    throw new Exception($"Something went extremely wrong, has the runner been disposed?");
                 if (_runningTask.Current != null)
-                    throw new System.Exception("ExtraLean runners cannot yield any other value than Yield.It");
+                    throw new Exception($"ExtraLean runners cannot yield any other value than Yield.It Task:{_name}");
 #endif
             }
             else

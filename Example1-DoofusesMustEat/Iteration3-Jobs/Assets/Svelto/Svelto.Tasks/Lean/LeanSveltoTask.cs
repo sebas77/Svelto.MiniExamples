@@ -11,9 +11,7 @@ namespace Svelto.Tasks.Lean
 {
     public struct LeanSveltoTask<TTask> : ISveltoTask where TTask : IEnumerator<TaskContract>
     {
-        internal ContinuationEnumerator Run<TRunner>(TRunner runner,
-            ref TTask task /*,
-                                                       bool      immediate*/)
+        internal ContinuationEnumerator Run<TRunner>(TRunner runner, ref TTask task)
             where TRunner : class, IRunner<LeanSveltoTask<TTask>>
         {
             _sveltoTask = new SveltoTaskWrapper<TTask, IRunner<LeanSveltoTask<TTask>>>(ref task, runner);
@@ -27,7 +25,7 @@ namespace Svelto.Tasks.Lean
             _continuationEnumerator = new ContinuationEnumerator(ContinuationPool.RetrieveFromPool());
             _threadSafeSveltoTaskStates.started = true;
 
-            runner.StartCoroutine(this /*, immediate*/);
+            runner.StartCoroutine(this);
 
             return _continuationEnumerator;
         }
@@ -73,7 +71,7 @@ namespace Svelto.Tasks.Lean
             finally
             {
 #endif
-                if (completed == true)
+                if (completed == true)    
                 {
                     _continuationEnumerator.ce.ReturnToPool();
                     _threadSafeSveltoTaskStates.completed = true;

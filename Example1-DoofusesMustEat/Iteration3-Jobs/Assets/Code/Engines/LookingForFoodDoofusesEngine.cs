@@ -51,8 +51,8 @@ namespace Svelto.ECS.MiniExamples.Example1C
         (JobHandle inputDeps, FasterList<ExclusiveGroupStruct> foodGroups, FasterList<ExclusiveGroupStruct> doofusesGroups
        , ExclusiveGroupStruct swapDoofuseGroup, ExclusiveGroupStruct swapFoodGroup)
         {
-            var foodBuffer     = entitiesDB.NativeEntitiesBuffer<EGIDComponent>(foodGroups[0]);
-            var doofusesBuffer = entitiesDB.NativeEntitiesBuffer<MealInfoComponent, EGIDComponent>(doofusesGroups[0]);
+            var foodBuffer     = entitiesDB.QueryEntities<EGIDComponent>(foodGroups[0]);
+            var doofusesBuffer = entitiesDB.QueryEntities<MealInfoComponent, EGIDComponent>(doofusesGroups[0]);
 
             var doofusesCount = doofusesBuffer.count;
             var foodCount     = foodBuffer.count;
@@ -65,8 +65,8 @@ namespace Svelto.ECS.MiniExamples.Example1C
             //schedule the job
             var deps = new LookingForFoodDoofusesJob()
             {
-                _doofuses               = doofusesBuffer
-              , _food                   = foodBuffer
+                _doofuses               = doofusesBuffer.ToBuffers()
+              , _food                   = foodBuffer.ToBuffer()
               , _nativeDoofusesSwap     = _nativeDoofusesSwap
               , _nativeFoodSwap         = _nativeFoodSwap
               , _doofuseMealLockedGroup = swapDoofuseGroup

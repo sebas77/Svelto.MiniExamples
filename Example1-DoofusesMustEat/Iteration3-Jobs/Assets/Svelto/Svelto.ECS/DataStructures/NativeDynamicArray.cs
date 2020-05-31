@@ -7,7 +7,7 @@ namespace Svelto.ECS.DataStructures
 {
     public struct NativeDynamicArray : IDisposable
     {
-#if UNITY_BURST      
+#if UNITY_COLLECTIONS      
         [global::Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction]
 #endif
         unsafe UnsafeArray* _list;
@@ -16,7 +16,7 @@ namespace Svelto.ECS.DataStructures
 #endif
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int Count<T>() where T:unmanaged
+        public int Count<T>() where T:struct
         {
             unsafe
             {
@@ -32,7 +32,7 @@ namespace Svelto.ECS.DataStructures
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int Capacity<T>() where T:unmanaged
+        public int Capacity<T>() where T:struct
         {
             unsafe
             {
@@ -47,7 +47,7 @@ namespace Svelto.ECS.DataStructures
             }
         }
 
-        public static NativeDynamicArray Alloc<T>(Allocator allocator, uint newLength = 0) where T : unmanaged
+        public static NativeDynamicArray Alloc<T>(Allocator allocator, uint newLength = 0) where T : struct
         {
             unsafe
             {
@@ -74,7 +74,7 @@ namespace Svelto.ECS.DataStructures
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ref T Get<T>(uint index) where T : unmanaged
+        public ref T Get<T>(uint index) where T : struct
         {
             unsafe
             {
@@ -91,7 +91,7 @@ namespace Svelto.ECS.DataStructures
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Set<T>(uint index, in T value) where T : unmanaged
+        public void Set<T>(uint index, in T value) where T : struct
         {
             unsafe
             {
@@ -118,7 +118,7 @@ namespace Svelto.ECS.DataStructures
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Add<T>(in T item) where T : unmanaged
+        public void Add<T>(in T item) where T : struct
         {
             unsafe
             {
@@ -138,7 +138,7 @@ namespace Svelto.ECS.DataStructures
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void AddWithoutGrow<T>(in T item) where T : unmanaged
+        public void AddWithoutGrow<T>(in T item) where T : struct
         {
             unsafe
             {
@@ -154,6 +154,29 @@ namespace Svelto.ECS.DataStructures
                     throw new Exception("NativeDynamicArray: no writing authorized");
 #endif
                 _list->Add(item);
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void UnorderedRemoveAt<T>(uint index) where T : struct
+        {
+            unsafe
+            {
+#if DEBUG && !PROFILE_SVELTO
+                if (_list == null)
+                    throw new Exception("NativeDynamicArray: null-access");
+                if (hashType != TypeHash<T>.hash)
+                    throw new Exception("NativeDynamicArray: not excepted type used");
+                if (Count<T>() == 0)
+                    throw new Exception("NativeDynamicArray: empty array invalid operation");
+#endif
+                var count = Count<T>() - 1;
+                if (index < count)
+                {
+                    Set<T>(index, Get<T>((uint)count));
+                }
+
+                _list->Pop<T>();
             }
         }
 
@@ -182,7 +205,7 @@ namespace Svelto.ECS.DataStructures
             return (T*) _list->ptr;
         }
         
-        public IntPtr ToIntPTR<T>() where T : unmanaged
+        public IntPtr ToIntPTR<T>() where T : struct
         {
             unsafe
             {
@@ -230,7 +253,6 @@ namespace Svelto.ECS.DataStructures
                     throw new Exception("NativeDynamicArray: null-access");
                 if (hashType != TypeHash<T>.hash)
                     throw new Exception("NativeDynamicArray: not excepted type used");
-
 #endif
                 var capacity            = Capacity<T>();
                 var lengthToCopyInBytes = capacity * MemoryUtilities.SizeOf<T>();
@@ -244,5 +266,63 @@ namespace Svelto.ECS.DataStructures
                 return ret;
             }
         }
+
+        public void RemoveAt<T>(uint index) where T : struct
+        {
+            unsafe
+            {
+#if DEBUG && !PROFILE_SVELTO
+                if (_list == null)
+                    throw new Exception("NativeDynamicArray: null-access");
+                if (hashType != TypeHash<T>.hash)
+                    throw new Exception("NativeDynamicArray: not excepted type used");
+#endif
+           
+                var ptr = ToPTR<EGID>();
+
+                var sizeOf = MemoryUtilities.SizeOf<T>();
+                Unsafe.CopyBlock(ptr + index * sizeOf, ptr + (index + 1) * sizeOf, (uint) ((Count<T>() - (index + 1)) * sizeOf));
+                _list->Pop<T>();
+            }
+        }
+    }
+    
+    public ref struct NativeDynamicArrayCast<T> where T:struct
+    {
+        NativeDynamicArray _array;
+
+        public NativeDynamicArrayCast(NativeDynamicArray array):this()
+        {
+            _array = array;
+        }
+
+        public int count
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => _array.Count<T>();
+        }
+
+        public ref T this[int index]
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => ref _array.Get<T>((uint) index);
+        }
+
+        public ref T this[uint index]
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => ref _array.Get<T>(index);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Add(in T id) { _array.Add(id); }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void UnorderedRemoveAt(uint index) { _array.UnorderedRemoveAt<T>(index); }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void RemoveAt(uint index) { _array.RemoveAt<T>(index); }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Clear() { _array.Clear(); }
     }
 }

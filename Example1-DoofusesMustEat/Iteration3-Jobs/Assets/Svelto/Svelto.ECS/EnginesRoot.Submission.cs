@@ -66,16 +66,19 @@ namespace Svelto.ECS
                                     break;
                             }
                         }
-                        catch (Exception e)
+                        catch
                         {
                             var str = "Crash while executing Entity Operation "
                                 .FastConcat(entitiesOperations[i].type.ToString());
-
-                            throw new ECSException(str.FastConcat(" ")
+                            
+                            
+                            Svelto.Console.LogError(str.FastConcat(" ")
 #if DEBUG && !PROFILE_SVELTO
-                                    .FastConcat(entitiesOperations[i].trace.ToString())
+                                                      .FastConcat(entitiesOperations[i].trace.ToString())
 #endif
-                                , e);
+                                                 );
+
+                            throw;
                         }
                     }
                 }

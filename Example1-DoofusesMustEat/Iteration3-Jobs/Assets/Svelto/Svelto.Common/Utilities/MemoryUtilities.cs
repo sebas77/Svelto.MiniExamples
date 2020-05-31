@@ -1,3 +1,7 @@
+#if DEBUG && !PROFILE_SVELTO
+#define DEBUG_MEMORY
+#endif
+
 using System;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -44,15 +48,78 @@ namespace Svelto.Common
 #if UNITY_EDITOR && !UNITY_COLLECTIONS        
         static MemoryUtilities()
         {
-            #error Svelto.Common is depending on the Unity Collection package. Alternatively you can import System.Runtime.CompilerServices.Unsafe.dll
+            #warning Svelto.Common is depending on the Unity Collection package. Alternatively you can import System.Runtime.CompilerServices.Unsafe.dll
         }
 #endif
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static IntPtr Alloc(uint newCapacity, Allocator allocator)
+        {
+            unsafe
+            {
+                var signedCapacity = (int) SignedCapacity(newCapacity);
+#if UNITY_COLLECTIONS
+                var newPointer =
+                    Unity.Collections.LowLevel.Unsafe.UnsafeUtility.Malloc(signedCapacity, (int) OptimalAlignment.alignment, (Unity.Collections.Allocator) allocator);
+#else
+                var newPointer = System.Runtime.InteropServices.Marshal.AllocHGlobal(signedCapacity);
+#endif
+#if DEBUG && !PROFILE_SVELTO
+                MemClear((IntPtr) newPointer, (uint) signedCapacity);
+#endif          
+                var signedPointer = SignedPointer(newCapacity, (IntPtr) newPointer);
+
+                CheckBoundaries((IntPtr) newPointer);
+
+                return signedPointer;
+            }
+        }
+
+        public static IntPtr Realloc(IntPtr realBuffer, uint oldCapacity , uint newCapacity, Allocator allocator)
+        {
+            unsafe
+            {
+#if DEBUG && !PROFILE_SVELTO            
+                if (newCapacity <= 0)
+                    throw new Exception("new size must be greater than 0");
+                if (newCapacity <= oldCapacity)
+                    throw new Exception("new size must be greater than oldsize");
+#endif          
+                //Alloc returns the corret Signed Pointer already
+                IntPtr signedPointer = Alloc(newCapacity, allocator);
+
+                //Copy only the real data
+                Unsafe.CopyBlock((void*) signedPointer, (void*) realBuffer, oldCapacity);
+                
+                //Free unsigns the pointer itself
+                Free(realBuffer, allocator);
+                return signedPointer;
+#if NOT_USED_BUT_IF_WANT_TO_I_HAVE_TO_CHECK_THE_MEMORY_BOUNDARIES_BEFORE_TO_REALLOC
+                //find the real pointer
+                var realPointer = UnsignPointer(realBuffer);
+                //find the real capacity with extra info
+                var realCapacity = (IntPtr) SignedCapacity(newCapacity);
+                //realloc with the new size
+                var newPointer = System.Runtime.InteropServices.Marshal.ReAllocHGlobal(realPointer, realCapacity);
+                
+                var signedPointer = SignedPointer(newCapacity, newPointer);
+#if DEBUG && !PROFILE_SVELTO
+                //clear from the end of the old buffer to the end of the new buffer
+                MemClear((IntPtr) signedPointer + (int) oldCapacity, newCapacity - oldCapacity);
+#endif                
+                //return the pointer with signature
+                return signedPointer;
+#endif
+            }
+        }
+        
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Free(IntPtr ptr, Allocator allocator)
         {
             unsafe
             {
+                ptr = CheckAndReturnPointerToFree(ptr);
+
 #if UNITY_COLLECTIONS
                 Unity.Collections.LowLevel.Unsafe.UnsafeUtility.Free((void*) ptr, (Unity.Collections.Allocator) allocator);
 #else
@@ -60,53 +127,16 @@ namespace Svelto.Common
 #endif
             }
         }
-
+       
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static IntPtr Alloc(uint newCapacity, Allocator allocator)
-        {
-            unsafe
-            {
-#if UNITY_COLLECTIONS
-                var newPointer =
-                    Unity.Collections.LowLevel.Unsafe.UnsafeUtility.Malloc(newCapacity, (int) OptimalAlignment.alignment, (Unity.Collections.Allocator) allocator);
-#else
-                var newPointer = System.Runtime.InteropServices.Marshal.AllocHGlobal((int) newCapacity);
-#endif
-                return (IntPtr) newPointer;
-            }
-        }
-        
-        public static void Realloc(ref IntPtr realBuffer, uint oldSize , uint newSize, Allocator allocator)
-        {
-            unsafe
-            {
-#if DEBUG && !PROFILE_SVELTO            
-                if (newSize <= 0)
-                    throw new Exception("new size must be greater than 0");
-                if (newSize <= oldSize)
-                    throw new Exception("new size must be greater than oldsize");
-#endif                
-#if UNITY_COLLECTIONS
-                IntPtr newPointer =
-                    (IntPtr)Unity.Collections.LowLevel.Unsafe.UnsafeUtility.Malloc((long) newSize  , (int) OptimalAlignment.alignment, (Unity.Collections.Allocator) allocator);
-                Unity.Collections.LowLevel.Unsafe.UnsafeUtility.MemCpy((void*) newPointer, (void*) realBuffer, oldSize);
-                Free(realBuffer, allocator);
-#else
-                var newPointer = System.Runtime.InteropServices.Marshal.ReAllocHGlobal(realBuffer, (IntPtr) (newSize));
-#endif
-                realBuffer = newPointer;
-            }
-        }
-        
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void MemClear(IntPtr listData, uint sizeOf)
+        public static void MemClear(IntPtr destination, uint sizeOf)
         {
             unsafe 
             {
 #if UNITY_COLLECTIONS
-                Unity.Collections.LowLevel.Unsafe.UnsafeUtility.MemClear((void*) listData, sizeOf);
+                Unity.Collections.LowLevel.Unsafe.UnsafeUtility.MemClear((void*) destination, sizeOf);
 #else
-               Unsafe.InitBlock((void*) listData, 0, sizeOf);
+               Unsafe.InitBlock((void*) destination, 0, sizeOf);
 #endif
             }
         }
@@ -165,5 +195,81 @@ namespace Svelto.Common
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint Align4(uint input) { return (uint) (Math.Ceiling(input / 4.0) * 4); }
+        
+        static long SignedCapacity(uint newCapacity)
+        {
+#if DEBUG_MEMORY            
+            return newCapacity + 128;
+#else
+            return newCapacity;
+#endif            
+        }
+
+        static IntPtr SignedPointer(uint capacityWithoutSignature, IntPtr pointerToSign)
+        {
+            unsafe {
+#if DEBUG_MEMORY            
+                uint value = 0xDEADBEEF;
+                for (int i = 0; i < 60; i += 4)
+                {
+                    Unsafe.Write((void*) pointerToSign, value); //4 bytes signature
+                    pointerToSign += 4;
+                }
+
+                Unsafe.Write((void*) pointerToSign, capacityWithoutSignature); //4 bytes size allocated
+                pointerToSign += 4;
+                
+                for (int i = 0; i < 64; i += 4)
+                    Unsafe.Write( (void*) (pointerToSign+ (int) (capacityWithoutSignature) + i), value); //4 bytes size allocated
+
+                return (IntPtr) ((byte*) pointerToSign);
+#else
+                return (IntPtr) pointerToSign;
+#endif
+            }
+        }
+
+        static IntPtr UnsignPointer(IntPtr ptr)
+        {
+#if DEBUG_MEMORY            
+            return ptr - 64;
+#else
+            return ptr;
+#endif
+        }
+
+        static IntPtr CheckAndReturnPointerToFree(IntPtr ptr)
+        {
+            ptr = UnsignPointer(ptr);
+            
+            CheckBoundaries(ptr);
+            return ptr;
+        }
+
+        static unsafe void CheckBoundaries(IntPtr ptr)
+        {
+#if DEBUG_MEMORY
+            var debugPtr = ptr;
+
+            for (int i = 0; i < 60; i += 4)
+            {
+                var u = Unsafe.Read<uint>((void*) (debugPtr));
+                if (u != 0xDEADBEEF)
+                    throw new Exception();
+
+                debugPtr += 4;
+            }
+
+            uint size = Unsafe.Read<uint>((void*) (debugPtr));
+            debugPtr = debugPtr + (int) (4 + size);
+
+            for (int i = 0; i < 64; i += 4)
+            {
+                var u = Unsafe.Read<uint>((void*) (debugPtr + i));
+                if (u != 0xDEADBEEF)
+                    throw new Exception();
+            }
+#endif
+        }
     }
 }

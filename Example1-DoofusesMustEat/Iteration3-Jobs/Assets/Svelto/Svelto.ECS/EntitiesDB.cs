@@ -63,22 +63,21 @@ namespace Svelto.ECS
         public EntityCollection<T> QueryEntities<T>(ExclusiveGroupStruct groupStructId)
             where T : struct, IEntityComponent
         {
-            IBuffer<T> ret;
+            IBuffer<T> buffer;
             uint count = 0;
 
             if (SafeQueryEntityDictionary<T>(groupStructId, out var typeSafeDictionary) == false)
-                ret = RetrieveEmptyEntityComponentArray<T>();
+                buffer = RetrieveEmptyEntityComponentArray<T>();
             else
             {
                 var safeDictionary = (typeSafeDictionary as ITypeSafeDictionary<T>);
-                ret = safeDictionary.GetValuesArray(out count);
+                buffer = safeDictionary.GetValues(out count);
             }
 
-            return new EntityCollection<T>(ret, count);
+            return new EntityCollection<T>(buffer, count);
         }
 
-        public EntityCollection<T1, T2> QueryEntities<T1, T2>(
-            ExclusiveGroupStruct groupStruct)
+        public EntityCollection<T1, T2> QueryEntities<T1, T2>(ExclusiveGroupStruct groupStruct)
             where T1 : struct, IEntityComponent where T2 : struct, IEntityComponent
         {
             var T1entities = QueryEntities<T1>(groupStruct);
@@ -94,8 +93,7 @@ namespace Svelto.ECS
             return new EntityCollection<T1, T2>(T1entities, T2entities);
         }
 
-        public EntityCollection<T1, T2, T3>
-            QueryEntities<T1, T2, T3>(ExclusiveGroupStruct groupStruct)
+        public EntityCollection<T1, T2, T3> QueryEntities<T1, T2, T3>(ExclusiveGroupStruct groupStruct)
             where T1 : struct, IEntityComponent where T2 : struct, IEntityComponent where T3 : struct, IEntityComponent
         {
             var T1entities = QueryEntities<T1>(groupStruct);
@@ -112,25 +110,30 @@ namespace Svelto.ECS
                         .FastConcat(" Entity 3: ".FastConcat(typeof(T3).ToString()))
                         .FastConcat(" count: ").FastConcat(T3entities.count)));
 
-            return new EntityCollection<T1, T2, T3>(T1entities,
-                T2entities, T3entities);
+            return new EntityCollection<T1, T2, T3>(T1entities, T2entities, T3entities);
         }
 
-        public EntityCollections<T> QueryEntities<T>(ExclusiveGroup[] groups) where T : struct, IEntityComponent
+        public (EntityCollections<T> entities, GroupsEnumerable<T> groups) QueryEntities<T>(FasterList<ExclusiveGroupStruct> groups) where T : struct, IEntityComponent
         {
-            return new EntityCollections<T>(this, groups);
+            return (new EntityCollections<T>(this, groups), new GroupsEnumerable<T>(this, groups));
         }
 
-        public EntityCollections<T1, T2> QueryEntities<T1, T2>(ExclusiveGroup[] groups)
+        public (EntityCollections<T1, T2> entities, GroupsEnumerable<T1, T2> groups) QueryEntities<T1, T2>(FasterList<ExclusiveGroupStruct> groups)
             where T1 : struct, IEntityComponent where T2 : struct, IEntityComponent
         {
-            return new EntityCollections<T1, T2>(this, groups);
+            return (new EntityCollections<T1, T2>(this, groups), new GroupsEnumerable<T1, T2>(this, groups));
         }
         
-        public EntityCollections<T1, T2, T3> QueryEntities<T1, T2, T3>(ExclusiveGroup[] groups)
+        public (EntityCollections<T1, T2, T3> entities, GroupsEnumerable<T1, T2, T3> groups)  QueryEntities<T1, T2, T3>(FasterList<ExclusiveGroupStruct> groups)
             where T1 : struct, IEntityComponent where T2 : struct, IEntityComponent where T3 : struct, IEntityComponent
         {
-            return new EntityCollections<T1, T2, T3>(this, groups);
+            return (new EntityCollections<T1, T2, T3>(this, groups), new GroupsEnumerable<T1, T2, T3>(this, groups));
+        }
+        
+        public (EntityCollections<T1, T2, T3, T4> entities, GroupsEnumerable<T1, T2, T3, T4> groups)  QueryEntities<T1, T2, T3, T4>(FasterList<ExclusiveGroupStruct> groups)
+            where T1 : struct, IEntityComponent where T2 : struct, IEntityComponent where T3 : struct, IEntityComponent  where T4 : struct, IEntityComponent
+        {
+            return (new EntityCollections<T1, T2, T3, T4>(this, groups), new GroupsEnumerable<T1, T2, T3, T4>(this, groups));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -264,25 +267,27 @@ namespace Svelto.ECS
             _entityStream.PublishEntity(ref QueryEntity<T>(egid), egid);
         }
 
+        [Obsolete("<color=orange>This Method will be removed soon. please use QueryEntities instead</color>")]
         public void ExecuteOnAllEntities<T>(ExecuteOnAllEntitiesAction<T> action) where T : struct, IEntityComponent
         {
             if (_groupsPerEntity.TryGetValue(TypeRefWrapper<T>.wrapper, out var dictionary))
                 foreach (var pair in dictionary)
                 {
-                    var entities = (pair.Value as ITypeSafeDictionary<T>).GetValuesArray(out var count);
+                    IBuffer<T> entities = (pair.Value as ITypeSafeDictionary<T>).GetValues(out var count);
 
                     if (count > 0)
                         action(entities, new ExclusiveGroupStruct(pair.Key), count, this);
                 }
         }
 
+        [Obsolete("<color=orange>This Method will be removed soon. please use QueryEntities instead</color>")]
         public void ExecuteOnAllEntities<T, W>(ref W value, ExecuteOnAllEntitiesAction<T, W> action)
             where T : struct, IEntityComponent
         {
             if (_groupsPerEntity.TryGetValue(TypeRefWrapper<T>.wrapper, out var dic))
                 foreach (var pair in dic)
                 {
-                    var entities = (pair.Value as ITypeSafeDictionary<T>).GetValuesArray(out var innerCount);
+                    IBuffer<T> entities = (pair.Value as ITypeSafeDictionary<T>).GetValues(out var innerCount);
 
                     if (innerCount > 0)
                         action(entities, new ExclusiveGroupStruct(pair.Key), innerCount, this,
@@ -310,7 +315,7 @@ namespace Svelto.ECS
             if (safeDictionary.TryFindIndex(entityGID.entityID, out index) == false)
                 return null;
 
-            return (safeDictionary as ITypeSafeDictionary<T>).unsafeValues;
+            return (safeDictionary as ITypeSafeDictionary<T>).GetValues(out _);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

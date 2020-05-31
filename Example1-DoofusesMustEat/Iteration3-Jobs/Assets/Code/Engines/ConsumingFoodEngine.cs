@@ -47,16 +47,16 @@ namespace Svelto.ECS.MiniExamples.Example1C
              == false) return inputDeps;
 
             var doofusesEntityGroups = entitiesDB
-                   .NativeGroupsIterator<PositionEntityComponent, VelocityEntityComponent, MealInfoComponent,
+                   .QueryEntities<PositionEntityComponent, VelocityEntityComponent, MealInfoComponent,
                         EGIDComponent>(doofusesGroups);
 
             //against all the doofuses
-            foreach (var doofusesBuffer in doofusesEntityGroups)
+            foreach (var doofusesBuffer in doofusesEntityGroups.groups)
             {
                 var doofusesCount = doofusesBuffer.count;
 
                 //schedule the job
-                var deps = new ConsumingFoodJob(doofusesBuffer, foodPositionMapper, _nativeSwap, _nativeRemove, swapGroup)
+                var deps = new ConsumingFoodJob(doofusesBuffer.ToFast(), foodPositionMapper, _nativeSwap, _nativeRemove, swapGroup)
                        .ScheduleParallel(doofusesCount, inputDeps);
                 
                 inputDeps = JobHandle.CombineDependencies(deps, inputDeps);

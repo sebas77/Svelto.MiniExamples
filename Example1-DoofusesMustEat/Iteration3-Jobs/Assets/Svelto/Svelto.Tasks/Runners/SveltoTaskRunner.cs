@@ -20,8 +20,14 @@ namespace Svelto.Tasks.Internal
 
         internal class Process<TFlowModifier> : IProcessSveltoTasks where TFlowModifier: IFlowModifier
         {
-            public Process( ThreadSafeQueue<T> newTaskRoutines, FasterList<T> coroutines,
-                            FlushingOperation flushingOperation, TFlowModifier info)
+            public override string ToString()
+            {
+                return _info.runnerName;
+            }
+
+            public Process
+            (ThreadSafeQueue<T> newTaskRoutines, FasterList<T> coroutines, FlushingOperation flushingOperation
+           , TFlowModifier info)
             {
                 _newTaskRoutines   = newTaskRoutines;
                 _coroutines        = coroutines;
@@ -29,10 +35,17 @@ namespace Svelto.Tasks.Internal
                 _info              = info;
             }    
 
-            public bool MoveNext<PlatformProfiler>(bool immediate, in PlatformProfiler platformProfiler) 
+            public bool MoveNext<PlatformProfiler>(in PlatformProfiler platformProfiler) 
                 where PlatformProfiler : IPlatformProfiler
             {
-                if (_flushingOperation.kill) return false;
+                if (_flushingOperation.kill == true)
+                {
+                    _newTaskRoutines.Clear();
+                    _coroutines.Clear();
+                    
+                    return false;
+                }
+
                 if (_flushingOperation.stopping == true && _coroutines.count == 0)
                 {
                     //once all the coroutines are flushed the loop can return accepting new tasks
@@ -55,6 +68,7 @@ namespace Svelto.Tasks.Internal
 #endif
                 _info.Reset();
 
+                //Note: old comment, left as memo, when I used to allow to run tasks immediately
                 //I decided to adopt this strategy instead to call MoveNext() directly when a task
                 //must be executed immediately. However this works only if I do not update the coroutines count
                 //after the MoveNext which on its turn could run immediately another task.
@@ -62,7 +76,7 @@ namespace Svelto.Tasks.Internal
                 //at the end of the list and the child MoveNext executes only the new one. When the stack
                 //goes back to the previous MoveNext, I don't want to execute the new just added task again,
                 //so I can't update the coroutines count, it must stay the previous one/
-                int index = (int) (immediate == true ? coroutinesCount - 1 : 0);
+                int index = 0;
 
                 bool mustExit;
 
@@ -104,7 +118,7 @@ namespace Svelto.Tasks.Internal
                     else
                         index++;
 
-                    mustExit = (coroutinesCount == 0 || immediate ||
+                    mustExit = (coroutinesCount == 0 || 
                                 _info.CanMoveNext(ref index, ref coroutines[previousIndex], (int) coroutinesCount) ==
                                 false ||
                                 index >= coroutinesCount);

@@ -25,8 +25,7 @@ namespace Svelto.ECS
                 where T : IEntityDescriptor, new()
             {
                 return _enginesRoot.Target.BuildEntity(
-                    egid, EntityDescriptorTemplate<T>.descriptor.componentsToBuild
-                  , implementors);
+                    egid, EntityDescriptorTemplate<T>.descriptor.componentsToBuild, implementors);
             }
 
             public EntityComponentInitializer BuildEntity<T>

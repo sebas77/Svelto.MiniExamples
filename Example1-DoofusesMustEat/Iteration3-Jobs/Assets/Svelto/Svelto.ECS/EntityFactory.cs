@@ -39,11 +39,11 @@ namespace Svelto.ECS.Internal
             FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary> group,
             IComponentBuilder[] componentBuilders, IEnumerable<object> implementors)
         {
+            var count = componentBuilders.Length;
+
 #if DEBUG && !PROFILE_SVELTO
             HashSet<Type> types = new HashSet<Type>();
-#endif
-            var count = componentBuilders.Length;
-#if DEBUG && !PROFILE_SVELTO
+
             for (var index = 0; index < count; ++index)
             {
                 var entityComponentType = componentBuilders[index].GetEntityComponentType();

@@ -17,7 +17,7 @@ namespace Svelto.ECS.DataStructures
     /// </summary>
     public struct NativeBag : IDisposable
     {
-#if UNITY_BURST
+#if UNITY_COLLECTIONS
         [global::Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction]
 #endif
         unsafe UnsafeBlob* _queue;

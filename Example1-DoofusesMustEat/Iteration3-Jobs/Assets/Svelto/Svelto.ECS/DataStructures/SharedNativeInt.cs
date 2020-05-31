@@ -6,7 +6,7 @@ namespace Svelto.ECS.DataStructures
 {
     public struct SharedNativeInt: IDisposable
     {
-#if UNITY_BURST      
+#if UNITY_COLLECTIONS 
         [global::Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction]
 #endif
         unsafe int* data;

@@ -35,6 +35,8 @@ namespace Svelto.DataStructures
         {
             Array.Clear(_buffer, (int) 0, (int) _buffer.Length);
         }
+        
+        public void FastClear() { }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public T[] ToManagedArray()

@@ -6,7 +6,7 @@ namespace Svelto.ECS.Internal
 
     static class SetEGIDWithoutBoxing<T> where T : struct, IEntityComponent
     {
-        public static SetEGIDWithoutBoxingActionCast<T> SetIDWithoutBoxing = MakeSetter();
+        public static readonly SetEGIDWithoutBoxingActionCast<T> SetIDWithoutBoxing = MakeSetter();
 
         public static void Warmup() { }
 

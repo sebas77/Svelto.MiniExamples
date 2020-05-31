@@ -77,11 +77,11 @@ namespace Svelto.ECS
                 foreach (FasterDictionary<uint, FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary>>.KeyValuePairFast groups in _groupEntityComponentsDB)
                 {
                     foreach (FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary>.KeyValuePairFast entityList in groups.Value)
-                    {
                         entityList.Value.RemoveEntitiesFromEngines(_reactiveEnginesAddRemove, profiler,
                                                                    new ExclusiveGroupStruct(groups.Key));
+
+                    foreach (FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary>.KeyValuePairFast entityList in groups.Value)
                         entityList.Value.Dispose();
-                    }
                 }
 
                 _groupEntityComponentsDB.Clear();
@@ -102,6 +102,7 @@ namespace Svelto.ECS
 #if DEBUG && !PROFILE_SVELTO
                 _idCheckers.Clear();
 #endif
+                _groupedEntityToAdd.Dispose();
                 _groupedEntityToAdd = null;
 
                 _entitiesStream.Dispose();

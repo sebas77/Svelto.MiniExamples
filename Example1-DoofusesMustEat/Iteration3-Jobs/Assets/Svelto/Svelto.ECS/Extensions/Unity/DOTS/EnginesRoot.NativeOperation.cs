@@ -1,4 +1,5 @@
 #if UNITY_BURST
+using System;
 using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.ECS.DataStructures.Unity;
@@ -23,7 +24,7 @@ namespace Svelto.ECS
             //todo: remove operation array and store entity descriptor hash in the return value
             //todo I maybe able to provide a  _nativeSwap.SwapEntity<entityDescriptor> 
             _nativeRemoveOperations.Add(
-                new NativeOperationRemove(EntityDescriptorTemplate<T>.descriptor.componentsToBuild));
+                new NativeOperationRemove(EntityDescriptorTemplate<T>.descriptor.componentsToBuild, TypeCache<T>.type));
 
             return new NativeEntityRemove(_removeOperationQueue, _nativeRemoveOperations.count - 1);
         }
@@ -58,10 +59,10 @@ namespace Svelto.ECS
                     {
                         var componentsIndex = buffer.Dequeue<uint>();
                         var entityEGID = buffer.Dequeue<EGID>();
-                        CheckRemoveEntityID(entityEGID); 
+                        CheckRemoveEntityID(entityEGID, _nativeRemoveOperations[componentsIndex].type); 
                         QueueEntitySubmitOperation(new EntitySubmitOperation(
                                                        EntitySubmitOperationType.Remove, entityEGID, entityEGID
-                                                     , _nativeRemoveOperations[componentsIndex].ComponentComponents));
+                                                     , _nativeRemoveOperations[componentsIndex].components));
                     }
                 }
 
@@ -79,7 +80,7 @@ namespace Svelto.ECS
                         
                         QueueEntitySubmitOperation(new EntitySubmitOperation(
                                                        EntitySubmitOperationType.Swap, entityEGID.@from, entityEGID.to
-                                                     , _nativeSwapOperations[componentsIndex].ComponentComponents));
+                                                     , _nativeSwapOperations[componentsIndex].components));
                     }
                 }
             }
@@ -146,45 +147,29 @@ namespace Svelto.ECS
 
         public NativeOperationBuild(IComponentBuilder[] descriptorComponentsToBuild)
         {
-#if DEBUG && !PROFILE_SVELTO            
-            for (int i = 0; i < descriptorComponentsToBuild.Length; ++i)
-                if (descriptorComponentsToBuild[i].IsUnmanaged == false)
-                    throw new System.NotSupportedException();
-#endif
-            
             components = descriptorComponentsToBuild;
         }
     }
 
     readonly struct NativeOperationRemove
     {
-        internal readonly IComponentBuilder[] ComponentComponents;
-
-        public NativeOperationRemove(IComponentBuilder[] descriptorComponentsToRemove)
+        internal readonly IComponentBuilder[] components;
+        internal readonly Type type;
+        
+        public NativeOperationRemove(IComponentBuilder[] descriptorComponentsToRemove, Type entityType)
         {
-#if DEBUG && !PROFILE_SVELTO            
-            for (int i = 0; i < descriptorComponentsToRemove.Length; ++i)
-                if (descriptorComponentsToRemove[i].IsUnmanaged == false)
-                    throw new System.NotSupportedException();
-#endif
-            
-            ComponentComponents = descriptorComponentsToRemove;
+            components = descriptorComponentsToRemove;
+            type = entityType;
         }
     }
 
     readonly struct NativeOperationSwap
     {
-        internal readonly IComponentBuilder[] ComponentComponents;
+        internal readonly IComponentBuilder[] components;
 
         public NativeOperationSwap(IComponentBuilder[] descriptorComponentsToSwap)
         {
-#if DEBUG && !PROFILE_SVELTO            
-            for (int i = 0; i < descriptorComponentsToSwap.Length; ++i)
-                if (descriptorComponentsToSwap[i].IsUnmanaged == false)
-                    throw new System.NotSupportedException();
-#endif
-            
-            ComponentComponents = descriptorComponentsToSwap;
+            components = descriptorComponentsToSwap;
         }
     }
 }

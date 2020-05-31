@@ -11,6 +11,5 @@ namespace Svelto.ECS
         ITypeSafeDictionary Preallocate(ref ITypeSafeDictionary dictionary, uint size);
 
         Type GetEntityComponentType();
-        bool IsUnmanaged { get; }
     }
 }

@@ -7,14 +7,12 @@ namespace Svelto.ECS.Internal
     public interface ITypeSafeDictionary<TValue> : ITypeSafeDictionary where TValue : IEntityComponent
     {
         void Add(uint egidEntityId, in TValue entityComponent);
-        ref TValue GetValueByRef(uint key);
         ref TValue this[uint idEntityId] { get; }
         bool TryGetValue(uint entityId, out TValue item);
         ref TValue GetOrCreate(uint idEntityId);
 
-        IBuffer<TValue> GetValuesArray(out uint count);
-        IBuffer<TValue> unsafeValues { get; }
-        object GenerateSentinel();
+        IBuffer<TValue> GetValues(out uint count);
+        ref TValue GetDirectValueByRef(uint key);
     }
 
     public interface ITypeSafeDictionary:IDisposable

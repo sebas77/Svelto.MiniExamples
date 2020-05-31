@@ -3,23 +3,23 @@ using Svelto.DataStructures;
 
 namespace Svelto.ECS
 {
-    public readonly struct NativeGroupsEnumerable<T1, T2, T3, T4> where T1 : unmanaged, IEntityComponent
-                                                                  where T2 : unmanaged, IEntityComponent
-                                                                  where T3 : unmanaged, IEntityComponent
-                                                                  where T4 : unmanaged, IEntityComponent
+    public readonly struct GroupsEnumerable<T1, T2, T3, T4> where T1 : struct, IEntityComponent
+                                                            where T2 : struct, IEntityComponent
+                                                            where T3 : struct, IEntityComponent
+                                                            where T4 : struct, IEntityComponent
     {
-        readonly EntitiesDB             _db;
+        readonly EntitiesDB                       _db;
         readonly FasterList<ExclusiveGroupStruct> _groups;
 
-        public NativeGroupsEnumerable(EntitiesDB db, FasterList<ExclusiveGroupStruct> groups)
+        public GroupsEnumerable(EntitiesDB db, FasterList<ExclusiveGroupStruct> groups)
         {
             _db     = db;
             _groups = groups;
         }
 
-        public struct NativeGroupsIterator
+        public struct GroupsIterator
         {
-            public NativeGroupsIterator(EntitiesDB db, FasterList<ExclusiveGroupStruct> groups) : this()
+            public GroupsIterator(EntitiesDB db, FasterList<ExclusiveGroupStruct> groups) : this()
             {
                 _groups     = groups;
                 _indexGroup = -1;
@@ -41,10 +41,10 @@ namespace Svelto.ECS
                     Check.Assert(entityCollection1.count == entityCollection2.count
                                , "congratulation, you found a bug in Svelto, please report it");
 
-                    var array  = entityCollection1.ToNativeBuffers<T1, T2, T3>();
-                    var array2 = entityCollection2.ToNativeBuffer<T4>();
-                    _buffers = new BT<NB<T1>, NB<T2>, NB<T3>, NB<T4>>(array.buffer1, array.buffer2, array.buffer3, array2.buffer
-                                                                  , entityCollection1.count);
+                    BT<IBuffer<T1>, IBuffer<T2>, IBuffer<T3>> array  = entityCollection1.ToBuffers();
+                    IBuffer<T4> array2 = entityCollection2.ToBuffer();
+                    _buffers = new BT<IBuffer<T1>, IBuffer<T2>, IBuffer<T3>, IBuffer<T4>>(
+                        array.buffer1, array.buffer2, array.buffer3, array2, entityCollection1.count);
                     break;
                 }
 
@@ -53,34 +53,34 @@ namespace Svelto.ECS
 
             public void Reset() { _indexGroup = -1; }
 
-            public BT<NB<T1>, NB<T2>, NB<T3>, NB<T4>> Current => _buffers;
+            public BT<IBuffer<T1>, IBuffer<T2>, IBuffer<T3>, IBuffer<T4>> Current => _buffers;
 
             readonly FasterList<ExclusiveGroupStruct> _groups;
 
-            int                                _indexGroup;
-            BT<NB<T1>, NB<T2>, NB<T3>, NB<T4>> _buffers;
-            readonly EntitiesDB                _entitiesDB;
+            int                                                    _indexGroup;
+            BT<IBuffer<T1>, IBuffer<T2>, IBuffer<T3>, IBuffer<T4>> _buffers;
+            readonly EntitiesDB                                    _entitiesDB;
         }
 
-        public NativeGroupsIterator GetEnumerator() { return new NativeGroupsIterator(_db, _groups); }
+        public GroupsIterator GetEnumerator() { return new GroupsIterator(_db, _groups); }
     }
 
-    public readonly struct NativeGroupsEnumerable<T1, T2, T3> where T1 : unmanaged, IEntityComponent
-                                                              where T2 : unmanaged, IEntityComponent
-                                                              where T3 : unmanaged, IEntityComponent
+    public readonly struct GroupsEnumerable<T1, T2, T3> where T1 : struct, IEntityComponent
+                                                        where T2 : struct, IEntityComponent
+                                                        where T3 : struct, IEntityComponent
     {
-        readonly EntitiesDB             _db;
+        readonly EntitiesDB                       _db;
         readonly FasterList<ExclusiveGroupStruct> _groups;
 
-        public NativeGroupsEnumerable(EntitiesDB db, FasterList<ExclusiveGroupStruct> groups)
+        public GroupsEnumerable(EntitiesDB db, FasterList<ExclusiveGroupStruct> groups)
         {
             _db     = db;
             _groups = groups;
         }
 
-        public struct NativeGroupsIterator
+        public struct GroupsIterator
         {
-            public NativeGroupsIterator(EntitiesDB db, FasterList<ExclusiveGroupStruct> groups) : this()
+            public GroupsIterator(EntitiesDB db, FasterList<ExclusiveGroupStruct> groups) : this()
             {
                 _groups     = groups;
                 _indexGroup = -1;
@@ -96,7 +96,7 @@ namespace Svelto.ECS
                     if (entityCollection.count == 0)
                         continue;
 
-                    _buffers = entityCollection.ToNativeBuffers<T1, T2, T3>();
+                    _buffers = entityCollection.ToBuffers();
                     break;
                 }
 
@@ -105,30 +105,29 @@ namespace Svelto.ECS
 
             public void Reset() { _indexGroup = -1; }
 
-            public BT<NB<T1>, NB<T2>, NB<T3>> Current => _buffers;
+            public BT<IBuffer<T1>, IBuffer<T2>, IBuffer<T3>> Current => _buffers;
 
             readonly FasterList<ExclusiveGroupStruct> _groups;
 
-            int                        _indexGroup;
-            BT<NB<T1>, NB<T2>, NB<T3>> _buffers;
-            readonly EntitiesDB        _entitiesDB;
+            int                                       _indexGroup;
+            BT<IBuffer<T1>, IBuffer<T2>, IBuffer<T3>> _buffers;
+            readonly EntitiesDB                       _entitiesDB;
         }
 
-        public NativeGroupsIterator GetEnumerator() { return new NativeGroupsIterator(_db, _groups); }
+        public GroupsIterator GetEnumerator() { return new GroupsIterator(_db, _groups); }
     }
 
-    public struct NativeGroupsEnumerable<T1, T2> where T1 : unmanaged, IEntityComponent
-                                                 where T2 : unmanaged, IEntityComponent
+    public readonly struct GroupsEnumerable<T1, T2> where T1 : struct, IEntityComponent where T2 : struct, IEntityComponent
     {
-        public NativeGroupsEnumerable(EntitiesDB db, FasterList<ExclusiveGroupStruct> groups)
+        public GroupsEnumerable(EntitiesDB db, FasterList<ExclusiveGroupStruct> groups)
         {
             _db     = db;
             _groups = groups;
         }
 
-        public struct NativeGroupsIterator
+        public struct GroupsIterator
         {
-            public NativeGroupsIterator(EntitiesDB db, FasterList<ExclusiveGroupStruct> groups) : this()
+            public GroupsIterator(EntitiesDB db, FasterList<ExclusiveGroupStruct> groups) : this()
             {
                 _db         = db;
                 _groups     = groups;
@@ -144,7 +143,7 @@ namespace Svelto.ECS
                     if (entityCollection.count == 0)
                         continue;
 
-                    _buffers = entityCollection.ToNativeBuffers<T1, T2>();
+                    _buffers = entityCollection.ToBuffers();
                     break;
                 }
 
@@ -153,32 +152,33 @@ namespace Svelto.ECS
 
             public void Reset() { _indexGroup = -1; }
 
-            public BT<NB<T1>, NB<T2>> Current => _buffers;
+            //todo move to tuple and add group to as it may be necessary?
+            public BT<IBuffer<T1>, IBuffer<T2>> Current => _buffers;
 
-            readonly EntitiesDB             _db;
+            readonly EntitiesDB                       _db;
             readonly FasterList<ExclusiveGroupStruct> _groups;
 
             int                _indexGroup;
-            BT<NB<T1>, NB<T2>> _buffers;
+            BT<IBuffer<T1>, IBuffer<T2>> _buffers;
         }
 
-        public NativeGroupsIterator GetEnumerator() { return new NativeGroupsIterator(_db, _groups); }
+        public GroupsIterator GetEnumerator() { return new GroupsIterator(_db, _groups); }
 
-        readonly EntitiesDB             _db;
+        readonly EntitiesDB                       _db;
         readonly FasterList<ExclusiveGroupStruct> _groups;
     }
 
-    public struct NativeGroupsEnumerable<T1> where T1 : unmanaged, IEntityComponent
+    public readonly struct GroupsEnumerable<T1> where T1 : struct, IEntityComponent
     {
-        public NativeGroupsEnumerable(EntitiesDB db, FasterList<ExclusiveGroupStruct> groups)
+        public GroupsEnumerable(EntitiesDB db, FasterList<ExclusiveGroupStruct> groups)
         {
             _db     = db;
             _groups = groups;
         }
 
-        public struct NativeGroupsIterator
+        public struct GroupsIterator
         {
-            public NativeGroupsIterator(EntitiesDB db, FasterList<ExclusiveGroupStruct> groups) : this()
+            public GroupsIterator(EntitiesDB db, FasterList<ExclusiveGroupStruct> groups) : this()
             {
                 _db         = db;
                 _groups     = groups;
@@ -194,7 +194,7 @@ namespace Svelto.ECS
                     if (entityCollection.count == 0)
                         continue;
 
-                    _buffer = entityCollection.ToNativeBuffer<T1>().buffer;
+                    _buffer = new BT<IBuffer<T1>>(entityCollection.ToBuffer(), entityCollection.count);
                     break;
                 }
 
@@ -203,18 +203,18 @@ namespace Svelto.ECS
 
             public void Reset() { _indexGroup = -1; }
 
-            public NB<T1> Current => _buffer;
+            public BT<IBuffer<T1>> Current => _buffer;
 
-            readonly EntitiesDB             _db;
+            readonly EntitiesDB                       _db;
             readonly FasterList<ExclusiveGroupStruct> _groups;
 
             int    _indexGroup;
-            NB<T1> _buffer;
+            BT<IBuffer<T1>> _buffer;
         }
 
-        public NativeGroupsIterator GetEnumerator() { return new NativeGroupsIterator(_db, _groups); }
+        public GroupsIterator GetEnumerator() { return new GroupsIterator(_db, _groups); }
 
-        readonly EntitiesDB             _db;
+        readonly EntitiesDB                       _db;
         readonly FasterList<ExclusiveGroupStruct> _groups;
     }
 }

@@ -10,6 +10,11 @@ namespace Svelto.DataStructures
         
         public uint count => _count;
         public uint capacity => (uint) _buffer.Length;
+        
+        public static implicit operator FasterList<T>(T[] array)
+        {
+            return new FasterList<T>(array);
+        }
 
         public FasterList()
         {

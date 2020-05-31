@@ -26,11 +26,11 @@ namespace Svelto.Tasks.Profiler
 
         float _axisUpperBounds = 2f;
 
-        string avgTitle = "Avg".PadRight(15, ' ');
-        string updateTitle = "Now".PadRight(15, ' ');
-        string minTitle = "Min".PadRight(15, ' ');
-        string maxTitle = "Max".PadRight(15, ' ');
-        string calls = "Calls";
+        string avgTitle = "    Avg".PadRight(15, ' ');
+        string updateTitle = "      Now".PadRight(15, ' ');
+        string minTitle = "      Min".PadRight(15, ' ');
+        string maxTitle = "      Max".PadRight(15, ' ');
+        string calls = "    Calls";
         
         TasksMonitor _tasksMonitor;
         Queue<float> _taskMonitorData;

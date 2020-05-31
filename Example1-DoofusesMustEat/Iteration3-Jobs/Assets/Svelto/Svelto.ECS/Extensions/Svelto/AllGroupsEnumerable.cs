@@ -3,22 +3,16 @@ using Svelto.ECS.Internal;
 
 namespace Svelto.ECS
 {
-    public readonly struct NativeAllGroupsEnumerable<T1> where T1 : unmanaged, IEntityComponent
+    public readonly struct AllGroupsEnumerable<T1> where T1 : struct, IEntityComponent
     {
-        public NativeAllGroupsEnumerable(EntitiesDB db)
+        public AllGroupsEnumerable(EntitiesDB db)
         {
             _db = db;
         }
         
-        public struct NativeGroupsIterator
+        public struct GroupsIterator
         {
-            public struct CurrentGroup
-            {
-                public NB<T1> buffer;
-                public ExclusiveGroupStruct group;
-            }
-            
-            public NativeGroupsIterator(EntitiesDB db) : this()
+            public GroupsIterator(EntitiesDB db) : this()
             {
                 _db = db.FindGroups<T1>().GetEnumerator();
             }
@@ -33,8 +27,9 @@ namespace Svelto.ECS
                     ITypeSafeDictionary<T1> typeSafeDictionary = @group.Value as ITypeSafeDictionary<T1>;
                     
                     if (typeSafeDictionary.count == 0) continue;
-                    
-                    _array.buffer = new EntityCollection<T1>(typeSafeDictionary.GetValuesArray(out var count), count).ToNativeBuffer<T1>().buffer;
+
+                    _array.buffer = new BT<IBuffer<T1>>(
+                        new EntityCollection<T1>(typeSafeDictionary.GetValues(out var count), count).ToBuffer(), count);
                     _array.@group = new ExclusiveGroupStruct(group.Key);
 
                     return true;
@@ -43,19 +38,15 @@ namespace Svelto.ECS
                 return false;
             }
 
-            public void Reset()
-            {
-            }
-
-            public CurrentGroup Current => _array;
+            public (BT<IBuffer<T1>>, ExclusiveGroupStruct) Current => _array;
 
             FasterDictionary<uint, ITypeSafeDictionary>.FasterDictionaryKeyValueEnumerator _db;
-            CurrentGroup _array;
+            (BT<IBuffer<T1>> buffer, ExclusiveGroupStruct group) _array;
         }
 
-        public NativeGroupsIterator GetEnumerator()
+        public GroupsIterator GetEnumerator()
         {
-            return new NativeGroupsIterator(_db);
+            return new GroupsIterator(_db);
         }
 
         readonly EntitiesDB       _db;
@@ -92,7 +83,7 @@ namespace Svelto.ECS
                     if (typeSafeDictionary1.Count == 0) continue;
                     
                     _array = new BT<NB<T1>, NB<T2>>()(new EntityCollection<T1>(typeSafeDictionary1.GetValuesArray(out var count), count)
-                       .ToNativeBuffer<T1>();
+                       .ToBuffer();
 
                     return true;
                 }

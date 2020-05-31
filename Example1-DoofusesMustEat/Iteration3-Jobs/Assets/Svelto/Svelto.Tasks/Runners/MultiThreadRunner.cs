@@ -185,7 +185,7 @@ namespace Svelto.Tasks
 #endif
         }
 
-        public void StartCoroutine(in TTask task /*, bool immediate*/)
+        public void StartCoroutine(in TTask task)
         {
             if (isKilled == true)
                 throw new MultiThreadRunnerException("Trying to start a task on a killed runner");
@@ -337,7 +337,7 @@ namespace Svelto.Tasks
                 {
                     while (true)
                     {
-                        if (_process.MoveNext(false, profiler) == false)
+                        if (_process.MoveNext(profiler) == false)
                             break;
 
                         if (_flushingOperation.kill == false)

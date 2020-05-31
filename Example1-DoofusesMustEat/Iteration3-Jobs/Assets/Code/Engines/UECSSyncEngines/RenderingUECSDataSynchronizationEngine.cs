@@ -28,7 +28,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
                 //just become a pool of entities to fetch and assign values to. Of course we need to be sure that the
                 //entities are compatible, that's why we group the UECS entities like with do with the Svelto ones, using
                 //the UECS shared component UECSSveltoGroupID.
-                NB<PositionEntityComponent> entityCollection = collection.ToNativeBuffer<PositionEntityComponent>().buffer;
+                NB<PositionEntityComponent> entityCollection = collection.ToBuffer().buffer;
 
                 //when it's time to sync, I have two options, iterate the svelto entities first or iterate the
                 //UECS entities first. 

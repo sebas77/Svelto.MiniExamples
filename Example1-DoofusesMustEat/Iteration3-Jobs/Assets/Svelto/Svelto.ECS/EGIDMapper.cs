@@ -25,14 +25,14 @@ namespace Svelto.ECS
 #else
                 map.TryFindIndex(entityID, out var findIndex);
 #endif
-                return ref map.unsafeValues[(int) findIndex];
+                return ref map.GetDirectValueByRef(findIndex);
         }
         
         public bool TryGetEntity(uint entityID, out T value)
         {
             if (map.TryFindIndex(entityID, out var index))
             {
-                value = map.unsafeValues[index];
+                value = map.GetDirectValueByRef(index);
                 return true;
             }
 
@@ -44,7 +44,7 @@ namespace Svelto.ECS
         {
             if (map.TryFindIndex(entityID, out index))
             {
-                return map.unsafeValues;
+                return map.GetValues(out _);
             }
 
             throw new ECSException("Entity not found");
@@ -54,7 +54,7 @@ namespace Svelto.ECS
         {
             if (map.TryFindIndex(entityID, out index))
             {
-                array =  map.unsafeValues;
+                array = map.GetValues(out _);
                 return true;
             }
 

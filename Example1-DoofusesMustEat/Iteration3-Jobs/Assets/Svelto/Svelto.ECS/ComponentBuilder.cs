@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Svelto.Common;
@@ -102,12 +102,12 @@ namespace Svelto.ECS
         readonly T                        _initializer;
 
         internal static readonly Type ENTITY_COMPONENT_TYPE;
-        internal static readonly bool HAS_EGID;
+        public static readonly   bool HAS_EGID;
         internal static readonly bool IS_ENTITY_VIEW_COMPONENT;
 
-        static readonly T      DEFAULT_IT;
-        static readonly string ENTITY_COMPONENT_NAME;
-        internal static readonly bool IS_UNMANAGED;
+        static readonly          T      DEFAULT_IT;
+        static readonly          string ENTITY_COMPONENT_NAME;
+        internal static readonly bool   IS_UNMANAGED;
 
         static class EntityViewComponentCache
         {
