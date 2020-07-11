@@ -28,6 +28,7 @@ Goal of this example:
    * Move the camera with arrows and mouse, left button to drop 100 random food only once
  ###  **Iteration 3:**
    * Full jobified/burstified code with Svelto ECS 3.0
+   * test integration with IL2CPP
   
 ## Example 2: The classic Survival demo (Hybrid ECS)
 
@@ -37,7 +38,7 @@ Basic integration with Unity GameObjects and Monobehaviours. Uses Svelto ECS 2.8
 
 Goal of this example: 
 
-* show the integration with OOP platforms (Unity in this case) throught the use of Entity View Structs and implementors.
+* show the integration with OOP platforms (Unity in this case) throught the use of Entity View Components and Implementors.
 * Test webgl support
 
 Main Article: http://www.sebaslab.com/learning-svelto-ecs-by-example-the-survival-example/
