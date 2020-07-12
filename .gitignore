@@ -40,3 +40,5 @@ Example1-DoofusesMustEat/Iteration3-Jobs/Build/
 *.sln
 Example1-DoofusesMustEat/Iteration3-Jobs/UserSettings/
 Example1-DoofusesMustEat/Iteration3-Jobs/IL2CPP/
+Example2-Survival/SECS_3_0/Packages/packages-lock.json
+Example2-Survival/SECS_3_0/Build/

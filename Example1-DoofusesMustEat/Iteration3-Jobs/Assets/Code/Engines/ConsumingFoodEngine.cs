@@ -51,18 +51,17 @@ namespace Svelto.ECS.MiniExamples.Example1C
                         EGIDComponent>(doofusesGroups);
 
             //against all the doofuses
+            JobHandle deps = inputDeps;
             foreach (var doofusesBuffer in doofusesEntityGroups.groups)
             {
                 var doofusesCount = doofusesBuffer.count;
 
                 //schedule the job
-                var deps = new ConsumingFoodJob(doofusesBuffer.ToFast(), foodPositionMapper, _nativeSwap, _nativeRemove, swapGroup)
-                       .ScheduleParallel(doofusesCount, inputDeps);
-                
-                inputDeps = JobHandle.CombineDependencies(deps, inputDeps);
+                deps = JobHandle.CombineDependencies(deps, new ConsumingFoodJob(doofusesBuffer.ToBuffers(), foodPositionMapper, _nativeSwap, _nativeRemove, swapGroup)
+                                                        .ScheduleParallel(doofusesCount, inputDeps));
             }
 
-            return inputDeps;
+            return deps;
         }
 
         readonly NativeEntitySwap _nativeSwap;

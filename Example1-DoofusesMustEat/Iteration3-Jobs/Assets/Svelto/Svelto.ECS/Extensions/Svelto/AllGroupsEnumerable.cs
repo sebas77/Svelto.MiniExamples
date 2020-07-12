@@ -23,13 +23,11 @@ namespace Svelto.ECS
                 while (_db.MoveNext() == true)
                 {
                     FasterDictionary<uint, ITypeSafeDictionary>.KeyValuePairFast group = _db.Current;
-
                     ITypeSafeDictionary<T1> typeSafeDictionary = @group.Value as ITypeSafeDictionary<T1>;
                     
                     if (typeSafeDictionary.count == 0) continue;
 
-                    _array.buffer = new BT<IBuffer<T1>>(
-                        new EntityCollection<T1>(typeSafeDictionary.GetValues(out var count), count).ToBuffer(), count);
+                    _array.buffer = new BT<IBuffer<T1>>(typeSafeDictionary.GetValues(out var count), count);
                     _array.@group = new ExclusiveGroupStruct(group.Key);
 
                     return true;

@@ -7,7 +7,7 @@ namespace Svelto.DataStructures
         public static RefWrapper<Type> wrapper = new RefWrapper<Type>(typeof(T));        
     }
     
-    public struct RefWrapper<T>: IEquatable<RefWrapper<T>> where T:class
+    public readonly struct RefWrapper<T>: IEquatable<RefWrapper<T>> where T:class
     {
         public RefWrapper(T obj)
         {

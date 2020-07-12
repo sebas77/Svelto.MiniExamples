@@ -1,0 +1,162 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abc77607c2a62ef48b8f7dec55cc6d91, type: 3}
+  m_Name: AnalyzeRuleData
+  m_EditorClassIdentifier: 
+  m_RuleToResults:
+  - RuleName: Check Duplicate Bundle Dependencies
+    Results:
+    - m_ResultName: No issues found
+      m_Severity: 0
+  - RuleName: Check Resources to Addressable Duplicate Dependencies
+    Results:
+    - m_ResultName: Check Resources to Addressable Duplicate Dependencies - No issues
+        found.
+      m_Severity: 0
+  - RuleName: Check Scene to Addressable Duplicate Dependencies
+    Results:
+    - m_ResultName: Assets/Scenes/Level 01.unity:defaultlocalgroup_assets_all.bundle:Assets/Code/ECS/EntityViewComponents/Implementors/AnimatorImplementor.cs
+      m_Severity: 2
+  - RuleName: Check Sprite Atlas to Addressable Duplicate Dependencies
+    Results:
+    - m_ResultName: No issues found
+      m_Severity: 0
+  - RuleName: Build Bundle Layout
+    Results:
+    - m_ResultName: defaultlocalgroup_assets_all.bundle:Explicit:Assets/Json/EnemyAttackData.json
+      m_Severity: 0
+    - m_ResultName: defaultlocalgroup_assets_all.bundle:Explicit:Assets/Prefabs/Player.prefab
+      m_Severity: 0
+    - m_ResultName: defaultlocalgroup_assets_all.bundle:Explicit:Assets/Prefabs/Hellephant.prefab
+      m_Severity: 0
+    - m_ResultName: defaultlocalgroup_assets_all.bundle:Explicit:Assets/Json/prefabs.json
+      m_Severity: 0
+    - m_ResultName: defaultlocalgroup_assets_all.bundle:Explicit:Assets/Prefabs/ZomBunny.prefab
+      m_Severity: 0
+    - m_ResultName: defaultlocalgroup_assets_all.bundle:Explicit:Assets/Prefabs/ZomBear.prefab
+      m_Severity: 0
+    - m_ResultName: defaultlocalgroup_assets_all.bundle:Explicit:Assets/Json/EnemySpawningData.json
+      m_Severity: 0
+    - m_ResultName: defaultlocalgroup_assets_all.bundle:Implicit:Assets/Materials/GunMaterial.mat
+      m_Severity: 0
+    - m_ResultName: defaultlocalgroup_assets_all.bundle:Implicit:Assets/Animation/PlayerAnimatorController.controller
+      m_Severity: 0
+    - m_ResultName: defaultlocalgroup_assets_all.bundle:Implicit:Assets/Textures/BoyDiffuse.tif
+      m_Severity: 0
+    - m_ResultName: defaultlocalgroup_assets_all.bundle:Implicit:Assets/Models/Characters/Player.fbx
+      m_Severity: 0
+    - m_ResultName: defaultlocalgroup_assets_all.bundle:Implicit:Assets/Models/Characters/Player.fbx
+      m_Severity: 0
+    - m_ResultName: defaultlocalgroup_assets_all.bundle:Implicit:Assets/Models/Characters/Player.fbx
+      m_Severity: 0
+    - m_ResultName: defaultlocalgroup_assets_all.bundle:Implicit:Assets/Models/Characters/Player.fbx
+      m_Severity: 0
+    - m_ResultName: defaultlocalgroup_assets_all.bundle:Implicit:Assets/Models/Characters/Player.fbx
+      m_Severity: 0
+    - m_ResultName: defaultlocalgroup_assets_all.bundle:Implicit:Assets/Models/Characters/Player.fbx
+      m_Severity: 0
+    - m_ResultName: defaultlocalgroup_assets_all.bundle:Implicit:Assets/Textures/GunNormals.tif
+      m_Severity: 0
+    - m_ResultName: defaultlocalgroup_assets_all.bundle:Implicit:Assets/Textures/BoyNormals.tif
+      m_Severity: 0
+    - m_ResultName: defaultlocalgroup_assets_all.bundle:Implicit:Assets/Textures/GunDiffuse.tif
+      m_Severity: 0
+    - m_ResultName: defaultlocalgroup_assets_all.bundle:Implicit:Assets/Materials/PlayerMaterial.mat
+      m_Severity: 0
+    - m_ResultName: defaultlocalgroup_assets_all.bundle:Implicit:Assets/Audio/Effects/Player
+        Death.wav
+      m_Severity: 0
+    - m_ResultName: defaultlocalgroup_assets_all.bundle:Implicit:Assets/Audio/Effects/Player
+        GunShot.wav
+      m_Severity: 0
+    - m_ResultName: defaultlocalgroup_assets_all.bundle:Implicit:Assets/Materials/LineRenderMaterial.mat
+      m_Severity: 0
+    - m_ResultName: defaultlocalgroup_assets_all.bundle:Implicit:Assets/Materials/FlareParticleMaterial.mat
+      m_Severity: 0
+    - m_ResultName: defaultlocalgroup_assets_all.bundle:Implicit:Assets/Audio/Effects/Player
+        Hurt.wav
+      m_Severity: 0
+    - m_ResultName: defaultlocalgroup_assets_all.bundle:Implicit:Assets/Audio/Effects/Hellephant
+        Death.wav
+      m_Severity: 0
+    - m_ResultName: defaultlocalgroup_assets_all.bundle:Implicit:Assets/Materials/HellephantMaterial.mat
+      m_Severity: 0
+    - m_ResultName: defaultlocalgroup_assets_all.bundle:Implicit:Assets/Textures/HellephantDiffuse.tif
+      m_Severity: 0
+    - m_ResultName: defaultlocalgroup_assets_all.bundle:Implicit:Assets/Materials/FluffParticleMaterial.mat
+      m_Severity: 0
+    - m_ResultName: defaultlocalgroup_assets_all.bundle:Implicit:Assets/Audio/Effects/Hellephant
+        Hurt.wav
+      m_Severity: 0
+    - m_ResultName: defaultlocalgroup_assets_all.bundle:Implicit:Assets/Animation/EnemyAnimatorController.controller
+      m_Severity: 0
+    - m_ResultName: defaultlocalgroup_assets_all.bundle:Implicit:Assets/Shaders/Rim
+        Lit Bumped Specular.shader
+      m_Severity: 0
+    - m_ResultName: defaultlocalgroup_assets_all.bundle:Implicit:Assets/Textures/HellephantNormals.tif
+      m_Severity: 0
+    - m_ResultName: defaultlocalgroup_assets_all.bundle:Implicit:Assets/Animation/HellephantAnimatorController.overrideController
+      m_Severity: 0
+    - m_ResultName: defaultlocalgroup_assets_all.bundle:Implicit:Assets/Textures/PuffSprite.png
+      m_Severity: 0
+    - m_ResultName: defaultlocalgroup_assets_all.bundle:Implicit:Assets/Models/Characters/Zombunny.fbx
+      m_Severity: 0
+    - m_ResultName: defaultlocalgroup_assets_all.bundle:Implicit:Assets/Models/Characters/Zombunny.fbx
+      m_Severity: 0
+    - m_ResultName: defaultlocalgroup_assets_all.bundle:Implicit:Assets/Models/Characters/Zombunny.fbx
+      m_Severity: 0
+    - m_ResultName: defaultlocalgroup_assets_all.bundle:Implicit:Assets/Materials/EyesMaterial.mat
+      m_Severity: 0
+    - m_ResultName: defaultlocalgroup_assets_all.bundle:Implicit:Assets/Models/Characters/Hellephant.fbx
+      m_Severity: 0
+    - m_ResultName: defaultlocalgroup_assets_all.bundle:Implicit:Assets/Models/Characters/Hellephant.fbx
+      m_Severity: 0
+    - m_ResultName: defaultlocalgroup_assets_all.bundle:Implicit:Assets/Models/Characters/Hellephant.fbx
+      m_Severity: 0
+    - m_ResultName: defaultlocalgroup_assets_all.bundle:Implicit:Assets/Models/Characters/Hellephant.fbx
+      m_Severity: 0
+    - m_ResultName: defaultlocalgroup_assets_all.bundle:Implicit:Assets/Models/Characters/Hellephant.fbx
+      m_Severity: 0
+    - m_ResultName: defaultlocalgroup_assets_all.bundle:Implicit:Assets/Audio/Effects/ZomBunny
+        Death.wav
+      m_Severity: 0
+    - m_ResultName: defaultlocalgroup_assets_all.bundle:Implicit:Assets/Textures/ZomBunnyDiffuse.tif
+      m_Severity: 0
+    - m_ResultName: defaultlocalgroup_assets_all.bundle:Implicit:Assets/Materials/ZombunnyMaterial.mat
+      m_Severity: 0
+    - m_ResultName: defaultlocalgroup_assets_all.bundle:Implicit:Assets/Models/Characters/Zombunny.fbx
+      m_Severity: 0
+    - m_ResultName: defaultlocalgroup_assets_all.bundle:Implicit:Assets/Models/Characters/Zombunny.fbx
+      m_Severity: 0
+    - m_ResultName: defaultlocalgroup_assets_all.bundle:Implicit:Assets/Audio/Effects/ZomBunny
+        Hurt.wav
+      m_Severity: 0
+    - m_ResultName: defaultlocalgroup_assets_all.bundle:Implicit:Assets/Textures/ZomBunnyNormals.tif
+      m_Severity: 0
+    - m_ResultName: defaultlocalgroup_assets_all.bundle:Implicit:Assets/Materials/ZombearMaterial.mat
+      m_Severity: 0
+    - m_ResultName: defaultlocalgroup_assets_all.bundle:Implicit:Assets/Textures/ZomBearDiffuse.tif
+      m_Severity: 0
+    - m_ResultName: defaultlocalgroup_assets_all.bundle:Implicit:Assets/Audio/Effects/ZomBear
+        Hurt.wav
+      m_Severity: 0
+    - m_ResultName: defaultlocalgroup_assets_all.bundle:Implicit:Assets/Textures/ZomBearNormals.tif
+      m_Severity: 0
+    - m_ResultName: defaultlocalgroup_assets_all.bundle:Implicit:Assets/Models/Characters/ZomBear.fbx
+      m_Severity: 0
+    - m_ResultName: defaultlocalgroup_assets_all.bundle:Implicit:Assets/Models/Characters/ZomBear.fbx
+      m_Severity: 0
+    - m_ResultName: defaultlocalgroup_assets_all.bundle:Implicit:Assets/Audio/Effects/ZomBear
+        Death.wav
+      m_Severity: 0
+  - RuleName: UnityEditor.AddressableAssets.Build.AnalyzeRules.AnalyzeRule
+    Results: []

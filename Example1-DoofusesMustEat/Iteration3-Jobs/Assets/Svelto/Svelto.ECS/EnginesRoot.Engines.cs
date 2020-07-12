@@ -7,7 +7,7 @@ using Svelto.ECS.Schedulers;
 
 namespace Svelto.ECS
 {
-    public partial class EnginesRoot
+    public sealed partial class EnginesRoot
     {
         public struct EntitiesSubmitter
         {

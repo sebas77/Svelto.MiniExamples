@@ -18,14 +18,14 @@ namespace Svelto.ECS.Serialization
         {
             IComponentBuilder[] defaultEntities = EntityDescriptorTemplate<TType>.descriptor.componentsToBuild;
 
-            var hashNameAttribute = _type.GetCustomAttribute<HashNameAttribute>();
+            var hashNameAttribute = Type.GetCustomAttribute<HashNameAttribute>();
             if (hashNameAttribute == null)
             {
                 throw new Exception(
-                    "HashName attribute not found on the serializable type ".FastConcat(_type.FullName));
+                    "HashName attribute not found on the serializable type ".FastConcat(Type.FullName));
             }
 
-            _hash = DesignatedHash.Hash(Encoding.ASCII.GetBytes(hashNameAttribute._name));
+            Hash = DesignatedHash.Hash(Encoding.ASCII.GetBytes(hashNameAttribute._name));
 
             var (index, dynamicIndex) = SetupSpecialEntityComponent(defaultEntities, out ComponentsToBuild);
             if (index == -1)
@@ -36,7 +36,7 @@ namespace Svelto.ECS.Serialization
             // Stores the hash of this EntityDescriptor
             ComponentsToBuild[index] = new ComponentBuilder<SerializableEntityComponent>(new SerializableEntityComponent
             {
-                descriptorHash = _hash
+                descriptorHash = Hash
             });
 
             // If the current serializable is an ExtendibleDescriptor, I have to update it.
@@ -50,18 +50,18 @@ namespace Svelto.ECS.Serialization
 
             /////
             var entitiesToSerialize = new FasterList<ISerializableComponentBuilder>();
-            _entityComponentsToSerializeMap = new FasterDictionary<RefWrapper<Type>, ISerializableComponentBuilder>();
+            EntityComponentsToSerializeMap = new FasterDictionary<RefWrapper<Type>, ISerializableComponentBuilder>();
             foreach (IComponentBuilder e in defaultEntities)
             {
                 if (e is ISerializableComponentBuilder serializableEntityBuilder)
                 {
                     var entityType = serializableEntityBuilder.GetEntityComponentType();
-                    _entityComponentsToSerializeMap[new RefWrapper<Type>(entityType)] = serializableEntityBuilder;
+                    EntityComponentsToSerializeMap[new RefWrapper<Type>(entityType)] = serializableEntityBuilder;
                     entitiesToSerialize.Add(serializableEntityBuilder);
                 }
             }
 
-            _entitiesToSerialize = entitiesToSerialize.ToArray();
+            EntitiesToSerialize = entitiesToSerialize.ToArray();
         }
 
         static (int indexSerial, int indexDynamic) SetupSpecialEntityComponent
@@ -75,7 +75,7 @@ namespace Svelto.ECS.Serialization
 
             for (var i = 0; i < length; ++i)
             {
-                if (defaultEntities[i].GetEntityComponentType() == _serializableStructType)
+                if (defaultEntities[i].GetEntityComponentType() == SerializableStructType)
                 {
                     indexSerial = i;
                     --newLenght;
@@ -94,16 +94,16 @@ namespace Svelto.ECS.Serialization
             return (indexSerial, indexDynamic);
         }
 
-        public IComponentBuilder[]             componentsToBuild => ComponentsToBuild;
-        public uint                         hash                    => _hash;
-        public ISerializableComponentBuilder[] entitiesToSerialize     => _entitiesToSerialize;
+        public IComponentBuilder[]             componentsToBuild   => ComponentsToBuild;
+        public uint                            hash                => Hash;
+        public ISerializableComponentBuilder[] entitiesToSerialize => EntitiesToSerialize;
 
         static readonly IComponentBuilder[]                                               ComponentsToBuild;
-        static readonly FasterDictionary<RefWrapper<Type>, ISerializableComponentBuilder> _entityComponentsToSerializeMap;
-        static readonly ISerializableComponentBuilder[]                                   _entitiesToSerialize;
+        static readonly FasterDictionary<RefWrapper<Type>, ISerializableComponentBuilder> EntityComponentsToSerializeMap;
+        static readonly ISerializableComponentBuilder[]                                   EntitiesToSerialize;
 
-        static readonly uint _hash;
-        static readonly Type _serializableStructType = typeof(SerializableEntityComponent);
-        static readonly Type _type                   = typeof(TType);
+        static readonly uint Hash;
+        static readonly Type SerializableStructType = typeof(SerializableEntityComponent);
+        static readonly Type Type                   = typeof(TType);
     }
 }

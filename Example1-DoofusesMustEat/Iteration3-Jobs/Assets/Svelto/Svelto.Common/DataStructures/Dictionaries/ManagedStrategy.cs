@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.CompilerServices;
+using Svelto.Common;
 
 namespace Svelto.DataStructures
 {
@@ -10,10 +11,10 @@ namespace Svelto.DataStructures
 
         public ManagedStrategy(uint size):this()
         {
-            Alloc(size);
+            Alloc(size, Allocator.None);
         }
 
-        public void Alloc(uint size)
+        public void Alloc(uint size, Allocator nativeAllocator)
         {
             MB<T> b = new MB<T>();
             b.Set(new T[size]);

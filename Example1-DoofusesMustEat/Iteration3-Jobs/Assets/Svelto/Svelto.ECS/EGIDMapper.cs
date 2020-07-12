@@ -6,7 +6,7 @@ namespace Svelto.ECS
 {
     public readonly struct EGIDMapper<T> where T : struct, IEntityComponent
     {
-        internal readonly ITypeSafeDictionary<T> map;
+        readonly ITypeSafeDictionary<T> map;
         public uint Length => map.count;
         public ExclusiveGroupStruct groupID { get; }
 

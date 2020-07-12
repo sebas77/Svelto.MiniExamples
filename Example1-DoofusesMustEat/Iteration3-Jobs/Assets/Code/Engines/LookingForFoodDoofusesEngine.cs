@@ -66,15 +66,15 @@ namespace Svelto.ECS.MiniExamples.Example1C
                     var willEatDoofuses = math.min(foodCount, doofusesCount);
 
                     //schedule the job
-                    deps = new LookingForFoodDoofusesJob()
+                    deps = JobHandle.CombineDependencies(deps, new LookingForFoodDoofusesJob()
                     {
-                        _doofuses               = doofusesGroup.ToFast()
-                      , _food                   = foodgroup.ToFast()
+                        _doofuses               = doofusesGroup.ToBuffers()
+                      , _food                   = foodgroup.ToBuffer()
                       , _nativeDoofusesSwap     = _nativeDoofusesSwap
                       , _nativeFoodSwap         = _nativeFoodSwap
                       , _doofuseMealLockedGroup = swapDoofuseGroup
                       , _lockedFood             = swapFoodGroup
-                    }.ScheduleParallel(willEatDoofuses, deps);
+                    }.ScheduleParallel(willEatDoofuses, inputDeps));
                 }
             }
 

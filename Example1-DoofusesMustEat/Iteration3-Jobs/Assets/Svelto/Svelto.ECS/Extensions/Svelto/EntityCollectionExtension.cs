@@ -9,7 +9,7 @@ namespace Svelto.ECS
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static BT<NB<T1>> ToBuffer<T1>(in this EntityCollection<T1> ec) where T1 : unmanaged, IEntityComponent
         {
-            return new BT<NB<T1>>(ec.ToBuffer().ToFast(), ec.count);
+            return new BT<NB<T1>>(ec._nativedBuffer, ec.count);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -17,7 +17,7 @@ namespace Svelto.ECS
             (in this EntityCollection<T1, T2> ec)
             where T2 : unmanaged, IEntityComponent where T1 : unmanaged, IEntityComponent
         {
-            return new BT<NB<T1>, NB<T2>>(ec.Item1.ToBuffer().ToFast(), ec.Item2.ToBuffer().ToFast(), ec.count);
+            return new BT<NB<T1>, NB<T2>>(ec.item1._nativedBuffer, ec.item2._nativedBuffer, ec.count);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -27,8 +27,8 @@ namespace Svelto.ECS
             where T1 : unmanaged, IEntityComponent
             where T3 : unmanaged, IEntityComponent
         {
-            return new BT<NB<T1>, NB<T2>, NB<T3>>(ec.Item1.ToBuffer().ToFast(), ec.Item2.ToBuffer().ToFast()
-                                                , ec.Item3.ToBuffer().ToFast(), ec.count);
+            return new BT<NB<T1>, NB<T2>, NB<T3>>(ec.item1._nativedBuffer, ec.item2._nativedBuffer
+                                                , ec.item3._nativedBuffer, ec.count);
         }
     }
 
@@ -37,7 +37,7 @@ namespace Svelto.ECS
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static BT<MB<T1>> ToBuffer<T1>(in this EntityCollection<T1> ec) where T1 : struct, IEntityViewComponent
         {
-            return new BT<MB<T1>>(ec.ToBuffer().ToFast(), ec.count);
+            return new BT<MB<T1>>(ec._managedBuffer, ec.count);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -45,7 +45,7 @@ namespace Svelto.ECS
             (in this EntityCollection<T1, T2> ec)
             where T2 : struct, IEntityViewComponent where T1 : struct, IEntityViewComponent
         {
-            return (ec.Item1.ToBuffer().ToFast(), ec.Item2.ToBuffer().ToFast(), ec.count);
+            return (ec.item1._managedBuffer, ec.item2._managedBuffer, ec.count);
         }
 
         public static (MB<T1> buffer1, MB<T2> buffer2, MB<T3> buffer3, uint count) ToBuffers<T1, T2, T3>
@@ -54,7 +54,7 @@ namespace Svelto.ECS
             where T1 : struct, IEntityViewComponent
             where T3 : struct, IEntityViewComponent
         {
-            return (ec.Item1.ToBuffer().ToFast(), ec.Item2.ToBuffer().ToFast(), ec.Item3.ToBuffer().ToFast(), ec.count);
+            return (ec.item1._managedBuffer, ec.item2._managedBuffer, ec.item3._managedBuffer, ec.count);
         }
     }
 
@@ -65,7 +65,7 @@ namespace Svelto.ECS
             (in this EntityCollection<T1, T2> ec)
             where T1 : unmanaged, IEntityComponent where T2 : struct, IEntityViewComponent
         {
-            return (ec.Item1.ToBuffer().ToFast(), ec.Item2.ToBuffer().ToFast(), ec.count);
+            return (ec.item1._nativedBuffer, ec.item2._managedBuffer, ec.count);
         }
 
         public static (NB<T1> buffer1, MB<T2> buffer2, MB<T3> buffer3, uint count) ToBuffers<T1, T2, T3>
@@ -74,7 +74,30 @@ namespace Svelto.ECS
             where T2 : struct, IEntityViewComponent
             where T3 : struct, IEntityViewComponent
         {
-            return (ec.Item1.ToBuffer().ToFast(), ec.Item2.ToBuffer().ToFast(), ec.Item3.ToBuffer().ToFast(), ec.count);
+            return (ec.item1._nativedBuffer, ec.item2._managedBuffer, ec.item3._managedBuffer, ec.count);
+        }
+    }
+    
+    public static class EntityCollectionExtensionD
+    {
+        public static (NB<T1> buffer1, NB<T2> buffer2, MB<T3> buffer3, uint count) ToBuffers<T1, T2, T3>
+            (in this EntityCollection<T1, T2, T3> ec)
+            where T1 : unmanaged, IEntityComponent
+            where T2 : unmanaged, IEntityComponent
+            where T3 : struct, IEntityViewComponent
+        {
+            return (ec.item1._nativedBuffer, ec.item2._nativedBuffer, ec.item3._managedBuffer, ec.count);
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static BT<NB<T1>,  NB<T2>,  NB<T3>,  NB<T4> > ToBuffers<T1, T2, T3, T4>
+            (in this EntityCollection<T1, T2, T3, T4> ec)
+            where T2 : unmanaged, IEntityComponent
+            where T1 : unmanaged, IEntityComponent
+            where T3 : unmanaged, IEntityComponent
+            where T4 : unmanaged, IEntityComponent
+        {
+            return new BT<NB<T1>, NB<T2>, NB<T3>, NB<T4>>(ec.item1._nativedBuffer, ec.item2._nativedBuffer, ec.item3._nativedBuffer, ec.item4._nativedBuffer, ec.count);
         }
     }
     

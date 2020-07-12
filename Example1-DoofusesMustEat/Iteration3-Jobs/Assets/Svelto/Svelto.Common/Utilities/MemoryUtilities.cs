@@ -64,9 +64,9 @@ namespace Svelto.Common
 #else
                 var newPointer = System.Runtime.InteropServices.Marshal.AllocHGlobal(signedCapacity);
 #endif
-#if DEBUG && !PROFILE_SVELTO
+                //Note MemClear is actually necessary
                 MemClear((IntPtr) newPointer, (uint) signedCapacity);
-#endif          
+          
                 var signedPointer = SignedPointer(newCapacity, (IntPtr) newPointer);
 
                 CheckBoundaries((IntPtr) newPointer);

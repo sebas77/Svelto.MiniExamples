@@ -108,6 +108,7 @@ namespace Svelto.ECS
 
         [FieldOffset(0)] uint       _id;
         [FieldOffset(3)] byte _bytemask;
-        static uint _globalId;
+        
+        static uint _globalId = 1; //it starts from 1 because default EGID is considered not initalized value
     }
 }
