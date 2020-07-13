@@ -259,6 +259,9 @@ PlayerSettings:
     height: 180
     banner: {fileID: 0}
   androidGamepadSupportLevel: 0
+  AndroidMinifyWithR8: 0
+  AndroidMinifyRelease: 0
+  AndroidMinifyDebug: 0
   AndroidValidateAppBundleSize: 1
   AndroidAppBundleSizeToValidate: 150
   m_BuildTargetIcons:
@@ -622,15 +625,16 @@ PlayerSettings:
   webGLThreadsSupport: 0
   webGLDecompressionFallback: 0
   scriptingDefineSymbols:
-    1: PROFILE_SVELTO;ENABLE_PLATFORM_PROFILER
+    1: 
   platformArchitecture: {}
   scriptingBackend:
     Standalone: 1
   il2cppCompilerConfiguration:
-    Standalone: 0
+    Standalone: 1
   managedStrippingLevel: {}
   incrementalIl2cppBuild: {}
   allowUnsafeCode: 1
+  useDeterministicCompilation: 1
   additionalIl2CppArgs: 
   scriptingRuntimeVersion: 1
   gcIncremental: 1

@@ -27,7 +27,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
 
         IEnumerator MainThreadTick(FasterList<IJobifiedEngine> engines)
         {
-            EnginesExecutionOrderGroup orderGroup = new EnginesExecutionOrderGroup(new FasterReadOnlyList<IJobifiedEngine>(engines));
+            EnginesExecutionOrderGroup orderGroup = new EnginesExecutionOrderGroup(engines);
 
             JobHandle jobs = default;
             
@@ -78,10 +78,10 @@ namespace Svelto.ECS.MiniExamples.Example1C
         {
             DoofusesStandardSchedulers.StopAndCleanupAllDefaultSchedulers();
             
+            _enginesRoot?.Dispose();
+            
             GC.Collect();
             GC.WaitForPendingFinalizers();
-
-            _enginesRoot?.Dispose();
         }
 
         public void OnContextCreated<T>(T contextHolder)

@@ -16,39 +16,40 @@ namespace Svelto.ECS.MiniExamples.Example1C
 
         public ConsumingFoodEngine(IEntityFunctions nativeOptions)
         {
-            _nativeSwap    = nativeOptions.ToNativeSwap<DoofusEntityDescriptor>();
-            _nativeRemove  = nativeOptions.ToNativeRemove<FoodEntityDescriptor>();
+            _nativeSwap   = nativeOptions.ToNativeSwap<DoofusEntityDescriptor>(nameof(ConsumingFoodEngine));
+            _nativeRemove = nativeOptions.ToNativeRemove<FoodEntityDescriptor>(nameof(ConsumingFoodEngine));
         }
 
         public JobHandle Execute(JobHandle _jobHandle)
         {
             //Iterate EATING RED doofuses to move toward locked food and move to NOEATING if food is ATE
             //todo: this is a double responsibility. Move toward food and eating the food may work in separate engines
-            var handle1 = CreateJobForDoofusesAndFood(
-                _jobHandle, GroupCompound<GameGroups.DOOFUSES, GameGroups.RED, GameGroups.EATING>.Groups
-              , GroupCompound<GameGroups.DOOFUSES, GameGroups.RED, GameGroups.NOTEATING>.BuildGroup
-              , GroupCompound<GameGroups.FOOD, GameGroups.RED, GameGroups.EATING>.BuildGroup);
+            var handle1 = CreateJobForDoofusesAndFood(_jobHandle, GameGroups.RED_DOOFUSES_EATING.Groups
+                                                    , GameGroups.RED_DOOFUSES_NOT_EATING.BuildGroup
+                                                    , GameGroups.RED_FOOD_EATEN.BuildGroup);
             //Iterate EATING BLUE doofuses to look for BLUE food and MOVE them to NOEATING if food is ATE
             //todo: this is a double responsibility. Move toward food and eating the food may work in separate engines
-            var handle2 = CreateJobForDoofusesAndFood(
-                _jobHandle, GroupCompound<GameGroups.DOOFUSES, GameGroups.BLUE, GameGroups.EATING>.Groups
-              , GroupCompound<GameGroups.DOOFUSES, GameGroups.BLUE, GameGroups.NOTEATING>.BuildGroup
-              , GroupCompound<GameGroups.FOOD, GameGroups.BLUE, GameGroups.EATING>.BuildGroup);
+            var handle2 = CreateJobForDoofusesAndFood(_jobHandle, GameGroups.BLUE_DOOFUSES_EATING.Groups
+                                                    , GameGroups.BLUE_DOOFUSES_NOT_EATING.BuildGroup
+                                                    , GameGroups.BLUE_FOOD_EATEN.BuildGroup);
 
             //can run in parallel
             return JobHandle.CombineDependencies(handle1, handle2);
         }
 
+        public string name => nameof(ConsumingFoodEngine);
+
         JobHandle CreateJobForDoofusesAndFood
-        (JobHandle inputDeps, FasterList<ExclusiveGroupStruct> doofusesGroups, ExclusiveGroupStruct swapGroup
-       , ExclusiveGroupStruct foodGroup)
+        (JobHandle inputDeps, FasterReadOnlyList<ExclusiveGroupStruct> doofusesGroups
+       , ExclusiveGroupStruct swapGroup, ExclusiveGroupStruct foodGroup)
         {
             if (entitiesDB.TryQueryNativeMappedEntities<PositionEntityComponent>(foodGroup, out var foodPositionMapper)
-             == false) return inputDeps;
+             == false)
+                return inputDeps;
 
             var doofusesEntityGroups = entitiesDB
-                   .QueryEntities<PositionEntityComponent, VelocityEntityComponent, MealInfoComponent,
-                        EGIDComponent>(doofusesGroups);
+               .QueryEntities<PositionEntityComponent, VelocityEntityComponent, MealInfoComponent, EGIDComponent>(
+                    doofusesGroups);
 
             //against all the doofuses
             JobHandle deps = inputDeps;
@@ -57,14 +58,16 @@ namespace Svelto.ECS.MiniExamples.Example1C
                 var doofusesCount = doofusesBuffer.count;
 
                 //schedule the job
-                deps = JobHandle.CombineDependencies(deps, new ConsumingFoodJob(doofusesBuffer.ToBuffers(), foodPositionMapper, _nativeSwap, _nativeRemove, swapGroup)
-                                                        .ScheduleParallel(doofusesCount, inputDeps));
+                deps = JobHandle.CombineDependencies(
+                    deps
+                  , new ConsumingFoodJob(doofusesBuffer.ToBuffers(), foodPositionMapper, _nativeSwap, _nativeRemove
+                                       , swapGroup).ScheduleParallel(doofusesCount, inputDeps));
             }
 
             return deps;
         }
 
-        readonly NativeEntitySwap _nativeSwap;
+        readonly NativeEntitySwap   _nativeSwap;
         readonly NativeEntityRemove _nativeRemove;
 
         public EntitiesDB entitiesDB { private get; set; }
@@ -99,25 +102,25 @@ namespace Svelto.ECS.MiniExamples.Example1C
         public void Execute(int index)
         {
             ref EGID   mealInfoComponent = ref _doofuses.buffer3[index].targetMeal;
-            ref float3 doofusPosition = ref _doofuses.buffer1[index].position;
-            ref float3 velocity       = ref _doofuses.buffer2[index].velocity;
-            
-            ref float3 foodPosition      = ref _foodPosition.Entity(mealInfoComponent.entityID).position;
-            
+            ref float3 doofusPosition    = ref _doofuses.buffer1[index].position;
+            ref float3 velocity          = ref _doofuses.buffer2[index].velocity;
+
+            ref float3 foodPosition = ref _foodPosition.Entity(mealInfoComponent.entityID).position;
+
             var computeDirection = foodPosition - doofusPosition;
-            var sqrModule = computeDirection.x * computeDirection.x + computeDirection.z * computeDirection.z;
+            var sqrModule        = computeDirection.x * computeDirection.x + computeDirection.z * computeDirection.z;
 
             if (sqrModule < 2)
             {
                 velocity.x = 0;
                 velocity.z = 0;
-                
+
                 //food found
                 //Change Doofuses State
                 _nativeSwap.SwapEntity(_doofuses.buffer4[index].ID, _doofuseMealLockedGroup, _threadIndex);
                 //Remove Eaten Food
                 _nativeRemove.RemoveEntity(mealInfoComponent, _threadIndex);
-            
+
                 return;
             }
 

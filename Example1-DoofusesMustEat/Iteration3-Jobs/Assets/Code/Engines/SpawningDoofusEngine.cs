@@ -21,6 +21,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
         }
 
         public EntitiesDB entitiesDB { get; set; }
+        public string name => nameof(SpawningDoofusEngine);
 
         public void Ready() { }
 

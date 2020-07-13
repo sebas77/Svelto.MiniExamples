@@ -9,6 +9,7 @@
         "Unity.Entities.Hybrid",
         "Unity.Collections",
         "Unity.Transforms",
+        "Unity.Jobs",
         "Svelto.Common_3"
     ],
     "includePlatforms": [],

@@ -13,15 +13,14 @@ namespace Svelto.ECS.MiniExamples.Example1C
         public void Ready() { }
 
         public EntitiesDB entitiesDB { get; set; }
+        
+        public string name => nameof(VelocityToPositionDoofusesEngine);
 
         public JobHandle Execute(JobHandle _jobHandle)
         {
-            FasterList<ExclusiveGroupStruct> groupsToUpdate =
-                GroupCompound<GameGroups.DOOFUSES, GameGroups.EATING>.Groups;
-
             var doofusesEntityGroups =
                 entitiesDB.QueryEntities<PositionEntityComponent, VelocityEntityComponent, SpeedEntityComponent>(   
-                    groupsToUpdate);
+                    GameGroups.DOOFUSES_EATING.Groups);
 
             foreach (var doofuses in doofusesEntityGroups.groups)
             {

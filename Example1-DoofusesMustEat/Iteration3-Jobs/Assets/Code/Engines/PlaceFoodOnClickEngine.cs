@@ -22,9 +22,11 @@ namespace Svelto.ECS.MiniExamples.Example1C
         public PlaceFoodOnClickEngine(Entity redfood, Entity bluefood, IEntityFactory entityFactory)
         {
             _entityFactory = entityFactory;
-            _redfood          = redfood;
-            _bluefood = bluefood;
+            _redfood       = redfood;
+            _bluefood      = bluefood;
         }
+
+        public string name => nameof(PlaceFoodOnClickEngine);
 
         IEnumerator CheckClick()
         {
@@ -45,25 +47,25 @@ namespace Svelto.ECS.MiniExamples.Example1C
                         {
                             EntityComponentInitializer init;
 
-                            var randX = position.x + _random.NextFloat(-50, 50);
-                            var randZ = position.z + _random.NextFloat(-50, 50);
+                            var randX       = position.x + _random.NextFloat(-50, 50);
+                            var randZ       = position.z + _random.NextFloat(-50, 50);
                             var newposition = new float3(randX, position.y, randZ);
 
                             bool isRed;
 
                             if (Input.GetMouseButton(0))
                             {
-                                init = _entityFactory.BuildEntity<FoodEntityDescriptor>(_foodPlaced++,
-                                                        GroupCompound<GameGroups.FOOD, GameGroups.RED,
-                                                            GameGroups.NOTEATING>.BuildGroup);
+                                init = _entityFactory.BuildEntity<FoodEntityDescriptor>(
+                                    _foodPlaced++
+                                  , GroupCompound<GameGroups.FOOD, GameGroups.RED, GameGroups.NOTEATING>.BuildGroup);
 
                                 isRed = true;
                             }
                             else
                             {
-                                init = _entityFactory.BuildEntity<FoodEntityDescriptor>(_foodPlaced++,
-                                                         GroupCompound<GameGroups.FOOD, GameGroups.BLUE,
-                                                             GameGroups.NOTEATING>.BuildGroup);
+                                init = _entityFactory.BuildEntity<FoodEntityDescriptor>(
+                                    _foodPlaced++
+                                  , GroupCompound<GameGroups.FOOD, GameGroups.BLUE, GameGroups.NOTEATING>.BuildGroup);
 
                                 isRed = false;
                             }
@@ -75,8 +77,9 @@ namespace Svelto.ECS.MiniExamples.Example1C
                             //these structs are used for ReactOnAdd callback to create unity Entities later
                             init.Init(new UnityEcsEntityComponent
                             {
-                                uecsEntity    = isRed ? _redfood : _bluefood,
-                                spawnPosition = newposition,
+                                uecsEntity    = isRed ? _redfood : _bluefood
+                              , spawnPosition = newposition
+                               ,
                             });
                         }
 
@@ -92,12 +95,12 @@ namespace Svelto.ECS.MiniExamples.Example1C
         public EntitiesDB entitiesDB { private get; set; }
 
         public void Ready() { CheckClick().RunOn(UIInteractionRunner); }
-        
-        public static readonly SteppableRunner UIInteractionRunner = new SteppableRunner("UIInteraction");
+
+        static readonly SteppableRunner UIInteractionRunner = new SteppableRunner("UIInteraction");
 
         readonly IEntityFactory _entityFactory;
         readonly Entity         _redfood;
-        readonly Entity _bluefood;
+        readonly Entity         _bluefood;
 
         uint _foodPlaced;
 

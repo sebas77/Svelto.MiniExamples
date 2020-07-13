@@ -5,7 +5,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
 {
     public class EnginesExecutionOrderGroup : SortedJobifedEnginesGroup<IJobifiedEngine, DoofusesEnginesOrder>
     {
-        public EnginesExecutionOrderGroup(FasterReadOnlyList<IJobifiedEngine> engines) : base(engines)
+        public EnginesExecutionOrderGroup(FasterList<IJobifiedEngine> engines) : base(engines)
         {
         }
     }

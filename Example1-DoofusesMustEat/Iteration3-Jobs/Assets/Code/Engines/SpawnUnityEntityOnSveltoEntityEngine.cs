@@ -8,6 +8,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
     /// <summary>
     /// In a Svelto<->UECS scenario, is common to have UECS entity created on creation of Svelto ones. Same for
     /// destruction.
+    /// Note this can be easily moved to using Entity Command Buffer and I should do it at a given point
     /// </summary>
     public class SpawnUnityEntityOnSveltoEntityEngine
         : IReactOnAddAndRemove<UnityEcsEntityComponent>, IReactOnSwap<UnityEcsEntityComponent>, IQueryingEntitiesEngine
