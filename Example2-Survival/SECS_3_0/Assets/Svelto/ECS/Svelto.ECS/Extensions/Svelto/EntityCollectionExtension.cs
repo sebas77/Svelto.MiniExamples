@@ -5,30 +5,6 @@ using Svelto.ECS.Hybrid;
 
 namespace Svelto.ECS
 {
-    // public static class Test
-    // {
-    //     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    //     public static void Deconstruct<T1>(in this EntityCollection<T1> ec, out BT<NB<T1>> buffer) where T1 : unmanaged, IEntityComponent
-    //     {
-    //         buffer = new BT<NB<T1>>(ec._nativedBuffer, ec.count);
-    //     }
-    //     
-    //     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    //     public static void Deconstruct<T1, T2>(in this EntityCollection<T1, T2> ec, out BT<NB<T1>, NB<T2>> buffers) where T1 : unmanaged, IEntityComponent
-    //                                                                                                                 where T2 : unmanaged, IEntityComponent
-    //     {
-    //         buffers = new BT<NB<T1>, NB<T2>>(ec.Item1._nativedBuffer, ec.Item2._nativedBuffer, ec.count);
-    //     }
-    //     
-    //     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    //     public static void Deconstruct<T1, T2, T3>(in this EntityCollection<T1, T2, T3> ec, out BT<NB<T1>, NB<T2>, NB<T3>> buffers) where T1 : unmanaged, IEntityComponent
-    //                                                                                                                                 where T2 : unmanaged, IEntityComponent
-    //                                                                                                                                 where T3 : unmanaged, IEntityComponent
-    //     {
-    //         buffers = new BT<NB<T1>, NB<T2>, NB<T3>>(ec.Item1._nativedBuffer, ec.Item2._nativedBuffer, ec.Item3._nativedBuffer, ec.count);
-    //     }
-    // }
-    
     public static class EntityCollectionExtension
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

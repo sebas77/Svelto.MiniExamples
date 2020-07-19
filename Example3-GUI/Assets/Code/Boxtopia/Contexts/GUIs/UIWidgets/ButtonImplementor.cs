@@ -1,5 +1,5 @@
 using Svelto.ECS;
-using Svelto.ECS.Unity;
+using Svelto.ECS.Hybrid;
 using UnityEngine;
 
 namespace Boxtopia.GUIs.Generic

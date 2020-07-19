@@ -2,7 +2,7 @@ using System;
 using System.Text.RegularExpressions;
 using Boxtopia.GUIs.LocalisedText;
 using ServiceLayer;
-using Svelto.ECS.Unity;
+using Svelto.ECS.Hybrid;
 using TMPro;
 using UnityEngine;
 

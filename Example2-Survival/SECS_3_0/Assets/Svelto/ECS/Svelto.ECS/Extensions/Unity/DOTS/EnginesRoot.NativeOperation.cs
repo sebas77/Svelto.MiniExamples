@@ -38,7 +38,7 @@ namespace Svelto.ECS
             return new NativeEntitySwap(_swapOperationQueue, _nativeSwapOperations.count - 1);
         }
 
-        NativeEntityFactory ProvideNativeEntityFactoryQueue<T>() where T : IEntityDescriptor, new()
+        NativeEntityFactory ProvideNativeEntityFactoryQueue<T>(string memberName) where T : IEntityDescriptor, new()
         {
             //todo: remove operation array and store entity descriptor hash in the return value
             _nativeAddOperations.Add(

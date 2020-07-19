@@ -3,7 +3,7 @@ using Svelto.ECS.Hybrid;
 
 namespace Boxtopia.GUIs.LocalisedText
 {
-    public struct LocalizedLabelEntityViewStruct : IEntityViewStruct
+    public struct LocalizedLabelEntityViewComponent : IEntityViewComponent
     {
         public ILabelText label;
         

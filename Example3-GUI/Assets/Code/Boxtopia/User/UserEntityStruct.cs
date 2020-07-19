@@ -3,7 +3,7 @@ using Svelto.ECS.Experimental;
 
 namespace User
 {
-    public struct UserEntityStruct : IEntityStruct
+    public struct UserEntityComponent : IEntityComponent
     {
         public ECSString name;
     }

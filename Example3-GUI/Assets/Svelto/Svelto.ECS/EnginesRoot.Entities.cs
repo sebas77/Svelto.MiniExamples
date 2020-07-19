@@ -1,312 +1,325 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using DBC.ECS;
 using Svelto.Common;
-using Svelto.DataStructures.Experimental;
+using Svelto.DataStructures;
 using Svelto.ECS.Internal;
 
 namespace Svelto.ECS
 {
-    public partial class EnginesRoot : IDisposable
+    public partial class EnginesRoot : IDisposable, IUnitTestingInterface
     {
-        /// <summary>
-        /// Dispose an EngineRoot once not used anymore, so that all the
-        /// engines are notified with the entities removed.
-        /// It's a clean up process.
-        /// </summary>
-        public void Dispose()
-        {
-            using (var profiler = new PlatformProfiler("Final Dispose"))
-            {
-                foreach (var groups in _groupEntityDB)
-                    foreach (var entityList in groups.Value)
-                    {
-                        try
-                        {
-                            entityList.Value.RemoveEntitiesFromEngines(_reactiveEnginesAddRemove, profiler);
-                        }
-                        catch (Exception e)
-                        {
-                            Console.LogException(e);
-                        }
-                    }
-
-                foreach (var engine in _disposableEngines)
-                    try
-                    {
-                        engine.Dispose();
-                    }
-                    catch (Exception e)
-                    {
-                        Console.LogException(e);
-                    }
-            }
-
-            GC.SuppressFinalize(this);
-        }
-
-        ~EnginesRoot()
-        {
-            Console.LogWarning("Engines Root has been garbage collected, don't forget to call Dispose()!");
-
-            Dispose();
-        }
-
         ///--------------------------------------------
         ///
         public IEntityStreamConsumerFactory GenerateConsumerFactory()
         {
-            return new GenericentityStreamConsumerFactory(new DataStructures.WeakReference<EnginesRoot>(this));
+            return new GenericEntityStreamConsumerFactory(this);
         }
-
-        public IEntityFactory GenerateEntityFactory()
-        {
-            return new GenericEntityFactory(new DataStructures.WeakReference<EnginesRoot>(this));
-        }
-
-        public IEntityFunctions GenerateEntityFunctions()
-        {
-            return new GenericEntityFunctions(new DataStructures.WeakReference<EnginesRoot>(this));
-        }
+        public IEntityFactory GenerateEntityFactory() { return new GenericEntityFactory(this); }
+        public IEntityFunctions GenerateEntityFunctions() { return new GenericEntityFunctions(this); }
 
         ///--------------------------------------------
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        EntityStructInitializer BuildEntity<T>(EGID entityID, object[] implementors) where T : IEntityDescriptor, new()
+        EntityComponentInitializer BuildEntity
+            (EGID entityID, IComponentBuilder[] componentsToBuild, Type implementorType, IEnumerable<object> implementors = null)
         {
-            return BuildEntity(entityID, EntityDescriptorTemplate<T>.descriptor, implementors);
+            CheckAddEntityID(entityID, implementorType);
+            Check.Require(entityID.groupID != 0, "invalid group detected");
+
+            var dic = EntityFactory.BuildGroupedEntities(entityID, _groupedEntityToAdd, componentsToBuild
+                                                       , implementors);
+
+            return new EntityComponentInitializer(entityID, dic);
         }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        EntityStructInitializer BuildEntity<T>(EGID entityID, T entityDescriptor, object[] implementors)
-            where T : IEntityDescriptor
-        {
-            var descriptorEntitiesToBuild = entityDescriptor.entitiesToBuild;
-
-            CheckAddEntityID(entityID, entityDescriptor);
-
-            var dic = EntityFactory.BuildGroupedEntities(entityID, _groupedEntityToAdd,
-                                                         descriptorEntitiesToBuild, implementors);
-
-            return new EntityStructInitializer(entityID, dic);
-        }
-
-#if REAL_ID
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        EntityStructInitializer BuildEntity<T>(ExclusiveGroup.ExclusiveGroupStruct groupID, object[] implementors) where T : IEntityDescriptor, new()
-        {
-            //temporary egid, will change during the real submission, needed for the initialization look up
-            var egid = EGID.CREATE_WITHOUT_ID(groupID, _groupedEntityToAdd.entitiesBuiltThisSubmission++);
-            
-            var dic = EntityFactory.BuildGroupedEntities(egid, _groupedEntityToAdd.current,
-                                                         EntityDescriptorTemplate<T>.descriptor.entitiesToBuild, implementors);
-            
-            return new EntityStructInitializer(egid, dic.groups);
-        }
-#endif
 
         ///--------------------------------------------
-        void Preallocate<T>(uint groupID, uint size) where T : IEntityDescriptor, new()
+        void Preallocate<T>(ExclusiveGroupStruct groupID, uint size) where T : IEntityDescriptor, new()
         {
-            var entityViewsToBuild = EntityDescriptorTemplate<T>.descriptor.entitiesToBuild;
-            var numberOfEntityViews              = entityViewsToBuild.Length;
-            
-            //reserve space in the database
-            if (_groupEntityDB.TryGetValue(groupID, out var @group) == false)
-                group = _groupEntityDB[groupID] = new Dictionary<Type, ITypeSafeDictionary>();
-
-            for (var index = 0; index < numberOfEntityViews; index++)
+            using (var profiler = new PlatformProfiler("Preallocate"))
             {
-                var entityViewBuilder = entityViewsToBuild[index];
-                var entityViewType = entityViewBuilder.GetEntityType();
+                var entityComponentsToBuild  = EntityDescriptorTemplate<T>.descriptor.componentsToBuild;
+                var numberOfEntityComponents = entityComponentsToBuild.Length;
 
-                if (group.TryGetValue(entityViewType, out var dbList) == false)
-                    group[entityViewType] = entityViewBuilder.Preallocate(ref dbList, size);
-                else
-                    dbList.SetCapacity(size);
+                FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary> group = GetOrCreateGroup(groupID, profiler);
 
-                if (_groupsPerEntity.TryGetValue(entityViewType, out var groupedGroup) == false)
-                    groupedGroup = _groupsPerEntity[entityViewType] = new FasterDictionary<uint, ITypeSafeDictionary>();
+                for (var index = 0; index < numberOfEntityComponents; index++)
+                {
+                    var entityComponentBuilder = entityComponentsToBuild[index];
+                    var entityComponentType    = entityComponentBuilder.GetEntityComponentType();
 
-                groupedGroup[groupID] = dbList;
+                    var refWrapper = new RefWrapper<Type>(entityComponentType);
+                    if (group.TryGetValue(refWrapper, out var dbList) == false)
+                        group[refWrapper] = entityComponentBuilder.Preallocate(ref dbList, size);
+                    else
+                        dbList.SetCapacity(size);
+
+                    if (_groupsPerEntity.TryGetValue(refWrapper, out var groupedGroup) == false)
+                        groupedGroup = _groupsPerEntity[refWrapper] = new FasterDictionary<uint, ITypeSafeDictionary>();
+
+                    groupedGroup[groupID] = dbList;
+                }
             }
         }
 
         ///--------------------------------------------
-        /// 
-        void MoveEntity(IEntityBuilder[] entityBuilders, EGID fromEntityGID, Type originalDescriptorType, EGID? toEntityGID)
+        ///
+        void MoveEntityFromAndToEngines(IComponentBuilder[] componentBuilders, EGID fromEntityGID, EGID? toEntityGID)
         {
-            using (var sampler = new PlatformProfiler("Move Entity"))
+            using (var sampler = new PlatformProfiler("Move Entity From Engines"))
             {
-                //for each entity view generated by the entity descriptor
-                if (_groupEntityDB.TryGetValue(fromEntityGID.groupID, out var fromGroup) == false)
-                    throw new ECSException("from group not found eid: ".FastConcat(fromEntityGID.entityID)
-                                              .FastConcat(" group: ").FastConcat(fromEntityGID.groupID));
+                var fromGroup = GetGroup(fromEntityGID.groupID);
 
                 //Check if there is an EntityInfoView linked to this entity, if so it's a DynamicEntityDescriptor!
-#if DEBUG && !PROFILER                
-                bool correctEntityDescriptorFound = true;
-#endif
-                EntityStructInfoView entityInfoView = default;
-                if (fromGroup.TryGetValue(ENTITY_INFO_VIEW_TYPE, out var entityInfoViewDic) &&
-                    (entityInfoViewDic as TypeSafeDictionary<EntityStructInfoView>).TryGetValue(
-                        fromEntityGID.entityID, out entityInfoView) && 
-                    (
-#if DEBUG && !PROFILER                        
-correctEntityDescriptorFound =
-#endif
-                        entityInfoView.type == originalDescriptorType))
-                {
-                    var entitiesToMove = entityInfoView.entitiesToBuild;
-
-                    Dictionary<Type, ITypeSafeDictionary> toGroup = null;
-
-                    if (toEntityGID != null)
-                    {
-                        var toGroupID = toEntityGID.Value.groupID;
-                        
-                        if (_groupEntityDB.TryGetValue(toGroupID, out toGroup) == false)
-                            toGroup = _groupEntityDB[toGroupID] = new Dictionary<Type, ITypeSafeDictionary>();
-                    }
-
-                    for (int i = 0; i < entitiesToMove.Length; i++)
-                        MoveEntityView(fromEntityGID, toEntityGID, toGroup, ref fromGroup,
-                                       entitiesToMove[i].GetEntityType(), sampler);
-                }
+                if (fromGroup.TryGetValue(new RefWrapper<Type>(ComponentBuilderUtilities.ENTITY_STRUCT_INFO_VIEW)
+                                        , out var entityInfoViewDic)
+                 && (entityInfoViewDic as ITypeSafeDictionary<EntityInfoViewComponent>).TryGetValue(
+                        fromEntityGID.entityID, out var entityInfoView))
+                    MoveEntityComponents(fromEntityGID, toEntityGID, entityInfoView.componentsToBuild, fromGroup
+                                       , sampler);
                 //otherwise it's a normal static entity descriptor
                 else
-                {
-#if DEBUG && !PROFILER
-                    if (correctEntityDescriptorFound == false)
-                    throw new ECSException(INVALID_DYNAMIC_DESCRIPTOR_ERROR.FastConcat(" ID ").FastConcat(fromEntityGID.entityID)
-                                               .FastConcat(" group ID ").FastConcat(fromEntityGID.groupID).FastConcat(
-                                                " descriptor found: ", entityInfoView.type.Name, " descriptor Excepted ",
-                                                originalDescriptorType.Name));
-#endif
-
-                    Dictionary<Type, ITypeSafeDictionary> toGroup = null;
-                    if (toEntityGID != null)
-                    {
-                        var toGroupID = toEntityGID.Value.groupID;
-                        
-                        if (_groupEntityDB.TryGetValue(toGroupID, out toGroup) == false)
-                            toGroup = _groupEntityDB[toGroupID] = new Dictionary<Type, ITypeSafeDictionary>();
-                    }
-
-                    for (var i = 0; i < entityBuilders.Length; i++)
-                        MoveEntityView(fromEntityGID, toEntityGID, toGroup, ref fromGroup,
-                                       entityBuilders[i].GetEntityType(), sampler);
-                }
+                    MoveEntityComponents(fromEntityGID, toEntityGID, componentBuilders, fromGroup, sampler);
             }
         }
 
-        void MoveEntityView(EGID entityGID, EGID? toEntityGID, Dictionary<Type, ITypeSafeDictionary> toGroup,
-            ref Dictionary<Type, ITypeSafeDictionary> fromGroup, Type entityViewType, in PlatformProfiler profiler)
+        void MoveEntityComponents(EGID fromEntityGID, EGID? toEntityGID, IComponentBuilder[] entitiesToMove
+                    , FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary> fromGroup, in PlatformProfiler sampler)
         {
-            if (fromGroup.TryGetValue(entityViewType, out var fromTypeSafeDictionary) == false)
+            using (sampler.Sample("MoveEntityComponents"))
             {
-                throw new ECSException("no entities in from group eid: ".FastConcat(entityGID.entityID)
-                                          .FastConcat(" group: ").FastConcat(entityGID.groupID));
-            }
+                var length = entitiesToMove.Length;
 
-            ITypeSafeDictionary toEntitiesDictionary = null;
+                FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary> toGroup = null;
 
-            //in case we want to move to a new group, otherwise is just a remove
-            if (toEntityGID != null)
-            {
-                if (toGroup.TryGetValue(entityViewType, out toEntitiesDictionary) == false)
+                if (toEntityGID != null)
                 {
-                    toEntitiesDictionary = fromTypeSafeDictionary.Create();
-                    toGroup.Add(entityViewType, toEntitiesDictionary);
+                    var toGroupID = toEntityGID.Value.groupID;
+
+                    toGroup = GetOrCreateGroup(toGroupID, sampler);
+
+                    //Add all the entities to the dictionary
+                    for (var i = 0; i < length; i++)
+                        CopyEntityToDictionary(fromEntityGID, toEntityGID.Value, fromGroup, toGroup
+                                             , entitiesToMove[i].GetEntityComponentType(), sampler);
                 }
 
-                if (_groupsPerEntity.TryGetValue(entityViewType, out var groupedGroup) == false)
-                    groupedGroup = _groupsPerEntity[entityViewType] = new FasterDictionary<uint, ITypeSafeDictionary>();
+                //call all the callbacks
+                for (var i = 0; i < length; i++)
+                    MoveEntityComponentFromAndToEngines(fromEntityGID, toEntityGID, fromGroup, toGroup
+                                                      , entitiesToMove[i].GetEntityComponentType(), sampler);
 
-                groupedGroup[toEntityGID.Value.groupID] = toEntitiesDictionary;
+                //then remove all the entities from the dictionary
+                for (var i = 0; i < length; i++)
+                    RemoveEntityFromDictionary(fromEntityGID, fromGroup, entitiesToMove[i].GetEntityComponentType(), sampler);
             }
+        }
 
+        void CopyEntityToDictionary
+        (EGID entityGID, EGID toEntityGID, FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary> fromGroup
+       , FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary> toGroup, Type entityComponentType, in PlatformProfiler sampler)
+        {
+            using (sampler.Sample("CopyEntityToDictionary"))
+            {
+                var wrapper = new RefWrapper<Type>(entityComponentType);
+
+                ITypeSafeDictionary fromTypeSafeDictionary =
+                    GetTypeSafeDictionary(entityGID.groupID, fromGroup, wrapper);
+
+#if DEBUG && !PROFILE_SVELTO
             if (fromTypeSafeDictionary.Has(entityGID.entityID) == false)
             {
-                throw new EntityNotFoundException(entityGID, entityViewType);
+                throw new EntityNotFoundException(entityGID, entityComponentType);
             }
+#endif
+                ITypeSafeDictionary toEntitiesDictionary =
+                    GetOrCreateTypeSafeDictionary(toEntityGID.groupID, toGroup, wrapper, fromTypeSafeDictionary);
 
-            fromTypeSafeDictionary.MoveEntityFromDictionaryAndEngines(entityGID, toEntityGID,
-                                                                      toEntitiesDictionary,
-                                                                      toEntityGID == null ? _reactiveEnginesAddRemove :
-                                                                      _reactiveEnginesSwap,
-                                                                      in profiler);
-
-            if (fromTypeSafeDictionary.Count == 0) //clean up
-            {
-                _groupsPerEntity[entityViewType].Remove(entityGID.groupID);
-
-                //I don't remove the group if empty on purpose, in case it needs to be reused however I trim it to save
-                //memory
-                fromTypeSafeDictionary.Trim();
+                fromTypeSafeDictionary.AddEntityToDictionary(entityGID, toEntityGID, toEntitiesDictionary);
             }
         }
 
-        void RemoveGroupAndEntitiesFromDB(uint groupID, Type entityDescriptor)
+        void MoveEntityComponentFromAndToEngines
+        (EGID entityGID, EGID? toEntityGID, FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary> fromGroup
+       , FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary> toGroup, Type entityComponentType
+       , in PlatformProfiler profiler)
         {
-            throw new NotImplementedException();
-            /*  var profiler = new PlatformProfiler();
-              using (profiler.StartNewSession("Remove Group Of Entities"))
-              {
-                  FasterDictionary<int, ITypeSafeDictionary> @group;
-                  if (_groupsPerEntity.TryGetValue(entityDescriptor, out group))
-                  {
-                      if (group.TryGetValue())
-                      foreach (var entity in group)
-                      {
-                          MoveEntity(entity.);
-                      }                    
-                  }
-              }*/
+            using (profiler.Sample("MoveEntityComponentFromAndToEngines"))
+            {
+                //add all the entities
+                var refWrapper             = new RefWrapper<Type>(entityComponentType);
+                var fromTypeSafeDictionary = GetTypeSafeDictionary(entityGID.groupID, fromGroup, refWrapper);
+
+                ITypeSafeDictionary toEntitiesDictionary = null;
+                if (toGroup != null)
+                    toEntitiesDictionary = toGroup[refWrapper]; //this is guaranteed to exist by AddEntityToDictionary
+
+#if DEBUG && !PROFILE_SVELTO
+            if (fromTypeSafeDictionary.Has(entityGID.entityID) == false)
+                throw new EntityNotFoundException(entityGID, entityComponentType);
+#endif
+                fromTypeSafeDictionary.MoveEntityFromEngines(entityGID, toEntityGID, toEntitiesDictionary
+                                                           , toEntityGID == null
+                                                                 ? _reactiveEnginesAddRemove
+                                                                 : _reactiveEnginesSwap, in profiler);
+            }
         }
 
-        void RemoveGroupAndEntitiesFromDB(uint groupID)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        void RemoveEntityFromDictionary
+        (EGID entityGID, FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary> fromGroup, Type entityComponentType
+       , in PlatformProfiler sampler)
         {
-            using (var profiler = new PlatformProfiler("Remove Group"))
+            using (sampler.Sample("RemoveEntityFromDictionary"))
             {
-                var dictionariesOfEntities = _groupEntityDB[groupID];
-                foreach (var dictionaryOfEntities in dictionariesOfEntities)
+                var refWrapper             = new RefWrapper<Type>(entityComponentType);
+                var fromTypeSafeDictionary = GetTypeSafeDictionary(entityGID.groupID, fromGroup, refWrapper);
+
+                fromTypeSafeDictionary.RemoveEntityFromDictionary(entityGID);
+            }
+        }
+
+        /// <summary>
+        /// Swap all the entities from one group to another
+        /// </summary>
+        /// <param name="fromIdGroupId"></param>
+        /// <param name="toGroupId"></param>
+        /// <param name="profiler"></param>
+        void SwapEntitiesBetweenGroups(uint fromIdGroupId, uint toGroupId, in PlatformProfiler profiler)
+        {
+            using (profiler.Sample("SwapEntitiesBetweenGroups"))
+            {
+                FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary> fromGroup = GetGroup(fromIdGroupId);
+                FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary> toGroup = GetOrCreateGroup(toGroupId, profiler);
+
+                foreach (FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary>.KeyValuePairFast dictionaryOfEntities
+                    in fromGroup)
                 {
-                    var platformProfiler = profiler;
-                    dictionaryOfEntities.Value.RemoveEntitiesFromEngines(_reactiveEnginesAddRemove, platformProfiler);
-                    var groupedGroupOfEntities = _groupsPerEntity[dictionaryOfEntities.Key];
-                    groupedGroupOfEntities.Remove(groupID);
-                }
+                    //call all the MoveTo callbacks
+                    dictionaryOfEntities.Value.AddEntitiesToEngines(_reactiveEnginesAddRemove
+                                                                  , dictionaryOfEntities.Value
+                                                                  , new ExclusiveGroupStruct(toGroupId), profiler);
 
-                //careful, in this case I assume you really don't want to use this group anymore
-                //so I remove it from the database
-                _groupEntityDB.Remove(groupID);
+                    ITypeSafeDictionary toEntitiesDictionary =
+                        GetOrCreateTypeSafeDictionary(toGroupId, toGroup, dictionaryOfEntities.Key
+                                                    , dictionaryOfEntities.Value);
+
+                    FasterDictionary<uint, ITypeSafeDictionary> groupsOfEntityType =
+                        _groupsPerEntity[dictionaryOfEntities.Key];
+
+                    ITypeSafeDictionary typeSafeDictionary = groupsOfEntityType[fromIdGroupId];
+                    toEntitiesDictionary.AddEntitiesFromDictionary(typeSafeDictionary, toGroupId);
+
+                    typeSafeDictionary.FastClear();
+                }
             }
         }
 
-        ///--------------------------------------------
-        void SwapEntityGroup(IEntityBuilder[] builders, Type originalEntityDescriptor, EGID fromEntityID,
-            EGID toEntityID)
+        FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary> GetGroup(uint fromIdGroupId)
         {
-            DBC.ECS.Check.Require(fromEntityID.groupID != toEntityID.groupID,
-                                  "entity group is the same of the destination group");
+            if (_groupEntityComponentsDB.TryGetValue(fromIdGroupId
+                                                   , out FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary>
+                                                         fromGroup) == false)
+                throw new ECSException("Group doesn't exist: ".FastConcat(fromIdGroupId));
 
-            MoveEntity(builders, fromEntityID, originalEntityDescriptor, toEntityID);
+            return fromGroup;
         }
 
-        internal Consumer<T> GenerateConsumer<T>(string name, int capacity) where T : unmanaged, IEntityStruct
+        FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary> GetOrCreateGroup(uint toGroupId, in PlatformProfiler profiler)
+        {
+            using (profiler.Sample("GetOrCreateGroup"))
+            {
+                if (_groupEntityComponentsDB.TryGetValue(
+                    toGroupId, out FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary> toGroup) == false)
+                    toGroup = _groupEntityComponentsDB[toGroupId] =
+                        new FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary>();
+
+                return toGroup;
+            }
+        }
+
+        ITypeSafeDictionary GetOrCreateTypeSafeDictionary
+        (uint groupId, FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary> toGroup, RefWrapper<Type> type
+       , ITypeSafeDictionary fromTypeSafeDictionary)
+        {
+            //be sure that the TypeSafeDictionary for the entity Type exists
+            if (toGroup.TryGetValue(type, out ITypeSafeDictionary toEntitiesDictionary) == false)
+            {
+                toEntitiesDictionary = fromTypeSafeDictionary.Create();
+                toGroup.Add(type, toEntitiesDictionary);
+            }
+
+            //update GroupsPerEntity
+            if (_groupsPerEntity.TryGetValue(type, out var groupedGroup) == false)
+                groupedGroup = _groupsPerEntity[type] = new FasterDictionary<uint, ITypeSafeDictionary>();
+
+            groupedGroup[groupId] = toEntitiesDictionary;
+            return toEntitiesDictionary;
+        }
+
+        static ITypeSafeDictionary GetTypeSafeDictionary
+            (uint groupID, FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary> @group, RefWrapper<Type> refWrapper)
+        {
+            if (@group.TryGetValue(refWrapper, out ITypeSafeDictionary fromTypeSafeDictionary) == false)
+            {
+                throw new ECSException("no group found: ".FastConcat(groupID));
+            }
+
+            return fromTypeSafeDictionary;
+        }
+
+        void RemoveGroupAndEntities(uint groupID, in PlatformProfiler profiler)
+        {
+            FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary> dictionariesOfEntities =
+                _groupEntityComponentsDB[groupID];
+
+            foreach (FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary>.KeyValuePairFast dictionaryOfEntities in dictionariesOfEntities)
+            {
+                dictionaryOfEntities.Value.RemoveEntitiesFromEngines(_reactiveEnginesAddRemove, profiler
+                                                                   , new ExclusiveGroupStruct(groupID));
+                dictionaryOfEntities.Value.FastClear();
+
+                FasterDictionary<uint, ITypeSafeDictionary> groupsOfEntityType =
+                    _groupsPerEntity[dictionaryOfEntities.Key];
+                groupsOfEntityType[groupID].FastClear();
+            }
+        }
+
+        internal Consumer<T> GenerateConsumer<T>(string name, uint capacity) where T : unmanaged, IEntityComponent
         {
             return _entitiesStream.GenerateConsumer<T>(name, capacity);
         }
 
-        
-        public Consumer<T> GenerateConsumer<T>(ExclusiveGroup @group, string name, int capacity) where T : unmanaged, 
-            IEntityStruct
+        internal Consumer<T> GenerateConsumer<T>(ExclusiveGroupStruct group, string name, uint capacity)
+            where T : unmanaged, IEntityComponent
         {
-            return _entitiesStream.GenerateConsumer<T>(@group, name, capacity);
+            return _entitiesStream.GenerateConsumer<T>(group, name, capacity);
         }
-        const string INVALID_DYNAMIC_DESCRIPTOR_ERROR =
-            "Found an entity requesting an invalid dynamic descriptor, this " +
-            "can happen only if you are building different entities with the " +
-            "same ID in the same group! The operation will continue using" + "the base descriptor only ";
+
+        //one datastructure rule them all:
+        //split by group
+        //split by type per group. It's possible to get all the entities of a give type T per group thanks
+        //to the FasterDictionary capabilities OR it's possible to get a specific entityComponent indexed by
+        //ID. This ID doesn't need to be the EGID, it can be just the entityID
+        //for each group id, save a dictionary indexed by entity type of entities indexed by id
+        //                         group                EntityComponentType   entityID, EntityComponent
+        readonly FasterDictionary<uint, FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary>>
+            _groupEntityComponentsDB;
+
+        //for each entity view type, return the groups (dictionary of entities indexed by entity id) where they are
+        //found indexed by group id. TypeSafeDictionary are never created, they instead point to the ones hold
+        //by _groupEntityComponentsDB
+        //                        EntityComponentType                    groupID  entityID, EntityComponent
+        readonly FasterDictionary<RefWrapper<Type>, FasterDictionary<uint, ITypeSafeDictionary>> _groupsPerEntity;
+
+        readonly EntitiesDB     _entitiesDB;
+        readonly EntitiesStream _entitiesStream;
+
+        EntitiesDB IUnitTestingInterface.entitiesForTesting => _entitiesDB;
+    }
+
+    public interface IUnitTestingInterface
+    {
+        EntitiesDB entitiesForTesting { get; }
     }
 }

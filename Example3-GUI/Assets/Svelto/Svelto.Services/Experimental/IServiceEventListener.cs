@@ -1,19 +1,14 @@
+using System;
+
 namespace Svelto.ServiceLayer.Experimental
 {
-    interface IServiceEventListener<TData1, TData2> : IServiceEventListenerBase
+    public interface IServiceEventListener<in TDelegate> : IServiceEventListenerBase where TDelegate : Delegate
     {
-    }
-
-    interface IServiceEventListener<TData> : IServiceEventListenerBase
-    {
-    }
-
-    interface IServiceEventListener : IServiceEventListenerBase
-    {
+        void SetCallback(TDelegate callback);
     }
 
     // This interface exists so we can use one type which can represent any of the interfaces above
-    interface IServiceEventListenerBase
+    public interface IServiceEventListenerBase : IDisposable
     {
     }
 }

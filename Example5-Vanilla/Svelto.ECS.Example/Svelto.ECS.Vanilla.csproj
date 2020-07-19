@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <OutputType>Exe</OutputType>
     <StartupObject>Svelto.ECS.Vanilla.Example.Program</StartupObject>
     <LangVersion>latest</LangVersion>
@@ -15,6 +15,7 @@
     <Compile Remove="SveltoVanilla\src\Svelto-ECS-Simplest-Example-Ever\Scripts\MainContextSimple.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Svelto\Svelto.csproj" />
+    <ProjectReference Include="..\Svelto\Svelto.Common_3\Svelto.Common.csproj" />
+    <ProjectReference Include="..\Svelto\Svelto.ECS\Svelto.ECS.csproj" />
   </ItemGroup>
 </Project>

@@ -6,11 +6,11 @@ namespace Boxtopia.GUIs.Generic
 {
     class GuiViewSwitchEngine : IQueryingEntitiesEngine
     {
-        public IEntitiesDB entitiesDB { private get; set; }
+        public EntitiesDB entitiesDB { private get; set; }
 
         public GuiViewSwitchEngine(IEntityStreamConsumerFactory consumerFactory)
         {
-            _buttonConsumer = consumerFactory.GenerateConsumer<ButtonEntityStruct>(ExclusiveGroups.GuiViewButton, "MaterialEditorViewSwitchButtons", 1);
+            _buttonConsumer = consumerFactory.GenerateConsumer<ButtonEntityComponent>(ExclusiveGroups.GuiViewButton, "MaterialEditorViewSwitchButtons", 1);
         }
 
         public void Ready()
@@ -26,15 +26,15 @@ namespace Boxtopia.GUIs.Generic
                 {
                     if (entity.message == ButtonEvents.SELECT)
                     {
-                        IGuiViewIndex guiViewIndex = entitiesDB.QueryEntity<GuiViewIndexEntityViewStruct>(entity.ID).guiViewIndex;
+                        IGuiViewIndex guiViewIndex = entitiesDB.QueryEntity<GuiViewIndexEntityViewComponent>(entity.ID).guiViewIndex;
 
-                        ExclusiveGroup.ExclusiveGroupStruct group = entity.ID.groupID;
+                        ExclusiveGroupStruct group = entity.ID.groupID;
                         if (string.IsNullOrEmpty(guiViewIndex.groupName) == false)
                             group = ExclusiveGroup.Search(guiViewIndex.groupName);
 
-                        var entities = entitiesDB.QueryEntities<GUIEntityViewStruct>(group);
-                            foreach (var gui in entities)
-                                gui.guiRoot.view = guiViewIndex.index;
+                        var (entities, count) = entitiesDB.QueryEntities<GUIEntityViewComponent>(@group);
+                            for (int i = 0; i < count; i++)
+                                entities[i].guiRoot.view = guiViewIndex.index;
                     }
                 }
 
@@ -42,6 +42,6 @@ namespace Boxtopia.GUIs.Generic
             }
         }
 
-        readonly Consumer<ButtonEntityStruct> _buttonConsumer;
+        readonly Consumer<ButtonEntityComponent> _buttonConsumer;
     }
 }

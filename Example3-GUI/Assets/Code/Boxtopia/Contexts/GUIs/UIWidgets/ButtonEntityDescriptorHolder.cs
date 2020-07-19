@@ -1,4 +1,4 @@
-using Svelto.ECS.Unity;
+using Svelto.ECS.Extensions.Unity;
 
 namespace Boxtopia.GUIs.Generic
 {

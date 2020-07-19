@@ -1,10 +1,9 @@
-#if UNITY_2017_4_OR_NEWER
 using System;
 using System.IO;
 using System.Text;
 using UnityEngine.Networking;
 
-namespace Svelto.ServiceLayer.Experimental.Unity
+namespace Svelto.Services
 {
     public class UnityDownloadHandler : DownloadHandlerScript
     {
@@ -54,16 +53,9 @@ namespace Svelto.ServiceLayer.Experimental.Unity
             _handler?.CompleteContent();
         }
 
-        // Called when a Content-Length header is received from the server.
-        protected override void ReceiveContentLength(int contentLength)
-        {
-            _handler?.ReceiveContentLength(contentLength);
-        }
-
         readonly IResponseHandler _handler;
         byte[]                    _data;
         int                       _dataLength;
         string                    _errorString;
     }
 }
-#endif

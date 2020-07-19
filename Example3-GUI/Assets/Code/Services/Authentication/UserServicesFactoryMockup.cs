@@ -1,3 +1,4 @@
+using Svelto.ServiceLayer;
 using Svelto.ServiceLayer.Experimental;
 
 namespace User.Services.Authentication

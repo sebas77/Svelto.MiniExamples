@@ -1,4 +1,5 @@
-using Svelto.ECS.Unity;
+using Svelto.ECS.Extensions.Unity;
+using Svelto.ECS.Hybrid;
 
 namespace Boxtopia.GUIs.LocalisedText
 {

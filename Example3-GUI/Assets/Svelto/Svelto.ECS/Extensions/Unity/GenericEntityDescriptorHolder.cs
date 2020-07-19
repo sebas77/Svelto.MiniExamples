@@ -1,7 +1,7 @@
 #if UNITY_5 || UNITY_5_3_OR_NEWER
 using UnityEngine;
 
-namespace Svelto.ECS.Unity
+namespace Svelto.ECS.Extensions.Unity
 {
     public abstract class GenericEntityDescriptorHolder<T>: 
         MonoBehaviour , IEntityDescriptorHolder
@@ -17,7 +17,7 @@ namespace Svelto.ECS.Unity
 
 #pragma warning disable 649
         [SerializeField] string _groupName;
-        [SerializeField] ushort _id = 0;
+        [SerializeField] ushort _id;
 #pragma warning restore 649
     }
 }

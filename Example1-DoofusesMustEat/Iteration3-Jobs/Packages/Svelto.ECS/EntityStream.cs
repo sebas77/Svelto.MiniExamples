@@ -5,12 +5,11 @@ using Svelto.DataStructures;
 namespace Svelto.ECS
 {
     /// <summary>
-    /// Do not use this class in place of a normal polling.
-    /// I eventually realised than in ECS no form of communication other than polling entity components can exist.
-    /// Using groups, you can have always an optimal set of entity components to poll, so EntityStreams must be used
-    /// only if:
-    /// - you want to polling engine to be able to track all the entity changes happening in between polls and not
-    /// just the current state
+    /// I eventually realised that, with the ECS design, no form of communication other than polling entity components can exist.
+    /// Using groups, you can have always an optimal set of entity components to poll. However EntityStreams  
+    /// can be useful if:
+    /// - you need to react on seldom entity changes, usually due to user events
+    /// - you want engines to be able to track entity changes
     /// - you want a thread-safe way to read entity states, which includes all the state changes and not the last
     /// one only
     /// - you want to communicate between EnginesRoots

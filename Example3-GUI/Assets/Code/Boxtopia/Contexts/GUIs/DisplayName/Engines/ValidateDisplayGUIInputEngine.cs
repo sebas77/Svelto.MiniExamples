@@ -4,7 +4,6 @@ using Boxtopia.GUIs.Generic;
 using Boxtopia.GUIs.InputField;
 using Boxtopia.GUIs.LocalisedText;
 using Svelto.ECS;
-using Svelto.ECS.Experimental;
 using Svelto.Tasks;
 using Svelto.Tasks.Enumerators;
 using Svelto.Tasks.Lean;
@@ -12,14 +11,13 @@ using Svelto.Tasks.ExtraLean;
 using User;
 using User.Services.Authentication;
 using ServiceLayer;
-using Svelto.ServiceLayer.Experimental;
-using Svelto.ServiceLayer.Experimental.Unity;
+using Svelto.ServiceLayer;
 
 namespace Boxtopia.GUIs.DisplayName
 {
     public class ValidateDisplayGUIInputEngine : IQueryingEntitiesEngine
     {
-        public IEntitiesDB entitiesDB { get; set; }
+        public EntitiesDB entitiesDB { get; set; }
 
         public ValidateDisplayGUIInputEngine(IServiceRequestsFactory serviceFactory,
             IEntityStreamConsumerFactory buttonEntityConsumer, IEntityFunctions entitiesFunction)
@@ -42,11 +40,11 @@ namespace Boxtopia.GUIs.DisplayName
         /// <returns></returns>
         IEnumerator CheckOKClicked()
         {
-            while (entitiesDB.Exists<UserEntityStruct>(UniqueEGID.UserToValidate) == false)
+            while (entitiesDB.Exists<UserEntityComponent>(UniqueEGID.UserToValidate) == false)
                 yield return Yield.It;
 
             using (var consumer =
-                _buttonEntityConsumer.GenerateConsumer<ButtonEntityStruct>(ExclusiveGroups.DisplayName,
+                _buttonEntityConsumer.GenerateConsumer<ButtonEntityComponent>(ExclusiveGroups.DisplayName,
                     "ValidateDisplayGUIInputEngine", 1))
             {
                 while (true)
@@ -58,7 +56,7 @@ namespace Boxtopia.GUIs.DisplayName
                         {
                             _onScreenOpen = false;
 
-                            entitiesDB.QueryEntity<UserEntityStruct>(UniqueEGID.UserToValidate).name
+                            entitiesDB.QueryEntity<UserEntityComponent>(UniqueEGID.UserToValidate).name
                                 .Set(_validatedString);
 
                             _entitiesFunction.SwapEntityGroup<UserEntityDescriptor>(
@@ -84,7 +82,7 @@ namespace Boxtopia.GUIs.DisplayName
             var yieldUntilDisplayGuiIsEnabled = YieldUntilDisplayGUIIsEnabled();
             yield return yieldUntilDisplayGuiIsEnabled.Continue();
 
-            var inputField = entitiesDB.QueryUniqueEntity<InputFieldEntityViewStruct>(ExclusiveGroups.DisplayName)
+            var inputField = entitiesDB.QueryUniqueEntity<InputFieldEntityViewComponent>(ExclusiveGroups.DisplayName)
                 .inputField;
             var inputFieldText = inputField.text;
             inputField.limit = 24;
@@ -99,7 +97,7 @@ namespace Boxtopia.GUIs.DisplayName
                 if (_currentString != inputFieldText)
                 {
                     //disable the submit button until verified
-                    entitiesDB.QueryUniqueEntity<ButtonEntityViewStruct>(ExclusiveGroups.DisplayName).buttonState
+                    entitiesDB.QueryUniqueEntity<ButtonEntityViewComponent>(ExclusiveGroups.DisplayName).buttonState
                             .interactive = false;
                     
                     _currentString = inputFieldText;
@@ -109,18 +107,16 @@ namespace Boxtopia.GUIs.DisplayName
                     yield return checkNameValidity.Continue();
                     
                     ///Should all the possible errors be handled properly?
-                    entitiesDB.QueryUniqueEntity<LocalizedLabelEntityViewStruct>(ExclusiveGroups.FeedbackLabel).label
+                    entitiesDB.QueryUniqueEntity<LocalizedLabelEntityViewComponent>(ExclusiveGroups.FeedbackLabel).label
                             .text = unifiedAuthVerifyDisplayNameService.result == WebRequestResult.Success
                             ? OnSuccess(unifiedAuthVerifyDisplayNameService.response)
                             : OnFailure();
-                    
-                    yield return wait.Continue();
                 }
-                else
-                    yield return Yield.It;
+                
+                yield return Yield.It;
 
                 //can the entity change? Actually it can't, but these kind of reasoning should be standard
-                inputFieldText = entitiesDB.QueryUniqueEntity<InputFieldEntityViewStruct>(ExclusiveGroups.DisplayName)
+                inputFieldText = entitiesDB.QueryUniqueEntity<InputFieldEntityViewComponent>(ExclusiveGroups.DisplayName)
                     .inputField.text;
             }
         }
@@ -134,7 +130,7 @@ namespace Boxtopia.GUIs.DisplayName
         {
             if (response.valid == true)
             {
-                entitiesDB.QueryUniqueEntity<ButtonEntityViewStruct>(ExclusiveGroups.DisplayName).buttonState
+                entitiesDB.QueryUniqueEntity<ButtonEntityViewComponent>(ExclusiveGroups.DisplayName).buttonState
                     .interactive = true;
 
                 _validatedString = _currentString;
@@ -142,7 +138,7 @@ namespace Boxtopia.GUIs.DisplayName
                 return LocalizationService.Localize(GameStringsID.strValidDisplayName);
             }
 
-            entitiesDB.QueryUniqueEntity<ButtonEntityViewStruct>(ExclusiveGroups.DisplayName).buttonState
+            entitiesDB.QueryUniqueEntity<ButtonEntityViewComponent>(ExclusiveGroups.DisplayName).buttonState
                 .interactive = false;
 
             return LocalizationService.Localize(GameStringsID.strInvalidDisplayName);
@@ -150,8 +146,8 @@ namespace Boxtopia.GUIs.DisplayName
 
         IEnumerator YieldUntilDisplayGUIIsEnabled()
         {
-            while (entitiesDB.HasAny<GUIEntityViewStruct>(ExclusiveGroups.DisplayName) == false ||
-                   entitiesDB.QueryUniqueEntity<GUIEntityViewStruct>(ExclusiveGroups.DisplayName).guiRoot.enabled ==
+            while (entitiesDB.HasAny<GUIEntityViewComponent>(ExclusiveGroups.DisplayName) == false ||
+                   entitiesDB.QueryUniqueEntity<GUIEntityViewComponent>(ExclusiveGroups.DisplayName).guiRoot.enabled ==
                    false)
                 yield return Yield.It;
         }

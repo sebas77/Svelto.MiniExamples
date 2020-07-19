@@ -2,6 +2,7 @@
 using System.Runtime.CompilerServices;
 using Svelto.Common;
 using Svelto.DataStructures;
+using Svelto.ECS.Hybrid;
 
 namespace Svelto.ECS.Internal
 {
@@ -10,7 +11,9 @@ namespace Svelto.ECS.Internal
         static readonly Type   _type       = typeof(TValue);
         static readonly string _typeName   = _type.Name;
         static readonly bool   _hasEgid    = typeof(INeedEGID).IsAssignableFrom(_type);
-        static readonly bool   _isUmanaged = _type.IsUnmanaged();
+
+        internal static readonly bool _isUmanaged =
+            _type.IsUnmanaged() && (typeof(IEntityViewComponent).IsAssignableFrom(_type) == false);
 
         internal SveltoDictionary<uint, TValue, NativeStrategy<FasterDictionaryNode<uint>>, ManagedStrategy<TValue>> implMgd;
         internal SveltoDictionary<uint, TValue, NativeStrategy<FasterDictionaryNode<uint>>, NativeStrategy<TValue>> implUnmgd;

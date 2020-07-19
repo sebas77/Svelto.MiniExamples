@@ -26,7 +26,9 @@ namespace Svelto.ECS
                 GroupCompound<G1, G2>.Add(Group); //<G1/G2> and <G2/G1> must share the same array
                 GroupCompound<G1, G3>.Add(Group);
                 GroupCompound<G2, G3>.Add(Group);
-                    
+                
+                //This is done here to be sure that the group is added once per group tag
+                //(if done inside the previous group compound it would be added multiple times)
                 GroupTag<G1>.Add(Group);
                 GroupTag<G2>.Add(Group);
                 GroupTag<G3>.Add(Group);
@@ -35,6 +37,17 @@ namespace Svelto.ECS
                 GroupMap.idToName[(uint) Group] = $"Compound: {typeof(G1).Name}-{typeof(G2).Name}-{typeof(G3).Name}";
 #endif 
             }
+        }
+        
+        public static void Add(ExclusiveGroupStruct @group)
+        {
+            for (int i = 0; i < _Groups.count; ++i)
+                if (_Groups[i] == group)
+                    throw new Exception("temporary must be transformed in unit test");
+            
+            _Groups.Add(group);
+            
+          //  GroupCompound<G1, G2, G3>._Groups = _Groups;
         }
 
         public static ExclusiveGroupStruct BuildGroup => new ExclusiveGroupStruct(_Groups[0]);
@@ -62,7 +75,6 @@ namespace Svelto.ECS
 #if DEBUG        
                 GroupMap.idToName[(uint) Group] = $"Compound: {typeof(G1).Name}-{typeof(G2).Name}";
 #endif 
-
             }
         } 
 
@@ -76,7 +88,8 @@ namespace Svelto.ECS
             
             _Groups.Add(group);
             
-            GroupCompound<G2, G1>._Groups = _Groups;
+            //unit test this to check if it's necessary
+          //  GroupCompound<G2, G1>._Groups = _Groups;
         }
     }
 
@@ -96,7 +109,7 @@ namespace Svelto.ECS
         }
 
         //Each time a new combination of group tags is found a new group is added.
-        internal static void Add(ExclusiveGroup @group)
+        internal static void Add(ExclusiveGroupStruct @group)
         {
             for (int i = 0; i < _Groups.count; ++i)
                 if (_Groups[i] == group)

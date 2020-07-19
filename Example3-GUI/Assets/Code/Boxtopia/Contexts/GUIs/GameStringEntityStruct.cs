@@ -3,7 +3,7 @@ using Svelto.ECS;
 
 namespace Boxtopia
 {
-    public struct GameStringEntityStruct : IEntityStruct
+    public struct GameStringEntityComponent : IEntityComponent
     {
         public GameStringsID StringId;
         public EGID          ID { get; set; }

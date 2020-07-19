@@ -10,14 +10,15 @@ namespace Svelto.Tasks
         void Pause();
         void Resume();
         void Stop();
+        void Flush();
 
-        int numberOfRunningTasks { get; }
-        int numberOfQueuedTasks  { get; }
-        int numberOfProcessingTasks { get; }
+        uint numberOfRunningTasks { get; }
+        uint numberOfQueuedTasks  { get; }
+        uint numberOfProcessingTasks { get; }
     }
 
     public interface IRunner<T> where T:ISveltoTask
     {
-        void StartCoroutine(ref T task/*, bool immediate*/);
+        void StartCoroutine(in T task);
     }
 }

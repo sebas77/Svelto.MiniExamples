@@ -1,16 +1,14 @@
-#if UNITY_2017_4_OR_NEWER
 using System;
 using System.Collections.Generic;
 using System.Net;
 using UnityEngine;
 using System.Security.Cryptography.X509Certificates;
 using System.Net.Security;
-using System.Text;
 using Svelto.Tasks;
 using Svelto.Tasks.Enumerators;
 using UnityEngine.Networking;
 
-namespace Svelto.ServiceLayer.Experimental.Unity
+namespace Svelto.Services
 {
     public enum Method
     {
@@ -18,7 +16,7 @@ namespace Svelto.ServiceLayer.Experimental.Unity
         POST
     }
 
-    public enum WebRequestResult
+    public enum Result
     {
         Success,
         ServerHandledError,
@@ -35,7 +33,7 @@ namespace Svelto.ServiceLayer.Experimental.Unity
             ServicePointManager.DefaultConnectionLimit = 64;
         }
 
-        public WebRequestResult result { get; private set; }
+        public Result result { get; private set; }
 
         public int maxAttempts        = 3;
         public int waitOnRetrySeconds = 1;
@@ -46,7 +44,7 @@ namespace Svelto.ServiceLayer.Experimental.Unity
         public IResponseHandler           responseHandler;
         public string                     URL;
 
-        public IEnumerator<TaskContract> Execute<TDependency>(TDependency dependency)
+        public IEnumerator<TaskContract> Execute(byte[] bodyRaw)
         {
             int attemptNumber = 0;
 
@@ -67,8 +65,6 @@ namespace Svelto.ServiceLayer.Experimental.Unity
                             break;
                     }
 
-                    byte[] bodyRaw = Encoding.ASCII.GetBytes(JsonUtility.ToJson(dependency));
-
                     request.url = URL;
                     request.uploadHandler = new UploadHandlerRaw(bodyRaw);
                     request.downloadHandler = new UnityDownloadHandler(responseHandler);
@@ -86,25 +82,25 @@ namespace Svelto.ServiceLayer.Experimental.Unity
                     {
                         if (ProcessResponse(request) == true)
                         {
-                            result = WebRequestResult.Success;
+                            result = Result.Success;
                             
-                            Svelto.Console.LogWarningDebug("web request completed");
+                            Svelto.Console.LogDebug("web request completed");
 
                             yield break;
                         }
                         else
                         {
-                            Svelto.Console.LogWarningDebug("web request completed with failure ", URL);
+                            Svelto.Console.LogDebug("web request completed with failure ", URL);
 
                             try
                             {
                                 responseHandler?.CompleteContent();
 
-                                result = WebRequestResult.ServerHandledError;
+                                result = Result.ServerHandledError;
                             }
                             catch
                             {
-                                result = WebRequestResult.ServerException;
+                                result = Result.ServerException;
                             }
 
                             yield break; //no retry on server error!
@@ -117,13 +113,13 @@ namespace Svelto.ServiceLayer.Experimental.Unity
 
                         while (wait.MoveNext() == true) yield return Yield.It;
 
-                        Svelto.Console.LogWarningDebug("web request retry");
+                        Svelto.Console.LogDebug("web request retry");
 
                         continue; //retry on client error
                     }
                     else
                     {
-                        result = WebRequestResult.ClientFailure;
+                        result = Result.ClientFailure;
 
                         yield break;
                     }
@@ -178,4 +174,3 @@ namespace Svelto.ServiceLayer.Experimental.Unity
         }
     }
 }
-#endif

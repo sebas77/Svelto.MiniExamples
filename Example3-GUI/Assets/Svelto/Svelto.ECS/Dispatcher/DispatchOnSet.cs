@@ -1,14 +1,11 @@
 using System;
-using Svelto.WeakEvents;
 
 namespace Svelto.ECS
 {
-    public class DispatchOnSet<T> where T:struct
+    public class DispatchOnSet<T>
     {
         public DispatchOnSet(EGID senderID)
         {      
-            _subscribers = new WeakEvent<EGID, T>();
-            
             _senderID = senderID;
         }
         
@@ -18,28 +15,33 @@ namespace Svelto.ECS
             {
                 _value = value;
 
-                if(_paused == false)
-                    _subscribers.Invoke(_senderID, value);
+                if (_paused == false)
+                    _subscriber(_senderID, value);
             }
         }
         
         public void NotifyOnValueSet(Action<EGID, T> action)
         {
-            _subscribers += action;    
+#if DEBUG && !PROFILE_SVELTO
+            DBC.ECS.Check.Require(_subscriber == null, $"{this.GetType().Name}: listener already registered");            
+#endif
+            _subscriber = action;
+            _paused = false;
         }
 
-        public void StopNotify(Action<EGID, T> action)
+        public void StopNotify()
         {
-            _subscribers -= action;
+            _subscriber = null;
+            _paused = true;
         }
 
         public void PauseNotify() { _paused = true; }
         public void ResumeNotify() { _paused = false; }
 
-        protected T    _value;
-        readonly  EGID _senderID;
+        protected T  _value;
+        readonly EGID _senderID;
 
-        WeakEvent<EGID, T> _subscribers;
-        bool               _paused;
+        Action<EGID, T> _subscriber;
+        bool            _paused;
     }
 }

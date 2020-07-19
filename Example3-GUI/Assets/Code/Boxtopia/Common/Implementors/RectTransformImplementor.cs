@@ -1,5 +1,5 @@
 using Svelto.ECS.Components;
-using Svelto.ECS.Unity;
+using Svelto.ECS.Hybrid;
 using UnityEngine;
 
 namespace Common

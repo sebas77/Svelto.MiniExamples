@@ -1,6 +1,6 @@
 using System;
 using ServiceLayer;
-using Svelto.ECS.Unity;
+using Svelto.ECS.Hybrid;
 using TMPro;
 using UnityEngine;
 

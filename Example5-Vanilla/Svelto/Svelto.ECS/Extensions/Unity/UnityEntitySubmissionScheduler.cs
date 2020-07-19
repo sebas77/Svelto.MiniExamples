@@ -1,14 +1,13 @@
 #if UNITY_5 || UNITY_5_3_OR_NEWER
 using Object = UnityEngine.Object;
-using System;
 using System.Collections;
 using UnityEngine;
 
 namespace Svelto.ECS.Schedulers.Unity
 {
-    //The EntitySubmissionScheduler has been introduced to make the entity views submission logic platform independent
+    //The EntitySubmissionScheduler has been introduced to make the entity components submission logic platform independent
     //You can customize the scheduler if you wish
-    public class UnityEntitySubmissionScheduler : IEntitySubmissionScheduler
+    public class UnityEntitiesSubmissionScheduler : IEntitiesSubmissionScheduler
     {
         class Scheduler : MonoBehaviour
         {
@@ -28,39 +27,46 @@ namespace Svelto.ECS.Schedulers.Unity
                 {
                     yield return _wait;
                     
-                    onTick.Invoke();
+                    onTick();
                 }
             }
 
             readonly WaitForEndOfFrame _wait = new WaitForEndOfFrame();
-            readonly IEnumerator _coroutine;
+            readonly IEnumerator       _coroutine;
             
-            public EnginesRoot.EntitiesSubmitter onTick;
+            public System.Action onTick;
         }
-        
-        public UnityEntitySubmissionScheduler(string name = "ECSScheduler") { _name = name; }
+
+        public UnityEntitiesSubmissionScheduler(string name = "ECSScheduler")
+        {
+            _scheduler = new GameObject(name).AddComponent<Scheduler>();
+            GameObject.DontDestroyOnLoad(_scheduler.gameObject);
+            _scheduler.onTick = SubmitEntities;
+        }
 
         public void Dispose()
         {
-            Object.Destroy(_scheduler.gameObject);
-        }
-        
-        public EnginesRoot.EntitiesSubmitter onTick
-        {
-            set
+            if (_scheduler != null && _scheduler.gameObject != null)
             {
-                if (_scheduler == null)
-                {
-                    _scheduler = new GameObject(_name).AddComponent<Scheduler>();
-                    GameObject.DontDestroyOnLoad(_scheduler.gameObject);
-                }
-
-                _scheduler.onTick = value;
+                Object.Destroy(_scheduler.gameObject);
             }
         }
 
-        Scheduler _scheduler;
-        readonly string _name;
+        void SubmitEntities()
+        {
+            if (paused == false)
+                _onTick.Invoke();
+        }
+        
+        EnginesRoot.EntitiesSubmitter IEntitiesSubmissionScheduler.onTick
+        {
+            set => _onTick = value;
+        }
+        
+        public bool paused { get; set; }
+
+        readonly Scheduler       _scheduler;
+        EnginesRoot.EntitiesSubmitter _onTick;
     }
 }
 #endif

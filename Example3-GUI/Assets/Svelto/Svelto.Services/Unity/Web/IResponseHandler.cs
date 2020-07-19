@@ -1,4 +1,4 @@
-﻿namespace Svelto.ServiceLayer.Experimental.Unity
+﻿namespace Svelto.Services
 {
     public interface IResponseHandler<ResponseType> : IResponseHandler
     {

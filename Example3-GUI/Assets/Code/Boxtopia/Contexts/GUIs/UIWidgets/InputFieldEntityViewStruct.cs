@@ -3,7 +3,7 @@ using Svelto.ECS.Hybrid;
 
 namespace Boxtopia.GUIs.InputField
 {
-    public struct InputFieldEntityViewStruct : IEntityViewStruct
+    public struct InputFieldEntityViewComponent : IEntityViewComponent
     {
         public EGID ID { get; set; }
 

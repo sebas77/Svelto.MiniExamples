@@ -9,7 +9,7 @@ namespace Boxtopia.GUIs
 {
     public class GenericGUIInteraction : IQueryingEntitiesEngine
     {
-        public IEntitiesDB entitiesDB { get; set; }
+        public EntitiesDB entitiesDB { get; set; }
         
         public GenericGUIInteraction(IEntityStreamConsumerFactory generateConsumer)
         {
@@ -24,7 +24,7 @@ namespace Boxtopia.GUIs
         IEnumerator PollForButtonClicked()
         {
             using (var consumer =
-                _generateConsumer.GenerateConsumer<ButtonEntityStruct>("StandardButtonActions", 1))
+                _generateConsumer.GenerateConsumer<ButtonEntityComponent>("StandardButtonActions", 1))
             {
                 while (true)
                 {
@@ -50,11 +50,10 @@ namespace Boxtopia.GUIs
                             var entityHierarchy =
                                 entitiesDb.QueryEntity<EntityHierarchyStruct>(entity.ID);
                             
-                            var guiEntityViewStructs =
-                                entitiesDb.QueryEntities<GUIEntityViewStruct>(entityHierarchy.parentGroup, out var count);
+                            var (guiEntityViewComponents, count) = entitiesDb.QueryEntities<GUIEntityViewComponent>(entityHierarchy.parentGroup);
 
                             for (int i = 0; i < count; i++)
-                                guiEntityViewStructs[i].guiRoot.enabled = false;
+                                guiEntityViewComponents[i].guiRoot.enabled = false;
                         }
                     }
 

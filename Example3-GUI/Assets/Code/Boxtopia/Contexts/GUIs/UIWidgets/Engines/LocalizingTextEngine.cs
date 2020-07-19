@@ -3,19 +3,19 @@ using Svelto.ECS;
 
 namespace Boxtopia.GUIs.LocalisedText
 {
-    public class LocalizingTextEngine : IReactOnAddAndRemove<LocalizedLabelEntityViewStruct>, IQueryingEntitiesEngine
+    public class LocalizingTextEngine : IReactOnAddAndRemove<LocalizedLabelEntityViewComponent>, IQueryingEntitiesEngine
     {
-        public IEntitiesDB entitiesDB { private get; set; }
+        public EntitiesDB entitiesDB { private get; set; }
 
         public void Ready()
         {}
 
-        public void Add(ref LocalizedLabelEntityViewStruct entityView)
+        public void Add(ref LocalizedLabelEntityViewComponent entityView, EGID egid)
         {
             entityView.label.text = LocalizationService.Localize(entityView.label.textKey);
         }
 
-        public void Remove(ref LocalizedLabelEntityViewStruct entityView)
+        public void Remove(ref LocalizedLabelEntityViewComponent entityView, EGID egid)
         {}
     }
 }

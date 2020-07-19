@@ -1,9 +1,11 @@
-using Svelto.WeakEvents;
+using System;
 
 namespace Svelto.ECS.Schedulers
 {
-    public interface IEntitySubmissionScheduler
+    public interface IEntitiesSubmissionScheduler: IDisposable
     {
-        WeakAction onTick { set; }
+        EnginesRoot.EntitiesSubmitter onTick { set; }
+
+        bool paused { get; set; }
     }
 }

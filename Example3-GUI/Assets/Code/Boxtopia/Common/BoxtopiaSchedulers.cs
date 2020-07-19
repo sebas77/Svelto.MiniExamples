@@ -45,8 +45,6 @@ public static class BoxtopiaSchedulers
         Lean.BoxtopiaSchedulers.UIScheduler.Stop();
         Lean.BoxtopiaSchedulers.UserScheduler.Stop();
         Lean.BoxtopiaSchedulers.ResourceScheduler.Stop();
-
-        TaskRunner.Stop();
     }
 
     public static void StopAndCleanupAllDefaultSchedulers()
@@ -59,8 +57,6 @@ public static class BoxtopiaSchedulers
         Lean.BoxtopiaSchedulers.UIScheduler.Dispose();
         Lean.BoxtopiaSchedulers.UserScheduler.Dispose();
         Lean.BoxtopiaSchedulers.ResourceScheduler.Dispose();
-
-        TaskRunner.Dispose();
     }
 }
 

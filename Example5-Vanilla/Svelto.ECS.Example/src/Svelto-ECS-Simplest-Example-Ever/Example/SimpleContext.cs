@@ -27,7 +27,7 @@ namespace Svelto.ECS.Vanilla.Example
         {
             //An EnginesRoot holds all the engines created. it needs a EntitySubmissionScheduler to know when to
             //add the EntityViews generated inside the EntityDB.
-            var simpleSubmissionEntityViewScheduler = new SimpleSubmissionEntityViewScheduler();
+            var simpleSubmissionEntityViewScheduler = new SimpleEntitiesSubmissionScheduler();
             _enginesRoot = new EnginesRoot(simpleSubmissionEntityViewScheduler);
 
             //an EnginesRoot must never be injected inside other classes only IEntityFactory and IEntityFunctions
@@ -44,8 +44,6 @@ namespace Svelto.ECS.Vanilla.Example
 
             //as we are using a basic scheduler, we need to schedule the entity submission ourselves
             simpleSubmissionEntityViewScheduler.SubmitEntities();
-            //twice as we want the Swap that is executed after the first submission, to be executed too
-            simpleSubmissionEntityViewScheduler.SubmitEntities();
 
             //as we don't have any ticking system for this basic example, we tick explicitly 
             behaviourForEntityClassEngine.Update();
@@ -58,19 +56,18 @@ namespace Svelto.ECS.Vanilla.Example
         }
    }
     
-        //An EntityStruct must always implement the IEntityStruct interface
+        //An EntityComponent must always implement the IEntityComponent interface
     //don't worry, boxing/unboxing will never happen.
-    public struct EntityStruct : IEntityStruct
+    public struct EntityComponent : IEntityComponent
     {
         public int  counter;
-        public EGID ID { get; set; }
     }
 
     /// <summary>
     ///     The EntityDescriptor identifies your Entity. It's essential to identify
     ///     your entities with a name that comes from the Game Design domain.
     /// </summary>
-    class SimpleEntityDescriptor : GenericEntityDescriptor<EntityStruct>
+    class SimpleEntityDescriptor : GenericEntityDescriptor<EntityComponent>
     {}
 
     namespace SimpleEntityEngine
@@ -79,8 +76,8 @@ namespace Svelto.ECS.Vanilla.Example
             :
                 //this interface makes the engine reactive, it's absolutely optional, you need to read my articles
                 //and wiki about it.
-                IReactOnAddAndRemove<EntityStruct>,
-                IReactOnSwap<EntityStruct>,
+                IReactOnAddAndRemove<EntityComponent>,
+                IReactOnSwap<EntityComponent>,
                 //while this interface is optional too, it's almost always used as it gives access to the entitiesDB
                 IQueryingEntitiesEngine
         {
@@ -92,25 +89,25 @@ namespace Svelto.ECS.Vanilla.Example
                 _entityFunctions = entityFunctions;
             }
 
-            public IEntitiesDB entitiesDB { get; set; }
+            public EntitiesDB entitiesDB { get; set; }
 
             public void Ready() { }
 
-            public void Add(ref EntityStruct entityView, EGID egid)
+            public void Add(ref EntityComponent entityView, EGID egid)
             {
-                _entityFunctions.SwapEntityGroup<SimpleEntityDescriptor>(entityView.ID, ExclusiveGroups.group1);
+                _entityFunctions.SwapEntityGroup<SimpleEntityDescriptor>(egid, ExclusiveGroups.group1);
             }
 
-            public void Remove(ref EntityStruct entityView, EGID egid) { }
+            public void Remove(ref EntityComponent entityView, EGID egid) { }
             
-            public void MovedTo(ref EntityStruct entityView, ExclusiveGroup.ExclusiveGroupStruct previousGroup, EGID egid)
+            public void MovedTo(ref EntityComponent entityComponent, ExclusiveGroupStruct previousGroup, EGID egid)
             {
                 Console.Log("Swap happened");
             }
 
             public void Update()
             {
-                var entityViews = entitiesDB.QueryEntities<EntityStruct>(ExclusiveGroups.group1, out var count);
+                var (entityViews, count) = entitiesDB.QueryEntities<EntityComponent>(ExclusiveGroups.group1);
 
                 if (count > 0)
                 {

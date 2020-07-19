@@ -1,124 +1,205 @@
 using System;
-using System.Collections.Concurrent;
+using System.Runtime.InteropServices;
 using Svelto.DataStructures;
 
 namespace Svelto.ECS
 {
     /// <summary>
-    /// Do not use this class in place of a normal polling.
-    /// I eventually realised than in ECS no form of communication other than polling entity components can exist.
-    /// Using groups, you can have always an optimal set of entity components to poll, so EntityStreams must be used
-    /// only if:
-    /// - you want to polling engine to be able to track all the entity changes happening in between polls and not
-    /// just the current state
+    /// I eventually realised that, with the ECS design, no form of communication other than polling entity components can exist.
+    /// Using groups, you can have always an optimal set of entity components to poll. However EntityStreams  
+    /// can be useful if:
+    /// - you need to react on seldom entity changes, usually due to user events
+    /// - you want engines to be able to track entity changes
     /// - you want a thread-safe way to read entity states, which includes all the state changes and not the last
     /// one only
     /// - you want to communicate between EnginesRoots
     /// </summary>
-    class EntitiesStream
+    class EntitiesStream : IDisposable
     {
-        internal Consumer<T> GenerateConsumer<T>(string name, int capacity) where T : unmanaged, IEntityStruct
+        internal Consumer<T> GenerateConsumer<T>(string name, uint capacity)
+            where T : unmanaged, IEntityComponent
         {
-            if (_streams.ContainsKey(typeof(T)) == false) _streams[typeof(T)] = new EntityStream<T>();
+            if (_streams.ContainsKey(TypeRefWrapper<T>.wrapper) == false)
+                _streams[TypeRefWrapper<T>.wrapper] = new EntityStream<T>();
 
-            return (_streams[typeof(T)] as EntityStream<T>).GenerateConsumer(name, capacity);
-        }
-        
-        public Consumer<T> GenerateConsumer<T>(ExclusiveGroup @group, string name, int capacity) where T : unmanaged, IEntityStruct
-        {
-            if (_streams.ContainsKey(typeof(T)) == false) _streams[typeof(T)] = new EntityStream<T>();
-
-            return (_streams[typeof(T)] as EntityStream<T>).GenerateConsumer( @group, name, capacity);
+            return (_streams[TypeRefWrapper<T>.wrapper] as EntityStream<T>).GenerateConsumer(name, capacity);
         }
 
-        internal void PublishEntity<T>(ref T entity) where T : unmanaged, IEntityStruct
+        public Consumer<T> GenerateConsumer<T>(ExclusiveGroupStruct group, string name, uint capacity)
+            where T : unmanaged, IEntityComponent
         {
-            if (_streams.TryGetValue(typeof(T), out var typeSafeStream))
-                (typeSafeStream as EntityStream<T>).PublishEntity(ref entity);
+            if (_streams.ContainsKey(TypeRefWrapper<T>.wrapper) == false)
+                _streams[TypeRefWrapper<T>.wrapper] = new EntityStream<T>();
+
+            EntityStream<T> typeSafeStream = (EntityStream<T>) _streams[TypeRefWrapper<T>.wrapper];
+            return typeSafeStream.GenerateConsumer(group, name, capacity);
+        }
+
+        internal void PublishEntity<T>(ref T entity, EGID egid) where T : unmanaged, IEntityComponent
+        {
+            if (_streams.TryGetValue(TypeRefWrapper<T>.wrapper, out var typeSafeStream))
+                (typeSafeStream as EntityStream<T>).PublishEntity(ref entity, egid);
             else
-                Console.LogWarningDebug("No Consumers are waiting for this entity to change ", typeof(T));
+                Console.LogDebug("No Consumers are waiting for this entity to change ", typeof(T));
         }
 
-        readonly ConcurrentDictionary<Type, ITypeSafeStream> _streams =
-            new ConcurrentDictionary<Type, ITypeSafeStream>();
+        readonly ThreadSafeDictionary<RefWrapper<Type>, ITypeSafeStream> _streams =
+            new ThreadSafeDictionary<RefWrapper<Type>, ITypeSafeStream>();
+
+        public void Dispose()
+        {
+            _streams.Clear();
+        }
     }
 
     interface ITypeSafeStream
-    {}
+    { }
 
-    class EntityStream<T>:ITypeSafeStream where T:unmanaged, IEntityStruct
+    public class EntityStream<T> : ITypeSafeStream where T : unmanaged, IEntityComponent
     {
-        public void PublishEntity(ref T entity)
+        ~EntityStream()
+        {
+            for (int i = 0; i < _consumers.Count; i++)
+                _consumers[i].Free();
+        }
+        
+        internal EntityStream()
+        {
+            _consumers = new ThreadSafeFasterList<Consumer<T>>();
+        }
+        
+        internal void PublishEntity(ref T entity, EGID egid)
         {
             for (int i = 0; i < _consumers.Count; i++)
             {
-                if (_consumers[i]._hasGroup)
+                unsafe
                 {
-                    if (EntityBuilder<T>.HAS_EGID && (entity as INeedEGID).ID.groupID == _consumers[i]._group)
+                    if (*(bool *)_consumers[i].mustBeDisposed)
                     {
-                        _consumers[i].Enqueue(ref entity);
+                        _consumers[i].Free();
+                        _consumers.UnorderedRemoveAt(i);
+                        --i;
+                        continue;
+                    }
+                
+                    if (_consumers[i].hasGroup)
+                    {
+                        if (egid.groupID == _consumers[i].@group)
+                        {
+                            _consumers[i].Enqueue(entity, egid);
+                        }
+                    }
+                    else
+                    {
+                        _consumers[i].Enqueue(entity, egid);
                     }
                 }
-                else
-                    _consumers[i].Enqueue(ref entity);
             }
         }
 
-        public Consumer<T> GenerateConsumer(string name, int capacity)
+        internal Consumer<T> GenerateConsumer(string name, uint capacity)
         {
-            var consumer = new Consumer<T>(name, capacity, this);
-            
+            var consumer = new Consumer<T>(name, capacity);
+
             _consumers.Add(consumer);
-            
-            return consumer;
-        }
-        
-        public Consumer<T> GenerateConsumer(ExclusiveGroup @group, string name, int capacity)
-        {
-            var consumer = new Consumer<T>(group, name, capacity, this);
-            
-            _consumers.Add(consumer);
-            
+
             return consumer;
         }
 
-        public void RemoveConsumer(Consumer<T> consumer)
+        internal Consumer<T> GenerateConsumer(ExclusiveGroupStruct group, string name, uint capacity)
         {
-            _consumers.UnorderedRemove(consumer);
+            var consumer = new Consumer<T>(group, name, capacity);
+
+            _consumers.Add(consumer);
+
+            return consumer;
         }
 
-        readonly FasterListThreadSafe<Consumer<T>> _consumers = new FasterListThreadSafe<Consumer<T>>();
+        readonly ThreadSafeFasterList<Consumer<T>> _consumers;
     }
 
-    public struct Consumer<T>: IDisposable where T:unmanaged, IEntityStruct
+    public struct Consumer<T> :IDisposable where T : unmanaged, IEntityComponent
     {
-        internal Consumer(string name, int capacity, EntityStream<T> stream): this()
+        internal Consumer(string name, uint capacity) : this()
         {
-            _ringBuffer = new RingBuffer<T>(capacity);
-            _name = name;
-            _stream = stream;
-        }
-        
-        internal Consumer(ExclusiveGroup @group, string name, int capacity, EntityStream<T> stream):this(name, capacity, stream)
-        {
-            _group = group;
-            _hasGroup = true;
+            unsafe
+            {
+#if DEBUG && !PROFILE_SVELTO
+                _name = name;
+#endif
+                _ringBuffer = new RingBuffer<ValueTuple<T, EGID>>((int) capacity,
+#if DEBUG && !PROFILE_SVELTO
+                    _name
+#else
+                string.Empty
+#endif
+                );
+                mustBeDisposed = Marshal.AllocHGlobal(sizeof(bool));
+                *((bool*) mustBeDisposed) = false;
+            }
         }
 
-        internal void Enqueue(ref T entity)
+        internal Consumer(ExclusiveGroupStruct group, string name, uint capacity) : this(name, capacity)
         {
-            _ringBuffer.Enqueue(ref entity, _name);
+            this.@group = @group;
+            hasGroup = true;
+        }
+
+        internal void Enqueue(in T entity, in EGID egid)
+        {
+            _ringBuffer.Enqueue((entity, egid));
+        }
+
+        public bool TryDequeue(out T entity)
+        {
+            var tryDequeue = _ringBuffer.TryDequeue(out var values);
+
+            entity = values.Item1;
+
+            return tryDequeue;
+        }
+
+        public bool TryDequeue(out T entity, out EGID id)
+        {
+            var tryDequeue = _ringBuffer.TryDequeue(out var values);
+
+            entity = values.Item1;
+            id = values.Item2;
+
+            return tryDequeue;
+        }
+
+        public void Flush()
+        {
+            _ringBuffer.Reset();
+        }
+
+        public void Dispose()
+        {
+            unsafe
+            {
+                *(bool *)mustBeDisposed = true;
+            }
+        }
+
+        public uint Count()
+        {
+            return (uint) _ringBuffer.Count;
         }
         
-        public bool TryDequeue(out T entity) { return _ringBuffer.TryDequeue(out entity, _name); }
-        public void Flush() { _ringBuffer.Reset(); }
-        public void Dispose() { _stream.RemoveConsumer(this); }
+        public void Free()
+        {
+            Marshal.FreeHGlobal(mustBeDisposed);
+        }
 
-        readonly          RingBuffer<T>   _ringBuffer;
-        readonly          EntityStream<T> _stream;
-        readonly          string          _name;
-        
-        internal readonly ExclusiveGroup  _group;
-        internal readonly bool            _hasGroup;
+        readonly RingBuffer<ValueTuple<T, EGID>> _ringBuffer;
+
+        internal readonly ExclusiveGroupStruct @group;
+        internal readonly bool           hasGroup;
+        internal          IntPtr         mustBeDisposed;
+
+#if DEBUG && !PROFILE_SVELTO
+        readonly string _name;
+#endif
     }
 }

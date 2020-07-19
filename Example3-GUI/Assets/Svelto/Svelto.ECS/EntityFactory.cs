@@ -1,79 +1,82 @@
 using System;
 using System.Collections.Generic;
+using Svelto.DataStructures;
 
 namespace Svelto.ECS.Internal
 {
     static class EntityFactory
     {
-        internal static Dictionary<Type, ITypeSafeDictionary> BuildGroupedEntities(EGID egid,
-            EnginesRoot.DoubleBufferedEntitiesToAdd groupEntitiesToAdd, IEntityBuilder[] entitiesToBuild,
-            object[] implementors)
+        public static FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary> BuildGroupedEntities(EGID egid,
+            EnginesRoot.DoubleBufferedEntitiesToAdd groupEntitiesToAdd, IComponentBuilder[] componentsToBuild,
+            IEnumerable<object> implementors)
         {
-            var @group = FetchEntityGroup(egid.groupID, groupEntitiesToAdd);
+            var group = FetchEntityGroup(egid.groupID, groupEntitiesToAdd);
 
-            BuildEntitiesAndAddToGroup(egid, group, entitiesToBuild, implementors);
+            BuildEntitiesAndAddToGroup(egid, group, componentsToBuild, implementors);
 
             return group;
         }
 
-        static Dictionary<Type, ITypeSafeDictionary> FetchEntityGroup(uint groupID,
-            EnginesRoot.DoubleBufferedEntitiesToAdd groupEntityViewsByType)
+        static FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary> FetchEntityGroup(uint groupID,
+            EnginesRoot.DoubleBufferedEntitiesToAdd groupEntityComponentsByType)
         {
-            if (groupEntityViewsByType.current.TryGetValue(groupID, out Dictionary<Type, ITypeSafeDictionary> @group) ==
-                false)
+            if (groupEntityComponentsByType.current.TryGetValue(groupID, out var group) == false)
             {
-                @group = new Dictionary<Type, ITypeSafeDictionary>();
+                group = new FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary>();
                 
-                groupEntityViewsByType.current.Add(groupID, @group);
+                groupEntityComponentsByType.current.Add(groupID, group);
             }
 
-            groupEntityViewsByType.currentEntitiesCreatedPerGroup.TryGetValue(groupID, out var value);
-            groupEntityViewsByType.currentEntitiesCreatedPerGroup[groupID] = value+1;
+            if (groupEntityComponentsByType.currentEntitiesCreatedPerGroup.TryGetValue(groupID, out var value) == false)
+                groupEntityComponentsByType.currentEntitiesCreatedPerGroup[groupID] = 0;
+            else
+                groupEntityComponentsByType.currentEntitiesCreatedPerGroup[groupID] = value+1;
             
-            return @group;
+            return group;
         }
 
-        static void BuildEntitiesAndAddToGroup(EGID                                    entityID,
-                                               Dictionary<Type, ITypeSafeDictionary>   @group,
-                                               IEntityBuilder[]                        entitiesToBuild,
-                                               object[]                                implementors)
+        static void BuildEntitiesAndAddToGroup(EGID entityID,
+            FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary> group,
+            IComponentBuilder[] componentBuilders, IEnumerable<object> implementors)
         {
-            var count = entitiesToBuild.Length;
-#if DEBUG && !PROFILER
+            var count = componentBuilders.Length;
+
+#if DEBUG && !PROFILE_SVELTO
             HashSet<Type> types = new HashSet<Type>();
-            
+
             for (var index = 0; index < count; ++index)
             {
-                var entityViewType = entitiesToBuild[index].GetEntityType();
-                if (types.Contains(entityViewType))
+                var entityComponentType = componentBuilders[index].GetEntityComponentType();
+                if (types.Contains(entityComponentType))
                 {
                     throw new ECSException("EntityBuilders must be unique inside an EntityDescriptor");
                 }
-                
-                types.Add(entityViewType);
+
+                types.Add(entityComponentType);
             }
 #endif
             for (var index = 0; index < count; ++index)
             {
-                var entityViewBuilder = entitiesToBuild[index];
-                var entityViewType = entityViewBuilder.GetEntityType();
+                var entityComponentBuilder = componentBuilders[index];
+                var entityComponentType      = entityComponentBuilder.GetEntityComponentType();
 
-                BuildEntity(entityID, @group, entityViewType, entityViewBuilder, implementors);
+                BuildEntity(entityID, @group, entityComponentType, entityComponentBuilder, implementors);
             }
         }
 
-        static void BuildEntity(EGID entityID, Dictionary<Type, ITypeSafeDictionary> @group, Type entityViewType,
-            IEntityBuilder entityBuilder, object[] implementors)
+        static void BuildEntity(EGID entityID, FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary> group,
+                                Type entityComponentType, IComponentBuilder componentBuilder, IEnumerable<object> implementors)
         {
-            var entityViewsPoolWillBeCreated = @group.TryGetValue(entityViewType, out var safeDictionary) == false;
+            var entityComponentsPoolWillBeCreated =
+                group.TryGetValue(new RefWrapper<Type>(entityComponentType), out var safeDictionary) == false;
 
-            //passing the undefined entityViewsByType inside the entityViewBuilder will allow it to be created with the
+            //passing the undefined entityComponentsByType inside the entityComponentBuilder will allow it to be created with the
             //correct type and casted back to the undefined list. that's how the list will be eventually of the target
             //type.
-            entityBuilder.BuildEntityAndAddToList(ref safeDictionary, entityID, implementors);
+            componentBuilder.BuildEntityAndAddToList(ref safeDictionary, entityID, implementors);
 
-            if (entityViewsPoolWillBeCreated)
-                @group.Add(entityViewType, safeDictionary);
+            if (entityComponentsPoolWillBeCreated)
+                group.Add(new RefWrapper<Type>(entityComponentType), safeDictionary);
         }
     }
 }

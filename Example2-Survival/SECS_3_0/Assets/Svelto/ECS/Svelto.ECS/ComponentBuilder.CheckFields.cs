@@ -48,16 +48,16 @@ namespace Svelto.ECS
 
                 if (fields.Length < 1)
                 {
-                    ProcessError("Entity View Structs must hold only public interfaces", entityComponentType);
+                    ProcessError("No valid fields found in Entity View Struct", entityComponentType);
                 }
 
                 for (int i = fields.Length - 1; i >= 0; --i)
                 {
                     FieldInfo fieldInfo = fields[i];
 
-                    if (fieldInfo.FieldType.IsInterfaceEx() == false)
+                    if (fieldInfo.FieldType.IsInterfaceEx() == false && fieldInfo.FieldType.IsValueTypeEx() == false)
                     {
-                        ProcessError("Entity View Structs must hold only public interfaces.",
+                        ProcessError("Entity View Structs must hold only public interfaces or value type fields.",
                             entityComponentType);
                     }
 

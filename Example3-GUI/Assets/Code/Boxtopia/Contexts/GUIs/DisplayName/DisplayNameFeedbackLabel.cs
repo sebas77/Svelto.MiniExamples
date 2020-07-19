@@ -4,10 +4,9 @@ using Svelto.ECS;
 namespace Boxtopia.GUIs.DisplayName
 {
     public class DisplayNameFeedbackLabelEntityDescriptor : GenericEntityDescriptor<
-        DisplayNameFeedbackLabelViewStruct,
-        LocalizedLabelEntityViewStruct>
+        DisplayNameFeedbackLabelViewStruct, LocalizedLabelEntityViewComponent>
     {}
 
-    public struct DisplayNameFeedbackLabelViewStruct : IEntityStruct
+    public struct DisplayNameFeedbackLabelViewStruct : IEntityComponent
     {}
 }

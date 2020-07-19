@@ -8,26 +8,22 @@ namespace Svelto.ECS
         : IEquatable<EntitySubmitOperation>
     {
         public readonly EntitySubmitOperationType type;
-        public readonly IEntityBuilder[]          builders;
+        public readonly IComponentBuilder[]          builders;
         public readonly EGID                      fromID;
         public readonly EGID                      toID;
-        public readonly Type                      entityDescriptor;
-#if DEBUG && !PROFILER
-        public string trace;
+#if DEBUG && !PROFILE_SVELTO
+        public System.Diagnostics.StackFrame trace;
 #endif
 
         public EntitySubmitOperation(EntitySubmitOperationType operation, EGID from, EGID to,
-                                     IEntityBuilder[]          builders         = null,
-                                     Type                      entityDescriptor = null)
+                                     IComponentBuilder[]          builders         = null)
         {
             type          = operation;
             this.builders = builders;
-            fromID            = from;
+            fromID        = from;
             toID          = to;
-
-            this.entityDescriptor = entityDescriptor;
-#if DEBUG && !PROFILER
-            trace = string.Empty;
+#if DEBUG && !PROFILE_SVELTO
+            trace = default;
 #endif
         }
         
@@ -51,6 +47,7 @@ namespace Svelto.ECS
     {
         Swap,
         Remove,
-        RemoveGroup
+        RemoveGroup,
+        SwapGroup
     }
 }

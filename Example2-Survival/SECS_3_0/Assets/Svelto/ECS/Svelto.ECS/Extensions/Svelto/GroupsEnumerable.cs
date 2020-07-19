@@ -56,8 +56,13 @@ namespace Svelto.ECS
                         array.Item1, array.Item2, array.Item3, array2);
                     break;
                 }
+                
+                var moveNext = _indexGroup < _groups.count;
+                
+                if (moveNext == false)
+                    Reset();
 
-                return _indexGroup < _groups.count;
+                return moveNext;
             }
 
             public void Reset() { _indexGroup = -1; }
@@ -114,8 +119,13 @@ namespace Svelto.ECS
                     _buffers = entityCollection;
                     break;
                 }
+                
+                var moveNext = _indexGroup < _groups.count;
+                
+                if (moveNext == false)
+                    Reset();
 
-                return _indexGroup < _groups.count;
+                return moveNext;
             }
 
             public void Reset() { _indexGroup = -1; }
@@ -162,7 +172,12 @@ namespace Svelto.ECS
                     break;
                 }
 
-                return _indexGroup < _groups.count;
+                var moveNext = _indexGroup < _groups.count;
+                
+                if (moveNext == false)
+                    Reset();
+                
+                return moveNext;
             }
 
             public void Reset() { _indexGroup = -1; }

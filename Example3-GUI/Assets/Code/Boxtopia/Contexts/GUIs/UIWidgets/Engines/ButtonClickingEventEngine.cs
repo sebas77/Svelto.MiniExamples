@@ -3,32 +3,32 @@ using Svelto.ECS;
 
 namespace Boxtopia.GUIs.Generic
 {
-    public class ButtonClickingEventEngine : IReactOnAddAndRemove<ButtonEntityViewStruct>, IQueryingEntitiesEngine
+    public class ButtonClickingEventEngine : IReactOnAddAndRemove<ButtonEntityViewComponent>, IQueryingEntitiesEngine
     {
-        public IEntitiesDB entitiesDB { get; set; }
+        public EntitiesDB entitiesDB { get; set; }
 
         public void Ready()
         {
             _enqueueButtonChange = EnqueueButtonChange;
         }
 
-        public void Add(ref ButtonEntityViewStruct entityView)
+        public void Add(ref ButtonEntityViewComponent entityView, EGID egid)
         {
-            entityView.buttonClick.buttonEvent = new DispatchOnSet<ButtonEvents>(entityView.ID);
+            entityView.buttonClick.buttonEvent = new DispatchOnSet<ButtonEvents>(egid);
             
             entityView.buttonClick.buttonEvent.NotifyOnValueSet(_enqueueButtonChange);
         }
 
-        public void Remove(ref ButtonEntityViewStruct entityView)
+        public void Remove(ref ButtonEntityViewComponent entityView, EGID egid)
         {
-            entityView.buttonClick.buttonEvent.StopNotify(_enqueueButtonChange);
+            entityView.buttonClick.buttonEvent.StopNotify();
         }
 
         void EnqueueButtonChange(EGID egid, ButtonEvents value)
         {
-            entitiesDB.QueryEntity<ButtonEntityStruct>(egid) = new ButtonEntityStruct(egid, value);
+            entitiesDB.QueryEntity<ButtonEntityComponent>(egid) = new ButtonEntityComponent(egid, value);
             
-            entitiesDB.PublishEntityChange<ButtonEntityStruct>(egid);
+            entitiesDB.PublishEntityChange<ButtonEntityComponent>(egid);
         }
         
         Action<EGID, ButtonEvents> _enqueueButtonChange;

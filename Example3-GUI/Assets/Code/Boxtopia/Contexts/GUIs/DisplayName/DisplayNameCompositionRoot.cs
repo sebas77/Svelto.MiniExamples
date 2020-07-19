@@ -4,9 +4,8 @@ using Boxtopia.GUIs.InputField;
 using Boxtopia.GUIs.LocalisedText;
 using Svelto.Context;
 using Svelto.ECS;
+using Svelto.ECS.Extensions.Unity;
 using Svelto.ECS.Schedulers.Unity;
-using Svelto.ECS.Unity;
-using Svelto.Tasks;
 using User;
 using User.Services.Authentication;
 
@@ -16,7 +15,7 @@ namespace Boxtopia.GUIs.DisplayName
     {
         public void OnContextInitialized<T>(T contextHolder)
         {
-            _enginesRoot = new EnginesRoot(new UnityEntitySubmissionScheduler());
+            _enginesRoot = new EnginesRoot(new UnityEntitiesSubmissionScheduler());
             var userServicesFactory = new UserServicesFactoryMockup();
 
             var generateEntityFactory = _enginesRoot.GenerateEntityFactory();
@@ -41,9 +40,9 @@ namespace Boxtopia.GUIs.DisplayName
         static void BuildActualGUIEntities<T>(T contextHolder, IEntityFactory generateEntityFactory)
         {
             //create the main GUI widget and relative entity
-            var holder = SveltoGUIHelper.Create<DisplayNameDescriptorHolder>(
+            SveltoGUIHelper.Create<DisplayNameDescriptorHolder>(
                 new EGID(0, ExclusiveGroups.DisplayName), (contextHolder as UnityContext).transform,
-                generateEntityFactory);
+                generateEntityFactory, out var holder);
 
             //extract all the entities from its nested widgets
             var index = SveltoGUIHelper.CreateAll<ButtonEntityDescriptorHolder>(1, 
@@ -62,7 +61,6 @@ namespace Boxtopia.GUIs.DisplayName
         public void OnContextDestroyed()
         {
             BoxtopiaSchedulers.StopAllCoroutines();
-            TaskRunner.Stop();
 
             GC.Collect();
             GC.WaitForPendingFinalizers();

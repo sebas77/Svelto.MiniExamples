@@ -69,7 +69,7 @@ namespace Svelto.ECS
             (EGID egid, IComponentBuilder[] componentsToBuild, Type type, IEnumerable<object> implementors = null);
 
 #if UNITY_BURST
-        NativeEntityFactory ToNative<T>() where T : IEntityDescriptor, new();
+        NativeEntityFactory ToNative<T>(string memberName) where T : IEntityDescriptor, new();
 #endif        
     }
 }

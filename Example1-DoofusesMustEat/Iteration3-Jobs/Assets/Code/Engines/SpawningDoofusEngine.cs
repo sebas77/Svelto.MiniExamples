@@ -17,7 +17,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
         {
             _redCapsule  = redCapsule;
             _blueCapsule = blueCapsule;
-            _factory     = factory.ToNative<DoofusEntityDescriptor>();
+            _factory     = factory.ToNative<DoofusEntityDescriptor>(nameof(SpawningDoofusEngine));
         }
 
         public EntitiesDB entitiesDB { get; set; }

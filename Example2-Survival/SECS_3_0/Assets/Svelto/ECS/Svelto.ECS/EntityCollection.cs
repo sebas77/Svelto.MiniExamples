@@ -1,12 +1,13 @@
 using System.Runtime.CompilerServices;
 using Svelto.Common;
 using Svelto.DataStructures;
+using Svelto.ECS.Internal;
 
 namespace Svelto.ECS
 {
     public readonly ref struct EntityCollection<T> where T : struct, IEntityComponent
     {
-        static readonly bool IsUnmanaged = UnmanagedTypeExtensions.IsUnmanaged<T>(); 
+        static readonly bool IsUnmanaged = TypeSafeDictionary<T>._isUmanaged; 
         
         public EntityCollection(IBuffer<T> buffer, uint count):this()
         {
@@ -134,6 +135,7 @@ namespace Svelto.ECS
             readonly uint                     _count;
             int                               _index;
         }
+
     }
 
     public readonly ref struct EntityCollection<T1, T2, T3> where T3 : struct, IEntityComponent

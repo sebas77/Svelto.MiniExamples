@@ -5,7 +5,6 @@ using System.Runtime.InteropServices;
 
 namespace Svelto.ECS
 {
-    //todo: add debug map
     [Serialization.DoNotSerialize]
     [Serializable]
     [StructLayout(LayoutKind.Explicit)]

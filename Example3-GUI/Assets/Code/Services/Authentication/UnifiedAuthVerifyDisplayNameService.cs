@@ -1,6 +1,5 @@
 using System.Collections.Generic;
-using Svelto.ServiceLayer.Experimental;
-using Svelto.ServiceLayer.Experimental.Unity;
+using Svelto.ServiceLayer;
 using Svelto.Tasks;
 
 namespace User.Services.Authentication
@@ -26,7 +25,12 @@ namespace User.Services.Authentication
         public WebRequestResult result => WebRequestResult.Success;
         public VerifyDisplayNameResponse response { get; private set; }
     }
-    
+
+    public enum WebRequestResult
+    {
+        Success
+    }
+
     public struct VerifyDisplayNameResponse
     {
         public bool valid;

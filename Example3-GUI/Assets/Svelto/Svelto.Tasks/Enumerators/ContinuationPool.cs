@@ -1,5 +1,5 @@
 using System;
-using Svelto.DataStructures;
+using Svelto.Tasks.DataStructures;
 using Svelto.Tasks.Enumerators;
 
 namespace Svelto.Tasks.Internal
@@ -15,7 +15,7 @@ namespace Svelto.Tasks.Internal
         {
             ContinuationEnumeratorInternal task;
 
-            if (_pool.Dequeue(out task))
+            if (_pool.TryDequeue(out task))
             {
                 GC.ReRegisterForFinalize(task);
 
@@ -37,7 +37,7 @@ namespace Svelto.Tasks.Internal
             return new ContinuationEnumeratorInternal();
         }
 
-        static readonly LockFreeQueue<ContinuationEnumeratorInternal> _pool =
-            new LockFreeQueue<ContinuationEnumeratorInternal>();
+        static readonly ThreadSafeQueue<ContinuationEnumeratorInternal> _pool =
+            new ThreadSafeQueue<ContinuationEnumeratorInternal>();
     }
 }

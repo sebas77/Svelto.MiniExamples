@@ -33,6 +33,7 @@ namespace Svelto.DataStructures
             return _values.ToBuffer();
         }
 
+        //I should put it back to int
         public uint count => _freeValueCellIndex;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

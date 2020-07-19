@@ -7,7 +7,7 @@ namespace Boxtopia.GUIs
 {
     public class ClosingGUIEngine : IQueryingEntitiesEngine
     {
-        public IEntitiesDB entitiesDB { get; set; }
+        public EntitiesDB entitiesDB { get; set; }
         public void        Ready()    { PollForButtonClicked().RunOn(ExtraLean.BoxtopiaSchedulers.UIScheduler); }
 
         public ClosingGUIEngine(IEntityStreamConsumerFactory generateConsumer)
@@ -17,7 +17,7 @@ namespace Boxtopia.GUIs
 
         IEnumerator PollForButtonClicked()
         {
-            var generateConsumer = _generateConsumer.GenerateConsumer<ButtonEntityStruct>("ClosingGUIEngine", 1);
+            var generateConsumer = _generateConsumer.GenerateConsumer<ButtonEntityComponent>("ClosingGUIEngine", 1);
             
             while (true)
             {
@@ -26,11 +26,10 @@ namespace Boxtopia.GUIs
                     if (entity.message == ButtonEvents.OK || entity.message == ButtonEvents.CANCEL)
                     {
                         // The buttons are contextual to the GUI that owns them, so the group must be the same
-                        var guiEntityViewStructs =
-                            entitiesDB.QueryEntities<GUIEntityViewStruct>(entity.ID.groupID, out var count);
+                        var (guiEntityViewComponents, count) = entitiesDB.QueryEntities<GUIEntityViewComponent>(entity.ID.groupID);
 
                         for (int i = 0; i < count; i++)
-                            guiEntityViewStructs[i].guiRoot.enabled = false;
+                            guiEntityViewComponents[i].guiRoot.enabled = false;
                     }
                 }
 

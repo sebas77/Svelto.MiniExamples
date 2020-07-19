@@ -17,7 +17,7 @@ namespace Svelto.Tasks
         {}
     }
     
-    public class ParallelTaskCollection<T>: TaskCollection<T> where T: IEnumerator<TaskContract>
+    public class ParallelTaskCollection<T>: TaskCollection<T> where T: class, IEnumerator<TaskContract>
     {
         const int _INITIAL_STACK_COUNT = 3;
         
@@ -33,7 +33,7 @@ namespace Svelto.Tasks
         public ParallelTaskCollection(string name, T[] ptasks):base(name, ptasks.Length)
         {
             for (int i = 0; i < ptasks.Length; i++)
-                Add(ref ptasks[i]);
+                Add(ptasks[i]);
         }
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace Svelto.Tasks
                                 //in order to be able to reuse the task collection, we will keep the stack 
                                 //in its original state. The tasks will be shuffled, but due to the nature
                                 //of the parallel execution, it doesn't matter.
-                                index = SwapStack(index, stacks, taskCount);
+                                index = SwapStack(index, stacks, (int) taskCount);
                                 _stackOffset++; 
                                 //move to the next task
                             }
@@ -89,9 +89,6 @@ namespace Svelto.Tasks
 
             return true;
         }
-
-        protected override void ProcessTask(ref T Task)
-        {}
 
         int SwapStack(int index, StructFriendlyStack[] buffer, int count)
         {

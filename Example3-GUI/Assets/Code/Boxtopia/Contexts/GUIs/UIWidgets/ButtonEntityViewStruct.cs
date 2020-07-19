@@ -3,7 +3,7 @@ using Svelto.ECS.Hybrid;
 
 namespace Boxtopia.GUIs.Generic
 {
-    public struct ButtonEntityViewStruct : IEntityViewStruct
+    public struct ButtonEntityViewComponent : IEntityViewComponent
     {
         public IButtonClick buttonClick;
         public IUIState buttonState;

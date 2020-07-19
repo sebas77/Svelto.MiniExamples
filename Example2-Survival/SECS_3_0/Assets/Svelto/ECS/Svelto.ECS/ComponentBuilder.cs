@@ -32,8 +32,6 @@ namespace Svelto.ECS
             T entityComponent = default;
             if (IS_ENTITY_VIEW_COMPONENT)
             {
-                DBC.ECS.Check.Require(implementors != null,
-                    $"Implementors not found while building an EntityComponent `{typeof(T)}`");
                 DBC.ECS.Check.Require(castedDic.ContainsKey(egid.entityID) == false,
                     $"building an entity with already used entity id! id: '{(ulong) egid}', {ENTITY_COMPONENT_NAME}");
 
@@ -126,11 +124,13 @@ namespace Svelto.ECS
                 for (var i = fields.Length - 1; i >= 0; --i)
                 {
                     var field  = fields[i];
-                    DBC.ECS.Check.Require(field.FieldType.IsInterface == true, "Entity View Components must hold only public interfaces");
-                    var setter = FastInvoke<T>.MakeSetter(field);
+                    if (field.FieldType.IsInterface == true)
+                    {
+                        var setter = FastInvoke<T>.MakeSetter(field);
 
-                    //for each interface, cache the setter for this type 
-                    cachedFields.Add(new KeyValuePair<Type, FastInvokeActionCast<T>>(field.FieldType, setter));
+                        //for each interface, cache the setter for this type 
+                        cachedFields.Add(new KeyValuePair<Type, FastInvokeActionCast<T>>(field.FieldType, setter));
+                    }
                 }
 
                 cachedTypes = new Dictionary<Type, Type[]>();

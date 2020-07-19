@@ -6,8 +6,7 @@ namespace Svelto.ECS.Experimental
     [Serialization.DoNotSerialize]
     [StructLayout(LayoutKind.Explicit)]
     ///
-    /// Note: I should extend this to reuse unused
-    /// id 
+    /// Note: I should extend this to reuse unused id 
     /// 
     public struct ECSString:IEquatable<ECSString>
     {

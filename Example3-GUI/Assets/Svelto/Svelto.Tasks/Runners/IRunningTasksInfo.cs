@@ -1,5 +1,3 @@
-using Svelto.Common;
-
 namespace Svelto.Tasks.Internal
 {
     public interface IRunningTasksInfo
@@ -9,11 +7,5 @@ namespace Svelto.Tasks.Internal
         void Reset();
         
         string runnerName { get; set; }
-    }
-    
-    public interface IProcessSveltoTasks
-    {
-        bool MoveNext<PlatformProfiler>(bool immediate, in PlatformProfiler platformProfiler)
-            where PlatformProfiler : IPlatformProfiler<DisposableSampler>;
     }
 }

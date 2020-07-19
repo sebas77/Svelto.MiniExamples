@@ -20,6 +20,8 @@ namespace Svelto.ECS
             _dic = dictionary;
         }
 
+        public int count => (int) _dic.count;
+
         public void Dispose()
         {
             _dic.Dispose();

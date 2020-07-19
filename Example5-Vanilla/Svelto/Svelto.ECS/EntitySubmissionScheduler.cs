@@ -2,8 +2,10 @@ using System;
 
 namespace Svelto.ECS.Schedulers
 {
-    public interface IEntitySubmissionScheduler: IDisposable
+    public interface IEntitiesSubmissionScheduler: IDisposable
     {
         EnginesRoot.EntitiesSubmitter onTick { set; }
+
+        bool paused { get; set; }
     }
 }

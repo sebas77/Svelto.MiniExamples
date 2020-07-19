@@ -1,7 +1,7 @@
 #if UNITY_5 || UNITY_5_3_OR_NEWER
 using System.Collections;
 using System.Collections.Generic;
-using Svelto.Common;
+using Svelto.Tasks.FlowModifiers;
 using Svelto.Tasks.Internal;
 using Svelto.Tasks.Unity.Internal;
 
@@ -17,33 +17,45 @@ namespace Svelto.Tasks
     /// </summary>
     namespace Lean.Unity
     {
-        public class CoroutineMonoRunner : Svelto.Tasks.Unity.UpdateMonoRunner<SveltoTask<IEnumerator<TaskContract>>>
+        public class CoroutineMonoRunner : Svelto.Tasks.Unity.CoroutineMonoRunner<LeanSveltoTask<IEnumerator<TaskContract>>>
         {
             public CoroutineMonoRunner(string name) : base(name)
             {
             }
+            public CoroutineMonoRunner(string name, uint runningOrder) : base(name, runningOrder)
+            {
+            }
         }
-        
-        public class CoroutineMonoRunner<T> : Svelto.Tasks.Unity.UpdateMonoRunner<SveltoTask<T>> where T : IEnumerator<TaskContract>
+
+        public class CoroutineMonoRunner<T> : Svelto.Tasks.Unity.CoroutineMonoRunner<LeanSveltoTask<T>> where T : IEnumerator<TaskContract>
         {
             public CoroutineMonoRunner(string name) : base(name)
+            {
+            }
+            public CoroutineMonoRunner(string name, uint runningOrder) : base(name, runningOrder)
             {
             }
         }
     }
-    
+
     namespace ExtraLean.Unity
     {
-        public class CoroutineMonoRunner : Svelto.Tasks.Unity.UpdateMonoRunner<SveltoTask<IEnumerator>>
+        public class CoroutineMonoRunner : Svelto.Tasks.Unity.CoroutineMonoRunner<ExtraLeanSveltoTask<IEnumerator>>
         {
             public CoroutineMonoRunner(string name) : base(name)
             {
             }
+            public CoroutineMonoRunner(string name, uint runningOrder) : base(name, runningOrder)
+            {
+            }
         }
-        
-        public class CoroutineMonoRunner<T> : Svelto.Tasks.Unity.UpdateMonoRunner<SveltoTask<T>> where T : IEnumerator
+
+        public class CoroutineMonoRunner<T> : Svelto.Tasks.Unity.CoroutineMonoRunner<ExtraLeanSveltoTask<T>> where T : IEnumerator
         {
             public CoroutineMonoRunner(string name) : base(name)
+            {
+            }
+            public CoroutineMonoRunner(string name, uint runningOrder) : base(name, runningOrder)
             {
             }
         }
@@ -51,30 +63,26 @@ namespace Svelto.Tasks
 
     namespace Unity
     {
-        public class CoroutineMonoRunner<T> : CoroutineMonoRunner<T, StandardRunningTasksInfo> where T : ISveltoTask
+        public class CoroutineMonoRunner<T> : CoroutineMonoRunner<T, StandardRunningInfo> where T : ISveltoTask
         {
-            public CoroutineMonoRunner(string name) : base(name, new StandardRunningTasksInfo())
+            public CoroutineMonoRunner(string name) : base(name, 0, new StandardRunningInfo())
+            {
+            }
+            public CoroutineMonoRunner(string name, uint runningOrder) : base(name, runningOrder, new StandardRunningInfo())
             {
             }
         }
 
         public class CoroutineMonoRunner<T, TFlowModifier> : BaseRunner<T> where T : ISveltoTask
-                                                                           where TFlowModifier : IRunningTasksInfo
+                                                                           where TFlowModifier : IFlowModifier
         {
-            public CoroutineMonoRunner(string name, TFlowModifier modifier) : base(name)
+            public CoroutineMonoRunner(string name, uint runningOrder, TFlowModifier modifier) : base(name)
             {
                 modifier.runnerName = name;
 
-                _processEnumerator =
-                    new CoroutineRunner<T>.Process<TFlowModifier>
-                        (_newTaskRoutines, _coroutines, _flushingOperation, modifier);
+                var _processEnumerator = InitializeRunner(modifier);
 
-                UnityCoroutineRunner.StartCoroutine(_processEnumerator);
-            }
-
-            public void StartYieldInstruction(IEnumerator instruction)
-            {
-                UnityCoroutineRunner.StartYieldCoroutine(instruction);
+                UnityCoroutineRunner.StartCoroutine(_processEnumerator, runningOrder);
             }
         }
     }

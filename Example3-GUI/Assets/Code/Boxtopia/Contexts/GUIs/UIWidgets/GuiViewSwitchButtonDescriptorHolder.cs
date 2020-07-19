@@ -1,6 +1,6 @@
 using Svelto.ECS;
+using Svelto.ECS.Extensions.Unity;
 using Svelto.ECS.Hybrid;
-using Svelto.ECS.Unity;
 
 namespace Boxtopia.GUIs.Generic
 {
@@ -8,11 +8,11 @@ namespace Boxtopia.GUIs.Generic
     {
     }
 
-    class GuiViewSwitchButtonDescriptor : GenericEntityDescriptor<GuiViewIndexEntityViewStruct, ButtonEntityViewStruct, ButtonEntityStruct>
+    class GuiViewSwitchButtonDescriptor : GenericEntityDescriptor<GuiViewIndexEntityViewComponent, ButtonEntityViewComponent, ButtonEntityComponent>
     {
     }
 
-    struct GuiViewIndexEntityViewStruct : IEntityViewStruct
+    struct GuiViewIndexEntityViewComponent : IEntityViewComponent
     {
         public IGuiViewIndex guiViewIndex;
 

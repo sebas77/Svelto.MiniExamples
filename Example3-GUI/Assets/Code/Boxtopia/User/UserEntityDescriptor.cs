@@ -2,7 +2,7 @@ using Svelto.ECS;
 
 namespace User
 {
-    public class UserEntityDescriptor:GenericEntityDescriptor<UserEntityStruct>
+    public class UserEntityDescriptor:GenericEntityDescriptor<UserEntityComponent>
     {
     }
 }

@@ -6,6 +6,7 @@ using System;
 using System.Runtime.CompilerServices;
 using Svelto.Common;
 using Svelto.DataStructures;
+using Svelto.ECS.Hybrid;
 using Svelto.ECS.Internal;
 
 namespace Svelto.ECS
@@ -153,7 +154,7 @@ namespace Svelto.ECS
 
             return (typeSafeDictionary as ITypeSafeDictionary<T>).ToEGIDMapper(groupStructId);
         }
-
+        
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool TryQueryMappedEntities<T>
             (ExclusiveGroupStruct groupStructId, out EGIDMapper<T> mapper) where T : struct, IEntityComponent
@@ -253,7 +254,7 @@ namespace Svelto.ECS
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal bool SafeQueryEntityDictionary<T>(uint group, out ITypeSafeDictionary typeSafeDictionary)
-            where T : struct, IEntityComponent
+            where T : IEntityComponent
         {
             if (UnsafeQueryEntityDictionary(group, TypeCache<T>.type, out var safeDictionary) == false)
             {

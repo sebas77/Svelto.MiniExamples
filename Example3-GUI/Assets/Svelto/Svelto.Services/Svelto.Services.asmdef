@@ -1,7 +1,7 @@
 {
     "name": "Svelto.Services",
     "references": [
-        "Svelto.Common",
+        "Svelto.Common_3",
         "Svelto.Tasks",
         "Utf8Json"
     ],
@@ -12,5 +12,6 @@
     "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,
-    "defineConstraints": []
+    "defineConstraints": [],
+    "versionDefines": []
 }

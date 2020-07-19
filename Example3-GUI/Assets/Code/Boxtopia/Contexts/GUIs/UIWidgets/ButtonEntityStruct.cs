@@ -2,11 +2,11 @@ using Svelto.ECS;
 
 namespace Boxtopia.GUIs.Generic
 {
-    public struct ButtonEntityStruct : IEntityStruct
+    public struct ButtonEntityComponent : IEntityComponent
     {
         public readonly ButtonEvents message;
 
-        public ButtonEntityStruct(EGID egid, ButtonEvents value) : this()
+        public ButtonEntityComponent(EGID egid, ButtonEvents value) : this()
         {
             ID = egid;
             message = value;
