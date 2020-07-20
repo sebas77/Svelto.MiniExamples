@@ -62,7 +62,7 @@ Goal of this example
 
 Main article: http://www.sebaslab.com/svelto-miniexamples-gui-and-services-layer/
 
-## Example 4: Multiple Contexts and more serious alternative to the implementors (ToDO)
+## Example 4: ToDO
 
 ## Example 5: Vanilla
 
