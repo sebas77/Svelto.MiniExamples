@@ -39,7 +39,7 @@ Basic integration with Unity GameObjects and Monobehaviours. Uses Svelto ECS 3.0
 Goal of this example: 
 
 * show the integration with OOP platforms (Unity in this case) throught the use of Entity View Components and Implementors.
-* Test webgl support
+* *Test WebGL support*
 
 Main Article: http://www.sebaslab.com/learning-svelto-ecs-by-example-the-survival-example/
 
