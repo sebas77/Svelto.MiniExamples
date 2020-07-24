@@ -20,13 +20,13 @@ Goal of this example:
 * Show the integration with UnityECS, show the use of Svelto.Tasks 2.0 (alpha state) 
 * show integration with Unity Jobs and Burst (using Svelto.ECS 3.0 (currently alpha state)
  
- ### **Iteration 1**
+ ### **Iteration 1 (old)**
    * Integration with UnityECS for rendering
    * Move the camera with arrows and mouse, left button to drop food
- ###  **Iteration 2:**
+ ###  **Iteration 2 (old)**
    * Integration with Burst for better performance
    * Move the camera with arrows and mouse, left button to drop 100 random food only once
- ###  **Iteration 3:**
+ ###  **Iteration 3**
    * Full jobified/burstified code with Svelto ECS 3.0
    * test integration with IL2CPP
   
@@ -34,7 +34,7 @@ Goal of this example:
 
 ![Image](https://github.com/sebas77/GithubWikiImages/blob/master/gif_animation_002.gif)
 
-Basic integration with Unity GameObjects and Monobehaviours. Uses Svelto ECS 2.8 and Svelto Tasks 1.5
+Basic integration with Unity GameObjects and Monobehaviours. Uses Svelto ECS 3.0 and Svelto Tasks 1.5
 
 Goal of this example: 
 
@@ -51,7 +51,7 @@ Most of the source code has been rewritten to work with Svelto.ECS framework. Th
 
 ![Image](https://i2.wp.com/www.sebaslab.com/wp-content/uploads/2019/07/image-2.png?w=701)
 
-Integration with Unity UI and Svelto entities.
+Integration with Unity UI and Svelto entities 3.0
 
 Goal of this example
 
@@ -62,10 +62,10 @@ Goal of this example
 
 Main article: http://www.sebaslab.com/svelto-miniexamples-gui-and-services-layer/
 
-## Example 4: Multiple Contexts and more serious alternative to the implementors (ToDO)
+## Example 4: ToDO
 
 ## Example 5: Vanilla
 
-Basic Platform Agnostic Svelto example
+Basic Platform Agnostic Svelto.ECS 3.0 example
 
 * Goal: Shows the very foundation of a simple entity and engine logic, without any Unity or other platform dependency (pure .net). This example won't cover all the aspects of SECS, but only the basics.
