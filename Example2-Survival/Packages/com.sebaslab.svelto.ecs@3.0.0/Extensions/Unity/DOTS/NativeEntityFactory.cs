@@ -1,4 +1,4 @@
-#if UNITY_BURST
+#if UNITY_NATIVE
 using Svelto.ECS.DataStructures;
 
 namespace Svelto.ECS

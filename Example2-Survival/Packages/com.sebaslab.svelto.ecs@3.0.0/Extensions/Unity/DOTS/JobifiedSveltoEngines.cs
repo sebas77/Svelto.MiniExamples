@@ -1,4 +1,4 @@
-#if UNITY_BURST
+#if UNITY_ECS
 namespace Svelto.ECS.Extensions.Unity
 {
     public enum JobifiedSveltoEngines

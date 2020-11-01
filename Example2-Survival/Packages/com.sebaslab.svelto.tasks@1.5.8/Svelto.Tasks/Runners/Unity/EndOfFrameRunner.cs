@@ -19,8 +19,6 @@ namespace Svelto.Tasks.Unity
             UnityCoroutineRunner<T>.StartEndOfFrameCoroutine(new UnityCoroutineRunner<T>.Process<UnityCoroutineRunner<T>.RunningTasksInfo>
                 (_newTaskRoutines, _coroutines, _flushingOperation, info));
         }
-
-        int _numberOfRunningTasks;
     }
 }
 #endif

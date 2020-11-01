@@ -59,7 +59,7 @@ namespace Svelto.ECS
 
             scheduler        = entitiesComponentScheduler;
             scheduler.onTick = new EntitiesSubmitter(this);
-#if UNITY_BURST
+#if UNITY_NATIVE
             AllocateNativeOperations();
 #endif
         }
@@ -128,7 +128,7 @@ namespace Svelto.ECS
 
                 _groupFilters.Clear();
 
-#if UNITY_BURST                
+#if UNITY_NATIVE                
                 _addOperationQueue.Dispose();
                 _removeOperationQueue.Dispose();
                 _swapOperationQueue.Dispose();

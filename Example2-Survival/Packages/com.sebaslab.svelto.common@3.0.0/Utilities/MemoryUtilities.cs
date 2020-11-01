@@ -48,20 +48,13 @@ namespace Svelto.Common
 
     public static class MemoryUtilities
     {    
-#if UNITY_EDITOR && !UNITY_COLLECTIONS        
-        static MemoryUtilities()
-        {
-            #warning Svelto.Common is depending on the Unity Collection package. Alternatively you can import System.Runtime.CompilerServices.Unsafe.dll
-        }
-#endif
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static IntPtr Alloc(uint newCapacity, Allocator allocator, bool clear = true)
         {
             unsafe
             {
                 var signedCapacity = (int) SignedCapacity(newCapacity);
-#if UNITY_COLLECTIONS
+#if UNITY_NATIVE
                 var allocator1 = (Unity.Collections.Allocator) allocator;
                 var newPointer =
                     Unity.Collections.LowLevel.Unsafe.UnsafeUtility.Malloc(signedCapacity, (int) OptimalAlignment.alignment, allocator1);
@@ -131,7 +124,7 @@ namespace Svelto.Common
             {
                 ptr = CheckAndReturnPointerToFree(ptr);
 
-#if UNITY_COLLECTIONS
+#if UNITY_NATIVE
                 Unity.Collections.LowLevel.Unsafe.UnsafeUtility.Free((void*) ptr, (Unity.Collections.Allocator) allocator);
 #else
                 System.Runtime.InteropServices.Marshal.FreeHGlobal((IntPtr) ptr);
@@ -144,7 +137,7 @@ namespace Svelto.Common
         {
             unsafe 
             {
-#if UNITY_COLLECTIONS
+#if UNITY_NATIVE
                 Unity.Collections.LowLevel.Unsafe.UnsafeUtility.MemClear((void*) destination, sizeOf);
 #else
                Unsafe.InitBlock((void*) destination, 0, sizeOf);
@@ -201,7 +194,7 @@ namespace Svelto.Common
 
         public static int GetFieldOffset(FieldInfo field)
         {
-#if UNITY_COLLECTIONS
+#if UNITY_NATIVE
             return Unity.Collections.LowLevel.Unsafe.UnsafeUtility.GetFieldOffset(field);
 #else
             int GetFieldOffset(RuntimeFieldHandle h) => 

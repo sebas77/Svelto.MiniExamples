@@ -10,7 +10,6 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
     {
         CapsuleCollider _capsuleCollider; // Reference to the capsule collider.
         NavMeshAgent    _nav;             // Reference to the nav mesh agent.
-        Action          _removeAction;
         Transform       _transform;
 
         public bool navMeshEnabled { set { _nav.enabled = value; } get { return _nav.enabled; } }

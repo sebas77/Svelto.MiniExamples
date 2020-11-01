@@ -1,10 +1,11 @@
-#if UNITY_JOBS
+#if UNITY_NATIVE
 using System;
 using Svelto.ECS.Extensions.Unity;
 using Unity.Jobs;
 
 namespace Svelto.ECS
 {
+#if UNITY_JOBS    
     public static class UnityJobExtensions
     {
         public static JobHandle ScheduleParallel
@@ -27,7 +28,7 @@ namespace Svelto.ECS
             return job.ScheduleBatch((int)iterations, innerloopBatchCount, inputDeps);
         }
     }
-    
+#endif    
     public static class UnityJobExtensions2
     {
         public static JobHandle ScheduleDispose

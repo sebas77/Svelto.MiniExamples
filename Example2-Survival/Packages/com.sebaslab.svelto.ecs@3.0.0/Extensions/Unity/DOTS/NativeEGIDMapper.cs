@@ -1,4 +1,4 @@
-#if UNITY_BURST
+#if UNITY_NATIVE
 using System;
 using System.Runtime.CompilerServices;
 using Svelto.Common;

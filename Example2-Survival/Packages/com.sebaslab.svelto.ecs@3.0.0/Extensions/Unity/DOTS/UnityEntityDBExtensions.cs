@@ -1,4 +1,4 @@
-#if UNITY_JOBS
+#if UNITY_NATIVE
 using System.Runtime.CompilerServices;
 using Svelto.Common;
 using Svelto.DataStructures;

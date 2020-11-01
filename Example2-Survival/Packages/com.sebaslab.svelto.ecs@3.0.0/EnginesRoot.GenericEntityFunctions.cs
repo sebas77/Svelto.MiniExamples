@@ -134,7 +134,7 @@ namespace Svelto.ECS
                 SwapEntityGroup<T>(fromID, toID);
             }
 
-#if UNITY_BURST
+#if UNITY_NATIVE
             public NativeEntityRemove ToNativeRemove<T>(string memberName) where T : IEntityDescriptor, new()
             {
                 return _enginesRoot.Target.ProvideNativeEntityRemoveQueue<T>(memberName);

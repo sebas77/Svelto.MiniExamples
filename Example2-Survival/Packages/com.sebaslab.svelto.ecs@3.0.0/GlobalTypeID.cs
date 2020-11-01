@@ -37,7 +37,7 @@ namespace Svelto.ECS
 
     static class EntityComponentID<T>
     {
-#if UNITY_BURST
+#if UNITY_NATIVE
         internal static readonly Unity.Burst.SharedStatic<uint> ID =
             Unity.Burst.SharedStatic<uint>.GetOrCreate<GlobalTypeID, T>();
 #else

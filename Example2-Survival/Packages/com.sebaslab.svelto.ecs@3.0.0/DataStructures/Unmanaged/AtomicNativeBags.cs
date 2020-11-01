@@ -8,7 +8,7 @@ namespace Svelto.ECS.DataStructures
 {
     public unsafe struct AtomicNativeBags:IDisposable
     {
-#if UNITY_BURST        
+#if UNITY_NATIVE     
         [global::Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction]
 #endif        
         NativeBag* _data;

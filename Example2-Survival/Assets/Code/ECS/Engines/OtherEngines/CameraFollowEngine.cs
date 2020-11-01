@@ -9,8 +9,6 @@ namespace Svelto.ECS.Example.Survive.Camera
     //Third step start to write the code and create classes/fields as needed using refactoring tools 
     public class CameraFollowTargetEngine : IQueryingEntitiesEngine
     {
-        readonly ITaskRoutine<IEnumerator> _taskRoutine;
-
         readonly ITime _time;
 
         public CameraFollowTargetEngine(ITime time) { _time = time; }

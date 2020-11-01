@@ -24,8 +24,6 @@ namespace Svelto
 
         static readonly FasterList<ILogger> _loggers;
 
-        static ILogger _standardLogger;
-
         static Console()
         {
             _loggers = new FasterList<ILogger>();

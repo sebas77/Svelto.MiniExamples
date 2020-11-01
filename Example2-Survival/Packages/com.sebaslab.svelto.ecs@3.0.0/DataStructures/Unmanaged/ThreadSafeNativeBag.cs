@@ -183,7 +183,7 @@ namespace Svelto.ECS.DataStructures
             }
         }
         
-#if UNITY_COLLECTIONS
+#if UNITY_NATIVE
         [global::Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction]
 #endif
         unsafe UnsafeBlob* _queue;

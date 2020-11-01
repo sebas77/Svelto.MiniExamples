@@ -13,8 +13,6 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
     //This is the case when implementor can and should be Monobehaviours. Here an example:
     public class EnemyTriggerImplementor : MonoBehaviour, IImplementor, IEnemyTriggerComponent
     {
-        bool _targetInRange;
-
         /// <summary>
         /// it's annoying that there isn't a physic matrix dedicated for triggers. This means that OnTriggerEnter
         /// will be executed for any collider entering in the enemy trigger area, including the static ones  

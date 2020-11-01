@@ -1,4 +1,4 @@
-#if UNITY_BURST
+#if UNITY_NATIVE
 using System;
 using Svelto.Common;
 using Svelto.DataStructures;

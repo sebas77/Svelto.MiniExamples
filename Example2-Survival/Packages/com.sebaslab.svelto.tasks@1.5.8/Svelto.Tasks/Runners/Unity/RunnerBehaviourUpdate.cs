@@ -80,8 +80,6 @@ namespace Svelto.Tasks.Unity.Internal
             _physicRoutines.Add(enumerator);
         }
 
-        IEnumerator _mainRoutine;
-
         readonly WaitForEndOfFrame _waitForEndOfFrame = new WaitForEndOfFrame();
         
         FasterList<IEnumerator> _earlyMainRoutines  = new FasterList<IEnumerator>();

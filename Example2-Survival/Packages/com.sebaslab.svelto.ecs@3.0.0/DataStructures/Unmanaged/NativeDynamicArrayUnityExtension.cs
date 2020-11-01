@@ -1,4 +1,4 @@
-#if UNITY_COLLECTIONS
+#if UNITY_NATIVE
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 

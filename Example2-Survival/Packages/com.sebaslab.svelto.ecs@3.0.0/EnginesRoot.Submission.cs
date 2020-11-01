@@ -34,7 +34,7 @@ namespace Svelto.ECS
         /// <param name="profiler"></param>
         void SingleSubmission(in PlatformProfiler profiler)
         {
-#if UNITY_BURST          
+#if UNITY_NATIVE          
             NativeOperationSubmission(profiler);
 #endif
             ClearChecks();

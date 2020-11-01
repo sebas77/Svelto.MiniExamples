@@ -56,7 +56,6 @@ namespace Svelto.ECS.Extensions.Unity
         public string name => _name;
 
         readonly FasterReadOnlyList<Interface> _engines;
-        readonly bool                          _completeEachJob;
         readonly string                        _name;
     }
     

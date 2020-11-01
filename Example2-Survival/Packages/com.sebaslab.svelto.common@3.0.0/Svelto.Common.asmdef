@@ -1,7 +1,9 @@
 {
     "name": "Svelto.Common",
     "references": [
-        "com.sebaslab.svelto.unsafe"
+        "com.sebaslab.svelto.unsafe",
+		"Unity.Collections",
+        "Unity.Burst"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -14,9 +16,34 @@
     "defineConstraints": [],
     "versionDefines": [
         {
+            "name": "com.unity.entities",
+            "expression": "",
+            "define": "UNITY_ECS"
+        },
+        {
+            "name": "com.unity.burst",
+            "expression": "",
+            "define": "UNITY_BURST"
+        },
+        {
             "name": "com.unity.collections",
             "expression": "",
             "define": "UNITY_COLLECTIONS"
+        },
+		{
+            "name": "com.unity.entities",
+            "expression": "",
+            "define": "UNITY_NATIVE"
+        },
+        {
+            "name": "com.unity.burst",
+            "expression": "",
+            "define": "UNITY_NATIVE"
+        },
+        {
+            "name": "com.unity.collections",
+            "expression": "",
+            "define": "UNITY_NATIVE"
         }
     ],
     "noEngineReferences": false

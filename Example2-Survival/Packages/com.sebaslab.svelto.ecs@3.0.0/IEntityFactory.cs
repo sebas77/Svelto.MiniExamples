@@ -60,7 +60,7 @@ namespace Svelto.ECS
         EntityComponentInitializer BuildEntity
             (EGID egid, IComponentBuilder[] componentsToBuild, Type type, IEnumerable<object> implementors = null);
 
-#if UNITY_BURST
+#if UNITY_NATIVE
         NativeEntityFactory ToNative<T>(string memberName) where T : IEntityDescriptor, new();
 #endif        
     }

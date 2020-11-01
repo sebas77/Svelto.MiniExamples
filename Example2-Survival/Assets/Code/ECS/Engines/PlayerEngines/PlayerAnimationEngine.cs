@@ -59,7 +59,6 @@ namespace Svelto.ECS.Example.Survive.Characters.Player
 
         public string name => nameof(PlayerAnimationEngine);
         
-        readonly ITaskRoutine<IEnumerator>    _taskRoutine;
         readonly IEntityStreamConsumerFactory _consumerFactory;
         readonly IEnumerator _deathCheck;
     }
