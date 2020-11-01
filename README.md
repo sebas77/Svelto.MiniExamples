@@ -1,6 +1,8 @@
 # Svelto.ECS.MiniExamples
 
-New Mini Examples for Svelto.ECS and Svelto.Tasks
+New Mini Examples for Svelto.ECS and Svelto.Tasks.
+
+These examples use the last beta version of unity available at the moment of the update.
 
 Warning: these examples may use using unofficial versions of Svelto that you won't find on the main repository until officially released.
 
@@ -26,7 +28,7 @@ Goal of this example:
  ###  **Iteration 2 (old)**
    * Integration with Burst for better performance
    * Move the camera with arrows and mouse, left button to drop 100 random food only once
- ###  **Iteration 3**
+ ###  **Iteration 3 (MUST BE USED THIS AS REFERENCE)**
    * Full jobified/burstified code with Svelto ECS 3.0
    * test integration with IL2CPP
   
