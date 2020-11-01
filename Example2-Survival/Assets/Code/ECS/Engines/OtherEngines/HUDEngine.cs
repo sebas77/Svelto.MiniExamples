@@ -33,10 +33,10 @@ namespace Svelto.ECS.Example.Survive.HUD
         {
             void AnimateUI()
             {
-                var entities = entitiesDB.QueryEntities<HUDEntityView>(ECSGroups.GUICanvas);
-                foreach (var guiEntityView in entities)
+                var (buffer, count) = entitiesDB.QueryEntities<HUDEntityView>(ECSGroups.GUICanvas);
+                for (int i = 0; i < count; ++i)
                 {
-                    var damageComponent = guiEntityView.damageImageComponent;
+                    var damageComponent = buffer[i].damageImageComponent;
 
                     damageComponent.imageColor = Color.Lerp(damageComponent.imageColor, Color.clear
                                                           , damageComponent.speed * UnityEngine.Time.deltaTime);

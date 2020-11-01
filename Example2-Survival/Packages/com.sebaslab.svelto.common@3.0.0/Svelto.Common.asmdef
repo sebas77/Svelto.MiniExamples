@@ -1,0 +1,23 @@
+{
+    "name": "Svelto.Common",
+    "references": [
+        "com.sebaslab.svelto.unsafe"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "System.Runtime.CompilerServices.Unsafe.dll"
+    ],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.collections",
+            "expression": "",
+            "define": "UNITY_COLLECTIONS"
+        }
+    ],
+    "noEngineReferences": false
+}

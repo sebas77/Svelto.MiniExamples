@@ -17,12 +17,11 @@ namespace Svelto.ECS.Example.Survive.Characters
 
         public void Step()
         {
-            var healths = entitiesDB.QueryEntities<HealthComponent>(ECSGroups.DamageableEntities).entities;
-
-            foreach (ref var health in healths)
+            foreach (var ((buffer, count), _) in entitiesDB.QueryEntities<HealthComponent>(ECSGroups.DamageableEntities))
             {
-                if (health.currentHealth <= 0)
-                    entitiesDB.PublishEntityChange<DeathComponent>(health.ID);
+                for (int i = 0; i < count; ++i)
+                    if (buffer[i].currentHealth <= 0)
+                        entitiesDB.PublishEntityChange<DeathComponent>(buffer[i].ID);
             }
         }
 
