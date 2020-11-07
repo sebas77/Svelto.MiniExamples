@@ -40,7 +40,7 @@ namespace Svelto.ECS
                 //attention, the while is necessary to skip empty groups
                 while (_db.MoveNext() == true)
                 {
-                    FasterDictionary<uint, ITypeSafeDictionary>.KeyValuePairFast group = _db.Current;
+                    FasterDictionary<ExclusiveGroupStruct, ITypeSafeDictionary>.KeyValuePairFast group = _db.Current;
                     ITypeSafeDictionary<T1> typeSafeDictionary = @group.Value as ITypeSafeDictionary<T1>;
                     
                     if (typeSafeDictionary.count == 0) continue;
@@ -56,7 +56,7 @@ namespace Svelto.ECS
 
             public GroupCollection Current => _array;
 
-            FasterDictionary<uint, ITypeSafeDictionary>.FasterDictionaryKeyValueEnumerator _db; 
+            FasterDictionary<ExclusiveGroupStruct, ITypeSafeDictionary>.FasterDictionaryKeyValueEnumerator _db; 
             GroupCollection _array;
         }
 

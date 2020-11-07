@@ -212,13 +212,15 @@ namespace Svelto.ECS.Example.Survive
         }
 
         /// <summary>
-        /// An EntityDescriptorHolder is a special Svelto.ECS class created to exploit GameObjects to dynamically
-        /// retrieve implementors attached to it and then build a Svelto Entity.
+        /// An EntityDescriptorHolder is a special Svelto.ECS hybrid class dedicated to the unity platform. Once attached to a gameobject
+        /// it automatically retrieves implementors from the hierarchy.
         ///     This pattern is usually useful for guis where complex hierarchy of gameobjects are necessary, but
         /// otherwise you should always create entities in factories. In the mini examples repository is possible
         ///     to find a more advanced GUI example
         /// The gui of this project is ultra simple and is all managed by one entity only. This way won't do
-        /// for a complex GUI
+        /// for a complex GUI.
+        /// Note that creating an entity to manage a complex gui like this, is OK only for such a simple scenario
+        /// otherwise a widget-like design should be adopted.
         /// </summary>
         /// <param name="contextHolder"></param>
         void BuildGUIEntitiesFromScene(UnityContext contextHolder, IEntityFactory entityFactory)

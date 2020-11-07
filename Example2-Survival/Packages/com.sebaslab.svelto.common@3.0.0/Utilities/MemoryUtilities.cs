@@ -1,6 +1,11 @@
 #if DEBUG && !PROFILE_SVELTO
 #define DEBUG_MEMORY
 #endif
+#if UNITY_2019_3_OR_NEWER
+#define USE_UNITY_NATIVE
+#else
+#error Svelto.ECS 3.0 supports Unity 2019_3 and above only
+#endif
 
 using System;
 using System.Reflection;
@@ -54,7 +59,7 @@ namespace Svelto.Common
             unsafe
             {
                 var signedCapacity = (int) SignedCapacity(newCapacity);
-#if UNITY_NATIVE
+#if UNITY_2019_3_OR_NEWER
                 var allocator1 = (Unity.Collections.Allocator) allocator;
                 var newPointer =
                     Unity.Collections.LowLevel.Unsafe.UnsafeUtility.Malloc(signedCapacity, (int) OptimalAlignment.alignment, allocator1);
@@ -98,22 +103,6 @@ namespace Svelto.Common
                 //Free unsigns the pointer itself
                 Free(realBuffer, allocator);
                 return signedPointer;
-#if NOT_USED_BUT_IF_WANT_TO_I_HAVE_TO_CHECK_THE_MEMORY_BOUNDARIES_BEFORE_TO_REALLOC
-                //find the real pointer
-                var realPointer = UnsignPointer(realBuffer);
-                //find the real capacity with extra info
-                var realCapacity = (IntPtr) SignedCapacity(newCapacity);
-                //realloc with the new size
-                var newPointer = System.Runtime.InteropServices.Marshal.ReAllocHGlobal(realPointer, realCapacity);
-                
-                var signedPointer = SignedPointer(newCapacity, newPointer);
-#if DEBUG && !PROFILE_SVELTO
-                //clear from the end of the old buffer to the end of the new buffer
-                MemClear((IntPtr) signedPointer + (int) oldCapacity, newCapacity - oldCapacity);
-#endif                
-                //return the pointer with signature
-                return signedPointer;
-#endif
             }
         }
         
@@ -124,7 +113,7 @@ namespace Svelto.Common
             {
                 ptr = CheckAndReturnPointerToFree(ptr);
 
-#if UNITY_NATIVE
+#if UNITY_2019_3_OR_NEWER
                 Unity.Collections.LowLevel.Unsafe.UnsafeUtility.Free((void*) ptr, (Unity.Collections.Allocator) allocator);
 #else
                 System.Runtime.InteropServices.Marshal.FreeHGlobal((IntPtr) ptr);
@@ -137,14 +126,14 @@ namespace Svelto.Common
         {
             unsafe 
             {
-#if UNITY_NATIVE
+#if UNITY_2019_3_OR_NEWER
                 Unity.Collections.LowLevel.Unsafe.UnsafeUtility.MemClear((void*) destination, sizeOf);
 #else
                Unsafe.InitBlock((void*) destination, 0, sizeOf);
 #endif
             }
         }
-
+#if UNITY_2019_3_OR_NEWER
         static class OptimalAlignment
         {
             internal static readonly uint alignment;
@@ -154,7 +143,7 @@ namespace Svelto.Common
                 alignment = (uint) (Environment.Is64BitProcess ? 16 : 8);
             }
         }
-
+#endif
         static class CachedSize<T> where T : struct
         {
             public static readonly uint cachedSize = (uint) Unsafe.SizeOf<T>();
@@ -194,7 +183,7 @@ namespace Svelto.Common
 
         public static int GetFieldOffset(FieldInfo field)
         {
-#if UNITY_NATIVE
+#if UNITY_2019_3_OR_NEWER
             return Unity.Collections.LowLevel.Unsafe.UnsafeUtility.GetFieldOffset(field);
 #else
             int GetFieldOffset(RuntimeFieldHandle h) => 

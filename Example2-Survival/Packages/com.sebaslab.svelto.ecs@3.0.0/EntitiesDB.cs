@@ -256,7 +256,7 @@ namespace Svelto.ECS
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal bool SafeQueryEntityDictionary<T>(uint group, out ITypeSafeDictionary typeSafeDictionary)
+        internal bool SafeQueryEntityDictionary<T>(ExclusiveGroupStruct group, out ITypeSafeDictionary typeSafeDictionary)
             where T : IEntityComponent
         {
             if (UnsafeQueryEntityDictionary(group, TypeCache<T>.type, out var safeDictionary) == false)
@@ -272,7 +272,7 @@ namespace Svelto.ECS
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal bool UnsafeQueryEntityDictionary(uint group, Type type, out ITypeSafeDictionary typeSafeDictionary)
+        internal bool UnsafeQueryEntityDictionary(ExclusiveGroupStruct group, Type type, out ITypeSafeDictionary typeSafeDictionary)
         {
             //search for the group
             if (groupEntityComponentsDB.TryGetValue(group, out var entitiesInGroupPerType) == false)
@@ -342,8 +342,8 @@ namespace Svelto.ECS
             }
         }
 
-        static readonly FasterDictionary<uint, ITypeSafeDictionary> _emptyDictionary =
-            new FasterDictionary<uint, ITypeSafeDictionary>();
+        static readonly FasterDictionary<ExclusiveGroupStruct, ITypeSafeDictionary> _emptyDictionary =
+            new FasterDictionary<ExclusiveGroupStruct, ITypeSafeDictionary>();
 
         readonly EnginesRoot _enginesRoot;
 
@@ -353,14 +353,14 @@ namespace Svelto.ECS
         //group, then indexable per type, then indexable per EGID. however the TypeSafeDictionary can return an array of
         //values directly, that can be iterated over, so that is possible to iterate over all the entity components of
         //a specific type inside a specific group.
-
-        FasterDictionary<uint, FasterDictionary<RefWrapperType, ITypeSafeDictionary>>
+FasterDictionary<ExclusiveGroupStruct, FasterDictionary<RefWrapperType, ITypeSafeDictionary>>
             groupEntityComponentsDB => _enginesRoot._groupEntityComponentsDB;
 
-        //needed to be able to track in which groups a specific entity type can be found.
-
-        //may change in future as it could be expanded to support queries
-        FasterDictionary<RefWrapperType, FasterDictionary<uint, ITypeSafeDictionary>> groupsPerEntity =>
+//for each entity view type, return the groups (dictionary of entities indexed by entity id) where they are
+//found indexed by group id. TypeSafeDictionary are never created, they instead point to the ones hold
+//by _groupEntityComponentsDB
+//                        <EntityComponentType                            <groupID  <entityID, EntityComponent>>>  
+        FasterDictionary<RefWrapperType, FasterDictionary<ExclusiveGroupStruct, ITypeSafeDictionary>> groupsPerEntity =>
             _enginesRoot._groupsPerEntity;
     }
 }

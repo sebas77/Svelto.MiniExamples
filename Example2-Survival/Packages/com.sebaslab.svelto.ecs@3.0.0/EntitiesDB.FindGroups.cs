@@ -12,7 +12,7 @@ namespace Svelto.ECS
             FasterList<ExclusiveGroupStruct> result = groups.Value;
             result.FastClear();
             if (groupsPerEntity.TryGetValue(TypeRefWrapper<T1>.wrapper
-                                           , out FasterDictionary<uint, ITypeSafeDictionary> result1) == false)
+                                           , out FasterDictionary<ExclusiveGroupStruct, ITypeSafeDictionary> result1) == false)
                 return result;
         
             var result1Count           = result1.count;
@@ -31,10 +31,10 @@ namespace Svelto.ECS
             FasterList<ExclusiveGroupStruct> result = groups.Value;
             result.FastClear();
             if (groupsPerEntity.TryGetValue(TypeRefWrapper<T1>.wrapper
-                                           , out FasterDictionary<uint, ITypeSafeDictionary> result1) == false)
+                                           , out FasterDictionary<ExclusiveGroupStruct, ITypeSafeDictionary> result1) == false)
                 return result;
             if (groupsPerEntity.TryGetValue(TypeRefWrapper<T2>.wrapper
-                                           , out FasterDictionary<uint, ITypeSafeDictionary> result2) == false)
+                                           , out FasterDictionary<ExclusiveGroupStruct, ITypeSafeDictionary> result2) == false)
                 return result;
             
             var result1Count           = result1.count;
@@ -73,35 +73,45 @@ namespace Svelto.ECS
             FasterList<ExclusiveGroupStruct> result = groups.Value;
             result.FastClear();
             if (groupsPerEntity.TryGetValue(TypeRefWrapper<T1>.wrapper
-              , out FasterDictionary<uint, ITypeSafeDictionary> result1) == false)
+              , out FasterDictionary<ExclusiveGroupStruct, ITypeSafeDictionary> groupOfEntities1) == false)
                 return result;
             if (groupsPerEntity.TryGetValue(TypeRefWrapper<T2>.wrapper
-              , out FasterDictionary<uint, ITypeSafeDictionary> result2) == false)
+              , out FasterDictionary<ExclusiveGroupStruct, ITypeSafeDictionary> groupOfEntities2) == false)
                 return result;
             if (groupsPerEntity.TryGetValue(TypeRefWrapper<T3>.wrapper
-              , out FasterDictionary<uint, ITypeSafeDictionary> result3) == false)
+              , out FasterDictionary<ExclusiveGroupStruct, ITypeSafeDictionary> groupOfEntities3) == false)
                 return result;
             
-            var result1Count           = result1.count;
-            var result2Count           = result2.count;
-            var result3Count           = result3.count;
-            var fasterDictionaryNodes1 = result1.unsafeKeys;
-            var fasterDictionaryNodes2 = result2.unsafeKeys;
-            var fasterDictionaryNodes3 = result3.unsafeKeys;
-
+            var result1Count           = groupOfEntities1.count;
+            var result2Count           = groupOfEntities2.count;
+            var result3Count           = groupOfEntities3.count;
+            var fasterDictionaryNodes1 = groupOfEntities1.unsafeKeys;
+            var fasterDictionaryNodes2 = groupOfEntities2.unsafeKeys;
+            var fasterDictionaryNodes3 = groupOfEntities3.unsafeKeys;
+            
+            //
+            //TODO: I have to find once for ever a solution to be sure that the entities in the groups match
+            //Currently this returns group where the entities are found, but the entities may not match in these
+            //groups.
+            //Checking the size of the entities is an early check, needed, but not sufficient, as entities components may
+            //coincidentally match in number but not from which entities they are generated
+            
+            //foreach group where T1 is found
             for (int i = 0; i < result1Count; i++)
             {
-                var key = fasterDictionaryNodes1[i].key;
+                var groupT1 = fasterDictionaryNodes1[i].key;
                 
+                //foreach group where T2 is found
                 for (int j = 0; j < result2Count; ++j)
                 {
-                    if (key == fasterDictionaryNodes2[j].key)
+                    if (groupT1 == fasterDictionaryNodes2[j].key)
                     {
+                        //foreach group where T3 is found
                         for (int k = 0; k < result3Count; ++k)
                         {
-                            if (key == fasterDictionaryNodes3[k].key)
+                            if (groupT1 == fasterDictionaryNodes3[k].key)
                             {
-                                result.Add(new ExclusiveGroupStruct(key));
+                                result.Add(new ExclusiveGroupStruct(groupT1));
                                 break;
                             }
                         }
@@ -114,7 +124,7 @@ namespace Svelto.ECS
             return result;
         }
 
-        internal FasterDictionary<uint, ITypeSafeDictionary> FindGroups_INTERNAL(Type type) 
+        internal FasterDictionary<ExclusiveGroupStruct, ITypeSafeDictionary> FindGroups_INTERNAL(Type type) 
         {
             if (groupsPerEntity.ContainsKey(new RefWrapperType(type)) == false)
                 return _emptyDictionary;

@@ -49,8 +49,8 @@ namespace Svelto.ECS
             _transientEntitiesOperations = new FasterList<EntitySubmitOperation>();
 
             _groupEntityComponentsDB =
-                new FasterDictionary<uint, FasterDictionary<RefWrapperType, ITypeSafeDictionary>>();
-            _groupsPerEntity    = new FasterDictionary<RefWrapperType, FasterDictionary<uint, ITypeSafeDictionary>>();
+                new FasterDictionary<ExclusiveGroupStruct, FasterDictionary<RefWrapperType, ITypeSafeDictionary>>();
+            _groupsPerEntity    = new FasterDictionary<RefWrapperType, FasterDictionary<ExclusiveGroupStruct, ITypeSafeDictionary>>();
             _groupedEntityToAdd = new DoubleBufferedEntitiesToAdd();
 
             _entityStreams = EntitiesStreams.Create();
@@ -98,7 +98,7 @@ namespace Svelto.ECS
                     }
                 }
                 
-                foreach (FasterDictionary<uint, FasterDictionary<RefWrapperType, ITypeSafeDictionary>>.
+                foreach (FasterDictionary<ExclusiveGroupStruct, FasterDictionary<RefWrapperType, ITypeSafeDictionary>>.
                     KeyValuePairFast groups in _groupEntityComponentsDB)
                 {
                     foreach (FasterDictionary<RefWrapperType, ITypeSafeDictionary>.KeyValuePairFast entityList in
@@ -114,7 +114,7 @@ namespace Svelto.ECS
                         }
                 }
                 
-                foreach (FasterDictionary<uint, FasterDictionary<RefWrapperType, ITypeSafeDictionary>>.
+                foreach (FasterDictionary<ExclusiveGroupStruct, FasterDictionary<RefWrapperType, ITypeSafeDictionary>>.
                     KeyValuePairFast groups in _groupEntityComponentsDB)
                 {
                     foreach (FasterDictionary<RefWrapperType, ITypeSafeDictionary>.KeyValuePairFast entityList in

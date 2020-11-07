@@ -7,15 +7,15 @@ namespace Svelto.ECS.Extensions.Unity
 {
     /// <summary>
     /// Note sorted jobs run in serial
-    /// </summary>
+    /// </summary> 
     /// <typeparam name="Interface"></typeparam>
     /// <typeparam name="SequenceOrder"></typeparam>
-    public abstract class SortedJobifedEnginesGroup<Interface, SequenceOrder> 
+    public abstract class SortedJobifiedEnginesGroup<Interface, SequenceOrder> 
         where SequenceOrder : struct, ISequenceOrder where Interface : class, IJobifiedEngine
     {
-        protected SortedJobifedEnginesGroup(FasterList<Interface> engines)
+        protected SortedJobifiedEnginesGroup(FasterList<Interface> engines)
         {
-            _name = "SortedJobifedEnginesGroup - "+this.GetType().Name;
+            _name = "SortedJobifiedEnginesGroup - "+this.GetType().Name;
             _instancedSequence = new Sequence<Interface, SequenceOrder>(engines);
         }
 
@@ -41,12 +41,12 @@ namespace Svelto.ECS.Extensions.Unity
         readonly Sequence<Interface, SequenceOrder> _instancedSequence;
     } 
     
-    public abstract class SortedJobifedEnginesGroup<Interface, Parameter, SequenceOrder>: IJobifiedGroupEngine<Parameter>
+    public abstract class SortedJobifiedEnginesGroup<Interface, Parameter, SequenceOrder>: IJobifiedGroupEngine<Parameter>
         where SequenceOrder : struct, ISequenceOrder where Interface : class, IJobifiedEngine<Parameter>
     {
-        protected SortedJobifedEnginesGroup(FasterList<Interface> engines)
+        protected SortedJobifiedEnginesGroup(FasterList<Interface> engines)
         {
-            _name = "SortedJobifedEnginesGroup - "+this.GetType().Name;
+            _name = "SortedJobifiedEnginesGroup - "+this.GetType().Name;
             _instancedSequence = new Sequence<Interface, SequenceOrder>(engines);
         }
 

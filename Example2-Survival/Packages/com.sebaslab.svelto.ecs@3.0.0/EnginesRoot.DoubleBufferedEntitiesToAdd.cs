@@ -83,8 +83,8 @@ namespace Svelto.ECS
             /// To avoid extra allocation, I don't clear the dictionaries, so I need an extra data structure
             /// to keep count of the number of entities submitted this frame
             /// </summary>
-            internal FasterDictionary<uint, uint> currentEntitiesCreatedPerGroup;
-            internal FasterDictionary<uint, uint> otherEntitiesCreatedPerGroup;
+            internal FasterDictionary<ExclusiveGroupStruct, uint> currentEntitiesCreatedPerGroup;
+            internal FasterDictionary<ExclusiveGroupStruct, uint> otherEntitiesCreatedPerGroup;
 
             //Before I tried for the third time to use a SparseSet instead of FasterDictionary, remember that
             //while group indices are sequential, they may not be used in a sequential order. Sparaset needs
@@ -100,8 +100,8 @@ namespace Svelto.ECS
                 _entityComponentsToAddBufferB =
                     new FasterDictionary<uint, FasterDictionary<RefWrapperType, ITypeSafeDictionary>>();
 
-            readonly FasterDictionary<uint, uint> _entitiesCreatedPerGroupA = new FasterDictionary<uint, uint>();
-            readonly FasterDictionary<uint, uint> _entitiesCreatedPerGroupB = new FasterDictionary<uint, uint>();
+            readonly FasterDictionary<ExclusiveGroupStruct, uint> _entitiesCreatedPerGroupA = new FasterDictionary<ExclusiveGroupStruct, uint>();
+            readonly FasterDictionary<ExclusiveGroupStruct, uint> _entitiesCreatedPerGroupB = new FasterDictionary<ExclusiveGroupStruct, uint>();
 
             public DoubleBufferedEntitiesToAdd()
             {

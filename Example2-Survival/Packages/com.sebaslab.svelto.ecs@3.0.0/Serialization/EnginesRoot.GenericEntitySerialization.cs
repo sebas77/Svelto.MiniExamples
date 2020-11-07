@@ -149,7 +149,7 @@ namespace Svelto.ECS
             void SerializeEntityComponent(EGID entityGID, ISerializableComponentBuilder componentBuilder,
                 ISerializationData serializationData, int serializationType)
             {
-                uint groupId = entityGID.groupID;
+                ExclusiveGroupStruct groupId = entityGID.groupID;
                 Type entityType = componentBuilder.GetEntityComponentType();
                 if (!_enginesRoot._entitiesDB.UnsafeQueryEntityDictionary(groupId, entityType,
                     out var safeDictionary))

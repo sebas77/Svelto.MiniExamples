@@ -17,7 +17,7 @@ namespace Svelto.ECS.Internal
             return group;
         }
 
-        static FasterDictionary<RefWrapperType, ITypeSafeDictionary> FetchEntityGroup(uint groupID,
+        static FasterDictionary<RefWrapperType, ITypeSafeDictionary> FetchEntityGroup(ExclusiveGroupStruct groupID,
             EnginesRoot.DoubleBufferedEntitiesToAdd groupEntityComponentsByType)
         {
             if (groupEntityComponentsByType.current.TryGetValue(groupID, out var group) == false)

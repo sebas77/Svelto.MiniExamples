@@ -175,7 +175,7 @@ namespace Svelto.ECS
                 }
             }
 
-            public bool TryRemoveEntity<T>(int filtersID, EGID egid) where T : unmanaged, IEntityComponent
+            public bool TryRemoveEntityFromFilter<T>(int filtersID, EGID egid) where T : unmanaged, IEntityComponent
             {
                 if (TryGetFilterForGroup<T>(filtersID, egid.groupID, out var filter))
                 {
