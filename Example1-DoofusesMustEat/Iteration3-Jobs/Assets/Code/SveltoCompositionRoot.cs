@@ -1,58 +1,93 @@
-using System;
-using System.Collections;
+#if PROFILE_SVELTO
+#warning the global define PROFILE_SVELTO must be used only when it's necessary to start a profiling session to reduce the overhead of debugging code. Normally remove this define to get insights when errors happen
+#endif
+#if !UNITY_DISABLE_AUTOMATIC_SYSTEM_BOOTSTRAP
+#error this demo takes completely over the UECS initialization and ticking. UNITY_DISABLE_AUTOMATIC_SYSTEM_BOOTSTRAP must be enabled
+#endif
 using Svelto.Context;
 using Svelto.DataStructures;
 using Svelto.ECS.Extensions.Unity;
-using Svelto.ECS.Internal;
-using Svelto.Tasks;
-using Svelto.Tasks.ExtraLean;
 using Unity.Entities;
-using Unity.Jobs;
 using UnityEngine;
 
 namespace Svelto.ECS.MiniExamples.Example1C
 {
-    public class SveltoCompositionRoot : ICompositionRoot, ICustomBootstrap
+    public class SveltoCompositionRoot : ICompositionRoot
     {
-        static World _world;
-
-        EnginesRoot _enginesRoot;
-        FasterList<IJobifiedEngine> _enginesToTick;
-        SimpleEntitiesSubmissionScheduler _simpleSubmitScheduler;
-
-        void StartTicking(FasterList<IJobifiedEngine> engines)
+        public void OnContextCreated<T>(T contextHolder)
         {
-            MainThreadTick(engines).RunOn(DoofusesStandardSchedulers.mainThreadScheduler);
-        }
+            QualitySettings.vSyncCount = -1;
+            Cursor.lockState           = CursorLockMode.Locked;
+            Cursor.visible             = false;
 
-        IEnumerator MainThreadTick(FasterList<IJobifiedEngine> engines)
-        {
-            EnginesExecutionOrderGroup orderGroup = new EnginesExecutionOrderGroup(engines);
-
-            JobHandle jobs = default;
+            _simpleSubmitScheduler                  = new SimpleEntitiesSubmissionScheduler();
+            _enginesRoot                            = new EnginesRoot(_simpleSubmitScheduler);
+            _sveltoOverUecsEnginesGroupEnginesGroup = new SveltoOverUECSEnginesGroup(_enginesRoot);
             
-            while (true)
-            {
-                jobs.Complete();
-                
-                //Sync point on the mainthread:
-                //Svelto entities are added/removed/swapped
-                //callback functions are called (which may create UECS entities)
-                _simpleSubmitScheduler.SubmitEntities();
-
-                //schedule all jobs and let them run until next frame;
-                jobs = orderGroup.Execute(jobs);
-                
-                yield return Yield.It;
-            }
+            _enginesToTick.Add(_sveltoOverUecsEnginesGroupEnginesGroup);
+            _mainLoop = new MainLoop(_enginesToTick);
         }
 
         public void OnContextInitialized<T>(T contextHolder)
-        { }
-
-        void AddSveltoCallbackEngine(IReactEngine engine)
         {
-            _enginesRoot.AddEngine(engine);
+            LoadAssetAndCreatePrefabs(_sveltoOverUecsEnginesGroupEnginesGroup.world, out var redFoodPrefab
+                                    , out var blueFootPrefab, out var redDoofusPrefab, out var blueDoofusPrefab);
+
+            ComposeEnginesRoot(redFoodPrefab, blueFootPrefab, redDoofusPrefab, blueDoofusPrefab);
+
+            _mainLoop.Run();
+        }
+
+        public void OnContextDestroyed()
+        {
+            _sveltoOverUecsEnginesGroupEnginesGroup.Dispose();
+            _enginesRoot.Dispose();
+            _mainLoop.Dispose();
+            _simpleSubmitScheduler.Dispose();
+        }
+
+        void ComposeEnginesRoot
+            (Entity redFoodPrefab, Entity blueFootPrefab, Entity redDoofusPrefab, Entity blueDoofusPrefab)
+        {
+            var entityFactory   = _enginesRoot.GenerateEntityFactory();
+            var entityFunctions = _enginesRoot.GenerateEntityFunctions();
+
+            AddSveltoEngineToTick(new PlaceFoodOnClickEngine(redFoodPrefab, blueFootPrefab, entityFactory));
+            AddSveltoEngineToTick(new SpawningDoofusEngine(redDoofusPrefab, blueDoofusPrefab, entityFactory));
+            AddSveltoEngineToTick(new ConsumingFoodEngine(entityFunctions));
+            AddSveltoEngineToTick(new LookingForFoodDoofusesEngine(entityFunctions));
+            AddSveltoEngineToTick(new VelocityToPositionDoofusesEngine());
+
+            _sveltoOverUecsEnginesGroupEnginesGroup.AddUECSSubmissionEngine(new SpawnUnityEntityOnSveltoEntityEngine());
+            _sveltoOverUecsEnginesGroupEnginesGroup.AddSveltoToUECSEngine(new RenderingUECSDataSynchronizationEngine());
+        }
+
+        static void LoadAssetAndCreatePrefabs
+        (World world, out Entity redFoodPrefab, out Entity blueFootPrefab, out Entity redDoofusPrefab
+       , out Entity blueDoofusPrefab)
+        {
+            //I believe the proper way to do this now is to create a subscene, but I am not sure how it would
+            //work with prefabs, so I am not testing it (yet)
+            redFoodPrefab = GameObjectConversionUtility.ConvertGameObjectHierarchy(
+                Resources.Load("Sphere") as GameObject, new GameObjectConversionSettings
+                {
+                    DestinationWorld = world
+                });
+            blueFootPrefab = GameObjectConversionUtility.ConvertGameObjectHierarchy(
+                Resources.Load("Sphereblue") as GameObject, new GameObjectConversionSettings
+                {
+                    DestinationWorld = world
+                });
+            redDoofusPrefab = GameObjectConversionUtility.ConvertGameObjectHierarchy(
+                Resources.Load("RedCapsule") as GameObject, new GameObjectConversionSettings
+                {
+                    DestinationWorld = world
+                });
+            blueDoofusPrefab = GameObjectConversionUtility.ConvertGameObjectHierarchy(
+                Resources.Load("BlueCapsule") as GameObject, new GameObjectConversionSettings
+                {
+                    DestinationWorld = world
+                });
         }
 
         void AddSveltoEngineToTick(IJobifiedEngine engine)
@@ -61,92 +96,10 @@ namespace Svelto.ECS.MiniExamples.Example1C
             _enginesToTick.Add(engine);
         }
 
-        void AddSveltoUECSEngine<T>(T engine) where T : SyncSveltoToUECSEngine
-        {
-            //it's a Svelto Engine/UECS SystemBase so it must be added in the UECS world AND svelto enginesRoot
-            _world.AddSystem(engine);
-            _enginesRoot.AddEngine(engine);
-            
-            //We assume that the UECS/Svelto engines are to be added in teh SimulationSystemGroup
-            var copySveltoToUecsEnginesGroup = _world.GetExistingSystem<SyncSveltoToUECSGroup>();
-            //Svelto will tick the UECS group that will tick the System, this because we still rely on the UECS
-            //dependency tracking for the UECS components too
-            copySveltoToUecsEnginesGroup.AddSystemToUpdateList(engine);
-        }
-
-        public void OnContextDestroyed()
-        {
-            DoofusesStandardSchedulers.StopAndCleanupAllDefaultSchedulers();
-            
-            _enginesRoot?.Dispose();
-            
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-        }
-
-        public void OnContextCreated<T>(T contextHolder)
-        { }
-
-        public bool Initialize(string defaultWorldName)
-        {
-            //            Physics.autoSimulation = false;
-            QualitySettings.vSyncCount = -1;
-
-            _simpleSubmitScheduler = new SimpleEntitiesSubmissionScheduler();
-            _enginesRoot = new EnginesRoot(_simpleSubmitScheduler);
-            _enginesToTick = new FasterList<IJobifiedEngine>();
-
-            _world = new World("Custom world");
-
-            var systems = DefaultWorldInitialization.GetAllSystems(WorldSystemFilterFlags.Default);
-            DefaultWorldInitialization.AddSystemsToRootLevelSystemGroups(_world, systems);
-
-            World.DefaultGameObjectInjectionWorld = _world;
-
-            var copySveltoToUecsEnginesGroup = new SyncSveltoToUECSGroup();
-            _world.AddSystem(copySveltoToUecsEnginesGroup);
-            AddSveltoEngineToTick(copySveltoToUecsEnginesGroup);
-            
-            var tickUECSSystemsGroup = new PureUECSSystemsGroup(_world);
-            AddSveltoEngineToTick(tickUECSSystemsGroup);
-            
-            ///Svelto will tick the UECS engines, We need control over everything
-            //ScriptBehaviourUpdateOrder.UpdatePlayerLoop(_world);
-            
-            //add the engines we are going to use
-            var generateEntityFactory = _enginesRoot.GenerateEntityFactory();
-
-            var redfoodEntity =
-                GameObjectConversionUtility.ConvertGameObjectHierarchy(Resources.Load("Sphere") as GameObject,
-                                                                       new GameObjectConversionSettings()
-                                                                           {DestinationWorld = _world});
-            var bluefoodEntity =
-                GameObjectConversionUtility.ConvertGameObjectHierarchy(Resources.Load("Sphereblue") as GameObject,
-                                                                       new GameObjectConversionSettings()
-                                                                           {DestinationWorld = _world});
-            var redDoofusEntity =
-                GameObjectConversionUtility.ConvertGameObjectHierarchy(Resources.Load("RedCapsule") as GameObject,
-                                                                       new GameObjectConversionSettings()
-                                                                           {DestinationWorld = _world});
-            var blueDoofusEntity =
-                GameObjectConversionUtility.ConvertGameObjectHierarchy(Resources.Load("BlueCapsule") as GameObject,
-                                                                       new GameObjectConversionSettings()
-                                                                           {DestinationWorld = _world});
-
-            AddSveltoEngineToTick(new PlaceFoodOnClickEngine(redfoodEntity, bluefoodEntity, generateEntityFactory));
-            AddSveltoEngineToTick(new SpawningDoofusEngine(redDoofusEntity, blueDoofusEntity, generateEntityFactory));
-            var generateEntityFunctions = _enginesRoot.GenerateEntityFunctions();
-            AddSveltoEngineToTick(new ConsumingFoodEngine(generateEntityFunctions));
-            AddSveltoEngineToTick(new LookingForFoodDoofusesEngine(generateEntityFunctions));
-            AddSveltoEngineToTick(new VelocityToPositionDoofusesEngine());
-            
-            AddSveltoCallbackEngine(new SpawnUnityEntityOnSveltoEntityEngine(_world));
-            
-            AddSveltoUECSEngine(new RenderingUECSDataSynchronizationEngine());
-            
-            StartTicking(_enginesToTick);
-
-            return true;
-        }
+        EnginesRoot                          _enginesRoot;
+        readonly FasterList<IJobifiedEngine> _enginesToTick = new FasterList<IJobifiedEngine>();
+        SimpleEntitiesSubmissionScheduler    _simpleSubmitScheduler;
+        SveltoOverUECSEnginesGroup           _sveltoOverUecsEnginesGroupEnginesGroup;
+        MainLoop                             _mainLoop;
     }
 }

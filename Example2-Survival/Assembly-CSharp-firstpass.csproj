@@ -41,11 +41,11 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
-     <Compile Include="Assets\Plugins\MobileInput\Scripts\PlatformSpecific\StandaloneInput.cs" />
      <Compile Include="Assets\Plugins\MobileInput\Scripts\VirtualInput.cs" />
+     <Compile Include="Assets\Plugins\MobileInput\Scripts\Joystick.cs" />
+     <Compile Include="Assets\Plugins\MobileInput\Scripts\PlatformSpecific\StandaloneInput.cs" />
      <Compile Include="Assets\Plugins\MobileInput\Scripts\CrossPlatformInputManager.cs" />
      <Compile Include="Assets\Plugins\MobileInput\Scripts\PlatformSpecific\MobileInput.cs" />
-     <Compile Include="Assets\Plugins\MobileInput\Scripts\Joystick.cs" />
      <Reference Include="UnityEngine">
      <HintPath>C:/Program Files/Unity/Hub/Editor/2020.2.0b10/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
      </Reference>
@@ -613,8 +613,14 @@
      <Reference Include="Unity.Addressables">
      <HintPath>C:/Prgdir/Svelto/Svelto.MiniExamples/Example2-Survival/Library/ScriptAssemblies/Unity.Addressables.dll</HintPath>
      </Reference>
+     <Reference Include="Unity.TextMeshPro.Editor">
+     <HintPath>C:/Prgdir/Svelto/Svelto.MiniExamples/Example2-Survival/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
+     </Reference>
      <Reference Include="Unity.VisualStudio.Editor">
      <HintPath>C:/Prgdir/Svelto/Svelto.MiniExamples/Example2-Survival/Library/ScriptAssemblies/Unity.VisualStudio.Editor.dll</HintPath>
+     </Reference>
+     <Reference Include="Unity.TextMeshPro">
+     <HintPath>C:/Prgdir/Svelto/Svelto.MiniExamples/Example2-Survival/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
      </Reference>
      <Reference Include="Unity.ScriptableBuildPipeline">
      <HintPath>C:/Prgdir/Svelto/Svelto.MiniExamples/Example2-Survival/Library/ScriptAssemblies/Unity.ScriptableBuildPipeline.dll</HintPath>

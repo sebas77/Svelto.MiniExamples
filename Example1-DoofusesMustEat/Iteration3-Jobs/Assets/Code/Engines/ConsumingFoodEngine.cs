@@ -53,14 +53,15 @@ namespace Svelto.ECS.MiniExamples.Example1C
 
             //against all the doofuses
             JobHandle deps = inputDeps;
-            foreach (var doofusesBuffer in doofusesEntityGroups.groups)
+            foreach (var (doofusesBuffer, _) in doofusesEntityGroups)
             {
-                var doofusesCount = doofusesBuffer.count;
+                var doofuses      = doofusesBuffer.ToBuffers();
+                var doofusesCount = doofuses.count;
 
                 //schedule the job
                 deps = JobHandle.CombineDependencies(
                     deps
-                  , new ConsumingFoodJob(doofusesBuffer.ToBuffers(), foodPositionMapper, _nativeSwap, _nativeRemove
+                  , new ConsumingFoodJob(doofuses, foodPositionMapper, _nativeSwap, _nativeRemove
                                        , swapGroup).ScheduleParallel(doofusesCount, inputDeps));
             }
 
@@ -110,6 +111,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
             var computeDirection = foodPosition - doofusPosition;
             var sqrModule        = computeDirection.x * computeDirection.x + computeDirection.z * computeDirection.z;
 
+            //close enough to the food
             if (sqrModule < 2)
             {
                 velocity.x = 0;

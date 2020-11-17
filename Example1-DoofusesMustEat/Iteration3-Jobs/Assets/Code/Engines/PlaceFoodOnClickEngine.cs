@@ -34,6 +34,8 @@ namespace Svelto.ECS.MiniExamples.Example1C
 
             while (true)
             {
+                //note: in a complex project an engine shouldn't ever poll input directly, it should instead poll
+                //entity states
                 if (Input.GetMouseButton(0) || Input.GetMouseButton(1) == true)
                 {
                     var _random = new Random((uint) DateTime.Now.Ticks);
@@ -45,7 +47,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
                         //entity that will be built.
                         for (int i = 0; i < MaxMeals; i++)
                         {
-                            EntityComponentInitializer init;
+                            EntityComponentInitializer init; 
 
                             var randX       = position.x + _random.NextFloat(-50, 50);
                             var randZ       = position.z + _random.NextFloat(-50, 50);
@@ -56,16 +58,14 @@ namespace Svelto.ECS.MiniExamples.Example1C
                             if (Input.GetMouseButton(0))
                             {
                                 init = _entityFactory.BuildEntity<FoodEntityDescriptor>(
-                                    _foodPlaced++
-                                  , GroupCompound<GameGroups.FOOD, GameGroups.RED, GameGroups.NOTEATING>.BuildGroup);
+                                    _foodPlaced++, GameGroups.RED_FOOD_NOT_EATEN.BuildGroup);
 
                                 isRed = true;
                             }
                             else
                             {
                                 init = _entityFactory.BuildEntity<FoodEntityDescriptor>(
-                                    _foodPlaced++
-                                  , GroupCompound<GameGroups.FOOD, GameGroups.BLUE, GameGroups.NOTEATING>.BuildGroup);
+                                    _foodPlaced++, GameGroups.BLUE_FOOD_NOT_EATEN.BuildGroup);
 
                                 isRed = false;
                             }

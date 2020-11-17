@@ -21,59 +21,54 @@ namespace Svelto.ECS.MiniExamples.Example1C
         }
 
         public EntitiesDB entitiesDB { get; set; }
-        public string name => nameof(SpawningDoofusEngine);
+        public string     name       => nameof(SpawningDoofusEngine);
 
         public void Ready() { }
-
-        readonly NativeEntityFactory _factory;
-        readonly Entity         _redCapsule, _blueCapsule;
-
-        const int MaxNumberOfDoofuses = 10000;
-
-        readonly ExclusiveGroupStruct blueDoofusesNotEating =
-            GroupCompound<GameGroups.DOOFUSES, GameGroups.BLUE, GameGroups.NOTEATING>.BuildGroup;
-
-        readonly ExclusiveGroupStruct redDoofusesNotEating =
-            GroupCompound<GameGroups.DOOFUSES, GameGroups.RED, GameGroups.NOTEATING>.BuildGroup;
-
-        bool _done;
 
         public JobHandle Execute(JobHandle _jobHandle)
         {
             if (_done == true)
                 return _jobHandle;
-            
+
             var spawnRed = new SpawningJob()
             {
-                _group = redDoofusesNotEating, 
-                _factory = _factory,
-                _entity = _redCapsule,
-                _random = new Random(1234567)
+                _group   = GameGroups.RED_DOOFUSES_NOT_EATING.BuildGroup
+              , _factory = _factory
+              , _entity  = _redCapsule
+              , _random  = new Random(1234567)
             }.ScheduleParallel(MaxNumberOfDoofuses, _jobHandle);
-            
+
             var spawnBlue = new SpawningJob()
             {
-                _group   = blueDoofusesNotEating, 
-                _factory = _factory,
-                _entity  = _blueCapsule,
-                _random = new Random(7654321)
+                _group   = GameGroups.BLUE_DOOFUSES_NOT_EATING.BuildGroup
+              , _factory = _factory
+              , _entity  = _blueCapsule
+              , _random  = new Random(7654321)
             }.ScheduleParallel(MaxNumberOfDoofuses, _jobHandle);
-            
+
             //Yeah this shouldn't be solved like this, but I keep it in this way for simplicity sake 
             _done = true;
 
             return JobHandle.CombineDependencies(spawnBlue, spawnRed);
         }
+        
+        readonly NativeEntityFactory _factory;
+        readonly Entity              _redCapsule, _blueCapsule;
+
+        const int MaxNumberOfDoofuses = 10000;
+
+        bool _done;
 
         [BurstCompile]
-        struct SpawningJob: IJobParallelFor
+        struct SpawningJob : IJobParallelFor
         {
             internal NativeEntityFactory  _factory;
             internal Entity               _entity;
             internal ExclusiveGroupStruct _group;
-            internal Random     _random;
+            internal Random               _random;
 
 #pragma warning disable 649
+            //thread index is necessary to build entity in parallel in Svelto ECS
             [NativeSetThreadIndex] int _threadIndex;
 #pragma warning restore 649
 
@@ -86,7 +81,8 @@ namespace Svelto.ECS.MiniExamples.Example1C
                 //these structs are used for ReactOnAdd callback to create unity Entities later
                 var uecsComponent = new UnityEcsEntityComponent
                 {
-                    uecsEntity = _entity, spawnPosition = positionEntityComponent.position
+                    uecsEntity    = _entity
+                  , spawnPosition = positionEntityComponent.position
                 };
 
                 var init = _factory.BuildEntity((uint) index, _group, _threadIndex);

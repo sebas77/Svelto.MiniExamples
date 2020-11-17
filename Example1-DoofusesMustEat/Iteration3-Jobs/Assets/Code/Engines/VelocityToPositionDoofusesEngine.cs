@@ -22,10 +22,11 @@ namespace Svelto.ECS.MiniExamples.Example1C
                 entitiesDB.QueryEntities<PositionEntityComponent, VelocityEntityComponent, SpeedEntityComponent>(   
                     GameGroups.DOOFUSES_EATING.Groups);
 
-            foreach (var doofuses in doofusesEntityGroups.groups)
+            foreach (var (doofuses, _) in doofusesEntityGroups)
             {
-                var dep = new ComputePostionFromVelocityJob(doofuses.ToBuffers(), Time.deltaTime).ScheduleParallel(
-                        doofuses.count, _jobHandle);
+                var buffers = doofuses.ToBuffers();
+                var dep = new ComputePostionFromVelocityJob(buffers, Time.deltaTime).ScheduleParallel(
+                        buffers.count, _jobHandle);
 
                 _jobHandle = JobHandle.CombineDependencies(_jobHandle, dep);
             }

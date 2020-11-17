@@ -639,8 +639,14 @@
      <Reference Include="Unity.Addressables">
      <HintPath>C:/Prgdir/Svelto/Svelto.MiniExamples/Example2-Survival/Library/ScriptAssemblies/Unity.Addressables.dll</HintPath>
      </Reference>
+     <Reference Include="Unity.TextMeshPro.Editor">
+     <HintPath>C:/Prgdir/Svelto/Svelto.MiniExamples/Example2-Survival/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
+     </Reference>
      <Reference Include="Unity.VisualStudio.Editor">
      <HintPath>C:/Prgdir/Svelto/Svelto.MiniExamples/Example2-Survival/Library/ScriptAssemblies/Unity.VisualStudio.Editor.dll</HintPath>
+     </Reference>
+     <Reference Include="Unity.TextMeshPro">
+     <HintPath>C:/Prgdir/Svelto/Svelto.MiniExamples/Example2-Survival/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
      </Reference>
      <Reference Include="Unity.ScriptableBuildPipeline">
      <HintPath>C:/Prgdir/Svelto/Svelto.MiniExamples/Example2-Survival/Library/ScriptAssemblies/Unity.ScriptableBuildPipeline.dll</HintPath>
