@@ -72,7 +72,7 @@ namespace Svelto.ECS
 #if DONT_USE
         [Conditional("CHECK_ALL")]
 #endif
-        void RemoveGroupID(ExclusiveGroupStruct groupID) { _idChecker.Remove(groupID); }
+        void RemoveGroupID(BuildGroup groupID) { _idChecker.Remove(groupID); }
 
 #if DONT_USE
         [Conditional("CHECK_ALL")]

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Svelto.Common;
 using Svelto.DataStructures;
-using Svelto.ECS.Experimental;
 using Svelto.ECS.Internal;
 using Svelto.ECS.Schedulers;
 
@@ -10,12 +9,14 @@ namespace Svelto.ECS
 {
     public sealed partial class EnginesRoot
     {
-        public struct EntitiesSubmitter
+        public readonly struct EntitiesSubmitter
         {
             public EntitiesSubmitter(EnginesRoot enginesRoot)
             {
                 _weakReference = new Svelto.DataStructures.WeakReference<EnginesRoot>(enginesRoot);
             }
+
+            public bool IsUnused => _weakReference.IsValid == false;
 
             public void Invoke()
             {
@@ -26,7 +27,8 @@ namespace Svelto.ECS
             readonly Svelto.DataStructures.WeakReference<EnginesRoot> _weakReference;
         }
 
-        public IEntitiesSubmissionScheduler scheduler { get; }
+        readonly EntitiesSubmissionScheduler  _scheduler;
+        public   IEntitiesSubmissionScheduler scheduler => _scheduler;
 
         /// <summary>
         /// Engines root contextualize your engines and entities. You don't need to limit yourself to one EngineRoot
@@ -36,7 +38,7 @@ namespace Svelto.ECS
         /// The EntitySubmissionScheduler cannot hold an EnginesRoot reference, that's why
         /// it must receive a weak reference of the EnginesRoot callback.
         /// </summary>
-        public EnginesRoot(IEntitiesSubmissionScheduler entitiesComponentScheduler)
+        public EnginesRoot(EntitiesSubmissionScheduler entitiesComponentScheduler)
         {
             _entitiesOperations          = new ThreadSafeDictionary<ulong, EntitySubmitOperation>();
             serializationDescriptorMap   = new SerializationDescriptorMap();
@@ -59,15 +61,15 @@ namespace Svelto.ECS
                 new FasterDictionary<RefWrapperType, FasterDictionary<ExclusiveGroupStruct, GroupFilters>>();
             _entitiesDB = new EntitiesDB(this);
 
-            scheduler        = entitiesComponentScheduler;
-            scheduler.onTick = new EntitiesSubmitter(this);
+            _scheduler        = entitiesComponentScheduler;
+            _scheduler.onTick = new EntitiesSubmitter(this);
 #if UNITY_NATIVE
             AllocateNativeOperations();
 #endif
         }
 
         public EnginesRoot
-            (IEntitiesSubmissionScheduler entitiesComponentScheduler, bool isDeserializationOnly) :
+            (EntitiesSubmissionScheduler entitiesComponentScheduler, bool isDeserializationOnly) :
             this(entitiesComponentScheduler)
         {
             _isDeserializationOnly = isDeserializationOnly;
@@ -92,6 +94,8 @@ namespace Svelto.ECS
                 {
                     try
                     {
+                        if (engine is IDisposingEngine dengine)
+                            dengine.isDisposing = true;
                         engine.Dispose();
                     }
                     catch (Exception e)
@@ -151,6 +155,7 @@ namespace Svelto.ECS
 
                 _groupedEntityToAdd.Dispose();
                 _entityStreams.Dispose();
+                scheduler.Dispose();
             }
 
             GC.SuppressFinalize(this);

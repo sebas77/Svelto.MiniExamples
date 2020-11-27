@@ -8,13 +8,18 @@ using System;
 
 namespace Svelto.DataStructures
 {
-    public class WeakReference<T>: WeakReference where T : class
+    public readonly struct WeakReference<T> where T : class
     {
-        public bool IsValid => Target != null && IsAlive == true;
+        public bool     IsValid => _weakReference != null && Target != null && _weakReference.IsAlive == true;
 
-        public new T Target => (T)base.Target;
+        public T    Target  => (T)_weakReference.Target;
+        public bool IsAlive => _weakReference.IsAlive;
 
-        public WeakReference(T target) : base(target)
-        {}
+        public WeakReference(T target)
+        {
+            _weakReference = new WeakReference(target);
+        }
+        
+        readonly WeakReference _weakReference;
     }
 }

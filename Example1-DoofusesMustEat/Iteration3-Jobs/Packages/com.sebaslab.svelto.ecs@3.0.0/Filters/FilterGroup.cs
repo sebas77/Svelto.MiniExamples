@@ -189,6 +189,6 @@ namespace Svelto.ECS
         SharedSveltoDictionaryNative<uint, uint> _indexOfEntityInDenseList;
 
         readonly ExclusiveGroupStruct _exclusiveGroupStruct;
-        int                          _ID;
+        readonly int                  _ID;
     }
 }

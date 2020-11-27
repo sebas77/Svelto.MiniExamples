@@ -30,6 +30,11 @@ namespace Svelto.ECS
         {
             _GID = MAKE_GLOBAL_ID(entityID, groupID);
         }
+        
+        public EGID(uint entityID, BuildGroup groupID) : this()
+        {
+            _GID = MAKE_GLOBAL_ID(entityID, groupID.group);
+        }
 
         static ulong MAKE_GLOBAL_ID(uint entityId, uint groupId)
         {

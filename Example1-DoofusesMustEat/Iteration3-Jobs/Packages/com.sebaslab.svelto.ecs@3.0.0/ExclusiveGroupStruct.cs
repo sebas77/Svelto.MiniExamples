@@ -1,10 +1,34 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using Svelto.DataStructures;
 
 namespace Svelto.ECS
 {
+    public readonly struct BuildGroup
+    {
+        internal BuildGroup(ExclusiveGroupStruct group)
+        {
+            this.group = group;
+        }
+
+        public static implicit operator BuildGroup(ExclusiveGroupStruct group)
+        {
+            return new BuildGroup(group);
+        }
+
+        public static implicit operator BuildGroup(ExclusiveGroup group)
+        {
+            return new BuildGroup(group);
+        }
+        
+        public static implicit operator uint(BuildGroup groupStruct)
+        {
+            return groupStruct.group;
+        }
+
+        internal ExclusiveGroupStruct @group             { get; }
+    }
+    
     [StructLayout(LayoutKind.Explicit, Size = 4)]
     public struct ExclusiveGroupStruct : IEquatable<ExclusiveGroupStruct>, IComparable<ExclusiveGroupStruct>,
                                          IEqualityComparer<ExclusiveGroupStruct>
@@ -99,7 +123,7 @@ namespace Svelto.ECS
         {
             return groupStruct._id;
         }
-
+        
         public static ExclusiveGroupStruct operator+(ExclusiveGroupStruct a, uint b)
         {
             var group = new ExclusiveGroupStruct {_id = a._id + b};

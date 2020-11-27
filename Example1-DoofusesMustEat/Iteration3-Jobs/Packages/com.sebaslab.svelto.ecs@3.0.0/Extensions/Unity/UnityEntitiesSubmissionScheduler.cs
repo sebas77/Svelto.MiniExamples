@@ -7,7 +7,7 @@ namespace Svelto.ECS.Schedulers.Unity
 {
     //The EntitySubmissionScheduler has been introduced to make the entity components submission logic platform independent
     //You can customize the scheduler if you wish
-    public class UnityEntitiesSubmissionScheduler : IEntitiesSubmissionScheduler
+    public class UnityEntitiesSubmissionScheduler : EntitiesSubmissionScheduler
     {
         class Scheduler : MonoBehaviour
         {
@@ -37,14 +37,14 @@ namespace Svelto.ECS.Schedulers.Unity
             public System.Action onTick;
         }
 
-        public UnityEntitiesSubmissionScheduler(string name = "ECSScheduler")
+        public UnityEntitiesSubmissionScheduler(string name)
         {
             _scheduler = new GameObject(name).AddComponent<Scheduler>();
             GameObject.DontDestroyOnLoad(_scheduler.gameObject);
             _scheduler.onTick = SubmitEntities;
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
             if (_scheduler != null && _scheduler.gameObject != null)
             {
@@ -52,7 +52,7 @@ namespace Svelto.ECS.Schedulers.Unity
             }
         }
 
-        public bool paused { get; set; }
+        public override bool paused { get; set; }
 
         void SubmitEntities()
         {
@@ -60,7 +60,7 @@ namespace Svelto.ECS.Schedulers.Unity
                 _onTick.Invoke();
         }
 
-        EnginesRoot.EntitiesSubmitter IEntitiesSubmissionScheduler.onTick
+        protected internal override EnginesRoot.EntitiesSubmitter onTick
         {
             set => _onTick = value;
         }

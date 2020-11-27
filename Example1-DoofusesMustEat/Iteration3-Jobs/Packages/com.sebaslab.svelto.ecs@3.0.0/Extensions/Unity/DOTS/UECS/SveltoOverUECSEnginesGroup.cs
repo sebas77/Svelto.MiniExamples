@@ -11,7 +11,7 @@ namespace Svelto.ECS.Extensions.Unity
     {
         public SveltoOverUECSEnginesGroup(EnginesRoot enginesRoot)
         {
-            DBC.ECS.Check.Require(enginesRoot.scheduler is ISimpleEntitiesSubmissionScheduler, "The Engines root must use a ISimpleEntitiesSubmissionScheduler scheduler implementation");
+            DBC.ECS.Check.Require(enginesRoot.scheduler is ISimpleEntitiesSubmissionScheduler, "The Engines root must use a EntitiesSubmissionScheduler scheduler implementation");
 
             CreateUnityECSWorldForSvelto(enginesRoot.scheduler as ISimpleEntitiesSubmissionScheduler, enginesRoot);
         }
@@ -42,10 +42,10 @@ namespace Svelto.ECS.Extensions.Unity
             _enginesRoot = enginesRoot;
         }
 
-        public JobHandle Execute(JobHandle _jobHandle)
+        public JobHandle Execute(JobHandle inputDeps)
         {
             //this is a sync point, there won't be pending jobs after this
-            _sveltoUecsEntitiesSubmissionGroup.Execute(_jobHandle);
+            _sveltoUecsEntitiesSubmissionGroup.Execute(inputDeps);
 
             //Mixed explicit job dependency and internal automatic ECS dependency system
             //Write in to UECS entities so the UECS dependencies react on the components touched

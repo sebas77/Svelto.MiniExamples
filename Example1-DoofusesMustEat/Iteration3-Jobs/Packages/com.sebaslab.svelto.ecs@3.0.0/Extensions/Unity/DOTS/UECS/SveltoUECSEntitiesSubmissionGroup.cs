@@ -24,7 +24,7 @@ namespace Svelto.ECS.Extensions.Unity
             _ECBSystem           = UECSWorld.CreateSystem<SubmissionEntitiesCommandBufferSystem>();
         }
 
-        public void Execute(JobHandle jobHandle)
+        public new void Execute(JobHandle jobHandle)
         {
             //Sync Point as we must be sure that jobs that create/swap/remove entities are done
             jobHandle.Complete();
@@ -55,8 +55,7 @@ namespace Svelto.ECS.Extensions.Unity
         readonly SubmissionEntitiesCommandBufferSystem _ECBSystem;
 
         [DisableAutoCreation]
-        class SubmissionEntitiesCommandBufferSystem : EntityCommandBufferSystem
-        { }
+        class SubmissionEntitiesCommandBufferSystem : EntityCommandBufferSystem { }
     }
 }
 #endif

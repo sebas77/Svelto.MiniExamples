@@ -22,7 +22,7 @@ namespace Svelto.ECS
             
         }
 
-        public void SwapEntity(EGID from, ExclusiveGroupStruct to, int threadIndex)
+        public void SwapEntity(EGID from, BuildGroup to, int threadIndex)
         {
             var simpleNativeBag = _swapQueue.GetBuffer(threadIndex);
             simpleNativeBag.Enqueue(_indexSwap);

@@ -7,6 +7,7 @@
 using Svelto.Context;
 using Svelto.DataStructures;
 using Svelto.ECS.Extensions.Unity;
+using Svelto.ECS.Schedulers;
 using Unity.Entities;
 using UnityEngine;
 

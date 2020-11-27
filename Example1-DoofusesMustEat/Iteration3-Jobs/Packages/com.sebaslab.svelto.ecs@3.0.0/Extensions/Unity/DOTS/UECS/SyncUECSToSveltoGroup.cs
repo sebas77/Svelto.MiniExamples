@@ -11,9 +11,9 @@ namespace Svelto.ECS.Extensions.Unity
 
     public abstract class SyncUECSToSveltoEngine : SystemBase, IJobifiedEngine
     {
-        public JobHandle Execute(JobHandle _jobHandle)
+        public JobHandle Execute(JobHandle inputDeps)
         {
-            Dependency = JobHandle.CombineDependencies(Dependency, _jobHandle);
+            Dependency = JobHandle.CombineDependencies(Dependency, inputDeps);
             
             Update();
 

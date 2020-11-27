@@ -44,8 +44,8 @@ namespace Svelto.ECS.MiniExamples.Example1C
         /// </summary>
         JobHandle CreateJobForDoofusesAndFood
         (JobHandle inputDeps, FasterReadOnlyList<ExclusiveGroupStruct> availableFood
-       , FasterReadOnlyList<ExclusiveGroupStruct> availableDoofuses, ExclusiveGroupStruct eatingDoofusesGroup
-       , ExclusiveGroupStruct eatenFoodGroup)
+       , FasterReadOnlyList<ExclusiveGroupStruct> availableDoofuses, BuildGroup eatingDoofusesGroup
+       , BuildGroup eatenFoodGroup)
         {
             JobHandle deps = inputDeps;
 
@@ -86,8 +86,8 @@ namespace Svelto.ECS.MiniExamples.Example1C
             public NB<EGIDComponent>     _food;
             public NativeEntitySwap      _nativeDoofusesSwap;
             public NativeEntitySwap      _nativeFoodSwap;
-            public ExclusiveGroupStruct  _doofuseMealLockedGroup;
-            public ExclusiveGroupStruct  _lockedFood;
+            public BuildGroup  _doofuseMealLockedGroup;
+            public BuildGroup  _lockedFood;
             public NB<EGIDComponent>     _doofusesegids;
 
 #pragma warning disable 649

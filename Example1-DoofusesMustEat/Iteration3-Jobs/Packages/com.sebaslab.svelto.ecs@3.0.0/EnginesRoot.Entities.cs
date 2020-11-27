@@ -34,7 +34,7 @@ namespace Svelto.ECS
             IEnumerable<object> implementors = null)
         {
             CheckAddEntityID(entityID, descriptorType);
-            Check.Require(entityID.groupID != 0, "invalid group detected");
+            Check.Require(entityID.groupID != 0, "invalid group detected, are you using new ExclusiveGroupStruct() instead of new ExclusiveGroup()?");
 
             var dic = EntityFactory.BuildGroupedEntities(entityID, _groupedEntityToAdd, componentsToBuild
               , implementors, descriptorType);

@@ -64,7 +64,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
         {
             internal NativeEntityFactory  _factory;
             internal Entity               _entity;
-            internal ExclusiveGroupStruct _group;
+            internal BuildGroup _group;
             internal Random               _random;
 
 #pragma warning disable 649
