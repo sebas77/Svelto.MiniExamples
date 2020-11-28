@@ -15,7 +15,7 @@ namespace Boxtopia.GUIs.DisplayName
     {
         public void OnContextInitialized<T>(T contextHolder)
         {
-            _enginesRoot = new EnginesRoot(new UnityEntitiesSubmissionScheduler());
+            _enginesRoot = new EnginesRoot(new UnityEntitiesSubmissionScheduler("DisplayNameCompositionRoot"));
             var userServicesFactory = new UserServicesFactoryMockup();
 
             var generateEntityFactory = _enginesRoot.GenerateEntityFactory();

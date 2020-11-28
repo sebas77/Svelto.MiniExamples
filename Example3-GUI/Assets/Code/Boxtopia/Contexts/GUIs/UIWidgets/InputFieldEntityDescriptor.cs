@@ -4,6 +4,6 @@ using Svelto.ECS;
 namespace Boxtopia.GUIs.InputField
 {
     public class InputFieldEntityDescriptor
-        : GenericEntityDescriptor<InputFieldEntityViewComponent, LocalizedLabelEntityViewComponent, EntityHierarchyStruct>
+        : GenericEntityDescriptor<InputFieldEntityViewComponent, LocalizedLabelEntityViewComponent, EntityHierarchyComponent>
     {}
 }
