@@ -11,7 +11,6 @@ namespace Svelto.ECS.MiniExamples.Example1C
         public class EATING : GroupTag<EATING> { }
         public class NOTEATING : GroupTag<NOTEATING> { }
         
-        
         //GroupCompounds enable Entities to be grouped by States and Adjectives. GroupCompounds are a simple way to handle Groups of entities separated not
         //only by their entity type but also by their current state. To switch state is enough to switch
         //group using the GroupCompound buildgroup. This is how Svelto fills the gap of the lack to dynamically Add/Remove components 

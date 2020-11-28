@@ -1,5 +1,6 @@
 ﻿using System;
 using Svelto.ECS;
+using Svelto.ECS.Schedulers;
 using Svelto.ECS.Vanilla.Example.SimpleEntityEngine;
 
 /// <summary>

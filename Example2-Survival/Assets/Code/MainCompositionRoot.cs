@@ -95,7 +95,7 @@ namespace Svelto.ECS.Example.Survive
         {
             //the UnitySumbmissionEntityViewScheduler is the scheduler that is used by the EnginesRoot to know
             //when to submit the entities. Custom ones can be created for special cases.
-            var unityEntitySubmissionScheduler = new UnityEntitiesSubmissionScheduler();
+            var unityEntitySubmissionScheduler = new UnityEntitiesSubmissionScheduler("survival");
             //The Engines Root is the core of Svelto.ECS. You shouldn't inject the EngineRoot,
             //therefore the composition root class must hold a reference or it will be garbage collected.
             _enginesRoot                    = new EnginesRoot(unityEntitySubmissionScheduler);
