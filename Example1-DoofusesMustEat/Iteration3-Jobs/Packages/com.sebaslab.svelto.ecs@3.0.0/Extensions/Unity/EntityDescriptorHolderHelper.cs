@@ -1,3 +1,4 @@
+#if UNITY_ECS
 using Svelto.ECS.Hybrid;
 using UnityEngine;
 
@@ -26,3 +27,4 @@ namespace Svelto.ECS.Extensions.Unity
         }
     }
 }
+#endif

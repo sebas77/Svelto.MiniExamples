@@ -1,3 +1,4 @@
+#if UNITY_ECS
 using Unity.Entities;
 
 namespace Svelto.ECS.Extensions.Unity
@@ -8,3 +9,4 @@ namespace Svelto.ECS.Extensions.Unity
         EntityManager EM { get; set;}
     }
 }
+#endif

@@ -1,3 +1,4 @@
+#if UNITY_NATIVE //because of the thread count, ATM this is only for unity
 using System;
 using System.Runtime.CompilerServices;
 using Svelto.Common;
@@ -8,9 +9,8 @@ namespace Svelto.ECS.DataStructures
 {
     public unsafe struct AtomicNativeBags:IDisposable
     {
-#if UNITY_NATIVE     
         [global::Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction]
-#endif        
+        
         NativeBag* _data;
         readonly Allocator _allocator;
         readonly uint _threadsCount;
@@ -73,3 +73,4 @@ namespace Svelto.ECS.DataStructures
         }
     }
 }
+#endif

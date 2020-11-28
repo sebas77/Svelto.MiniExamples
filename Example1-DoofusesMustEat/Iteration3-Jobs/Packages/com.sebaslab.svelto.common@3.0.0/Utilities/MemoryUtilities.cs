@@ -1,10 +1,12 @@
 #if DEBUG && !PROFILE_SVELTO
 #define DEBUG_MEMORY
 #endif
+#if UNITY_EDITOR
 #if UNITY_2019_3_OR_NEWER
 #define USE_UNITY_NATIVE
 #else
 #error Svelto.ECS 3.0 supports Unity 2019_3 and above only
+#endif
 #endif
 
 using System;

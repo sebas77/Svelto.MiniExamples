@@ -122,6 +122,7 @@
      <Compile Include="Assets\Code\ECS\EntityComponents\GunAttributesComponent.cs" />
      <None Include="Assets\Fonts\LuckiestGuy\LICENSE.txt" />
      <None Include="Assets\Shaders\Rim Lit Bumped Specular.shader" />
+     <None Include="Assets\StreamingAssets\aa\link.xml" />
      <Reference Include="UnityEngine">
      <HintPath>C:/Program Files/Unity/Hub/Editor/2020.2.0b13/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
      </Reference>
