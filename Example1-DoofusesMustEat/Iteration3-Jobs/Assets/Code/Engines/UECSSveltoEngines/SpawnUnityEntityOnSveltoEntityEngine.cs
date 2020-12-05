@@ -1,4 +1,4 @@
-#define USE_ENTITY_MANAGER
+//#define USE_ENTITY_MANAGER
 
 using System;
 using Svelto.ECS.Extensions.Unity;

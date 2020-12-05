@@ -1,16 +1,14 @@
 {
   "dependencies": {
-    "com.sebaslab.svelto.common": "2.9.12",
-    "com.sebaslab.svelto.ecs": "2.9.12",
-    "com.sebaslab.svelto.tasks": "1.5.10",
-    "com.unity.collab-proxy": "1.2.16",
-    "com.unity.collections": "0.7.0-preview.2",
-    "com.unity.entities": "0.8.0-preview.8",
+    "com.sebaslab.svelto.ecs": "3.0.3",
+    "com.unity.collab-proxy": "1.3.9",
+    "com.unity.collections": "0.9.0-preview.6",
     "com.unity.ext.nunit": "1.0.0",
-    "com.unity.ide.rider": "2.0.1",
-    "com.unity.ide.vscode": "1.1.4",
-    "com.unity.test-framework": "1.1.11",
-    "com.unity.textmeshpro": "2.0.1",
+    "com.unity.ide.rider": "2.0.7",
+    "com.unity.ide.visualstudio": "2.0.3",
+    "com.unity.ide.vscode": "1.2.3",
+    "com.unity.test-framework": "1.1.18",
+    "com.unity.textmeshpro": "3.0.1",
     "com.unity.timeline": "1.2.6",
     "com.unity.ugui": "1.0.0",
     "com.unity.modules.ai": "1.0.0",
@@ -47,13 +45,13 @@
   },
   "scopedRegistries": [
     {
-      "name": "package.openupm.com",
+      "name": "OpenUPM",
       "url": "https://package.openupm.com",
       "scopes": [
         "com.openupm",
         "com.sebaslab.svelto.common",
         "com.sebaslab.svelto.ecs",
-        "com.sebaslab.svelto.tasks"
+		"com.sebaslab.svelto.unsafe"
       ]
     }
   ]

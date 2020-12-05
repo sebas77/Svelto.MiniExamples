@@ -1,0 +1,46 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Svelto-3.0", "Svelto-3.0", "{A4408A6A-8DEB-493E-A53B-4B1A1C76AFB5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{2C0520A6-50F0-440D-933D-1E40EA9F49B4}"
+ProjectSection(SolutionItems) = preProject
+	LICENSE = LICENSE
+	README.md = README.md
+EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SveltoDeterministic2DPhysicsDemo", "SveltoDeterministic2DPhysicsDemo\SveltoDeterministic2DPhysicsDemo.csproj", "{AD942CA8-1442-4C6A-B650-DC65D992B0D7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.Common", "com.sebaslab.svelto.common@3.0.0\Svelto.Common.csproj", "{C6DABAA3-C6C3-4CB2-B75C-72445EF6B8A6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.ECS", "com.sebaslab.svelto.ecs@3.0.0\Svelto.ECS.csproj", "{904781CF-9F0F-4CBA-A1B8-E7F85790E357}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SDL", "SDL\SDL.csproj", "{17E3D200-1CD3-46DE-BE39-1AAF12F571E3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C6DABAA3-C6C3-4CB2-B75C-72445EF6B8A6} = {A4408A6A-8DEB-493E-A53B-4B1A1C76AFB5}
+		{904781CF-9F0F-4CBA-A1B8-E7F85790E357} = {A4408A6A-8DEB-493E-A53B-4B1A1C76AFB5}
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AD942CA8-1442-4C6A-B650-DC65D992B0D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD942CA8-1442-4C6A-B650-DC65D992B0D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD942CA8-1442-4C6A-B650-DC65D992B0D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD942CA8-1442-4C6A-B650-DC65D992B0D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C6DABAA3-C6C3-4CB2-B75C-72445EF6B8A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6DABAA3-C6C3-4CB2-B75C-72445EF6B8A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6DABAA3-C6C3-4CB2-B75C-72445EF6B8A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6DABAA3-C6C3-4CB2-B75C-72445EF6B8A6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{904781CF-9F0F-4CBA-A1B8-E7F85790E357}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{904781CF-9F0F-4CBA-A1B8-E7F85790E357}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{904781CF-9F0F-4CBA-A1B8-E7F85790E357}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{904781CF-9F0F-4CBA-A1B8-E7F85790E357}.Release|Any CPU.Build.0 = Release|Any CPU
+		{17E3D200-1CD3-46DE-BE39-1AAF12F571E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{17E3D200-1CD3-46DE-BE39-1AAF12F571E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17E3D200-1CD3-46DE-BE39-1AAF12F571E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{17E3D200-1CD3-46DE-BE39-1AAF12F571E3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
