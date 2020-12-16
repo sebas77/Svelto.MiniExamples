@@ -12,7 +12,7 @@ namespace Svelto.ECS
             _instancedSequence = engines;
         }
 
-        public void Step()
+        public void StepAll()
         {
             var sequenceItems = _instancedSequence;
             using (var profiler = new PlatformProfiler(_name))

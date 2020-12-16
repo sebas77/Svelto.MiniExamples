@@ -1,18 +1,14 @@
-﻿using Svelto.Common;
-using Svelto.ECS;
-using SveltoDeterministic2DPhysicsDemo.Graphics;
-using SveltoDeterministic2DPhysicsDemo.Maths;
-using SveltoDeterministic2DPhysicsDemo.Physics.EntityComponents;
-using SveltoDeterministic2DPhysicsDemo.Physics.Loggers;
+﻿using Svelto.ECS;
+using FixedMaths;
+using MiniExamples.DeterministicPhysicDemo.Physics.EntityComponents;
 
-namespace SveltoDeterministic2DPhysicsDemo.Physics.Engines
+namespace MiniExamples.DeterministicPhysicDemo.Physics.Engines
 {
-    [Sequenced(nameof(PhysicsEngineNames.ResolvePenetrationEngine))]
     public class ResolvePenetrationEngine : IQueryingEntitiesEngine, IScheduledPhysicsEngine
     {
         public ResolvePenetrationEngine(IEngineScheduler engineScheduler) { _engineScheduler = engineScheduler; }
 
-        public void Execute(ulong tick)
+        public void Execute(FixedPoint delta, ulong tick)
         {
             foreach (var ((transforms, rigidbodies, manifolds, count), _) in entitiesDB
                .QueryEntities<TransformEntityComponent, RigidbodyEntityComponent, CollisionManifoldEntityComponent>(
@@ -31,10 +27,11 @@ namespace SveltoDeterministic2DPhysicsDemo.Physics.Engines
 
                     var collisionManifold = manifold.CollisionManifold.Value;
 
-                    FixedPointVector2Logger.Instance.DrawCross(
-                        transform.Position - collisionManifold.Normal * collisionManifold.Penetration, tick
-                      , Colour.Orange
-                      , FixedPoint.ConvertToInteger(MathFixedPoint.Round(collisionManifold.Penetration)));
+                    // Is this meant for debugging? Because it shouldn't be here otherwise
+                    // FixedPointVector2Logger.Instance.DrawCross(
+                    //     transform.Position - collisionManifold.Normal * collisionManifold.Penetration, tick
+                    //   , Colour.Orange
+                    //   , FixedPoint.ConvertToInteger(MathFixedPoint.Round(collisionManifold.Penetration)));
 
                     transform = TransformEntityComponent.From(transform.Position - collisionManifold.Normal
                                                             , transform.PositionLastPhysicsTick

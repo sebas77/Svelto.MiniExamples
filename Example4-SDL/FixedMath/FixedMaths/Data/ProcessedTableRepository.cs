@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 
-namespace SveltoDeterministic2DPhysicsDemo.Maths.Data
+namespace FixedMaths.Data
 {
     public class ProcessedTableRepository : IProcessedTableRepository
     {
@@ -90,16 +91,14 @@ namespace SveltoDeterministic2DPhysicsDemo.Maths.Data
             return data.ToDictionary(x => FixedPoint.FromExplicit(x.Key), x => FixedPoint.FromExplicit(x.Value)
                                    , FixedPointEqualityComparer.Instance);
         }
-
-        public static ProcessedTableRepository From(string targetDirectory)
+        
+        internal static ProcessedTableRepository Init()
         {
-            var strings = Directory.GetFiles(targetDirectory);
-
-            var data = new Dictionary<Operation, Dictionary<int, int>>();
-
-            foreach (var filename in strings.Where(x => x.Contains("math-lut.dat")))
+            var data     = new Dictionary<Operation, Dictionary<int, int>>();
+            var assembly = Assembly.GetExecutingAssembly();
+            using (var stream = assembly.GetManifestResourceStream("FixedMath.FixedMaths.ProcessedTableData.math-lut.dat"))
             {
-                using var sr = new StreamReader(filename);
+                using var sr = new StreamReader(stream);
 
                 var lines    = new string[3];
                 var readLine = 0;

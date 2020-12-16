@@ -1,6 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 
-namespace SveltoDeterministic2DPhysicsDemo.Maths.Data
+namespace FixedMaths.Data
 {
     public class ProcessedTableService
     {
@@ -15,10 +15,12 @@ namespace SveltoDeterministic2DPhysicsDemo.Maths.Data
         public readonly ReadOnlyDictionary<FixedPoint, FixedPoint> SinData;
         public readonly ReadOnlyDictionary<FixedPoint, FixedPoint> SinhData;
         public readonly ReadOnlyDictionary<FixedPoint, FixedPoint> SqrtData;
-        public static   ProcessedTableService                      Instance { get; private set; }
+        public static   ProcessedTableService                      Instance { get; }
 
-        public static void CreateInstance(IProcessedTableRepository repository)
+        static ProcessedTableService()
         {
+            var repository = ProcessedTableRepository.Init();
+
             Instance = new ProcessedTableService(new ReadOnlyDictionary<int, FixedPoint>(repository.CalculateAcosData())
                                                , new ReadOnlyDictionary<FixedPoint, FixedPoint>(
                                                      repository.CalculateAcoshData())

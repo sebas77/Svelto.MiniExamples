@@ -58,7 +58,7 @@ namespace Svelto.ECS.Extensions.Unity
             return combinedHandles;
         }
 
-        protected internal void Add(Interface engine)
+        public void Add(Interface engine)
         {
             _engines.Add(engine);
         }
@@ -66,7 +66,7 @@ namespace Svelto.ECS.Extensions.Unity
         public string name => _name;
 
         protected readonly FasterList<Interface> _engines;
-        readonly           string                        _name;
+        readonly           string                _name;
     }
     
     public abstract class JobifiedEnginesGroup<Interface, Param>: IJobifiedGroupEngine<Param> where Interface : class, IJobifiedEngine<Param>

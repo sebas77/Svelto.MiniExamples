@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Diagnostics;
-using Svelto.ECS;
-using Svelto.ECS.Schedulers;
-using SveltoDeterministic2DPhysicsDemo.Graphics;
-using SveltoDeterministic2DPhysicsDemo.Maths;
-using SveltoDeterministic2DPhysicsDemo.Physics;
-using SveltoDeterministic2DPhysicsDemo.Physics.Engines;
+using MiniExamples.DeterministicPhysicDemo.Graphics;
+using FixedMaths;
 
-namespace SveltoDeterministic2DPhysicsDemo
+namespace MiniExamples.DeterministicPhysicDemo
 {
+    /// <summary>
+    /// A simple experiment, not related to Svelto, to have a reusable GameLoop
+    /// </summary>
     public class GameLoop : IGameLoop
     {
         const uint TicksPerMillisecond = 1000;
@@ -23,9 +22,6 @@ namespace SveltoDeterministic2DPhysicsDemo
             SetPhysicsSimulationsPerSecond(DefaultPhysicsSimulationsPerSecond);
             SetGraphicsFramesPerSecond(DefaultGraphicsFramesPerSecond);
             SetSimulationSpeed(DefaultSimulationSpeed);
-
-            _schedulerReporter = new EngineSchedulerReporter();
-            _scheduler         = new EngineScheduler(_schedulerReporter);
         }
 
         public IGameLoop AddGraphics(IGraphics graphics)
@@ -42,28 +38,29 @@ namespace SveltoDeterministic2DPhysicsDemo
 
         public void Execute()
         {
-            _running = true;
-
-            var clock = new Stopwatch();
-            clock.Restart();
-
-            EcsInit();
             if (!_graphics?.Init() ?? true)
             {
                 Console.WriteLine("Graphics exist, but failed to init.");
                 return;
             }
+            
+            _running = true;
+            
+            var clock = new Stopwatch();
+            clock.Restart();
 
-            _onBeforeMainGameLoop(_entityFactory, _simpleSubmissionEntityViewScheduler);
+            _onBeforeMainGameLoop();
+            
+            var physicsSimulationsPerSecondFP = FixedPoint.From(_physicsSimulationsPerSecond / 1000);
 
-            var physicsAction = ScheduledAction.From(_scheduler.ExecutePhysics, _physicsSimulationsPerSecond, true);
+            var physicsAction = ScheduledAction.From(
+                (tick) => _scheduler.ExecutePhysics(physicsSimulationsPerSecondFP, tick), _physicsSimulationsPerSecond
+              , true);
 
             var graphicsAction = ScheduledAction.From(tick =>
             {
                 _graphics?.RenderStart();
-                _scheduler.ExecuteGraphics(
-                    FixedPoint.From((float) physicsAction.RemainingDelta / _physicsSimulationsPerSecond)
-                  , physicsAction.CurrentTick);
+         //       _scheduler.ExecuteGraphics((lastElapsedTicks - clock.ElapsedTicks) / 10000, tick);
 
                 if (_graphics != null)
                     _schedulerReporter.Report(_graphics);
@@ -103,16 +100,24 @@ namespace SveltoDeterministic2DPhysicsDemo
             return this;
         }
 
-        public IGameLoop SetOnBeforeMainGameLoopAction(Action<IEntityFactory, SimpleEntitiesSubmissionScheduler> action)
+        public IGameLoop SetOnBeforeMainGameLoopAction(Action action)
         {
             _onBeforeMainGameLoop = action;
+            return this;
+        }
+
+        public IGameLoop SetSchedulers(IEngineScheduler logicScheduler, IEngineSchedulerReporter logicSchedulerReporter)
+        {
+            _scheduler         = logicScheduler;
+            _schedulerReporter = logicSchedulerReporter;
+
             return this;
         }
 
         public IGameLoop SetPhysicsSimulationsPerSecond(uint frequency)
         {
             _physicsSimulationsPerSecond           = TicksPerSecond / frequency;
-            _physicsSimulationsPerSecondFixedPoint = FixedPoint.From(frequency);
+
             return this;
         }
 
@@ -130,31 +135,17 @@ namespace SveltoDeterministic2DPhysicsDemo
 
         public void Stop() { _running = false; }
 
-        readonly EngineScheduler         _scheduler;
-        readonly EngineSchedulerReporter _schedulerReporter;
-        IEntityFactory                   _entityFactory;
-
         IGraphics _graphics;
         uint      _graphicsFramesPerSecond;
         IInput    _input;
 
-        Action<IEntityFactory, SimpleEntitiesSubmissionScheduler> _onBeforeMainGameLoop = (factory, scheduler) => { };
+        Action _onBeforeMainGameLoop = () => { };
 
-        uint                              _physicsSimulationsPerSecond;
-        FixedPoint                        _physicsSimulationsPerSecondFixedPoint;
-        bool                              _running;
-        SimpleEntitiesSubmissionScheduler _simpleSubmissionEntityViewScheduler;
-        float                             _simulationSpeed;
+        uint _physicsSimulationsPerSecond;
 
-        void EcsInit()
-        {
-            _simpleSubmissionEntityViewScheduler = new SimpleEntitiesSubmissionScheduler();
-            var enginesRoot = new EnginesRoot(_simpleSubmissionEntityViewScheduler);
-
-            _entityFactory = enginesRoot.GenerateEntityFactory();
-
-            if (_graphics != null)
-                enginesRoot.AddEngine(new DebugPhysicsDrawEngine(_scheduler, _graphics));
-        }
+        bool                     _running;
+        float                    _simulationSpeed;
+        IEngineScheduler         _scheduler;
+        IEngineSchedulerReporter _schedulerReporter;
     }
 }

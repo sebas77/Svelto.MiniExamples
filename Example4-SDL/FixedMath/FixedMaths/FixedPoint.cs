@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace SveltoDeterministic2DPhysicsDemo.Maths
+namespace FixedMaths
 {
     /// <summary>
     ///     Implements a fixed point number, based on https://en.wikipedia.org/wiki/Q_%28number_format%29
     /// </summary>
-    public readonly struct FixedPoint
+    public readonly struct FixedPoint:IEquatable<FixedPoint>
     {
         public const short Q = 12;
         const        int   K = 1 << (Q - 1);
@@ -224,10 +224,7 @@ namespace SveltoDeterministic2DPhysicsDemo.Maths
         public FixedPoint Squared() { return this * this; }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        bool Equals(FixedPoint other) { return Value == other.Value && _isNaN == other._isNaN; }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override bool Equals(object obj) { return obj is FixedPoint other && Equals(other); }
+        public bool Equals(FixedPoint other) { return Value == other.Value && _isNaN == other._isNaN; }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override int GetHashCode() { return HashCode.Combine(Value, _isNaN); }

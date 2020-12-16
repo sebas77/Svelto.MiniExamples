@@ -1,7 +1,7 @@
 ﻿using Svelto.ECS;
-using SveltoDeterministic2DPhysicsDemo.Maths;
+using FixedMaths;
 
-namespace SveltoDeterministic2DPhysicsDemo.Physics.EntityComponents
+namespace MiniExamples.DeterministicPhysicDemo.Physics.EntityComponents
 {
     public readonly struct CircleColliderEntityComponent : IEntityComponent
     {

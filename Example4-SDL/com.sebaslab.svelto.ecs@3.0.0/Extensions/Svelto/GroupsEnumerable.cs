@@ -114,6 +114,7 @@ namespace Svelto.ECS
 
         public GroupsEnumerable(EntitiesDB db, in LocalFasterReadOnlyList<ExclusiveGroupStruct> groups)
         {
+            DBC.ECS.Check.Require(groups.count > 0, "can't initialise a query without valid groups");
             _db     = db;
             _groups = groups;
         }
@@ -151,6 +152,7 @@ namespace Svelto.ECS
             public void Reset() { _indexGroup = -1; }
 
             public RefCurrent<T1, T2, T3> Current => new RefCurrent<T1, T2, T3>(_buffers, _groups[_indexGroup]);
+            public bool                   isValid => _indexGroup != -1;
 
             readonly LocalFasterReadOnlyList<ExclusiveGroupStruct> _groups;
 

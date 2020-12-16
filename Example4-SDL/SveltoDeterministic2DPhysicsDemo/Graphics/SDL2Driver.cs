@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using SDL2;
-using SveltoDeterministic2DPhysicsDemo.Graphics.Extensions;
+using MiniExamples.DeterministicPhysicDemo.Graphics.Extensions;
 
-namespace SveltoDeterministic2DPhysicsDemo.Graphics
+namespace MiniExamples.DeterministicPhysicDemo.Graphics
 {
     public class Sdl2Driver : IGraphics, IInput
     {

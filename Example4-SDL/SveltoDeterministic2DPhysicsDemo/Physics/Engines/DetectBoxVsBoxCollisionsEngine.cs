@@ -1,50 +1,37 @@
-﻿using Svelto.Common;
-using Svelto.ECS;
-using SveltoDeterministic2DPhysicsDemo.Maths;
-using SveltoDeterministic2DPhysicsDemo.Physics.CollisionStructures;
-using SveltoDeterministic2DPhysicsDemo.Physics.EntityComponents;
-using SveltoDeterministic2DPhysicsDemo.Physics.Types;
+﻿using Svelto.ECS;
+using FixedMaths;
+using MiniExamples.DeterministicPhysicDemo.Physics.CollisionStructures;
+using MiniExamples.DeterministicPhysicDemo.Physics.EntityComponents;
+using MiniExamples.DeterministicPhysicDemo.Physics.Types;
 
-namespace SveltoDeterministic2DPhysicsDemo.Physics.Engines
+namespace MiniExamples.DeterministicPhysicDemo.Physics.Engines
 {
-    [Sequenced(nameof(PhysicsEngineNames.DetectBoxVsBoxCollisionsEngine))]
     public class DetectBoxVsBoxCollisionsEngine : IQueryingEntitiesEngine, IScheduledPhysicsEngine
     {
         public DetectBoxVsBoxCollisionsEngine(IEngineScheduler engineScheduler) { _engineScheduler = engineScheduler; }
 
-        public void Execute(ulong tick)
+        public void Execute(FixedPoint delta, ulong tick)
         {
-            foreach (var ((transforms, colliders, manifolds, rigidbodies, count), _) in entitiesDB
-               .QueryEntities<TransformEntityComponent, BoxColliderEntityComponent, CollisionManifoldEntityComponent,
-                    RigidbodyEntityComponent>(GameGroups.RigidBodyWithBoxColliders.Groups))
-                for (var a = 0; a < count; a++)
-                {
-                    ref var colliderA  = ref colliders[a];
-                    ref var transformA = ref transforms[a];
-                    ref var rigidBodyA = ref rigidbodies[a];
+            var dynamicEntities = new DoubleEntitiesEnumerator<TransformEntityComponent, BoxColliderEntityComponent, 
+                CollisionManifoldEntityComponent>(
+                    entitiesDB.QueryEntities<TransformEntityComponent, BoxColliderEntityComponent,
+                            CollisionManifoldEntityComponent>(GameGroups.DynamicRigidBodyWithBoxColliders.Groups));
 
-                    var aabbA = colliderA.ToAABB(transformA.Position);
+            foreach (var ((transformsA, collidersA, buffer3, count), indexA, ((transformsB, collidersB, buffer4, i), exclusiveGroupStruct),
+                indexB) in dynamicEntities)
+            {
+                ref var colliderA  = ref collidersA[indexA];
+                ref var transformA = ref transformsA[indexA];
 
-                    for (var b = a + 1; b < count; b++)
-                    {
-                        ref var colliderB  = ref colliders[b];
-                        ref var transformB = ref transforms[b];
-                        ref var rigidBodyB = ref rigidbodies[b];
+                var aabbA = colliderA.ToAABB(transformA.Position);
 
-                        if (rigidBodyA.IsKinematic && rigidBodyB.IsKinematic)
-                            continue;
+                ref var colliderB  = ref collidersB[indexB];
+                ref var transformB = ref transformsB[indexB];
 
-                        var aabbB = colliderB.ToAABB(transformB.Position);
+                var aabbB = colliderB.ToAABB(transformB.Position);
 
-                        var manifold = CalculateManifold(a, aabbA, b, aabbB);
-
-                        if (!manifold.HasValue)
-                            continue;
-
-                        manifolds[a] = CollisionManifoldEntityComponent.From(manifold.Value);
-                        //manifoldB = CollisionManifoldEntityComponent.From(manifold.Value.Reverse());
-                    }
-                }
+                var manifold = CalculateManifold(indexA, aabbA, indexB, aabbB);
+            }
         }
 
         public   void             Ready() { _engineScheduler.RegisterScheduledPhysicsEngine(this); }
@@ -53,7 +40,8 @@ namespace SveltoDeterministic2DPhysicsDemo.Physics.Engines
 
         public string Name => nameof(DetectBoxVsBoxCollisionsEngine);
 
-        static CollisionManifold? CalculateManifold(int indexA, AABB a, int indexB, AABB b)
+        static bool CalculateManifold
+        (int indexA, AABB a, int indexB, AABB b)
         {
             // First, calculate the Minkowski difference. a maps to red, and b maps to blue from our example (though it doesn't matter!)
             var top    = a.Max.Y - b.Min.Y;
@@ -63,7 +51,7 @@ namespace SveltoDeterministic2DPhysicsDemo.Physics.Engines
 
             // If the Minkowski difference intersects the origin, there's a collision
             if (right < FixedPoint.Zero || left > FixedPoint.Zero || top < FixedPoint.Zero || bottom > FixedPoint.Zero)
-                return null;
+                return false;
 
             // The pen vector is the shortest vector from the origin of the MD to an edge.
             // You know this has to be a vertical or horizontal line from the origin (these are by def. the shortest)
@@ -95,10 +83,12 @@ namespace SveltoDeterministic2DPhysicsDemo.Physics.Engines
             }
 
             if (penetration.HasValue)
-                return CollisionManifold.From(min, penetration.Value.Normalize(), CollisionType.AABBToAABB, indexA
-                                            , indexB);
+            {
+                FixedPointVector2 normal = penetration.Value.Normalize();
+                return true;
+            }
 
-            return null;
+            return false;
         }
     }
 }

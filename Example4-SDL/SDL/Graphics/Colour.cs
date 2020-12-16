@@ -1,4 +1,4 @@
-﻿namespace SveltoDeterministic2DPhysicsDemo.Graphics
+﻿namespace MiniExamples.DeterministicPhysicDemo.Graphics
 {
     public enum Colour
     {

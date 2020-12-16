@@ -1,8 +1,11 @@
 ﻿using Svelto.ECS;
-using SveltoDeterministic2DPhysicsDemo.Physics.EntityComponents;
+using MiniExamples.DeterministicPhysicDemo.Physics.EntityComponents;
 
-namespace SveltoDeterministic2DPhysicsDemo.Physics.Descriptors
+namespace MiniExamples.DeterministicPhysicDemo.Physics.Descriptors
 {
+    /// <summary>
+    /// RigidBody EntityDescriptor, designed to be exteded
+    /// </summary>
     public class RigidBodyDescriptor : GenericEntityDescriptor<TransformEntityComponent, RigidbodyEntityComponent,
         CollisionManifoldEntityComponent, EGIDComponent> { }
 }

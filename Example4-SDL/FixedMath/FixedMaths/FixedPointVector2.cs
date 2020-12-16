@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace SveltoDeterministic2DPhysicsDemo.Maths
+namespace FixedMaths
 {
-    public readonly struct FixedPointVector2
+    public readonly struct FixedPointVector2:IEquatable<FixedPointVector2>
     {
         public static FixedPointVector2 Up    { get; } = new FixedPointVector2(FixedPoint.Zero, FixedPoint.One);
         public static FixedPointVector2 Down  { get; } = new FixedPointVector2(FixedPoint.Zero, FixedPoint.NegativeOne);
@@ -161,9 +161,7 @@ namespace SveltoDeterministic2DPhysicsDemo.Maths
             y = FixedPoint.ConvertToFloat(Y);
         }
 
-        bool Equals(FixedPointVector2 other) { return X.Equals(other.X) && Y.Equals(other.Y); }
-
-        public override bool Equals(object obj) { return obj is FixedPointVector2 other && Equals(other); }
+        public bool Equals(FixedPointVector2 other) { return X.Equals(other.X) && Y.Equals(other.Y); }
 
         public override int GetHashCode() { return HashCode.Combine(X, Y); }
     }

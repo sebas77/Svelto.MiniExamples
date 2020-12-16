@@ -1,27 +1,43 @@
 ﻿using System;
 using Svelto.ECS;
-using SveltoDeterministic2DPhysicsDemo.Maths;
-using SveltoDeterministic2DPhysicsDemo.Physics.Descriptors;
-using SveltoDeterministic2DPhysicsDemo.Physics.EntityComponents;
+using FixedMaths;
+using MiniExamples.DeterministicPhysicDemo.Physics.Descriptors;
+using MiniExamples.DeterministicPhysicDemo.Physics.EntityComponents;
 
-namespace SveltoDeterministic2DPhysicsDemo.Physics.Builders
+namespace MiniExamples.DeterministicPhysicDemo.Physics.Builders
 {
+    /// <summary>
+    /// Factory to build Rigidbody Entities
+    /// </summary>
     public class RigidBodyWithColliderBuilder
     {
         public void Build(IEntityFactory entityFactory, uint egid)
         {
-            var initializer = _colliderType switch
+            EntityComponentInitializer initializer;
+            switch (_colliderType)
             {
-                ColliderType.Box => entityFactory.BuildEntity<RigidBodyWithBoxColliderDescriptor>(
-                    egid, GameGroups.RigidBodyWithBoxColliders.BuildGroup)
-              , ColliderType.Circle => entityFactory.BuildEntity<RigidBodyWithCircleColliderDescriptor>(
-                    egid, GameGroups.RigidBodyWithCircleColliders.BuildGroup)
-              , _ => throw new ArgumentOutOfRangeException($"Unknown {_colliderType}")
-            };
+                case ColliderType.Box:
+                    if (_isKinematic)
+                        initializer = entityFactory.BuildEntity<RigidBodyWithBoxColliderDescriptor>(
+                            egid, GameGroups.KinematicRigidBodyWithBoxColliders.BuildGroup);
+                    else
+                        initializer = entityFactory.BuildEntity<RigidBodyWithBoxColliderDescriptor>(
+                            egid, GameGroups.DynamicRigidBodyWithBoxColliders.BuildGroup);
+                    break;
+                case ColliderType.Circle:
+                    if (_isKinematic)
+                        initializer = entityFactory.BuildEntity<RigidBodyWithCircleColliderDescriptor>(
+                            egid, GameGroups.KinematicRigidBodyWithCircleColliders.BuildGroup);
+                    else
+                        initializer = entityFactory.BuildEntity<RigidBodyWithCircleColliderDescriptor>(
+                            egid, GameGroups.DynamicRigidBodyWithCircleColliders.BuildGroup);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException($"Unknown {_colliderType}");
+            }
 
             initializer.Init(TransformEntityComponent.From(_position, _position));
             initializer.Init(RigidbodyEntityComponent.From(_direction, _speed, _restitution, _mass, _isKinematic));
-            initializer.Init(CollisionManifoldEntityComponent.Default);
 
             switch (_colliderType)
             {
@@ -64,12 +80,6 @@ namespace SveltoDeterministic2DPhysicsDemo.Physics.Builders
             return this;
         }
 
-        public RigidBodyWithColliderBuilder SetIsKinematic(bool isKinematic)
-        {
-            _isKinematic = isKinematic;
-            return this;
-        }
-
         public RigidBodyWithColliderBuilder SetMass(FixedPoint value)
         {
             _mass = value;
@@ -79,6 +89,12 @@ namespace SveltoDeterministic2DPhysicsDemo.Physics.Builders
         public RigidBodyWithColliderBuilder SetPosition(FixedPointVector2 value)
         {
             _position = value;
+            return this;
+        }
+
+        public RigidBodyWithColliderBuilder SetIsKinematic(bool isKinematic)
+        {
+            _isKinematic = isKinematic;
             return this;
         }
 
@@ -100,12 +116,12 @@ namespace SveltoDeterministic2DPhysicsDemo.Physics.Builders
         FixedPoint        _circleColliderRadius = FixedPoint.Zero;
         ColliderType      _colliderType         = ColliderType.Box;
         FixedPointVector2 _direction            = FixedPointVector2.Zero;
-        bool              _isKinematic;
-        FixedPoint        _mass = FixedPoint.One;
+        FixedPoint        _mass                 = FixedPoint.One;
+        FixedPointVector2 _position             = FixedPointVector2.Zero;
+        FixedPoint        _restitution          = FixedPoint.One;
+        FixedPoint        _speed                = FixedPoint.Zero;
 
-        FixedPointVector2 _position    = FixedPointVector2.Zero;
-        FixedPoint        _restitution = FixedPoint.One;
-        FixedPoint        _speed       = FixedPoint.Zero;
+        bool _isKinematic;
     }
 
     public enum ColliderType

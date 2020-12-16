@@ -1,4 +1,6 @@
-﻿namespace SveltoDeterministic2DPhysicsDemo.Graphics
+﻿using MiniExamples.DeterministicPhysicDemo.Graphics;
+
+namespace MiniExamples.DeterministicPhysicDemo.Graphics
 {
     public interface IGraphics
     {

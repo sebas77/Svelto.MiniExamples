@@ -1,6 +1,6 @@
-﻿using SveltoDeterministic2DPhysicsDemo.Maths;
+﻿using FixedMaths;
 
-namespace SveltoDeterministic2DPhysicsDemo
+namespace MiniExamples.DeterministicPhysicDemo
 {
     public interface IScheduledGraphicsEngine
     {

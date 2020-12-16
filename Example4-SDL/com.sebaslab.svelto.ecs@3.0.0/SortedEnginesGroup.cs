@@ -17,8 +17,11 @@ namespace Svelto.ECS
         string name { get; }
     }
     
-    public interface IStepGroupEngine : IStepEngine
+    public interface IStepGroupEngine : IEngine
     {
+        void StepAll();
+        
+        string name { get; }
     }
     
     public interface IStepGroupEngine<T> : IStepEngine<T>
@@ -34,7 +37,7 @@ namespace Svelto.ECS
             _instancedSequence = new Sequence<Interface, SequenceOrder>(engines);
         }
 
-        public void Step()
+        public void StepAll()
         {
             var sequenceItems = _instancedSequence.items;
             using (var profiler = new PlatformProfiler(_name))
@@ -47,7 +50,7 @@ namespace Svelto.ECS
             }
         }
 
-        public string name => _name;
+        public string name   => _name;
         
         readonly string _name;
         readonly Sequence<Interface, SequenceOrder> _instancedSequence;

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SveltoDeterministic2DPhysicsDemo
+namespace MiniExamples.DeterministicPhysicDemo
 {
     public class ScheduledAction
     {
@@ -44,11 +44,6 @@ namespace SveltoDeterministic2DPhysicsDemo
             _lastTick = elapsedTicks;
         }
 
-        readonly Action<ulong> _action;
-        readonly bool          _enforceFrequency;
-        readonly ulong         _frequency;
-        ulong                  _lastTick;
-
         ScheduledAction(Action<ulong> action, ulong frequency, bool enforceFrequency)
         {
             _action           = action;
@@ -58,5 +53,10 @@ namespace SveltoDeterministic2DPhysicsDemo
             RemainingDelta    = 0UL;
             CurrentTick       = 0UL;
         }
+        
+        readonly Action<ulong> _action;
+        readonly bool          _enforceFrequency;
+        readonly ulong         _frequency;
+        ulong                  _lastTick;
     }
 }

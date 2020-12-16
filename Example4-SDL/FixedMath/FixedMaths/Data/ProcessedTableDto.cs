@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace SveltoDeterministic2DPhysicsDemo.Maths.Data
+namespace FixedMaths.Data
 {
     public class ProcessedTableDto
     {

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace SveltoDeterministic2DPhysicsDemo.Maths
+namespace FixedMaths
 {
     public class FixedPointEqualityComparer : IEqualityComparer<FixedPoint>
     {

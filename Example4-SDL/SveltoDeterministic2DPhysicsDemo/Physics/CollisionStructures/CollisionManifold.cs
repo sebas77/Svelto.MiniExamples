@@ -1,27 +1,19 @@
 ﻿using System;
-using SveltoDeterministic2DPhysicsDemo.Maths;
-using SveltoDeterministic2DPhysicsDemo.Physics.Types;
+using FixedMaths;
+using MiniExamples.DeterministicPhysicDemo.Physics.Types;
 
-namespace SveltoDeterministic2DPhysicsDemo.Physics.CollisionStructures
+namespace MiniExamples.DeterministicPhysicDemo.Physics.CollisionStructures
 {
     public readonly struct CollisionManifold
     {
-        public static CollisionManifold From
-        (FixedPoint penetration, FixedPointVector2 normal, CollisionType collisionType, int entityIndex1
-       , int entityIndex2)
-        {
-            return new CollisionManifold(penetration, normal, collisionType, entityIndex1, entityIndex2);
-        }
-
         public readonly FixedPoint        Penetration;
         public readonly FixedPointVector2 Normal;
         public readonly CollisionType     CollisionType;
         public readonly int               EntityIndex1;
         public readonly int               EntityIndex2;
 
-        CollisionManifold
-        (FixedPoint penetration, FixedPointVector2 normal, CollisionType collisionType, int entityIndex1
-       , int entityIndex2)
+        public CollisionManifold(FixedPoint penetration, FixedPointVector2 normal, CollisionType collisionType, 
+                          int entityIndex1, int entityIndex2)
         {
             Penetration   = penetration;
             Normal        = normal;
@@ -30,10 +22,10 @@ namespace SveltoDeterministic2DPhysicsDemo.Physics.CollisionStructures
             EntityIndex2  = entityIndex2;
         }
 
-        public CollisionManifold Reverse()
-        {
-            return new CollisionManifold(-Penetration, -Normal, CollisionType, EntityIndex1, EntityIndex2);
-        }
+        // public CollisionManifold Reverse()
+        // {
+        //     return new CollisionManifold(-Penetration, -Normal, CollisionType, EntityIndex1, EntityIndex2);
+        // }
 
         bool Equals(CollisionManifold other)
         {

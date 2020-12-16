@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
-using SveltoDeterministic2DPhysicsDemo.Graphics;
+using MiniExamples.DeterministicPhysicDemo.Graphics;
 
-namespace SveltoDeterministic2DPhysicsDemo
+namespace MiniExamples.DeterministicPhysicDemo
 {
     public interface IEngineSchedulerReporter
     {
-        void RecordTicksSpent(string engine, long delta);
+        void        RecordTicksSpent(string engine, long delta);
+        public void Report(IGraphics graphics);
+        public void Reset();
     }
 
     public class EngineSchedulerReporter : IEngineSchedulerReporter

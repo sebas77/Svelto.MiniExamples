@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SveltoDeterministic2DPhysicsDemo.Maths.Data
+namespace FixedMaths.Data
 {
     public class SerializeOperationValue
     {

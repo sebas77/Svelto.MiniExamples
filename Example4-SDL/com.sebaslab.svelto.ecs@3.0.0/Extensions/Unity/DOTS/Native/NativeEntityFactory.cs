@@ -15,12 +15,12 @@ namespace Svelto.ECS
         }
 
         public NativeEntityComponentInitializer BuildEntity
-            (uint eindex, BuildGroup BuildGroup, int threadIndex)
+            (uint eindex, ExclusiveBuildGroup exclusiveBuildGroup, int threadIndex)
         {
             NativeBag unsafeBuffer = _addOperationQueue.GetBuffer(threadIndex + 1);
 
             unsafeBuffer.Enqueue(_index);
-            unsafeBuffer.Enqueue(new EGID(eindex, BuildGroup));
+            unsafeBuffer.Enqueue(new EGID(eindex, exclusiveBuildGroup));
             unsafeBuffer.ReserveEnqueue<uint>(out var index) = 0;
 
             return new NativeEntityComponentInitializer(unsafeBuffer, index);

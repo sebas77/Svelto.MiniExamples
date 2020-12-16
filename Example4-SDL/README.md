@@ -12,7 +12,7 @@ I'd recommend **NOT** using this for anything.
 * SDL2.dll
 
 ## Setup
-Clone the repo, build then run the `SveltoDeterministic2DPhysicsDemo` project to see boxes bounding around the screen
+Clone the repo, build then run the `MiniExamples.DeterministicPhysicDemo` project to see boxes bounding around the screen
 
 ## Controls
 This contains a super simple simulation setup, will start up SDL2 and bounce some boxes around.

@@ -1,4 +1,4 @@
-﻿namespace SveltoDeterministic2DPhysicsDemo.Physics.Loggers.Data
+﻿namespace MiniExamples.DeterministicPhysicDemo.Physics.Loggers.Data
 {
     public enum Shape
     {

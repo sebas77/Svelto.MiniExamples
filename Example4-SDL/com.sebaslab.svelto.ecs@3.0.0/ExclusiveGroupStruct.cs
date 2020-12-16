@@ -4,24 +4,24 @@ using System.Runtime.InteropServices;
 
 namespace Svelto.ECS
 {
-    public readonly struct BuildGroup
+    public readonly struct ExclusiveBuildGroup
     {
-        internal BuildGroup(ExclusiveGroupStruct group)
+        internal ExclusiveBuildGroup(ExclusiveGroupStruct group)
         {
             this.group = group;
         }
 
-        public static implicit operator BuildGroup(ExclusiveGroupStruct group)
+        public static implicit operator ExclusiveBuildGroup(ExclusiveGroupStruct group)
         {
-            return new BuildGroup(group);
+            return new ExclusiveBuildGroup(group);
         }
 
-        public static implicit operator BuildGroup(ExclusiveGroup group)
+        public static implicit operator ExclusiveBuildGroup(ExclusiveGroup group)
         {
-            return new BuildGroup(group);
+            return new ExclusiveBuildGroup(group);
         }
         
-        public static implicit operator uint(BuildGroup groupStruct)
+        public static implicit operator uint(ExclusiveBuildGroup groupStruct)
         {
             return groupStruct.group;
         }

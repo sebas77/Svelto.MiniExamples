@@ -1,4 +1,4 @@
-﻿namespace SveltoDeterministic2DPhysicsDemo.Maths
+﻿namespace FixedMaths
 {
     public enum Operation
     {

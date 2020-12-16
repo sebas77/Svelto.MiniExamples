@@ -1,8 +1,11 @@
 ﻿using Svelto.ECS;
-using SveltoDeterministic2DPhysicsDemo.Physics.EntityComponents;
+using MiniExamples.DeterministicPhysicDemo.Physics.EntityComponents;
 
-namespace SveltoDeterministic2DPhysicsDemo.Physics.Descriptors
+namespace MiniExamples.DeterministicPhysicDemo.Physics.Descriptors
 {
+    /// <summary>
+    /// Todo: collision with circle can be added and possibly will be in future iteration of this demo
+    /// </summary>
     public class RigidBodyWithCircleColliderDescriptor : ExtendibleEntityDescriptor<RigidBodyDescriptor>
     {
         public RigidBodyWithCircleColliderDescriptor() : base(new IComponentBuilder[]

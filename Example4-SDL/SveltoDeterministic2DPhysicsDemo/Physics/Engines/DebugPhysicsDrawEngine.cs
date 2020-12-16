@@ -1,15 +1,13 @@
 ﻿using System;
-using Svelto.Common;
 using Svelto.ECS;
-using SveltoDeterministic2DPhysicsDemo.Graphics;
-using SveltoDeterministic2DPhysicsDemo.Maths;
-using SveltoDeterministic2DPhysicsDemo.Physics.EntityComponents;
-using SveltoDeterministic2DPhysicsDemo.Physics.Loggers;
-using SveltoDeterministic2DPhysicsDemo.Physics.Loggers.Data;
+using MiniExamples.DeterministicPhysicDemo.Graphics;
+using FixedMaths;
+using MiniExamples.DeterministicPhysicDemo.Physics.EntityComponents;
+using MiniExamples.DeterministicPhysicDemo.Physics.Loggers;
+using MiniExamples.DeterministicPhysicDemo.Physics.Loggers.Data;
 
-namespace SveltoDeterministic2DPhysicsDemo.Physics.Engines
+namespace MiniExamples.DeterministicPhysicDemo.Physics.Engines
 {
-    [Sequenced(nameof(PhysicsEngineNames.DebugPhysicsDrawEngine))]
     public class DebugPhysicsDrawEngine : IQueryingEntitiesEngine, IScheduledGraphicsEngine
     {
         public DebugPhysicsDrawEngine(EngineScheduler engineScheduler, IGraphics graphics)
@@ -33,7 +31,7 @@ namespace SveltoDeterministic2DPhysicsDemo.Physics.Engines
 
             foreach (var ((transforms, colliders, count), _) in entitiesDB
                .QueryEntities<TransformEntityComponent, BoxColliderEntityComponent>(
-                    GameGroups.RigidBodyWithBoxColliders.Groups))
+                    GameGroups.WithBoxCollider.Groups))
                 for (var i = 0; i < count; i++)
                 {
                     ref var transformEntityComponent   = ref transforms[i];
@@ -51,7 +49,7 @@ namespace SveltoDeterministic2DPhysicsDemo.Physics.Engines
 
             foreach (var ((transforms, colliders, count), _) in entitiesDB
                .QueryEntities<TransformEntityComponent, CircleColliderEntityComponent>(
-                    GameGroups.RigidBodyWithCircleColliders.Groups))
+                    GameGroups.WithCircleCollider.Groups))
                 for (var i = 0; i < count; i++)
                 {
                     ref var transformEntityComponent      = ref transforms[i];

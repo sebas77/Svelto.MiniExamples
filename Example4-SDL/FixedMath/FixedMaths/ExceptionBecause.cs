@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SveltoDeterministic2DPhysicsDemo.Maths
+namespace FixedMaths
 {
     public static class ExceptionBecause
     {

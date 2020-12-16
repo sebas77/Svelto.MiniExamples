@@ -1,15 +1,14 @@
 ﻿using Svelto.ECS;
-using SveltoDeterministic2DPhysicsDemo.Maths;
-using SveltoDeterministic2DPhysicsDemo.Physics.Engines;
+using MiniExamples.DeterministicPhysicDemo.Physics.Engines;
 
-namespace SveltoDeterministic2DPhysicsDemo.Physics
+namespace MiniExamples.DeterministicPhysicDemo.Physics
 {
     public static class PhysicsCore
     {
         public static void RegisterTo
-            (EnginesRoot enginesRoot, IEngineScheduler scheduler, FixedPoint physicsSimulationsPerSecond)
+            (EnginesRoot enginesRoot, IEngineScheduler scheduler)
         {
-            enginesRoot.AddEngine(new ApplyVelocityEngine(scheduler, physicsSimulationsPerSecond));
+            enginesRoot.AddEngine(new ApplyVelocityEngine(scheduler));
             enginesRoot.AddEngine(new DetectBoxVsBoxCollisionsEngine(scheduler));
             enginesRoot.AddEngine(new ResolveCollisionEngine(scheduler));
             enginesRoot.AddEngine(new ResolvePenetrationEngine(scheduler));

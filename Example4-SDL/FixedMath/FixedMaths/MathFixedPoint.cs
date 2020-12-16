@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using SveltoDeterministic2DPhysicsDemo.Maths.Data;
+using FixedMaths.Data;
 
-namespace SveltoDeterministic2DPhysicsDemo.Maths
+namespace FixedMaths
 {
     public static class MathFixedPoint
     {

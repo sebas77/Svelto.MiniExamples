@@ -14,7 +14,7 @@ namespace Svelto.ECS
             }
 
             public EntityComponentInitializer BuildEntity<T>
-                (uint entityID, BuildGroup groupStructId, IEnumerable<object> implementors = null)
+                (uint entityID, ExclusiveBuildGroup groupStructId, IEnumerable<object> implementors = null)
                 where T : IEntityDescriptor, new()
             {
                 return _enginesRoot.Target.BuildEntity(new EGID(entityID, groupStructId)
@@ -41,7 +41,7 @@ namespace Svelto.ECS
             }
 #endif            
             public EntityComponentInitializer BuildEntity<T>
-                (uint entityID, BuildGroup groupStructId, T descriptorEntity, IEnumerable<object> implementors)
+                (uint entityID, ExclusiveBuildGroup groupStructId, T descriptorEntity, IEnumerable<object> implementors)
                 where T : IEntityDescriptor
             {
                 return _enginesRoot.Target.BuildEntity(new EGID(entityID, groupStructId)

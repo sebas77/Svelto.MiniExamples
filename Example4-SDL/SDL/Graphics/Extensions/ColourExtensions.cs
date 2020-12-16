@@ -1,4 +1,4 @@
-﻿namespace SveltoDeterministic2DPhysicsDemo.Graphics.Extensions
+﻿namespace MiniExamples.DeterministicPhysicDemo.Graphics.Extensions
 {
     public static class ColourExtensions
     {

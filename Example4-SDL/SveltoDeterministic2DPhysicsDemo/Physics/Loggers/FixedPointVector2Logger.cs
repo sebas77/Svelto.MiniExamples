@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
-using SveltoDeterministic2DPhysicsDemo.Graphics;
-using SveltoDeterministic2DPhysicsDemo.Maths;
-using SveltoDeterministic2DPhysicsDemo.Physics.Loggers.Data;
+using MiniExamples.DeterministicPhysicDemo.Graphics;
+using FixedMaths;
+using MiniExamples.DeterministicPhysicDemo.Physics.Loggers.Data;
 
-namespace SveltoDeterministic2DPhysicsDemo.Physics.Loggers
+namespace MiniExamples.DeterministicPhysicDemo.Physics.Loggers
 {
     public class FixedPointVector2Logger
     {

@@ -20,7 +20,7 @@ namespace Svelto.ECS
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public void RemoveEntity<T>(uint entityID, BuildGroup groupID) where T :
+            public void RemoveEntity<T>(uint entityID, ExclusiveBuildGroup groupID) where T :
                 IEntityDescriptor, new()
             {
                 RemoveEntity<T>(new EGID(entityID, groupID));
@@ -39,7 +39,7 @@ namespace Svelto.ECS
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public void RemoveEntitiesFromGroup(BuildGroup groupID)
+            public void RemoveEntitiesFromGroup(ExclusiveBuildGroup groupID)
             {
                 DBC.ECS.Check.Require(groupID != 0, "invalid group detected");
                 _enginesRoot.Target.RemoveGroupID(groupID);
@@ -73,7 +73,7 @@ namespace Svelto.ECS
             // }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public void SwapEntitiesInGroup<T>(BuildGroup fromGroupID, BuildGroup toGroupID)
+            public void SwapEntitiesInGroup<T>(ExclusiveBuildGroup fromGroupID, ExclusiveBuildGroup toGroupID)
                 where T : IEntityDescriptor, new()
             {
                 if (_enginesRoot.Target._groupEntityComponentsDB.TryGetValue(
@@ -98,23 +98,23 @@ namespace Svelto.ECS
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public void SwapEntityGroup<T>(uint entityID, BuildGroup fromGroupID,
-                                           BuildGroup toGroupID)
+            public void SwapEntityGroup<T>(uint entityID, ExclusiveBuildGroup fromGroupID,
+                                           ExclusiveBuildGroup toGroupID)
                 where T : IEntityDescriptor, new()
             {
                 SwapEntityGroup<T>(new EGID(entityID, fromGroupID), toGroupID);
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public void SwapEntityGroup<T>(EGID fromID, BuildGroup toGroupID)
+            public void SwapEntityGroup<T>(EGID fromID, ExclusiveBuildGroup toGroupID)
                 where T : IEntityDescriptor, new()
             {
                 SwapEntityGroup<T>(fromID, new EGID(fromID.entityID, (uint) toGroupID));
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public void SwapEntityGroup<T>(EGID fromID, BuildGroup toGroupID
-              , BuildGroup mustBeFromGroup)
+            public void SwapEntityGroup<T>(EGID fromID, ExclusiveBuildGroup toGroupID
+              , ExclusiveBuildGroup mustBeFromGroup)
                 where T : IEntityDescriptor, new()
             {
                 if (fromID.groupID != mustBeFromGroup)
@@ -125,7 +125,7 @@ namespace Svelto.ECS
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public void SwapEntityGroup<T>(EGID fromID, EGID toID
-              , BuildGroup mustBeFromGroup)
+              , ExclusiveBuildGroup mustBeFromGroup)
                 where T : IEntityDescriptor, new()
             {
                 if (fromID.groupID != mustBeFromGroup)

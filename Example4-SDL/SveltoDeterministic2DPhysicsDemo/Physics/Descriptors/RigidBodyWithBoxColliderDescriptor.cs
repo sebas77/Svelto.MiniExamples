@@ -1,7 +1,7 @@
 ﻿using Svelto.ECS;
-using SveltoDeterministic2DPhysicsDemo.Physics.EntityComponents;
+using MiniExamples.DeterministicPhysicDemo.Physics.EntityComponents;
 
-namespace SveltoDeterministic2DPhysicsDemo.Physics.Descriptors
+namespace MiniExamples.DeterministicPhysicDemo.Physics.Descriptors
 {
         public class RigidBodyWithBoxColliderDescriptor : ExtendibleEntityDescriptor<RigidBodyDescriptor>
         {

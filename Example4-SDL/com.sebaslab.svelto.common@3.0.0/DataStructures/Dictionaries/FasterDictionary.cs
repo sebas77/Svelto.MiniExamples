@@ -167,7 +167,7 @@ namespace Svelto.DataStructures
                 return ref _values[(int) findIndex];
             }
 
-            throw new FasterDictionaryException("Key not found");
+            throw new FasterDictionaryException($"Key not found {key}");
         }
 
         public void SetCapacity(uint size)

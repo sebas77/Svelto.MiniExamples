@@ -20,7 +20,7 @@ namespace Svelto.ECS
 
             public void Invoke()
             {
-                if (_weakReference.IsValid)
+                if (_weakReference.IsValid && _weakReference.Target._scheduler.paused == false)
                     _weakReference.Target.SubmitEntityComponents();
             }
 

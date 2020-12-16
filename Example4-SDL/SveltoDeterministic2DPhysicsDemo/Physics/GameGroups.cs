@@ -1,15 +1,19 @@
 ﻿using Svelto.ECS;
 
-namespace SveltoDeterministic2DPhysicsDemo.Physics
+namespace MiniExamples.DeterministicPhysicDemo.Physics
 {
     public static class GameGroups
     {
-        public class RigidBodies : RigidBodyTag { }
-        public class RigidBodyWithBoxColliders : GroupCompound<RigidBodyTag, RigidBodyWithBoxColliderTag> { }
-        public class RigidBodyWithCircleColliders : GroupCompound<RigidBodyTag, RigidBodyWithCircleColliderTag> { }
+        public class RigidBodies : RigidBody { }
+        public class DynamicRigidBodyWithBoxColliders : GroupCompound<RigidBody, WithBoxCollider, Dynamic> { }
+        public class DynamicRigidBodyWithCircleColliders : GroupCompound<RigidBody, WithCircleCollider, Dynamic> { }
+        public class KinematicRigidBodyWithBoxColliders : GroupCompound<RigidBody, WithBoxCollider, Kinematic> { }
+        public class KinematicRigidBodyWithCircleColliders : GroupCompound<RigidBody, WithCircleCollider, Kinematic> { }
         
-        public class RigidBodyTag : GroupTag<RigidBodyTag> { }
-        public class RigidBodyWithBoxColliderTag : GroupTag<RigidBodyWithBoxColliderTag> { }
-        public class RigidBodyWithCircleColliderTag : GroupTag<RigidBodyWithCircleColliderTag> { }
+        public class RigidBody : GroupTag<RigidBody> { }
+        public class Kinematic : GroupTag<Kinematic> { }
+        public class Dynamic : GroupTag<Dynamic> { }
+        public class WithBoxCollider : GroupTag<WithBoxCollider> { }
+        public class WithCircleCollider : GroupTag<WithCircleCollider> { }
     }
 }

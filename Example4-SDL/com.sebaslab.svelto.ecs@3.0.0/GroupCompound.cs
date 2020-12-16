@@ -20,7 +20,7 @@ namespace Svelto.ECS
          static readonly FasterList<ExclusiveGroupStruct> _Groups;
  
          public static FasterReadOnlyList<ExclusiveGroupStruct> Groups => new FasterReadOnlyList<ExclusiveGroupStruct>(_Groups);
-         public static BuildGroup BuildGroup => new BuildGroup(_Groups[0]);
+         public static ExclusiveBuildGroup BuildGroup => new ExclusiveBuildGroup(_Groups[0]);
  
          static GroupCompound()
          {
@@ -100,7 +100,7 @@ namespace Svelto.ECS
          public static FasterReadOnlyList<ExclusiveGroupStruct> Groups =>
              new FasterReadOnlyList<ExclusiveGroupStruct>(_Groups);
  
-         public static BuildGroup BuildGroup => new BuildGroup(_Groups[0]);
+         public static ExclusiveBuildGroup BuildGroup => new ExclusiveBuildGroup(_Groups[0]);
  
          public static void Add(ExclusiveGroupStruct group)
          {
@@ -152,7 +152,7 @@ namespace Svelto.ECS
          public static FasterReadOnlyList<ExclusiveGroupStruct> Groups =>
              new FasterReadOnlyList<ExclusiveGroupStruct>(_Groups);
  
-         public static BuildGroup BuildGroup => new BuildGroup(_Groups[0]);
+         public static ExclusiveBuildGroup BuildGroup => new ExclusiveBuildGroup(_Groups[0]);
  
          public static void Add(ExclusiveGroupStruct group)
          {
@@ -200,7 +200,7 @@ namespace Svelto.ECS
          public static FasterReadOnlyList<ExclusiveGroupStruct> Groups =>
              new FasterReadOnlyList<ExclusiveGroupStruct>(_Groups);
  
-         public static BuildGroup BuildGroup => new BuildGroup(_Groups[0]);
+         public static ExclusiveBuildGroup BuildGroup => new ExclusiveBuildGroup(_Groups[0]);
  
          static GroupTag()
          {

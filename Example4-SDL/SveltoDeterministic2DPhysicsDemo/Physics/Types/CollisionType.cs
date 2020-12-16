@@ -1,4 +1,4 @@
-﻿namespace SveltoDeterministic2DPhysicsDemo.Physics.Types
+﻿namespace MiniExamples.DeterministicPhysicDemo.Physics.Types
 {
     public enum CollisionType
     {

@@ -6,6 +6,12 @@ using Unity.Jobs;
 
 namespace Svelto.ECS.Extensions.Unity
 {
+    /// <summary>
+    /// This very high level class helps to wrap the complexity of the initialization of a UECS world to be used with Svelto.
+    /// This class is not necessary at all, it's just a out of the box solution for simple scenarios.
+    /// If used, it must be part of a SortedJobifiedEngineGroup and it must run always after all the jobified Svelto
+    /// Engines
+    /// </summary>
     [Sequenced(nameof(JobifiedSveltoEngines.SveltoOverUECS))]
     public class SveltoOverUECSEnginesGroup: IJobifiedEngine
     {
@@ -94,7 +100,6 @@ namespace Svelto.ECS.Extensions.Unity
         SyncSveltoToUECSGroup             _syncSveltoToUecsGroup;
         SyncUECSToSveltoGroup             _syncUecsToSveltoGroup;
         EnginesRoot                       _enginesRoot;
-
     }
 }
 #endif

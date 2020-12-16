@@ -1,5 +1,4 @@
-﻿using System;
-using Svelto.Common;
+﻿using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.ECS.Internal;
 
@@ -7,8 +6,6 @@ namespace Svelto.ECS
 {
     public partial class EnginesRoot
     {
-        readonly FasterList<EntitySubmitOperation> _transientEntitiesOperations;
-
         void SubmitEntityComponents()
         {
             using (var profiler = new PlatformProfiler("Svelto.ECS - Entities Submission"))
@@ -174,5 +171,6 @@ namespace Svelto.ECS
 
         readonly DoubleBufferedEntitiesToAdd                        _groupedEntityToAdd;
         readonly ThreadSafeDictionary<ulong, EntitySubmitOperation> _entitiesOperations;
+        readonly FasterList<EntitySubmitOperation>                  _transientEntitiesOperations;
     }
 }

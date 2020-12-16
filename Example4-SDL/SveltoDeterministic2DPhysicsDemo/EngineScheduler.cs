@@ -1,38 +1,38 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
-using SveltoDeterministic2DPhysicsDemo.Maths;
+using FixedMaths;
 
-namespace SveltoDeterministic2DPhysicsDemo
+namespace MiniExamples.DeterministicPhysicDemo
 {
     public class EngineScheduler : IEngineScheduler
     {
         public EngineScheduler(IEngineSchedulerReporter reporter)
         {
-            _reporter                = reporter;
-            _scheduledPhysicsEngines = new List<IScheduledPhysicsEngine>();
-            _scheduledGraphicsEngine = new List<IScheduledGraphicsEngine>();
-            _stopwatch               = Stopwatch.StartNew();
+            _reporter                    = reporter;
+            _scheduledPhysicsEngines     = new List<IScheduledPhysicsEngine>();
+            _scheduledGraphicsEngine     = new List<IScheduledGraphicsEngine>();
+            _stopwatch                   = Stopwatch.StartNew();
         }
 
-        public void ExecuteGraphics(FixedPoint delta, ulong physicsTick)
+        public void ExecuteGraphics(FixedPoint delta, ulong ticks)
         {
             foreach (var engine in _scheduledGraphicsEngine)
             {
                 var before = _stopwatch.ElapsedTicks;
 
-                engine.Draw(delta, physicsTick);
+                engine.Draw(delta, ticks);
 
                 _reporter.RecordTicksSpent(engine.Name, _stopwatch.ElapsedTicks - before);
             }
         }
 
-        public void ExecutePhysics(ulong tick)
+        public void ExecutePhysics(FixedPoint delta, ulong tick)
         {
             foreach (var engine in _scheduledPhysicsEngines)
             {
                 var before = _stopwatch.ElapsedTicks;
 
-                engine.Execute(tick);
+                engine.Execute(delta, tick);
 
                 _reporter.RecordTicksSpent(engine.Name, _stopwatch.ElapsedTicks - before);
             }
@@ -52,5 +52,5 @@ namespace SveltoDeterministic2DPhysicsDemo
         readonly List<IScheduledGraphicsEngine> _scheduledGraphicsEngine;
         readonly List<IScheduledPhysicsEngine>  _scheduledPhysicsEngines;
         readonly Stopwatch                      _stopwatch;
-    }
+ }
 }

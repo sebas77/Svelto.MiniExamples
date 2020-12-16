@@ -1,11 +1,11 @@
-﻿using SveltoDeterministic2DPhysicsDemo.Maths;
+﻿using FixedMaths;
 
-namespace SveltoDeterministic2DPhysicsDemo
+namespace MiniExamples.DeterministicPhysicDemo
 {
     public interface IEngineScheduler
     {
-        void ExecuteGraphics(FixedPoint delta, ulong tick);
-        void ExecutePhysics(ulong tick);
+        void ExecuteGraphics(FixedPoint delta, ulong ticks);
+        void ExecutePhysics(FixedPoint delta, ulong @ulong);
         void RegisterScheduledGraphicsEngine(IScheduledGraphicsEngine scheduledGraphicsEngine);
         void RegisterScheduledPhysicsEngine(IScheduledPhysicsEngine scheduled);
     }
