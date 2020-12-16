@@ -8,9 +8,9 @@ ProjectSection(SolutionItems) = preProject
 	README.md = README.md
 EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.Common", "com.sebaslab.svelto.common@3.0.0\Svelto.Common.csproj", "{C6DABAA3-C6C3-4CB2-B75C-72445EF6B8A6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.Common", "com.sebaslab.svelto.common@3.1.0\Svelto.Common.csproj", "{C6DABAA3-C6C3-4CB2-B75C-72445EF6B8A6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.ECS", "com.sebaslab.svelto.ecs@3.0.0\Svelto.ECS.csproj", "{904781CF-9F0F-4CBA-A1B8-E7F85790E357}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.ECS", "com.sebaslab.svelto.ecs@3.1.0\Svelto.ECS.csproj", "{904781CF-9F0F-4CBA-A1B8-E7F85790E357}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SDL", "SDL\SDL.csproj", "{17E3D200-1CD3-46DE-BE39-1AAF12F571E3}"
 EndProject

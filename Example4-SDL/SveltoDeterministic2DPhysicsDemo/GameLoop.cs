@@ -60,7 +60,7 @@ namespace MiniExamples.DeterministicPhysicDemo
             var graphicsAction = ScheduledAction.From(tick =>
             {
                 _graphics?.RenderStart();
-         //       _scheduler.ExecuteGraphics((lastElapsedTicks - clock.ElapsedTicks) / 10000, tick);
+                _scheduler.ExecuteGraphics((lastElapsedTicks - clock.ElapsedTicks) / 10000, tick);
 
                 if (_graphics != null)
                     _schedulerReporter.Report(_graphics);
