@@ -4,14 +4,14 @@ using MiniExamples.DeterministicPhysicDemo.Physics.CollisionStructures;
 
 namespace MiniExamples.DeterministicPhysicDemo.Physics.EntityComponents
 {
-    public readonly struct CollisionManifoldEntityComponent : IEntityComponent, IEquatable<CollisionManifoldEntityComponent>
+    public struct CollisionManifoldEntityComponent : IEntityComponent, IEquatable<CollisionManifoldEntityComponent>
     {
         public static CollisionManifoldEntityComponent From(CollisionManifold collisionManifold)
         {
             return new CollisionManifoldEntityComponent(collisionManifold);
         }
 
-        public readonly CollisionManifold? CollisionManifold;
+        public CollisionManifold? CollisionManifold;
 
         CollisionManifoldEntityComponent(CollisionManifold? collisionManifold)
         {

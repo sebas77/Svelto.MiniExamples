@@ -24,10 +24,13 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.Engines
                     
                     ref var position = ref transforms[i].Position;
                     
-                    FixedPointVector2 velocity       = rigidbody.Direction * rigidbody.Speed;
-                    var               targetPosition = position + velocity / delta;
+                    var velocity       = rigidbody.Direction * rigidbody.Speed;
+                    var targetPosition = position + velocity / delta;
                     
-                    transforms[i]      = TransformEntityComponent.From(targetPosition, position);
+                    transforms[i].Position                = targetPosition;
+                    transforms[i].PositionLastPhysicsTick = position;
+                    transforms[i].PositionMidpoint        = null;
+
                     rigidbody.Velocity = velocity;
                 }
         }

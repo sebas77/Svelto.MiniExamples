@@ -12,14 +12,14 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.EntityComponents
                                               , mass, isKinematic);
         }
 
-        public readonly bool              IsKinematic;
-        public readonly FixedPointVector2 Direction;
-        public          FixedPointVector2 Velocity;
-        public readonly FixedPoint        Speed;
-        public readonly FixedPoint        Potential;
-        public readonly FixedPoint        Restitution;
-        public readonly FixedPoint        Mass;
-        public readonly FixedPoint        InverseMass;
+        public bool              IsKinematic;
+        public FixedPointVector2 Direction;
+        public FixedPointVector2 Velocity;
+        public FixedPoint        Speed;
+        public FixedPoint        Potential;
+        public FixedPoint        Restitution;
+        public FixedPoint        Mass;
+        public FixedPoint        InverseMass;
 
         public RigidbodyEntityComponent
         (in FixedPoint speed, in FixedPointVector2 direction, in FixedPointVector2 velocity, in FixedPoint potential
