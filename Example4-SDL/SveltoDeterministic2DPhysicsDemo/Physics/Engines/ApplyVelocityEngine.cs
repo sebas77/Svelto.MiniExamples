@@ -11,7 +11,7 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.Engines
             _engineScheduler             = engineScheduler;
         }
 
-        public void Execute(FixedPoint delta, ulong tick)
+        public void Execute(FixedPoint delta)
         {
             foreach (var ((rigidbodies, transforms, count), _) in entitiesDB
                .QueryEntities<RigidbodyEntityComponent, TransformEntityComponent>(GameGroups.RigidBodies.Groups))

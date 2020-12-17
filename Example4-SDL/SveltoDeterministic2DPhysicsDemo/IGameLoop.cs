@@ -12,7 +12,6 @@ namespace MiniExamples.DeterministicPhysicDemo.Graphics
         IGameLoop SetGraphicsFramesPerSecond(uint frequency);
         IGameLoop SetUncappedGraphicsFramesPerSecond();
         IGameLoop SetSimulationSpeed(float simulationSpeed);
-        IGameLoop SetOnBeforeMainGameLoopAction(Action action);
         IGameLoop SetSchedulers(IEngineScheduler logicScheduler, IEngineSchedulerReporter logicSchedulerReporter = null);
     }
 }

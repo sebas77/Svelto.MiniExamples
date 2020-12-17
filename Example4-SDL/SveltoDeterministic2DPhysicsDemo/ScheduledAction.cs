@@ -1,62 +1,61 @@
 ﻿using System;
+using FixedMaths;
 
 namespace MiniExamples.DeterministicPhysicDemo
 {
     public class ScheduledAction
     {
-        public ulong CurrentTick    { get; private set; }
-        public ulong RemainingDelta { get; private set; }
-
-        public static ScheduledAction From(Action<ulong> action, ulong frequency, bool enforceFrequency)
+        public static ScheduledAction From(Action action, ulong frequency, bool enforceFrequency)
         {
             return new ScheduledAction(action, frequency, enforceFrequency);
         }
 
         public void Tick(ulong elapsedTicks)
         {
-            RemainingDelta += elapsedTicks - _lastTick;
+            _remainingDelta += elapsedTicks - _lastTick;
 
             if (_enforceFrequency)
             {
-                while (RemainingDelta >= _frequency)
+                while (_remainingDelta >= _frequency)
                 {
-                    CurrentTick += 1;
+                    _remainingDelta -= _frequency;
 
-                    RemainingDelta -= _frequency;
-
-                    _action(CurrentTick);
+                    _action();
                 }
             }
             else
             {
-                if (RemainingDelta >= _frequency)
+                if (_remainingDelta >= _frequency)
                 {
-                    var iterations = RemainingDelta / _frequency;
+                    var iterations = _remainingDelta / _frequency;
 
-                    CurrentTick += iterations;
+                    _remainingDelta -= _frequency * iterations;
 
-                    RemainingDelta -= _frequency * iterations;
-
-                    _action(CurrentTick);
+                    _action();
                 }
             }
 
             _lastTick = elapsedTicks;
         }
 
-        ScheduledAction(Action<ulong> action, ulong frequency, bool enforceFrequency)
+        public FixedPoint CalculateNormalisedDelta()
+        {
+            return FixedPoint.From((float) _remainingDelta / _frequency);
+        }
+
+        ScheduledAction(Action action, ulong frequency, bool enforceFrequency)
         {
             _action           = action;
             _frequency        = frequency;
             _enforceFrequency = enforceFrequency;
             _lastTick         = 0UL;
-            RemainingDelta    = 0UL;
-            CurrentTick       = 0UL;
+            _remainingDelta   = 0UL;
         }
         
-        readonly Action<ulong> _action;
-        readonly bool          _enforceFrequency;
-        readonly ulong         _frequency;
-        ulong                  _lastTick;
+        readonly Action _action;
+        readonly bool   _enforceFrequency;
+        readonly ulong  _frequency;
+        ulong           _lastTick;
+        private ulong   _remainingDelta;
     }
 }

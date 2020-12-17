@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
-using MiniExamples.DeterministicPhysicDemo.Graphics;
 using FixedMaths;
+using MiniExamples.DeterministicPhysicDemo.Graphics;
 
 namespace MiniExamples.DeterministicPhysicDemo
 {
@@ -43,39 +43,34 @@ namespace MiniExamples.DeterministicPhysicDemo
                 Console.WriteLine("Graphics exist, but failed to init.");
                 return;
             }
-            
-            _running = true;
-            
-            var clock = new Stopwatch();
-            clock.Restart();
-
-            _onBeforeMainGameLoop();
-            
-            var physicsSimulationsPerSecondFP = FixedPoint.From(_physicsSimulationsPerSecond / 1000);
 
             var physicsAction = ScheduledAction.From(
-                (tick) => _scheduler.ExecutePhysics(physicsSimulationsPerSecondFP, tick), _physicsSimulationsPerSecond
+                () => _scheduler.ExecutePhysics(_physicsDeltaPerSimulation)
+              , _physicsSimulationsPerSecond
               , true);
 
-            var graphicsAction = ScheduledAction.From(tick =>
+            var graphicsAction = ScheduledAction.From(() =>
             {
                 _graphics?.RenderStart();
-                _scheduler.ExecuteGraphics((lastElapsedTicks - clock.ElapsedTicks) / 10000, tick);
+                _scheduler.ExecuteGraphics(physicsAction.CalculateNormalisedDelta());
 
+                _schedulerReporter.IncrementFps();
                 if (_graphics != null)
                     _schedulerReporter.Report(_graphics);
 
                 _graphics?.RenderEnd();
             }, _graphicsFramesPerSecond, false);
 
-            var perSecond = ScheduledAction.From(tick =>
+            var oncePerSecond = ScheduledAction.From(() =>
             {
                 if (_graphics != null)
                     _schedulerReporter.Reset();
             }, TicksPerSecond, true);
 
+            var clock            = Stopwatch.StartNew();
             var lastElapsedTicks = clock.ElapsedTicks;
             var gameTick         = 0UL;
+            _running             = true;
             while (_running)
             {
                 _input?.PollEvents(this);
@@ -88,7 +83,7 @@ namespace MiniExamples.DeterministicPhysicDemo
                 // Execute simulation ticks
                 graphicsAction.Tick((ulong) elapsedTicks);
                 physicsAction.Tick(gameTick);
-                perSecond.Tick(gameTick);
+                oncePerSecond.Tick(gameTick);
             }
 
             _graphics?.Cleanup();
@@ -97,12 +92,6 @@ namespace MiniExamples.DeterministicPhysicDemo
         public IGameLoop SetGraphicsFramesPerSecond(uint frequency)
         {
             _graphicsFramesPerSecond = TicksPerSecond / frequency;
-            return this;
-        }
-
-        public IGameLoop SetOnBeforeMainGameLoopAction(Action action)
-        {
-            _onBeforeMainGameLoop = action;
             return this;
         }
 
@@ -116,7 +105,8 @@ namespace MiniExamples.DeterministicPhysicDemo
 
         public IGameLoop SetPhysicsSimulationsPerSecond(uint frequency)
         {
-            _physicsSimulationsPerSecond           = TicksPerSecond / frequency;
+            _physicsSimulationsPerSecond = TicksPerSecond / frequency;
+            _physicsDeltaPerSimulation   = FixedPoint.From(frequency);
 
             return this;
         }
@@ -139,10 +129,8 @@ namespace MiniExamples.DeterministicPhysicDemo
         uint      _graphicsFramesPerSecond;
         IInput    _input;
 
-        Action _onBeforeMainGameLoop = () => { };
-
-        uint _physicsSimulationsPerSecond;
-
+        uint                     _physicsSimulationsPerSecond;
+        FixedPoint               _physicsDeltaPerSimulation = FixedPoint.Zero;
         bool                     _running;
         float                    _simulationSpeed;
         IEngineScheduler         _scheduler;

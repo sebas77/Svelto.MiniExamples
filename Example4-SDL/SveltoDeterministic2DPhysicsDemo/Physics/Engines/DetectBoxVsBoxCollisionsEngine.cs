@@ -10,7 +10,7 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.Engines
     {
         public DetectBoxVsBoxCollisionsEngine(IEngineScheduler engineScheduler) { _engineScheduler = engineScheduler; }
 
-        public void Execute(FixedPoint delta, ulong tick)
+        public void Execute(FixedPoint delta)
         {
             var dynamicEntities = new DoubleEntitiesEnumerator<TransformEntityComponent, BoxColliderEntityComponent, 
                 CollisionManifoldEntityComponent>(

@@ -8,7 +8,7 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.Engines
     {
         public ClearPerFrameStateEngine(IEngineScheduler engineScheduler) { _engineScheduler = engineScheduler; }
 
-        public void Execute(FixedPoint delta, ulong tick)
+        public void Execute(FixedPoint delta)
         {
             foreach (var ((manifolds, count), _) in entitiesDB.QueryEntities<CollisionManifoldEntityComponent>(
                 GameGroups.RigidBody.Groups))
