@@ -2,7 +2,6 @@
 using FixedMaths;
 using MiniExamples.DeterministicPhysicDemo.Physics.CollisionStructures;
 using MiniExamples.DeterministicPhysicDemo.Physics.EntityComponents;
-using MiniExamples.DeterministicPhysicDemo.Physics.Types;
 
 namespace MiniExamples.DeterministicPhysicDemo.Physics.Engines
 {
@@ -12,13 +11,12 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.Engines
 
         public void Execute(FixedPoint delta)
         {
-            var dynamicEntities = new DoubleEntitiesEnumerator<TransformEntityComponent, BoxColliderEntityComponent, 
-                CollisionManifoldEntityComponent>(
-                    entitiesDB.QueryEntities<TransformEntityComponent, BoxColliderEntityComponent,
-                            CollisionManifoldEntityComponent>(GameGroups.DynamicRigidBodyWithBoxColliders.Groups));
+            var dynamicEntities = new DoubleEntitiesEnumerator<TransformEntityComponent, BoxColliderEntityComponent>(
+                entitiesDB.QueryEntities<TransformEntityComponent, BoxColliderEntityComponent>(
+                    GameGroups.DynamicRigidBodyWithBoxColliders.Groups));
 
-            foreach (var ((transformsA, collidersA, buffer3, count), indexA, ((transformsB, collidersB, buffer4, i), exclusiveGroupStruct),
-                indexB) in dynamicEntities)
+            foreach (var ((transformsA, collidersA, _), indexA, (transformsB, collidersB, _), indexB) in dynamicEntities
+            )
             {
                 ref var colliderA  = ref collidersA[indexA];
                 ref var transformA = ref transformsA[indexA];
@@ -40,8 +38,7 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.Engines
 
         public string Name => nameof(DetectBoxVsBoxCollisionsEngine);
 
-        static bool CalculateManifold
-        (int indexA, AABB a, int indexB, AABB b)
+        static bool CalculateManifold(int indexA, AABB a, int indexB, AABB b)
         {
             // First, calculate the Minkowski difference. a maps to red, and b maps to blue from our example (though it doesn't matter!)
             var top    = a.Max.Y - b.Min.Y;
