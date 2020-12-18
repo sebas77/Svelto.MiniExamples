@@ -8,7 +8,7 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.Engines
     {
         public ResolvePenetrationEngine(IEngineScheduler engineScheduler) { _engineScheduler = engineScheduler; }
 
-        public void Execute(FixedPoint delta, ulong tick)
+        public void Execute(FixedPoint delta)
         {
             foreach (var ((transforms, rigidbodies, manifolds, count), _) in entitiesDB
                .QueryEntities<TransformEntityComponent, RigidbodyEntityComponent, CollisionManifoldEntityComponent>(
@@ -26,12 +26,6 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.Engines
                         continue;
 
                     var collisionManifold = manifold.CollisionManifold.Value;
-
-                    // Is this meant for debugging? Because it shouldn't be here otherwise
-                    // FixedPointVector2Logger.Instance.DrawCross(
-                    //     transform.Position - collisionManifold.Normal * collisionManifold.Penetration, tick
-                    //   , Colour.Orange
-                    //   , FixedPoint.ConvertToInteger(MathFixedPoint.Round(collisionManifold.Penetration)));
 
                     transform = TransformEntityComponent.From(transform.Position - collisionManifold.Normal
                                                             , transform.PositionLastPhysicsTick

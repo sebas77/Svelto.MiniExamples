@@ -12,7 +12,7 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.Engines
     {
         public ResolveCollisionEngine(IEngineScheduler engineScheduler) { _engineScheduler = engineScheduler; }
 
-        public void Execute(FixedPoint delta, ulong tick)
+        public void Execute(FixedPoint delta)
         {
             // var boxRigidbodies    = new NB<RigidbodyEntityComponent>();
             // var boxManifolds      = new NB<CollisionManifoldEntityComponent>();

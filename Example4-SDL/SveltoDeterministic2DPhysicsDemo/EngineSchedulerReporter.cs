@@ -6,6 +6,7 @@ namespace MiniExamples.DeterministicPhysicDemo
     public interface IEngineSchedulerReporter
     {
         void        RecordTicksSpent(string engine, long delta);
+        void        IncrementFps();
         public void Report(IGraphics graphics);
         public void Reset();
     }
@@ -22,6 +23,11 @@ namespace MiniExamples.DeterministicPhysicDemo
             _ticksSpent[engine] += delta;
         }
 
+        public void IncrementFps()
+        {
+            _fpsAccumulator += 1;
+        }
+
         public void Report(IGraphics graphics)
         {
             var row       = 0;
@@ -36,15 +42,21 @@ namespace MiniExamples.DeterministicPhysicDemo
 
             graphics.DrawTextAbsolute(Colour.White, 0, row * (PtSize + 2)
                                     , $"total = {(float) usedDelta / 1000:0000.0000}ms");
+            graphics.DrawTextAbsolute(Colour.White, 0, (row + 1) * (PtSize + 2)
+                                    , $"fps = {_fps}");
         }
 
         public void Reset()
         {
-            _report     = _ticksSpent;
-            _ticksSpent = new Dictionary<string, long>();
+            _report         = _ticksSpent;
+            _ticksSpent     = new Dictionary<string, long>();
+            _fps            = _fpsAccumulator;
+            _fpsAccumulator = 0;
         }
 
         Dictionary<string, long> _report     = new Dictionary<string, long>();
         Dictionary<string, long> _ticksSpent = new Dictionary<string, long>();
+        uint                     _fpsAccumulator;
+        uint                     _fps;
     }
 }

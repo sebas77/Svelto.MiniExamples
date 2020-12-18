@@ -14,25 +14,25 @@ namespace MiniExamples.DeterministicPhysicDemo
             _stopwatch                   = Stopwatch.StartNew();
         }
 
-        public void ExecuteGraphics(FixedPoint delta, ulong ticks)
+        public void ExecuteGraphics(FixedPoint delta)
         {
             foreach (var engine in _scheduledGraphicsEngine)
             {
                 var before = _stopwatch.ElapsedTicks;
 
-                engine.Draw(delta, ticks);
+                engine.Draw(delta);
 
                 _reporter.RecordTicksSpent(engine.Name, _stopwatch.ElapsedTicks - before);
             }
         }
 
-        public void ExecutePhysics(FixedPoint delta, ulong tick)
+        public void ExecutePhysics(FixedPoint delta)
         {
             foreach (var engine in _scheduledPhysicsEngines)
             {
                 var before = _stopwatch.ElapsedTicks;
 
-                engine.Execute(delta, tick);
+                engine.Execute(delta);
 
                 _reporter.RecordTicksSpent(engine.Name, _stopwatch.ElapsedTicks - before);
             }
