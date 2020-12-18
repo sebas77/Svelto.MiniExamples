@@ -5,10 +5,9 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.EntityComponents
 {
     public struct TransformEntityComponent : IEntityComponent
     {
-        internal readonly FixedPointVector2? _positionMidpoint;
-
-        public          FixedPointVector2 Position;
-        public readonly FixedPointVector2 PositionLastPhysicsTick;
+        public FixedPointVector2 Position;
+        public FixedPointVector2 PositionLastPhysicsTick;
+        public FixedPointVector2? PositionMidpoint;
 
         public new string ToString() { return Position.ToString(); }
 
@@ -17,7 +16,7 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.EntityComponents
         {
             Position                = position;
             PositionLastPhysicsTick = positionLastPhysicsTick;
-            _positionMidpoint       = positionMidpoint;
+            PositionMidpoint       = positionMidpoint;
         }
 
         public static TransformEntityComponent From
@@ -32,12 +31,12 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.EntityComponents
     {
         public static FixedPointVector2 Interpolate(this in TransformEntityComponent component, FixedPoint delta)
         {
-            if (!component._positionMidpoint.HasValue)
+            if (!component.PositionMidpoint.HasValue)
                 return FixedPointVector2.Interpolate(component.PositionLastPhysicsTick, component.Position, delta);
 
-            var magnitude = MathFixedPoint.Magnitude(component.Position - component._positionMidpoint.Value);
+            var magnitude = MathFixedPoint.Magnitude(component.Position - component.PositionMidpoint.Value);
             var lastMagnitude =
-                MathFixedPoint.Magnitude(component.PositionLastPhysicsTick - component._positionMidpoint.Value);
+                MathFixedPoint.Magnitude(component.PositionLastPhysicsTick - component.PositionMidpoint.Value);
             var midPointFp = lastMagnitude / (magnitude + lastMagnitude + FixedPoint.Kludge);
 
             if (delta < midPointFp)
@@ -45,13 +44,13 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.EntityComponents
                 var midpointDeltaFp = (delta - midPointFp) / midPointFp + FixedPoint.One;
 
                 return FixedPointVector2.Interpolate(component.PositionLastPhysicsTick
-                                                   , component._positionMidpoint.Value, midpointDeltaFp);
+                                                   , component.PositionMidpoint.Value, midpointDeltaFp);
             }
             else
             {
                 var midpointDeltaFp = (delta - midPointFp) / (FixedPoint.One - midPointFp);
 
-                return FixedPointVector2.Interpolate(component._positionMidpoint.Value, component.Position
+                return FixedPointVector2.Interpolate(component.PositionMidpoint.Value, component.Position
                                                    , midpointDeltaFp);
             }
         }

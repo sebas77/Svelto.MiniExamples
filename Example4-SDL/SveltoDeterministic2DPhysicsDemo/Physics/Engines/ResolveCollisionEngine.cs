@@ -104,26 +104,20 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.Engines
             // Apply impulse
             var impulse = manifold.Normal * j;
 
-            //Console.WriteLine($"ResolveCollision {tick} {egid.ID.entityID} {rigidbody.Direction} | {rigidbody.Velocity} - {impulse} * {rigidbody.InverseMass} == {(rigidbody.Velocity - impulse * rigidbody.InverseMass).Normalize()}");
-
-            //return rigidbody.CloneAndReplaceDirection((rigidbody.Velocity - impulse * rigidbody.InverseMass).Normalize());
-
-            //Console.WriteLine($"ResolveCollision {manifold.EntityIndex1} vs {manifold.EntityIndex2} dir:{rigidbodyA.Direction} norm: {manifold.Normal} j:{j} | vel:{rigidbodyA.Velocity} - imp:{impulse} == {(rigidbodyA.Velocity - impulse)} norm: {(rigidbodyA.Velocity - impulse).Normalize()}");
-
             if (manifold.CollisionType == CollisionType.AABBToCircle)
             {
                 if (manifold.EntityIndex1 == index)
-                    rigidbodyA = rigidbodyA.CloneAndReplaceDirection((rigidbodyA.Velocity - impulse).Normalize());
+                    rigidbodyA.Direction = (rigidbodyA.Velocity - impulse).Normalize();
                 else
-                    rigidbodyB = rigidbodyB.CloneAndReplaceDirection((rigidbodyB.Velocity + impulse).Normalize());
+                    rigidbodyB.Direction = (rigidbodyB.Velocity + impulse).Normalize();
             }
             else
             {
                 if (!rigidbodyA.IsKinematic)
-                    rigidbodyA = rigidbodyA.CloneAndReplaceDirection((rigidbodyA.Velocity - impulse).Normalize());
+                    rigidbodyA.Direction = (rigidbodyA.Velocity - impulse).Normalize();
 
                 if (!rigidbodyB.IsKinematic)
-                    rigidbodyB = rigidbodyB.CloneAndReplaceDirection((rigidbodyB.Velocity + impulse).Normalize());
+                    rigidbodyB.Direction = (rigidbodyB.Velocity + impulse).Normalize();
             }
         }
     }

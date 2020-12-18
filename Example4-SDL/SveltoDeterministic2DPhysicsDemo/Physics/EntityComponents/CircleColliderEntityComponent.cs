@@ -3,15 +3,15 @@ using FixedMaths;
 
 namespace MiniExamples.DeterministicPhysicDemo.Physics.EntityComponents
 {
-    public readonly struct CircleColliderEntityComponent : IEntityComponent
+    public struct CircleColliderEntityComponent : IEntityComponent
     {
         public static CircleColliderEntityComponent From(FixedPoint radius, FixedPointVector2 center)
         {
             return new CircleColliderEntityComponent(radius, center);
         }
 
-        public readonly FixedPoint        Radius;
-        public readonly FixedPointVector2 Center;
+        public FixedPoint        Radius;
+        public FixedPointVector2 Center;
 
         CircleColliderEntityComponent(FixedPoint radius, FixedPointVector2 center)
         {
