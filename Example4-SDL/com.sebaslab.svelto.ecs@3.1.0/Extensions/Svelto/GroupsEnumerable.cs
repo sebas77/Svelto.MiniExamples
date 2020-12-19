@@ -78,7 +78,7 @@ namespace Svelto.ECS
         readonly EntitiesDB                                    _db;
         readonly LocalFasterReadOnlyList<ExclusiveGroupStruct> _groups;
 
-        public readonly ref struct RefCurrent
+        public ref struct RefCurrent
         {
             public RefCurrent(in EntityCollection<T1, T2, T3, T4> buffers, ExclusiveGroupStruct group)
             {
@@ -155,7 +155,7 @@ namespace Svelto.ECS
         readonly EntitiesDB                                    _db;
         readonly LocalFasterReadOnlyList<ExclusiveGroupStruct> _groups;
 
-        public readonly ref struct RefCurrent
+        public ref struct RefCurrent
         {
             public RefCurrent(in EntityCollection<T1, T2, T3> buffers, ExclusiveGroupStruct group)
             {
@@ -230,7 +230,7 @@ namespace Svelto.ECS
         readonly EntitiesDB                                    _db;
         readonly LocalFasterReadOnlyList<ExclusiveGroupStruct> _groups;
 
-        public readonly ref struct RefCurrent
+        public ref struct RefCurrent
         {
             public RefCurrent(in EntityCollection<T1, T2> buffers, ExclusiveGroupStruct group)
             {

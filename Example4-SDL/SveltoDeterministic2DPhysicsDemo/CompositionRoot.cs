@@ -19,7 +19,7 @@ namespace MiniExamples.DeterministicPhysicDemo
             _simpleSubmissionEntityViewScheduler = new SimpleEntitiesSubmissionScheduler();
             var enginesRoot = new EnginesRoot(_simpleSubmissionEntityViewScheduler);
 
-            enginesRoot.AddEngine(new DebugPhysicsDrawEngine(_scheduler, _graphics));
+            enginesRoot.AddEngine(new DebugPhysicsDrawEngine(_graphics));
             PhysicsCore.RegisterTo(enginesRoot, _scheduler);
 
             AddEntities(enginesRoot.GenerateEntityFactory(), _simpleSubmissionEntityViewScheduler);

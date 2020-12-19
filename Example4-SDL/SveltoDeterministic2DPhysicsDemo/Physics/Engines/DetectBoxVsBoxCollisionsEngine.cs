@@ -7,8 +7,6 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.Engines
 {
     public class DetectBoxVsBoxCollisionsEngine : IQueryingEntitiesEngine, IScheduledPhysicsEngine
     {
-        public DetectBoxVsBoxCollisionsEngine(IEngineScheduler engineScheduler) { _engineScheduler = engineScheduler; }
-
         public void Execute(FixedPoint delta)
         {
             var dynamicEntities = new DoubleIterationEnumerator<TransformEntityComponent, BoxColliderEntityComponent>(
@@ -32,8 +30,7 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.Engines
             }
         }
 
-        public   void             Ready() { _engineScheduler.RegisterScheduledPhysicsEngine(this); }
-        readonly IEngineScheduler _engineScheduler;
+        public   void             Ready() {}
         public   EntitiesDB       entitiesDB { get; set; }
 
         public string Name => nameof(DetectBoxVsBoxCollisionsEngine);

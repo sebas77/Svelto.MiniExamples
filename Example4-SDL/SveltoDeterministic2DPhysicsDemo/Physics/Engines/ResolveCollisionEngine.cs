@@ -10,8 +10,6 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.Engines
 {
     public class ResolveCollisionEngine : IQueryingEntitiesEngine, IScheduledPhysicsEngine
     {
-        public ResolveCollisionEngine(IEngineScheduler engineScheduler) { _engineScheduler = engineScheduler; }
-
         public void Execute(FixedPoint delta)
         {
             // var boxRigidbodies    = new NB<RigidbodyEntityComponent>();
@@ -74,8 +72,7 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.Engines
             // }
         }
 
-        public   void             Ready() { _engineScheduler.RegisterScheduledPhysicsEngine(this); }
-        readonly IEngineScheduler _engineScheduler;
+        public   void             Ready() { }
         public   EntitiesDB       entitiesDB { get; set; }
 
         public string Name => nameof(ResolveCollisionEngine);

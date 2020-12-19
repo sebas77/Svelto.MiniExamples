@@ -6,8 +6,6 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.Engines
 {
     public class ClearPerFrameStateEngine : IQueryingEntitiesEngine, IScheduledPhysicsEngine
     {
-        public ClearPerFrameStateEngine(IEngineScheduler engineScheduler) { _engineScheduler = engineScheduler; }
-
         public void Execute(FixedPoint delta)
         {
             foreach (var ((manifolds, count), _) in entitiesDB.QueryEntities<CollisionManifoldEntityComponent>(
@@ -16,9 +14,8 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.Engines
                     manifolds[i] = default;
         }
 
-        public void Ready() { _engineScheduler.RegisterScheduledPhysicsEngine(this); }
+        public void Ready() {}
 
-        readonly IEngineScheduler _engineScheduler;
         public   EntitiesDB       entitiesDB { get; set; }
 
         public string Name => nameof(ClearPerFrameStateEngine);

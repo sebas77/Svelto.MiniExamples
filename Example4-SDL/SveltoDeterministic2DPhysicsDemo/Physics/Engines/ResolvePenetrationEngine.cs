@@ -6,8 +6,6 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.Engines
 {
     public class ResolvePenetrationEngine : IQueryingEntitiesEngine, IScheduledPhysicsEngine
     {
-        public ResolvePenetrationEngine(IEngineScheduler engineScheduler) { _engineScheduler = engineScheduler; }
-
         public void Execute(FixedPoint delta)
         {
             foreach (var ((transforms, rigidbodies, manifolds, count), _) in entitiesDB
@@ -32,9 +30,8 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.Engines
                 }
         }
 
-        public void Ready() { _engineScheduler.RegisterScheduledPhysicsEngine(this); }
+        public void Ready() {}
 
-        readonly IEngineScheduler _engineScheduler;
         public   EntitiesDB       entitiesDB { get; set; }
 
         public string Name => nameof(ResolvePenetrationEngine);

@@ -8,9 +8,8 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.Engines
 {
     public class DebugPhysicsDrawEngine : IQueryingEntitiesEngine, IScheduledGraphicsEngine
     {
-        public DebugPhysicsDrawEngine(EngineScheduler engineScheduler, IGraphics graphics)
+        public DebugPhysicsDrawEngine(IGraphics graphics)
         {
-            _engineScheduler = engineScheduler;
             _graphics        = graphics;
         }
 
@@ -65,9 +64,8 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.Engines
                 }
         }
 
-        public void Ready() { _engineScheduler.RegisterScheduledGraphicsEngine(this); }
+        public void Ready() {}
 
-        readonly EngineScheduler _engineScheduler;
         readonly IGraphics       _graphics;
         public   EntitiesDB      entitiesDB { get; set; }
 

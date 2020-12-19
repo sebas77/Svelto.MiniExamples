@@ -4,13 +4,8 @@ using MiniExamples.DeterministicPhysicDemo.Physics.EntityComponents;
 
 namespace MiniExamples.DeterministicPhysicDemo.Physics.Engines
 {
-    public class ApplyVelocityEngine : IQueryingEntitiesEngine, IScheduledPhysicsEngine
+    public class ApplyVelocityToRigidBodiesEngine : IQueryingEntitiesEngine, IScheduledPhysicsEngine
     {
-        public ApplyVelocityEngine(IEngineScheduler engineScheduler)
-        {
-            _engineScheduler             = engineScheduler;
-        }
-
         public void Execute(FixedPoint delta)
         {
             foreach (var ((rigidbodies, transforms, count), _) in entitiesDB
@@ -35,14 +30,8 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.Engines
                 }
         }
 
-        public void Ready()
-        {
-            _engineScheduler.RegisterScheduledPhysicsEngine(this);
-        }
-
-        public   EntitiesDB       entitiesDB { get; set; }
-        public   string           Name => nameof(ApplyVelocityEngine);
-        
-        readonly IEngineScheduler _engineScheduler;
+        public EntitiesDB entitiesDB { get; set; }
+        public void       Ready()    {  }
+        public string     Name       => nameof(ApplyVelocityToRigidBodiesEngine);
     }
 }
