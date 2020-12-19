@@ -11,7 +11,7 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.Engines
 
         public void Execute(FixedPoint delta)
         {
-            var dynamicEntities = new DoubleEntitiesEnumerator<TransformEntityComponent, BoxColliderEntityComponent>(
+            var dynamicEntities = new DoubleIterationEnumerator<TransformEntityComponent, BoxColliderEntityComponent>(
                 entitiesDB.QueryEntities<TransformEntityComponent, BoxColliderEntityComponent>(
                     GameGroups.DynamicRigidBodyWithBoxColliders.Groups));
 

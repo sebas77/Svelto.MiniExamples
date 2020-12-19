@@ -130,10 +130,10 @@ namespace Svelto.ECS
         }
     }
 
-    public readonly ref struct DoubleEntitiesEnumerator<T1, T2> where T1 : struct, IEntityComponent
+    public readonly ref struct DoubleIterationEnumerator<T1, T2> where T1 : struct, IEntityComponent
                                                                 where T2 : struct, IEntityComponent
     {
-        public DoubleEntitiesEnumerator(GroupsEnumerable<T1, T2> groupsEnumerable)
+        public DoubleIterationEnumerator(GroupsEnumerable<T1, T2> groupsEnumerable)
         {
             _groupsEnumerable = groupsEnumerable;
         }
