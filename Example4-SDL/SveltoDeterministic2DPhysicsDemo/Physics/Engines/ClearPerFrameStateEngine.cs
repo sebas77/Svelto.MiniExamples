@@ -9,7 +9,7 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.Engines
         public void Execute(FixedPoint delta)
         {
             foreach (var ((manifolds, count), _) in entitiesDB.QueryEntities<CollisionManifoldEntityComponent>(
-                GameGroups.RigidBody.Groups))
+                GameGroups.RigidBodies.Groups))
                 for (var i = 0; i < count; i++)
                     manifolds[i] = default;
         }
