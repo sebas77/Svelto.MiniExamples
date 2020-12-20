@@ -13,7 +13,7 @@ namespace Svelto.ECS
                 _enginesRoot = new Svelto.DataStructures.WeakReference<EnginesRoot>(weakReference);
             }
 
-            public EntityComponentInitializer BuildEntity<T>
+            public EntityInitializer BuildEntity<T>
                 (uint entityID, ExclusiveBuildGroup groupStructId, IEnumerable<object> implementors = null)
                 where T : IEntityDescriptor, new()
             {
@@ -22,14 +22,14 @@ namespace Svelto.ECS
                                                      , TypeCache<T>.type, implementors);
             }
 
-            public EntityComponentInitializer BuildEntity<T>(EGID egid, IEnumerable<object> implementors = null)
+            public EntityInitializer BuildEntity<T>(EGID egid, IEnumerable<object> implementors = null)
                 where T : IEntityDescriptor, new()
             {
                 return _enginesRoot.Target.BuildEntity(
                     egid, EntityDescriptorTemplate<T>.descriptor.componentsToBuild, TypeCache<T>.type, implementors);
             }
 
-            public EntityComponentInitializer BuildEntity<T>
+            public EntityInitializer BuildEntity<T>
                 (EGID egid, T entityDescriptor, IEnumerable<object> implementors) where T : IEntityDescriptor
             {
                 return _enginesRoot.Target.BuildEntity(egid, entityDescriptor.componentsToBuild, TypeCache<T>.type, implementors);
@@ -40,7 +40,7 @@ namespace Svelto.ECS
                 return _enginesRoot.Target.ProvideNativeEntityFactoryQueue<T>(memberName);
             }
 #endif            
-            public EntityComponentInitializer BuildEntity<T>
+            public EntityInitializer BuildEntity<T>
                 (uint entityID, ExclusiveBuildGroup groupStructId, T descriptorEntity, IEnumerable<object> implementors)
                 where T : IEntityDescriptor
             {
@@ -54,7 +54,7 @@ namespace Svelto.ECS
                 _enginesRoot.Target.Preallocate<T>(groupStructId, size);
             }
             
-            public EntityComponentInitializer BuildEntity(EGID egid, IComponentBuilder[] componentsToBuild, Type type, IEnumerable<object> implementors = null)
+            public EntityInitializer BuildEntity(EGID egid, IComponentBuilder[] componentsToBuild, Type type, IEnumerable<object> implementors = null)
             {
                 return _enginesRoot.Target.BuildEntity(egid, componentsToBuild, type, implementors);
             }

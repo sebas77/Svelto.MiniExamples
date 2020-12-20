@@ -13,7 +13,7 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.Builders
     {
         public void Build(IEntityFactory entityFactory, uint egid)
         {
-            EntityComponentInitializer initializer;
+            EntityInitializer initializer;
             switch (_colliderType)
             {
                 case ColliderType.Box:

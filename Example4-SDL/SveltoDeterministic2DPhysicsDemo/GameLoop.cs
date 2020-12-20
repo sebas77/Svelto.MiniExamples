@@ -44,15 +44,16 @@ namespace MiniExamples.DeterministicPhysicDemo
                 return;
             }
 
-            var physicsAction = ScheduledAction.From(
-                () => _scheduler.ExecutePhysics(_physicsDeltaPerSimulation)
+            var physicGroup = ScheduledAction.From(
+                () => 
+                    _scheduler.ExecutePhysics(_physicsDeltaPerSimulation)
               , _physicsSimulationsPerSecond
               , true);
 
             var graphicsAction = ScheduledAction.From(() =>
             {
                 _graphics?.RenderStart();
-                _scheduler.ExecuteGraphics(physicsAction.CalculateNormalisedDelta());
+                _scheduler.ExecuteGraphics(physicGroup.CalculateNormalisedDelta());
 
                 _schedulerReporter.IncrementFps();
                 if (_graphics != null)
@@ -71,6 +72,7 @@ namespace MiniExamples.DeterministicPhysicDemo
             var lastElapsedTicks = clock.ElapsedTicks;
             var gameTick         = 0UL;
             _running             = true;
+            
             while (_running)
             {
                 _input?.PollEvents(this);
@@ -82,7 +84,7 @@ namespace MiniExamples.DeterministicPhysicDemo
 
                 // Execute simulation ticks
                 graphicsAction.Tick((ulong) elapsedTicks);
-                physicsAction.Tick(gameTick);
+                physicGroup.Tick(gameTick);
                 oncePerSecond.Tick(gameTick);
             }
 

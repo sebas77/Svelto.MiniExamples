@@ -29,7 +29,7 @@ namespace Svelto.ECS
 
         ///--------------------------------------------
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        EntityComponentInitializer BuildEntity
+        EntityInitializer BuildEntity
         (EGID entityID, IComponentBuilder[] componentsToBuild, Type descriptorType,
             IEnumerable<object> implementors = null)
         {
@@ -39,7 +39,7 @@ namespace Svelto.ECS
             var dic = EntityFactory.BuildGroupedEntities(entityID, _groupedEntityToAdd, componentsToBuild
               , implementors, descriptorType);
 
-            return new EntityComponentInitializer(entityID, dic);
+            return new EntityInitializer(entityID, dic);
         }
 
         ///--------------------------------------------

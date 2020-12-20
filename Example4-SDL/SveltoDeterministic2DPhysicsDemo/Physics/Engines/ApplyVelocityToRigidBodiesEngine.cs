@@ -15,20 +15,20 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.Engines
                     ref var rigidbody = ref rigidbodies[i];
 
                     ref var position = ref transforms[i].Position;
-                    
+
                     var velocity       = rigidbody.Direction * rigidbody.Speed;
                     var targetPosition = position + velocity / delta;
-                    
+
                     transforms[i].Position                = targetPosition;
                     transforms[i].PositionLastPhysicsTick = position;
-                    transforms[i].HasMidPoint        = false;
+                    transforms[i].HasMidPoint             = false;
 
                     rigidbody.Velocity = velocity;
                 }
         }
 
         public EntitiesDB entitiesDB { get; set; }
-        public void       Ready()    {  }
+        public void       Ready()    { }
         public string     Name       => nameof(ApplyVelocityToRigidBodiesEngine);
     }
 }

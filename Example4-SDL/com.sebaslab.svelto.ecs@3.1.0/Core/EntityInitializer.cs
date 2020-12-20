@@ -4,9 +4,9 @@ using Svelto.ECS.Internal;
 
 namespace Svelto.ECS
 {
-    public readonly ref struct EntityComponentInitializer
+    public readonly ref struct EntityInitializer
     {
-        public EntityComponentInitializer(EGID id, FasterDictionary<RefWrapperType, ITypeSafeDictionary> group)
+        public EntityInitializer(EGID id, FasterDictionary<RefWrapperType, ITypeSafeDictionary> group)
         {
             _group = group;
             _ID = id;

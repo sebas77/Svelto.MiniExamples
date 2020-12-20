@@ -3,31 +3,6 @@ using Svelto.Common;
 
 namespace Svelto.ECS
 {
-    public interface IStepEngine : IEngine
-    {
-        void Step();
-        
-        string name { get; }
-    }
-    
-    public interface IStepEngine<T> : IEngine
-    {
-        void Step(ref T _param);
-        
-        string name { get; }
-    }
-    
-    public interface IStepGroupEngine : IEngine
-    {
-        void StepAll();
-        
-        string name { get; }
-    }
-    
-    public interface IStepGroupEngine<T> : IStepEngine<T>
-    {
-    }
-
     public abstract class SortedEnginesGroup<Interface, SequenceOrder> : IStepGroupEngine
         where SequenceOrder : struct, ISequenceOrder where Interface : IStepEngine
     {
@@ -65,7 +40,7 @@ namespace Svelto.ECS
             _instancedSequence = new Sequence<Interface, SequenceOrder>(engines);
         }
 
-        public void Step(ref Parameter param)
+        public void StepAll(in Parameter param)
         {
             var sequenceItems = _instancedSequence.items;
             using (var profiler = new PlatformProfiler(_name))
@@ -73,7 +48,7 @@ namespace Svelto.ECS
                 for (var index = 0; index < sequenceItems.count; index++)
                 {
                     var engine = sequenceItems[index];
-                    using (profiler.Sample(engine.name)) engine.Step(ref param);
+                    using (profiler.Sample(engine.name)) engine.StepAll(param);
                 }
             }
         }
