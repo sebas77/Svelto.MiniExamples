@@ -9,14 +9,11 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.Engines
         public void Execute(FixedPoint delta)
         {
             foreach (var ((rigidbodies, transforms, count), _) in entitiesDB
-               .QueryEntities<RigidbodyEntityComponent, TransformEntityComponent>(GameGroups.RigidBodies.Groups))
+               .QueryEntities<RigidbodyEntityComponent, TransformEntityComponent>(GameGroups.DynamicRigidBodies.Groups))
                 for (var i = 0; i < count; i++)
                 {
                     ref var rigidbody = ref rigidbodies[i];
 
-                    if (rigidbody.IsKinematic)
-                        continue;
-                    
                     ref var position = ref transforms[i].Position;
                     
                     var velocity       = rigidbody.Direction * rigidbody.Speed;
@@ -24,7 +21,7 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.Engines
                     
                     transforms[i].Position                = targetPosition;
                     transforms[i].PositionLastPhysicsTick = position;
-                    transforms[i].PositionMidpoint        = null;
+                    transforms[i].HasMidPoint        = false;
 
                     rigidbody.Velocity = velocity;
                 }

@@ -26,7 +26,7 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.Engines
                     var collisionManifold = manifold.CollisionManifold.Value;
 
                     transform.Position         = transform.Position - collisionManifold.Normal;
-                    transform.PositionMidpoint = transform.Position - collisionManifold.Normal / FixedPoint.Two;
+                    transform.PositionMidPoint = transform.Position - collisionManifold.Normal / FixedPoint.Two;
                 }
         }
 

@@ -36,7 +36,7 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.Builders
                     throw new ArgumentOutOfRangeException($"Unknown {_colliderType}");
             }
 
-            initializer.Init(TransformEntityComponent.From(_position, _position));
+            initializer.Init(new TransformEntityComponent(_position, _position));
             initializer.Init(RigidbodyEntityComponent.From(_direction, _speed, _restitution, _mass, _isKinematic));
 
             switch (_colliderType)

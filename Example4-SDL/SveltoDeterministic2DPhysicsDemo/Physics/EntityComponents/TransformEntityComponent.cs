@@ -7,23 +7,26 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.EntityComponents
     {
         public FixedPointVector2 Position;
         public FixedPointVector2 PositionLastPhysicsTick;
-        public FixedPointVector2? PositionMidpoint;
+        public FixedPointVector2 PositionMidPoint;
+        public bool              HasMidPoint;
 
         public new string ToString() { return Position.ToString(); }
 
-        TransformEntityComponent(FixedPointVector2 position, FixedPointVector2 positionLastPhysicsTick
-                               , FixedPointVector2? positionMidpoint = null)
+        public TransformEntityComponent(FixedPointVector2 position, FixedPointVector2 positionLastPhysicsTick)
         {
             Position                = position;
             PositionLastPhysicsTick = positionLastPhysicsTick;
-            PositionMidpoint       = positionMidpoint;
+            PositionMidPoint        = default;
+            HasMidPoint             = false;
         }
-
-        public static TransformEntityComponent From
-        (FixedPointVector2 position, FixedPointVector2 positionLastPhysicsTick
-       , FixedPointVector2? positionMidpoint = null)
+        
+        public TransformEntityComponent(FixedPointVector2 position, FixedPointVector2 positionLastPhysicsTick
+                               , FixedPointVector2 positionMidPoint)
         {
-            return new TransformEntityComponent(position, positionLastPhysicsTick, positionMidpoint);
+            Position                = position;
+            PositionLastPhysicsTick = positionLastPhysicsTick;
+            PositionMidPoint        = positionMidPoint;
+            HasMidPoint             = true;
         }
     }
 
@@ -31,12 +34,12 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.EntityComponents
     {
         public static FixedPointVector2 Interpolate(this in TransformEntityComponent component, FixedPoint delta)
         {
-            if (!component.PositionMidpoint.HasValue)
+            if (!component.HasMidPoint)
                 return FixedPointVector2.Interpolate(component.PositionLastPhysicsTick, component.Position, delta);
 
-            var magnitude = MathFixedPoint.Magnitude(component.Position - component.PositionMidpoint.Value);
+            var magnitude = MathFixedPoint.Magnitude(component.Position - component.PositionMidPoint);
             var lastMagnitude =
-                MathFixedPoint.Magnitude(component.PositionLastPhysicsTick - component.PositionMidpoint.Value);
+                MathFixedPoint.Magnitude(component.PositionLastPhysicsTick - component.PositionMidPoint);
             var midPointFp = lastMagnitude / (magnitude + lastMagnitude + FixedPoint.Kludge);
 
             if (delta < midPointFp)
@@ -44,13 +47,13 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.EntityComponents
                 var midpointDeltaFp = (delta - midPointFp) / midPointFp + FixedPoint.One;
 
                 return FixedPointVector2.Interpolate(component.PositionLastPhysicsTick
-                                                   , component.PositionMidpoint.Value, midpointDeltaFp);
+                                                   , component.PositionMidPoint, midpointDeltaFp);
             }
             else
             {
                 var midpointDeltaFp = (delta - midPointFp) / (FixedPoint.One - midPointFp);
 
-                return FixedPointVector2.Interpolate(component.PositionMidpoint.Value, component.Position
+                return FixedPointVector2.Interpolate(component.PositionMidPoint, component.Position
                                                    , midpointDeltaFp);
             }
         }
