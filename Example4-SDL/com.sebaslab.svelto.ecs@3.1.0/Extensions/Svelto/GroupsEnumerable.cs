@@ -65,6 +65,7 @@ namespace Svelto.ECS
             public void Reset() { _indexGroup = -1; }
 
             public RefCurrent Current => new RefCurrent(_buffers, _groups[_indexGroup]);
+            public bool       isValid => _indexGroup != -1;
 
             readonly LocalFasterReadOnlyList<ExclusiveGroupStruct> _groups;
 

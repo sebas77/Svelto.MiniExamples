@@ -5,13 +5,6 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.EntityComponents
 {
     public struct RigidbodyEntityComponent : IEntityComponent
     {
-        public static RigidbodyEntityComponent From
-            (FixedPointVector2 direction, FixedPoint speed, FixedPoint restitution, FixedPoint mass, bool isKinematic)
-        {
-            return new RigidbodyEntityComponent(speed, direction, FixedPointVector2.Zero, FixedPoint.Zero, restitution
-                                              , mass, isKinematic);
-        }
-
         public bool              IsKinematic;
         public FixedPointVector2 Direction;
         public FixedPointVector2 Velocity;

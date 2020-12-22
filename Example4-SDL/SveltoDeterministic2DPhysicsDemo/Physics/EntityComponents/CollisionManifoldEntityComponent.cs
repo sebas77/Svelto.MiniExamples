@@ -6,21 +6,30 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.EntityComponents
 {
     public struct CollisionManifoldEntityComponent : IEntityComponent, IEquatable<CollisionManifoldEntityComponent>
     {
-        public static CollisionManifoldEntityComponent From(CollisionManifold collisionManifold)
-        {
-            return new CollisionManifoldEntityComponent(collisionManifold);
-        }
+        public CollisionManifold CollisionManifold;
+        public RigidbodyEntityComponent LocalRigidBody;
+        public RigidbodyEntityComponent CollisionRidigBody;
 
-        public CollisionManifold? CollisionManifold;
-
-        CollisionManifoldEntityComponent(CollisionManifold? collisionManifold)
+        public CollisionManifoldEntityComponent(CollisionManifold collisionManifold, ref RigidbodyEntityComponent localRigidBody, ref RigidbodyEntityComponent collisionRidigBody)
         {
+            CollisionRidigBody = collisionRidigBody;
+            LocalRigidBody = localRigidBody;
             CollisionManifold = collisionManifold;
         }
 
         public bool Equals(CollisionManifoldEntityComponent other)
         {
-            return Nullable.Equals(CollisionManifold, other.CollisionManifold);
+            return CollisionManifold.Equals(other.CollisionManifold) && LocalRigidBody.Equals(other.LocalRigidBody) && CollisionRidigBody.Equals(other.CollisionRidigBody);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is CollisionManifoldEntityComponent other && Equals(other);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(CollisionManifold, LocalRigidBody, CollisionRidigBody);
         }
     }
 }
