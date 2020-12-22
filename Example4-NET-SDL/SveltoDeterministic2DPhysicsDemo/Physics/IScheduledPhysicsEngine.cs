@@ -6,6 +6,6 @@ namespace MiniExamples.DeterministicPhysicDemo
     public interface IScheduledPhysicsEngine
     {
         string Name { get; }
-        void   Execute(FixedPoint delta);
+        void   Execute(in FixedPoint delta);
     }
 }

@@ -39,8 +39,6 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.Builders
 
             initializer.Init(new TransformEntityComponent(_position, _position));
             initializer.Init(new RigidbodyEntityComponent(_speed, _direction, FixedPointVector2.Zero, FixedPoint.Zero, _restitution, _mass, _isKinematic));
-            initializer.Init(new CollisionManifoldEntityComponent(2));
-            initializer.Init(new ImpulseEntityComponent(2));
 
             switch (_colliderType)
             {
