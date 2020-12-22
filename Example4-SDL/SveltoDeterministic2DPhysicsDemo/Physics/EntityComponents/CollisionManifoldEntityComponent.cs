@@ -1,26 +1,23 @@
 ﻿using System;
-using Svelto.ECS;
 using MiniExamples.DeterministicPhysicDemo.Physics.CollisionStructures;
+using Svelto.Common;
+using Svelto.ECS;
+using Svelto.ECS.DataStructures;
 
 namespace MiniExamples.DeterministicPhysicDemo.Physics.EntityComponents
 {
-    public struct CollisionManifoldEntityComponent : IEntityComponent, IEquatable<CollisionManifoldEntityComponent>
+    public struct CollisionManifoldEntityComponent : IEntityComponent, IDisposable
     {
-        public static CollisionManifoldEntityComponent From(CollisionManifold collisionManifold)
+        public CollisionManifoldEntityComponent(uint size)
         {
-            return new CollisionManifoldEntityComponent(collisionManifold);
+            Collisions = new NativeDynamicArrayCast<CollisionManifold>(NativeDynamicArray.Alloc<CollisionManifold>(Allocator.Temp, size));
         }
 
-        public CollisionManifold? CollisionManifold;
-
-        CollisionManifoldEntityComponent(CollisionManifold? collisionManifold)
+        public void Dispose()
         {
-            CollisionManifold = collisionManifold;
+            Collisions.Dispose();
         }
 
-        public bool Equals(CollisionManifoldEntityComponent other)
-        {
-            return Nullable.Equals(CollisionManifold, other.CollisionManifold);
-        }
+        public NativeDynamicArrayCast<CollisionManifold> Collisions { get; set; }
     }
 }

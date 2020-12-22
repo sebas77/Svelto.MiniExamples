@@ -5,11 +5,6 @@ namespace MiniExamples.DeterministicPhysicDemo
 {
     public class ScheduledAction
     {
-        public static ScheduledAction From(Action action, ulong frequency, bool enforceFrequency)
-        {
-            return new ScheduledAction(action, frequency, enforceFrequency);
-        }
-
         public void Tick(ulong elapsedTicks)
         {
             _remainingDelta += elapsedTicks - _lastTick;
@@ -43,7 +38,7 @@ namespace MiniExamples.DeterministicPhysicDemo
             return FixedPoint.From((float) _remainingDelta / _frequency);
         }
 
-        ScheduledAction(Action action, ulong frequency, bool enforceFrequency)
+        public ScheduledAction(Action action, ulong frequency, bool enforceFrequency)
         {
             _action           = action;
             _frequency        = frequency;

@@ -21,7 +21,7 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.EntityComponents
         }
         
         public TransformEntityComponent(FixedPointVector2 position, FixedPointVector2 positionLastPhysicsTick
-                               , FixedPointVector2 positionMidPoint)
+                                      , FixedPointVector2 positionMidPoint)
         {
             Position                = position;
             PositionLastPhysicsTick = positionLastPhysicsTick;

@@ -44,13 +44,13 @@ namespace MiniExamples.DeterministicPhysicDemo
                 return;
             }
 
-            var physicGroup = ScheduledAction.From(
-                () => 
-                    _scheduler.ExecutePhysics(_physicsDeltaPerSimulation)
+            var physicGroup = new ScheduledAction(
+                () => _scheduler.ExecutePhysics(_physicsDeltaPerSimulation)
+
               , _physicsSimulationsPerSecond
               , true);
 
-            var graphicsAction = ScheduledAction.From(() =>
+            var graphicsAction = new ScheduledAction(() =>
             {
                 _graphics?.RenderStart();
                 _scheduler.ExecuteGraphics(physicGroup.CalculateNormalisedDelta());
@@ -62,7 +62,7 @@ namespace MiniExamples.DeterministicPhysicDemo
                 _graphics?.RenderEnd();
             }, _graphicsFramesPerSecond, false);
 
-            var oncePerSecond = ScheduledAction.From(() =>
+            var oncePerSecond = new ScheduledAction(() =>
             {
                 if (_graphics != null)
                     _schedulerReporter.Reset();

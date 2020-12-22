@@ -12,17 +12,21 @@ namespace MiniExamples.DeterministicPhysicDemo
     {
         public CompositionRoot(IGraphics graphics)
         {
+            _simpleSubmissionEntityViewScheduler = new SimpleEntitiesSubmissionScheduler();
             _graphics          = graphics;
             _schedulerReporter = new EngineSchedulerReporter();
-            _scheduler         = new EngineScheduler(_schedulerReporter);
-            
-            _simpleSubmissionEntityViewScheduler = new SimpleEntitiesSubmissionScheduler();
-            var enginesRoot = new EnginesRoot(_simpleSubmissionEntityViewScheduler);
+            _scheduler         = new EngineScheduler(_schedulerReporter, _simpleSubmissionEntityViewScheduler);
 
-            enginesRoot.AddEngine(new DebugPhysicsDrawEngine(_graphics));
+            var enginesRoot     = new EnginesRoot(_simpleSubmissionEntityViewScheduler);
+            var entityFactory   = enginesRoot.GenerateEntityFactory();
+
+            var debugPhysicsDrawEngine = new DebugPhysicsDrawEngine(_graphics);
+            enginesRoot.AddEngine(debugPhysicsDrawEngine);
+            scheduler.RegisterScheduledGraphicsEngine(debugPhysicsDrawEngine);
+
             PhysicsCore.RegisterTo(enginesRoot, _scheduler);
 
-            AddEntities(enginesRoot.GenerateEntityFactory(), _simpleSubmissionEntityViewScheduler);
+            AddEntities(entityFactory, _simpleSubmissionEntityViewScheduler);
         }
         public IEngineSchedulerReporter schedulerReporter => _schedulerReporter;
         public IEngineScheduler scheduler => _scheduler;
@@ -34,25 +38,25 @@ namespace MiniExamples.DeterministicPhysicDemo
                                         .SetPosition(FixedPointVector2.From(FixedPoint.From(0), FixedPoint.From(-100)))
                                         .SetBoxCollider(FixedPointVector2.From(100, 5))
                                         .SetIsKinematic(true)
-                                        .Build(entityFactory, 0);
+                                        .Build(entityFactory);
             
             RigidBodyWithColliderBuilder.Create()
                                         .SetPosition(FixedPointVector2.From(FixedPoint.From(0), FixedPoint.From(100)))
                                         .SetBoxCollider(FixedPointVector2.From(100, 5))
                                         .SetIsKinematic(true)
-                                        .Build(entityFactory, 1);
+                                        .Build(entityFactory);
             
             RigidBodyWithColliderBuilder.Create()
                                         .SetPosition(FixedPointVector2.From(FixedPoint.From(-100), FixedPoint.From(0)))
                                         .SetBoxCollider(FixedPointVector2.From(5, 100))
                                         .SetIsKinematic(true)
-                                        .Build(entityFactory, 2);
+                                        .Build(entityFactory);
             
             RigidBodyWithColliderBuilder.Create()
                                         .SetPosition(FixedPointVector2.From(FixedPoint.From(100), FixedPoint.From(0)))
                                         .SetBoxCollider(FixedPointVector2.From(5, 100))
                                         .SetIsKinematic(true)
-                                        .Build(entityFactory, 3);
+                                        .Build(entityFactory);
             
             // Add some bounding boxes
             AddBoxColliderEntity(entityFactory, 4, FixedPointVector2.From(FixedPoint.From(-30), FixedPoint.From(0)), FixedPointVector2.Down, FixedPoint.From(3), FixedPointVector2.From(10, 10));
@@ -62,7 +66,7 @@ namespace MiniExamples.DeterministicPhysicDemo
             AddBoxColliderEntity(entityFactory, 8, FixedPointVector2.From(FixedPoint.From(40), FixedPoint.From(-90)), FixedPointVector2.From(1, 1).Normalize(), FixedPoint.From(10), FixedPointVector2.From(3, 3));
             AddBoxColliderEntity(entityFactory, 9, FixedPointVector2.From(FixedPoint.From(40), FixedPoint.From(-60)), FixedPointVector2.From(1, 1).Normalize(), FixedPoint.From(10), FixedPointVector2.From(3, 3));
             AddBoxColliderEntity(entityFactory, 10, FixedPointVector2.From(FixedPoint.From(40), FixedPoint.From(-30)), FixedPointVector2.From(1, 1).Normalize(), FixedPoint.From(3), FixedPointVector2.From(3, 3));
-            
+
             //this is wrong, SubmitEntities() must happen every tick, not just once, otherwise new entities cannot be submitted
             simpleSubmissionEntityViewScheduler.SubmitEntities();
         }
@@ -74,7 +78,7 @@ namespace MiniExamples.DeterministicPhysicDemo
                                         .SetDirection(direction)
                                         .SetSpeed(speed)
                                         .SetBoxCollider(boxColliderSize)
-                                        .Build(entityFactory, egid);
+                                        .Build(entityFactory);
         }
 
         readonly EngineScheduler          _scheduler;

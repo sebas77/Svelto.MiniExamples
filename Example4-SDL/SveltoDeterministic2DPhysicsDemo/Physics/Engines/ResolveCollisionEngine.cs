@@ -1,10 +1,9 @@
-﻿using System.Runtime.CompilerServices;
-using Svelto.DataStructures;
-using Svelto.ECS;
+﻿using System;
+using System.Runtime.CompilerServices;
 using FixedMaths;
 using MiniExamples.DeterministicPhysicDemo.Physics.CollisionStructures;
 using MiniExamples.DeterministicPhysicDemo.Physics.EntityComponents;
-using MiniExamples.DeterministicPhysicDemo.Physics.Types;
+using Svelto.ECS;
 
 namespace MiniExamples.DeterministicPhysicDemo.Physics.Engines
 {
@@ -12,74 +11,36 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.Engines
     {
         public void Execute(FixedPoint delta)
         {
-            // var boxRigidbodies    = new NB<RigidbodyEntityComponent>();
-            // var boxManifolds      = new NB<CollisionManifoldEntityComponent>();
-            // var boxCount          = 0;
-            // var circleRigidbodies = new NB<RigidbodyEntityComponent>();
-            // var circleManifolds   = new NB<CollisionManifoldEntityComponent>();
-            // var circleCount       = 0;
-            //
-            // foreach (var ((rigidbodies, manifolds, count), _) in entitiesDB
-            //    .QueryEntities<RigidbodyEntityComponent, CollisionManifoldEntityComponent>(
-            //         GameGroups.RigidBodyWithBoxColliders.Groups))
-            // {
-            //     boxRigidbodies = rigidbodies;
-            //     boxManifolds   = manifolds;
-            //     boxCount       = count;
-            // }
-            //
-            // foreach (var ((rigidbodies, manifolds, count), _) in entitiesDB
-            //    .QueryEntities<RigidbodyEntityComponent, CollisionManifoldEntityComponent>(
-            //         GameGroups.RigidBodyWithCircleColliders.Groups))
-            // {
-            //     circleRigidbodies = rigidbodies;
-            //     circleManifolds   = manifolds;
-            //     circleCount       = count;
-            // }
-            //
-            // for (var i = 0; i < boxCount; i++)
-            // {
-            //     ref var manifold = ref boxManifolds[i];
-            //
-            //     if (!manifold.CollisionManifold.HasValue)
-            //         continue;
-            //
-            //     if (manifold.CollisionManifold.Value.CollisionType == CollisionType.AABBToCircle)
-            //         ResolveCollision(i, manifold.CollisionManifold.Value
-            //                        , ref boxRigidbodies[manifold.CollisionManifold.Value.EntityIndex1]
-            //                        , ref circleRigidbodies[manifold.CollisionManifold.Value.EntityIndex2]);
-            //     else
-            //         ResolveCollision(i, manifold.CollisionManifold.Value
-            //                        , ref boxRigidbodies[manifold.CollisionManifold.Value.EntityIndex1]
-            //                        , ref boxRigidbodies[manifold.CollisionManifold.Value.EntityIndex2]);
-            // }
-            //
-            // for (var i = 0; i < circleCount; i++)
-            // {
-            //     ref var manifold = ref circleManifolds[i];
-            //
-            //     if (!manifold.CollisionManifold.HasValue)
-            //         continue;
-            //
-            //     if (manifold.CollisionManifold.Value.CollisionType == CollisionType.AABBToCircle)
-            //         ResolveCollision(i, manifold.CollisionManifold.Value
-            //                        , ref boxRigidbodies[manifold.CollisionManifold.Value.EntityIndex1]
-            //                        , ref circleRigidbodies[manifold.CollisionManifold.Value.EntityIndex2]);
-            //     else
-            //         ResolveCollision(i, manifold.CollisionManifold.Value
-            //                        , ref circleRigidbodies[manifold.CollisionManifold.Value.EntityIndex1]
-            //                        , ref circleRigidbodies[manifold.CollisionManifold.Value.EntityIndex2]);
-            // }
+            var entities = entitiesDB
+                .QueryEntities<CollisionManifoldEntityComponent, RigidbodyEntityComponent, ImpulseEntityComponent>(
+                    GameGroups.DynamicRigidBodyWithBoxColliders.Groups);
+
+            foreach (var ((manifolds, rigidBodies, impulses, count), _) in entities)
+            {
+                for (var i = 0; i < count; i++)
+                {
+                    ref var manifold = ref manifolds[i];
+                    ref var impulse = ref impulses[i];
+
+                    for (var j = 0; j < manifold.Collisions.count; j++)
+                    {
+                        ref var collision = ref manifold.Collisions[j];
+
+                        var calculatedImpulse = CalculateImpulse(
+                            ref collision,
+                            ref collision.LocalRigidBody,
+                            ref collision.RemoteRigidBody);
+
+                        impulse.Impulses.Add(calculatedImpulse);
+                    }
+                }
+            }
         }
 
-        public   void             Ready() { }
-        public   EntitiesDB       entitiesDB { get; set; }
-
-        public string Name => nameof(ResolveCollisionEngine);
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static void ResolveCollision(int index, CollisionManifold manifold, ref RigidbodyEntityComponent rigidbodyA
-                                   , ref RigidbodyEntityComponent rigidbodyB)
+        static FixedPointVector2 CalculateImpulse(ref CollisionManifold manifold
+                                                , ref RigidbodyEntityComponent rigidbodyA
+                                                , ref RigidbodyEntityComponent rigidbodyB)
         {
             // Calculate relative velocity
             var rv = rigidbodyB.Velocity - rigidbodyA.Velocity;
@@ -89,7 +50,7 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.Engines
 
             // Do not resolve if velocities are separating
             if (velAlongNormal > FixedPoint.Zero)
-                return;
+                return FixedPointVector2.Zero;
 
             // Calculate restitution
             var e = MathFixedPoint.Min(rigidbodyA.Restitution, rigidbodyB.Restitution);
@@ -99,23 +60,11 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.Engines
             //j /= rigidbody.InverseMass + collisionTarget.InverseMass;
 
             // Apply impulse
-            var impulse = manifold.Normal * j;
-
-            if (manifold.CollisionType == CollisionType.AABBToCircle)
-            {
-                if (manifold.EntityIndex1 == index)
-                    rigidbodyA.Direction = (rigidbodyA.Velocity - impulse).Normalize();
-                else
-                    rigidbodyB.Direction = (rigidbodyB.Velocity + impulse).Normalize();
-            }
-            else
-            {
-                if (!rigidbodyA.IsKinematic)
-                    rigidbodyA.Direction = (rigidbodyA.Velocity - impulse).Normalize();
-
-                if (!rigidbodyB.IsKinematic)
-                    rigidbodyB.Direction = (rigidbodyB.Velocity + impulse).Normalize();
-            }
+            return manifold.Normal * j;
         }
+
+        public string Name => nameof(ResolveCollisionEngine);
+        public EntitiesDB entitiesDB { get; set; }
+        public void Ready() { }
     }
 }

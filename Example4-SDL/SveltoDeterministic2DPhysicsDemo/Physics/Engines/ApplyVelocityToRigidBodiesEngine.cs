@@ -1,6 +1,6 @@
-﻿using Svelto.ECS;
-using FixedMaths;
+﻿using FixedMaths;
 using MiniExamples.DeterministicPhysicDemo.Physics.EntityComponents;
+using Svelto.ECS;
 
 namespace MiniExamples.DeterministicPhysicDemo.Physics.Engines
 {
@@ -27,8 +27,8 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.Engines
                 }
         }
 
+        public string Name => nameof(ApplyVelocityToRigidBodiesEngine);
         public EntitiesDB entitiesDB { get; set; }
-        public void       Ready()    { }
-        public string     Name       => nameof(ApplyVelocityToRigidBodiesEngine);
+        public void Ready() { }
     }
 }

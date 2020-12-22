@@ -1,6 +1,6 @@
 ﻿using FixedMaths;
-using Svelto.ECS;
 using MiniExamples.DeterministicPhysicDemo.Physics.EntityComponents;
+using Svelto.ECS;
 
 namespace MiniExamples.DeterministicPhysicDemo.Physics.Engines
 {
@@ -8,16 +8,20 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.Engines
     {
         public void Execute(FixedPoint delta)
         {
-            foreach (var ((manifolds, count), _) in entitiesDB.QueryEntities<CollisionManifoldEntityComponent>(
-                GameGroups.RigidBodies.Groups))
+            var entities = entitiesDB.QueryEntities<CollisionManifoldEntityComponent, ImpulseEntityComponent>(GameGroups.DynamicRigidBodies.Groups);
+
+            foreach (var ((collisions, impulses, count), _) in entities)
+            {
                 for (var i = 0; i < count; i++)
-                    manifolds[i] = default;
+                {
+                    collisions[i].Collisions.Clear();
+                    impulses[i].Impulses.Clear();
+                }
+            }
         }
 
-        public void Ready() {}
-
-        public   EntitiesDB       entitiesDB { get; set; }
-
         public string Name => nameof(ClearPerFrameStateEngine);
+        public EntitiesDB entitiesDB { get; set; }
+        public void Ready() { }
     }
 }

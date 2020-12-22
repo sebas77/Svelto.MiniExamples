@@ -15,20 +15,27 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.Engines
 
         public void Draw(FixedPoint normalisedDelta)
         {
-            foreach (var ((transforms, count), _) in entitiesDB.QueryEntities<TransformEntityComponent>(
-                GameGroups.RigidBodies.Groups))
+            foreach (var ((transforms, colliders, count), _) in entitiesDB
+                .QueryEntities<TransformEntityComponent, BoxColliderEntityComponent>(
+                    GameGroups.DynamicRigidBodyWithBoxColliders.Groups))
                 for (var i = 0; i < count; i++)
                 {
-                    ref var transformEntityComponent = ref transforms[i];
+                    ref var transformEntityComponent   = ref transforms[i];
+                    ref var boxColliderEntityComponent = ref colliders[i];
 
-                    var (drawX, drawY) = transformEntityComponent.Interpolate(normalisedDelta);
+                    var point = transformEntityComponent.Interpolate(normalisedDelta);
+                    var aabb  = boxColliderEntityComponent.ToAABB(point);
 
-                    _graphics.DrawPlus(Colour.Aqua, (int) Math.Round(drawX), (int) Math.Round(drawY), 3);
+                    var (minX, minY) = aabb.Min;
+                    var (maxX, maxY) = aabb.Max;
+
+                    _graphics.DrawBox(Colour.GreenYellow, (int) Math.Round(minX), (int) Math.Round(minY)
+                        , (int) Math.Round(maxX), (int) Math.Round(maxY));
                 }
 
             foreach (var ((transforms, colliders, count), _) in entitiesDB
-               .QueryEntities<TransformEntityComponent, BoxColliderEntityComponent>(
-                    GameGroups.WithBoxCollider.Groups))
+                .QueryEntities<TransformEntityComponent, BoxColliderEntityComponent>(
+                    GameGroups.KinematicRigidBodyWithBoxColliders.Groups))
                 for (var i = 0; i < count; i++)
                 {
                     ref var transformEntityComponent   = ref transforms[i];
@@ -41,26 +48,7 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.Engines
                     var (maxX, maxY) = aabb.Max;
 
                     _graphics.DrawBox(Colour.PaleVioletRed, (int) Math.Round(minX), (int) Math.Round(minY)
-                                    , (int) Math.Round(maxX), (int) Math.Round(maxY));
-                }
-
-            foreach (var ((transforms, colliders, count), _) in entitiesDB
-               .QueryEntities<TransformEntityComponent, CircleColliderEntityComponent>(
-                    GameGroups.WithCircleCollider.Groups))
-                for (var i = 0; i < count; i++)
-                {
-                    ref var transformEntityComponent      = ref transforms[i];
-                    ref var circleColliderEntityComponent = ref colliders[i];
-
-                    var point = transformEntityComponent.Interpolate(normalisedDelta);
-
-                    var x = FixedPoint.ConvertToInteger(
-                        MathFixedPoint.Round(point.X + circleColliderEntityComponent.Center.X));
-                    var y = FixedPoint.ConvertToInteger(
-                        MathFixedPoint.Round(point.Y + circleColliderEntityComponent.Center.Y));
-                    var radius = FixedPoint.ConvertToInteger(circleColliderEntityComponent.Radius);
-
-                    _graphics.DrawCircle(Colour.PaleVioletRed, x, y, radius);
+                        , (int) Math.Round(maxX), (int) Math.Round(maxY));
                 }
         }
 

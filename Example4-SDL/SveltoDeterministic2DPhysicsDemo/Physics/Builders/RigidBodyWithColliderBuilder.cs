@@ -3,6 +3,7 @@ using Svelto.ECS;
 using FixedMaths;
 using MiniExamples.DeterministicPhysicDemo.Physics.Descriptors;
 using MiniExamples.DeterministicPhysicDemo.Physics.EntityComponents;
+using SveltoDeterministic2DPhysicsDemo;
 
 namespace MiniExamples.DeterministicPhysicDemo.Physics.Builders
 {
@@ -11,7 +12,7 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.Builders
     /// </summary>
     public class RigidBodyWithColliderBuilder
     {
-        public void Build(IEntityFactory entityFactory, uint egid)
+        public void Build(IEntityFactory entityFactory)
         {
             EntityInitializer initializer;
             switch (_colliderType)
@@ -19,34 +20,36 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.Builders
                 case ColliderType.Box:
                     if (_isKinematic)
                         initializer = entityFactory.BuildEntity<RigidBodyWithBoxColliderDescriptor>(
-                            egid, GameGroups.KinematicRigidBodyWithBoxColliders.BuildGroup);
+                            EgidFactory.GetNextId(), GameGroups.KinematicRigidBodyWithBoxColliders.BuildGroup);
                     else
                         initializer = entityFactory.BuildEntity<RigidBodyWithBoxColliderDescriptor>(
-                            egid, GameGroups.DynamicRigidBodyWithBoxColliders.BuildGroup);
+                            EgidFactory.GetNextId(), GameGroups.DynamicRigidBodyWithBoxColliders.BuildGroup);
                     break;
                 case ColliderType.Circle:
                     if (_isKinematic)
                         initializer = entityFactory.BuildEntity<RigidBodyWithCircleColliderDescriptor>(
-                            egid, GameGroups.KinematicRigidBodyWithCircleColliders.BuildGroup);
+                            EgidFactory.GetNextId(), GameGroups.KinematicRigidBodyWithCircleColliders.BuildGroup);
                     else
                         initializer = entityFactory.BuildEntity<RigidBodyWithCircleColliderDescriptor>(
-                            egid, GameGroups.DynamicRigidBodyWithCircleColliders.BuildGroup);
+                            EgidFactory.GetNextId(), GameGroups.DynamicRigidBodyWithCircleColliders.BuildGroup);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException($"Unknown {_colliderType}");
             }
 
             initializer.Init(new TransformEntityComponent(_position, _position));
-            initializer.Init(RigidbodyEntityComponent.From(_direction, _speed, _restitution, _mass, _isKinematic));
+            initializer.Init(new RigidbodyEntityComponent(_speed, _direction, FixedPointVector2.Zero, FixedPoint.Zero, _restitution, _mass, _isKinematic));
+            initializer.Init(new CollisionManifoldEntityComponent(2));
+            initializer.Init(new ImpulseEntityComponent(2));
 
             switch (_colliderType)
             {
                 case ColliderType.Box:
-                    initializer.Init(BoxColliderEntityComponent.From(_boxColliderSize, _boxColliderCentre));
+                    initializer.Init(new BoxColliderEntityComponent(_boxColliderSize, _boxColliderCentre));
                     break;
 
                 case ColliderType.Circle:
-                    initializer.Init(CircleColliderEntityComponent.From(_circleColliderRadius, _circleColliderCentre));
+                    initializer.Init(new CircleColliderEntityComponent(_circleColliderRadius, _circleColliderCentre));
                     break;
 
                 default:
