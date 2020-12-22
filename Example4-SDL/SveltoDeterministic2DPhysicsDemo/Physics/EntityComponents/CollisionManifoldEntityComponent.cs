@@ -1,35 +1,23 @@
 ﻿using System;
-using Svelto.ECS;
 using MiniExamples.DeterministicPhysicDemo.Physics.CollisionStructures;
+using Svelto.Common;
+using Svelto.ECS;
+using Svelto.ECS.DataStructures;
 
 namespace MiniExamples.DeterministicPhysicDemo.Physics.EntityComponents
 {
-    public struct CollisionManifoldEntityComponent : IEntityComponent, IEquatable<CollisionManifoldEntityComponent>
+    public struct CollisionManifoldEntityComponent : IEntityComponent, IDisposable
     {
-        public CollisionManifold CollisionManifold;
-        public RigidbodyEntityComponent LocalRigidBody;
-        public RigidbodyEntityComponent CollisionRidigBody;
-
-        public CollisionManifoldEntityComponent(CollisionManifold collisionManifold, ref RigidbodyEntityComponent localRigidBody, ref RigidbodyEntityComponent collisionRidigBody)
+        public CollisionManifoldEntityComponent(uint size)
         {
-            CollisionRidigBody = collisionRidigBody;
-            LocalRigidBody = localRigidBody;
-            CollisionManifold = collisionManifold;
+            Collisions = new NativeDynamicArrayCast<CollisionManifold>(NativeDynamicArray.Alloc<CollisionManifold>(Allocator.Temp, size));
         }
 
-        public bool Equals(CollisionManifoldEntityComponent other)
+        public void Dispose()
         {
-            return CollisionManifold.Equals(other.CollisionManifold) && LocalRigidBody.Equals(other.LocalRigidBody) && CollisionRidigBody.Equals(other.CollisionRidigBody);
+            Collisions.Dispose();
         }
 
-        public override bool Equals(object obj)
-        {
-            return obj is CollisionManifoldEntityComponent other && Equals(other);
-        }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(CollisionManifold, LocalRigidBody, CollisionRidigBody);
-        }
+        public NativeDynamicArrayCast<CollisionManifold> Collisions { get; set; }
     }
 }

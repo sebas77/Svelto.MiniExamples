@@ -11,29 +11,28 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.Engines
     {
         public void Execute(FixedPoint delta)
         {
-            foreach (var ((manifolds, impulses, count), _) in entitiesDB
-               .QueryEntities<CollisionManifoldEntityComponent, ImpulseEntityComponent>(
-                    GameGroups.DynamicBoxVsDynamicBoxInCollision.Groups))
+            var entities = entitiesDB
+                .QueryEntities<CollisionManifoldEntityComponent, RigidbodyEntityComponent, ImpulseEntityComponent>(
+                    GameGroups.DynamicRigidBodyWithBoxColliders.Groups);
+
+            foreach (var ((manifolds, rigidBodies, impulses, count), _) in entities)
             {
                 for (var i = 0; i < count; i++)
                 {
                     ref var manifold = ref manifolds[i];
                     ref var impulse = ref impulses[i];
 
-                    impulse.Impulse = CalculateImpulse(ref manifold.CollisionManifold, ref manifold.LocalRigidBody, ref manifold.CollisionRidigBody);
-                }
-            }
+                    for (var j = 0; j < manifold.Collisions.count; j++)
+                    {
+                        ref var collision = ref manifold.Collisions[j];
 
-            foreach (var (( manifolds, impulses, count), _) in entitiesDB
-                .QueryEntities<CollisionManifoldEntityComponent, ImpulseEntityComponent>(
-                    GameGroups.DynamicBoxVsKinematicBoxInCollision.Groups))
-            {
-                for (var i = 0; i < count; i++)
-                {
-                    ref var manifold = ref manifolds[i];
-                    ref var impulse = ref impulses[i];
+                        var calculatedImpulse = CalculateImpulse(
+                            ref collision,
+                            ref collision.LocalRigidBody,
+                            ref collision.RemoteRigidBody);
 
-                    impulse.Impulse = CalculateImpulse(ref manifold.CollisionManifold, ref manifold.LocalRigidBody, ref manifold.CollisionRidigBody);
+                        impulse.Impulses.Add(calculatedImpulse);
+                    }
                 }
             }
         }

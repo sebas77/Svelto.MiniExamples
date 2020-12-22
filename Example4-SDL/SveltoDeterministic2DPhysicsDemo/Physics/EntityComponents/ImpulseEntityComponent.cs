@@ -1,15 +1,23 @@
-﻿using FixedMaths;
+﻿using System;
+using FixedMaths;
+using Svelto.Common;
 using Svelto.ECS;
+using Svelto.ECS.DataStructures;
 
 namespace MiniExamples.DeterministicPhysicDemo.Physics.EntityComponents
 {
-    public struct ImpulseEntityComponent : IEntityComponent
+    public struct ImpulseEntityComponent : IEntityComponent, IDisposable
     {
-        public FixedPointVector2 Impulse { get; set; }
-
-        public ImpulseEntityComponent(FixedPointVector2 impulse)
+        public ImpulseEntityComponent(uint size)
         {
-            Impulse = impulse;
+            Impulses = new NativeDynamicArrayCast<FixedPointVector2>(NativeDynamicArray.Alloc<FixedPointVector2>(Allocator.Temp, size));
         }
+
+        public void Dispose()
+        {
+            Impulses.Dispose();
+        }
+
+        public NativeDynamicArrayCast<FixedPointVector2> Impulses { get; set; }
     }
 }

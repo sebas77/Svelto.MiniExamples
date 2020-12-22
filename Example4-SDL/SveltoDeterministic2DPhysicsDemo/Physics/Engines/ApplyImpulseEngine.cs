@@ -9,17 +9,22 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.Engines
     {
         public void Execute(FixedPoint delta)
         {
-            foreach (var ((impulses, referenceEgids, count), _)
-                in entitiesDB.QueryEntities<ImpulseEntityComponent, ReferenceEgidComponent>(GameGroups.InCollision.Groups))
+            var entities =
+                entitiesDB.QueryEntities<ImpulseEntityComponent, RigidbodyEntityComponent>(GameGroups.DynamicRigidBodies.Groups);
+
+            foreach (var ((impulses, rigidBodies, count), _) in entities)
             {
                 for (var i = 0; i < count; i++)
                 {
-                    ref var impulse = ref impulses[i];
-                    ref var referenceEgid = ref referenceEgids[i];
+                    ref var impulseComponent = ref impulses[i];
+                    ref var rigidbody = ref rigidBodies[i];
 
-                    ref var rigidbody = ref entitiesDB.QueryEntity<RigidbodyEntityComponent>(referenceEgid.Egid);
+                    for (var j = 0; j < impulseComponent.Impulses.count; j++)
+                    {
+                        var impulse = impulseComponent.Impulses[j];
 
-                    rigidbody.Direction = (rigidbody.Velocity - impulse.Impulse).Normalize();
+                        rigidbody.Direction = (rigidbody.Velocity - impulse).Normalize();
+                    }
                 }
             }
         }

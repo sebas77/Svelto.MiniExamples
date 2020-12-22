@@ -19,18 +19,12 @@ namespace MiniExamples.DeterministicPhysicDemo
 
             var enginesRoot     = new EnginesRoot(_simpleSubmissionEntityViewScheduler);
             var entityFactory   = enginesRoot.GenerateEntityFactory();
-            var entityFunctions = enginesRoot.GenerateEntityFunctions();
 
             var debugPhysicsDrawEngine = new DebugPhysicsDrawEngine(_graphics);
             enginesRoot.AddEngine(debugPhysicsDrawEngine);
             scheduler.RegisterScheduledGraphicsEngine(debugPhysicsDrawEngine);
 
-<<<<<<< HEAD
-            enginesRoot.AddEngine(new DebugPhysicsDrawEngine(_graphics));
             PhysicsCore.RegisterTo(enginesRoot, _scheduler);
-=======
-            PhysicsCore.RegisterTo(enginesRoot, _scheduler, entityFactory, entityFunctions);
->>>>>>> b7d0192... supports multiple collisions via entity creation
 
             AddEntities(entityFactory, _simpleSubmissionEntityViewScheduler);
         }
@@ -72,7 +66,7 @@ namespace MiniExamples.DeterministicPhysicDemo
             AddBoxColliderEntity(entityFactory, 8, FixedPointVector2.From(FixedPoint.From(40), FixedPoint.From(-90)), FixedPointVector2.From(1, 1).Normalize(), FixedPoint.From(10), FixedPointVector2.From(3, 3));
             AddBoxColliderEntity(entityFactory, 9, FixedPointVector2.From(FixedPoint.From(40), FixedPoint.From(-60)), FixedPointVector2.From(1, 1).Normalize(), FixedPoint.From(10), FixedPointVector2.From(3, 3));
             AddBoxColliderEntity(entityFactory, 10, FixedPointVector2.From(FixedPoint.From(40), FixedPoint.From(-30)), FixedPointVector2.From(1, 1).Normalize(), FixedPoint.From(3), FixedPointVector2.From(3, 3));
-            
+
             //this is wrong, SubmitEntities() must happen every tick, not just once, otherwise new entities cannot be submitted
             simpleSubmissionEntityViewScheduler.SubmitEntities();
         }
