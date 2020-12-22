@@ -27,7 +27,7 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.Engines
                 }
         }
 
-        public string Name => nameof(ApplyVelocityEngine);
+        public string Name => nameof(ApplyVelocityToRigidBodiesEngine);
         public EntitiesDB entitiesDB { get; set; }
         public void Ready() { }
     }

@@ -12,30 +12,22 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.EntityComponents
 
         public new string ToString() { return Position.ToString(); }
 
-<<<<<<< HEAD
         public TransformEntityComponent(FixedPointVector2 position, FixedPointVector2 positionLastPhysicsTick)
-=======
-        public TransformEntityComponent(FixedPointVector2 position, FixedPointVector2 positionLastPhysicsTick
-                               , FixedPointVector2? positionMidpoint = null)
->>>>>>> b7d0192... supports multiple collisions via entity creation
         {
             Position                = position;
             PositionLastPhysicsTick = positionLastPhysicsTick;
             PositionMidPoint        = default;
             HasMidPoint             = false;
         }
-<<<<<<< HEAD
         
         public TransformEntityComponent(FixedPointVector2 position, FixedPointVector2 positionLastPhysicsTick
-                               , FixedPointVector2 positionMidPoint)
+                                      , FixedPointVector2 positionMidPoint)
         {
             Position                = position;
             PositionLastPhysicsTick = positionLastPhysicsTick;
             PositionMidPoint        = positionMidPoint;
             HasMidPoint             = true;
         }
-=======
->>>>>>> b7d0192... supports multiple collisions via entity creation
     }
 
     static class TransformEntityComponentUtility
