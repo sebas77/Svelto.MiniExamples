@@ -71,7 +71,7 @@ Goal of this example
 * Show how to use Svelto outside unity in an advanced scenario
 * Show how to use efficently group compounds
 
-![Image](https://twitter.com/i/status/1341714736023564288)
+![Image](https://github.com/sebas77/Svelto.MiniExamples/blob/master/Example4-NET-SDL/2020-12-23%2011-54-54.gif)
 
 ## Example 5: Vanilla
 
