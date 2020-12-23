@@ -64,7 +64,14 @@ Goal of this example
 
 Main article: http://www.sebaslab.com/svelto-miniexamples-gui-and-services-layer/
 
-## Example 4: ToDO
+## Example 4: Pure .net + SDL example
+
+Goal of this example
+
+* Show how to use Svelto outside unity in an advanced scenario
+* Show how to use efficently group compounds
+
+![Image](https://twitter.com/i/status/1341714736023564288)
 
 ## Example 5: Vanilla
 
