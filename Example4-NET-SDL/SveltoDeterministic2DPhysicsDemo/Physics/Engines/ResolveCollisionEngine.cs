@@ -1,5 +1,4 @@
-﻿using System;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using FixedMaths;
 using MiniExamples.DeterministicPhysicDemo.Physics.CollisionStructures;
 using MiniExamples.DeterministicPhysicDemo.Physics.EntityComponents;
@@ -26,10 +25,8 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.Engines
                     {
                         ref var collision = ref manifold.Collisions[j];
 
-                        var calculatedImpulse = CalculateImpulse(
-                            ref collision,
-                            ref collision.LocalRigidBody,
-                            ref collision.RemoteRigidBody);
+                        var calculatedImpulse = CalculateImpulse(collision, collision.LocalRigidBody,
+                                                                 collision.RemoteRigidBody);
 
                         impulse.Impulses.Add(calculatedImpulse);
                     }
@@ -38,9 +35,8 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.Engines
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static FixedPointVector2 CalculateImpulse(ref CollisionManifold manifold
-                                                , ref RigidbodyEntityComponent rigidbodyA
-                                                , ref RigidbodyEntityComponent rigidbodyB)
+        static FixedPointVector2 CalculateImpulse(in CollisionManifold manifold, in RigidbodyEntityComponent rigidbodyA
+                                                                               , in RigidbodyEntityComponent rigidbodyB)
         {
             // Calculate relative velocity
             var rv = rigidbodyB.Velocity - rigidbodyA.Velocity;

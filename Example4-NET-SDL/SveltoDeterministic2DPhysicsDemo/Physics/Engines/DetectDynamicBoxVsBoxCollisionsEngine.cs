@@ -10,22 +10,26 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.Engines
     {
         public void Execute(FixedPoint delta)
         {
-            var dynamicEntities = new DoubleEntitiesEnumerator<TransformEntityComponent, RigidbodyEntityComponent, BoxColliderEntityComponent, CollisionManifoldEntityComponent>(
-                entitiesDB.QueryEntities<TransformEntityComponent, RigidbodyEntityComponent, BoxColliderEntityComponent, CollisionManifoldEntityComponent>(
-                    GameGroups.DynamicRigidBodyWithBoxColliders.Groups));
+            var dynamicEntities =
+                new DoubleEntitiesEnumerator<TransformEntityComponent, RigidbodyEntityComponent,
+                    BoxColliderEntityComponent, CollisionManifoldEntityComponent>(
+                    entitiesDB
+                       .QueryEntities<TransformEntityComponent, RigidbodyEntityComponent, BoxColliderEntityComponent,
+                            CollisionManifoldEntityComponent>(GameGroups.DynamicRigidBodyWithBoxColliders.Groups));
 
-            foreach (var ((transformsA, rigidBodiesA, collidersA, collisionManifoldsA, _), indexA, (transformsB, rigidBodiesB, collidersB, collisionManifoldsB, _), indexB) in dynamicEntities)
+            foreach (var ((transformsA, rigidBodiesA, collidersA, collisionManifoldsA, _), indexA, (transformsB,
+                rigidBodiesB, collidersB, collisionManifoldsB, _), indexB) in dynamicEntities)
             {
-                ref var colliderA  = ref collidersA[indexA];
-                ref var transformA = ref transformsA[indexA];
-                ref var rigidBodyA = ref rigidBodiesA[indexA];
+                ref var colliderA          = ref collidersA[indexA];
+                ref var transformA         = ref transformsA[indexA];
+                ref var rigidBodyA         = ref rigidBodiesA[indexA];
                 ref var collisionManifoldA = ref collisionManifoldsA[indexA];
 
                 var aabbA = colliderA.ToAABB(transformA.Position);
 
-                ref var colliderB  = ref collidersB[indexB];
-                ref var transformB = ref transformsB[indexB];
-                ref var rigidBodyB = ref rigidBodiesB[indexB];
+                ref var colliderB          = ref collidersB[indexB];
+                ref var transformB         = ref transformsB[indexB];
+                ref var rigidBodyB         = ref rigidBodiesB[indexB];
                 ref var collisionManifoldB = ref collisionManifoldsB[indexB];
 
                 var aabbB = colliderB.ToAABB(transformB.Position);
@@ -40,8 +44,8 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.Engines
             }
         }
 
-        public string Name => nameof(DetectDynamicBoxVsBoxCollisionsEngine);
+        public string     Name       => nameof(DetectDynamicBoxVsBoxCollisionsEngine);
         public EntitiesDB entitiesDB { get; set; }
-        public void Ready() { }
+        public void       Ready()    { }
     }
 }

@@ -10,7 +10,7 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.EntityComponents
     {
         public ImpulseEntityComponent(uint size)
         {
-            Impulses = new NativeDynamicArrayCast<FixedPointVector2>(NativeDynamicArray.Alloc<FixedPointVector2>(Allocator.Temp, size));
+            Impulses = new NativeDynamicArrayCast<FixedPointVector2>(NativeDynamicArray.Alloc<FixedPointVector2>(Allocator.Persistent, size));
         }
 
         public void Dispose()

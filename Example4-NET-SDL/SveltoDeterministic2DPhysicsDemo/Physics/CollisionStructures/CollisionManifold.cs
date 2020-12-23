@@ -4,9 +4,10 @@ using MiniExamples.DeterministicPhysicDemo.Physics.EntityComponents;
 
 namespace MiniExamples.DeterministicPhysicDemo.Physics.CollisionStructures
 {
-    public struct CollisionManifold
+    public struct CollisionManifold:IEquatable<CollisionManifold>
     {
-        public static CollisionManifold? CalculateManifold(RigidbodyEntityComponent localRigidBody, AABB a, RigidbodyEntityComponent remoteRigidBody, AABB b)
+        public static CollisionManifold? CalculateManifold
+            (in RigidbodyEntityComponent localRigidBody, AABB a, in RigidbodyEntityComponent remoteRigidBody, in AABB b)
         {
             // First, calculate the Minkowski difference. a maps to red, and b maps to blue from our example (though it doesn't matter!)
             var top    = a.Max.Y - b.Min.Y;
@@ -49,40 +50,38 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.CollisionStructures
 
             if (penetration.HasValue)
             {
-                return new CollisionManifold(min, penetration.Value.Normalize(), ref localRigidBody, ref remoteRigidBody);
+                return new CollisionManifold(min, penetration.Value.Normalize(), localRigidBody, remoteRigidBody);
             }
 
             return null;
         }
 
-        public FixedPoint        Penetration;
-        public FixedPointVector2 Normal;
+        public FixedPoint               Penetration;
+        public FixedPointVector2        Normal;
         public RigidbodyEntityComponent LocalRigidBody;
         public RigidbodyEntityComponent RemoteRigidBody;
 
-        public CollisionManifold(FixedPoint penetration, FixedPointVector2 normal,
-            ref RigidbodyEntityComponent localRigidBody, ref RigidbodyEntityComponent remoteRigidBody)
+        public CollisionManifold
+        (FixedPoint penetration, FixedPointVector2 normal, in RigidbodyEntityComponent localRigidBody
+       , in RigidbodyEntityComponent remoteRigidBody)
         {
-            Penetration   = penetration;
-            Normal        = normal;
+            Penetration     = penetration;
+            Normal          = normal;
             LocalRigidBody  = localRigidBody;
-            RemoteRigidBody  = remoteRigidBody;
+            RemoteRigidBody = remoteRigidBody;
         }
 
         public CollisionManifold Reverse()
         {
-             return new CollisionManifold(-Penetration, -Normal, ref RemoteRigidBody, ref LocalRigidBody);
+            return new CollisionManifold(-Penetration, -Normal, RemoteRigidBody, LocalRigidBody);
         }
 
-        bool Equals(CollisionManifold other)
+        public bool Equals(CollisionManifold other)
         {
-            return Penetration.Equals(other.Penetration)
-                && Normal.Equals(other.Normal)
-                && LocalRigidBody.Equals(other.LocalRigidBody)
-                && RemoteRigidBody.Equals(other.RemoteRigidBody);
+            return Penetration.Equals(other.Penetration) && Normal.Equals(other.Normal)
+                                                         && LocalRigidBody.Equals(other.LocalRigidBody)
+                                                         && RemoteRigidBody.Equals(other.RemoteRigidBody);
         }
-
-        public override bool Equals(object obj) { return obj is CollisionManifold other && Equals(other); }
 
         public override int GetHashCode()
         {

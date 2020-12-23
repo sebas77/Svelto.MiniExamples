@@ -19,10 +19,15 @@ namespace Svelto.Common
     public enum Allocator
     {
         Invalid ,
+        //no allocation needed
         None,
+        //temporary allocation, it doesn't have any meaning outside unity atm
         Temp,
+        //temporary allocation, it doesn't have any meaning outside unity atm
         TempJob,
+        //persistent native allocation, must be disposed of
         Persistent,
+        //managed allocation
         Managed
     }
 #else    

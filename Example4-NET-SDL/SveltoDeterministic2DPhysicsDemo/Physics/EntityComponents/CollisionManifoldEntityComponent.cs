@@ -10,7 +10,7 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.EntityComponents
     {
         public CollisionManifoldEntityComponent(uint size)
         {
-            Collisions = new NativeDynamicArrayCast<CollisionManifold>(NativeDynamicArray.Alloc<CollisionManifold>(Allocator.Temp, size));
+            Collisions = new NativeDynamicArrayCast<CollisionManifold>(NativeDynamicArray.Alloc<CollisionManifold>(Allocator.Persistent, size));
         }
 
         public void Dispose()
