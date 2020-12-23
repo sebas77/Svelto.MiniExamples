@@ -71,6 +71,8 @@ Goal of this example
 * Show how to use Svelto outside unity in an advanced scenario
 * Show how to use efficently group compounds
 
+![Image](https://twitter.com/i/status/1341714736023564288)
+
 ## Example 5: Vanilla
 
 Basic Platform Agnostic Svelto.ECS 3.0 example
