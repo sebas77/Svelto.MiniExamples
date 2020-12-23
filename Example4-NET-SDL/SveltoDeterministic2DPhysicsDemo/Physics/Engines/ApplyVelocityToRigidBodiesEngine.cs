@@ -6,7 +6,7 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.Engines
 {
     public class ApplyVelocityToRigidBodiesEngine : IQueryingEntitiesEngine, IScheduledPhysicsEngine
     {
-        public void Execute(FixedPoint delta)
+        public void Execute(in FixedPoint delta)
         {
             foreach (var ((rigidbodies, transforms, count), _) in entitiesDB
                .QueryEntities<RigidbodyEntityComponent, TransformEntityComponent>(GameGroups.DynamicRigidBodies.Groups))

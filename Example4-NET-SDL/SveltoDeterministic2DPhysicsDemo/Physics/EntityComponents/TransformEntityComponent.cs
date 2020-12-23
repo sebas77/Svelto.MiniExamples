@@ -12,7 +12,7 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.EntityComponents
 
         public new string ToString() { return Position.ToString(); }
 
-        public TransformEntityComponent(FixedPointVector2 position, FixedPointVector2 positionLastPhysicsTick)
+        public TransformEntityComponent(in FixedPointVector2 position, in FixedPointVector2 positionLastPhysicsTick)
         {
             Position                = position;
             PositionLastPhysicsTick = positionLastPhysicsTick;
@@ -20,8 +20,8 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.EntityComponents
             HasMidPoint             = false;
         }
         
-        public TransformEntityComponent(FixedPointVector2 position, FixedPointVector2 positionLastPhysicsTick
-                                      , FixedPointVector2 positionMidPoint)
+        public TransformEntityComponent(in FixedPointVector2 position, in FixedPointVector2 positionLastPhysicsTick
+                                      , in FixedPointVector2 positionMidPoint)
         {
             Position                = position;
             PositionLastPhysicsTick = positionLastPhysicsTick;
@@ -32,7 +32,7 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.EntityComponents
 
     static class TransformEntityComponentUtility
     {
-        public static FixedPointVector2 Interpolate(this in TransformEntityComponent component, FixedPoint delta)
+        public static FixedPointVector2 Interpolate(this in TransformEntityComponent component, in FixedPoint delta)
         {
             if (!component.HasMidPoint)
                 return FixedPointVector2.Interpolate(component.PositionLastPhysicsTick, component.Position, delta);

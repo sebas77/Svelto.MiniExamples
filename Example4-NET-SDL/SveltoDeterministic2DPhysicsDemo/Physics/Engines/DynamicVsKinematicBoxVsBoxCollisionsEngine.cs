@@ -1,17 +1,16 @@
-﻿using System;
-using FixedMaths;
+﻿using FixedMaths;
 using MiniExamples.DeterministicPhysicDemo.Physics.CollisionStructures;
 using MiniExamples.DeterministicPhysicDemo.Physics.EntityComponents;
 using Svelto.ECS;
 
 namespace MiniExamples.DeterministicPhysicDemo.Physics.Engines
 {
-    public class DetectDynamicVsKinematicBoxVsBoxCollisionsEngine : IQueryingEntitiesEngine, IScheduledPhysicsEngine
+    public class DynamicVsKinematicBoxVsBoxCollisionsEngine : IQueryingEntitiesEngine, IScheduledPhysicsEngine
     {
-        public void Execute(FixedPoint delta)
+        public void Execute(in FixedPoint delta)
         {
             var kinematicEntities = entitiesDB.QueryEntities<TransformEntityComponent, RigidbodyEntityComponent, BoxColliderEntityComponent>(GameGroups.KinematicRigidBodyWithBoxColliders.Groups);
-            var dynamicEntities   = entitiesDB.QueryEntities<TransformEntityComponent, RigidbodyEntityComponent, BoxColliderEntityComponent, CollisionManifoldEntityComponent>(GameGroups.DynamicRigidBodyWithBoxColliders.Groups);
+            var dynamicEntities   = entitiesDB.QueryEntities<TransformEntityComponent, RigidbodyEntityComponent, BoxColliderEntityComponent>(GameGroups.DynamicRigidBodyWithBoxColliders.Groups);
 
             // Detect dynamic vs kinematic collisions.
             foreach (var ((kinematicTransforms, kinematicRigidBodies, kinematicColliders, kinematicCount), _) in kinematicEntities)
@@ -24,22 +23,22 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.Engines
 
                     var aabbKinematic = colliderKinematic.ToAABB(transformKinematic.Position);
 
-                    foreach (var ((dynamicTransforms, dynamicRigidBodies, dynamicColliders, dynamicCollisions, dynamicCount), _) in dynamicEntities)
+                    foreach (var ((dynamicTransforms, dynamicRigidBodies, dynamicColliders, dynamicCount), _) in dynamicEntities)
                     {
                         for (var dynamicIndex = 0; dynamicIndex < dynamicCount; dynamicIndex++)
                         {
                             ref var transformDynamic = ref dynamicTransforms[dynamicIndex];
                             ref var rigidBodyDynamic = ref dynamicRigidBodies[dynamicIndex];
                             ref var colliderDynamic  = ref dynamicColliders[dynamicIndex];
-                            ref var dynamicCollision = ref dynamicCollisions[dynamicIndex];
 
                             var aabbDynamic = colliderDynamic.ToAABB(transformDynamic.Position);
 
-                            var manifold = CollisionManifold.CalculateManifold(rigidBodyDynamic, aabbDynamic, rigidBodyKinematic, aabbKinematic);
+                            var manifold = CollisionManifold.CalculateManifold(aabbDynamic, aabbKinematic);
 
                             if (manifold.HasValue)
                             {
-                                dynamicCollision.Collisions.Add(manifold.Value);
+                                var impulse = manifold.Value.CalculateImpulse(ref rigidBodyDynamic, ref rigidBodyKinematic);
+                                rigidBodyDynamic.AddImpulse(impulse);
                             }
                         }
                     }
@@ -47,7 +46,7 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.Engines
             }
         }
 
-        public string Name => nameof(DetectDynamicVsKinematicBoxVsBoxCollisionsEngine);
+        public string Name => nameof(DynamicVsKinematicBoxVsBoxCollisionsEngine);
         public EntitiesDB entitiesDB { get; set; }
         public void Ready() { }
     }

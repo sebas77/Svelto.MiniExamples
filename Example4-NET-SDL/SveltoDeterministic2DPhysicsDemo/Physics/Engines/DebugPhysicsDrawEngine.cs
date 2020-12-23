@@ -13,7 +13,7 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.Engines
             _graphics        = graphics;
         }
 
-        public void Draw(FixedPoint normalisedDelta)
+        public void Draw(in FixedPoint normalisedDelta)
         {
             foreach (var ((transforms, colliders, count), _) in entitiesDB
                 .QueryEntities<TransformEntityComponent, BoxColliderEntityComponent>(
