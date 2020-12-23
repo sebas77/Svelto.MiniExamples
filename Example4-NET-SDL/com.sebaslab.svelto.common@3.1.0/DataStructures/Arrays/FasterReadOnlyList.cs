@@ -57,46 +57,4 @@ namespace Svelto.DataStructures
 
         internal readonly FasterList<T> _list;
     }
-    
-    public readonly ref struct LocalFasterReadOnlyList<T> 
-    {
-        public int count      => _list.count;
-        public uint capacity   => _list.capacity;
-
-        public LocalFasterReadOnlyList(FasterList<T> list)
-        {
-            _list = list;
-        }
-        
-        public static implicit operator LocalFasterReadOnlyList<T>(FasterList<T> list)
-        {
-            return new LocalFasterReadOnlyList<T>(list);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public FasterListEnumerator<T> GetEnumerator()
-        {
-            return _list.GetEnumerator();
-        }
-        
-        public ref T this[int index]
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => ref _list[index];
-        }
-
-        public ref T this[uint index]
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => ref _list[index];
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public T[] ToArrayFast(out uint count)
-        {
-            return _list.ToArrayFast(out count);
-        }
-
-        readonly FasterList<T> _list;
-    }
 }

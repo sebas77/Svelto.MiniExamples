@@ -21,19 +21,19 @@ namespace Svelto.ECS.Example.Survive
         public static readonly ExclusiveGroup Camera = new ExclusiveGroup();
 
         //Groups used to build/remove/swap
-        public static readonly ExclusiveGroupStruct PlayersGunsGroup  = new ExclusiveGroup();
-        public static readonly ExclusiveGroupStruct PlayersGroup      = new ExclusiveGroup();
-        public static readonly ExclusiveGroupStruct EnemiesGroup      = new ExclusiveGroup();
-        public static readonly  ExclusiveGroupStruct EnemiesDeadGroup = new ExclusiveGroup();
+        public static readonly ExclusiveGroup PlayersGunsGroup = new ExclusiveGroup();
+        public static readonly ExclusiveGroup PlayersGroup     = new ExclusiveGroup();
+        public static readonly ExclusiveGroup EnemiesGroup     = new ExclusiveGroup();
+        public static readonly ExclusiveGroup EnemiesDeadGroup = new ExclusiveGroup();
 
         //it's also possible to regroup groups. It's quite a flexible system
-        public static readonly FasterList<ExclusiveGroupStruct> DamageableEntities = new FasterList<ExclusiveGroupStruct>().Add(EnemiesGroup).Add(PlayersGroup);
+        public static readonly ExclusiveGroupStruct[] DamageableEntities = {EnemiesGroup, PlayersGroup};
 
         public static EGID   HUD = new EGID(0, GUICanvas);
         //Reserve a book range, as many groups as the possible number of player enemies
-        public static ExclusiveGroupStruct EnemiesToRecycleGroups = new ExclusiveGroup((ushort) Enum.GetNames(typeof(PlayerTargetType)).Length);
-        public static ExclusiveGroupStruct EnemiesTargetGroup     = PlayersGroup;
-        public static ExclusiveGroupStruct CameraTargetGroup = PlayersGroup;
-        public static ExclusiveGroupStruct PlayerTargetsGroup = EnemiesGroup;
+        public static ExclusiveGroup EnemiesToRecycleGroups = new ExclusiveGroup((ushort) Enum.GetNames(typeof(PlayerTargetType)).Length);
+        public static ExclusiveGroup EnemiesTargetGroup     = PlayersGroup;
+        public static ExclusiveGroup CameraTargetGroup = PlayersGroup;
+        public static ExclusiveGroup PlayerTargetsGroup = EnemiesGroup;
     }
 }
