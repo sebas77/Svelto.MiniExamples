@@ -18,7 +18,7 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.EntityComponents
 
     public static class BoxColliderEntityComponentUtility
     {
-        public static AABB ToAABB(in this BoxColliderEntityComponent component, FixedPointVector2 point)
+        public static AABB ToAABB(in this BoxColliderEntityComponent component, in FixedPointVector2 point)
         {
             return new AABB(point - component.Center - component.Size, point - component.Center + component.Size);
         }

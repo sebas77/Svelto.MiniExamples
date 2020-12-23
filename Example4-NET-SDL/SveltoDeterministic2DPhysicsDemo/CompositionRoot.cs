@@ -31,7 +31,7 @@ namespace MiniExamples.DeterministicPhysicDemo
         public IEngineSchedulerReporter schedulerReporter => _schedulerReporter;
         public IEngineScheduler scheduler => _scheduler;
 
-        static void AddEntities(IEntityFactory entityFactory, SimpleEntitiesSubmissionScheduler simpleSubmissionEntityViewScheduler)
+        static void AddEntities(in IEntityFactory entityFactory, in SimpleEntitiesSubmissionScheduler simpleSubmissionEntityViewScheduler)
         {
             // Make a simple bounding box
             RigidBodyWithColliderBuilder.Create()
@@ -71,7 +71,7 @@ namespace MiniExamples.DeterministicPhysicDemo
             simpleSubmissionEntityViewScheduler.SubmitEntities();
         }
         
-        private static void AddBoxColliderEntity(IEntityFactory entityFactory, uint egid, FixedPointVector2 position, FixedPointVector2 direction, FixedPoint speed, FixedPointVector2 boxColliderSize)
+        private static void AddBoxColliderEntity(in IEntityFactory entityFactory, in uint egid, in FixedPointVector2 position, in FixedPointVector2 direction, in FixedPoint speed, in FixedPointVector2 boxColliderSize)
         {
             RigidBodyWithColliderBuilder.Create()
                                         .SetPosition(position)

@@ -1,13 +1,13 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using FixedMaths;
 using MiniExamples.DeterministicPhysicDemo.Physics.EntityComponents;
 
 namespace MiniExamples.DeterministicPhysicDemo.Physics.CollisionStructures
 {
-    public struct CollisionManifold:IEquatable<CollisionManifold>
+    public struct CollisionManifold : IEquatable<CollisionManifold>
     {
-        public static CollisionManifold? CalculateManifold
-            (in RigidbodyEntityComponent localRigidBody, AABB a, in RigidbodyEntityComponent remoteRigidBody, in AABB b)
+        public static CollisionManifold? CalculateManifold(AABB a, AABB b)
         {
             // First, calculate the Minkowski difference. a maps to red, and b maps to blue from our example (though it doesn't matter!)
             var top    = a.Max.Y - b.Min.Y;
@@ -50,42 +50,60 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.CollisionStructures
 
             if (penetration.HasValue)
             {
-                return new CollisionManifold(min, penetration.Value.Normalize(), localRigidBody, remoteRigidBody);
+                return new CollisionManifold(min, penetration.Value.Normalize());
             }
 
             return null;
         }
 
-        public FixedPoint               Penetration;
-        public FixedPointVector2        Normal;
-        public RigidbodyEntityComponent LocalRigidBody;
-        public RigidbodyEntityComponent RemoteRigidBody;
+        public FixedPoint        Penetration;
+        public FixedPointVector2 Normal;
 
-        public CollisionManifold
-        (FixedPoint penetration, FixedPointVector2 normal, in RigidbodyEntityComponent localRigidBody
-       , in RigidbodyEntityComponent remoteRigidBody)
+        public CollisionManifold(FixedPoint penetration, FixedPointVector2 normal)
         {
-            Penetration     = penetration;
-            Normal          = normal;
-            LocalRigidBody  = localRigidBody;
-            RemoteRigidBody = remoteRigidBody;
+            Penetration   = penetration;
+            Normal        = normal;
         }
 
         public CollisionManifold Reverse()
         {
-            return new CollisionManifold(-Penetration, -Normal, RemoteRigidBody, LocalRigidBody);
+             return new CollisionManifold(-Penetration, -Normal);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public FixedPointVector2 CalculateImpulse(in RigidbodyEntityComponent rigidbodyA
+                                                , in RigidbodyEntityComponent rigidbodyB)
+        {
+            // Calculate relative velocity
+            var rv = rigidbodyB.Velocity - rigidbodyA.Velocity;
+
+            // Calculate relative velocity in terms of the normal direction
+            var velAlongNormal = FixedPointVector2.Dot(rv, Normal);
+
+            // Do not resolve if velocities are separating
+            if (velAlongNormal > FixedPoint.Zero)
+                return FixedPointVector2.Zero;
+
+            // Calculate restitution
+            var e = MathFixedPoint.Min(rigidbodyA.Restitution, rigidbodyB.Restitution);
+
+            // Calculate impulse scalar
+            var j = -(FixedPoint.One + e) * velAlongNormal;
+            //j /= rigidbody.InverseMass + collisionTarget.InverseMass;
+
+            // Apply impulse
+            return Normal * j;
         }
 
         public bool Equals(CollisionManifold other)
         {
-            return Penetration.Equals(other.Penetration) && Normal.Equals(other.Normal)
-                                                         && LocalRigidBody.Equals(other.LocalRigidBody)
-                                                         && RemoteRigidBody.Equals(other.RemoteRigidBody);
+            return Penetration.Equals(other.Penetration)
+                && Normal.Equals(other.Normal);
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Penetration, Normal, LocalRigidBody, RemoteRigidBody);
+            return HashCode.Combine(Penetration, Normal);
         }
     }
 }

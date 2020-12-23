@@ -31,11 +31,9 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.EntityComponents
 
     public static class RigidbodyEntityComponentUtility
     {
-        public static RigidbodyEntityComponent CloneAndReplaceDirection
-            (this in RigidbodyEntityComponent component, FixedPointVector2 direction)
+        public static void AddImpulse(this ref RigidbodyEntityComponent component, FixedPointVector2 impulse)
         {
-            return new RigidbodyEntityComponent(component.Speed, direction, component.Velocity, component.Potential
-                                              , component.Restitution, component.Mass, component.IsKinematic);
+            component.Direction = (component.Velocity - impulse).Normalize();
         }
     }
 }
