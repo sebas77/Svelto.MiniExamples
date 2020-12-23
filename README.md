@@ -8,7 +8,7 @@ Warning: these examples may use using unofficial versions of Svelto that you won
 
 ## Example 1: Doofuses Must Eat (Pure ECS)
 
-![Image](https://github.com/sebas77/GithubWikiImages/blob/master/Example1-Doofuses.gif)
+![Image](https://github.com/sebas77/Svelto.MiniExamples/blob/master/Example1-DOTS-DoofusesMustEat/2020-12-22%2016-05-22.gif)
 
 Object-less pure ECS example that shows the basics of Svelto.ECS and Svelto.Tasks.
 
@@ -22,13 +22,7 @@ Goal of this example:
 * Show the integration with UnityECS, show the use of Svelto.Tasks 2.0 (alpha state) 
 * show integration with Unity Jobs and Burst (using Svelto.ECS 3.0 (currently alpha state)
  
- ### **Iteration 1 (old)**
-   * Integration with UnityECS for rendering
-   * Move the camera with arrows and mouse, left button to drop food
- ###  **Iteration 2 (old)**
-   * Integration with Burst for better performance
-   * Move the camera with arrows and mouse, left button to drop 100 random food only once
- ###  **Iteration 3 (MUST BE USED THIS AS REFERENCE)**
+ ###  **Iteration 3
    * Full jobified/burstified code with Svelto ECS 3.0
    * test integration with IL2CPP
   
@@ -71,7 +65,7 @@ Goal of this example
 * Show how to use Svelto outside unity in an advanced scenario
 * Show how to use efficently group compounds
 
-![Image](https://twitter.com/i/status/1341714736023564288)
+![Image](https://github.com/sebas77/Svelto.MiniExamples/blob/master/Example4-NET-SDL/2020-12-23%2011-54-54.gif)
 
 ## Example 5: Vanilla
 
