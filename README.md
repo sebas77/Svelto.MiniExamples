@@ -22,13 +22,7 @@ Goal of this example:
 * Show the integration with UnityECS, show the use of Svelto.Tasks 2.0 (alpha state) 
 * show integration with Unity Jobs and Burst (using Svelto.ECS 3.0 (currently alpha state)
  
- ### **Iteration 1 (old)**
-   * Integration with UnityECS for rendering
-   * Move the camera with arrows and mouse, left button to drop food
- ###  **Iteration 2 (old)**
-   * Integration with Burst for better performance
-   * Move the camera with arrows and mouse, left button to drop 100 random food only once
- ###  **Iteration 3 (MUST BE USED THIS AS REFERENCE)**
+ ###  **Iteration 3
    * Full jobified/burstified code with Svelto ECS 3.0
    * test integration with IL2CPP
   
