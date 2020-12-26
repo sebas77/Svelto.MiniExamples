@@ -38,8 +38,6 @@ namespace Svelto.ECS.Example.Survive.Characters
 
                 entityHealth.currentHealth -= damageableComponent.damageInfo.damageToApply;
                 
-                
-                
                 entitiesDB.PublishEntityChange<HealthComponent>(ID);
             }
         }

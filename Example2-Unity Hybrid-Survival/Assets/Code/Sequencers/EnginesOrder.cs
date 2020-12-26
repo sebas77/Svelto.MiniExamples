@@ -16,7 +16,7 @@ namespace Svelto.ECS.Example.Survive
         {
             while (true)
             {
-                this.Step();
+                this.StepAll();
                 
                 yield return null;
             }

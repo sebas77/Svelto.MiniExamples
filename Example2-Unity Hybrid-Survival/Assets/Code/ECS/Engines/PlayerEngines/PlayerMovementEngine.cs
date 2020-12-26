@@ -53,31 +53,31 @@ namespace Svelto.ECS.Example.Survive.Characters.Player
         ///     entity components, so that here we can use inputComponent instead of
         ///     the class Input.
         /// </summary>
-        /// <param name="playerEntityView"></param>
-        /// <param name="entityView"></param>
-        void Movement(ref PlayerInputDataComponent playerEntityView, ref PlayerEntityViewComponent entityView)
+        /// <param name="playerInput"></param>
+        /// <param name="playerComponent"></param>
+        void Movement(ref PlayerInputDataComponent playerInput, ref PlayerEntityViewComponent playerComponent)
         {
             // Store the input axes.
-            var input = playerEntityView.input;
+            var input = playerInput.input;
 
             // Normalise the movement vector and make it proportional to the speed per second.
-            var movement = input.normalized * entityView.speedComponent.movementSpeed * _time.deltaTime;
+            var movement = input.normalized * playerComponent.speedComponent.movementSpeed * _time.deltaTime;
 
             // Move the player to it's current position plus the movement.
-            entityView.transformComponent.position = entityView.positionComponent.position + movement;
+            playerComponent.transformComponent.position = playerComponent.positionComponent.position + movement;
         }
 
-        void Turning(ref PlayerInputDataComponent playerEntityView, ref PlayerEntityViewComponent entityView)
+        void Turning(ref PlayerInputDataComponent playerInput, ref PlayerEntityViewComponent playerComponent)
         {
             // Create a ray from the mouse cursor on screen in the direction of the camera.
-            var camRay = playerEntityView.camRay;
+            var camRay = playerInput.camRay;
 
             // Perform the raycast and if it hits something on the floor layer...
             Vector3 point;
             if (_rayCaster.CheckHit(camRay, camRayLength, floorMask, out point))
             {
                 // Create a vector from the player to the point on the floor the raycast from the mouse hit.
-                var playerToMouse = point - entityView.positionComponent.position;
+                var playerToMouse = point - playerComponent.positionComponent.position;
 
                 // Ensure the vector is entirely along the floor plane.
                 playerToMouse.y = 0f;
@@ -86,7 +86,7 @@ namespace Svelto.ECS.Example.Survive.Characters.Player
                 var newRotatation = Quaternion.LookRotation(playerToMouse);
 
                 // Set the player's rotation to this new rotation.
-                entityView.transformComponent.rotation = newRotatation;
+                playerComponent.transformComponent.rotation = newRotatation;
             }
         }
     }

@@ -27,7 +27,7 @@ namespace Svelto.ECS.Example.Survive
         public static readonly ExclusiveGroup EnemiesDeadGroup = new ExclusiveGroup();
 
         //it's also possible to regroup groups. It's quite a flexible system
-        public static readonly ExclusiveGroupStruct[] DamageableEntities = {EnemiesGroup, PlayersGroup};
+        public static readonly ExclusiveGroupStruct[] DamageableEntitiesGroups = {EnemiesGroup, PlayersGroup};
 
         public static EGID   HUD = new EGID(0, GUICanvas);
         //Reserve a book range, as many groups as the possible number of player enemies

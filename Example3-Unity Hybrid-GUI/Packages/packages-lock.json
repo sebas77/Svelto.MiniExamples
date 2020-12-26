@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "com.sebaslab.svelto.common": {
-      "version": "file:com.sebaslab.svelto.common@3.0.0",
+      "version": "file:com.sebaslab.svelto.common@3.1.0",
       "depth": 0,
       "source": "embedded",
       "dependencies": {
@@ -9,11 +9,11 @@
       }
     },
     "com.sebaslab.svelto.ecs": {
-      "version": "file:com.sebaslab.svelto.ecs@3.0.0",
+      "version": "file:com.sebaslab.svelto.ecs@3.1.0",
       "depth": 0,
       "source": "embedded",
       "dependencies": {
-        "com.sebaslab.svelto.common": "3.0.0"
+        "com.sebaslab.svelto.common": "3.1.0"
       }
     },
     "com.sebaslab.svelto.services": {
@@ -39,11 +39,11 @@
       "dependencies": {}
     },
     "com.unity.addressables": {
-      "version": "1.16.7",
+      "version": "1.16.15",
       "depth": 0,
       "source": "registry",
       "dependencies": {
-        "com.unity.scriptablebuildpipeline": "1.14.0",
+        "com.unity.scriptablebuildpipeline": "1.15.1",
         "com.unity.modules.assetbundle": "1.0.0",
         "com.unity.modules.unitywebrequest": "1.0.0",
         "com.unity.modules.unitywebrequestassetbundle": "1.0.0"
@@ -51,14 +51,14 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.ext.nunit": {
-      "version": "1.0.0",
+      "version": "1.0.5",
       "depth": 2,
       "source": "registry",
       "dependencies": {},
       "url": "https://packages.unity.com"
     },
     "com.unity.ide.rider": {
-      "version": "3.0.2",
+      "version": "3.0.3",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -74,18 +74,18 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.scriptablebuildpipeline": {
-      "version": "1.14.0",
+      "version": "1.15.1",
       "depth": 1,
       "source": "registry",
       "dependencies": {},
       "url": "https://packages.unity.com"
     },
     "com.unity.test-framework": {
-      "version": "1.1.18",
+      "version": "1.1.19",
       "depth": 1,
       "source": "registry",
       "dependencies": {
-        "com.unity.ext.nunit": "1.0.0",
+        "com.unity.ext.nunit": "1.0.5",
         "com.unity.modules.imgui": "1.0.0",
         "com.unity.modules.jsonserialize": "1.0.0"
       },

@@ -15,6 +15,6 @@
     <Compile Remove="SveltoVanilla\src\Svelto-ECS-Simplest-Example-Ever\Scripts\MainContextSimple.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Svelto\com.sebaslab.svelto.ecs@3.0.0\Svelto.ECS.csproj" />
+    <ProjectReference Include="..\Svelto\com.sebaslab.svelto.ecs@3.1.0\Svelto.ECS.csproj" />
   </ItemGroup>
 </Project>

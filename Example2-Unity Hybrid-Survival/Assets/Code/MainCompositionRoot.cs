@@ -13,6 +13,7 @@ using Svelto.ECS.Extensions;
 using Svelto.ECS.Extensions.Unity;
 using Svelto.ECS.Schedulers.Unity;
 using Svelto.Tasks;
+using Svelto.Tasks.Enumerators;
 using UnityEngine;
 
 //Note on this example:
@@ -135,7 +136,7 @@ namespace Svelto.ECS.Example.Survive
 
             //Spawner engines are factories engines that can build entities
             var enemySpawnerEngine = new EnemySpawnerEngine(enemyFactory, entityFunctions);
-            var enemyDeathEngine   = new EnemyDeathEngine(entityFunctions, entityStreamConsumerFactory, entityFactory, time);
+            var enemyDeathEngine   = new EnemyDeathEngine(entityFunctions, entityStreamConsumerFactory, time, new WaitForSubmissionEnumerator(unityEntitySubmissionScheduler));
 
             //hud and sound engines
             var hudEngine         = new HUDEngine(time, entityStreamConsumerFactory);

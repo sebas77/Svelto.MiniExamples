@@ -82,8 +82,9 @@ namespace MiniExamples.DeterministicPhysicDemo
                 gameTick         += (ulong) ((elapsedTicks - lastElapsedTicks) * _simulationSpeed);
                 lastElapsedTicks =  elapsedTicks;
 
-                // Execute simulation ticks
+                // Execute graphic ticks
                 graphicsAction.Tick((ulong) elapsedTicks);
+                // Execute simulation ticks
                 physicGroup.Tick(gameTick);
                 oncePerSecond.Tick(gameTick);
             }

@@ -31,7 +31,9 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
                     var (entity, count) = entitiesDB.QueryEntities<EnemyEntityViewComponent>(ECSGroups.EnemiesGroup);
 
                     for (var i = 0; i < count; i++)
+                    {
                         entity[i].animationComponent.playAnimation = "PlayerDead";
+                    }
                 }
 
                 yield return null;
@@ -39,7 +41,7 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
         }
 
         /// <summary>
-        /// Lazyness alert: this shouldn't be in this engine
+        /// Laziness alert: this shouldn't be in this engine
         /// </summary>
         /// <returns></returns>
         IEnumerator SpawnEffectOnDamage()

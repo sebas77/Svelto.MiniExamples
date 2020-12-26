@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using Svelto.Common;
-using Svelto.ECS.Extensions;
 using Svelto.Tasks.Enumerators;
 using UnityEngine;
 
@@ -10,13 +9,13 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
     public class EnemyDeathEngine : IQueryingEntitiesEngine, IStepEngine, IReactOnSwap<EnemyEntityViewComponent>
     {
         public EnemyDeathEngine
-            (IEntityFunctions entityFunctions, IEntityStreamConsumerFactory consumerFactory, IEntityFactory entityFactory, ITime time)
+            (IEntityFunctions entityFunctions, IEntityStreamConsumerFactory consumerFactory, ITime time, WaitForSubmissionEnumerator waitForSubmission)
         {
-            _entityFunctions = entityFunctions;
-            _consumerFactory = consumerFactory;
-            _time            = time;
-            _entityFactory = entityFactory;
-            _checkIfDead     = CheckIfDead();
+            _entityFunctions   = entityFunctions;
+            _consumerFactory   = consumerFactory;
+            _time              = time;
+            _checkIfDead       = CheckIfDead();
+            _waitForSubmission = waitForSubmission;
         }
 
         public EntitiesDB entitiesDB { get; set; }
@@ -74,7 +73,7 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
             InitialSetup();
 
             //wait for the swap to happen
-            yield return new WaitForSubmissionEnumerator(_entityFunctions, _entityFactory, entitiesDB);
+            yield return _waitForSubmission;
 
             var wait = new WaitForSecondsEnumerator(2);
             
@@ -103,7 +102,8 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
         readonly IEntityStreamConsumerFactory _consumerFactory;
         readonly IEnumerator                  _checkIfDead;
         readonly ITime                        _time;
-        readonly IEntityFactory _entityFactory;
-        Consumer<DeathComponent> _consumer;
+        
+        Consumer<DeathComponent>          _consumer;
+        readonly WaitForSubmissionEnumerator _waitForSubmission;
     }
 }

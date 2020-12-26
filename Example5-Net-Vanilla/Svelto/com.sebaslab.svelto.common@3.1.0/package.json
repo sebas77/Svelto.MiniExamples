@@ -1,0 +1,14 @@
+{
+  "displayName": "Svelto Common",
+  "category": "Svelto",
+  "description": "Svelto common utilities and datastructures",
+  "dependencies": {
+    "com.sebaslab.svelto.unsafe": "4.7.1"
+  },
+  "keywords": [
+    "svelto"
+  ],
+  "name": "com.sebaslab.svelto.common",
+  "version": "3.1.0",
+  "type": "library"
+}

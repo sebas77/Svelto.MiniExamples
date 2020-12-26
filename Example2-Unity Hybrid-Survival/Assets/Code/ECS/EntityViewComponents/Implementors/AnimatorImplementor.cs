@@ -5,10 +5,6 @@ namespace Svelto.ECS.Example.Survive.Implementors
 {
     public class AnimatorImplementor : MonoBehaviour, IImplementor, IAnimationComponent
     {
-        Animator _anim;
-
-        string _animName;
-
         public string playAnimation
         {
             get { return _animName; }
@@ -31,5 +27,8 @@ namespace Svelto.ECS.Example.Survive.Implementors
         }
 
         void Awake() { _anim = GetComponent<Animator>(); }
+        
+        Animator _anim;
+        string   _animName;
     }
 }

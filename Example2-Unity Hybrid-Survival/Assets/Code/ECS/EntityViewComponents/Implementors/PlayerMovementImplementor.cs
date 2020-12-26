@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Svelto.ECS.Example.Survive.Characters.Player
 {
     public class PlayerMovementImplementor
-        : MonoBehaviour, IImplementor, IRigidBodyComponent, IPositionComponent, ISpeedComponent, ITransformComponent
+        : MonoBehaviour, IImplementor, IRigidBodyComponent, ISpeedComponent, ITransformComponent
     {
         Rigidbody    _playerRigidbody; // Reference to the player's rigidbody.
         Transform    _playerTransform;

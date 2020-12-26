@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "com.sebaslab.svelto.common": {
-      "version": "file:com.sebaslab.svelto.common@3.0.0",
+      "version": "file:com.sebaslab.svelto.common@3.1.0",
       "depth": 0,
       "source": "embedded",
       "dependencies": {
@@ -9,11 +9,11 @@
       }
     },
     "com.sebaslab.svelto.ecs": {
-      "version": "file:com.sebaslab.svelto.ecs@3.0.0",
+      "version": "file:com.sebaslab.svelto.ecs@3.1.0",
       "depth": 0,
       "source": "embedded",
       "dependencies": {
-        "com.sebaslab.svelto.common": "3.0.0"
+        "com.sebaslab.svelto.common": "3.1.0"
       }
     },
     "com.sebaslab.svelto.tasks": {
@@ -76,7 +76,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.ide.rider": {
-      "version": "3.0.2",
+      "version": "3.0.3",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -158,24 +158,22 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.render-pipelines.core": {
-      "version": "10.2.2",
+      "version": "11.0.0",
       "depth": 1,
-      "source": "registry",
+      "source": "builtin",
       "dependencies": {
         "com.unity.ugui": "1.0.0"
-      },
-      "url": "https://packages.unity.com"
+      }
     },
     "com.unity.render-pipelines.universal": {
-      "version": "10.2.2",
+      "version": "11.0.0",
       "depth": 0,
-      "source": "registry",
+      "source": "builtin",
       "dependencies": {
         "com.unity.mathematics": "1.1.0",
-        "com.unity.render-pipelines.core": "10.2.2",
-        "com.unity.shadergraph": "10.2.2"
-      },
-      "url": "https://packages.unity.com"
+        "com.unity.render-pipelines.core": "11.0.0",
+        "com.unity.shadergraph": "11.0.0"
+      }
     },
     "com.unity.rendering.hybrid": {
       "version": "0.10.0-preview.21",
@@ -187,7 +185,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.scriptablebuildpipeline": {
-      "version": "1.14.1",
+      "version": "1.15.1",
       "depth": 0,
       "source": "registry",
       "dependencies": {},
@@ -214,14 +212,13 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.shadergraph": {
-      "version": "10.2.2",
+      "version": "11.0.0",
       "depth": 1,
-      "source": "registry",
+      "source": "builtin",
       "dependencies": {
-        "com.unity.render-pipelines.core": "10.2.2",
+        "com.unity.render-pipelines.core": "11.0.0",
         "com.unity.searcher": "4.3.1"
-      },
-      "url": "https://packages.unity.com"
+      }
     },
     "com.unity.test-framework": {
       "version": "1.1.19",

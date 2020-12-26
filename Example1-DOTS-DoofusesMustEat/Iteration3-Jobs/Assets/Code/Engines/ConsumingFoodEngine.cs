@@ -40,7 +40,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
         public string name => nameof(ConsumingFoodEngine);
 
         JobHandle CreateJobForDoofusesAndFood(JobHandle inputDeps, in LocalFasterReadOnlyList<ExclusiveGroupStruct> 
-                doofusesEatingGroups, BuildGroup foodEatenGroup, in LocalFasterReadOnlyList<ExclusiveGroupStruct> foodGroup)
+                doofusesEatingGroups, ExclusiveBuildGroup foodEatenGroup, in LocalFasterReadOnlyList<ExclusiveGroupStruct> foodGroup)
         {
             var foodPositionMapper = entitiesDB.QueryNativeMappedEntities<PositionEntityComponent>(foodGroup);
             
@@ -80,13 +80,13 @@ namespace Svelto.ECS.MiniExamples.Example1C
         readonly NativeEntitySwap                               _nativeSwap;
         readonly NativeEntityRemove                             _nativeRemove;
 
-        [NativeSetThreadIndex] readonly int        _threadIndex;
-        readonly                        BuildGroup _doofuseMealLockedGroup;
+        [NativeSetThreadIndex] readonly int                 _threadIndex;
+        readonly                        ExclusiveBuildGroup _doofuseMealLockedGroup;
 
         public ConsumingFoodJob
         (in BT<NB<PositionEntityComponent>, NB<VelocityEntityComponent>, NB<MealInfoComponent>, NB<EGIDComponent>>
              doofuses, NativeEGIDMultiMapper<PositionEntityComponent> foodPositionMapper, NativeEntitySwap swap
-       , NativeEntityRemove nativeRemove, BuildGroup doofuseMealLockedGroup) : this()
+       , NativeEntityRemove nativeRemove, ExclusiveBuildGroup doofuseMealLockedGroup) : this()
         {
             _doofuses               = doofuses;
             _foodPositionMapper     = foodPositionMapper;

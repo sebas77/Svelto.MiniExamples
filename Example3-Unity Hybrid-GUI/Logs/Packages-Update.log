@@ -78,3 +78,12 @@ The following packages were updated:
   com.unity.purchasing from version 2.0.6 to 2.1.1
   com.unity.test-framework from version 1.1.14 to 1.1.18
   com.unity.textmeshpro from version 3.0.0 to 3.0.1
+
+=== Sat Dec 26 14:11:17 2020
+
+Packages were changed.
+Update Mode: updateDependencies
+
+The following packages were updated:
+  com.unity.addressables from version 1.16.7 to 1.16.15
+  com.unity.ide.rider from version 3.0.2 to 3.0.3

@@ -53,10 +53,9 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.Engines
         }
 
         public void Ready() {}
-
-        readonly IGraphics       _graphics;
-        public   EntitiesDB      entitiesDB { get; set; }
-
-        public string Name => nameof(DebugPhysicsDrawEngine);
+        public   EntitiesDB entitiesDB { get; set; }
+        public   string    Name => nameof(DebugPhysicsDrawEngine);
+        
+        readonly IGraphics _graphics;
     }
 }

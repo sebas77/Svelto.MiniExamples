@@ -29,11 +29,11 @@ namespace Svelto.ECS.MiniExamples.Example1C
             _isDisposing = true;
         }
         
-        public string              name       => nameof(SpawnUnityEntityOnSveltoEntityEngine);
-        public EntityCommandBuffer ECB        { get; set; }
-        public EntityManager       EM         { get; set; }
-        public EntitiesDB          entitiesDB { get; set; }
-        public void                Ready()    {  }
+        public string              name                                          => nameof(SpawnUnityEntityOnSveltoEntityEngine);
+        public EntityCommandBuffer ECB                                           { get; set; }
+        public EntityManager       EM                                            { get; set; }
+        public EntitiesDB          entitiesDB                                    { get; set; }
+        public void                Ready()                                       {  }
         
         public void Add(ref UnityEcsEntityComponent entityComponent, EGID egid)
         {

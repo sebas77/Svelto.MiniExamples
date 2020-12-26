@@ -73,8 +73,7 @@ namespace Svelto.ECS.Vanilla.Example
 
     namespace SimpleEntityEngine
     {
-        public class BehaviourForEntityClassEngine
-            :
+        public class BehaviourForEntityClassEngine :
                 //this interface makes the engine reactive, it's absolutely optional, you need to read my articles
                 //and wiki about it.
                 IReactOnAddAndRemove<EntityComponent>,

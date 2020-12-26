@@ -3,9 +3,13 @@ using MiniExamples.DeterministicPhysicDemo.Physics.Engines;
 
 namespace MiniExamples.DeterministicPhysicDemo.Physics
 {
+    /// <summary>
+    /// Physic core shows an interesting concept that is used in Gamecraft too: packaging encapsulated contexts
+    /// in different assemblies and exposing only the method to register engines.
+    /// </summary>
     public static class PhysicsCore
     {
-        public static void RegisterTo(in EnginesRoot enginesRoot, in IEngineScheduler scheduler)
+        public static void RegisterEngines(in EnginesRoot enginesRoot, in IEngineScheduler scheduler)
         {
             var applyVelocityToRigidBodiesEngine                 = new ApplyVelocityToRigidBodiesEngine();
             var detectDynamicBoxVsBoxCollisionsEngine            = new DynamicBoxVsBoxCollisionsEngine();

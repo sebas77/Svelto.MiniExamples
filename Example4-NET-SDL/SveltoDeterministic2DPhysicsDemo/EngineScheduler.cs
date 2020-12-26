@@ -8,13 +8,14 @@ namespace MiniExamples.DeterministicPhysicDemo
 {
     public class EngineScheduler : IEngineScheduler
     {
-        public EngineScheduler(IEngineSchedulerReporter reporter, ISimpleEntitiesSubmissionScheduler submissionScheduler)
+        public EngineScheduler
+            (IEngineSchedulerReporter reporter, SimpleEntitiesSubmissionSchedulerInterface submissionScheduler)
         {
-            _reporter                    = reporter;
-            _submissionScheduler         = submissionScheduler;
-            _scheduledPhysicsEngines     = new List<IScheduledPhysicsEngine>();
-            _scheduledGraphicsEngine     = new List<IScheduledGraphicsEngine>();
-            _stopwatch                   = Stopwatch.StartNew();
+            _reporter                = reporter;
+            _submissionScheduler     = submissionScheduler;
+            _scheduledPhysicsEngines = new List<IScheduledPhysicsEngine>();
+            _scheduledGraphicsEngine = new List<IScheduledGraphicsEngine>();
+            _stopwatch               = Stopwatch.StartNew();
         }
 
         public void ExecuteGraphics(FixedPoint delta)
@@ -53,10 +54,10 @@ namespace MiniExamples.DeterministicPhysicDemo
             _scheduledPhysicsEngines.Add(scheduled);
         }
 
-        readonly IEngineSchedulerReporter       _reporter;
-        private readonly ISimpleEntitiesSubmissionScheduler _submissionScheduler;
-        readonly List<IScheduledGraphicsEngine> _scheduledGraphicsEngine;
-        readonly List<IScheduledPhysicsEngine>  _scheduledPhysicsEngines;
-        readonly Stopwatch                      _stopwatch;
- }
+        readonly IEngineSchedulerReporter                   _reporter;
+        readonly SimpleEntitiesSubmissionSchedulerInterface _submissionScheduler;
+        readonly List<IScheduledGraphicsEngine>             _scheduledGraphicsEngine;
+        readonly List<IScheduledPhysicsEngine>              _scheduledPhysicsEngines;
+        readonly Stopwatch                                  _stopwatch;
+    }
 }
