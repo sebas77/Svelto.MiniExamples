@@ -2,15 +2,6 @@ using System;
 
 namespace Svelto.ECS
 {
-    public interface IEntityDescriptor
-    {
-        IComponentBuilder[] componentsToBuild { get; }
-    }
-    
-    public interface IDynamicEntityDescriptor: IEntityDescriptor
-    {
-    }
-
     static class EntityDescriptorTemplate<TType> where TType : IEntityDescriptor, new()
     {
         static EntityDescriptorTemplate()

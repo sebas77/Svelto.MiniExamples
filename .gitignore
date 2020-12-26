@@ -30,3 +30,4 @@ Example4-NET-SDL/SveltoDeterministic2DPhysicsDemo/bin/
 Example4-NET-SDL/com.sebaslab.svelto.ecs@3.1.0/bin/Debug/netstandard2.0/Svelto.Common.pdb
 Example4-NET-SDL/com.sebaslab.svelto.ecs@3.1.0/bin/
 Example2-Unity Hybrid-Survival/UserSettings/
+*.meta
