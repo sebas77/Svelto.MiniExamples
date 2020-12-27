@@ -3,8 +3,6 @@ Deterministic 2D Physics for C# Console Apps.
 
 This is an early commit to demo how its possible to use Svelto 3.0 in a non-Unity context.
 
-I'd recommend **NOT** using this for anything.
-
 ## Dependencies
 * Svelto.Common
 * Svelto.ECS
