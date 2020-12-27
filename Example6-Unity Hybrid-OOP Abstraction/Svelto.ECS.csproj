@@ -57,6 +57,7 @@
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Serialization\ComposedComponentSerializer.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Components\LinkedEntityComponent.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Core\EnginesGroup\SortedEnginesGroup.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Core\ValueReference.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Core\IEntityFunctions.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Core\EntityDescriptor\GenericEntityDescriptor.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Core\Streams\EnginesRoot.Streams.cs" />
@@ -75,8 +76,8 @@
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\DataStructures\ITypeSafeDictionary.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Core\SpecialEnumerators\DoubleIterationEnumerator.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Serialization\SerializationEntityDescriptorTemplate.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Extensions\Unity\EGIDHolderImplementor.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Core\SimpleEntitiesSubmissionScheduler.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Extensions\Unity\EGIDHolderImplementor.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Core\EntityDescriptor\IEntityDescriptorHolder.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Core\CheckEntityUtilities.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Core\Streams\GenericentityStreamConsumerFactory.cs" />
@@ -165,7 +166,6 @@
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Core\Streams\Consumer.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Serialization\EntitiesDB.SerializationDescriptorMap.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Core\IEngine.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Core\ValueReference.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Extensions\Unity\DOTS\Jobs\JobifiedEnginesGroup.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Extensions\Unity\UnityEntitiesSubmissionScheduler.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Core\EntitiesDB.cs" />

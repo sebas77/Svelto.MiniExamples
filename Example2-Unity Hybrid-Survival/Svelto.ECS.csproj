@@ -53,6 +53,7 @@
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Core\IEntityFunctions.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Core\EntityDescriptor\GenericEntityDescriptor.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Core\EntityFactory.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Core\Groups\ExclusiveBuildGroup.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Core\DBC.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\ECSResources\ECSString.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Serialization\SerializerExt.cs" />
@@ -91,9 +92,11 @@
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Core\Filters\EntitiesDB.GroupFilters.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Core\Hybrid\IEntityViewComponent.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Extensions\Svelto\EntityCollectionExtension.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Core\EntityDescriptor\IDynamicEntityDescriptor.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Core\EnginesRoot.Submission.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Core\EGIDMapper.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Serialization\DoNotSerializeAttribute.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Core\EntityDescriptor\IEntityDescriptor.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Core\EntityCollection.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Core\EntitySubmitOperation.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Core\Streams\EntityStream.cs" />
@@ -124,8 +127,10 @@
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\DataStructures\Unmanaged\NativeDynamicArrayCast.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Serialization\EnginesRoot.GenericEntitySerialization.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Serialization\ISerializationData.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Core\INeedEGID.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Core\EntityViewUtility.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Core\Filters\GroupFilters.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Core\ValueReference.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Extensions\Unity\EGIDHolderImplementor.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Core\SimpleEntitiesSubmissionScheduler.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Core\Streams\GenericentityStreamConsumerFactory.cs" />
@@ -182,10 +187,6 @@
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Core\EnginesRoot.Entities.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\DataStructures\Unmanaged\UnsafeArray.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Core\EnginesGroup\UnsortedEnginesGroup.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Core\INeedEGID.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Core\EntityDescriptor\IEntityDescriptor.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Core\EntityDescriptor\IDynamicEntityDescriptor.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Core\Groups\ExclusiveBuildGroup.cs" />
      <None Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Svelto.ECS.asmdef" />
      <Reference Include="UnityEngine">
      <HintPath>C:/Program Files/Unity/Hub/Editor/2021.1.0b1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>

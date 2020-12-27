@@ -5,7 +5,7 @@ using Svelto.ECS.DataStructures;
 
 namespace Svelto.ECS
 {
-    public static class GlobalTypeID
+    public class GlobalTypeID
     {
         internal static uint NextID<T>() { return (uint) (Interlocked.Increment(ref value) - 1); }
 
