@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Svelto.ECS.Example.OOPAbstraction
+namespace Svelto.ECS.Example.OOPAbstraction.EntityViewComponents
 {
     class SelectNewParentEngine : ITickingEngine, IQueryingEntitiesEngine
     {

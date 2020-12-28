@@ -1,26 +1,23 @@
 using UnityEngine;
 
-namespace Svelto.ECS.Example.OOPAbstraction
+namespace Svelto.ECS.Example.OOPAbstraction.OOPLayer
 {
     class MoveSpheresEngine : ITickingEngine, IQueryingEntitiesEngine
     {
         public void Step()
         {
-            var (buffer, count) = entitiesDB.QueryEntities<TransformViewComponent>(ExampleGroups.SphereGroup);
-            
-            for (int i = 0; i < count; i++)
-            {
-                buffer[i].transform.position = Oscillation(buffer[i].transform.position, i);
-            }
+            foreach (var ((buffer, count), _) in entitiesDB.QueryEntities<TransformComponent>(ExampleGroups.SpherePrimitive.Groups))
+                for (int i = 0; i < count; i++)
+                {
+                    Oscillation(ref buffer[i].position, i);
+                }
         }
 
-        Vector3 Oscillation(Vector3 transformPosition, int i)
+        void Oscillation(ref Vector3 transformPosition, int i)
         {
             float transformPositionX = Mathf.Cos(Time.fixedTime * 3 / Mathf.PI);
             
             transformPosition.x = transformPositionX + i * 1.5f;    
-            
-            return transformPosition;
         }
 
         public string     name       => nameof(MoveSpheresEngine);

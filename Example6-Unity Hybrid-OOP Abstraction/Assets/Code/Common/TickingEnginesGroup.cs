@@ -8,13 +8,9 @@ namespace Svelto.ECS.Example.OOPAbstraction
     {
         public TickingEnginesGroup(FasterList<ITickingEngine> engines) : base(engines)
         {
-            GameObject tickingSystem = new GameObject();
-            tickingSystem.AddComponent<UpdateMe>().update = updateEngines;
-        }
-
-        void updateEngines()
-        {
-            base.StepAll();
+            GameObject tickingSystem = new GameObject("Ticking System");
+            
+            tickingSystem.AddComponent<UpdateMe>().update = StepAll;
         }
 
         class UpdateMe:MonoBehaviour
@@ -26,7 +22,7 @@ namespace Svelto.ECS.Example.OOPAbstraction
 
             public UpdateMe(Action update) { this.update = update; }
 
-            internal System.Action update;
+            internal Action update;
         }
     }
 }

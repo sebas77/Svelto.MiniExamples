@@ -1,4 +1,4 @@
-namespace Svelto.ECS.Example.OOPAbstraction
+namespace Svelto.ECS.Example.OOPAbstraction.EntityViewComponents
 {
     public static class ExampleGroups
     {

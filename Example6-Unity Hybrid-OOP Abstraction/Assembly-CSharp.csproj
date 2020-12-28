@@ -41,17 +41,30 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
-     <Compile Include="Assets\Code\MainContext.cs" />
-     <Compile Include="Assets\Code\ITickingEngine.cs" />
-     <Compile Include="Assets\Code\SelectNewParentEngine.cs" />
-     <Compile Include="Assets\Code\MainCompositionRoot.cs" />
-     <Compile Include="Assets\Code\TickingEnginesGroup.cs" />
-     <Compile Include="Assets\Code\CubeEntityDescriptor.cs" />
+     <Compile Include="Assets\Code\WithEntityViewComponent\MainContextWithEntityViewComponents.cs" />
+     <Compile Include="Assets\Code\Common\ITickingEngine.cs" />
+     <Compile Include="Assets\Code\WithEntityViewComponent\Engines\SelectNewParentEngine.cs" />
+     <Compile Include="Assets\Code\WithEntityViewComponent\MainCompositionRootWithEntityViewComponents.cs" />
+     <Compile Include="Assets\Code\Common\TickingEnginesGroup.cs" />
+     <Compile Include="Assets\Code\WithEntityViewComponent\Descriptors\PrimitiveEntityDescriptor.cs" />
      <Compile Include="Assets\Code\GlobalSuppressions.cs" />
-     <Compile Include="Assets\Code\MoveSpheresEngine.cs" />
-     <Compile Include="Assets\Code\MoveCubesEngine.cs" />
-     <Compile Include="Assets\Code\ExampleGroups.cs" />
-     <Compile Include="Assets\Code\TransformViewComponent.cs" />
+     <Compile Include="Assets\Code\WithEntityViewComponent\Engines\MoveSpheresEngine.cs" />
+     <Compile Include="Assets\Code\WithEntityViewComponent\Engines\MoveCubesEngine.cs" />
+     <Compile Include="Assets\Code\WithEntityViewComponent\ExampleGroups.cs" />
+     <Compile Include="Assets\Code\WithEntityViewComponent\Descriptors\TransformViewComponent.cs" />
+     <Compile Include="Assets\Code\WithEntityViewComponent\Descriptors\TransformImplementor.cs" />
+     <Compile Include="Assets\Code\WithOOPLayer\MainContextWithOOPLayer.cs" />
+     <Compile Include="Assets\Code\WithOOPLayer\Engines\SelectNewParentEngine.cs" />
+     <Compile Include="Assets\Code\WithOOPLayer\Engines\OOPIndexComponent.cs" />
+     <Compile Include="Assets\Code\WithOOPLayer\Descriptors\PrimitiveEntityDescriptor.cs" />
+     <Compile Include="Assets\Code\WithOOPLayer\Engines\TransformComponent.cs" />
+     <Compile Include="Assets\Code\WithOOPLayer\Engines\MoveSpheresEngine.cs" />
+     <Compile Include="Assets\Code\WithOOPLayer\MainCompositionRootWithOOPLayer.cs" />
+     <Compile Include="Assets\Code\WithOOPLayer\OOPLayer\OOPManager.cs" />
+     <Compile Include="Assets\Code\WithOOPLayer\Engines\MoveCubesEngine.cs" />
+     <Compile Include="Assets\Code\WithOOPLayer\Engines\SyncTransformEngine.cs" />
+     <Compile Include="Assets\Code\WithOOPLayer\Engines\SyncHierarchyEngine.cs" />
+     <Compile Include="Assets\Code\WithOOPLayer\ExampleGroups.cs" />
      <Reference Include="UnityEngine">
      <HintPath>C:/Program Files/Unity/Hub/Editor/2021.1.0b1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
      </Reference>
