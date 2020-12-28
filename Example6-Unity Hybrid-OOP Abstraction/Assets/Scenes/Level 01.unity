@@ -133,6 +133,7 @@ GameObject:
   m_Component:
   - component: {fileID: 412089776}
   - component: {fileID: 412089775}
+  - component: {fileID: 412089777}
   m_Layer: 8
   m_Name: GameContext
   m_TagString: Untagged
@@ -147,11 +148,12 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 412089774}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe306650ddd845ffa00b0576fa0812db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  note: Enable this context to check how oop can be wrapped around EntityViewComponents
 --- !u!4 &412089776
 Transform:
   m_ObjectHideFlags: 0
@@ -167,6 +169,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &412089777
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 412089774}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7050b143c1b478994550a3450ae9e0d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  note: Enable this context to check how oop can be abstracted using code layers
 --- !u!1 &666138137
 GameObject:
   m_ObjectHideFlags: 0
@@ -192,7 +207,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 666138137}
-  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
   m_LocalPosition: {x: -0.24309151, y: 2.4083538, z: 12.708919}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
