@@ -1,8 +1,8 @@
-using Vector3 = UnityEngine.Vector3;
+using UnityEngine;
 
 namespace Svelto.ECS.Example.OOPAbstraction.OOPLayer
 {
-    struct TransformComponent : IEntityComponent
+    public struct TransformComponent : IEntityComponent
     {
         public Vector3 position;
 

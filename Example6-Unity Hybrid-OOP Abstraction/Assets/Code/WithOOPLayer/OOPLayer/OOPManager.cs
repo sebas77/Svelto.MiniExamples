@@ -3,36 +3,40 @@ using UnityEngine;
 
 namespace Svelto.ECS.Example.OOPAbstraction.OOPLayer
 {
-    public class OOPManager
+    class OOPManager:IOOPManager
     {
+        public uint RegisterCube()
+        {
+            var cubeObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
+
+            objects.Add(cubeObject.transform);
+
+            return (uint) (objects.count - 1);
+        }
+
         public uint RegisterSphere()
         {
-            var sphereObject      = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            
+            var sphereObject = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+
             objects.Add(sphereObject.transform);
 
             return (uint) (objects.count - 1);
         }
 
-        public uint RegisterCube()
+        internal void SetParent(uint index, in uint parent)
         {
-            var cubeObject      = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            
-            objects.Add(cubeObject.transform);
-            
-            return (uint) (objects.count - 1);
+            if (objects[index].parent != objects[parent])
+                objects[index].SetParent(objects[parent], false);
         }
 
-        public void SetPotion(uint index, in Vector3 position)
-        {
-            objects[index].localPosition = position;
-        }
+        internal void SetPotion(uint index, in Vector3 position) { objects[index].localPosition = position; }
 
-        public void SetParent(uint index, in uint parent)
-        {
-            objects[index].SetParent(objects[parent], false);
-        }
-        
         readonly FasterList<Transform> objects = new FasterList<Transform>();
+    }
+
+    public interface IOOPManager
+    {
+        uint RegisterCube();
+        uint RegisterSphere();
     }
 }

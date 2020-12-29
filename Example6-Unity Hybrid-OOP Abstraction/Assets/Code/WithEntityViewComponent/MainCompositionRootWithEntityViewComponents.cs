@@ -11,13 +11,15 @@ namespace Svelto.ECS.Example.OOPAbstraction.EntityViewComponents
 
         public void OnContextCreated<T>(T contextHolder) { }
 
-        public void OnContextInitialized<T>(T contextHolder) { CompositionRoot(); }
-
         public void OnContextDestroyed()
         {
             //final clean up
             _enginesRoot?.Dispose();
         }
+
+        public void OnContextInitialized<T>(T contextHolder) { CompositionRoot(); }
+
+        EnginesRoot _enginesRoot;
 
         void CompositionRoot()
         {
@@ -29,10 +31,13 @@ namespace Svelto.ECS.Example.OOPAbstraction.EntityViewComponents
             var moveCubesEngine    = new MoveCubesEngine();
             var moveSpheresEngine  = new MoveSpheresEngine();
             var selectParentEngine = new SelectNewParentEngine();
-            
-            TickingEnginesGroup tickingEnginesGroup =
-                new TickingEnginesGroup(new FasterList<ITickingEngine>(new ITickingEngine[] {moveCubesEngine, moveSpheresEngine, selectParentEngine}));
-            
+
+            var tickingEnginesGroup = new TickingEnginesGroup(
+                new FasterList<IStepEngine>(new IStepEngine[]
+                {
+                    moveCubesEngine, moveSpheresEngine, selectParentEngine
+                }));
+
             _enginesRoot.AddEngine(tickingEnginesGroup);
             _enginesRoot.AddEngine(moveCubesEngine);
             _enginesRoot.AddEngine(moveSpheresEngine);
@@ -47,24 +52,20 @@ namespace Svelto.ECS.Example.OOPAbstraction.EntityViewComponents
             for (uint i = 0; i < 5; i++)
             {
                 var cubeObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                cubeImplementor = cubeObject.AddComponent<TransformImplementor>();
+                cubeImplementor          = cubeObject.AddComponent<TransformImplementor>();
                 cubeImplementor.position = new Vector3(i * 1.5f, 0, 0);
 
                 entityFactory.BuildEntity<PrimitiveEntityDescriptor>(new EGID(i, ExampleGroups.CubeGroup)
-                                                              , new[] {cubeImplementor});
-                
-                
+                                                                   , new[] {cubeImplementor});
             }
 
             var sphereObject      = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             var sphereImplementor = sphereObject.AddComponent<TransformImplementor>();
 
             entityFactory.BuildEntity<PrimitiveEntityDescriptor>(new EGID(6, ExampleGroups.SphereGroup)
-                                                          , new[] {sphereImplementor});
+                                                               , new[] {sphereImplementor});
 
             sphereImplementor.transform.parent = cubeImplementor.transform;
         }
-        
-        EnginesRoot _enginesRoot;
     }
 }

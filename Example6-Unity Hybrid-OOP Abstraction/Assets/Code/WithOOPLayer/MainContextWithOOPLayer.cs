@@ -1,7 +1,7 @@
 using Svelto.Context;
 using UnityEngine;
 
-namespace Svelto.ECS.Example.OOPAbstraction.OOPLayer
+namespace Svelto.ECS.Example.OOPAbstraction.WithOOPLayer
 {
     public class MainContextWithOOPLayer : UnityContext<MainCompositionRootWithOOPLayer>
     {

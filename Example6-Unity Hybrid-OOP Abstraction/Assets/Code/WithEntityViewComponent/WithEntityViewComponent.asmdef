@@ -1,0 +1,17 @@
+{
+    "name": "WithEntityViewComponent",
+    "rootNamespace": "",
+    "references": [
+        "GUID:b57d644f44ff36944b46b93c68dceb3c",
+        "GUID:1869b46461d119144a089fe5899ab312"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

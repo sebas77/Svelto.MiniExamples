@@ -1,59 +1,59 @@
 using Svelto.Context;
 using Svelto.DataStructures;
+using Svelto.ECS.Example.OOPAbstraction.OOPLayer;
 using Svelto.ECS.Schedulers.Unity;
-using Vector3 = UnityEngine.Vector3;
+using UnityEngine;
 
-namespace Svelto.ECS.Example.OOPAbstraction.OOPLayer
+namespace Svelto.ECS.Example.OOPAbstraction.WithOOPLayer
 {
     public class MainCompositionRootWithOOPLayer : ICompositionRoot
     {
-        public void OnContextInitialized<T>(T contextHolder) { CompositionRoot<T>(); }
+        public void OnContextCreated<T>(T contextHolder) { }
+
         public void OnContextDestroyed()
         {
             //final clean up
             _enginesRoot?.Dispose();
         }
 
-        public void OnContextCreated<T>(T contextHolder) { }
+        public void OnContextInitialized<T>(T contextHolder)
+        {
+            CompositionRoot<T>(out var oopManager);
+            CreateStartupEntities(oopManager);
+        }
 
-        void CompositionRoot<T>()
+        EnginesRoot _enginesRoot;
+
+        void CompositionRoot<T>(out IOOPManager oopManager)
         {
             var unityEntitySubmissionScheduler = new UnityEntitiesSubmissionScheduler("oop-abstraction");
             _enginesRoot = new EnginesRoot(unityEntitySubmissionScheduler);
-
-            var oopManager = new OOPManager();
-
-            CreateStartupEntities(oopManager);
-
+            
             var moveCubesEngine     = new MoveCubesEngine();
             var moveSpheresEngine   = new MoveSpheresEngine();
             var selectParentEngine  = new SelectNewParentEngine();
-            var syncEngine          = new SyncTransformEngine(oopManager);
-            var syncHierarchyEngine = new SyncHierarchyEngine(oopManager);
 
-            TickingEnginesGroup tickingEnginesGroup = new TickingEnginesGroup(
-                new FasterList<ITickingEngine>(new ITickingEngine[]
-                {
-                    moveCubesEngine
-                  , moveSpheresEngine
-                  , selectParentEngine
-                  , syncEngine
-                  , syncHierarchyEngine
-                }));
+            var listOfEnginesToTick = new FasterList<IStepEngine>(new IStepEngine[]
+            {
+                moveCubesEngine
+              , moveSpheresEngine
+              , selectParentEngine
+            });
+            var tickingEnginesGroup = new TickingEnginesGroup(listOfEnginesToTick);
 
             _enginesRoot.AddEngine(tickingEnginesGroup);
             _enginesRoot.AddEngine(moveCubesEngine);
             _enginesRoot.AddEngine(moveSpheresEngine);
             _enginesRoot.AddEngine(selectParentEngine);
-            _enginesRoot.AddEngine(syncEngine);
-            _enginesRoot.AddEngine(syncHierarchyEngine);
+            
+            OOPManagerCompositionRoot.Compose(_enginesRoot, listOfEnginesToTick, out oopManager, NUMBER_OF_SPHERES);
         }
 
-        void CreateStartupEntities(OOPManager oopManager)
+        void CreateStartupEntities(IOOPManager oopManager)
         {
             var entityFactory = _enginesRoot.GenerateEntityFactory();
 
-            for (uint i = 0; i < 5; i++)
+            for (uint i = 0; i < NUMBER_OF_CUBES; i++)
             {
                 var cubeIndex = oopManager.RegisterCube();
 
@@ -62,19 +62,23 @@ namespace Svelto.ECS.Example.OOPAbstraction.OOPLayer
                         new EGID(i, ExampleGroups.CubePrimitive.BuildGroup));
 
                 cubeInit.Init(new TransformComponent(new Vector3(i * 1.5f, 0, 0)));
-                cubeInit.Init(new OOPIndexComponent(cubeIndex));
+                cubeInit.Init(new ObjectIndexComponent(cubeIndex));
             }
 
-            var sphereIndex = oopManager.RegisterSphere();
+            for (uint i = 0; i < NUMBER_OF_SPHERES; i++)
+            {
+                var sphereIndex = oopManager.RegisterSphere();
 
-            var sphereInit =
-                entityFactory.BuildEntity<PrimitiveEntityDescriptor>(
-                    new EGID(6, ExampleGroups.SpherePrimitive.BuildGroup));
-
-            sphereInit.Init(new TransformComponent(new Vector3(1.5f, 0, 0)));
-            sphereInit.Init(new OOPIndexComponent(sphereIndex));
+                var sphereInit =
+                    entityFactory.BuildEntity<PrimitiveEntityDescriptorWithParent>(
+                        new EGID(NUMBER_OF_CUBES + i, ExampleGroups.SpherePrimitive.BuildGroup));
+                
+                sphereInit.Init(new TransformComponent(new Vector3(1.5f, 0, 0)));
+                sphereInit.Init(new ObjectIndexComponent(sphereIndex));
+            }
         }
-
-        EnginesRoot _enginesRoot;
+        
+        const uint NUMBER_OF_CUBES   = 5;
+        const uint NUMBER_OF_SPHERES = 10; 
     }
 }

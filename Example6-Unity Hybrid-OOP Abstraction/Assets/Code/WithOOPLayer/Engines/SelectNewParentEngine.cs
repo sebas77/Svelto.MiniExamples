@@ -1,29 +1,35 @@
+using Svelto.ECS.Example.OOPAbstraction.OOPLayer;
 using UnityEngine;
 
-namespace Svelto.ECS.Example.OOPAbstraction.OOPLayer
+namespace Svelto.ECS.Example.OOPAbstraction.WithOOPLayer
 {
-    class SelectNewParentEngine : ITickingEngine, IQueryingEntitiesEngine
+    class SelectNewParentEngine : IStepEngine, IQueryingEntitiesEngine
     {
+        public void Ready() { }
+
         public void Step()
         {
             if (Input.anyKeyDown)
             {
-                var (bufferSphere, _)   = entitiesDB.QueryEntities<OOPIndexComponent>(ExampleGroups.SpherePrimitive.Groups[0]);
-                var (bufferCube, count) = entitiesDB.QueryEntities<OOPIndexComponent>(ExampleGroups.CubePrimitive.Groups[0]);
-
-                if (_index == count)
-                    _index = 0;
+                uint sphereIndex = 0;
+                foreach (var ((bufferSphere, egids, sphereCount), _) in entitiesDB.QueryEntities<ObjectParentComponent, EGIDComponent>(ExampleGroups.SpherePrimitive.Groups))
+                foreach (var ((bufferCube, cubeCount), _) in entitiesDB.QueryEntities<ObjectIndexComponent>(ExampleGroups.CubePrimitive.Groups))
+                {
+                    while (sphereIndex < sphereCount && sphereIndex < cubeCount)
+                    {
+                        bufferSphere[sphereIndex].parent = bufferCube[(uint) ((_index + sphereIndex) % cubeCount)].index;
+                        entitiesDB.PublishEntityChange<ObjectParentComponent>(egids[sphereIndex].ID);
+                        sphereIndex++;
+                    }
+                }
                 
-                bufferSphere[0].parent = bufferCube[_index].index;
-                
-                ++_index;
+                _index++;
             }
         }
 
-        public string     name       => nameof(SelectNewParentEngine);
+        int               _index;
         public EntitiesDB entitiesDB { get; set; }
-        public void       Ready()    {  }
-        
-        int _index;
+
+        public string name => nameof(SelectNewParentEngine);
     }
 }
