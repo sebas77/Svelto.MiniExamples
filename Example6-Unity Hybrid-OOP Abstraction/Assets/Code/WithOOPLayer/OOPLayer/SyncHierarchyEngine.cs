@@ -4,10 +4,11 @@ namespace Svelto.ECS.Example.OOPAbstraction.OOPLayer
 {
     class SyncHierarchyEngine : IStepEngine, IQueryingEntitiesEngine, IDisposable
     {
-        public SyncHierarchyEngine(OOPManager oopManager, in Consumer<ObjectParentComponent> consumer)
+        public SyncHierarchyEngine(OOPManager oopManager, IEntityStreamConsumerFactory generateConsumerFactory, uint maxQuantity)
         {
             _oopManager = oopManager;
-            _consumer   = consumer;
+            _consumer =
+                generateConsumerFactory.GenerateConsumer<ObjectParentComponent>("SyncHierarchyEngine", maxQuantity);
         }
 
         public void Ready()

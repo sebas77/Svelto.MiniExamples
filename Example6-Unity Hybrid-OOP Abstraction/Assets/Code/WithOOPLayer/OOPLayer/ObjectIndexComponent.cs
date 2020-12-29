@@ -6,9 +6,4 @@ namespace Svelto.ECS.Example.OOPAbstraction.OOPLayer
 
         public ObjectIndexComponent(uint index) : this() { this.index = index; }
     }
-    
-    public struct ObjectParentComponent : IEntityComponent
-    {
-        public uint parent;
-    }
 }

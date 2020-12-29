@@ -41,6 +41,7 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
+     <Compile Include="Assets\Code\WithOOPLayer\OOPLayer\ObjectParentComponent.cs" />
      <Compile Include="Assets\Code\WithOOPLayer\OOPLayer\SyncHierarchyEngine.cs" />
      <Compile Include="Assets\Code\WithOOPLayer\OOPLayer\SyncTransformEngine.cs" />
      <Compile Include="Assets\Code\WithOOPLayer\OOPLayer\TransformComponent.cs" />
@@ -49,7 +50,7 @@
      <Compile Include="Assets\Code\WithOOPLayer\OOPLayer\Descriptors\PrimitiveEntityDescriptor.cs" />
      <Compile Include="Assets\Code\WithOOPLayer\OOPLayer\ExampleGroups.cs" />
      <Compile Include="Assets\Code\WithOOPLayer\OOPLayer\OOPManagerCompositionRoot.cs" />
-     <Compile Include="Assets\Code\WithOOPLayer\OOPLayer\Descriptors\PrimitiveEntityDescriptorWithParent.cs" />
+     <Compile Include="Assets\Code\WithOOPLayer\OOPLayer\Descriptors\PrimitiveEntityWithParentDescriptor.cs" />
      <None Include="Assets\Code\WithOOPLayer\OOPLayer\OOPLayerPackage.asmdef" />
      <Reference Include="UnityEngine">
      <HintPath>C:/Program Files/Unity/Hub/Editor/2021.1.0b1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>

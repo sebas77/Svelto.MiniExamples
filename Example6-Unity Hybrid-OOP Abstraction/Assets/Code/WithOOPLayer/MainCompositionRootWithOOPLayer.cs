@@ -70,7 +70,7 @@ namespace Svelto.ECS.Example.OOPAbstraction.WithOOPLayer
                 var sphereIndex = oopManager.RegisterSphere();
 
                 var sphereInit =
-                    entityFactory.BuildEntity<PrimitiveEntityDescriptorWithParent>(
+                    entityFactory.BuildEntity<PrimitiveEntityWithParentDescriptor>(
                         new EGID(NUMBER_OF_CUBES + i, ExampleGroups.SpherePrimitive.BuildGroup));
                 
                 sphereInit.Init(new TransformComponent(new Vector3(1.5f, 0, 0)));

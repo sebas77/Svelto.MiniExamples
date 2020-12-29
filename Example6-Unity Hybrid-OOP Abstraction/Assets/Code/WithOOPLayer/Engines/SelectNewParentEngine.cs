@@ -22,7 +22,7 @@ namespace Svelto.ECS.Example.OOPAbstraction.WithOOPLayer
                         sphereIndex++;
                     }
                 }
-                
+
                 _index++;
             }
         }

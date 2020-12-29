@@ -25,8 +25,7 @@ namespace Svelto.ECS.Example.OOPAbstraction.OOPLayer
 
         internal void SetParent(uint index, in uint parent)
         {
-            if (objects[index].parent != objects[parent])
-                objects[index].SetParent(objects[parent], false);
+            objects[index].SetParent(objects[parent], false);
         }
 
         internal void SetPotion(uint index, in Vector3 position) { objects[index].localPosition = position; }
