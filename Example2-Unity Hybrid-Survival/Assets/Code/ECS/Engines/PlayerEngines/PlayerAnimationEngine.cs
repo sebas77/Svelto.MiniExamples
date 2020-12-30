@@ -1,7 +1,5 @@
 using System.Collections;
 using Svelto.Common;
-using Svelto.ECS.Extensions;
-using Svelto.Tasks;
 
 namespace Svelto.ECS.Example.Survive.Characters.Player
 {

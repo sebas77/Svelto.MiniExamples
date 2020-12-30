@@ -123,6 +123,7 @@
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Serialization\ComposedComponentSerializer.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Components\LinkedEntityComponent.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Core\EnginesGroup\SortedEnginesGroup.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Core\ValueReference.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Core\Streams\EnginesRoot.Streams.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\DataStructures\Unmanaged\NativeDynamicArrayCast.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Serialization\EnginesRoot.GenericEntitySerialization.cs" />
@@ -130,7 +131,6 @@
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Core\INeedEGID.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Core\EntityViewUtility.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Core\Filters\GroupFilters.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Core\ValueReference.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Extensions\Unity\EGIDHolderImplementor.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Core\SimpleEntitiesSubmissionScheduler.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Core\Streams\GenericentityStreamConsumerFactory.cs" />

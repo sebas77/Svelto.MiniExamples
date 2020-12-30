@@ -12,7 +12,7 @@ namespace Svelto.ECS.Example.Survive.Implementors.HUD
 
         public int score
         {
-            get { return _score; }
+            get => _score;
             set
             {
                 _score     = value;

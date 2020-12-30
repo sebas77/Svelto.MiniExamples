@@ -9,8 +9,6 @@ namespace Svelto.ECS.Example.Survive.Camera
     //Third step start to write the code and create classes/fields as needed using refactoring tools 
     public class CameraFollowTargetEngine : IQueryingEntitiesEngine
     {
-        readonly ITime _time;
-
         public CameraFollowTargetEngine(ITime time) { _time = time; }
 
         public void Ready()
@@ -24,18 +22,11 @@ namespace Svelto.ECS.Example.Survive.Camera
 
         IEnumerator PhysicUpdate()
         {
-            //wait for the camera to be created (the task just spins)
-            while (entitiesDB.HasAny<CameraEntityView>(ECSGroups.Camera) == false)
-                yield return null;
-            //wait for the camera target to be created (the task just spins)
-            while (entitiesDB.HasAny<CameraTargetEntityView>(ECSGroups.CameraTargetGroup) == false)
-                yield return null;
-            
-            var cameraTargetEntityView     = entitiesDB.QueryUniqueEntity<CameraTargetEntityView>(ECSGroups.PlayersGroup);
+            var cameraTargetEntityView = entitiesDB.QueryUniqueEntity<CameraTargetEntityView>(ECSGroups.PlayersGroup);
             var cameraEntityView = entitiesDB.QueryUniqueEntity<CameraEntityView>(ECSGroups.Camera);
-            var offset           = cameraEntityView.positionComponent.position - cameraTargetEntityView.targetComponent.position;
+            var offset = cameraEntityView.positionComponent.position - cameraTargetEntityView.targetComponent.position;
             var smoothing = 5.0f;
-            
+
             void TrackCameraTarget()
             {
                 ref var camera       = ref entitiesDB.QueryUniqueEntity<CameraEntityView>(ECSGroups.Camera);
@@ -55,11 +46,13 @@ namespace Svelto.ECS.Example.Survive.Camera
                     yield return null;
                 while (entitiesDB.HasAny<CameraTargetEntityView>(ECSGroups.CameraTargetGroup) == false)
                     yield return null;
-                
+
                 TrackCameraTarget();
 
                 yield return null;
             }
         }
+        
+        readonly ITime _time;
     }
 }

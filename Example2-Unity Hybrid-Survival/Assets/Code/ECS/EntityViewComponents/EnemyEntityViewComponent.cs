@@ -20,16 +20,4 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
 
         public EGID ID { get; set; }
     }
-
-    public struct EnemyAttackEntityViewComponent : IEntityViewComponent
-    {
-        public IEnemyTriggerComponent targetTriggerComponent;
-        public EGID                   ID { get; set; }
-    }
-
-    public struct EnemyTargetEntityViewComponent : IEntityViewComponent
-    {
-        public IPositionComponent targetPositionComponent;
-        public EGID               ID { get; set; }
-    }
 }

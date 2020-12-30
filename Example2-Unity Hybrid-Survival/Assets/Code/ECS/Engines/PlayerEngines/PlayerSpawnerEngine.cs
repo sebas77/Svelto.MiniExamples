@@ -32,9 +32,8 @@ namespace Svelto.ECS.Example.Player
             
             //Get the gameobject "implementors". Implementors can be monobehaviours that can be used with Svelto.ECS
             //unluckily the gun is found in the same prefab of the character, so the best thing to do is to search
-            //for all the implementors in the hiearchy and pass them to the BuildEntity. The BuildEntity will then
-            //search for the implementors the need (player and guns separately)
-            
+            //for all the implementors in the hierarchy and pass them to the BuildEntity. The BuildEntity will then
+            //search for the implementors they need (player and guns separately)
             List<IImplementor> implementors = new List<IImplementor>();
             player.GetComponentsInChildren(true, implementors);
             

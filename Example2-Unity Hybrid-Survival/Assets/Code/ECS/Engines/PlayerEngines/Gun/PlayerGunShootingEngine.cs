@@ -1,7 +1,6 @@
 using System.Collections;
 using Svelto.Common;
-using Svelto.ECS.Extensions;
-using Svelto.Tasks;
+using UnityEngine;
 
 namespace Svelto.ECS.Example.Survive.Characters.Player.Gun
 {
@@ -24,7 +23,7 @@ namespace Svelto.ECS.Example.Survive.Characters.Player.Gun
 
         IEnumerator Tick()
         {
-            void Shot()
+            void Shoot()
             {
                 var (guns, gunsViews, count) =
                     entitiesDB.QueryEntities<GunAttributesComponent, GunEntityViewComponent>(
@@ -37,23 +36,19 @@ namespace Svelto.ECS.Example.Survive.Characters.Player.Gun
 
                     //The Players and the Guns are not directly linked. However the guns are created with the playerID
                     //so we can query the player from the gun, and viceversa, through the ID
-                    //QueryEntity and EGIDMAppers are the only safe way to link entities between each other
+                    //QueryEntity and EGIDMappers are the only safe way to link entities between each other
                     //(even for hierarchies for example). These methods will be optimised even further in future
                     ref var playerInput = ref entitiesDB.QueryEntity<PlayerInputDataComponent>(
                         new EGID(playerGunComponent.ID.entityID, ECSGroups.PlayersGroup));
 
                     if (playerInput.fire && playerGunComponent.timer >= playerGunComponent.timeBetweenBullets)
-                        Shoot(ref playerGunComponent, gunsViews[i]);
+                        this.Shoot(ref playerGunComponent, gunsViews[i]);
                 }
             }
 
             while (true)
             {
-                ///pay attention: the code of this example started in a naive way, it originally assumed that
-                /// there was just one player available, which resulting code could have promoted some not
-                /// very good practices. However assuming that there is a relationship 1:1 between entities
-                /// between groups is just naive. This works because there is just one player
-                Shot();
+                Shoot();
 
                 yield return null;
             }
@@ -70,7 +65,7 @@ namespace Svelto.ECS.Example.Survive.Characters.Player.Gun
         {
             playerGunEntityView.timer = 0;
 
-            var shootRay = gunFxComponent.gunFXComponent.shootRay;
+            Ray shootRay = gunFxComponent.gunFXComponent.shootRay;
             var entityHit = _rayCaster.CheckHit(shootRay, playerGunEntityView.range, GAME_LAYERS.ENEMY_LAYER
                                               , GAME_LAYERS.SHOOTABLE_MASK | GAME_LAYERS.ENEMY_MASK, out var point
                                               , out var instanceID);
@@ -101,6 +96,11 @@ namespace Svelto.ECS.Example.Survive.Characters.Player.Gun
             entitiesDB.PublishEntityChange<GunAttributesComponent>(gunFxComponent.ID);
         }
 
+        /// <summary>
+        /// Pay attention: _raycaster is a stateless object so in reality it just encapsulate logic to not
+        /// repeat the same code over and over. Using an object instead than a static class is interesting
+        /// because it would be possible to inject different implementations in the engine. 
+        /// </summary>
         readonly IRayCaster  _rayCaster;
         readonly ITime       _time;
         readonly IEnumerator _shootTick;

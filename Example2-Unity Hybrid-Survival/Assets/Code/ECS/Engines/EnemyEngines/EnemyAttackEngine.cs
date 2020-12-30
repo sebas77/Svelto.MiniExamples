@@ -1,6 +1,5 @@
 using System;
 using Svelto.Common;
-using Svelto.ECS.Extensions;
 using UnityEngine;
 
 namespace Svelto.ECS.Example.Survive.Characters.Enemies

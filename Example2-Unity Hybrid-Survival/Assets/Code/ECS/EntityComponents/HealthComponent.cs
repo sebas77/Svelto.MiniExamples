@@ -6,8 +6,4 @@ namespace Svelto.ECS.Example.Survive.Characters
         
         public EGID ID { get; set; }
     }
-    
-    public struct DeathComponent : IEntityComponent
-    {
-    }
 }

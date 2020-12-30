@@ -14,14 +14,14 @@ namespace Svelto.ECS.Extensions.Unity
 #pragma warning disable 649
         public IEGIDHolder holder;
 #pragma warning restore 649
-        
-        EGID _ID;
 
         public EGID ID
         {
             get => _ID;
             set => _ID = holder.ID = value;
         }
+
+        EGID _ID;
     }
     
     public class EGIDHolderImplementor : MonoBehaviour, IEGIDHolder, IImplementor

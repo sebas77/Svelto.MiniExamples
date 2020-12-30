@@ -1,7 +1,6 @@
 using System.Collections;
 using Svelto.Common;
 using Svelto.DataStructures;
-using Svelto.ECS.Extensions;
 
 namespace Svelto.ECS.Example.Survive
 {
@@ -36,18 +35,15 @@ namespace Svelto.ECS.Example.Survive
     
     public struct EnginesOrder : ISequenceOrder
     {
-        public string[] enginesOrder
+        public string[] enginesOrder => new[]
         {
-            get => new[]
-            {
-                nameof(EnginesEnum.PlayerGunShootingEngine),
-                nameof(EnginesEnum.EnemyAttackEngine)
-              , nameof(EnginesEnum.ApplyDamageEngine)
-              , nameof(EnginesEnum.DeathEngine)
-              , nameof(EnginesEnum.PlayerAnimationEngine)
-              , nameof(EnginesEnum.PlayerDeathEngine)
-                , nameof(EnginesEnum.EnemyDeathEngine)
-            };
-        }
+            nameof(EnginesEnum.PlayerGunShootingEngine),
+            nameof(EnginesEnum.EnemyAttackEngine)
+          , nameof(EnginesEnum.ApplyDamageEngine)
+          , nameof(EnginesEnum.DeathEngine)
+          , nameof(EnginesEnum.PlayerAnimationEngine)
+          , nameof(EnginesEnum.PlayerDeathEngine)
+          , nameof(EnginesEnum.EnemyDeathEngine)
+        };
     }
 }

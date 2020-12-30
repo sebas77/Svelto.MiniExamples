@@ -14,9 +14,12 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
 
         public void Ready()
         {
-            _consumerHealth = _consumerFactory.GenerateConsumer<DamageableComponent>(ECSGroups.EnemiesGroup, "EnemyAnimationEngine", 15);
-            _consumerDeath = _consumerFactory.GenerateConsumer<DeathComponent>(ECSGroups.PlayersGroup, "EnemyAnimationEngine", 1);
-            
+            _consumerHealth =
+                _consumerFactory.GenerateConsumer<DamageableComponent>(ECSGroups.EnemiesGroup, "EnemyAnimationEngine"
+                                                                     , 15);
+            _consumerDeath =
+                _consumerFactory.GenerateConsumer<DeathComponent>(ECSGroups.PlayersGroup, "EnemyAnimationEngine", 1);
+
             SpawnEffectOnDamage().RunOnScheduler(StandardSchedulers.lateScheduler);
             CheckPlayerDeath().RunOnScheduler(StandardSchedulers.lateScheduler);
         }
@@ -66,7 +69,7 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
         }
 
         readonly IEntityStreamConsumerFactory _consumerFactory;
-        Consumer<DamageableComponent> _consumerHealth;
-        Consumer<DeathComponent> _consumerDeath;
+        Consumer<DamageableComponent>         _consumerHealth;
+        Consumer<DeathComponent>              _consumerDeath;
     }
 }

@@ -1,4 +1,3 @@
-using System;
 using Svelto.ECS.Hybrid;
 using UnityEngine;
 using UnityEngine.AI;
@@ -12,16 +11,16 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
         NavMeshAgent    _nav;             // Reference to the nav mesh agent.
         Transform       _transform;
 
-        public bool navMeshEnabled { set { _nav.enabled = value; } get { return _nav.enabled; } }
+        public bool navMeshEnabled { set => _nav.enabled = value; get => _nav.enabled; }
 
-        public Vector3 navMeshDestination  { set { _nav.destination           = value; } }
-        public bool    setCapsuleAsTrigger { set { _capsuleCollider.isTrigger = value; } }
+        public Vector3 navMeshDestination  { set => _nav.destination           = value; }
+        public bool    setCapsuleAsTrigger { set => _capsuleCollider.isTrigger = value; }
 
-        public int layer { set { gameObject.layer = value; } }
+        public int layer { set => gameObject.layer = value; }
 
-        public Vector3 position { get { return _transform.position; } set { _transform.position = value; } }
+        public Vector3 position { get => _transform.position; set => _transform.position = value; }
 
-        public Quaternion rotation { set { _transform.rotation = value; } }
+        public Quaternion rotation { set => _transform.rotation = value; }
 
         void Awake()
         {

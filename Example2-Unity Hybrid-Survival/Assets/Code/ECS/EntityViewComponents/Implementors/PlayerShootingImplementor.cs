@@ -4,8 +4,7 @@ using UnityEngine;
 
 namespace Svelto.ECS.Example.Survive.Characters.Player
 {
-    public class PlayerShootingImplementor
-        : MonoBehaviour, IImplementor, IGunFXComponent
+    public class PlayerShootingImplementor : MonoBehaviour, IImplementor, IGunFXComponent
     {
         AudioSource    _gunAudio;     // Reference to the audio source.
         Light          _gunLight;     // Reference to the light component.
@@ -14,12 +13,12 @@ namespace Svelto.ECS.Example.Survive.Characters.Player
 
         Transform    _transform;
 
-        public Ray   shootRay { get { return new Ray(_transform.position, _transform.forward); } }
+        public Ray shootRay => new Ray(_transform.position, _transform.forward);
 
         public float   effectsDisplayTime { get; } = 0.2f;
-        public Vector3 lineEndPosition    { set { _gunLine.SetPosition(1, value); } }
-        public Vector3 lineStartPosition  { set { _gunLine.SetPosition(0, value); } }
-        public bool    lineEnabled        { set { _gunLine.enabled = value; } }
+        public Vector3 lineEndPosition    { set => _gunLine.SetPosition(1, value); }
+        public Vector3 lineStartPosition  { set => _gunLine.SetPosition(0, value); }
+        public bool    lineEnabled        { set => _gunLine.enabled = value; }
 
         public bool play
         {
@@ -32,7 +31,7 @@ namespace Svelto.ECS.Example.Survive.Characters.Player
             }
         }
 
-        public bool lightEnabled { set { _gunLight.enabled = value; } }
+        public bool lightEnabled { set => _gunLight.enabled = value; }
 
         public bool playAudio
         {

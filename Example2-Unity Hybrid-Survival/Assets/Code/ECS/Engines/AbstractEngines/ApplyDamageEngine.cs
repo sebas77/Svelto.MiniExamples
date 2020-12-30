@@ -1,5 +1,4 @@
 using Svelto.Common;
-using Svelto.ECS.Extensions;
 
 namespace Svelto.ECS.Example.Survive.Characters
 {

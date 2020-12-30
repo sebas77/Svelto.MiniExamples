@@ -23,7 +23,7 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
             }
         }
 
-        public Vector3 position { set { particle.transform.position = value; } }
+        public Vector3 position { set => particle.transform.position = value; }
 
         void Awake() { particle = GetComponentInChildren<ParticleSystem>(); }
     }

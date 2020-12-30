@@ -1,5 +1,4 @@
 using System;
-using Svelto.DataStructures;
 using Svelto.ECS.Example.Survive.Characters.Player;
 
 namespace Svelto.ECS.Example.Survive

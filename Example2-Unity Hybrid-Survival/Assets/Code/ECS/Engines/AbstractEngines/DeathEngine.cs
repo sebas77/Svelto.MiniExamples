@@ -17,7 +17,8 @@ namespace Svelto.ECS.Example.Survive.Characters
 
         public void Step()
         {
-            foreach (var ((buffer, count), _) in entitiesDB.QueryEntities<HealthComponent>(ECSGroups.DamageableEntitiesGroups))
+            foreach (var ((buffer, count), _) in entitiesDB.QueryEntities<HealthComponent>(
+                ECSGroups.DamageableEntitiesGroups))
             {
                 for (int i = 0; i < count; ++i)
                     if (buffer[i].currentHealth <= 0)

@@ -7,6 +7,6 @@ namespace Svelto.ECS.Example.Survive
 
     public class Time : ITime
     {
-        public float deltaTime { get { return UnityEngine.Time.deltaTime; } }
+        public float deltaTime => UnityEngine.Time.deltaTime;
     }
 }
