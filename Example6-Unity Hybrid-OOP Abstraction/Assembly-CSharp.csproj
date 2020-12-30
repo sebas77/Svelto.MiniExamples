@@ -662,6 +662,10 @@
      </Reference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="WithOOPLayer.csproj">
+      <Project>{5908a6a8-17d0-ad27-c868-3f36444a4298}</Project>
+      <Name>WithOOPLayer</Name>
+    </ProjectReference>
     <ProjectReference Include="Svelto.ECS.csproj">
       <Project>{eecb381d-d537-8d9b-253a-f1a108e3b14d}</Project>
       <Name>Svelto.ECS</Name>
@@ -674,17 +678,13 @@
       <Project>{0c7f8a75-109c-9962-5f1c-6194f043216a}</Project>
       <Name>Svelto.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="OOPLayerPackage.csproj">
-      <Project>{03d58cc9-de2c-a6be-8082-9fee783f1c4e}</Project>
-      <Name>OOPLayerPackage</Name>
-    </ProjectReference>
-    <ProjectReference Include="WithOOPLayer.csproj">
-      <Project>{5908a6a8-17d0-ad27-c868-3f36444a4298}</Project>
-      <Name>WithOOPLayer</Name>
-    </ProjectReference>
     <ProjectReference Include="WithEntityViewComponent.csproj">
       <Project>{511bb390-f53b-fb33-de33-6e6a0383b051}</Project>
       <Name>WithEntityViewComponent</Name>
+    </ProjectReference>
+    <ProjectReference Include="OOPLayerPackage.csproj">
+      <Project>{03d58cc9-de2c-a6be-8082-9fee783f1c4e}</Project>
+      <Name>OOPLayerPackage</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

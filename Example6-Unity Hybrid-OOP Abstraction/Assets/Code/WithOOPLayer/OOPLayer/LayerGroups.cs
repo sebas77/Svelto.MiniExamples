@@ -1,6 +1,6 @@
 namespace Svelto.ECS.Example.OOPAbstraction.OOPLayer
 {
-    public static class ExampleGroups
+    public static class LayerGroups
     {
         public class Primitive : GroupTag<Primitive> { }
     }

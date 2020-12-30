@@ -41,13 +41,13 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
+     <Compile Include="Assets\Code\WithOOPLayer\Engines\TickingEnginesGroup.cs" />
      <Compile Include="Assets\Code\WithOOPLayer\Engines\SelectNewParentEngine.cs" />
      <Compile Include="Assets\Code\WithOOPLayer\ExampleGroups.cs" />
      <Compile Include="Assets\Code\WithOOPLayer\MainCompositionRootWithOOPLayer.cs" />
      <Compile Include="Assets\Code\WithOOPLayer\Engines\MoveCubesEngine.cs" />
      <Compile Include="Assets\Code\WithOOPLayer\Engines\MoveSpheresEngine.cs" />
      <Compile Include="Assets\Code\WithOOPLayer\MainContextWithOOPLayer.cs" />
-     <Compile Include="Assets\Code\WithOOPLayer\Engines\TickingEnginesGroup.cs" />
      <None Include="Assets\Code\WithOOPLayer\WithOOPLayer.asmdef" />
      <Reference Include="UnityEngine">
      <HintPath>C:/Program Files/Unity/Hub/Editor/2021.1.0b1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>

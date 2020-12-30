@@ -22,8 +22,6 @@ namespace Svelto.ECS.Example.OOPAbstraction.WithOOPLayer
             CreateStartupEntities(oopManager);
         }
 
-        EnginesRoot _enginesRoot;
-
         void CompositionRoot<T>(out IOOPManager oopManager)
         {
             var unityEntitySubmissionScheduler = new UnityEntitiesSubmissionScheduler("oop-abstraction");
@@ -79,6 +77,8 @@ namespace Svelto.ECS.Example.OOPAbstraction.WithOOPLayer
         }
         
         const uint NUMBER_OF_CUBES   = 5;
-        const uint NUMBER_OF_SPHERES = 10; 
+        const uint NUMBER_OF_SPHERES = 10;
+        
+        EnginesRoot _enginesRoot;
     }
 }

@@ -7,9 +7,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.ECS", "Svelto.ECS.cs
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OOPLayerPackage", "OOPLayerPackage.csproj", "{03d58cc9-de2c-a6be-8082-9fee783f1c4e}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WithEntityViewComponent", "WithEntityViewComponent.csproj", "{511bb390-f53b-fb33-de33-6e6a0383b051}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WithOOPLayer", "WithOOPLayer.csproj", "{5908a6a8-17d0-ad27-c868-3f36444a4298}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WithEntityViewComponent", "WithEntityViewComponent.csproj", "{511bb390-f53b-fb33-de33-6e6a0383b051}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "Assembly-CSharp.csproj", "{c91a12a7-4339-76fa-bd4d-8f72dce1575b}"
 EndProject
@@ -26,10 +26,10 @@ Global
 		{eecb381d-d537-8d9b-253a-f1a108e3b14d}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{03d58cc9-de2c-a6be-8082-9fee783f1c4e}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{03d58cc9-de2c-a6be-8082-9fee783f1c4e}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{511bb390-f53b-fb33-de33-6e6a0383b051}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{511bb390-f53b-fb33-de33-6e6a0383b051}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5908a6a8-17d0-ad27-c868-3f36444a4298}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5908a6a8-17d0-ad27-c868-3f36444a4298}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{511bb390-f53b-fb33-de33-6e6a0383b051}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{511bb390-f53b-fb33-de33-6e6a0383b051}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{c91a12a7-4339-76fa-bd4d-8f72dce1575b}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{c91a12a7-4339-76fa-bd4d-8f72dce1575b}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{dcb8f6e9-cccb-8501-3faf-7eb0229b9849}.Debug|Any CPU.ActiveCfg = Debug|Any CPU

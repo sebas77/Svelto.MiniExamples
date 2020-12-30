@@ -5,7 +5,7 @@ namespace Svelto.ECS.Example.OOPAbstraction.WithOOPLayer
         public class Cube : GroupTag<Cube> { }
         public class Sphere : GroupTag<Sphere> { }
 
-        public class CubePrimitive : GroupCompound<OOPLayer.ExampleGroups.Primitive, Cube> { }
-        public class SpherePrimitive : GroupCompound<OOPLayer.ExampleGroups.Primitive, Sphere> { }
+        public class CubePrimitive : GroupCompound<OOPLayer.LayerGroups.Primitive, Cube> { }
+        public class SpherePrimitive : GroupCompound<OOPLayer.LayerGroups.Primitive, Sphere> { }
     }
 }

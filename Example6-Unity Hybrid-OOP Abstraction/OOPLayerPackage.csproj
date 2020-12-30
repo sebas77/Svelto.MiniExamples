@@ -41,16 +41,16 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
-     <Compile Include="Assets\Code\WithOOPLayer\OOPLayer\ObjectParentComponent.cs" />
-     <Compile Include="Assets\Code\WithOOPLayer\OOPLayer\SyncHierarchyEngine.cs" />
-     <Compile Include="Assets\Code\WithOOPLayer\OOPLayer\SyncTransformEngine.cs" />
-     <Compile Include="Assets\Code\WithOOPLayer\OOPLayer\TransformComponent.cs" />
-     <Compile Include="Assets\Code\WithOOPLayer\OOPLayer\OOPManager.cs" />
-     <Compile Include="Assets\Code\WithOOPLayer\OOPLayer\ObjectIndexComponent.cs" />
-     <Compile Include="Assets\Code\WithOOPLayer\OOPLayer\Descriptors\PrimitiveEntityDescriptor.cs" />
-     <Compile Include="Assets\Code\WithOOPLayer\OOPLayer\ExampleGroups.cs" />
-     <Compile Include="Assets\Code\WithOOPLayer\OOPLayer\OOPManagerCompositionRoot.cs" />
      <Compile Include="Assets\Code\WithOOPLayer\OOPLayer\Descriptors\PrimitiveEntityWithParentDescriptor.cs" />
+     <Compile Include="Assets\Code\WithOOPLayer\OOPLayer\Engines\SyncHierarchyEngine.cs" />
+     <Compile Include="Assets\Code\WithOOPLayer\OOPLayer\OOPManagerCompositionRoot.cs" />
+     <Compile Include="Assets\Code\WithOOPLayer\OOPLayer\Engines\SyncTransformEngine.cs" />
+     <Compile Include="Assets\Code\WithOOPLayer\OOPLayer\Descriptors\TransformComponent.cs" />
+     <Compile Include="Assets\Code\WithOOPLayer\OOPLayer\OOPManager.cs" />
+     <Compile Include="Assets\Code\WithOOPLayer\OOPLayer\LayerGroups.cs" />
+     <Compile Include="Assets\Code\WithOOPLayer\OOPLayer\Descriptors\ObjectIndexComponent.cs" />
+     <Compile Include="Assets\Code\WithOOPLayer\OOPLayer\Descriptors\ObjectParentComponent.cs" />
+     <Compile Include="Assets\Code\WithOOPLayer\OOPLayer\Descriptors\PrimitiveEntityDescriptor.cs" />
      <None Include="Assets\Code\WithOOPLayer\OOPLayer\OOPLayerPackage.asmdef" />
      <Reference Include="UnityEngine">
      <HintPath>C:/Program Files/Unity/Hub/Editor/2021.1.0b1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>

@@ -8,9 +8,9 @@ namespace Svelto.ECS.Example.OOPAbstraction.OOPLayer
         public void Step()
         {
             foreach (var ((transforms, indices, count), _) in entitiesDB
-               .QueryEntities<TransformComponent, ObjectIndexComponent>(ExampleGroups.Primitive.Groups))
+               .QueryEntities<TransformComponent, ObjectIndexComponent>(LayerGroups.Primitive.Groups))
                 for (var i = 0; i < count; i++)
-                    _oopManager.SetPotion(indices[i].index, transforms[i].position);
+                    _oopManager.SetPosition(indices[i].index, transforms[i].position);
         }
 
         readonly OOPManager _oopManager;

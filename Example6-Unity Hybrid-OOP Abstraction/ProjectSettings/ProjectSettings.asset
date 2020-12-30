@@ -147,7 +147,7 @@ PlayerSettings:
   androidMaxAspectRatio: 2.1
   applicationIdentifier:
     Android: com.unity3d.nightmare
-    Standalone: unity.Unity Technologies.Nightmares
+    Standalone: com.UnityTechnologies.Svelto.ECS.Examples
     Tizen: com.unity3d.nightmare
     iPhone: com.unity3d.nightmare
     tvOS: com.unity3d.nightmare
@@ -578,7 +578,7 @@ PlayerSettings:
   webGLThreadsSupport: 0
   webGLDecompressionFallback: 0
   scriptingDefineSymbols:
-    1: ENABLE_PLATFORM_PROFILER;TASK_PROFILER_ENABLED;CROSS_PLATFORM_INPUT;TASKS_PROFILER_ENABLED
+    1: ENABLE_PLATFORM_PROFILER
     2: CROSS_PLATFORM_INPUT
     4: CROSS_PLATFORM_INPUT;MOBILE_INPUT
     7: CROSS_PLATFORM_INPUT;MOBILE_INPUT
@@ -591,7 +591,7 @@ PlayerSettings:
     iPhone: 1
   scriptingBackend:
     Android: 0
-    Standalone: 1
+    Standalone: 0
     WP8: 2
     WebGL: 1
     Windows Store Apps: 2
