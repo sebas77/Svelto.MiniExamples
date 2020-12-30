@@ -1,7 +1,11 @@
-using System;
-
 namespace Svelto.ECS.Example.OOPAbstraction.OOPLayer
 {
+    /// <summary>
+    /// Using this engine allows to completely abstract away the oopManager from specialised layers.
+    /// Once an Entity with ObjectIndexComponent is created, regardless the descriptor used, an Object
+    /// is registered and index registered. Destruction of entities is not contemplated in this demo, but it would
+    /// be simple to add.
+    /// </summary>
     class SyncEntityCreation : IReactOnAddAndRemove<ObjectIndexComponent>
     {
         public SyncEntityCreation(OOPManager oopManager)

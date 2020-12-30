@@ -39,7 +39,7 @@ namespace Svelto.ECS.Example.OOPAbstraction.WithOOPLayer
                         }
 
                         //the current sphere is parented with the current cube
-                        bufferSphere[sphereIndex].parent = bufferCube[(uint) ((_index + cubeIndex) % cubeCount)].index;
+                        bufferSphere[sphereIndex].parentIndex = bufferCube[(uint) ((_index + cubeIndex) % cubeCount)].index;
 
                         //publish the change
                         entitiesDB.PublishEntityChange<ObjectParentComponent>(egids[sphereIndex].ID);

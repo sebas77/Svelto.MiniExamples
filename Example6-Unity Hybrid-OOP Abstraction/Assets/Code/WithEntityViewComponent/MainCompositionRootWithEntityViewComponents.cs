@@ -19,8 +19,6 @@ namespace Svelto.ECS.Example.OOPAbstraction.EntityViewComponents
 
         public void OnContextInitialized<T>(T contextHolder) { CompositionRoot(); }
 
-        EnginesRoot _enginesRoot;
-
         void CompositionRoot()
         {
             var unityEntitySubmissionScheduler = new UnityEntitiesSubmissionScheduler("oop-abstraction");
@@ -67,5 +65,7 @@ namespace Svelto.ECS.Example.OOPAbstraction.EntityViewComponents
 
             sphereImplementor.transform.parent = cubeImplementor.transform;
         }
+
+        EnginesRoot _enginesRoot;
     }
 }

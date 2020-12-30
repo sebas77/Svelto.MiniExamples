@@ -1,5 +1,10 @@
 namespace Svelto.ECS.Example.OOPAbstraction.OOPLayer
 {
+    /// <summary>
+    /// This engine has the responsibility to synchronise the entity transforms with the object transform
+    /// note that the engine is abstract even if it's using group compound as it is using a generic tag
+    /// that specialised entities must adopt to be fetched by this engine.
+    /// </summary>
     class SyncTransformEngine : IStepEngine, IQueryingEntitiesEngine
     {
         public SyncTransformEngine(OOPManager oopManager) { _oopManager = oopManager; }
