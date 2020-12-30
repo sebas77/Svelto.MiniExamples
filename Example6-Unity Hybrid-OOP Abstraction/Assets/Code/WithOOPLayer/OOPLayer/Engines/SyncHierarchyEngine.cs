@@ -4,7 +4,8 @@ namespace Svelto.ECS.Example.OOPAbstraction.OOPLayer
 {
     class SyncHierarchyEngine : IStepEngine, IQueryingEntitiesEngine, IDisposable
     {
-        public SyncHierarchyEngine(OOPManager oopManager, IEntityStreamConsumerFactory generateConsumerFactory, uint maxQuantity)
+        public SyncHierarchyEngine(OOPManager oopManager, IEntityStreamConsumerFactory generateConsumerFactory, 
+                                   uint maxQuantity)
         {
             _oopManager = oopManager;
             _consumer =

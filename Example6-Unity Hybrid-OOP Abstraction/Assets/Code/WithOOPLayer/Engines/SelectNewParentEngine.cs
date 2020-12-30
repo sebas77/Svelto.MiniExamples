@@ -55,9 +55,10 @@ end:
             }
         }
 
-        int               _index;
         public EntitiesDB entitiesDB { get; set; }
 
         public string name => nameof(SelectNewParentEngine);
+        
+        int           _index;
     }
 }

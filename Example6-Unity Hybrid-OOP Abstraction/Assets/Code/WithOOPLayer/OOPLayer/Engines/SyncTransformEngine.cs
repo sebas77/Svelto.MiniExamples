@@ -13,9 +13,9 @@ namespace Svelto.ECS.Example.OOPAbstraction.OOPLayer
                     _oopManager.SetPosition(indices[i].index, transforms[i].position);
         }
 
-        readonly OOPManager _oopManager;
         public   EntitiesDB entitiesDB { get; set; }
-
-        public string name => nameof(SyncTransformEngine);
+        public   string     name => nameof(SyncTransformEngine);
+        
+        readonly OOPManager _oopManager;
     }
 }

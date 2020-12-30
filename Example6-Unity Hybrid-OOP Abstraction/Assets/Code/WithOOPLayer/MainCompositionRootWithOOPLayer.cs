@@ -18,11 +18,11 @@ namespace Svelto.ECS.Example.OOPAbstraction.WithOOPLayer
 
         public void OnContextInitialized<T>(T contextHolder)
         {
-            CompositionRoot<T>(out var oopManager);
-            CreateStartupEntities(oopManager);
+            CompositionRoot<T>();
+            CreateStartupEntities();
         }
 
-        void CompositionRoot<T>(out IOOPManager oopManager)
+        void CompositionRoot<T>()
         {
             var unityEntitySubmissionScheduler = new UnityEntitiesSubmissionScheduler("oop-abstraction");
             _enginesRoot = new EnginesRoot(unityEntitySubmissionScheduler);
@@ -44,35 +44,30 @@ namespace Svelto.ECS.Example.OOPAbstraction.WithOOPLayer
             _enginesRoot.AddEngine(moveSpheresEngine);
             _enginesRoot.AddEngine(selectParentEngine);
             
-            OOPManagerCompositionRoot.Compose(_enginesRoot, listOfEnginesToTick, out oopManager, NUMBER_OF_SPHERES);
+            OOPManagerCompositionRoot.Compose(_enginesRoot, listOfEnginesToTick, NUMBER_OF_SPHERES);
         }
 
-        void CreateStartupEntities(IOOPManager oopManager)
+        void CreateStartupEntities()
         {
             var entityFactory = _enginesRoot.GenerateEntityFactory();
 
             for (uint i = 0; i < NUMBER_OF_CUBES; i++)
             {
-                var cubeIndex = oopManager.RegisterCube();
-
-                var cubeInit =
-                    entityFactory.BuildEntity<PrimitiveEntityDescriptor>(
+                var cubeInit = entityFactory.BuildEntity<PrimitiveEntityDescriptor>(
                         new EGID(i, ExampleGroups.CubePrimitive.BuildGroup));
 
                 cubeInit.Init(new TransformComponent(new Vector3(i * 1.5f, 0, 0)));
-                cubeInit.Init(new ObjectIndexComponent(cubeIndex));
+                cubeInit.Init(new ObjectIndexComponent(PrimitiveType.Cube));
             }
 
             for (uint i = 0; i < NUMBER_OF_SPHERES; i++)
             {
-                var sphereIndex = oopManager.RegisterSphere();
-
                 var sphereInit =
                     entityFactory.BuildEntity<PrimitiveEntityWithParentDescriptor>(
                         new EGID(NUMBER_OF_CUBES + i, ExampleGroups.SpherePrimitive.BuildGroup));
                 
                 sphereInit.Init(new TransformComponent(new Vector3(1.5f, 0, 0)));
-                sphereInit.Init(new ObjectIndexComponent(sphereIndex));
+                sphereInit.Init(new ObjectIndexComponent(PrimitiveType.Sphere));
             }
         }
         

@@ -1,9 +1,12 @@
+using UnityEngine;
+
 namespace Svelto.ECS.Example.OOPAbstraction.OOPLayer
 {
-    public readonly struct ObjectIndexComponent : IEntityComponent
+    public struct ObjectIndexComponent : IEntityComponent
     {
-        public readonly uint index;
+        public uint          index;
+        public PrimitiveType type;
 
-        public ObjectIndexComponent(uint index) : this() { this.index = index; }
+        public ObjectIndexComponent(PrimitiveType type) : this() { this.type = type; }
     }
 }
