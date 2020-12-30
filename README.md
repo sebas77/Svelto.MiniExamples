@@ -37,8 +37,6 @@ Goal of this example:
 * show the integration with OOP platforms (Unity in this case) throught the use of Entity View Components and Implementors.
 * *Test WebGL support*
 
-Main Article: http://www.sebaslab.com/learning-svelto-ecs-by-example-the-survival-example/
-
 I used the Survival Shooter Unity Demo to show how an ECS framework could work inside Unity. I am not sure about the license of this demo, so use it only for learning purposes.
 
 Most of the source code has been rewritten to work with Svelto.ECS framework. The Survival Demo is tested with the latest version of Unity, so I cannot guarantee that it always works, but it should work with all the versions from 5.3 and above.
