@@ -22,7 +22,7 @@ Goal of this example:
 * Show the integration with UnityECS, show the use of Svelto.Tasks 2.0 (alpha state) 
 * show integration with Unity Jobs and Burst (using Svelto.ECS 3.0 (currently alpha state)
  
- ###  **Iteration 3
+ ###  Iteration 3
    * Full jobified/burstified code with Svelto ECS 3.0
    * test integration with IL2CPP
   
