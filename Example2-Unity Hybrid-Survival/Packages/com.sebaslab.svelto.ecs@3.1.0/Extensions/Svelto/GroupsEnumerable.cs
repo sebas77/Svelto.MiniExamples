@@ -319,6 +319,11 @@ namespace Svelto.ECS
                 group   = _group;
             }
             
+            public void Deconstruct(out EntityCollection<T1> buffers)
+            {
+                buffers = _buffers;
+            }
+
             public readonly EntityCollection<T1> _buffers;
             public readonly ExclusiveGroupStruct _group;
         }

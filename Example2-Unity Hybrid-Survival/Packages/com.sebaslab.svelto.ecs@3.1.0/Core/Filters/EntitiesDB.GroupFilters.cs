@@ -99,7 +99,7 @@ namespace Svelto.ECS
 #endif
                 return ref _filters[TypeRefWrapper<T>.wrapper][groupID].GetFilter(filterId);
             }
-
+            
             public bool TryGetFilterForGroup<T>(int filterId, ExclusiveGroupStruct groupID, out FilterGroup groupFilter)
                 where T : struct, IEntityComponent
             {

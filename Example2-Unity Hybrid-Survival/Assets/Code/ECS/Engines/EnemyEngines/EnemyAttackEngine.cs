@@ -4,9 +4,9 @@ using UnityEngine;
 
 namespace Svelto.ECS.Example.Survive.Characters.Enemies
 {
-    [Sequenced(nameof(EnginesEnum.EnemyAttackEngine))]
-    public class EnemyAttackEngine : IReactOnAddAndRemove<EnemyAttackEntityViewComponent>
-                                   , IReactOnSwap<EnemyAttackEntityViewComponent>, IQueryingEntitiesEngine, IStepEngine
+    [Sequenced(nameof(EnemyEnginesNames.EnemyAttackEngine))]
+    public class EnemyAttackEngine : IReactOnAddAndRemove<EnemyEntityViewComponent>
+                                   , IReactOnSwap<EnemyEntityViewComponent>, IQueryingEntitiesEngine, IStepEngine
     {
         public EnemyAttackEngine(ITime time)
         {
@@ -19,24 +19,26 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
         public void Ready() {}
 
         /// <summary>
-        ///     Add and Remove callbacks are enabled by the IReactOnAddAndRemove interface
+        ///     The Add and Remove callbacks are enabled by the IReactOnAddAndRemove interface
         ///     They are called when:
         ///     an Entity is built in a group  (no swap case)
         ///     an Entity is removed from a group (no swap case)
         /// </summary>
         /// <param name="entityViewComponent">the up to date entity</param>
         /// <param name="previousGroup">where the entity is coming from</param>
-        public void Add(ref EnemyAttackEntityViewComponent entityViewComponent, EGID egid)
+        public void Add(ref EnemyEntityViewComponent entityViewComponent, EGID egid)
         {
-            var dispatchOnChange = new DispatchOnChange<EnemyCollisionData>(egid);
-
-            dispatchOnChange.NotifyOnValueSet(_onCollidedWithTarget);
-
-            entityViewComponent.targetTriggerComponent.hitChange = dispatchOnChange;
+            //for each new enemy entity added, we register a new DispatchOnChange
+            //DispatchOnChange is a simple solution to let implementors communicate with engine
+            //An Implementor can communicate only with an appointed engine and the engine can broadcast the information
+            //if necessary.
+            //set what callback must be called when the implementor dispatch the value change
+            entityViewComponent.targetTriggerComponent.hitChange = new DispatchOnChange<EnemyCollisionData>(egid, _onCollidedWithTarget);
         }
 
-        public void Remove(ref EnemyAttackEntityViewComponent entityViewComponent, EGID egid)
+        public void Remove(ref EnemyEntityViewComponent entityViewComponent, EGID egid)
         {
+            //for safety we clean up the dispatcher on change in entity removal
             entityViewComponent.targetTriggerComponent.hitChange = null;
         }
 
@@ -46,7 +48,7 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
         /// </summary>
         /// <param name="entityViewComponent"></param>
         public void MovedTo
-            (ref EnemyAttackEntityViewComponent entityViewComponent, ExclusiveGroupStruct previousGroup, EGID egid)
+            (ref EnemyEntityViewComponent entityViewComponent, ExclusiveGroupStruct previousGroup, EGID egid)
         {
             if (egid.groupID == ECSGroups.EnemiesGroup)
                 entityViewComponent.targetTriggerComponent.hitChange.ResumeNotify();
@@ -70,10 +72,10 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
             // The engine is querying the EnemyTargets group instead of the PlayersGroup.
             // this is more than a sophistication, it's the implementation of the rule that every engine must use
             // its own set of groups to promote encapsulation and modularity
-            var (targetEntities, targetsCount) =
+            var buffer =
                 entitiesDB.QueryEntities<DamageableComponent>(ECSGroups.EnemiesTargetGroup);
 
-            if (targetsCount == 0)
+            if (buffer.count == 0)
                 return;
                 
             var (enemiesAttackData, enemiesCount) =
@@ -81,37 +83,32 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
             
             if (enemiesCount == 0)
                 return;
-            
-            //this is code show how you can use entity structs.
-            //this case is banal, entity structs should be use to handle hundreds or thousands
-            //of entities in a cache friendly and multi threaded code. However entity structs would allow
-            //the creation of entity without any allocation, so they can be handy for
-            //cases where entity should be built fast! Theoretically is possible to create
-            //a game using only entity structs if the framework allows so
-            for (var enemyTargetIndex = 0; enemyTargetIndex < targetsCount; enemyTargetIndex++)
+
+            for (var enemyIndex = 0; enemyIndex < enemiesCount; enemyIndex++)
             {
-                for (var enemyIndex = 0; enemyIndex < enemiesCount; enemyIndex++)
+                ref var enemyAttackComponent = ref enemiesAttackData[enemyIndex];
+                ref var enemyCollisionData   = ref enemyAttackComponent.entityInRange;
+
+                if (enemyCollisionData.collides)
                 {
-                    ref var enemyAttackComponent = ref enemiesAttackData[enemyIndex];
-                    ref var enemyCollisionData   = ref enemyAttackComponent.entityInRange;
+                    enemyAttackComponent.timer += _time.deltaTime;
 
-                    if (enemyCollisionData.collides
-                     && enemyCollisionData.otherEntityID == targetEntities[enemyTargetIndex].ID)
+                    if (enemyAttackComponent.timer >= enemyAttackComponent.timeBetweenAttack)
                     {
-                        enemyAttackComponent.timer += _time.deltaTime;
+                        enemyAttackComponent.timer = 0.0f;
 
-                        if (enemyAttackComponent.timer >= enemyAttackComponent.timeBetweenAttack)
-                        {
-                            enemyAttackComponent.timer = 0.0f;
-
-                            targetEntities[enemyTargetIndex].damageInfo =
-                                new DamageInfo(enemyAttackComponent.attackDamage, Vector3.zero);
-                                
-                            entitiesDB.PublishEntityChange<DamageableComponent>(targetEntities[enemyTargetIndex].ID);
-                        }
+                        DamageTargetInsideRange(enemyCollisionData.otherEntityID, enemyAttackComponent.attackDamage);
                     }
                 }
             }
+        }
+
+        void DamageTargetInsideRange(in EGID otherEntityID, int attackDamage)
+        {
+            entitiesDB.QueryEntity<DamageableComponent>(otherEntityID).damageInfo =
+                new DamageInfo(attackDamage, Vector3.zero);
+
+            entitiesDB.PublishEntityChange<DamageableComponent>(otherEntityID);
         }
 
         public string name => nameof(EnemyAttackEngine);

@@ -41,11 +41,6 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
-     <Compile Include="Assets\Plugins\MobileInput\Scripts\VirtualInput.cs" />
-     <Compile Include="Assets\Plugins\MobileInput\Scripts\Joystick.cs" />
-     <Compile Include="Assets\Plugins\MobileInput\Scripts\PlatformSpecific\StandaloneInput.cs" />
-     <Compile Include="Assets\Plugins\MobileInput\Scripts\CrossPlatformInputManager.cs" />
-     <Compile Include="Assets\Plugins\MobileInput\Scripts\PlatformSpecific\MobileInput.cs" />
      <Reference Include="UnityEngine">
      <HintPath>C:/Program Files/Unity/Hub/Editor/2021.1.0b1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
      </Reference>
@@ -657,17 +652,9 @@
      </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="Svelto.Tasks.StopEditorThread.csproj">
-      <Project>{d2137f9f-91d6-e970-7040-b722d45e187e}</Project>
-      <Name>Svelto.Tasks.StopEditorThread</Name>
-    </ProjectReference>
     <ProjectReference Include="Svelto.ECS.csproj">
       <Project>{8d2eb115-c2e2-3719-ca04-08d3c302a5a1}</Project>
       <Name>Svelto.ECS</Name>
-    </ProjectReference>
-    <ProjectReference Include="Svelto.Tasks.csproj">
-      <Project>{5598d254-f1fa-fc30-7fc6-214458b7ccdc}</Project>
-      <Name>Svelto.Tasks</Name>
     </ProjectReference>
     <ProjectReference Include="Svelto.Pool.Debugger.csproj">
       <Project>{c746b42f-36b3-0eae-2d23-d1cf4b74f48b}</Project>
@@ -677,6 +664,9 @@
       <Project>{53ca5d34-0f9e-ae64-6d32-8d74a6f2e9d4}</Project>
       <Name>Svelto.Common</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Assets" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

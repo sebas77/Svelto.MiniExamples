@@ -27,13 +27,8 @@ namespace Svelto.ECS.Example.Survive
 
     public interface IRigidBodyComponent
     {
-        bool isKinematic { set; }
-    }
-
-    //To do this must be a normal entity component
-    public interface ISpeedComponent
-    {
-        float movementSpeed { get; }
+        bool    isKinematic { set; }
+        Vector3 velocity    { set; }
     }
 
     public interface IDamageSoundComponent

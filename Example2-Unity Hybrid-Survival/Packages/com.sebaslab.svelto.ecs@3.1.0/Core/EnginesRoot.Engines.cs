@@ -54,6 +54,7 @@ namespace Svelto.ECS
             _entitiesOperations          = new ThreadSafeDictionary<ulong, EntitySubmitOperation>();
             serializationDescriptorMap   = new SerializationDescriptorMap();
             _reactiveEnginesAddRemove    = new FasterDictionary<RefWrapperType, FasterList<IReactEngine>>();
+            _reactiveEnginesAddRemoveOnDispose    = new FasterDictionary<RefWrapperType, FasterList<IReactEngine>>();
             _reactiveEnginesSwap         = new FasterDictionary<RefWrapperType, FasterList<IReactEngine>>();
             _reactiveEnginesSubmission   = new FasterList<IReactOnSubmission>();
             _enginesSet                  = new FasterList<IEngine>();
@@ -122,7 +123,7 @@ namespace Svelto.ECS
                        .Value)
                         try
                         {
-                            entityList.Value.ExecuteEnginesRemoveCallbacks(_reactiveEnginesAddRemove, profiler
+                            entityList.Value.ExecuteEnginesRemoveCallbacks(_reactiveEnginesAddRemoveOnDispose, profiler
                                                                      , new ExclusiveGroupStruct(groups.Key));
                         }
                         catch (Exception e)
@@ -159,6 +160,7 @@ namespace Svelto.ECS
                 _enginesTypeSet.Clear();
                 _reactiveEnginesSwap.Clear();
                 _reactiveEnginesAddRemove.Clear();
+                _reactiveEnginesAddRemoveOnDispose.Clear();
                 _reactiveEnginesSubmission.Clear();
 
                 _entitiesOperations.Clear();
@@ -193,7 +195,10 @@ namespace Svelto.ECS
             {
                 if (engine is IReactOnAddAndRemove viewEngine)
                     CheckReactEngineComponents(viewEngine, _reactiveEnginesAddRemove);
-
+                
+                if (engine is IReactOnDispose viewEngineDispose)
+                    CheckReactEngineComponents(viewEngineDispose, _reactiveEnginesAddRemoveOnDispose);
+                
                 if (engine is IReactOnSwap viewEngineSwap)
                     CheckReactEngineComponents(viewEngineSwap, _reactiveEnginesSwap);
 
@@ -230,12 +235,12 @@ namespace Svelto.ECS
                 {
                     var genericArguments = interf.GetGenericArgumentsEx();
 
-                    AddEngine(engine, genericArguments, engines);
+                    AddEngineToList(engine, genericArguments, engines);
                 }
             }
         }
 
-        static void AddEngine<T>
+        static void AddEngineToList<T>
             (T engine, Type[] entityComponentTypes, FasterDictionary<RefWrapperType, FasterList<IReactEngine>> engines)
             where T : class, IReactEngine
         {
@@ -243,29 +248,24 @@ namespace Svelto.ECS
             {
                 var type = entityComponentTypes[i];
 
-                AddEngine(engine, engines, type);
+                if (engines.TryGetValue(new RefWrapperType(type), out var list) == false)
+                {
+                    list = new FasterList<IReactEngine>();
+
+                    engines.Add(new RefWrapperType(type), list);
+                }
+
+                list.Add(engine);
             }
-        }
-
-        static void AddEngine<T>(T engine, FasterDictionary<RefWrapperType, FasterList<IReactEngine>> engines, Type type)
-            where T : class, IReactEngine
-        {
-            if (engines.TryGetValue(new RefWrapperType(type), out var list) == false)
-            {
-                list = new FasterList<IReactEngine>();
-
-                engines.Add(new RefWrapperType(type), list);
-            }
-
-            list.Add(engine);
         }
 
         readonly FasterDictionary<RefWrapperType, FasterList<IReactEngine>> _reactiveEnginesAddRemove;
+        readonly FasterDictionary<RefWrapperType, FasterList<IReactEngine>> _reactiveEnginesAddRemoveOnDispose;
         readonly FasterDictionary<RefWrapperType, FasterList<IReactEngine>> _reactiveEnginesSwap;
-        readonly FasterList<IReactOnSubmission>                        _reactiveEnginesSubmission;
-        readonly FasterList<IDisposable>                               _disposableEngines;
-        readonly FasterList<IEngine>                                   _enginesSet;
-        readonly HashSet<Type>                                         _enginesTypeSet;
-        internal bool                                                  _isDisposing;
+        readonly FasterList<IReactOnSubmission>                             _reactiveEnginesSubmission;
+        readonly FasterList<IDisposable>                                    _disposableEngines;
+        readonly FasterList<IEngine>                                        _enginesSet;
+        readonly HashSet<Type>                                              _enginesTypeSet;
+        internal bool                                                       _isDisposing;
     }
 }

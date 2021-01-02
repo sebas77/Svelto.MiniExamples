@@ -6,7 +6,6 @@ namespace Svelto.ECS.Example.Survive.Implementors
 {
     public class AudioImplementor : MonoBehaviour, IImplementor, IDamageSoundComponent
     {
-        AudioSource      _audioSource; // Reference to the audio source.
         public AudioClip damageClip;   // The sound to play when the enemy dies.
         public AudioClip deathClip;    // The sound to play when the enemy dies.
 
@@ -34,5 +33,7 @@ namespace Svelto.ECS.Example.Survive.Implementors
             // Setting up the references.
             _audioSource = GetComponent<AudioSource>();
         }
+
+        AudioSource _audioSource; // Reference to the audio source.
     }
 }

@@ -42,76 +42,85 @@
   </PropertyGroup>
   <ItemGroup>
      <Compile Include="Assets\Code\ECS\Engines\PlayerEngines\PlayerInputEngine.cs" />
-     <Compile Include="Assets\Code\ECS\EntityComponents\DeathComponent.cs" />
      <Compile Include="Assets\Code\ECS\EntityDescriptors\CameraEntityDescriptor.cs" />
-     <Compile Include="Assets\Code\ECS\EntityViewComponents\EnemyAttackEntityViewComponent.cs" />
-     <Compile Include="Assets\Code\ECS\EntityViewComponents\EnemyTargetEntityViewComponent.cs" />
-     <Compile Include="Assets\Code\Others\AnimationState.cs" />
-     <Compile Include="Assets\Code\Others\AudioType.cs" />
      <Compile Include="Assets\Code\Others\RayCaster.cs" />
+     <Compile Include="Assets\Code\ECS\Engines\DamageUnsortedEngines.cs" />
+     <Compile Include="Assets\Code\ECS\EntityViewComponents\DamageSoundEntityViewComponent.cs" />
+     <Compile Include="Assets\Code\MainContext.cs" />
      <Compile Include="Assets\Code\Others\DamangeInfo.cs" />
      <Compile Include="Assets\Code\ECS\EntityViewComponents\EnemyEntityViewComponent.cs" />
-     <Compile Include="Assets\Code\ECS\EntityViewComponents\Implementors\DamageHUDImplementor.cs" />
+     <Compile Include="Assets\Code\ECS\EntityViewComponents\Implementors\GUI\DamageHUDImplementor.cs" />
      <Compile Include="Assets\Code\ECS\Engines\OtherEngines\HUDEngine.cs" />
-     <Compile Include="Assets\Code\ECS\EntityViewComponents\Implementors\EnemyVFXImplementor.cs" />
+     <Compile Include="Assets\Code\ECS\EntityViewComponents\Implementors\Enemies\EnemyVFXImplementor.cs" />
+     <Compile Include="Assets\Code\ECS\EntityDescriptors\DamageableEntityDescriptor.cs" />
+     <Compile Include="Assets\Code\ECS\Engines\AbstractEngines\ApplyDamageToDamageableEntitiesEngine.cs" />
      <Compile Include="Assets\Code\Others\JsonHelper.cs" />
+     <Compile Include="Assets\Code\Others\AudioType.cs" />
      <Compile Include="Assets\Code\ECS\Engines\PlayerEngines\PlayerDeathEngine.cs" />
-     <Compile Include="Assets\Code\ECS\DataSources\JSonEnemySpawnData.cs" />
-     <Compile Include="Assets\Code\ECS\EntityViewComponents\PlayerViews.cs" />
-     <Compile Include="Assets\Code\ECS\EntityViewComponents\CameraEntityView.cs" />
-     <Compile Include="Assets\Code\ECS\EntityViewComponents\HUDEntityView.cs" />
-     <Compile Include="Assets\Code\ECS\EntityComponents\EnemyComponent.cs" />
-     <Compile Include="Assets\Code\ECS\Engines\EnemyEngines\EnemyMovementEngine.cs" />
-     <Compile Include="Assets\Code\Sequencers\EnginesOrder.cs" />
-     <Compile Include="Assets\Code\MainCompositionRoot.cs" />
-     <Compile Include="Assets\Code\ECS\EntityViewComponents\Implementors\EnemyMovementImplementor.cs" />
-     <Compile Include="Assets\Code\ECS\EntityViewComponents\ComponentInterfaces\EnemyComponentInterfaces.cs" />
-     <Compile Include="Assets\Code\ECS\Engines\PlayerEngines\Gun\PlayerGunShootingEngine.cs" />
-     <Compile Include="Assets\Code\ECS\EntityDescriptors\PlayerEntityDescriptor.cs" />
-     <Compile Include="Assets\Code\ECS\EntityViewComponents\Implementors\ScoreManagerImplementor.cs" />
-     <Compile Include="Assets\Code\GlobalSuppressions.cs" />
-     <Compile Include="Assets\Code\ECS\EntityViewComponents\Implementors\AnimatorImplementor.cs" />
-     <Compile Include="Assets\Code\ECS\EntityComponents\ScoreValueEntityComponent.cs" />
-     <Compile Include="Assets\Code\ECS\GAME_LAYERS.cs" />
-     <Compile Include="Assets\Code\ECS\EntityViewComponents\ComponentInterfaces\GunComponentInterfaces.cs" />
-     <Compile Include="Assets\Code\ECS\DataSources\JSonEnemyAttackData.cs" />
-     <Compile Include="Assets\Code\ECS\EntityComponents\EnemyAttackComponent.cs" />
-     <Compile Include="Assets\Code\ECS\Engines\PlayerEngines\PlayerSpawnerEngine.cs" />
-     <Compile Include="Assets\Code\ECS\DataSources\EnemyData.cs" />
-     <Compile Include="Assets\Code\ECS\EntityViewComponents\ComponentInterfaces\GUIComponentInterfaces.cs" />
-     <Compile Include="Assets\Code\ECS\Engines\EnemyEngines\EnemyAnimationEngine.cs" />
-     <Compile Include="Assets\Code\ECS\EntityViewComponents\Implementors\HealthSliderImplementor.cs" />
-     <Compile Include="Assets\Code\ECS\EntityViewComponents\CameraTargetEntityView.cs" />
-     <Compile Include="Assets\Code\ECS\EntityViewComponents\DamageSoundView.cs" />
-     <Compile Include="Assets\Code\MainContext.cs" />
-     <Compile Include="Assets\Code\ECS\Engines\AbstractEngines\ApplyDamageEngine.cs" />
      <Compile Include="Assets\Code\ECS\EntityComponents\HealthComponent.cs" />
-     <Compile Include="Assets\Code\ECS\Engines\OtherEngines\DamageSoundEngine.cs" />
-     <Compile Include="Assets\Code\ECS\Engines\OtherEngines\ScoreEngine.cs" />
-     <Compile Include="Assets\Code\ECS\Engines\OtherEngines\CameraFollowEngine.cs" />
+     <Compile Include="Assets\Code\ECS\Engines\AbstractEngines\DamageSoundEngine.cs" />
+     <Compile Include="Assets\Code\ECS\EntityComponents\SpeedComponent.cs" />
+     <Compile Include="Assets\Code\ECS\Engines\OtherEngines\UpdateScoreEngine.cs" />
+     <Compile Include="Assets\Code\Others\DataSources\JSonEnemySpawnData.cs" />
+     <Compile Include="Assets\Code\ECS\EntityViewComponents\PlayerEntityViewComponent.cs" />
+     <Compile Include="Assets\Code\ECS\Engines\TickEnginesGroup.cs" />
+     <Compile Include="Assets\Code\ECS\EntityViewComponents\CameraEntityViewComponent.cs" />
+     <Compile Include="Assets\Code\ECS\EntityViewComponents\EnemyTargetEntityViewComponent.cs" />
+     <Compile Include="Assets\Code\ECS\EntityViewComponents\HUDEntityViewComponent.cs" />
      <Compile Include="Assets\Code\Factories\EnemyFactory.cs" />
-     <Compile Include="Assets\Code\ECS\DataSources\SpawningData.cs" />
+     <Compile Include="Assets\Code\Others\DataSources\SpawningData.cs" />
      <Compile Include="Assets\Code\ECS\ECSGroups.cs" />
-     <Compile Include="Assets\Code\ECS\Engines\EnemyEngines\EnemyAttackEngine.cs" />
+     <Compile Include="Assets\Code\ECS\Engines\SurvivalUnsortedEnginesGroup.cs" />
+     <Compile Include="Assets\Code\ECS\EntityComponents\EnemyComponent.cs" />
      <Compile Include="Assets\Code\ECS\EntityViewComponents\Implementors\CameraImplementor.cs" />
+     <Compile Include="Assets\Code\ECS\Engines\EnemyEngines\EnemyAttackEngine.cs" />
+     <Compile Include="Assets\Code\ECS\Engines\EnemyEngines\EnemyMovementEngine.cs" />
+     <Compile Include="Assets\Code\ECS\Engines\SortedTickedEnginesOrder.cs" />
+     <Compile Include="Assets\Code\ECS\EntityViewComponents\ComponentInterfaces\ICameraComponent.cs" />
      <Compile Include="Assets\Code\ECS\Engines\EnemyEngines\EnemySpawnerEngine.cs" />
      <Compile Include="Assets\Code\ECS\EntityDescriptors\PlayerGunEntityDescriptor.cs" />
+     <Compile Include="Assets\Code\ECS\Engines\PlayerEngines\RestartGameOnPlayerDeathEngine.cs" />
+     <Compile Include="Assets\Code\MainCompositionRoot.cs" />
      <Compile Include="Assets\Code\ECS\EntityDescriptors\EnemyEntityDescriptor.cs" />
      <Compile Include="Assets\Code\Others\ITime.cs" />
+     <Compile Include="Assets\Code\ECS\EntityViewComponents\Implementors\Enemies\EnemyMovementImplementor.cs" />
+     <Compile Include="Assets\Code\ECS\Engines\AbstractEngines\DispatchKilledEntitiesEngine.cs" />
+     <Compile Include="Assets\Code\ECS\EntityViewComponents\ComponentInterfaces\EnemyComponentInterfaces.cs" />
      <Compile Include="Assets\Code\ECS\EntityComponents\DamageableComponent.cs" />
+     <Compile Include="Assets\Code\ECS\Engines\PlayerEngines\Gun\PlayerGunShootingEngine.cs" />
      <Compile Include="Assets\Code\ECS\Engines\PlayerEngines\PlayerMovementEngine.cs" />
      <Compile Include="Assets\Code\ECS\EntityViewComponents\ComponentInterfaces\SharedComponentInterfaces.cs" />
-     <Compile Include="Assets\Code\ECS\Engines\PlayerEngines\Gun\PlayerShootingFXsEngine.cs" />
-     <Compile Include="Assets\Code\ECS\EntityViewComponents\Implementors\EnemyTriggerImplementor.cs" />
+     <Compile Include="Assets\Code\ECS\Engines\PlayerEngines\Gun\PlayerGunShootingFXsEngine.cs" />
+     <Compile Include="Assets\Code\ECS\EntityViewComponents\Implementors\Enemies\EnemyTriggerImplementor.cs" />
+     <Compile Include="Assets\Code\ECS\EntityViewComponents\Implementors\GUI\ScoreManagerImplementor.cs" />
      <Compile Include="Assets\Code\ECS\Engines\EnemyEngines\EnemyDeathEngine.cs" />
+     <Compile Include="Assets\Code\ECS\EntityDescriptors\PlayerEntityDescriptor.cs" />
+     <Compile Include="Assets\Code\GlobalSuppressions.cs" />
+     <Compile Include="Assets\Code\ECS\EntityViewComponents\Implementors\AnimatorImplementor.cs" />
+     <Compile Include="Assets\Code\Others\WaitForSecondsEnumerator.cs" />
+     <Compile Include="Assets\Code\ECS\EntityComponents\ScoreValueEntityComponent.cs" />
      <Compile Include="Assets\Code\ECS\EntityComponents\PlayerInputDataComponent.cs" />
-     <Compile Include="Assets\Code\ECS\EntityViewComponents\Implementors\PlayerMovementImplementor.cs" />
-     <Compile Include="Assets\Code\ECS\EntityViewComponents\Implementors\PlayerShootingImplementor.cs" />
+     <Compile Include="Assets\Code\ECS\EntityViewComponents\Implementors\Player\PlayerMovementImplementor.cs" />
+     <Compile Include="Assets\Code\ECS\Engines\EnemyEngines\EnemySpawnEffectOnDamage.cs" />
+     <Compile Include="Assets\Code\ECS\EntityComponents\DeathComponent.cs" />
+     <Compile Include="Assets\Code\ECS\EntityViewComponents\GunEntityViewComponent.cs" />
+     <Compile Include="Assets\Code\ECS\EntityViewComponents\Implementors\Player\PlayerShootingFXImplementor.cs" />
      <Compile Include="Assets\Code\ECS\EntityViewComponents\Implementors\AudioImplementor.cs" />
-     <Compile Include="Assets\Code\ECS\Engines\AbstractEngines\DeathEngine.cs" />
+     <Compile Include="Assets\Code\ECS\GAME_LAYERS.cs" />
+     <Compile Include="Assets\Code\ECS\Engines\OtherEngines\CameraFollowingTargetEngine.cs" />
+     <Compile Include="Assets\Code\ECS\EntityViewComponents\ComponentInterfaces\GunComponentInterfaces.cs" />
+     <Compile Include="Assets\Code\Others\AnimationState.cs" />
+     <Compile Include="Assets\Code\Others\DataSources\JSonEnemyAttackData.cs" />
+     <Compile Include="Assets\Code\ECS\Engines\PlayerEngines\PlayerSpawnerEngine.cs" />
+     <Compile Include="Assets\Code\Others\DataSources\EnemyData.cs" />
      <Compile Include="Assets\Code\Others\PlayerTargetType.cs" />
      <Compile Include="Assets\Code\ECS\Engines\PlayerEngines\PlayerAnimationEngine.cs" />
+     <Compile Include="Assets\Code\ECS\EntityViewComponents\ComponentInterfaces\GUIComponentInterfaces.cs" />
+     <Compile Include="Assets\Code\ECS\Engines\EnemyEngines\EnemyChangeAnimationOnPlayerDeath.cs" />
+     <Compile Include="Assets\Code\ECS\EntityComponents\EnemyAttackComponent.cs" />
      <Compile Include="Assets\Code\ECS\EntityDescriptors\HudEntityDescriptorHolder.cs" />
+     <Compile Include="Assets\Code\ECS\EntityViewComponents\Implementors\GUI\HealthSliderImplementor.cs" />
+     <Compile Include="Assets\Code\ECS\EntityViewComponents\CameraTargetEntityViewComponent.cs" />
      <Compile Include="Assets\Code\Factories\GameObjectFactory.cs" />
      <Compile Include="Assets\Code\ECS\EntityComponents\GunAttributesComponent.cs" />
      <None Include="Assets\Fonts\LuckiestGuy\LICENSE.txt" />
@@ -727,21 +736,9 @@
      </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="Assembly-CSharp-firstpass.csproj">
-      <Project>{c065a968-0874-eb2a-ea05-3ed277e0a8a9}</Project>
-      <Name>Assembly-CSharp-firstpass</Name>
-    </ProjectReference>
-    <ProjectReference Include="Svelto.Tasks.StopEditorThread.csproj">
-      <Project>{d2137f9f-91d6-e970-7040-b722d45e187e}</Project>
-      <Name>Svelto.Tasks.StopEditorThread</Name>
-    </ProjectReference>
     <ProjectReference Include="Svelto.ECS.csproj">
       <Project>{8d2eb115-c2e2-3719-ca04-08d3c302a5a1}</Project>
       <Name>Svelto.ECS</Name>
-    </ProjectReference>
-    <ProjectReference Include="Svelto.Tasks.csproj">
-      <Project>{5598d254-f1fa-fc30-7fc6-214458b7ccdc}</Project>
-      <Name>Svelto.Tasks</Name>
     </ProjectReference>
     <ProjectReference Include="Svelto.Pool.Debugger.csproj">
       <Project>{c746b42f-36b3-0eae-2d23-d1cf4b74f48b}</Project>

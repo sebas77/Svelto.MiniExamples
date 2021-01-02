@@ -41,56 +41,6 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Common\Context\IWaitForFrameworkDestruction.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Common\DataStructures\ThreadSafeDictionary.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Common\Utilities\SimpleLogger.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Common\Command\IInjectableCommand.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Common\Context\Extensions\Unity\UnityContext.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Common\Command\ICommand.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Common\Utilities\DataToString.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Common\Observer\Observer.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Common\DataStructures\HashHelpers.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Common\ObjectPool\IObjectPool.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Common\PlatformProfiler\PlatformProfiler.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Common\DataStructures\ReadOnlyDictionary.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Common\Utilities\TypeToString.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Common\Utilities\ILogger.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Common\WeakEvents\SafeEvent.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Common\DebugExtensions.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Common\Context\IContextNotifer.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Common\ObjectPool\IObjectPoolDebug.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Common\Utilities\FastConcatUtility.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Common\DataStructures\WeakReference.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Common\DataStructures\FasterList.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Common\Context\IWaitForFrameworkInitialization.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Common\Command\ICommandFactory.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Common\Utilities\NetFXCoreWrappers.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Common\Utilities\ThreadUtility.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Common\Utilities\FastInvoke.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Common\Utilities\ReaderWriterLockSlimEx.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Common\ObjectPool\ObjectPool.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Common\Utilities\Console.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Common\PlatformProfiler\Unity\UnityPlatform.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Common\Context\ContextNotifier.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Common\ObjectPool\Unity\PoolDebugger.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Common\DataStructures\RingBuffer.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Common\Observer\Observable.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Common\DataStructures\CircularBufferIndexer.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Common\Command\CommandFactory.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Common\DataStructures\RefWrapper.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Common\Utilities\SlowLoggerUnity.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Common\DataStructures\FasterDictionary.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Common\Utilities\ActionRef.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Common\DBC.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Common\Context\ICompositionRoot.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Common\DataStructures\HashableWeakReference.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Common\PlatformProfiler\Unity\OldUnityPlatform.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Common\DataStructures\ReadOnlyCollectionStruct.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Common\ObjectPool\Unity\MonoBehaviourPool.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Common\ObjectPool\Unity\GameObjectPool.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Common\Utilities\Murmur3.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Common\Utilities\xxHash.cs" />
-     <None Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Common\Svelto.Common.asmdef" />
      <Reference Include="UnityEngine">
      <HintPath>C:/Program Files/Unity/Hub/Editor/2021.1.0b1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
      </Reference>
@@ -681,6 +631,7 @@
      </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Packages" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

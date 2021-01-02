@@ -41,68 +41,6 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Tasks\Enumerators\Unity\UnityWebRequestEnumerator.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Tasks\Profiler\Unity\Editor\InitTaskProfiler.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Tasks\TaskRunner.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Tasks\Profiler\Unity\TasksProfilerBehaviour.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Tasks\DBC.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Tasks\Runners\Unity\TimeBoundMonoRunner.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Tasks\Enumerators\TaskServiceEnumerator.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Tasks\ContinuationWrapperPool.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Tasks\Runners\SyncRunner.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Tasks\Enumerators\ActionEnumerators\TimedLoopFunctionEnumerator.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Tasks\Enumerators\ActionEnumerators\InterleavedLoopActionEnumerator.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Tasks\Runners\Unity\MonoRunner.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Tasks\Runners\Unity\StaggeredMonoRunner.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Tasks\Runners\Unity\EndOfFrameRunner.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Tasks\Enumerators\Unity\YieldInstructionEnumerator.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Tasks\Runners\ThreadSafeQueue.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Tasks\Profiler\Unity\Editor\TaskProfiler\ProfilerEditorLayout.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Tasks\BreakIt.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Tasks\Runners\MultiThreadRunner.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Tasks\Runners\Unity\EarlyUpdateMonoRunner.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Tasks\Parallelism\ParallelRunEnumerator.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Tasks\Collections\TaskCollection.StructFriendlyStack.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Tasks\Profiler\Pix\PIXWrapper.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Tasks\TasksChain\ParallelTaskCollection.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Tasks\Enumerators\ReusableWaitForSecondsEnumerator.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Tasks\ITaskRoutine.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Tasks\Enumerators\WaitForSignalEnumerator.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Tasks\Runners\Unity\RunnerBehaviourUpdate.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Tasks\Runners\Unity\SequentialMonoRunner.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Tasks\StandardSchedulers.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Tasks\Profiler\TaskInfo.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Tasks\TasksChain\SerialTaskCollection.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Tasks\Enumerators\EnumeratorWithProgress.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Tasks\Profiler\Unity\Editor\TaskProfiler\TasksMonitor.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Tasks\Profiler\TaskProfiler.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Tasks\Runners\Unity\LateMonoRunner.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Tasks\ServiceTasks\IServiceTask.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Tasks\Runners\Unity\CoroutineMonoRunner.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Tasks\Runners\Unity\IRunningTasksInfo.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Tasks\Profiler\Unity\Editor\TaskProfiler\TaskProfilerMenuItem.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Tasks\Runners\Unity\UpdateMonoRunner.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Tasks\TasksChain\ITaskChain.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Tasks\Runners\IRunner.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Tasks\Runners\Unity\PhysicMonoRunner.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Tasks\SveltoTask.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Tasks\Runners\Unity\TimeSlicedMonoRunner.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Tasks\Parallelism\ISveltoJob.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Tasks\TaskRunnerExtensions.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Tasks\Collections\SerialTaskCollection.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Tasks\Profiler\Unity\Editor\TaskProfiler\TasksProfilerInspector.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Tasks\Enumerators\ExceptionHandlingEnumerator.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Tasks\TaskYieldsIEnumerableException.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Tasks\SveltoTasksPool.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Tasks\Collections\TaskCollection.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Tasks\Enumerators\ActionEnumerators\SmartFunctionEnumerator.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Tasks\Enumerators\Unity\AsyncOperationEnumerator.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Tasks\Parallelism\MultiThreadedParallelTaskCollection.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Tasks\Enumerators\Unity\WWWEnumerator.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Tasks\Runners\Unity\UnityCoroutineRunner.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Tasks\Enumerators\WaitForSecondsEnumerator.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Tasks\Collections\ParallelTaskCollection.cs" />
-     <None Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Tasks\Svelto.Tasks.asmdef" />
      <Reference Include="UnityEngine">
      <HintPath>C:/Program Files/Unity/Hub/Editor/2021.1.0b1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
      </Reference>
@@ -697,6 +635,9 @@
       <Project>{37661005-aad0-6a1d-5a6a-c0f0c3f40df7}</Project>
       <Name>Svelto.Common_2_9</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Packages" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

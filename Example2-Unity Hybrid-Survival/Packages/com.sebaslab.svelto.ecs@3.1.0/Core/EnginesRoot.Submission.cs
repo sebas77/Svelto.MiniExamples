@@ -43,7 +43,6 @@ namespace Svelto.ECS
             ClearChecks();
 
             bool entitiesAreSubmitted = false;
-    
             uint numberOfOperations = 0;
             
             if (_entitiesOperations.Count > 0)

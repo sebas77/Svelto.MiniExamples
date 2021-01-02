@@ -7,6 +7,9 @@ namespace Svelto.ECS.Internal
     
     public interface IReactOnAddAndRemove : IReactEngine
     {}
+    
+    public interface IReactOnDispose : IReactEngine
+    {}
 
     public interface IReactOnSwap : IReactEngine
     {}
@@ -20,6 +23,11 @@ namespace Svelto.ECS
     public interface IReactOnAddAndRemove<T> : IReactOnAddAndRemove where T : IEntityComponent
     {
         void Add(ref T entityComponent, EGID egid);
+        void Remove(ref T entityComponent, EGID egid);
+    }
+    
+    public interface IReactOnDispose<T> : IReactOnDispose where T : IEntityComponent
+    {
         void Remove(ref T entityComponent, EGID egid);
     }
     

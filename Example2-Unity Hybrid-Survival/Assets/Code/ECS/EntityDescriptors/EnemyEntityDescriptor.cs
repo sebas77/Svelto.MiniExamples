@@ -3,22 +3,18 @@ using Svelto.ECS.Extensions.Unity;
 
 namespace Svelto.ECS.Example.Survive.Characters.Enemies
 {
-    public class EnemyEntityDescriptor : IEntityDescriptor
+    public class EnemyEntityDescriptor : ExtendibleEntityDescriptor<DamageableEntityDescriptor>
     {
-        static readonly IComponentBuilder[] _componentsToBuild =
+        public EnemyEntityDescriptor()
         {
-            new ComponentBuilder<EnemyComponent>(),
-            new ComponentBuilder<EnemyEntityViewComponent>(),
-            new ComponentBuilder<EnemyAttackEntityViewComponent>(),
-            new ComponentBuilder<ScoreValueComponent>(),
-            new ComponentBuilder<EnemyAttackComponent>(),
-            new ComponentBuilder<EGIDTrackerViewComponent>(),
-            
-            new ComponentBuilder<DamageableComponent>(),
-            new ComponentBuilder<HealthComponent>(),
-            new ComponentBuilder<DeathComponent>(),
-        };
-
-        public IComponentBuilder[] componentsToBuild => _componentsToBuild;
+            ExtendWith(new IComponentBuilder[]
+            {
+                new ComponentBuilder<EnemyComponent>(),
+                new ComponentBuilder<EnemyEntityViewComponent>(),
+                new ComponentBuilder<ScoreValueComponent>(),
+                new ComponentBuilder<EnemyAttackComponent>(),
+                new ComponentBuilder<EGIDTrackerViewComponent>()
+            });
+        }
     }
 }

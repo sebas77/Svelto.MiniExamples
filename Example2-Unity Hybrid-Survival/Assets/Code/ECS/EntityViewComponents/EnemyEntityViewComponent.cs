@@ -12,11 +12,12 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
     {
         public IEnemyMovementComponent movementComponent;
         public IEnemyVFXComponent      vfxComponent;
+        public IEnemyTriggerComponent  targetTriggerComponent;
 
-        public IAnimationComponent animationComponent;
-        public ITransformComponent transformComponent;
-        public IPositionComponent  positionComponent;
-        public ILayerComponent     layerComponent;
+        public IAnimationComponent    animationComponent;
+        public ITransformComponent    transformComponent;
+        public IPositionComponent     positionComponent;
+        public ILayerComponent        layerComponent;
 
         public EGID ID { get; set; }
     }

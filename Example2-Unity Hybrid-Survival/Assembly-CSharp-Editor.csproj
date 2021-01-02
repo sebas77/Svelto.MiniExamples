@@ -680,29 +680,13 @@
      </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="Assembly-CSharp-firstpass.csproj">
-      <Project>{c065a968-0874-eb2a-ea05-3ed277e0a8a9}</Project>
-      <Name>Assembly-CSharp-firstpass</Name>
-    </ProjectReference>
     <ProjectReference Include="Assembly-CSharp.csproj">
       <Project>{272ab51e-72fe-3806-4fb0-62df1b348d48}</Project>
       <Name>Assembly-CSharp</Name>
     </ProjectReference>
-    <ProjectReference Include="Assembly-CSharp-Editor-firstpass.csproj">
-      <Project>{2b2e4364-acdb-e91a-8cb5-ecbbb4f52030}</Project>
-      <Name>Assembly-CSharp-Editor-firstpass</Name>
-    </ProjectReference>
-    <ProjectReference Include="Svelto.Tasks.StopEditorThread.csproj">
-      <Project>{d2137f9f-91d6-e970-7040-b722d45e187e}</Project>
-      <Name>Svelto.Tasks.StopEditorThread</Name>
-    </ProjectReference>
     <ProjectReference Include="Svelto.ECS.csproj">
       <Project>{8d2eb115-c2e2-3719-ca04-08d3c302a5a1}</Project>
       <Name>Svelto.ECS</Name>
-    </ProjectReference>
-    <ProjectReference Include="Svelto.Tasks.csproj">
-      <Project>{5598d254-f1fa-fc30-7fc6-214458b7ccdc}</Project>
-      <Name>Svelto.Tasks</Name>
     </ProjectReference>
     <ProjectReference Include="Svelto.Pool.Debugger.csproj">
       <Project>{c746b42f-36b3-0eae-2d23-d1cf4b74f48b}</Project>

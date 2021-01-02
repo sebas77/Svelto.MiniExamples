@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Svelto.ECS.Example.Survive.Characters.Player.Gun
 {
-    [Sequenced(nameof(EnginesEnum.PlayerGunShootingEngine))]
+    [Sequenced(nameof(PlayerEnginesNames.PlayerGunShootingEngine))]
     public class PlayerGunShootingEngine : IQueryingEntitiesEngine, IStepEngine
     {
         public PlayerGunShootingEngine(IRayCaster rayCaster, ITime time)
@@ -15,34 +15,33 @@ namespace Svelto.ECS.Example.Survive.Characters.Player.Gun
         }
 
         public EntitiesDB entitiesDB { set; private get; }
-
-        public void Ready() { }
-
-        public void Step() { _shootTick.MoveNext(); }
-        public string name => nameof(PlayerGunShootingEngine);
+        public void       Ready()    { }
+        public void       Step()     { _shootTick.MoveNext(); }
+        public string     name       => nameof(PlayerGunShootingEngine);
 
         IEnumerator Tick()
         {
             void Shoot()
             {
-                var (guns, gunsViews, count) =
-                    entitiesDB.QueryEntities<GunAttributesComponent, GunEntityViewComponent>(
-                        ECSGroups.PlayersGunsGroup);
+                var (playersInputs, egids, count) =
+                    entitiesDB.QueryEntities<PlayerInputDataComponent, PlayerEntityViewComponent>(
+                        ECSGroups.PlayersGroup);
 
                 for (var i = 0; i < count; i++)
                 {
-                    ref var playerGunComponent = ref guns[i];
-                    playerGunComponent.timer += _time.deltaTime;
+                    var input = playersInputs[i];
+                    if (input.fire)
+                    {
+                        ref var playerGunComponent = ref entitiesDB.QueryEntity<GunAttributesComponent>(
+                            (uint) egids[i].ID, ECSGroups.PlayersGunsGroup);
+                        ref var playerGunViewComponent = ref entitiesDB.QueryEntity<GunEntityViewComponent>(
+                            (uint) egids[i].ID, ECSGroups.PlayersGunsGroup);
+                        
+                        playerGunComponent.timer += _time.deltaTime;
 
-                    //The Players and the Guns are not directly linked. However the guns are created with the playerID
-                    //so we can query the player from the gun, and viceversa, through the ID
-                    //QueryEntity and EGIDMappers are the only safe way to link entities between each other
-                    //(even for hierarchies for example). These methods will be optimised even further in future
-                    ref var playerInput = ref entitiesDB.QueryEntity<PlayerInputDataComponent>(
-                        new EGID(playerGunComponent.ID.entityID, ECSGroups.PlayersGroup));
-
-                    if (playerInput.fire && playerGunComponent.timer >= playerGunComponent.timeBetweenBullets)
-                        this.Shoot(ref playerGunComponent, gunsViews[i]);
+                        if (playerGunComponent.timer >= playerGunComponent.timeBetweenBullets)
+                            this.Shoot(ref playerGunComponent, playerGunViewComponent);
+                    }
                 }
             }
 
@@ -61,7 +60,7 @@ namespace Svelto.ECS.Example.Survive.Characters.Player.Gun
         ///     Svelto and ECS help immensely to abstract only when it's actually needed
         /// </summary>
         /// <param name="playerGunEntityView"></param>
-        void Shoot(ref GunAttributesComponent playerGunEntityView, GunEntityViewComponent gunFxComponent)
+        void Shoot(ref GunAttributesComponent playerGunEntityView, in GunEntityViewComponent gunFxComponent)
         {
             playerGunEntityView.timer = 0;
 
@@ -79,7 +78,7 @@ namespace Svelto.ECS.Example.Survive.Characters.Player.Gun
                 {
                     entitiesDB.QueryEntity<DamageableComponent>((uint) instanceID, ECSGroups.PlayerTargetsGroup)
                               .damageInfo = damageInfo;
-                    
+
                     entitiesDB.PublishEntityChange<DamageableComponent>(instanceID);
                 }
 
@@ -89,10 +88,6 @@ namespace Svelto.ECS.Example.Survive.Characters.Player.Gun
                 playerGunEntityView.lastTargetPosition =
                     shootRay.origin + shootRay.direction * playerGunEntityView.range;
 
-            //
-            // PublishEntityChange is the perfect ECS model to communicate event based data change.
-            // For each publisher there must be one or more consumers.
-            //
             entitiesDB.PublishEntityChange<GunAttributesComponent>(gunFxComponent.ID);
         }
 
@@ -101,7 +96,7 @@ namespace Svelto.ECS.Example.Survive.Characters.Player.Gun
         /// repeat the same code over and over. Using an object instead than a static class is interesting
         /// because it would be possible to inject different implementations in the engine. 
         /// </summary>
-        readonly IRayCaster  _rayCaster;
+        readonly IRayCaster _rayCaster;
         readonly ITime       _time;
         readonly IEnumerator _shootTick;
     }

@@ -6,12 +6,6 @@ namespace Svelto.Context
 {
     public abstract class UnityContext : MonoBehaviour
     {
-        protected abstract void OnAwake();
-
-        void Awake()
-        {
-            OnAwake();
-        }
     }
 
 //a Unity context is a platform specific context wrapper. With Unity, creates a GameObject and add this Monobehaviour
@@ -19,16 +13,27 @@ namespace Svelto.Context
 //OnContextInitialized is called one frame after the MB started OnContextDestroyed is called when the MB is destroyed
     public class UnityContext<T> : UnityContext where T : class, ICompositionRoot, new()
     {
-        protected sealed override void OnAwake()
+        void Awake()
         {
             _applicationRoot = new T();
 
             _applicationRoot.OnContextCreated(this);
+
+            Application.wantsToQuit += IsQuitting;
+        }
+        
+        bool IsQuitting() 
+        { 
+            _isQuitting = true;
+            _applicationRoot.OnContextDestroyed();
+            
+            return true;
         }
 
         void OnDestroy()
         {
-            _applicationRoot.OnContextDestroyed();
+            if (_isQuitting == false)
+                _applicationRoot.OnContextDestroyed();
         }
 
         void Start()
@@ -45,7 +50,8 @@ namespace Svelto.Context
             _applicationRoot.OnContextInitialized(this);
         }
 
-        T _applicationRoot;
+        T    _applicationRoot;
+        bool _isQuitting;
     }
 }
 #endif

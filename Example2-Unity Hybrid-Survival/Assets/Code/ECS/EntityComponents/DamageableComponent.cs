@@ -1,6 +1,6 @@
 namespace Svelto.ECS.Example.Survive.Characters
 {
-    struct DamageableComponent : IEntityComponent, INeedEGID
+    public struct DamageableComponent : IEntityComponent, INeedEGID
     {
         public DamageInfo damageInfo;
         

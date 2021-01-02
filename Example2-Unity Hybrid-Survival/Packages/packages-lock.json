@@ -16,14 +16,6 @@
         "com.sebaslab.svelto.common": "3.1.0"
       }
     },
-    "com.sebaslab.svelto.tasks": {
-      "version": "file:com.sebaslab.svelto.tasks@1.5.8",
-      "depth": 0,
-      "source": "embedded",
-      "dependencies": {
-        "com.sebaslab.svelto.common": "2.9.9"
-      }
-    },
     "com.sebaslab.svelto.unsafe": {
       "version": "file:com.sebaslab.svelto.unsafe@4.7.1",
       "depth": 0,

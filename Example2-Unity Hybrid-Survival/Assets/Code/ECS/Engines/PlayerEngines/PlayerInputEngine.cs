@@ -1,46 +1,49 @@
 ﻿using System.Collections;
-using Svelto.Tasks;
+using Svelto.ECS.Example.Survive.Camera;
 using UnityEngine;
-using UnityStandardAssets.CrossPlatformInput;
 
 namespace Svelto.ECS.Example.Survive.Characters.Player
 {
     /// <summary>
-    ///     if you need to test input, you can mock this class
-    ///     alternatively you can mock the implementor.
+    ///     if you need to test input, you can mock this class alternatively you can mock the implementor.
     /// </summary>
-    public class PlayerInputEngine : IQueryingEntitiesEngine
+    public class PlayerInputEngine : IQueryingEntitiesEngine, IStepEngine
     {
         public EntitiesDB entitiesDB { private get; set; }
-
-        public void Ready() { ReadInput().RunOnScheduler(StandardSchedulers.earlyScheduler); }
+        public string     name       => nameof(PlayerInputEngine);
+        
+        public void       Ready()    { _readInput = ReadInput(); }
+        public void       Step()     { _readInput.MoveNext(); }
 
         IEnumerator ReadInput()
         {
-            void IteratePlayersInput(EntityCollection<PlayerInputDataComponent> groups)
+            void IteratePlayersInput()
             {
-                var (playerEntityViews, playersCount) = groups;
-                
+                var (playerComponents, playersCount) = entitiesDB.QueryEntities<PlayerInputDataComponent>(ECSGroups.PlayersGroup);
+
                 for (int i = 0; i < playersCount; i++)
                 {
-                    var h = CrossPlatformInputManager.GetAxisRaw("Horizontal");
-                    var v = CrossPlatformInputManager.GetAxisRaw("Vertical");
+                    var h = Input.GetAxisRaw("Horizontal");
+                    var v = Input.GetAxisRaw("Vertical");
 
-                    playerEntityViews[i].input  = new Vector3(h, 0f, v);
-                    playerEntityViews[i].camRay = UnityEngine.Camera.main.ScreenPointToRay(Input.mousePosition);
-                    playerEntityViews[i].fire   = Input.GetButton("Fire1");
+                    playerComponents[i].input = new Vector3(h, 0f, v);
+                    playerComponents[i].fire = Input.GetButton("Fire1");
                 }
+                
+                var (cameraComponents, camerasCount) = entitiesDB.QueryEntities<CameraEntityViewComponent>(ECSGroups.Camera);
+
+                for (int i = 0; i < camerasCount; i++)
+                    cameraComponents[i].cameraComponent.camRayInput = Input.mousePosition;
             }
 
             while (true)
             {
-                var groups =
-                    entitiesDB.QueryEntities<PlayerInputDataComponent>(ECSGroups.PlayersGroup);
-
-                IteratePlayersInput(groups);
+                IteratePlayersInput();
 
                 yield return null;
             }
         }
-   }
+
+        IEnumerator _readInput;
+    }
 }

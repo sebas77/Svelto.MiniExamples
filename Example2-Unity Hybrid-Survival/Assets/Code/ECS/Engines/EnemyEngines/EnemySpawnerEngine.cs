@@ -1,34 +1,26 @@
 using System.Collections;
 using System.Collections.Generic;
-using Svelto.Tasks.Enumerators;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
 namespace Svelto.ECS.Example.Survive.Characters.Enemies
 {
-    //todo order of execution
-    public class EnemySpawnerEngine : IQueryingEntitiesEngine, IReactOnSwap<EnemyEntityViewComponent>
+    public class EnemySpawnerEngine : IQueryingEntitiesEngine, IReactOnSwap<EnemyEntityViewComponent>, IStepEngine
     {
         const int SECONDS_BETWEEN_SPAWNS = 1;
-
-        readonly EnemyFactory     _enemyFactory;
-        readonly IEntityFunctions _entityFunctions;
-
-        readonly WaitForSecondsEnumerator _waitForSecondsEnumerator =
-            new WaitForSecondsEnumerator(SECONDS_BETWEEN_SPAWNS);
-
-        int _numberOfEnemyToSpawn;
+        const int NUMBER_OF_ENEMIES_TO_SPAWN   = 12;
 
         public EnemySpawnerEngine(EnemyFactory enemyFactory, IEntityFunctions entityFunctions)
         {
             _entityFunctions      = entityFunctions;
             _enemyFactory         = enemyFactory;
-            _numberOfEnemyToSpawn = 15;
+            _numberOfEnemyToSpawn = NUMBER_OF_ENEMIES_TO_SPAWN;
         }
 
         public EntitiesDB entitiesDB { private get; set; }
-
-        public void Ready() { IntervaledTick().Run(); }
+        public void       Ready()    { _intervaledTick = IntervaledTick(); }
+        public void       Step()     { _intervaledTick.MoveNext(); }
+        public string     name       => nameof(EnemySpawnerEngine);
 
         public void MovedTo(ref EnemyEntityViewComponent entityComponent, ExclusiveGroupStruct previousGroup, EGID egid)
         {
@@ -49,13 +41,15 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
             //Also note that I am loading the data only once per application run, outside the 
             //main loop. You can always exploit this pattern when you know that the data you need
             //to use will never change            
-            IEnumerator<JSonEnemySpawnData[]> enemiestoSpawnJsons  = ReadEnemySpawningDataServiceRequest();
+            IEnumerator<JSonEnemySpawnData[]>  enemiestoSpawnJsons  = ReadEnemySpawningDataServiceRequest();
             IEnumerator<JSonEnemyAttackData[]> enemyAttackDataJsons = ReadEnemyAttackDataServiceRequest();
 
-            yield return enemiestoSpawnJsons;
-            yield return enemyAttackDataJsons;
+            while (enemiestoSpawnJsons.MoveNext())
+                yield return null;
+            while (enemyAttackDataJsons.MoveNext())
+                yield return null;
 
-            var enemiestoSpawn = enemiestoSpawnJsons.Current;
+            var enemiestoSpawn  = enemiestoSpawnJsons.Current;
             var enemyAttackData = enemyAttackDataJsons.Current;
 
             var spawningTimes = new float[enemiestoSpawn.Length];
@@ -70,15 +64,17 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
                 //Svelto.Tasks can yield Unity YieldInstructions but this comes with a performance hit
                 //so the fastest solution is always to use custom enumerators. To be honest the hit is minimal
                 //but it's better to not abuse it.                
-                yield return _waitForSecondsEnumerator;
-                
+                var waitForSecondsEnumerator = new WaitForSecondsEnumerator(SECONDS_BETWEEN_SPAWNS);
+                while (waitForSecondsEnumerator.MoveNext())
+                    yield return null;
+
                 //cycle around the enemies to spawn and check if it can be spawned
                 for (var i = enemiestoSpawn.Length - 1; i >= 0 && _numberOfEnemyToSpawn > 0; --i)
                 {
                     if (spawningTimes[i] <= 0.0f)
                     {
                         var spawnData = enemiestoSpawn[i];
-                        
+
                         //In this example every kind of enemy generates the same list of EntityViews
                         //therefore I always use the same EntityDescriptor. However if the 
                         //different enemies had to create different EntityViews for different
@@ -87,10 +83,10 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
                         //in my articles.
                         var EnemyAttackComponent = new EnemyAttackComponent
                         {
-                            attackDamage      = enemyAttackData[i].enemyAttackData.attackDamage,
-                            timeBetweenAttack = enemyAttackData[i].enemyAttackData.timeBetweenAttacks
+                            attackDamage      = enemyAttackData[i].enemyAttackData.attackDamage
+                          , timeBetweenAttack = enemyAttackData[i].enemyAttackData.timeBetweenAttacks
                         };
-                        
+
                         //have we got a compatible entity previously disabled and can it be reused?
                         //Note, pooling make sense only for Entities that use implementors.
                         //A pure struct based entity doesn't need pooling because it never allocates.
@@ -99,12 +95,16 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
                         //however since we need to fetch the right prefab from the pool (because of the graphic)
                         //using a range group for pooling helps.
                         var fromGroupId = ECSGroups.EnemiesToRecycleGroups + (uint) spawnData.enemySpawnData.targetType;
-                        
+
                         if (entitiesDB.HasAny<EnemyEntityViewComponent>(fromGroupId))
                             ReuseEnemy(fromGroupId, spawnData);
                         else
-                            yield return _enemyFactory.Build(spawnData.enemySpawnData, EnemyAttackComponent);
-                        
+                        {
+                            var build = _enemyFactory.Build(spawnData.enemySpawnData, EnemyAttackComponent);
+                            while (build.MoveNext())
+                                yield return null;
+                        }
+
                         spawningTimes[i] = spawnData.enemySpawnData.spawnTime;
                         _numberOfEnemyToSpawn--;
                     }
@@ -125,21 +125,22 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
         void ReuseEnemy(ExclusiveGroupStruct fromGroupId, JSonEnemySpawnData spawnData)
         {
             Svelto.Console.LogDebug("reuse enemy " + spawnData.enemySpawnData.enemyPrefab);
-            
-            var (healths, enemyViews, count) = entitiesDB.QueryEntities<HealthComponent, EnemyEntityViewComponent>(fromGroupId);
+
+            var (healths, enemyViews, count) =
+                entitiesDB.QueryEntities<HealthComponent, EnemyEntityViewComponent>(fromGroupId);
 
             if (count > 0)
             {
                 healths[0].currentHealth = 100;
-            
+
                 var spawnInfo = spawnData.enemySpawnData.spawnPoint;
-            
+
                 enemyViews[0].transformComponent.position           = spawnInfo;
                 enemyViews[0].movementComponent.navMeshEnabled      = true;
                 enemyViews[0].movementComponent.setCapsuleAsTrigger = false;
                 enemyViews[0].layerComponent.layer                  = GAME_LAYERS.ENEMY_LAYER;
                 enemyViews[0].animationComponent.reset              = true;
-            
+
                 _entityFunctions.SwapEntityGroup<EnemyEntityDescriptor>(enemyViews[0].ID, ECSGroups.EnemiesGroup);
             }
         }
@@ -148,8 +149,9 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
         {
             var json = Addressables.LoadAssetAsync<TextAsset>("EnemySpawningData");
 
-            while (json.IsDone == false) yield return null;
-            
+            while (json.IsDone == false)
+                yield return null;
+
             var enemiestoSpawn = JsonHelper.getJsonArray<JSonEnemySpawnData>(json.Result.text);
 
             yield return enemiestoSpawn;
@@ -158,12 +160,19 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
         static IEnumerator<JSonEnemyAttackData[]> ReadEnemyAttackDataServiceRequest()
         {
             var json = Addressables.LoadAssetAsync<TextAsset>("EnemyAttackData");
-            
-            while (json.IsDone == false) yield return null;
 
-            var enemiestoSpawn = JsonHelper.getJsonArray<JSonEnemyAttackData>(json.Result.text);
+            while (json.IsDone == false)
+                yield return null;
 
-            yield return enemiestoSpawn;
+            var enemiesAttackData = JsonHelper.getJsonArray<JSonEnemyAttackData>(json.Result.text);
+
+            yield return enemiesAttackData;
         }
+
+        readonly EnemyFactory     _enemyFactory;
+        readonly IEntityFunctions _entityFunctions;
+
+        int         _numberOfEnemyToSpawn;
+        IEnumerator _intervaledTick;
     }
 }

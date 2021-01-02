@@ -1,21 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.Tasks", "Svelto.Tasks.csproj", "{5598d254-f1fa-fc30-7fc6-214458b7ccdc}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.Common", "Svelto.Common.csproj", "{53ca5d34-0f9e-ae64-6d32-8d74a6f2e9d4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.ECS", "Svelto.ECS.csproj", "{8d2eb115-c2e2-3719-ca04-08d3c302a5a1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "Assembly-CSharp.csproj", "{272ab51e-72fe-3806-4fb0-62df1b348d48}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.Common", "Svelto.Common.csproj", "{53ca5d34-0f9e-ae64-6d32-8d74a6f2e9d4}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.Common_2_9", "Svelto.Common_2_9.csproj", "{37661005-aad0-6a1d-5a6a-c0f0c3f40df7}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp-firstpass", "Assembly-CSharp-firstpass.csproj", "{c065a968-0874-eb2a-ea05-3ed277e0a8a9}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.Tasks.StopEditorThread", "Svelto.Tasks.StopEditorThread.csproj", "{d2137f9f-91d6-e970-7040-b722d45e187e}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp-Editor-firstpass", "Assembly-CSharp-Editor-firstpass.csproj", "{2b2e4364-acdb-e91a-8cb5-ecbbb4f52030}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.Pool.Debugger", "Svelto.Pool.Debugger.csproj", "{c746b42f-36b3-0eae-2d23-d1cf4b74f48b}"
 EndProject
@@ -26,22 +16,12 @@ Global
 		Debug|Any CPU = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{5598d254-f1fa-fc30-7fc6-214458b7ccdc}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5598d254-f1fa-fc30-7fc6-214458b7ccdc}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53ca5d34-0f9e-ae64-6d32-8d74a6f2e9d4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53ca5d34-0f9e-ae64-6d32-8d74a6f2e9d4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8d2eb115-c2e2-3719-ca04-08d3c302a5a1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8d2eb115-c2e2-3719-ca04-08d3c302a5a1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{272ab51e-72fe-3806-4fb0-62df1b348d48}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{272ab51e-72fe-3806-4fb0-62df1b348d48}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{53ca5d34-0f9e-ae64-6d32-8d74a6f2e9d4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{53ca5d34-0f9e-ae64-6d32-8d74a6f2e9d4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{37661005-aad0-6a1d-5a6a-c0f0c3f40df7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{37661005-aad0-6a1d-5a6a-c0f0c3f40df7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{c065a968-0874-eb2a-ea05-3ed277e0a8a9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{c065a968-0874-eb2a-ea05-3ed277e0a8a9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{d2137f9f-91d6-e970-7040-b722d45e187e}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{d2137f9f-91d6-e970-7040-b722d45e187e}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2b2e4364-acdb-e91a-8cb5-ecbbb4f52030}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2b2e4364-acdb-e91a-8cb5-ecbbb4f52030}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{c746b42f-36b3-0eae-2d23-d1cf4b74f48b}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{c746b42f-36b3-0eae-2d23-d1cf4b74f48b}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{116008fc-84ba-af66-f357-c5c09c2ed75b}.Debug|Any CPU.ActiveCfg = Debug|Any CPU

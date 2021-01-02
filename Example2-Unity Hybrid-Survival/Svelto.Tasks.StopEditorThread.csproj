@@ -41,8 +41,6 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
-     <Compile Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Tasks\Runners\Unity\Editor\UnityThreadStopper.cs" />
-     <None Include="Packages\com.sebaslab.svelto.tasks@1.5.8\Svelto.Tasks\Runners\Unity\Editor\Svelto.Tasks.StopEditorThread.asmdef" />
      <Reference Include="UnityEngine">
      <HintPath>C:/Program Files/Unity/Hub/Editor/2021.1.0b1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
      </Reference>
@@ -655,6 +653,9 @@
       <Project>{5598d254-f1fa-fc30-7fc6-214458b7ccdc}</Project>
       <Name>Svelto.Tasks</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Packages" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

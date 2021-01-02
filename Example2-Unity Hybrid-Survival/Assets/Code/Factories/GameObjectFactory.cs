@@ -15,7 +15,7 @@ namespace Svelto.ECS.Example.Survive.ResourceManager
     {
         public GameObjectFactory() { _prefabs = new Dictionary<string, GameObject>(); }
 
-        public IEnumerator<GameObject> Build(string prefabName)
+        public IEnumerator<GameObject> Build(string prefabName, bool startActive = true)
         {
             if (_prefabs.TryGetValue(prefabName, out var go) == false)
             {
@@ -28,7 +28,9 @@ namespace Svelto.ECS.Example.Survive.ResourceManager
                 _prefabs.Add(prefabName, go);
             }
 
-            yield return GameObject.Instantiate(go);
+            var gameObject = GameObject.Instantiate(go);
+            gameObject.SetActive(startActive);
+            yield return gameObject;
         }
 
         readonly Dictionary<string, GameObject> _prefabs;

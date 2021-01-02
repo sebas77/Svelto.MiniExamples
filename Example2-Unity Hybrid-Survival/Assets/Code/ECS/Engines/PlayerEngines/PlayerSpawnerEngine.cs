@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using Svelto.ECS.Example.Survive;
+using Svelto.ECS.Example.Survive.Camera;
 using Svelto.ECS.Example.Survive.Characters;
 using Svelto.ECS.Example.Survive.Characters.Player;
+using Svelto.ECS.Example.Survive.Characters.Player.Gun;
 using Svelto.ECS.Example.Survive.ResourceManager;
 using Svelto.ECS.Extensions.Unity;
 using Svelto.ECS.Hybrid;
@@ -10,7 +12,7 @@ using UnityEngine;
 
 namespace Svelto.ECS.Example.Player
 {
-    public class PlayerSpawnerEngine : IQueryingEntitiesEngine
+    public class PlayerSpawnerEngine : IQueryingEntitiesEngine, IStepEngine
     {
         public PlayerSpawnerEngine(GameObjectFactory gameobjectFactory, IEntityFactory entityFactory)
         {
@@ -20,15 +22,23 @@ namespace Svelto.ECS.Example.Player
         
         public EntitiesDB entitiesDB { private get; set; }
 
-        public void Ready() { SpawnPlayer().Run(); }
+        public void Ready() { _spawnPlayer = SpawnPlayer(); }
+
+        public void   Step() { _spawnPlayer.MoveNext(); }
+        public string name   => nameof(PlayerSpawnerEngine);
 
         IEnumerator SpawnPlayer()
         {
-            IEnumerator<GameObject> loadingAsync = _gameobjectFactory.Build("Player");
+            IEnumerator<GameObject> playerLoading = _gameobjectFactory.Build("Player");
             
-            yield return loadingAsync; //wait until the asset is loaded and the gameobject built
+            while (playerLoading.MoveNext()) yield return null;
             
-            GameObject player = loadingAsync.Current;
+            IEnumerator<GameObject> cameraLoading = _gameobjectFactory.Build("Camera");
+            
+            while (cameraLoading.MoveNext()) yield return null;
+            
+            GameObject player = playerLoading.Current;
+            GameObject camera = cameraLoading.Current;
             
             //Get the gameobject "implementors". Implementors can be monobehaviours that can be used with Svelto.ECS
             //unluckily the gun is found in the same prefab of the character, so the best thing to do is to search
@@ -42,6 +52,13 @@ namespace Svelto.ECS.Example.Player
             IImplementor egidHoldImplementor = player.AddComponent<EGIDHolderImplementor>();
             implementors.Add(egidHoldImplementor);
             
+            BuildPlayerEntity(implementors, out var playerInitializer);
+            BuildGunEntity(playerInitializer, implementors);
+            BuildCameraEntity(playerInitializer, camera);
+        }
+
+        void BuildPlayerEntity(List<IImplementor> implementors, out EntityInitializer playerInitializer)
+        {
             //Build the Svelto ECS entity for the player. Svelto.ECS has the unique feature to let the user decide
             //the ID of the entity (which must be anyway unique). The user may think that using, for example, 
             //the GameObject.GetInstanceID() value as entity ID is a good idea, as it would be simple to fetch the
@@ -54,22 +71,55 @@ namespace Svelto.ECS.Example.Player
             //if the Svelto entity is linked to an external OOP resource, like the GameObject in this case, the
             //relative implementor must be passed to the BuildEntity method.
             //Pure ECS (no OOP) entities do not need implementors passed.
-            var playerInitializer =
-                _entityFactory.BuildEntity<PlayerEntityDescriptor>(0, ECSGroups.PlayersGroup, implementors);
-            
+            playerInitializer = _entityFactory.BuildEntity<PlayerEntityDescriptor>(0, ECSGroups.PlayersGroup, implementors);
+
             //BuildEntity returns an initializer that can be used to initialise all the entity components generated
             //by the entity descriptor. In this case I am initializing just the Health.
-            playerInitializer.Init(new HealthComponent {currentHealth = 100});
-            
+            //being lazy here, it should be read from json file
+            playerInitializer.Init(new HealthComponent
+            {
+                currentHealth = 100
+            });
+            playerInitializer.Init(new SpeedComponent(6));
+        }
+
+        void BuildGunEntity(EntityInitializer playerInitializer, List<IImplementor> implementors)
+        {
             //Gun and player are two different entities, but they are linked by the EGID
             //in this case we assume that we know at all the time the ID of the gun and the group where the gun is
             //but this is not often the case when groups must be swapped.
-            _entityFactory.BuildEntity<PlayerGunEntityDescriptor>((uint) playerInitializer.EGID.entityID,
-                                                                  ECSGroups.PlayersGunsGroup, implementors);
+            var init = _entityFactory.BuildEntity<PlayerGunEntityDescriptor>(playerInitializer.EGID.entityID
+                                                                           , ECSGroups.PlayersGunsGroup, implementors);
 
+            //being lazy here, it should be read from json file
+            init.Init(new GunAttributesComponent()
+            {
+                timeBetweenBullets = 0.15f
+              , range              = 100f
+              , damagePerShot      = 20
+               ,
+            });
+        }
+
+        /// <summary>
+        /// This demo has just one camera, but it would be simple to create a camera for each player for a split
+        /// screen scenario. Of course in that case, I would move the creation of the camera in a proper factory
+        /// </summary>
+        /// <param name="playerID"></param>
+        /// <param name="gameObject"></param>
+        void BuildCameraEntity(EntityInitializer playerID, GameObject camera)
+        {
+            //implementors can be attatched at run time, while not? Check the player spawner engine to 
+            //read more about implementors
+            var implementor = camera.AddComponent<CameraImplementor>();
+            implementor.offset = camera.transform.position - playerID.Get<CameraTargetEntityViewComponent>().targetComponent.position;
+
+            _entityFactory.BuildEntity<CameraEntityDescriptor>((uint) playerID.EGID.entityID, ECSGroups.Camera
+                                                            , new[] {implementor});
         }
         
         readonly IEntityFactory    _entityFactory;
         readonly GameObjectFactory _gameobjectFactory;
+        IEnumerator                _spawnPlayer;
     }
 }
