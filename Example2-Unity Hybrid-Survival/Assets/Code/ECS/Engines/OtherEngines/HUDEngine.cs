@@ -78,7 +78,7 @@ namespace Svelto.ECS.Example.Survive.HUD
         }
 
         readonly IEntityStreamConsumerFactory _consumerFactory;
-        IEnumerator                           _animateUI;
-        IEnumerator                           _checkForDamage;
+        readonly IEnumerator                  _animateUI;
+        readonly IEnumerator                  _checkForDamage;
     }
 }

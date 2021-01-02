@@ -96,7 +96,7 @@ namespace Svelto.ECS.Example.Survive
             var entityFunctions             = _enginesRoot.GenerateEntityFunctions();
             var entityStreamConsumerFactory = _enginesRoot.GenerateConsumerFactory();
 
-            //wrap non testable unity static classes, so that can be mocked if needed.
+            //wrap non testable unity static classes, so that can be mocked if needed (or implementation can change in general, without changing the interface).
             IRayCaster rayCaster = new RayCaster();
             ITime      time      = new Time();
             //GameObjectFactory allows to create GameObjects without using the Static method GameObject.Instantiate.

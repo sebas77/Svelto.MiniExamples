@@ -26,10 +26,10 @@ namespace Svelto.ECS.Example.Survive.Characters.Player
             }
         }
         
-        //this assumes that removing an entity means it's death. If necessary I could check the group it comes from
-        //to have a sort of transition callback on state change
         public void Add(ref PlayerEntityViewComponent entityComponent, EGID egid) {  }
 
+        //this assumes that removing an entity means its death. If necessary I could check the group it comes from
+        //to have a sort of transition callback on state change
         public void Remove(ref PlayerEntityViewComponent playerEntityView, EGID egid)
         {
             playerEntityView.rigidBodyComponent.isKinematic = true;

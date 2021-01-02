@@ -103,8 +103,7 @@ namespace Svelto.ECS.Example.Player
 
         /// <summary>
         /// This demo has just one camera, but it would be simple to create a camera for each player for a split
-        /// screen scenario. Of course in that case, I would move the creation of the camera in a proper factory
-        /// </summary>
+        /// screen scenario. 
         /// <param name="playerID"></param>
         /// <param name="gameObject"></param>
         void BuildCameraEntity(EntityInitializer playerID, GameObject camera)

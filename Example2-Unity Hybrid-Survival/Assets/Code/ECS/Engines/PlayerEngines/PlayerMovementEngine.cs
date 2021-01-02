@@ -16,7 +16,7 @@ namespace Svelto.ECS.Example.Survive.Characters.Player
 
         public EntitiesDB entitiesDB { private get; set; }
 
-        public void   Ready() {}
+        public void   Ready() { }
         public void   Step()  { _tick.MoveNext(); }
         public string name    => nameof(PlayerMovementEngine);
 
@@ -34,7 +34,9 @@ namespace Svelto.ECS.Example.Survive.Characters.Player
                 for (int i = 0; i < count; i++)
                 {
                     Movement(playersInput[i], ref playerViews[i], speedInfos[i]);
-                    Turning(ref entitiesDB.QueryEntity<CameraEntityViewComponent>(playerViews[i].ID.entityID, ECSGroups.Camera), ref playerViews[i]);
+                    Turning(
+                        ref entitiesDB.QueryEntity<CameraEntityViewComponent>(
+                            playerViews[i].ID.entityID, ECSGroups.Camera), ref playerViews[i]);
                 }
 
                 yield return null; //don't forget to yield or you will enter in an infinite loop!
@@ -50,7 +52,9 @@ namespace Svelto.ECS.Example.Survive.Characters.Player
         /// </summary>
         /// <param name="playerInput"></param>
         /// <param name="playerComponent"></param>
-        void Movement(in PlayerInputDataComponent playerInput, ref PlayerEntityViewComponent playerComponent, in SpeedComponent speedComponent)
+        void Movement
+        (in PlayerInputDataComponent playerInput, ref PlayerEntityViewComponent playerComponent
+       , in SpeedComponent speedComponent)
         {
             // Normalise the movement vector and make it proportional to the speed per second.
             var movement = playerInput.input.normalized * speedComponent.movementSpeed;
@@ -81,8 +85,10 @@ namespace Svelto.ECS.Example.Survive.Characters.Player
             }
         }
 
-        readonly IRayCaster  _rayCaster;
-        readonly int         floorMask = LayerMask.GetMask("Floor"); // A layer mask so that a ray can be cast just at gameobjects on the floor layer.
+        readonly IRayCaster _rayCaster;
+
+        readonly int floorMask = LayerMask.GetMask("Floor"); // A layer mask so that a ray can be cast just at gameobjects on the floor layer.
+
         readonly IEnumerator _tick;
     }
 }
