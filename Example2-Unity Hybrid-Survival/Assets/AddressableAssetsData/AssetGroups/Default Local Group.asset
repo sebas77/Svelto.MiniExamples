@@ -60,7 +60,7 @@ MonoBehaviour:
     m_MainAsset: {fileID: 0}
     m_TargetAsset: {fileID: 0}
   - m_GUID: d01ecffff2a5a324e90a977b3b019b6f
-    m_Address: Camera
+    m_Address: CameraPrefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     m_MainAsset: {fileID: 0}

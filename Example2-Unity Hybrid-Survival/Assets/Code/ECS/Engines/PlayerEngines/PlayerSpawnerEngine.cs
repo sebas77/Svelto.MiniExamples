@@ -33,7 +33,7 @@ namespace Svelto.ECS.Example.Player
             
             while (playerLoading.MoveNext()) yield return null;
             
-            IEnumerator<GameObject> cameraLoading = _gameobjectFactory.Build("Camera");
+            IEnumerator<GameObject> cameraLoading = _gameobjectFactory.Build("CameraPrefab");
             
             while (cameraLoading.MoveNext()) yield return null;
             
