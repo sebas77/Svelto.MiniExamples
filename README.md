@@ -21,27 +21,25 @@ Goal of this example:
 * intoduce to the concept of entity descriptors, entity structs and groups. 
 * Show the integration with UnityECS, show the use of Svelto.Tasks 2.0 (alpha state) 
 * show integration with Unity Jobs and Burst (using Svelto.ECS 3.0 (currently alpha state)
- 
- ###  **Iteration 3
-   * Full jobified/burstified code with Svelto ECS 3.0
-   * test integration with IL2CPP
+* test Full jobified/burstified code with Svelto ECS 3.0
+* test integration with IL2CPP
   
 ## Example 2: The classic Survival demo (Hybrid ECS)
 
 ![Image](https://github.com/sebas77/GithubWikiImages/blob/master/gif_animation_002.gif)
 
-Basic integration with Unity GameObjects and Monobehaviours. Uses Svelto ECS 3.0 and Svelto Tasks 1.5
+Basic integration with Unity GameObjects and Monobehaviours.
 
 Goal of this example: 
 
 * show the integration with OOP platforms (Unity in this case) throught the use of Entity View Components and Implementors.
 * *Test WebGL support*
 
-Main Article: http://www.sebaslab.com/learning-svelto-ecs-by-example-the-survival-example/
-
 I used the Survival Shooter Unity Demo to show how an ECS framework could work inside Unity. I am not sure about the license of this demo, so use it only for learning purposes.
-
 Most of the source code has been rewritten to work with Svelto.ECS framework. The Survival Demo is tested with the latest version of Unity, so I cannot guarantee that it always works, but it should work with all the versions from 5.3 and above.
+
+* Note: This demo shows just one way to abstract OOP code, it is not _THE WAY_. Other strategies are in fact listed in the Example 6. 
+* Note: This demo code is old and it's still using ExclusiveGroups instead of GroupCompounds. You should use GroupCompunds.
 
 ## Example 3: GUI and Service Layer (Hybrid ECS for GUI)
 
@@ -72,3 +70,7 @@ Goal of this example
 Basic Platform Agnostic Svelto.ECS 3.0 example
 
 * Goal: Shows the very foundation of a simple entity and engine logic, without any Unity or other platform dependency (pure .net). This example won't cover all the aspects of SECS, but only the basics.
+
+## Example 6: Abstract Object Oriented Code
+
+* Goal: this example shows the two main strategies to abstract OOP code. Mixing the two strategies will result in the least boiler plate and fastest code.
