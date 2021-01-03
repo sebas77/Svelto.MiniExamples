@@ -16,11 +16,10 @@ Article:
 
 http://www.sebaslab.com/svelto-mini-examples-doofuses-must-eat/
 
-Goal of this example: 
-* show the simplest use of Svelto ECS (mixed versions) 
+Goals of this example are to: 
 * intoduce to the concept of entity descriptors, entity structs and groups. 
-* Show the integration with UnityECS, show the use of Svelto.Tasks 2.0 (alpha state) 
-* show integration with Unity Jobs and Burst (using Svelto.ECS 3.0 (currently alpha state)
+* Show the integration with UnityECS, shows the use of Svelto.Tasks 2.0 (alpha state) 
+* show the integration with Unity Jobs and Burst (using Svelto.ECS 3.0)
 * test Full jobified/burstified code with Svelto ECS 3.0
 * test integration with IL2CPP
   
@@ -40,6 +39,7 @@ Most of the source code has been rewritten to work with Svelto.ECS framework. Th
 
 * Note: This demo shows just one way to abstract OOP code, it is not _THE WAY_. Other strategies are in fact listed in the Example 6. 
 * Note: This demo code is old and it's still using ExclusiveGroups instead of GroupCompounds. You should use GroupCompunds.
+* Note: The purposes of this demo is NOT to show how to write fast code. In fact most of the solutions you will find in this demo are not optimal at all. Svelto ECS is used only to wrap high level code as all the low level functionalities are executed through standard gameobjects.
 
 ## Example 3: GUI and Service Layer (Hybrid ECS for GUI)
 
@@ -74,3 +74,5 @@ Basic Platform Agnostic Svelto.ECS 3.0 example
 ## Example 6: Abstract Object Oriented Code
 
 * Goal: this example shows the two main strategies to abstract OOP code. Mixing the two strategies will result in the least boiler plate and fastest code.
+* Fist integration wraps gameobjects through the use of EntityViewComponents like seen in MiniExamples 2 Survival
+* Second integration shows a more efficent approach, where pure ECS is used as much as possible and engines objects are synched only as late as possible.
