@@ -13,7 +13,6 @@ Example1-DoofusesMustEat/Iteration2-Burst/Build/
 Example1-DoofusesMustEat/Iteration3-Jobs/Build/
 Example1-DoofusesMustEat/Iteration3-Jobs/UserSettings/
 Example1-DoofusesMustEat/Iteration3-Jobs/IL2CPP/
-
 Example1-DoofusesMustEat/Iteration3-Jobs/Logs/
 Example2-Survival/Assets/StreamingAssets/
 Example4-SDL/com.sebaslab.svelto.ecs@3.0.0/bin/
@@ -30,5 +29,7 @@ Example4-NET-SDL/SveltoDeterministic2DPhysicsDemo/bin/
 Example4-NET-SDL/com.sebaslab.svelto.ecs@3.1.0/bin/Debug/netstandard2.0/Svelto.Common.pdb
 Example4-NET-SDL/com.sebaslab.svelto.ecs@3.1.0/bin/
 Example2-Unity Hybrid-Survival/UserSettings/
-*.meta
+Example4-NET-SDL/*.meta
 Example2-Unity Hybrid-Survival/Logs/
+Example6-Unity Hybrid-OOP Abstraction/UserSettings/
+Example6-Unity Hybrid-OOP Abstraction/Logs/
