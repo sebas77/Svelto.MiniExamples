@@ -42,7 +42,6 @@
   </PropertyGroup>
   <ItemGroup>
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Extensions\Unity\DOTS\UECS\JobifiedSveltoEngines.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Core\ValueReference.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Extensions\Unity\DOTS\Native\NativeEGIDMapper.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Serialization\SerializableEntityComponent.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\DataStructures\ThreadSafeNativeBagTest.cs" />
@@ -124,6 +123,7 @@
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Serialization\ComposedComponentSerializer.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Components\LinkedEntityComponent.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Core\EnginesGroup\SortedEnginesGroup.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Core\ValueReference.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Core\Streams\EnginesRoot.Streams.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\DataStructures\Unmanaged\NativeDynamicArrayCast.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Serialization\EnginesRoot.GenericEntitySerialization.cs" />
