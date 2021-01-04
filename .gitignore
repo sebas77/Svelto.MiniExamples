@@ -35,3 +35,11 @@ Example6-Unity Hybrid-OOP Abstraction/UserSettings/
 Example6-Unity Hybrid-OOP Abstraction/Logs/
 Example1-DOTS-DoofusesMustEat/DOOFUSES_UECS/IL2CPP/Svelto.ECS.MiniExamples_BackUpThisFolder_ButDontShipItWithYourGame/Managed/Unity.Mathematics.Extensions.dll
 Example1-DOTS-DoofusesMustEat/DOOFUSES_UECS/IL2CPP/
+Example1-DOTS-DoofusesMustEat/DOOFUSES_GAMEOBJECTS/Build/
+Example1-DOTS-DoofusesMustEat/DOOFUSES_GAMEOBJECTS/Assembly-CSharp.csproj
+Example1-DOTS-DoofusesMustEat/DOOFUSES_GAMEOBJECTS/Assembly-CSharp-Editor.csproj
+Example1-DOTS-DoofusesMustEat/DOOFUSES_GAMEOBJECTS/Svelto.Common.csproj
+Example1-DOTS-DoofusesMustEat/DOOFUSES_GAMEOBJECTS/Svelto.ECS.csproj
+Example1-DOTS-DoofusesMustEat/DOOFUSES_GAMEOBJECTS/Svelto.Pool.Debugger.csproj
+Example1-DOTS-DoofusesMustEat/DOOFUSES_GAMEOBJECTS/Svelto.Tasks.csproj
+Example1-DOTS-DoofusesMustEat/DOOFUSES_GAMEOBJECTS/UserSettings/

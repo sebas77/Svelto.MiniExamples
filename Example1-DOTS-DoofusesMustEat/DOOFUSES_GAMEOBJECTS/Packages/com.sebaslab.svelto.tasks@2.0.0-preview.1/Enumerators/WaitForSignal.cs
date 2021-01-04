@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Threading;
-using Svelto.Utilities;
 
 namespace Svelto.Tasks.Enumerators
 {

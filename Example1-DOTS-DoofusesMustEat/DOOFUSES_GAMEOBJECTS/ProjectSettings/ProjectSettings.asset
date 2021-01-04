@@ -624,11 +624,11 @@ PlayerSettings:
   webGLThreadsSupport: 0
   webGLDecompressionFallback: 0
   scriptingDefineSymbols:
-    1: ENABLE_PLATFORM_PROFILER;PROFILE_SVELTO;ENABLE_HYBRID_RENDERER_V2
+    1: ENABLE_PLATFORM_PROFILER
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend:
-    Standalone: 1
+    Standalone: 0
   il2cppCompilerConfiguration:
     Standalone: 1
   managedStrippingLevel: {}

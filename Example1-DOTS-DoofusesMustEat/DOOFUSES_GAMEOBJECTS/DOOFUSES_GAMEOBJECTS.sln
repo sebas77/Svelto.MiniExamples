@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.Common", "Svelto.Com
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "Assembly-CSharp.csproj", "{060cbbea-8a47-e1b2-aed9-8d475755f8ea}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameObjectLayer", "GameObjectLayer.csproj", "{ad94bc6c-aada-c538-fae4-58c3af10bd8e}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp-Editor", "Assembly-CSharp-Editor.csproj", "{f4bd21f3-8f75-ae5f-b1a2-f49f48b83eaa}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.Pool.Debugger", "Svelto.Pool.Debugger.csproj", "{a63ed956-e9c4-d864-e0f4-83d8aca66ec0}"
@@ -26,6 +28,8 @@ Global
 		{140004fb-0da5-19e4-3ca2-47c48b23573f}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{060cbbea-8a47-e1b2-aed9-8d475755f8ea}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{060cbbea-8a47-e1b2-aed9-8d475755f8ea}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ad94bc6c-aada-c538-fae4-58c3af10bd8e}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ad94bc6c-aada-c538-fae4-58c3af10bd8e}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{f4bd21f3-8f75-ae5f-b1a2-f49f48b83eaa}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{f4bd21f3-8f75-ae5f-b1a2-f49f48b83eaa}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{a63ed956-e9c4-d864-e0f4-83d8aca66ec0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU

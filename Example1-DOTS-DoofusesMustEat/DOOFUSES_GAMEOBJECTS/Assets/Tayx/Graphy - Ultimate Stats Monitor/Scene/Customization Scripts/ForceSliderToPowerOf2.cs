@@ -12,8 +12,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-using System.Collections;
-
 namespace Tayx.Graphy.CustomizationScene
 {
 	public class ForceSliderToPowerOf2 : MonoBehaviour
