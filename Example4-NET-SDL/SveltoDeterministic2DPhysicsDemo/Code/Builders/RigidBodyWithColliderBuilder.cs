@@ -3,14 +3,14 @@ using Svelto.ECS;
 using FixedMaths;
 using MiniExamples.DeterministicPhysicDemo.Physics.Descriptors;
 using MiniExamples.DeterministicPhysicDemo.Physics.EntityComponents;
-using SveltoDeterministic2DPhysicsDemo;
 
 namespace MiniExamples.DeterministicPhysicDemo.Physics.Builders
 {
     /// <summary>
-    /// Factory to build Rigidbody Entities
+    /// Factory to build Rigidbody Entities. This is not a pattern, you can use or not use factories and design
+    /// factories like you wish
     /// </summary>
-    public class RigidBodyWithColliderBuilder
+    public struct RigidBodyWithColliderBuilder
     {
         public void Build(IEntityFactory entityFactory)
         {
@@ -38,7 +38,8 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.Builders
             }
 
             initializer.Init(new TransformEntityComponent(_position, _position));
-            initializer.Init(new RigidbodyEntityComponent(_speed, _direction, FixedPointVector2.Zero, FixedPoint.Zero, _restitution, _mass, _isKinematic));
+            initializer.Init(new RigidbodyEntityComponent(_speed, _direction, FixedPointVector2.Zero, FixedPoint.Zero
+                                                        , _restitution, _mass, _isKinematic));
 
             switch (_colliderType)
             {
@@ -55,7 +56,22 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.Builders
             }
         }
 
-        public static RigidBodyWithColliderBuilder Create() { return new RigidBodyWithColliderBuilder(); }
+        public static RigidBodyWithColliderBuilder Create()
+        {
+            return new RigidBodyWithColliderBuilder()
+            {
+                _boxColliderCentre    = FixedPointVector2.Zero
+              , _boxColliderSize      = FixedPointVector2.Zero
+              , _circleColliderCentre = FixedPointVector2.Zero
+              , _circleColliderRadius = FixedPoint.Zero
+              , _colliderType         = ColliderType.Box
+              , _direction            = FixedPointVector2.Zero
+              , _mass                 = FixedPoint.One
+              , _position             = FixedPointVector2.Zero
+              , _restitution          = FixedPoint.One
+              , _speed                = FixedPoint.Zero
+            };
+        }
 
         public RigidBodyWithColliderBuilder SetBoxCollider(FixedPointVector2 size, FixedPointVector2? centre = null)
         {
@@ -111,16 +127,16 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.Builders
             return this;
         }
 
-        FixedPointVector2 _boxColliderCentre    = FixedPointVector2.Zero;
-        FixedPointVector2 _boxColliderSize      = FixedPointVector2.Zero;
-        FixedPointVector2 _circleColliderCentre = FixedPointVector2.Zero;
-        FixedPoint        _circleColliderRadius = FixedPoint.Zero;
-        ColliderType      _colliderType         = ColliderType.Box;
-        FixedPointVector2 _direction            = FixedPointVector2.Zero;
-        FixedPoint        _mass                 = FixedPoint.One;
-        FixedPointVector2 _position             = FixedPointVector2.Zero;
-        FixedPoint        _restitution          = FixedPoint.One;
-        FixedPoint        _speed                = FixedPoint.Zero;
+        FixedPointVector2 _boxColliderCentre   ;
+        FixedPointVector2 _boxColliderSize     ;
+        FixedPointVector2 _circleColliderCentre;
+        FixedPoint        _circleColliderRadius;
+        ColliderType      _colliderType        ;
+        FixedPointVector2 _direction           ;
+        FixedPoint        _mass                ;
+        FixedPointVector2 _position            ;
+        FixedPoint        _restitution         ;
+        FixedPoint        _speed               ;
 
         bool _isKinematic;
     }

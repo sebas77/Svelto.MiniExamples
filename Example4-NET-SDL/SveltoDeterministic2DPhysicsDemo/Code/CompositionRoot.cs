@@ -27,7 +27,17 @@ namespace MiniExamples.DeterministicPhysicDemo
             enginesRoot.AddEngine(debugPhysicsDrawEngine);
             scheduler.RegisterScheduledGraphicsEngine(debugPhysicsDrawEngine);
 
-            PhysicsCore.RegisterEngines(enginesRoot, _scheduler);
+            var applyVelocityToRigidBodiesEngine                 = new ApplyVelocityToRigidBodiesEngine();
+            var detectDynamicBoxVsBoxCollisionsEngine            = new DynamicBoxVsBoxCollisionsEngine();
+            var detectDynamicVsKinematicBoxVsBoxCollisionsEngine = new DynamicVsKinematicBoxVsBoxCollisionsEngine();
+
+            enginesRoot.AddEngine(applyVelocityToRigidBodiesEngine);
+            enginesRoot.AddEngine(detectDynamicBoxVsBoxCollisionsEngine);
+            enginesRoot.AddEngine(detectDynamicVsKinematicBoxVsBoxCollisionsEngine);
+
+            ((IEngineScheduler) _scheduler).RegisterScheduledPhysicsEngine(applyVelocityToRigidBodiesEngine);
+            ((IEngineScheduler) _scheduler).RegisterScheduledPhysicsEngine(detectDynamicBoxVsBoxCollisionsEngine);
+            ((IEngineScheduler) _scheduler).RegisterScheduledPhysicsEngine(detectDynamicVsKinematicBoxVsBoxCollisionsEngine);
 
             //Entities can be created in the composition root, but it's a strategy ok only for simple scenarios.
             //Normally factory engines are used instead.
@@ -62,21 +72,21 @@ namespace MiniExamples.DeterministicPhysicDemo
                                         .Build(entityFactory);
 
             // Add some bounding boxes
-            AddBoxColliderEntity(entityFactory, 4, FixedPointVector2.From(FixedPoint.From(-30), FixedPoint.From(0))
+            AddBoxColliderEntity(entityFactory, FixedPointVector2.From(FixedPoint.From(-30), FixedPoint.From(0))
                                , FixedPointVector2.Down, FixedPoint.From(3), FixedPointVector2.From(10, 10));
-            AddBoxColliderEntity(entityFactory, 5, FixedPointVector2.From(FixedPoint.From(-35), FixedPoint.From(-50))
+            AddBoxColliderEntity(entityFactory, FixedPointVector2.From(FixedPoint.From(-35), FixedPoint.From(-50))
                                , FixedPointVector2.Up, FixedPoint.From(5), FixedPointVector2.From(10, 10));
-            AddBoxColliderEntity(entityFactory, 6, FixedPointVector2.From(FixedPoint.From(-30), FixedPoint.From(50))
+            AddBoxColliderEntity(entityFactory, FixedPointVector2.From(FixedPoint.From(-30), FixedPoint.From(50))
                                , FixedPointVector2.Up, FixedPoint.From(3), FixedPointVector2.From(10, 10));
-            AddBoxColliderEntity(entityFactory, 7, FixedPointVector2.From(FixedPoint.From(0), FixedPoint.From(50))
+            AddBoxColliderEntity(entityFactory, FixedPointVector2.From(FixedPoint.From(0), FixedPoint.From(50))
                                , FixedPointVector2.Right, FixedPoint.From(3), FixedPointVector2.From(10, 10));
-            AddBoxColliderEntity(entityFactory, 8, FixedPointVector2.From(FixedPoint.From(40), FixedPoint.From(-90))
+            AddBoxColliderEntity(entityFactory, FixedPointVector2.From(FixedPoint.From(40), FixedPoint.From(-90))
                                , FixedPointVector2.From(1, 1).Normalize(), FixedPoint.From(10)
                                , FixedPointVector2.From(3, 3));
-            AddBoxColliderEntity(entityFactory, 9, FixedPointVector2.From(FixedPoint.From(40), FixedPoint.From(-60))
+            AddBoxColliderEntity(entityFactory, FixedPointVector2.From(FixedPoint.From(40), FixedPoint.From(-60))
                                , FixedPointVector2.From(1, 1).Normalize(), FixedPoint.From(10)
                                , FixedPointVector2.From(3, 3));
-            AddBoxColliderEntity(entityFactory, 10, FixedPointVector2.From(FixedPoint.From(40), FixedPoint.From(-30))
+            AddBoxColliderEntity(entityFactory, FixedPointVector2.From(FixedPoint.From(40), FixedPoint.From(-30))
                                , FixedPointVector2.From(1, 1).Normalize(), FixedPoint.From(3)
                                , FixedPointVector2.From(3, 3));
 
@@ -85,7 +95,7 @@ namespace MiniExamples.DeterministicPhysicDemo
         }
 
         static void AddBoxColliderEntity
-        (in IEntityFactory entityFactory, in uint egid, in FixedPointVector2 position
+        (in IEntityFactory entityFactory, in FixedPointVector2 position
        , in FixedPointVector2 direction, in FixedPoint speed, in FixedPointVector2 boxColliderSize)
         {
             RigidBodyWithColliderBuilder.Create().SetPosition(position).SetDirection(direction).SetSpeed(speed)

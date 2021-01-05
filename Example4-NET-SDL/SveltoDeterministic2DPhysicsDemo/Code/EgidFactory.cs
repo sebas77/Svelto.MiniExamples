@@ -1,4 +1,4 @@
-﻿namespace SveltoDeterministic2DPhysicsDemo
+﻿namespace MiniExamples.DeterministicPhysicDemo
 {
     public static class EgidFactory
     {
