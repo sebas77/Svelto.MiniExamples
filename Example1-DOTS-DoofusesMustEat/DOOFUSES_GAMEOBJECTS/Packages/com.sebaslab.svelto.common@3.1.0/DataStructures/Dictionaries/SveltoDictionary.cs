@@ -1,6 +1,7 @@
 using System;
 using System.Runtime.CompilerServices;
 using Svelto.Common;
+using Svelto.Utilities;
 
 namespace Svelto.DataStructures
 {
@@ -147,6 +148,20 @@ namespace Svelto.DataStructures
             AddValue(key, builder(), out findIndex);
 
             return ref _values[(int) findIndex];
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ref TValue GetOrCreate<W>(TKey key, FuncRef<W, TValue> builder, ref W parameter)
+        {
+            if (TryFindIndex(key, out var findIndex) == true)
+            {
+                return ref _values[(int) findIndex];
+            }
+
+            AddValue(key, builder(ref parameter), out findIndex);
+
+            return ref _values[(int) findIndex];
+
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -583,9 +598,9 @@ namespace Svelto.DataStructures
         internal TKeyStrategy _valuesInfo;
         TBucketStrategy       _buckets;
 
-        uint                                   _freeValueCellIndex;
-        uint                                   _collisions;
-        internal TValueStrategy                _values;
+        uint                      _freeValueCellIndex;
+        uint                      _collisions;
+        internal   TValueStrategy _values;
     }
 
     public class SveltoDictionaryException : Exception

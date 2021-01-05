@@ -19,7 +19,7 @@ namespace Svelto.ECS.Extensions.Unity
     public class SveltoUECSEntitiesSubmissionGroup : JobifiedEnginesGroup<IUECSSubmissionEngine>
     {
         public SveltoUECSEntitiesSubmissionGroup
-            (SimpleEntitiesSubmissionSchedulerInterface submissionScheduler, World UECSWorld)
+            (SimpleEntitiesSubmissionScheduler submissionScheduler, World UECSWorld)
         {
             _submissionScheduler = submissionScheduler;
             _ECBSystem           = UECSWorld.CreateSystem<SubmissionEntitiesCommandBufferSystem>();
@@ -52,7 +52,7 @@ namespace Svelto.ECS.Extensions.Unity
             _ECBSystem.Update();
         }
 
-        readonly SimpleEntitiesSubmissionSchedulerInterface _submissionScheduler;
+        readonly SimpleEntitiesSubmissionScheduler _submissionScheduler;
         readonly SubmissionEntitiesCommandBufferSystem      _ECBSystem;
         IEnumerator                                         _submission;
 

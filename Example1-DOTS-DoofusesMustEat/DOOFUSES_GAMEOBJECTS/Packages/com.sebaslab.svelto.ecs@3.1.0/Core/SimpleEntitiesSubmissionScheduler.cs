@@ -4,14 +4,14 @@ using System.Collections;
 namespace Svelto.ECS.Schedulers
 {
     //This scheduler shouldn't be used in production and it's meant to be used for Unit Tests only
-    public sealed class SimpleEntitiesSubmissionScheduler : SimpleEntitiesSubmissionSchedulerInterface
+    public sealed class SimpleEntitiesSubmissionScheduler : EntitiesSubmissionScheduler
     {
         public SimpleEntitiesSubmissionScheduler(uint maxNumberOfOperationsPerFrame = UInt32.MaxValue)
         {
             _maxNumberOfOperationsPerFrame = maxNumberOfOperationsPerFrame;
         }
         
-        public override IEnumerator SubmitEntitiesAsync()
+        public IEnumerator SubmitEntitiesAsync()
         {
             if (paused == false)
             {
@@ -21,6 +21,16 @@ namespace Svelto.ECS.Schedulers
                     yield return null;
             }
         }
+
+        public void SubmitEntities()
+        {
+            var enumerator = SubmitEntitiesAsync();
+
+            while (enumerator.MoveNext());
+        }
+
+        public override bool paused                        { get; set; }
+        public override void Dispose() { }
 
         protected internal override EnginesRoot.EntitiesSubmitter onTick
         {
@@ -32,11 +42,8 @@ namespace Svelto.ECS.Schedulers
             }
         }
 
-        public override bool paused                        { get; set; }
-
-        public override void Dispose() { }
-
         EnginesRoot.EntitiesSubmitter _onTick;
+
         readonly uint                 _maxNumberOfOperationsPerFrame;
     }
 }

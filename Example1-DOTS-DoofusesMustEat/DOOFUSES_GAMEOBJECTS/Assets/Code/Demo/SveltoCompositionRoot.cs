@@ -75,9 +75,10 @@ namespace Svelto.ECS.MiniExamples.Example1C
 
         //the topmost composition root has the responsibility to hold all the main structures
         EnginesRoot                          _enginesRoot;
-        readonly FasterList<IJobifiedEngine> _enginesToTick = new FasterList<IJobifiedEngine>();
         SimpleEntitiesSubmissionScheduler    _simpleSubmitScheduler;
         MainLoop                             _mainLoop;
         GameObjectManager                    _gameObjectManager;
+        
+        readonly FasterList<IJobifiedEngine> _enginesToTick = new FasterList<IJobifiedEngine>();
     }
 }
