@@ -9,16 +9,14 @@ namespace Svelto.ECS
     
     public interface IStepEngine<T> : IEngine
     {
-        void StepAll(in T _param);
+        void Step(in T _param);
         
         string name { get; }
     }
     
-    public interface IStepGroupEngine : IEngine
+    //this must stay IStep Engine as it may be part of a group itself
+    public interface IStepGroupEngine : IStepEngine
     {
-        void StepAll();
-        
-        string name { get; }
     }
     
     public interface IStepGroupEngine<T> : IStepEngine<T>

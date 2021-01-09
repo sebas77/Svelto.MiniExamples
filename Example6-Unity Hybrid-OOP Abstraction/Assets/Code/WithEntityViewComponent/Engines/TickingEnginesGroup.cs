@@ -10,7 +10,7 @@ namespace Svelto.ECS.Example.OOPAbstraction
         {
             var tickingSystem = new GameObject("Ticking System");
 
-            tickingSystem.AddComponent<UpdateMe>().update = StepAll;
+            tickingSystem.AddComponent<UpdateMe>().update = Step;
         }
 
         class UpdateMe : MonoBehaviour

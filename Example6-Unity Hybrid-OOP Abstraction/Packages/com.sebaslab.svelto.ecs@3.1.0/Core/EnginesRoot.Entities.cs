@@ -285,8 +285,7 @@ namespace Svelto.ECS
         {
             if (_groupEntityComponentsDB.TryGetValue(groupID, out var dictionariesOfEntities))
             {
-                foreach (FasterDictionary<RefWrapperType, ITypeSafeDictionary>.KeyValuePairFast dictionaryOfEntities
-                    in dictionariesOfEntities)
+                foreach (var dictionaryOfEntities in dictionariesOfEntities)
                 {
                     dictionaryOfEntities.Value.ExecuteEnginesRemoveCallbacks(_reactiveEnginesAddRemove, profiler
                       , new ExclusiveGroupStruct(groupID));

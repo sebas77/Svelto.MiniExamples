@@ -1,6 +1,5 @@
 using System;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using Svelto.Common;
 
 namespace Svelto.DataStructures
@@ -21,7 +20,7 @@ namespace Svelto.DataStructures
         public ManagedSveltoDictionary(uint size)
         {
             var dictionary =
-                new SveltoDictionary<TKey, TValue, ManagedStrategy<FasterDictionaryNode<TKey>>, ManagedStrategy<TValue>,
+                new SveltoDictionary<TKey, TValue, ManagedStrategy<SveltoDictionaryNode<TKey>>, ManagedStrategy<TValue>,
                 ManagedStrategy<int> >(size, Allocator.Managed);
 
             _dictionary       = dictionary;
@@ -34,7 +33,7 @@ namespace Svelto.DataStructures
             return _dictionary._values.ToRealBuffer();
         }
 
-        public SveltoDictionary<TKey, TValue, ManagedStrategy<FasterDictionaryNode<TKey>>, ManagedStrategy<TValue>, ManagedStrategy<int>>.
+        public SveltoDictionary<TKey, TValue, ManagedStrategy<SveltoDictionaryNode<TKey>>, ManagedStrategy<TValue>, ManagedStrategy<int>>.
             SveltoDictionaryKeyValueEnumerator GetEnumerator() => _dictionary.GetEnumerator();
 
         public int count
@@ -146,6 +145,6 @@ namespace Svelto.DataStructures
             return new ManagedSveltoDictionary<TKey, TValue>(0);
         }
 
-        SveltoDictionary<TKey, TValue, ManagedStrategy<FasterDictionaryNode<TKey>>, ManagedStrategy<TValue>, ManagedStrategy<int>> _dictionary;
+        SveltoDictionary<TKey, TValue, ManagedStrategy<SveltoDictionaryNode<TKey>>, ManagedStrategy<TValue>, ManagedStrategy<int>> _dictionary;
     }
 }

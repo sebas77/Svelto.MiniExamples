@@ -12,7 +12,7 @@ namespace Svelto.ECS
             _instancedSequence = engines;
         }
 
-        public void StepAll()
+        public void Step()
         {
             var sequenceItems = _instancedSequence;
             using (var profiler = new PlatformProfiler(_name))
@@ -40,7 +40,7 @@ namespace Svelto.ECS
             _instancedSequence = engines;
         }
 
-        public void StepAll(in Parameter param)
+        public void Step(in Parameter param)
         {
             var sequenceItems = _instancedSequence;
             using (var profiler = new PlatformProfiler(_name))
@@ -48,7 +48,7 @@ namespace Svelto.ECS
                 for (var index = 0; index < sequenceItems.count; index++)
                 {
                     var engine = sequenceItems[index];
-                    using (profiler.Sample(engine.name)) engine.StepAll(param);
+                    using (profiler.Sample(engine.name)) engine.Step(param);
                 }
             }
         }

@@ -17,8 +17,7 @@ namespace Svelto.ObjectPool
 
         public int secondsToWait;
 
-        public List<ObjectPoolDebugStructureInt>    debugPoolInfo      = new List<ObjectPoolDebugStructureInt>();
-        public List<ObjectPoolDebugStructureString> debugNamedPoolInfo = new List<ObjectPoolDebugStructureString>();
+        public List<ObjectPoolDebugStructure>    debugPoolInfo      = new List<ObjectPoolDebugStructure>();
 
         public DateTime Later { get; private set; }
 
@@ -37,7 +36,6 @@ namespace Svelto.ObjectPool
         void SetLists()
         {
             debugPoolInfo      = _objectPool.DebugPoolInfo(debugPoolInfo);
-            debugNamedPoolInfo = _objectPool.DebugNamedPoolInfo(debugNamedPoolInfo);
         }
 
         void FetchObjectCreatedLite()
