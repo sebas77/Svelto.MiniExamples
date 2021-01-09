@@ -40,7 +40,7 @@ namespace Svelto.ECS
             return filters.TryGetValue(filterIndex, out filter);
         }
 
-        public SveltoDictionary<int, FilterGroup, NativeStrategy<FasterDictionaryNode<int>>, NativeStrategy<FilterGroup>
+        public SveltoDictionary<int, FilterGroup, NativeStrategy<SveltoDictionaryNode<int>>, NativeStrategy<FilterGroup>
           , NativeStrategy<int>>.SveltoDictionaryKeyValueEnumerator GetEnumerator()
         {
             return filters.GetEnumerator();

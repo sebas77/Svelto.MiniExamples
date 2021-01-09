@@ -258,7 +258,7 @@ namespace DBC.Common
 
 		// Are trace assertion statements being used? 
 		// Default is to use exception handling.
-		private static bool useAssertions = false;
+		static bool useAssertions = false;
 
 		#endregion // Implementation
 

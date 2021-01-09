@@ -1,8 +1,9 @@
 {
     "name": "Svelto.Common",
+    "rootNamespace": "",
     "references": [
         "com.sebaslab.svelto.unsafe",
-		"Unity.Collections",
+        "Unity.Collections",
         "Unity.Burst"
     ],
     "includePlatforms": [],
@@ -30,7 +31,7 @@
             "expression": "",
             "define": "UNITY_COLLECTIONS"
         },
-		{
+        {
             "name": "com.unity.entities",
             "expression": "",
             "define": "UNITY_NATIVE"
@@ -44,6 +45,11 @@
             "name": "com.unity.collections",
             "expression": "",
             "define": "UNITY_NATIVE"
+        },
+        {
+            "name": "Unity",
+            "expression": "2019.3",
+            "define": "UNITY_JOBS"
         }
     ],
     "noEngineReferences": false

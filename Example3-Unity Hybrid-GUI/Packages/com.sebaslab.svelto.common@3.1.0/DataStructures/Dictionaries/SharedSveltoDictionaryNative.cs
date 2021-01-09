@@ -1,6 +1,5 @@
 using System;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using Svelto.Common;
 
 namespace Svelto.DataStructures
@@ -26,10 +25,10 @@ namespace Svelto.DataStructures
         public SharedSveltoDictionaryNative(uint size, Allocator nativeAllocator)
         {
             var dictionary =
-                new SveltoDictionary<TKey, TValue, NativeStrategy<FasterDictionaryNode<TKey>>, NativeStrategy<TValue>,
+                new SveltoDictionary<TKey, TValue, NativeStrategy<SveltoDictionaryNode<TKey>>, NativeStrategy<TValue>,
                 NativeStrategy<int>>(
                     size, nativeAllocator);
-            int structSize = MemoryUtilities.SizeOf<SveltoDictionary<TKey, TValue, NativeStrategy<FasterDictionaryNode<TKey>>, NativeStrategy<TValue>,
+            int structSize = MemoryUtilities.SizeOf<SveltoDictionary<TKey, TValue, NativeStrategy<SveltoDictionaryNode<TKey>>, NativeStrategy<TValue>,
                 NativeStrategy<int>>>();
             _sharedDictionary = MemoryUtilities.Alloc((uint) structSize, Allocator.Persistent);
 
@@ -43,7 +42,7 @@ namespace Svelto.DataStructures
             return _dictionary._values.ToRealBuffer();
         }
 
-        public SveltoDictionary<TKey, TValue, NativeStrategy<FasterDictionaryNode<TKey>>, NativeStrategy<TValue>,
+        public SveltoDictionary<TKey, TValue, NativeStrategy<SveltoDictionaryNode<TKey>>, NativeStrategy<TValue>,
             NativeStrategy<int>>.
             SveltoDictionaryKeyValueEnumerator GetEnumerator() => _dictionary.GetEnumerator();
 
@@ -160,7 +159,7 @@ namespace Svelto.DataStructures
             MemoryUtilities.Free(_sharedDictionary, Allocator.Persistent);
         }
 
-        ref SveltoDictionary<TKey, TValue, NativeStrategy<FasterDictionaryNode<TKey>>, NativeStrategy<TValue>, NativeStrategy<int>>
+        ref SveltoDictionary<TKey, TValue, NativeStrategy<SveltoDictionaryNode<TKey>>, NativeStrategy<TValue>, NativeStrategy<int>>
             _dictionary
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -168,7 +167,7 @@ namespace Svelto.DataStructures
             {
                 unsafe
                 {
-                    return ref Unsafe.AsRef<SveltoDictionary<TKey, TValue, NativeStrategy<FasterDictionaryNode<TKey>>,
+                    return ref Unsafe.AsRef<SveltoDictionary<TKey, TValue, NativeStrategy<SveltoDictionaryNode<TKey>>,
                         NativeStrategy<TValue>, NativeStrategy<int>>>((void*) _sharedDictionary);
                 }
             }

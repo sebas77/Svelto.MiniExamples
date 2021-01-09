@@ -23,12 +23,12 @@ namespace Svelto.DataStructures
         public ReadonlySveltoDictionaryNative(uint size, Allocator nativeAllocator)
         {
             _dictionary =
-                new SveltoDictionary<TKey, TValue, NativeStrategy<FasterDictionaryNode<TKey>>, NativeStrategy<TValue>, NativeStrategy<int>>(
+                new SveltoDictionary<TKey, TValue, NativeStrategy<SveltoDictionaryNode<TKey>>, NativeStrategy<TValue>, NativeStrategy<int>>(
                     size, nativeAllocator);
         }
 
         public static implicit operator ReadonlySveltoDictionaryNative<TKey, TValue>
-            (SveltoDictionary<TKey, TValue, NativeStrategy<FasterDictionaryNode<TKey>>, NativeStrategy<TValue>, NativeStrategy<int>> dic)
+            (SveltoDictionary<TKey, TValue, NativeStrategy<SveltoDictionaryNode<TKey>>, NativeStrategy<TValue>, NativeStrategy<int>> dic)
         {
             return new ReadonlySveltoDictionaryNative<TKey, TValue>(dic);
         }
@@ -39,7 +39,7 @@ namespace Svelto.DataStructures
         }
         
         ReadonlySveltoDictionaryNative
-            (SveltoDictionary<TKey, TValue, NativeStrategy<FasterDictionaryNode<TKey>>, NativeStrategy<TValue>, NativeStrategy<int>> dic)
+            (SveltoDictionary<TKey, TValue, NativeStrategy<SveltoDictionaryNode<TKey>>, NativeStrategy<TValue>, NativeStrategy<int>> dic)
         {
             _dictionary = dic;
         }
@@ -84,6 +84,6 @@ namespace Svelto.DataStructures
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Dispose() { _dictionary.Dispose(); }
 
-        readonly SveltoDictionary<TKey, TValue, NativeStrategy<FasterDictionaryNode<TKey>>, NativeStrategy<TValue>, NativeStrategy<int>> _dictionary;
+        readonly SveltoDictionary<TKey, TValue, NativeStrategy<SveltoDictionaryNode<TKey>>, NativeStrategy<TValue>, NativeStrategy<int>> _dictionary;
     }
 }
