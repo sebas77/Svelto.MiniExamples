@@ -3,7 +3,6 @@ using System.Collections;
 
 namespace Svelto.ECS.Schedulers
 {
-    //This scheduler shouldn't be used in production and it's meant to be used for Unit Tests only
     public sealed class SimpleEntitiesSubmissionScheduler : EntitiesSubmissionScheduler
     {
         public SimpleEntitiesSubmissionScheduler(uint maxNumberOfOperationsPerFrame = UInt32.MaxValue)
@@ -43,7 +42,6 @@ namespace Svelto.ECS.Schedulers
         }
 
         EnginesRoot.EntitiesSubmitter _onTick;
-
         readonly uint                 _maxNumberOfOperationsPerFrame;
     }
 }

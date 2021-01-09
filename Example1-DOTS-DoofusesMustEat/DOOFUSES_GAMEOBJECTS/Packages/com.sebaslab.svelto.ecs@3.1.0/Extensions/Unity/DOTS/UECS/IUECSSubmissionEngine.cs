@@ -16,8 +16,8 @@ namespace Svelto.ECS.Extensions.Unity
             return Dependency; 
         }
 
-        public EntityCommandBuffer ECB { get; internal set; }
-        public EntityManager       EM  { get; internal set; }
+        public    EntityCommandBuffer ECB { get; internal set; }
+        protected EntityManager       EM  => this.EntityManager;
 
         public string name => TypeToString.Name(this);
     }

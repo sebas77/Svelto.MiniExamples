@@ -45,7 +45,6 @@ namespace Svelto.ECS.Extensions.Unity
             //This is the UECS group that takes care of all the UECS systems that creates entities
             //it also submits Svelto entities
             _sveltoUecsEntitiesSubmissionGroup = new SveltoUECSEntitiesSubmissionGroup(scheduler, world);
-            enginesRoot.AddEngine(_sveltoUecsEntitiesSubmissionGroup);
             //This is the group that handles the UECS sync systems that copy the svelto entities values to UECS entities
             _syncSveltoToUecsGroup = new SyncSveltoToUECSGroup();
             enginesRoot.AddEngine(_syncSveltoToUecsGroup);
@@ -61,7 +60,7 @@ namespace Svelto.ECS.Extensions.Unity
         public JobHandle Execute(JobHandle inputDeps)
         {
             //this is a sync point, there won't be pending jobs after this
-            _sveltoUecsEntitiesSubmissionGroup.Execute(inputDeps);
+            _sveltoUecsEntitiesSubmissionGroup.SubmitEntities(inputDeps);
 
             //Mixed explicit job dependency and internal automatic ECS dependency system
             //Write in to UECS entities so the UECS dependencies react on the components touched
