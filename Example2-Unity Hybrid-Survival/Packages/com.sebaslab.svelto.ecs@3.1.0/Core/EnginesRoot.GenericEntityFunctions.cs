@@ -1,5 +1,4 @@
-﻿using System;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.ECS.Internal;
@@ -196,7 +195,7 @@ namespace Svelto.ECS
             }
             else
 #endif
-                _entitiesOperations.Set((ulong) entitySubmitOperation.fromID, entitySubmitOperation);
+                _entitiesOperations[(ulong) entitySubmitOperation.fromID] = entitySubmitOperation;
         }
     }
 }

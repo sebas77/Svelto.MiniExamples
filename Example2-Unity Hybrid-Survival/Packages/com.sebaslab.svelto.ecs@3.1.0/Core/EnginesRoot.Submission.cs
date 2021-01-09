@@ -20,7 +20,7 @@ namespace Svelto.ECS
                     while (submitEntityComponents.MoveNext() == true)
                         yield return null;
                 } while ((_groupedEntityToAdd.currentEntitiesCreatedPerGroup.count > 0 ||
-                          _entitiesOperations.Count > 0) && ++iterations < 5);
+                          _entitiesOperations.count > 0) && ++iterations < 5);
 
 #if DEBUG && !PROFILE_SVELTO
                 if (iterations == 5)
@@ -45,7 +45,7 @@ namespace Svelto.ECS
             bool entitiesAreSubmitted = false;
             uint numberOfOperations = 0;
             
-            if (_entitiesOperations.Count > 0)
+            if (_entitiesOperations.count > 0)
             {
                 using (profiler.Sample("Remove and Swap operations"))
                 {
@@ -190,6 +190,6 @@ namespace Svelto.ECS
         }
 
         readonly DoubleBufferedEntitiesToAdd                        _groupedEntityToAdd;
-        readonly ThreadSafeDictionary<ulong, EntitySubmitOperation> _entitiesOperations;
+        readonly FasterDictionary<ulong, EntitySubmitOperation> _entitiesOperations;
     }
 }

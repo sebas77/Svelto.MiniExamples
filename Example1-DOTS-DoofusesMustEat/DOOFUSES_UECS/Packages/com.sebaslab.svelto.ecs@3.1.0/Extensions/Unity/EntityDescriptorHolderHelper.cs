@@ -1,4 +1,4 @@
-#if UNITY_ECS
+#if UNITY_5 || UNITY_5_3_OR_NEWER
 using Svelto.ECS.Hybrid;
 using UnityEngine;
 

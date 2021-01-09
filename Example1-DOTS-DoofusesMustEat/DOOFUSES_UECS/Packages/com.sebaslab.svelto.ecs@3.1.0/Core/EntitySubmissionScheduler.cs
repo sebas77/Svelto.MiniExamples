@@ -13,16 +13,4 @@ namespace Svelto.ECS.Schedulers
         
         internal bool isRunning;
     }
-    
-    public abstract class SimpleEntitiesSubmissionSchedulerInterface : EntitiesSubmissionScheduler
-    {
-        public void SubmitEntities()
-        {
-            var enumerator = SubmitEntitiesAsync();
-
-            while (enumerator.MoveNext());
-        }
-
-        public abstract IEnumerator SubmitEntitiesAsync();
-    }
 }

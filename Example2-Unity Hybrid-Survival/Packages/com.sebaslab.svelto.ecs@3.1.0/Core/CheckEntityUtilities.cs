@@ -3,7 +3,6 @@
 #endif
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using Svelto.DataStructures;
 
 namespace Svelto.ECS

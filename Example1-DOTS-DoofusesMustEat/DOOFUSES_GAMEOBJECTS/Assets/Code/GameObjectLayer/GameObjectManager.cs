@@ -33,6 +33,8 @@ namespace Svelto.ECS.MiniExamples.GameObjectsLayer
 
         internal int FetchGameObject(int prefabID, int poolID)
         {
+            //optimization alert: this will allocate every time is used, not good. However it's used only 
+            //when entities are created so..meh
             GameObject ONFirstUse() => GameObject.Instantiate(_prefabs[prefabID]);
 
             var go = _pool.Use(poolID, ONFirstUse);
@@ -59,7 +61,7 @@ namespace Svelto.ECS.MiniExamples.GameObjectsLayer
 
         readonly GameObjectPool                              _pool;
         readonly FasterList<GameObject>                      _prefabs;
-        readonly FasterDictionary<int, SparseSet> _instancesMap;
+        readonly FasterDictionary<int, SparseSet>            _instancesMap;
         readonly FasterDictionary<int, TransformAccessArray> _transformAccessArray;
         int                                                  _lastIndex;
     }

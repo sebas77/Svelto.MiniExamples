@@ -1,4 +1,4 @@
-#if UNITY_NATIVE
+#if UNITY_JOBS
 using System;
 using Svelto.ECS.Extensions.Unity;
 using Unity.Jobs;

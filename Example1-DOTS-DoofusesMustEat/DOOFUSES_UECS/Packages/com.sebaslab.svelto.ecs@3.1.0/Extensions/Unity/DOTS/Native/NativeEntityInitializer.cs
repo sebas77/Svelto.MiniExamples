@@ -2,12 +2,12 @@ using Svelto.ECS.DataStructures;
 
 namespace Svelto.ECS
 {
-    public readonly ref struct NativeEntityComponentInitializer
+    public readonly ref struct NativeEntityInitializer
     {
         readonly NativeBag        _unsafeBuffer;
         readonly UnsafeArrayIndex _index;
 
-        public NativeEntityComponentInitializer(in NativeBag unsafeBuffer, UnsafeArrayIndex index)
+        public NativeEntityInitializer(in NativeBag unsafeBuffer, UnsafeArrayIndex index)
         {
             _unsafeBuffer = unsafeBuffer;
             _index        = index;

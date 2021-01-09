@@ -71,6 +71,7 @@
      <Compile Include="Packages\com.sebaslab.svelto.common@3.1.0\Utilities\NetFXCoreWrappers.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common@3.1.0\Context\ICompositionRoot.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common@3.1.0\DataStructures\Dictionaries\ManagedSveltoDictionary.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.common@3.1.0\DataStructures\Dictionaries\SparseSet.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common@3.1.0\DataStructures\Arrays\ThreadSafeFasterList.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common@3.1.0\Context\Extensions\Unity\UnityContext.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common@3.1.0\DataStructures\Dictionaries\NativeStrategy.cs" />

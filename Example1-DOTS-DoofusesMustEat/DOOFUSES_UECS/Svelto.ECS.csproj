@@ -134,7 +134,7 @@
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Extensions\Unity\GenericEntityDescriptorHolder.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Core\EntityDescriptor\DynamicEntityDescriptor.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Extensions\Unity\DOTS\Native\EnginesRoot.NativeOperation.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Extensions\Unity\DOTS\Native\NativeEntityComponentInitializer.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Extensions\Unity\DOTS\Native\NativeEntityInitializer.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Extensions\Unity\EntityDescriptorHolderHelper.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Core\Filters\FilterGroup.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Core\Filters\EntitiesDB.GroupFilters.cs" />
@@ -172,6 +172,7 @@
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Extensions\Unity\SveltoGUIHelper.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Core\EnginesRoot.Engines.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Serialization\SerializableComponentBuilder.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Extensions\Unity\DOTS\Jobs\IJobifiedEngine.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\ECSResources\ECSResources.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Core\AllowMultipleAttribute.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs@3.1.0\Core\IEntityComponent.cs" />

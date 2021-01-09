@@ -15,23 +15,13 @@ namespace Svelto.ECS.MiniExamples.Example1C
     /// Note this can be easily moved to using Entity Command Buffer and I should do it at a given point
     /// </summary>
     [DisableAutoCreation]
-    public class SpawnUnityEntityOnSveltoEntityEngine : IUECSSubmissionEngine, IQueryingEntitiesEngine
+    public class SpawnUnityEntityOnSveltoEntityEngine : SubmissionEngine, IQueryingEntitiesEngine
                                                       , IReactOnAddAndRemove<UnityEcsEntityComponent>
-                                                      , IReactOnSwap<UnityEcsEntityComponent>, IDisposable
+                                                      , IReactOnSwap<UnityEcsEntityComponent>
     {
-        public JobHandle Execute(JobHandle _jobHandle)
-        {
-            return _jobHandle;
-        }
+        protected override void OnUpdate() 
+        { }
 
-        public void Dispose()
-        {
-            _isDisposing = true;
-        }
-        
-        public string              name                                          => nameof(SpawnUnityEntityOnSveltoEntityEngine);
-        public EntityCommandBuffer ECB                                           { get; set; }
-        public EntityManager       EM                                            { get; set; }
         public EntitiesDB          entitiesDB                                    { get; set; }
         public void                Ready()                                       {  }
         
@@ -56,7 +46,6 @@ namespace Svelto.ECS.MiniExamples.Example1C
 
         void DestroyEntity(in UnityEcsEntityComponent entityComponent)
         {
-            if (_isDisposing == false)
 #if USE_ENTITY_MANAGER                    
                 EM.DestroyEntity(entityComponent.uecsEntity);
 #else
@@ -90,7 +79,5 @@ namespace Svelto.ECS.MiniExamples.Example1C
             
             entitiesDB.QueryEntity<UnityEcsEntityComponent>(egid).uecsEntity = uecsEntity;
         }
-
-        bool                       _isDisposing;
     }
 }

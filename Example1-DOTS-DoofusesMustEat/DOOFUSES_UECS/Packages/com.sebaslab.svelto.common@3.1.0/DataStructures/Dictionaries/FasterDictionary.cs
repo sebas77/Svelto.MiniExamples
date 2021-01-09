@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 using Svelto.Common;
+using Svelto.Utilities;
 
 namespace Svelto.DataStructures
 {
@@ -83,6 +84,12 @@ namespace Svelto.DataStructures
         public ref TValue GetOrCreate(TKey key, Func<TValue> builder)
         {
             return ref _dictionary.GetOrCreate(key, builder);
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ref TValue GetOrCreate<W>(TKey key, FuncRef<W, TValue> builder, ref W parameter)
+        {
+            return ref _dictionary.GetOrCreate(key, builder, ref parameter);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

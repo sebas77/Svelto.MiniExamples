@@ -16,7 +16,7 @@ namespace Svelto.ECS.Extensions.Unity
     /// solve external dependencies. External dependencies are tracked, but only linked to the UECS components operations
     /// With Dependency I cannot guarantee that an external container is used before previous jobs working on it are completed
     /// </summary>
-    public class SveltoUECSEntitiesSubmissionGroup : JobifiedEnginesGroup<IUECSSubmissionEngine>
+    public class SveltoUECSEntitiesSubmissionGroup : JobifiedEnginesGroup<SubmissionEngine>
     {
         public SveltoUECSEntitiesSubmissionGroup
             (SimpleEntitiesSubmissionScheduler submissionScheduler, World UECSWorld)

@@ -17,7 +17,7 @@ namespace Svelto.ObjectPool
 
         public int secondsToWait;
 
-        public List<ObjectPoolDebugStructureInt>    debugPoolInfo      = new List<ObjectPoolDebugStructureInt>();
+        public List<ObjectPoolDebugStructure>    debugPoolInfo      = new List<ObjectPoolDebugStructure>();
 
         public DateTime Later { get; private set; }
 

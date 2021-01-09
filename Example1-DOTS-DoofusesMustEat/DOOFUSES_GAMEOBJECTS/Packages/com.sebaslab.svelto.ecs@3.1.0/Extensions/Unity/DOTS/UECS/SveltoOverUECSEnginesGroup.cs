@@ -75,7 +75,7 @@ namespace Svelto.ECS.Extensions.Unity
             return _syncUecsToSveltoGroup.Execute(handle);
         }
 
-        public void AddUECSSubmissionEngine(IUECSSubmissionEngine spawnUnityEntityOnSveltoEntityEngine)
+        public void AddUECSSubmissionEngine(SubmissionEngine spawnUnityEntityOnSveltoEntityEngine)
         {
             _sveltoUecsEntitiesSubmissionGroup.Add(spawnUnityEntityOnSveltoEntityEngine);
             _enginesRoot.AddEngine(spawnUnityEntityOnSveltoEntityEngine);

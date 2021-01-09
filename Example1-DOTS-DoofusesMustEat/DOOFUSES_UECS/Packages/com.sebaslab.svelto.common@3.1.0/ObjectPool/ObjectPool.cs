@@ -85,12 +85,15 @@ namespace Svelto.ObjectPool
         }
 
 #if DEBUG && !PROFILE_SVELTO
-        public List<ObjectPoolDebugStructureInt> DebugPoolInfo(List<ObjectPoolDebugStructureInt> debugInfo)
+        public List<ObjectPoolDebugStructure> DebugPoolInfo(List<ObjectPoolDebugStructure> debugInfo)
         {
             debugInfo.Clear();
 
             for (var enumerator = _pools.GetEnumerator(); enumerator.MoveNext();)
-                debugInfo.Add(new ObjectPoolDebugStructureInt(enumerator.Current.Key, enumerator.Current.Value.count));
+            {
+                FasterList<T> currentValue = enumerator.Current.Value;
+                debugInfo.Add(new ObjectPoolDebugStructure(enumerator.Current.Key, currentValue.count));
+            }
 
             return debugInfo;
         }
@@ -115,8 +118,7 @@ namespace Svelto.ObjectPool
             if (alreadyRecycled.Add(obj) == false)
                 throw new Exception("An object already Recycled in the pool has been Recycled again");
 #endif
-            DBC.Common.Check.Assert(_pools.ContainsKey(pool) == true
-                                  , "Cannot recycle object without being preallocated or used");
+            DBC.Common.Check.Assert(_pools.ContainsKey(pool) == true, "invalid pool requested");
 
             _pools[pool].Push(obj);
 

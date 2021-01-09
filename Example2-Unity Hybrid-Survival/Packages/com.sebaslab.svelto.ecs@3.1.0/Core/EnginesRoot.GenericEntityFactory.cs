@@ -35,9 +35,9 @@ namespace Svelto.ECS
                 return _enginesRoot.Target.BuildEntity(egid, entityDescriptor.componentsToBuild, TypeCache<T>.type, implementors);
             }
 #if UNITY_NATIVE
-            public NativeEntityFactory ToNative<T>(string memberName) where T : IEntityDescriptor, new()
+            public NativeEntityFactory ToNative<T>(string callerName) where T : IEntityDescriptor, new()
             {
-                return _enginesRoot.Target.ProvideNativeEntityFactoryQueue<T>(memberName);
+                return _enginesRoot.Target.ProvideNativeEntityFactoryQueue<T>(callerName);
             }
 #endif            
             public EntityInitializer BuildEntity<T>

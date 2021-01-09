@@ -49,7 +49,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
                         //entity that will be built.
                         for (int i = 0; i < MaxMeals; i++)
                         {
-                            NativeEntityComponentInitializer init; 
+                            NativeEntityInitializer init; 
 
                             var randX       = position.x + _random.NextFloat(-50, 50);
                             var randZ       = position.z + _random.NextFloat(-50, 50);

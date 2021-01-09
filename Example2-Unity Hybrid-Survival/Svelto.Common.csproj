@@ -46,7 +46,7 @@
      <Compile Include="Packages\com.sebaslab.svelto.common@3.1.0\DataStructures\Arrays\MB.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common@3.1.0\DataStructures\Arrays\NB.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common@3.1.0\DataStructures\Dictionaries\ReadonlySveltoDictionaryNative.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.common@3.1.0\DataStructures\Dictionaries\FasterDictionaryNode.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.common@3.1.0\DataStructures\Dictionaries\SveltoDictionaryNode.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common@3.1.0\Utilities\MemoryUtilities.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common@3.1.0\ObjectPool\ObjectPool.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common@3.1.0\PlatformProfiler\Unity\UnityPlatform.cs" />
@@ -81,6 +81,7 @@
      <Compile Include="Packages\com.sebaslab.svelto.common@3.1.0\Context\ICompositionRoot.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common@3.1.0\DataStructures\Dictionaries\ManagedSveltoDictionary.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common@3.1.0\Utilities\Console.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.common@3.1.0\DataStructures\Dictionaries\SparseSet.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common@3.1.0\DataStructures\RefWrapper.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common@3.1.0\DataStructures\Arrays\FasterListEnumerator.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common@3.1.0\Context\IContextNotifer.cs" />

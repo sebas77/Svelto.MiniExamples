@@ -275,15 +275,6 @@ namespace MiniExamples.DeterministicPhysicDemo.Graphics
             DrawPlus(Colour.Gray, 0, 0, 5000);
         }
 
-        readonly Dictionary<int, IntPtr> _fontPoints = new Dictionary<int, IntPtr>();
-        int                              _cameraX    = WindowWidth / 2;
-        int                              _cameraY    = WindowHeight / 2;
-        IntPtr                           _primarySurface;
-        IntPtr                           _renderer = IntPtr.Zero;
-        IntPtr                           _window   = IntPtr.Zero;
-
-        float _zoom = 2.0f;
-
         IntPtr GetFont(int ptSize)
         {
             if (_fontPoints.ContainsKey(ptSize))
@@ -294,5 +285,14 @@ namespace MiniExamples.DeterministicPhysicDemo.Graphics
                 throw new Exception("unable to load font");
             return _fontPoints[ptSize] = fontPtr;
         }
+
+        readonly Dictionary<int, IntPtr> _fontPoints = new Dictionary<int, IntPtr>();
+        int                              _cameraX    = WindowWidth / 2;
+        int                              _cameraY    = WindowHeight / 2;
+        IntPtr                           _primarySurface;
+        IntPtr                           _renderer = IntPtr.Zero;
+        IntPtr                           _window   = IntPtr.Zero;
+
+        float _zoom = 2.0f;
     }
 }

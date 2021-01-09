@@ -50,6 +50,7 @@ namespace Svelto.DataStructures
         }
         
         public static implicit operator T(RefWrapper<T> t) => t._value;
+        public static implicit operator RefWrapper<T>(T t) => new RefWrapper<T>(t);
 
         readonly T   _value;
         readonly int _hashCode;

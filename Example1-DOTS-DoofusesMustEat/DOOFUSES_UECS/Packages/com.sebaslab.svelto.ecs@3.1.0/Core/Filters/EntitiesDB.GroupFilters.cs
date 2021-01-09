@@ -1,4 +1,3 @@
-using System;
 using Svelto.DataStructures;
 
 namespace Svelto.ECS

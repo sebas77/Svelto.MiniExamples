@@ -32,6 +32,7 @@ namespace Svelto.ECS.MiniExamples.GameObjectsLayer
             Remove(ref entityComponent, new EGID(egid.entityID, previousGroup));
             Add(ref entityComponent, egid);
         }
+        
         readonly GameObjectManager _goManager;
     }
 }

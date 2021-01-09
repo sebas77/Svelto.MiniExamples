@@ -12,7 +12,7 @@ namespace Svelto.ECS
     {
         public struct EntitiesSubmitter
         {
-            public EntitiesSubmitter(EnginesRoot enginesRoot):this()
+            public EntitiesSubmitter(EnginesRoot enginesRoot) : this()
             {
                 _weakReference = new Svelto.DataStructures.WeakReference<EnginesRoot>(enginesRoot);
             }
@@ -24,8 +24,10 @@ namespace Svelto.ECS
                 var entitiesSubmissionScheduler = _weakReference.Target._scheduler;
                 if (_weakReference.IsValid && entitiesSubmissionScheduler.paused == false)
                 {
-                    var submitEntityComponents = _weakReference.Target.SubmitEntityComponents(maxNumberOfOperationsPerFrame);
-                    DBC.ECS.Check.Require(entitiesSubmissionScheduler.isRunning == false, "A submission started while the previous one was still flushing");
+                    var submitEntityComponents =
+                        _weakReference.Target.SubmitEntityComponents(maxNumberOfOperationsPerFrame);
+                    DBC.ECS.Check.Require(entitiesSubmissionScheduler.isRunning == false
+                                        , "A submission started while the previous one was still flushing");
                     entitiesSubmissionScheduler.isRunning = true;
                     while (submitEntityComponents.MoveNext() == true)
                         yield return null;
@@ -38,7 +40,7 @@ namespace Svelto.ECS
             readonly Svelto.DataStructures.WeakReference<EnginesRoot> _weakReference;
         }
 
-        readonly EntitiesSubmissionScheduler  _scheduler;
+        readonly EntitiesSubmissionScheduler _scheduler;
         public   EntitiesSubmissionScheduler scheduler => _scheduler;
 
         /// <summary>
@@ -51,16 +53,16 @@ namespace Svelto.ECS
         /// </summary>
         public EnginesRoot(EntitiesSubmissionScheduler entitiesComponentScheduler)
         {
-            _entitiesOperations          = new ThreadSafeDictionary<ulong, EntitySubmitOperation>();
-            serializationDescriptorMap   = new SerializationDescriptorMap();
-            _reactiveEnginesAddRemove    = new FasterDictionary<RefWrapperType, FasterList<IReactEngine>>();
-            _reactiveEnginesAddRemoveOnDispose    = new FasterDictionary<RefWrapperType, FasterList<IReactEngine>>();
-            _reactiveEnginesSwap         = new FasterDictionary<RefWrapperType, FasterList<IReactEngine>>();
-            _reactiveEnginesSubmission   = new FasterList<IReactOnSubmission>();
-            _enginesSet                  = new FasterList<IEngine>();
-            _enginesTypeSet              = new HashSet<Type>();
-            _disposableEngines           = new FasterList<IDisposable>();
-            _transientEntitiesOperations = new FasterList<EntitySubmitOperation>();
+            _entitiesOperations                = new FasterDictionary<ulong, EntitySubmitOperation>();
+            serializationDescriptorMap         = new SerializationDescriptorMap();
+            _reactiveEnginesAddRemove          = new FasterDictionary<RefWrapperType, FasterList<IReactEngine>>();
+            _reactiveEnginesAddRemoveOnDispose = new FasterDictionary<RefWrapperType, FasterList<IReactEngine>>();
+            _reactiveEnginesSwap               = new FasterDictionary<RefWrapperType, FasterList<IReactEngine>>();
+            _reactiveEnginesSubmission         = new FasterList<IReactOnSubmission>();
+            _enginesSet                        = new FasterList<IEngine>();
+            _enginesTypeSet                    = new HashSet<Type>();
+            _disposableEngines                 = new FasterList<IDisposable>();
+            _transientEntitiesOperations       = new FasterList<EntitySubmitOperation>();
 
             _groupEntityComponentsDB =
                 new FasterDictionary<ExclusiveGroupStruct, FasterDictionary<RefWrapperType, ITypeSafeDictionary>>();
@@ -116,15 +118,13 @@ namespace Svelto.ECS
                     }
                 }
 
-                foreach (FasterDictionary<ExclusiveGroupStruct, FasterDictionary<RefWrapperType, ITypeSafeDictionary>>.
-                    KeyValuePairFast groups in _groupEntityComponentsDB)
+                foreach (var groups in _groupEntityComponentsDB)
                 {
-                    foreach (FasterDictionary<RefWrapperType, ITypeSafeDictionary>.KeyValuePairFast entityList in groups
-                       .Value)
+                    foreach (var entityList in groups.Value)
                         try
                         {
                             entityList.Value.ExecuteEnginesRemoveCallbacks(_reactiveEnginesAddRemoveOnDispose, profiler
-                                                                     , new ExclusiveGroupStruct(groups.Key));
+                                                                         , new ExclusiveGroupStruct(groups.Key));
                         }
                         catch (Exception e)
                         {
@@ -132,18 +132,15 @@ namespace Svelto.ECS
                         }
                 }
 
-                foreach (FasterDictionary<ExclusiveGroupStruct, FasterDictionary<RefWrapperType, ITypeSafeDictionary>>.
-                    KeyValuePairFast groups in _groupEntityComponentsDB)
+                foreach (var groups in _groupEntityComponentsDB)
                 {
-                    foreach (FasterDictionary<RefWrapperType, ITypeSafeDictionary>.KeyValuePairFast entityList in groups
-                       .Value)
+                    foreach (var entityList in groups.Value)
                         entityList.Value.Dispose();
                 }
 
-                foreach (FasterDictionary<RefWrapperType, FasterDictionary<ExclusiveGroupStruct, GroupFilters>>.
-                    KeyValuePairFast type in _groupFilters)
-                foreach (FasterDictionary<ExclusiveGroupStruct, GroupFilters>.KeyValuePairFast group in type.Value)
-                    group.Value.Dispose();
+                foreach (var type in _groupFilters)
+                    foreach (var group in type.Value)
+                        group.Value.Dispose();
 
                 _groupFilters.Clear();
 
@@ -195,10 +192,10 @@ namespace Svelto.ECS
             {
                 if (engine is IReactOnAddAndRemove viewEngine)
                     CheckReactEngineComponents(viewEngine, _reactiveEnginesAddRemove);
-                
+
                 if (engine is IReactOnDispose viewEngineDispose)
                     CheckReactEngineComponents(viewEngineDispose, _reactiveEnginesAddRemoveOnDispose);
-                
+
                 if (engine is IReactOnSwap viewEngineSwap)
                     CheckReactEngineComponents(viewEngineSwap, _reactiveEnginesSwap);
 
