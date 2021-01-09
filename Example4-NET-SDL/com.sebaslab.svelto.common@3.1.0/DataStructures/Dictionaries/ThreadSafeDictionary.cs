@@ -9,7 +9,7 @@ namespace Svelto.DataStructures
     /// <typeparam name = "TKey"></typeparam>
     /// <typeparam name = "TValue"></typeparam>
 
-    public sealed class ThreadSafeDictionary<TKey, TValue> where TKey : IEquatable<TKey>
+    public sealed class ThreadSafeDictionary<TKey, TValue> where TKey : struct, IEquatable<TKey>
     {
         public ThreadSafeDictionary(int size)
         {
@@ -23,6 +23,23 @@ namespace Svelto.DataStructures
 
         // setup the lock;
         public uint Count
+        {
+            get
+            {
+                _lockQ.EnterReadLock();
+                try
+                {
+                    return (uint)_dict.count;
+                }
+                finally
+                {
+                    _lockQ.ExitReadLock();
+                }
+            }
+        }
+        
+        // setup the lock;
+        public uint count
         {
             get
             {
@@ -234,7 +251,7 @@ namespace Svelto.DataStructures
 
         public void CopyValuesTo(FasterList<TValue> values)
         {
-            values.ExpandTo(_dict.count);
+            values.ExpandTo((uint) _dict.count);
             CopyValuesTo(values.ToArrayFast(out _), 0);
         }
 

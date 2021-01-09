@@ -9,7 +9,7 @@ namespace MiniExamples.DeterministicPhysicDemo
     public class EngineScheduler : IEngineScheduler
     {
         public EngineScheduler
-            (IEngineSchedulerReporter reporter, SimpleEntitiesSubmissionSchedulerInterface submissionScheduler)
+            (IEngineSchedulerReporter reporter, SimpleEntitiesSubmissionScheduler submissionScheduler)
         {
             _reporter                = reporter;
             _submissionScheduler     = submissionScheduler;
@@ -55,7 +55,7 @@ namespace MiniExamples.DeterministicPhysicDemo
         }
 
         readonly IEngineSchedulerReporter                   _reporter;
-        readonly SimpleEntitiesSubmissionSchedulerInterface _submissionScheduler;
+        readonly SimpleEntitiesSubmissionScheduler  _submissionScheduler;
         readonly List<IScheduledGraphicsEngine>             _scheduledGraphicsEngine;
         readonly List<IScheduledPhysicsEngine>              _scheduledPhysicsEngines;
         readonly Stopwatch                                  _stopwatch;

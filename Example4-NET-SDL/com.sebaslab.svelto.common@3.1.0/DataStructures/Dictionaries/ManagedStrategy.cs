@@ -26,7 +26,7 @@ namespace Svelto.DataStructures
 
         public void Resize(uint newCapacity, bool copyContent = true)
         {
-            DBC.Common.Check.Require(newCapacity > 0, "Resize requires a size greater than 0");
+            DBC.Common.Check.Require(newCapacity >= 0, "Resize requires a size greater or equal to 0");
             
             var realBuffer = _realBuffer.ToManagedArray();
             if (copyContent == true)

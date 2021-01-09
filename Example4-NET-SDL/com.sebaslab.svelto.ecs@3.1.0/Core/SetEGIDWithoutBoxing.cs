@@ -1,5 +1,3 @@
-using System.Runtime.CompilerServices;
-
 namespace Svelto.ECS.Internal
 {
     delegate void SetEGIDWithoutBoxingActionCast<T>(ref T target, EGID egid) where T : struct, IEntityComponent;

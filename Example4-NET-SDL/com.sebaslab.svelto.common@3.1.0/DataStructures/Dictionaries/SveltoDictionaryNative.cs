@@ -12,12 +12,12 @@ namespace Svelto.DataStructures
         public SveltoDictionaryNative(uint size, Allocator nativeAllocator)
         {
             _dictionary =
-                new SveltoDictionary<TKey, TValue, NativeStrategy<FasterDictionaryNode<TKey>>, NativeStrategy<TValue>, NativeStrategy<int>>(
+                new SveltoDictionary<TKey, TValue, NativeStrategy<SveltoDictionaryNode<TKey>>, NativeStrategy<TValue>, NativeStrategy<int>>(
                     size, nativeAllocator);
         }
 
         public static implicit operator SveltoDictionaryNative<TKey, TValue>
-            (SveltoDictionary<TKey, TValue, NativeStrategy<FasterDictionaryNode<TKey>>, NativeStrategy<TValue>, NativeStrategy<int>> dic)
+            (SveltoDictionary<TKey, TValue, NativeStrategy<SveltoDictionaryNode<TKey>>, NativeStrategy<TValue>, NativeStrategy<int>> dic)
         {
             return new SveltoDictionaryNative<TKey, TValue>()
             {
@@ -25,7 +25,7 @@ namespace Svelto.DataStructures
             };
         }
         
-        public static implicit operator SveltoDictionary<TKey, TValue, NativeStrategy<FasterDictionaryNode<TKey>>, NativeStrategy<TValue>, NativeStrategy<int>>
+        public static implicit operator SveltoDictionary<TKey, TValue, NativeStrategy<SveltoDictionaryNode<TKey>>, NativeStrategy<TValue>, NativeStrategy<int>>
             (SveltoDictionaryNative<TKey, TValue> dic)
         {
             return dic._dictionary;
@@ -95,6 +95,6 @@ namespace Svelto.DataStructures
             _dictionary.Dispose();
         }
 
-        SveltoDictionary<TKey, TValue, NativeStrategy<FasterDictionaryNode<TKey>>, NativeStrategy<TValue>, NativeStrategy<int>> _dictionary;
+        SveltoDictionary<TKey, TValue, NativeStrategy<SveltoDictionaryNode<TKey>>, NativeStrategy<TValue>, NativeStrategy<int>> _dictionary;
     }
 }

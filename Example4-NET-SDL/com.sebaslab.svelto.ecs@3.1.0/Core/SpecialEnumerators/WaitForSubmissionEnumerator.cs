@@ -4,6 +4,9 @@ using Svelto.ECS.Schedulers;
 
 namespace Svelto.ECS
 {
+    /// <summary>
+    /// Enumerator that yields until the next Entities Submission
+    /// </summary>
     public struct WaitForSubmissionEnumerator : IEnumerator
     {
         public WaitForSubmissionEnumerator(EntitiesSubmissionScheduler scheduler):this()

@@ -5,9 +5,9 @@ using Svelto.Common;
 
 namespace Svelto.DataStructures
 {
-    internal sealed class NBDebugProxy<T> where T : struct
+    sealed class NBDebugProxy<T> where T : struct
     {
-        private NB<T> m_Array;
+        NB<T> m_Array;
 
         public NBDebugProxy(NB<T> array)
         {

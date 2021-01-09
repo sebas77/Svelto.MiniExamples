@@ -42,7 +42,7 @@ namespace Svelto.DataStructures
         {
 #if DEBUG && !PROFILE_SVELTO            
             if (!(newCapacity > 0))
-                throw new PreconditionException("Resize requires a size greater than 0");
+                throw new PreconditionException("Resize requires a size greater or equal to 0");
             if (!(newCapacity > capacity))
                 throw new PreconditionException("can't resize to a smaller size");
 #endif            
