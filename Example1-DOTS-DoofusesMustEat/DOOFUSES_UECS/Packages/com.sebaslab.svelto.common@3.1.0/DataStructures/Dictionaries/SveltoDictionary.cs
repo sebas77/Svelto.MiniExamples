@@ -115,7 +115,7 @@ namespace Svelto.DataStructures
         {
             if (TryFindIndex(key, out var findIndex) == true)
             {
-                result = _values[(int) findIndex];
+                result = _values[findIndex];
                 return true;
             }
 
@@ -129,12 +129,12 @@ namespace Svelto.DataStructures
         {
             if (TryFindIndex(key, out var findIndex) == true)
             {
-                return ref _values[(int) findIndex];
+                return ref _values[findIndex];
             }
 
             AddValue(key, default, out findIndex);
 
-            return ref _values[(int) findIndex];
+            return ref _values[findIndex];
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -142,12 +142,12 @@ namespace Svelto.DataStructures
         {
             if (TryFindIndex(key, out var findIndex) == true)
             {
-                return ref _values[(int) findIndex];
+                return ref _values[findIndex];
             }
 
             AddValue(key, builder(), out findIndex);
 
-            return ref _values[(int) findIndex];
+            return ref _values[findIndex];
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -155,12 +155,12 @@ namespace Svelto.DataStructures
         {
             if (TryFindIndex(key, out var findIndex) == true)
             {
-                return ref _values[(int) findIndex];
+                return ref _values[findIndex];
             }
 
             AddValue(key, builder(ref parameter), out findIndex);
 
-            return ref _values[(int) findIndex];
+            return ref _values[findIndex];
 
         }
 
@@ -175,14 +175,14 @@ namespace Svelto.DataStructures
         {
 #if DEBUG && !PROFILE_SVELTO
             if (TryFindIndex(key, out var findIndex) == true)
-                return ref _values[(int) findIndex];
+                return ref _values[findIndex];
 
             throw new SveltoDictionaryException("Key not found");
 #else
             //Burst is not able to vectorise code if throw is found, regardless if it's actually ever thrown
             TryFindIndex(key, out var findIndex);
 
-            return ref _values[(int) findIndex];
+            return ref _values[findIndex];
 #endif
         }
 

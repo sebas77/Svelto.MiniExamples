@@ -3,7 +3,7 @@
   "category": "Svelto",
   "description": "Svelto common utilities and datastructures",
   "dependencies": {
-    "com.sebaslab.svelto.unsafe": "4.7.1"
+    "com.sebaslab.svelto.unsafe": "4.7.1-upload.3"
   },
   "keywords": [
     "svelto"
