@@ -47,3 +47,5 @@ Example1-DOTS-DoofusesMustEat/DOOFUSES_GAMEOBJECTS/Logs/
 Example1-DOTS-DoofusesMustEat/DOOFUSES_UECS/UserSettings/
 Example1-DOTS-DoofusesMustEat/DOOFUSES_UECS/Logs/
 *.meta
+Example5-Net-Vanilla/Svelto.ECS.Example/bin/
+Example4-NET-SDL/com.sebaslab.svelto.ecs/bin/

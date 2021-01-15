@@ -8,8 +8,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\com.sebaslab.svelto.common@3.1.0\Svelto.Common.csproj" />
-        <ProjectReference Include="..\com.sebaslab.svelto.ecs@3.1.0\Svelto.ECS.csproj" />
+        <ProjectReference Include="..\com.sebaslab.svelto.common\Svelto.Common.csproj" />
+        <ProjectReference Include="..\com.sebaslab.svelto.ecs\Svelto.ECS.csproj" />
         <ProjectReference Include="..\FixedMath\FixedMath.csproj" />
         <ProjectReference Include="..\SDL\SDL.csproj" />
     </ItemGroup>

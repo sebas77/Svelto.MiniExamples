@@ -5,9 +5,9 @@ VisualStudioVersion = 16.0.30309.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Svelto.ECS.Vanilla", "Svelto.ECS.Example\Svelto.ECS.Vanilla.csproj", "{609EAAA5-9323-407E-8279-D6A20C493188}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.Common", "Svelto\com.sebaslab.svelto.common@3.1.0\Svelto.Common.csproj", "{0C660AE1-237F-4A04-99DD-4D14506184F6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.Common", "Svelto\com.sebaslab.svelto.common\Svelto.Common.csproj", "{0C660AE1-237F-4A04-99DD-4D14506184F6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.ECS", "Svelto\com.sebaslab.svelto.ecs@3.1.0\Svelto.ECS.csproj", "{6D8AA077-01C5-4EEE-9203-B9AE89C36E36}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.ECS", "Svelto\com.sebaslab.svelto.ecs\Svelto.ECS.csproj", "{6D8AA077-01C5-4EEE-9203-B9AE89C36E36}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,0 +1,32 @@
+name: Svelto.Common Nuget Release
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - version.json
+      - ".github/workflows/nuget-release.yml"
+
+jobs:
+  build:
+    env:
+      PKG_NAME: Svelto.Common
+      VERSION_JSON: version.json
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: get preparation tools
+      run: git clone https://github.com/Ujinjinjin/upm-preparator.git --branch v1.0.12 --single-branch
+
+    - name: get package version
+      run: python3 upm-preparator/version.py --version-file "version.json" --env-file "${GITHUB_ENV}"
+
+    - name: build nuget package
+      run: dotnet pack /p:Version=${PKG_VERSION} -o .
+
+    - name: publish nuget package
+      run: dotnet nuget push ${{ env.PKG_NAME }}.${{ env.PKG_VERSION }}.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json

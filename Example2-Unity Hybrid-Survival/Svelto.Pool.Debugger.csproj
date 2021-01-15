@@ -41,8 +41,8 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
-     <Compile Include="Packages\com.sebaslab.svelto.common@3.1.0\ObjectPool\Unity\Editor\PoolDebuggerCustomInspector.cs" />
-     <None Include="Packages\com.sebaslab.svelto.common@3.1.0\ObjectPool\Unity\Editor\Svelto.Pool.Debugger.asmdef" />
+     <Compile Include="Packages\com.sebaslab.svelto.common\ObjectPool\Unity\Editor\PoolDebuggerCustomInspector.cs" />
+     <None Include="Packages\com.sebaslab.svelto.common\ObjectPool\Unity\Editor\Svelto.Pool.Debugger.asmdef" />
      <Reference Include="UnityEngine">
      <HintPath>C:/Program Files/Unity/Hub/Editor/2021.1.0b1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
      </Reference>

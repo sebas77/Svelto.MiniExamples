@@ -1,7 +1,7 @@
 {
   "dependencies": {
-    "com.sebaslab.svelto.common": "com.sebaslab.svelto.common@3.0.0",
-    "com.sebaslab.svelto.ecs": "com.sebaslab.svelto.ecs@3.0.0",
+    "com.sebaslab.svelto.common": "com.sebaslab.svelto.common",
+    "com.sebaslab.svelto.ecs": "com.sebaslab.svelto.ecs",
     "com.sebaslab.svelto.tasks": "com.sebaslab.svelto.tasks@2.0.0-preview.1",
     "com.sebaslab.svelto.unsafe": "com.sebaslab.svelto.unsafe@4.7.1",
     "com.unity.burst": "1.4.3",
