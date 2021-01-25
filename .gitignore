@@ -49,3 +49,6 @@ Example1-DOTS-DoofusesMustEat/DOOFUSES_UECS/Logs/
 *.meta
 Example5-Net-Vanilla/Svelto.ECS.Example/bin/
 Example4-NET-SDL/com.sebaslab.svelto.ecs/bin/
+Example1-DOTS-DoofusesMustEat/DOOFUSES_UECS/Mono/
+Example1-DOTS-DoofusesMustEat/
+packages-lock.json

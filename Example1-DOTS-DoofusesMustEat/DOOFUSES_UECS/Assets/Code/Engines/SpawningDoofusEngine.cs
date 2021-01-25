@@ -79,7 +79,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
                     position = new float3(_random.NextFloat(0.0f, 40.0f), 0, _random.NextFloat(0.0f, 40.0f))
                 };
                 //these structs are used for ReactOnAdd callback to create unity Entities later
-                var uecsComponent = new UnityEcsEntityComponent
+                var uecsComponent = new UECSEntityComponent
                 {
                     uecsEntity    = _entity
                   , spawnPosition = positionEntityComponent.position

@@ -23,80 +23,86 @@ namespace Svelto.ECS.Extensions.Unity
     {
         public SveltoUECSEntitiesSubmissionGroup(SimpleEntitiesSubmissionScheduler submissionScheduler, World UECSWorld)
         {
-            _submissionScheduler = submissionScheduler;
-            _ECBSystem           = UECSWorld.CreateSystem<SubmissionEntitiesCommandBufferSystem>();
-            _engines             = new FasterList<SubmissionEngine>();
+            _submissionScheduler     = submissionScheduler;
+            _ECBSystem               = UECSWorld.CreateSystem<SubmissionEntitiesCommandBufferSystem>();
+            _engines                 = new FasterList<SubmissionEngine>();
+            _afterSubmissionEngines  = new FasterList<IUpdateAfterSubmission>();
+            _beforeSubmissionEngines = new FasterList<IUpdateBeforeSubmission>();
         }
 
         public void SubmitEntities(JobHandle jobHandle)
         {
-            JobHandle RefHelper()
-            {
-                //execute submission engines and complete jobs because of this I don't need to do _ECBSystem.AddJobHandleForProducer(Dependency);
-                using (var profiler = new PlatformProfiler("SveltoUECSEntitiesSubmissionGroup"))
-                {
-                    for (var index = 0; index < _engines.count; index++)
-                    {
-                        ref var engine = ref _engines[index];
-                        using (profiler.Sample(engine.name))
-                        {
-                            jobHandle = engine.Execute(jobHandle);
-                        }
-                    }
-                }
-
-                return jobHandle;
-            }
-
             if (_submissionScheduler.paused)
                 return;
-            
-            jobHandle.Complete();
 
-            //prepare the entity command buffer to be used by the registered engines
-            var entityCommandBuffer = _ECBSystem.CreateCommandBuffer();
-
-            foreach (var system in _engines)
+            using (var profiler = new PlatformProfiler("SveltoUECSEntitiesSubmissionGroup - PreSubmissionPhase"))
             {
-                system.ECB = entityCommandBuffer;
-            }
+                PreSubmissionPhase(ref jobHandle, profiler);
 
-            //Submit Svelto Entities, calls Add/Remove/MoveTo that can be used by the IUECSSubmissionEngines
-            _submissionScheduler.SubmitEntities();
-
-            jobHandle = RefHelper();
-
-            //Sync Point as we must be sure that jobs that create/swap/remove entities are done
-            jobHandle.Complete();
-
-            //flush command buffer
-            _ECBSystem.Update();
-        }
-
-        public IEnumerator SubmitEntities(JobHandle jobHandle, uint maxEntities)
-        {
-            JobHandle RefHelper()
-            {
-                //execute submission engines and complete jobs because of this I don't need to do _ECBSystem.AddJobHandleForProducer(Dependency);
-                using (var profiler = new PlatformProfiler("SveltoUECSEntitiesSubmissionGroup"))
+                //Submit Svelto Entities, calls Add/Remove/MoveTo that can be used by the IUECSSubmissionEngines
+                using (profiler.Sample("Submit svelto entities"))
                 {
-                    for (var index = 0; index < _engines.count; index++)
-                    {
-                        ref var engine = ref _engines[index];
-                        using (profiler.Sample(engine.name))
-                        {
-                            jobHandle = engine.Execute(jobHandle);
-                        }
-                    }
+                    _submissionScheduler.SubmitEntities();
                 }
 
-                return jobHandle;
+                AfterSubmissionPhase(profiler);
             }
+        }
 
+        public IEnumerator SubmitEntitiesAsync(JobHandle jobHandle, uint maxEntities)
+        {
             if (_submissionScheduler.paused)
                 yield break;
             
-            jobHandle.Complete();
+            using (var profiler = new PlatformProfiler("SveltoUECSEntitiesSubmissionGroup - PreSubmissionPhase"))
+            {
+                PreSubmissionPhase(ref jobHandle, profiler);
+
+                //Submit Svelto Entities, calls Add/Remove/MoveTo that can be used by the IUECSSubmissionEngines
+                while (true)
+                {
+                    var  submitEntitiesAsync = _submissionScheduler.SubmitEntitiesAsync(maxEntities);
+                    bool moveNext;
+                    using (profiler.Sample("Submit svelto entities async"))
+                    {
+                        moveNext = submitEntitiesAsync.MoveNext();
+                    }
+
+                    if (moveNext)
+                        yield return null;
+                    else
+                        break;
+                }
+
+                AfterSubmissionPhase(profiler);
+            }
+        }
+
+        void PreSubmissionPhase(ref JobHandle jobHandle, PlatformProfiler profiler)
+        {
+            JobHandle BeforeECBFlushEngines()
+            {
+                JobHandle jobHandle = default;
+
+                //execute submission engines and complete jobs because of this I don't need to do _ECBSystem.AddJobHandleForProducer(Dependency);
+
+                for (var index = 0; index < _beforeSubmissionEngines.count; index++)
+                {
+                    ref var engine = ref _beforeSubmissionEngines[index];
+                    using (profiler.Sample(engine.name))
+                    {
+                        jobHandle = JobHandle.CombineDependencies(
+                            jobHandle, engine.BeforeSubmissionUpdate(jobHandle));
+                    }
+                }
+
+                return jobHandle;
+            }
+
+            using (profiler.Sample("Complete All Pending Jobs"))
+            {
+                jobHandle.Complete();
+            }
 
             //prepare the entity command buffer to be used by the registered engines
             var entityCommandBuffer = _ECBSystem.CreateCommandBuffer();
@@ -106,29 +112,58 @@ namespace Svelto.ECS.Extensions.Unity
                 system.ECB = entityCommandBuffer;
             }
 
-            //Submit Svelto Entities, calls Add/Remove/MoveTo that can be used by the IUECSSubmissionEngines
-            var submitEntitiesAsync = _submissionScheduler.SubmitEntitiesAsync(maxEntities);
-            while (submitEntitiesAsync.MoveNext())
-                yield return null;
-
-            jobHandle = RefHelper();
-
-            //Sync Point as we must be sure that jobs that create/swap/remove entities are done
-            jobHandle.Complete();
-
-            //flush command buffer
-            _ECBSystem.Update();
+            using (profiler.Sample("Before Submission Engines"))
+            {
+                BeforeECBFlushEngines().Complete();
+            }
         }
-        
+
+        void AfterSubmissionPhase(PlatformProfiler profiler)
+        {
+            JobHandle AfterECBFlushEngines()
+            {
+                JobHandle jobHandle = default;
+
+                //execute submission engines and complete jobs because of this I don't need to do _ECBSystem.AddJobHandleForProducer(Dependency);
+                for (var index = 0; index < _afterSubmissionEngines.count; index++)
+                {
+                    ref var engine = ref _afterSubmissionEngines[index];
+                    using (profiler.Sample(engine.name))
+                    {
+                        jobHandle = JobHandle.CombineDependencies(
+                            jobHandle, engine.AfterSubmissionUpdate(jobHandle));
+                    }
+                }
+
+                return jobHandle;
+            }
+
+            using (profiler.Sample("Flush Command Buffer"))
+            {
+                _ECBSystem.Update();
+            }
+
+            using (profiler.Sample("After Submission Engines"))
+            {
+                AfterECBFlushEngines().Complete();
+            }
+        }
+
         public void Add(SubmissionEngine engine)
         {
             _ECBSystem.World.AddSystem(engine);
+            if (engine is IUpdateAfterSubmission afterSubmission)
+                _afterSubmissionEngines.Add(afterSubmission);
+            if (engine is IUpdateBeforeSubmission beforeSubmission)
+                _beforeSubmissionEngines.Add(beforeSubmission);
             _engines.Add(engine);
         }
 
         readonly SimpleEntitiesSubmissionScheduler     _submissionScheduler;
         readonly SubmissionEntitiesCommandBufferSystem _ECBSystem;
         readonly FasterList<SubmissionEngine>          _engines;
+        readonly FasterList<IUpdateBeforeSubmission>   _beforeSubmissionEngines;
+        readonly FasterList<IUpdateAfterSubmission>    _afterSubmissionEngines;
 
         [DisableAutoCreation]
         class SubmissionEntitiesCommandBufferSystem : EntityCommandBufferSystem { }

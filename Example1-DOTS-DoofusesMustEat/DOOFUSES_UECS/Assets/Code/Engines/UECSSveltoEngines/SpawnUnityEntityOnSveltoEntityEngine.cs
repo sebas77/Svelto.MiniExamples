@@ -1,6 +1,3 @@
-#define USE_ENTITY_MANAGER
-
-using System;
 using Svelto.ECS.Extensions.Unity;
 using Unity.Entities;
 using Unity.Jobs;
@@ -16,68 +13,70 @@ namespace Svelto.ECS.MiniExamples.Example1C
     /// </summary>
     [DisableAutoCreation]
     public class SpawnUnityEntityOnSveltoEntityEngine : SubmissionEngine, IQueryingEntitiesEngine
-                                                      , IReactOnAddAndRemove<UnityEcsEntityComponent>
-                                                      , IReactOnSwap<UnityEcsEntityComponent>
+                                                      , IUpdateAfterSubmission, IUpdateBeforeSubmission
+                                                      , IReactOnAddAndRemove<UECSEntityComponent>
+                                                      , IReactOnSwap<UECSEntityComponent>
     {
-        protected override void OnUpdate() 
-        { }
+        public EntitiesDB entitiesDB { get; set; }
 
-        public EntitiesDB          entitiesDB                                    { get; set; }
-        public void                Ready()                                       {  }
-        
-        public void Add(ref UnityEcsEntityComponent entityComponent, EGID egid)
+        public void Ready() { _entityQuery = GetEntityQuery(typeof(UpdateUECSEntityAfterSubmission)); }
+
+        public void Add(ref UECSEntityComponent entityComponent, EGID egid)
         {
-            SpawnUnityEntities(entityComponent, egid);
-        }
-
-        public void Remove(ref UnityEcsEntityComponent entityComponent, EGID egid)
-        {
-            DestroyEntity(entityComponent);
-        }
-
-        public void MovedTo(ref UnityEcsEntityComponent entityComponent, ExclusiveGroupStruct previousGroup, EGID egid)
-        {
-#if USE_ENTITY_MANAGER            
-            EntityManager.SetSharedComponentData(entityComponent.uecsEntity, new UECSSveltoGroupID(egid.groupID));
-#else
-            ECB.SetSharedComponent(entityComponent.uecsEntity, new UECSSveltoGroupID(egid.groupID));
-#endif            
-        }
-
-        void DestroyEntity(in UnityEcsEntityComponent entityComponent)
-        {
-#if USE_ENTITY_MANAGER                    
-            EntityManager.DestroyEntity(entityComponent.uecsEntity);
-#else
-                ECB.DestroyEntity(entityComponent.uecsEntity);
-#endif            
-        }
-
-        void SpawnUnityEntities(in UnityEcsEntityComponent unityEcsEntityComponent, in EGID egid)
-        {
-#if USE_ENTITY_MANAGER            
-            Entity uecsEntity = EntityManager.Instantiate(unityEcsEntityComponent.uecsEntity);
-
-            //SharedComponentData can be used to group the UECS entities exactly like the Svelto ones
-            EntityManager.AddSharedComponentData(uecsEntity, new UECSSveltoGroupID(egid.groupID));
-            EntityManager.SetComponentData(uecsEntity, new Translation
-            {
-                Value = new float3(unityEcsEntityComponent.spawnPosition.x, unityEcsEntityComponent.spawnPosition.y
-                                 , unityEcsEntityComponent.spawnPosition.z)
-            });
-#else
-            Entity uecsEntity = ECB.Instantiate(unityEcsEntityComponent.uecsEntity);
+            Entity uecsEntity = ECB.Instantiate(entityComponent.uecsEntity);
 
             //SharedComponentData can be used to group the UECS entities exactly like the Svelto ones
             ECB.AddSharedComponent(uecsEntity, new UECSSveltoGroupID(egid.groupID));
+            ECB.AddComponent(uecsEntity, new UpdateUECSEntityAfterSubmission(egid));
             ECB.SetComponent(uecsEntity, new Translation
             {
-                Value = new float3(unityEcsEntityComponent.spawnPosition.x, unityEcsEntityComponent.spawnPosition.y
-                                 , unityEcsEntityComponent.spawnPosition.z)
+                Value = new float3(entityComponent.spawnPosition.x, entityComponent.spawnPosition.y
+                                 , entityComponent.spawnPosition.z)
             });
-#endif            
-            
-            entitiesDB.QueryEntity<UnityEcsEntityComponent>(egid).uecsEntity = uecsEntity;
         }
+
+        public void Remove(ref UECSEntityComponent entityComponent, EGID egid)
+        {
+            ECB.DestroyEntity(entityComponent.uecsEntity);
+        }
+
+        public void MovedTo(ref UECSEntityComponent entityComponent, ExclusiveGroupStruct previousGroup, EGID egid)
+        {
+            ECB.SetSharedComponent(entityComponent.uecsEntity, new UECSSveltoGroupID(egid.groupID));
+        }
+
+        public JobHandle BeforeSubmissionUpdate(JobHandle jobHandle)
+        {
+             Dependency = JobHandle.CombineDependencies(jobHandle, Dependency);
+            
+             ECB.RemoveComponentForEntityQuery<UpdateUECSEntityAfterSubmission>(_entityQuery);
+            
+             return Dependency;
+        }
+
+        public JobHandle AfterSubmissionUpdate(JobHandle jobHandle)
+        {
+            if (_entityQuery.IsEmpty == false)
+            {
+                NativeEGIDMultiMapper<UECSEntityComponent> mapper =
+                    entitiesDB.QueryNativeMappedEntities<UECSEntityComponent>(
+                        entitiesDB.FindGroups<UECSEntityComponent>());
+
+                Dependency = JobHandle.CombineDependencies(jobHandle, Dependency);
+
+                Entities.ForEach((Entity id, ref UpdateUECSEntityAfterSubmission egidComponent) =>
+                {
+                    mapper.Entity(egidComponent.egid).uecsEntity = id;
+                }).ScheduleParallel();
+
+                mapper.ScheduleDispose(jobHandle);
+
+                return Dependency;
+            }
+
+            return jobHandle;
+        }
+
+        EntityQuery _entityQuery;
     }
 }

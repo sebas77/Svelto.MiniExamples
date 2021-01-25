@@ -13,7 +13,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
 
         protected override void OnUpdate()
         {
-            foreach (var ((entityCollection, _), group) in entitiesDB.QueryEntities<PositionEntityComponent>(
+            foreach (var ((positions, _), group) in entitiesDB.QueryEntities<PositionEntityComponent>(
                 GameGroups.DOOFUSES.Groups))
             {
                 //there are usually two ways to sync Svelto entities with UECS entities
@@ -26,7 +26,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
                 //UECS entities first. 
                 Entities.ForEach((int entityInQueryIndex, ref Translation translation) =>
                          {
-                             ref readonly var positionEntityComponent = ref entityCollection[entityInQueryIndex];
+                             ref readonly var positionEntityComponent = ref positions[entityInQueryIndex];
 
                              translation.Value = positionEntityComponent.position;
                          }).WithBurst()

@@ -624,11 +624,12 @@ PlayerSettings:
   webGLThreadsSupport: 0
   webGLDecompressionFallback: 0
   scriptingDefineSymbols:
-    1: UNITY_DISABLE_AUTOMATIC_SYSTEM_BOOTSTRAP;ENABLE_PLATFORM_PROFILER;ENABLE_HYBRID_RENDERER_V2
+    1: UNITY_DISABLE_AUTOMATIC_SYSTEM_BOOTSTRAP;ENABLE_PLATFORM_PROFILER;ENABLE_HYBRID_RENDERER_V2;PROFILE_SVELTO
+    13: UNITY_DISABLE_AUTOMATIC_SYSTEM_BOOTSTRAP;PROFILE_SVELTO
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend:
-    Standalone: 1
+    Standalone: 0
   il2cppCompilerConfiguration:
     Standalone: 1
   managedStrippingLevel: {}
