@@ -42,9 +42,8 @@ namespace Svelto.DataStructures
             return _dictionary._values.ToRealBuffer();
         }
 
-        public SveltoDictionary<TKey, TValue, NativeStrategy<SveltoDictionaryNode<TKey>>, NativeStrategy<TValue>,
-            NativeStrategy<int>>.
-            SveltoDictionaryKeyValueEnumerator GetEnumerator() => _dictionary.GetEnumerator();
+        public SveltoDictionaryKeyValueEnumerator<TKey, TValue, NativeStrategy<SveltoDictionaryNode<TKey>>,
+            NativeStrategy<TValue>, NativeStrategy<int>> GetEnumerator() => _dictionary.GetEnumerator();
 
         public int count
         {

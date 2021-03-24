@@ -50,7 +50,7 @@ namespace Svelto.ECS
         {
             var reference = FetchAndRemoveReference(@egid);
 
-            // Invalidate the entity locator element by bumping its version and setting the egid to point to a unexisting element.
+            // Invalidate the entity locator element by bumping its version and setting the egid to point to a not existing element.
             ref var entityReferenceMapElement = ref _entityReferenceMap[reference.uniqueID];
             entityReferenceMapElement.egid = new EGID((uint)  _nextReferenceIndex, 0);
             entityReferenceMapElement.version++;
@@ -68,7 +68,7 @@ namespace Svelto.ECS
             return reference;
         }
 
-        void RemoveAllGroupReferenceLocators(uint groupId)
+        void RemoveAllGroupReferenceLocators(ExclusiveGroupStruct groupId)
         {
             if (_egidToReferenceMap.TryGetValue(groupId, out var groupMap) == false)
             {
@@ -83,7 +83,7 @@ namespace Svelto.ECS
             _egidToReferenceMap.Remove(groupId);
         }
 
-        void UpdateAllGroupReferenceLocators(uint fromGroupId, uint toGroupId)
+        void UpdateAllGroupReferenceLocators(ExclusiveGroupStruct fromGroupId, uint toGroupId)
         {
             if (_egidToReferenceMap.TryGetValue(fromGroupId, out var groupMap) == false)
             {
@@ -127,8 +127,14 @@ namespace Svelto.ECS
             return false;
         }
 
+        void PreallocateReferenceMaps(ExclusiveGroupStruct groupID, uint size)
+        {
+            _egidToReferenceMap.GetOrCreate(groupID, () => new FasterDictionary<uint, EntityReference>(size)).SetCapacity(size);
+            _entityReferenceMap.EnsureExtraCapacity(size);
+        }
+
         uint                                                                     _nextReferenceIndex;
         readonly FasterList<EntityReferenceMapElement>                           _entityReferenceMap;
-        readonly FasterDictionary<uint, FasterDictionary<uint, EntityReference>> _egidToReferenceMap;
+        readonly FasterDictionary<ExclusiveGroupStruct, FasterDictionary<uint, EntityReference>> _egidToReferenceMap;
     }
 }

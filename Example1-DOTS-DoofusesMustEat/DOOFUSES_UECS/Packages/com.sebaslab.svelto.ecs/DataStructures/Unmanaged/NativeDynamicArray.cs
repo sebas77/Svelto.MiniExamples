@@ -107,6 +107,12 @@ namespace Svelto.ECS.DataStructures
                 return ref _list->Get<T>(index);
             }
         }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ref T Get<T>(int index) where T : struct
+        {
+            return ref Get<T>((uint) index);
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Set<T>(uint index, in T value) where T : struct

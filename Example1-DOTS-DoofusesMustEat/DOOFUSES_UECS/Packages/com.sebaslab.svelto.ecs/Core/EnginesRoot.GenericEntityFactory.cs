@@ -48,10 +48,10 @@ namespace Svelto.ECS
                                                      , descriptorEntity.componentsToBuild, TypeCache<T>.type, implementors);
             }
 
-            public void PreallocateEntitySpace<T>(ExclusiveGroupStruct groupStructId, uint size)
+            public void PreallocateEntitySpace<T>(ExclusiveGroupStruct groupStructId, uint numberOfEntities)
                 where T : IEntityDescriptor, new()
             {
-                _enginesRoot.Target.Preallocate<T>(groupStructId, size);
+                _enginesRoot.Target.Preallocate(groupStructId, numberOfEntities, EntityDescriptorTemplate<T>.descriptor.componentsToBuild);
             }
             
             public EntityInitializer BuildEntity(EGID egid, IComponentBuilder[] componentsToBuild, Type type, IEnumerable<object> implementors = null)

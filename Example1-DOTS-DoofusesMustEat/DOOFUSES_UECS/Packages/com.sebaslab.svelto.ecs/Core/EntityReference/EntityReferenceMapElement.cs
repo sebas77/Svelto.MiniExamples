@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Svelto.ECS
+﻿namespace Svelto.ECS
 {
     struct EntityReferenceMapElement
     {

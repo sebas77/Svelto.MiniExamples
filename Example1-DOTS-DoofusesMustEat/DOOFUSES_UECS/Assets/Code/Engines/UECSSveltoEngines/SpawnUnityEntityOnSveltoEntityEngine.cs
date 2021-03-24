@@ -13,17 +13,16 @@ namespace Svelto.ECS.MiniExamples.Example1C
     /// </summary>
     [DisableAutoCreation]
     public class SpawnUnityEntityOnSveltoEntityEngine : SubmissionEngine, IQueryingEntitiesEngine
-                                                      , IUpdateAfterSubmission, IUpdateBeforeSubmission
-                                                      , IReactOnAddAndRemove<UECSEntityComponent>
-                                                      , IReactOnSwap<UECSEntityComponent>
+                                                      , IReactOnAddAndRemove<SpawnPointEntityComponent>
+                                                     
     {
         public EntitiesDB entitiesDB { get; set; }
 
-        public void Ready() { _entityQuery = GetEntityQuery(typeof(UpdateUECSEntityAfterSubmission)); }
+        public void Ready() { }
 
-        public void Add(ref UECSEntityComponent entityComponent, EGID egid)
+        public void Add(ref SpawnPointEntityComponent entityComponent, EGID egid)
         {
-            Entity uecsEntity = ECB.Instantiate(entityComponent.uecsEntity);
+            Entity uecsEntity = ECB.Instantiate(entityComponent.prefabEntity);
 
             //SharedComponentData can be used to group the UECS entities exactly like the Svelto ones
             ECB.AddSharedComponent(uecsEntity, new UECSSveltoGroupID(egid.groupID));
@@ -35,48 +34,6 @@ namespace Svelto.ECS.MiniExamples.Example1C
             });
         }
 
-        public void Remove(ref UECSEntityComponent entityComponent, EGID egid)
-        {
-            ECB.DestroyEntity(entityComponent.uecsEntity);
-        }
-
-        public void MovedTo(ref UECSEntityComponent entityComponent, ExclusiveGroupStruct previousGroup, EGID egid)
-        {
-            ECB.SetSharedComponent(entityComponent.uecsEntity, new UECSSveltoGroupID(egid.groupID));
-        }
-
-        public JobHandle BeforeSubmissionUpdate(JobHandle jobHandle)
-        {
-             Dependency = JobHandle.CombineDependencies(jobHandle, Dependency);
-            
-             ECB.RemoveComponentForEntityQuery<UpdateUECSEntityAfterSubmission>(_entityQuery);
-            
-             return Dependency;
-        }
-
-        public JobHandle AfterSubmissionUpdate(JobHandle jobHandle)
-        {
-            if (_entityQuery.IsEmpty == false)
-            {
-                NativeEGIDMultiMapper<UECSEntityComponent> mapper =
-                    entitiesDB.QueryNativeMappedEntities<UECSEntityComponent>(
-                        entitiesDB.FindGroups<UECSEntityComponent>());
-
-                Dependency = JobHandle.CombineDependencies(jobHandle, Dependency);
-
-                Entities.ForEach((Entity id, ref UpdateUECSEntityAfterSubmission egidComponent) =>
-                {
-                    mapper.Entity(egidComponent.egid).uecsEntity = id;
-                }).ScheduleParallel();
-
-                mapper.ScheduleDispose(jobHandle);
-
-                return Dependency;
-            }
-
-            return jobHandle;
-        }
-
-        EntityQuery _entityQuery;
+        public void Remove(ref SpawnPointEntityComponent entityComponent, EGID egid) {  }
     }
 }

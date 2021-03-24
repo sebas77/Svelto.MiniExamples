@@ -25,7 +25,9 @@ namespace Svelto.DataStructures
         where TBucketStrategy : struct, IBufferStrategy<int>
     {
         public SveltoDictionary(uint size) : this(size, Allocator.Persistent)
-        { }
+        {
+            IsStruct = TypeCache<TValue>.IsUnmanaged == true; 
+        }
 
         public SveltoDictionary(uint size, Allocator nativeAllocator) : this()
         {
@@ -81,9 +83,19 @@ namespace Svelto.DataStructures
 
             _freeValueCellIndex = 0;
 
+            //Buckets cannot be FastCleared because it's important that the values are reset to 0
             _buckets.Clear();
-            _values.Clear();
-            _valuesInfo.Clear();
+
+            if (IsStruct == false)
+            {
+                _values.Clear();
+                _valuesInfo.Clear();
+            }
+            else
+            {
+                _values.FastClear();
+                _valuesInfo.FastClear();
+            }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -94,8 +106,9 @@ namespace Svelto.DataStructures
 
             _freeValueCellIndex = 0;
 
+            //Buckets cannot be FastCleared because it's important that the values are reset to 0
             _buckets.Clear();
-            _valuesInfo.Clear();
+            _valuesInfo.FastClear();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -105,9 +118,9 @@ namespace Svelto.DataStructures
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public SveltoDictionaryKeyValueEnumerator GetEnumerator()
+        public SveltoDictionaryKeyValueEnumerator<TKey, TValue, TKeyStrategy, TValueStrategy, TBucketStrategy> GetEnumerator()
         {
-            return new SveltoDictionaryKeyValueEnumerator(this);
+            return new SveltoDictionaryKeyValueEnumerator<TKey, TValue, TKeyStrategy, TValueStrategy, TBucketStrategy>(this);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -486,41 +499,6 @@ namespace Svelto.DataStructures
                 valuesInfo[previous].next = next;
         }
 
-        public struct SveltoDictionaryKeyValueEnumerator
-        {
-            public SveltoDictionaryKeyValueEnumerator
-                (SveltoDictionary<TKey, TValue, TKeyStrategy, TValueStrategy, TBucketStrategy> dic) : this()
-            {
-                _dic   = dic;
-                _index = -1;
-                _count = (int) dic.count;
-            }
-
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public bool MoveNext()
-            {
-#if DEBUG && !PROFILE_SVELTO
-                if (_count != _dic.count)
-                    throw new SveltoDictionaryException("can't modify a dictionary during its iteration");
-#endif
-                if (_index < _count - 1)
-                {
-                    ++_index;
-                    return true;
-                }
-
-                return false;
-            }
-
-            public KeyValuePairFast Current =>
-                new KeyValuePairFast(_dic._valuesInfo[_index].key, _dic._values, _index);
-
-            readonly SveltoDictionary<TKey, TValue, TKeyStrategy, TValueStrategy, TBucketStrategy> _dic;
-            readonly int                                                                           _count;
-
-            int _index;
-        }
-
         public struct SveltoDictionaryKeyEnumerable
         {
             SveltoDictionary<TKey, TValue, TKeyStrategy, TValueStrategy, TBucketStrategy> _dic;
@@ -568,28 +546,6 @@ namespace Svelto.DataStructures
             int _index;
         }
 
-        /// <summary>
-        ///the mechanism to use arrays is fundamental to work 
-        /// </summary>
-        public readonly struct KeyValuePairFast
-        {
-            readonly TValueStrategy _dicValues;
-            readonly TKey           _key;
-            readonly int            _index;
-
-            public KeyValuePairFast(TKey keys, TValueStrategy dicValues, int index)
-            {
-                _dicValues = dicValues;
-                _index     = index;
-                _key       = keys;
-            }
-
-            public TKey Key => _key;
-
-            //todo: I can't use ToFast here, unboxing would be slower than indexing the array in a IBuffer. I have to use the Strategy here
-            public ref TValue Value => ref _dicValues[_index];
-        }
-
         public void Dispose()
         {
             _valuesInfo.Dispose();
@@ -603,6 +559,8 @@ namespace Svelto.DataStructures
         uint                      _freeValueCellIndex;
         uint                      _collisions;
         internal   TValueStrategy _values;
+
+        readonly bool IsStruct;
     }
 
     public class SveltoDictionaryException : Exception
@@ -610,5 +568,71 @@ namespace Svelto.DataStructures
         public SveltoDictionaryException(string keyAlreadyExisting) : base(keyAlreadyExisting)
         {
         }
+    }
+    
+     public struct SveltoDictionaryKeyValueEnumerator<TKey, TValue, TKeyStrategy, TValueStrategy, TBucketStrategy>
+        where TKey : struct, IEquatable<TKey>
+        where TKeyStrategy : struct, IBufferStrategy<SveltoDictionaryNode<TKey>>
+        where TValueStrategy : struct, IBufferStrategy<TValue>
+        where TBucketStrategy : struct, IBufferStrategy<int>
+    {
+        public SveltoDictionaryKeyValueEnumerator
+            (SveltoDictionary<TKey, TValue, TKeyStrategy, TValueStrategy, TBucketStrategy> dic) : this()
+        {
+            _dic   = dic;
+            _index = -1;
+#if DEBUG && !PROFILE_SVELTO            
+            _count = (int) dic.count;
+#endif            
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool MoveNext()
+        {
+#if DEBUG && !PROFILE_SVELTO
+                if (_count != _dic.count)
+                    throw new SveltoDictionaryException("can't modify a dictionary while it is iterated");
+#else
+            var _count = _dic.count;
+#endif
+            if (_index < _count - 1)
+            {
+                ++_index;
+                return true;
+            }
+
+            return false;
+        }
+
+        public KeyValuePairFast<TKey, TValue, TValueStrategy> Current =>
+            new KeyValuePairFast<TKey, TValue, TValueStrategy>(_dic._valuesInfo[_index].key, _dic._values, _index);
+
+        internal SveltoDictionary<TKey, TValue, TKeyStrategy, TValueStrategy, TBucketStrategy> _dic;
+#if DEBUG && !PROFILE_SVELTO            
+            readonly int                                                                           _count;
+#endif
+        internal int _index;
+    }
+    
+    /// <summary>
+    ///the mechanism to use arrays is fundamental to work 
+    /// </summary>
+    public readonly struct KeyValuePairFast<TKey, TValue, TValueStrategy>
+        where TKey : struct, IEquatable<TKey>
+        where TValueStrategy : struct, IBufferStrategy<TValue>
+    {
+        public KeyValuePairFast(TKey keys, TValueStrategy dicValues, int index)
+        {
+            _dicValues = dicValues;
+            _index     = index;
+            _key       = keys;
+        }
+
+        public TKey Key => _key;
+        public ref TValue Value => ref _dicValues[_index];
+        
+        readonly TValueStrategy _dicValues;
+        readonly TKey           _key;
+        readonly int            _index;
     }
 }

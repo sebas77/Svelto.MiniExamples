@@ -41,6 +41,10 @@ namespace Svelto.ECS
 
         public ref T Entity(EGID entity)
         {
+#if DEBUG && !PROFILE_SVELTO
+            if (Exists(entity) == false)
+                throw new Exception("NativeEGIDMultiMapper: Entity not found");
+#endif            
             ref var sveltoDictionary = ref _dic.GetValueByRef(entity.groupID);
             return ref sveltoDictionary.GetValueByRef(entity.entityID);
         }

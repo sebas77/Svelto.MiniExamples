@@ -22,12 +22,12 @@ namespace Svelto.Common
         
         public DisposableSampler Sample(string samplerName, string samplerInfo = null)
         {
-            return new DisposableSampler();
+            return default;
         }
 
         public DisposableSampler Sample<T>(T sampled, string samplerInfo = null)
         {
-            return new DisposableSampler();
+            return default;
         }
 
         public void Dispose()
@@ -41,12 +41,12 @@ namespace Svelto.Common
 
         public DisposableSampler Sample(string samplerName, string samplerInfo = null)
         {
-            return new DisposableSampler();
+            return default;
         }
         
         public DisposableSampler Sample<T>(T samplerName, string samplerInfo = null)
         {
-            return new DisposableSampler();
+            return default;
         }
 
         public void Dispose()

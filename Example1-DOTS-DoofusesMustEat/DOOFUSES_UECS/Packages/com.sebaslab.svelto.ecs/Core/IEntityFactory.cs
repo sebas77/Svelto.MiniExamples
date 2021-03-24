@@ -25,8 +25,8 @@ namespace Svelto.ECS
         ///  </summary>
         ///  <typeparam name="T"></typeparam>
         ///  <param name="groupStructId"></param>
-        ///  <param name="size"></param>
-        void PreallocateEntitySpace<T>(ExclusiveGroupStruct groupStructId, uint size)
+        ///  <param name="numberOfEntities"></param>
+        void PreallocateEntitySpace<T>(ExclusiveGroupStruct groupStructId, uint numberOfEntities)
             where T : IEntityDescriptor, new();
 
         /// <summary>

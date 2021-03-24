@@ -44,8 +44,10 @@ namespace Svelto.ECS.Extensions.Unity
 
             //This is the UECS group that takes care of all the UECS systems that creates entities
             //it also submits Svelto entities
-            _sveltoUecsEntitiesSubmissionGroup = new SveltoUECSEntitiesSubmissionGroup(scheduler, world);
+            _sveltoUecsEntitiesSubmissionGroup = new SveltoUECSEntitiesSubmissionGroup(scheduler);
             //This is the group that handles the UECS sync systems that copy the svelto entities values to UECS entities
+            enginesRoot.AddEngine(_sveltoUecsEntitiesSubmissionGroup);
+            world.AddSystem(_sveltoUecsEntitiesSubmissionGroup);
             _syncSveltoToUecsGroup = new SyncSveltoToUECSGroup();
             enginesRoot.AddEngine(_syncSveltoToUecsGroup);
             _syncUecsToSveltoGroup = new SyncUECSToSveltoGroup();

@@ -21,8 +21,7 @@ namespace Svelto.ECS.Serialization
             var hashNameAttribute = Type.GetCustomAttribute<HashNameAttribute>();
             if (hashNameAttribute == null)
             {
-                throw new Exception(
-                    "HashName attribute not found on the serializable type ".FastConcat(Type.FullName));
+                throw new Exception("HashName attribute not found on the serializable type ".FastConcat(Type.FullName));
             }
 
             Hash = DesignatedHash.Hash(Encoding.ASCII.GetBytes(hashNameAttribute._name));
@@ -99,9 +98,9 @@ namespace Svelto.ECS.Serialization
         public Type                            realType            => Type;
         public ISerializableComponentBuilder[] entitiesToSerialize => EntitiesToSerialize;
 
-        static readonly IComponentBuilder[]                                               ComponentsToBuild;
+        static readonly IComponentBuilder[]                                             ComponentsToBuild;
         static readonly FasterDictionary<RefWrapperType, ISerializableComponentBuilder> EntityComponentsToSerializeMap;
-        static readonly ISerializableComponentBuilder[]                                   EntitiesToSerialize;
+        static readonly ISerializableComponentBuilder[]                                 EntitiesToSerialize;
 
         static readonly uint Hash;
         static readonly Type SerializableStructType = typeof(SerializableEntityComponent);

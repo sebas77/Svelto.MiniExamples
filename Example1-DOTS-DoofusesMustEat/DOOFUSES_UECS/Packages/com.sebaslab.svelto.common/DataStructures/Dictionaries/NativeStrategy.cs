@@ -1,7 +1,6 @@
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using DBC.Common;
 using Svelto.Common;
 
 namespace Svelto.DataStructures
@@ -12,7 +11,7 @@ namespace Svelto.DataStructures
         static NativeStrategy()
         {
             if (TypeCache<T>.IsUnmanaged == false)
-                throw new PreconditionException("Only unmanaged data can be stored natively");
+                throw new DBC.Common.PreconditionException("Only unmanaged data can be stored natively");
         }
 #endif        
 
@@ -20,7 +19,7 @@ namespace Svelto.DataStructures
         {
 #if DEBUG && !PROFILE_SVELTO            
             if (!(this._realBuffer.ToNativeArray(out _) == IntPtr.Zero))
-                throw new PreconditionException("can't alloc an already allocated buffer");
+                throw new DBC.Common.PreconditionException("can't alloc an already allocated buffer");
 #endif            
             _nativeAllocator = nativeAllocator;
 
@@ -42,9 +41,9 @@ namespace Svelto.DataStructures
         {
 #if DEBUG && !PROFILE_SVELTO            
             if (!(newCapacity > 0))
-                throw new PreconditionException("Resize requires a size greater or equal to 0");
+                throw new DBC.Common.PreconditionException("Resize requires a size greater or equal to 0");
             if (!(newCapacity > capacity))
-                throw new PreconditionException("can't resize to a smaller size");
+                throw new DBC.Common.PreconditionException("can't resize to a smaller size");
 #endif            
             var pointer = _realBuffer.ToNativeArray(out _);
             var sizeOf  = MemoryUtilities.SizeOf<T>();

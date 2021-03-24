@@ -1,6 +1,6 @@
 using Svelto.DataStructures;
 
-namespace Svelto.Common.DataStructures
+namespace Svelto.DataStructures
 {
     /// <summary>
     /// Represents an unordered sparse set of natural numbers, and provides constant-time operations on it.

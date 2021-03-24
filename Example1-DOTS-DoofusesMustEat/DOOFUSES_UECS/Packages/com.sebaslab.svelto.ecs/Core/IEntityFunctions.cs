@@ -7,8 +7,8 @@ namespace Svelto.ECS
         //being entity ID globally not unique, the group must be specified when
         //an entity is removed. Not specifying the group will attempt to remove
         //the entity from the special standard group.
-        void RemoveEntity<T>(uint entityID, ExclusiveBuildGroup groupID, [CallerMemberName] string memberName = "") where T : IEntityDescriptor, new();
-        void RemoveEntity<T>(EGID entityegid, [CallerMemberName] string memberName = "") where T : IEntityDescriptor, new();
+        void RemoveEntity<T>(uint entityID, ExclusiveBuildGroup groupID) where T : IEntityDescriptor, new();
+        void RemoveEntity<T>(EGID entityegid) where T : IEntityDescriptor, new();
         
         void RemoveEntitiesFromGroup(ExclusiveBuildGroup groupID);
 

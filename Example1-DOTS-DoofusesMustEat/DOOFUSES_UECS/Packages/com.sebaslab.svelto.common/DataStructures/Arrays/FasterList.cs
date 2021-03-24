@@ -406,6 +406,12 @@ namespace Svelto.DataStructures
             if (_buffer.Length < newSize)
                 AllocateMore(newSize);
         }
+        
+        public void EnsureExtraCapacity(uint newSize)
+        {
+            if (_buffer.Length < _count + newSize)
+                AllocateMore(_count + newSize);
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public uint Push(in T item)

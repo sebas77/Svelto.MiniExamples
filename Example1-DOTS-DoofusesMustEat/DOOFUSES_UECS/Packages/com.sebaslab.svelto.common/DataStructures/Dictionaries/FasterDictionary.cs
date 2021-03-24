@@ -28,6 +28,11 @@ namespace Svelto.DataStructures
 
             _dictionary = dictionary;
         }
+        
+        public static FasterDictionary<TKey, TValue> Construct()
+        {
+            return new FasterDictionary<TKey, TValue>(0);
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public MB<TValue> GetValues(out uint count)
@@ -48,8 +53,12 @@ namespace Svelto.DataStructures
             get => _dictionary._valuesInfo.ToRealBuffer().ToManagedArray();
         }
 
-        public SveltoDictionary<TKey, TValue, ManagedStrategy<SveltoDictionaryNode<TKey>>, ManagedStrategy<TValue>,
-            ManagedStrategy<int>>.SveltoDictionaryKeyValueEnumerator GetEnumerator() => _dictionary.GetEnumerator();
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public SveltoDictionaryKeyValueEnumerator<TKey, TValue, ManagedStrategy<SveltoDictionaryNode<TKey>>, ManagedStrategy<TValue>,
+            ManagedStrategy<int>> GetEnumerator()
+        {
+            return _dictionary.GetEnumerator();
+        }
 
         public int count
         {
@@ -57,7 +66,11 @@ namespace Svelto.DataStructures
             get => _dictionary.count;
         }
 
-        public bool isValid => _dictionary.isValid;
+        public bool isValid
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => _dictionary.isValid;
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Add(TKey key, in TValue value) { _dictionary.Add(key, in value); }

@@ -46,7 +46,7 @@ namespace Svelto.ECS
 
                 if (fields.Length < 1)
                 {
-                    ProcessError("No valid fields found in Entity View Components", entityComponentType);
+                    ProcessError("No valid fields found in Entity View Components. Are you declaring only properties?", entityComponentType);
                 }
 
                 for (int i = fields.Length - 1; i >= 0; --i)
@@ -56,8 +56,7 @@ namespace Svelto.ECS
                     if (fieldInfo.FieldType.IsInterfaceEx() == true)
                     {
                         PropertyInfo[] properties = fieldInfo.FieldType.GetProperties(
-                            BindingFlags.Public | BindingFlags.Instance
-                                                | BindingFlags.DeclaredOnly);
+                            BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
 
                         for (int j = properties.Length - 1; j >= 0; --j)
                         {

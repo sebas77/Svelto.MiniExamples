@@ -23,12 +23,9 @@ namespace Svelto.ECS
 
         public bool isUnmanaged => IS_UNMANAGED;
 
-        public void BuildEntityAndAddToList(ref ITypeSafeDictionary dictionary, EGID egid,
+        public void BuildEntityAndAddToList(ITypeSafeDictionary dictionary, EGID egid,
                                             IEnumerable<object> implementors)
         {
-            if (dictionary == null) 
-                dictionary = TypeSafeDictionaryFactory<T>.Create();
-
             var castedDic = dictionary as ITypeSafeDictionary<T>;
 
             T entityComponent = default;
@@ -38,7 +35,7 @@ namespace Svelto.ECS
                 DBC.ECS.Check.Require(castedDic.ContainsKey(egid.entityID) == false,
                     $"building an entity with already used entity id! id: '{(ulong) egid}', {ENTITY_COMPONENT_NAME}");
 
-                this.FillEntityComponent(ref entityComponent, EntityViewComponentCache.cachedFields, implementors,
+                this.SetEntityViewComponentImplementors(ref entityComponent, EntityViewComponentCache.cachedFields, implementors,
                                          EntityViewComponentCache.implementorsByType, EntityViewComponentCache.cachedTypes);
 
                 castedDic.Add(egid.entityID, entityComponent);
@@ -52,19 +49,16 @@ namespace Svelto.ECS
             }
         }
 
-        ITypeSafeDictionary IComponentBuilder.Preallocate(ref ITypeSafeDictionary dictionary, uint size)
+        void IComponentBuilder.Preallocate(ITypeSafeDictionary dictionary, uint size)
         {
-            return Preallocate(ref dictionary, size);
+            Preallocate(dictionary, size);
         }
 
-        static ITypeSafeDictionary Preallocate(ref ITypeSafeDictionary dictionary, uint size)
-        {
-            if (dictionary == null)
-                dictionary = TypeSafeDictionaryFactory<T>.Create(size);
-            else
-                dictionary.SetCapacity(size);
+        public ITypeSafeDictionary CreateDictionary(uint size) { return  TypeSafeDictionaryFactory<T>.Create(size);}
 
-            return dictionary;
+        static void Preallocate(ITypeSafeDictionary dictionary, uint size)
+        {
+            dictionary.SetCapacity(size);
         }
 
         public Type GetEntityComponentType()
@@ -141,6 +135,12 @@ namespace Svelto.ECS
                         cachedFields.Add(new KeyValuePair<Type, FastInvokeActionCast<T>>(field.FieldType, setter));
                     }
                 }
+#if DEBUG && !PROFILE_SVELTO
+                if (fields.Length == 0)
+                {
+                    Svelto.Console.LogWarning($"No fields found in component {type}. Are you declaring only properties?");
+                }
+#endif                
 
                 cachedTypes = new Dictionary<Type, Type[]>();
 

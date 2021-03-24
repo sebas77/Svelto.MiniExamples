@@ -78,12 +78,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
                                 position = newposition
                             });
                             //these structs are used for ReactOnAdd callback to create unity Entities later
-                            init.Init(new UECSEntityComponent
-                            {
-                                uecsEntity    = isRed ? _redfood : _bluefood
-                              , spawnPosition = newposition
-                               ,
-                            });
+                            init.Init(new SpawnPointEntityComponent(isRed ? _redfood : _bluefood, newposition));
                         }
 
                         while (timer.IsDone() == false)

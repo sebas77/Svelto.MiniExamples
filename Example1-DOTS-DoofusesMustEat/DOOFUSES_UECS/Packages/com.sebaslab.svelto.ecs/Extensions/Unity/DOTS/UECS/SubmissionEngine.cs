@@ -21,7 +21,7 @@ namespace Svelto.ECS.Extensions.Unity
     {
         public    EntityCommandBuffer ECB { get; internal set; }
         
-        protected override void OnUpdate() {}
+        protected sealed override void OnUpdate() {}
 
         public string name => TypeToString.Name(this);
     }

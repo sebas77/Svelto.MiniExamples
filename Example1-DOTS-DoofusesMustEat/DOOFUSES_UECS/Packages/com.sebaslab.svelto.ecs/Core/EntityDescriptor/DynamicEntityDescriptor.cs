@@ -59,6 +59,11 @@ namespace Svelto.ECS
         {
             ComponentsToBuild = Construct(extraEntities.Length, extraEntities, ComponentsToBuild);
         }
+        
+        public void ExtendWith(FasterList<IComponentBuilder> extraEntities)
+        {
+            ComponentsToBuild = Construct(extraEntities.count, extraEntities.ToArrayFast(out _), ComponentsToBuild);
+        }
 
         static IComponentBuilder[] Construct(int extraEntitiesLength, IComponentBuilder[] extraEntities,
             IComponentBuilder[] startingEntities)
