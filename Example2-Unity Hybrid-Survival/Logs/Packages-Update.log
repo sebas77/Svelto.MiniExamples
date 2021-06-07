@@ -87,3 +87,14 @@ Update Mode: updateDependencies
 The following packages were updated:
   com.unity.addressables from version 1.16.10 to 1.16.15
   com.unity.ide.rider from version 3.0.2 to 3.0.3
+
+=== Tue May 11 11:20:40 2021
+
+Packages were changed.
+Update Mode: updateDependencies
+
+The following packages were updated:
+  com.unity.addressables from version 1.16.15 to 1.16.19
+  com.unity.ide.rider from version 3.0.3 to 3.0.6
+  com.unity.ide.visualstudio from version 2.0.5 to 2.0.7
+  com.unity.textmeshpro from version 3.0.3 to 3.0.4

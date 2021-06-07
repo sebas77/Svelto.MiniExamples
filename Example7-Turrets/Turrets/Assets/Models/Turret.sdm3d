@@ -1,0 +1,23 @@
+!Model
+Id: 443617fc-4f28-4add-a981-699a423b8986
+SerializedVersion: {Stride: 2.0.0.0}
+Tags: []
+Source: !file ../Turret/Turret.fbx
+Skeleton: null
+PivotPosition: {X: 0.0, Y: 0.0, Z: 0.0}
+Materials:
+    2f2143631a5d5dba55d047e6c021df3b:
+        Name: Mat_Body
+        MaterialInstance:
+            Material: e0a3bf82-3b6a-406c-8561-af3aab3479d5:Models/HoverBot_Eye
+    b03248b3885b8c284dfd83107e154398:
+        Name: Mat_Glass
+        MaterialInstance:
+            Material: c39e9cbc-5066-43a1-9ceb-558ca7197247:Mat_Glass
+    b0f8027e024142b9ab1966caf2356802:
+        Name: Mat_Light
+        MaterialInstance:
+            Material: a1762409-3a9e-4f52-92c3-78be9c9cd417:Mat_Light
+Modifiers: {}
+~SourceHashes:
+    cc6e05827935c83f7b9e737241274e70~../Turret/Turret.fbx: 7376f2d94f215c6991376a6df8497791

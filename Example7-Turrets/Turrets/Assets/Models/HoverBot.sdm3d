@@ -1,0 +1,23 @@
+!Model
+Id: af984a43-a49a-4032-870a-76d1b4b5dd6a
+SerializedVersion: {Stride: 2.0.0.0}
+Tags: []
+Source: !file ../Turret/HoverBot.fbx
+Skeleton: null
+PivotPosition: {X: 0.0, Y: 0.0, Z: 0.0}
+Materials:
+    69c3924298bfa9e2d8badb9aed856f8f:
+        Name: HoverBot_Body
+        MaterialInstance:
+            Material: null
+    1a6c034227e74a9595559b85649a5db0:
+        Name: HoverBot_Lens
+        MaterialInstance:
+            Material: null
+    c1c6dbe0fb25479d6ff0b34bd677b236:
+        Name: HoverBot_Eye
+        MaterialInstance:
+            Material: e0a3bf82-3b6a-406c-8561-af3aab3479d5:Models/HoverBot_Eye
+Modifiers: {}
+~SourceHashes:
+    0e1510a023563b02108f5d92df05bbe7~../Turret/HoverBot.fbx: 81098b52fc2c47c64fd988fc437a06f6

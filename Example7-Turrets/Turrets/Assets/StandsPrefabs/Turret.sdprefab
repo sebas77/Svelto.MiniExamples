@@ -1,0 +1,43 @@
+!PrefabAsset
+Id: 83020843-3487-4627-9313-da5ce4430747
+SerializedVersion: {Stride: 3.1.0.1}
+Tags: []
+Hierarchy:
+    RootParts:
+        - ref!! c3ef870e-80de-46dd-bbd0-ff55624d8883
+        - ref!! a3cbb945-6526-41f8-b285-19b0aeb4f411
+    Parts:
+        -   Entity:
+                Id: a3cbb945-6526-41f8-b285-19b0aeb4f411
+                Name: HoverBot
+                Components:
+                    7a1b1722719e08dd4c7b6516fa815497: !TransformComponent
+                        Id: a2962d79-3d2d-4493-80a1-8faba2fa2081
+                        Position: {X: 0.0, Y: 0.17568517, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.70710677, Z: 0.0, W: 0.70710677}
+                        Scale: {X: 0.3, Y: 0.3, Z: 0.3}
+                        Children: {}
+                    d9800bd95769fb6e542e92086d7874a2: !ModelComponent
+                        Id: 0ebd02a4-11d8-4bd9-ba06-4860aa04e588
+                        Model: af984a43-a49a-4032-870a-76d1b4b5dd6a:Models/HoverBot
+                        Materials:
+                            5a61eff8af1efb9baf415f8022819a01~0: dec3b8ea-9598-48f1-88b8-ea09ed8d4a61:Materials/Blade
+                            789ede4e670933d6dbf9f6f9fb76e6bd~1: 2d580307-8a98-4dca-9b03-cc22f0b66ea8:Materials/Gold
+        -   Entity:
+                Id: c3ef870e-80de-46dd-bbd0-ff55624d8883
+                Name: Turret
+                Components:
+                    2938129f231d15ebcf3b5e5d55c31a27: !TransformComponent
+                        Id: b3318db1-f3fb-4e2a-8595-67d698f44247
+                        Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.3, Y: 0.3, Z: 0.3}
+                        Children: {}
+                    0117aa4625c5ad7e5d4d2d0392285eee: !ModelComponent
+                        Id: fe5771be-cd64-4bd8-9800-ab50f49bcba1
+                        Model: 443617fc-4f28-4add-a981-699a423b8986:Models/Turret
+                        Materials:
+                            2ad7c1c89d42ca0e76baa778c1607275~0: 2a1e2c7f-caad-45d4-b5c7-49377408d361:Materials/iron/iron
+                    14fa533d8c4106ba8b67352156679db0: !Svelto.ECS.MiniExamples.Turrets.TurretEntityHolder,Turrets
+                        Id: 15dd0c05-45fa-4643-bd68-43f3b0b64019
+                        child: ref!! a3cbb945-6526-41f8-b285-19b0aeb4f411
