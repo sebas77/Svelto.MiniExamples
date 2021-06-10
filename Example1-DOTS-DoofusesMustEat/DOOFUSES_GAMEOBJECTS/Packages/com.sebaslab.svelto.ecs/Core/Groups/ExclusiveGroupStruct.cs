@@ -1,12 +1,11 @@
 using System;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace Svelto.ECS
 {
     [StructLayout(LayoutKind.Explicit, Size = 4)]
-    public struct ExclusiveGroupStruct : IEquatable<ExclusiveGroupStruct>, IComparable<ExclusiveGroupStruct>,
-                                         IEqualityComparer<ExclusiveGroupStruct>
+    //the type doesn't implement IEqualityComparer, what implements it is a custom comparer
+    public struct ExclusiveGroupStruct : IEquatable<ExclusiveGroupStruct>, IComparable<ExclusiveGroupStruct>
     {
         public override bool Equals(object obj)
         {
@@ -36,16 +35,6 @@ namespace Svelto.ECS
         public int CompareTo(ExclusiveGroupStruct other)
         {
             return other._id.CompareTo(_id);
-        }
-
-        public bool Equals(ExclusiveGroupStruct x, ExclusiveGroupStruct y)
-        {
-            return x._id == y._id;
-        }
-
-        public int GetHashCode(ExclusiveGroupStruct obj)
-        {
-            return _id.GetHashCode();
         }
 
         public override string ToString()
@@ -94,7 +83,7 @@ namespace Svelto.ECS
             DBC.ECS.Check.Ensure(_id < _globalId, "Invalid group ID deserialiased");
         }
 
-        public static implicit operator uint(ExclusiveGroupStruct groupStruct)
+        public static explicit operator uint(ExclusiveGroupStruct groupStruct)
         {
             return groupStruct._id;
         }

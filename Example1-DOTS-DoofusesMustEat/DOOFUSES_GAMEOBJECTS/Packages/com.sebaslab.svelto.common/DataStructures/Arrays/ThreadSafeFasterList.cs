@@ -115,12 +115,12 @@ namespace Svelto.DataStructures
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Insert(int index, T item)
+        public void Insert(uint index, T item)
         {
             _lockQ.EnterWriteLock();
             try
             {
-                _list.Insert(index, item);
+                _list.InsertAt(index, item);
             }
             finally
             {
@@ -129,7 +129,7 @@ namespace Svelto.DataStructures
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void RemoveAt(int index)
+        public void RemoveAt(uint index)
         {
             _lockQ.EnterWriteLock();
             try
@@ -143,7 +143,7 @@ namespace Svelto.DataStructures
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void UnorderedRemoveAt(int index)
+        public void UnorderedRemoveAt(uint index)
         {
             _lockQ.EnterWriteLock();
             try
@@ -157,7 +157,7 @@ namespace Svelto.DataStructures
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public T[] ToArrayFast(out uint count)
+        public T[] ToArrayFast(out int count)
         {
             _lockQ.EnterReadLock();
             try

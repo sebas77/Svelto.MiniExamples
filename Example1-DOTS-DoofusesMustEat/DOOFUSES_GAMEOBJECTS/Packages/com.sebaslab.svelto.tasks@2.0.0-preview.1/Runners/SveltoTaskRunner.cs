@@ -111,7 +111,7 @@ namespace Svelto.Tasks.Internal
 
                     if (result == false)
                     {
-                        _coroutines.UnorderedRemoveAt(index);
+                        _coroutines.UnorderedRemoveAt((uint)index);
 
                         coroutinesCount--;
                     }

@@ -4,7 +4,7 @@ using Unity.Jobs;
 
 namespace Svelto.ECS.Extensions.Unity
 {
-    public class SyncSveltoToUECSGroup : JobifiedEnginesGroup<SyncSveltoToUECSEngine>
+    public class SyncSveltoToUECSGroup : UnsortedJobifiedEnginesGroup<SyncSveltoToUECSEngine>
     {
     }
 

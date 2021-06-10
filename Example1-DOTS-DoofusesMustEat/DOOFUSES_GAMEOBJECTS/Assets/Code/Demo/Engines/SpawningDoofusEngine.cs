@@ -1,6 +1,7 @@
 using Svelto.Common;
 using Svelto.ECS.Extensions.Unity;
 using Svelto.ECS.MiniExamples.GameObjectsLayer;
+using Svelto.ECS.Native;
 using Unity.Burst;
 using Unity.Collections.LowLevel.Unsafe;
 

@@ -5,9 +5,23 @@ using UnityEngine;
 
 namespace Svelto.ECS.Extensions.Unity
 {
+    public class ListToPopupAttribute : PropertyAttribute
+    {
+        public Type   classType;
+        public string listName;
+    
+        public ListToPopupAttribute(Type classType, string listName)
+        {
+            this.classType = classType;
+            this.listName  = listName;
+        }
+    }
     /// <summary>
     /// I introduced this option thinking it could be a good idea, but I am not sure anymore. Although it's slightly
-    /// more annoying, extending GenericEntityDescriptorHolder is wiser than using this class
+    /// more annoying, extending GenericEntityDescriptorHolder is wiser than using this class.
+    /// Consider this experimental
+    /// Todo: sort in alphabetic order
+    /// Todo: hide inner descriptors
     /// </summary>
     public class EntityDescriptorHolder : MonoBehaviour, IEntityDescriptorHolder
     {

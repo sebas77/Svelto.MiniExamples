@@ -10,5 +10,11 @@
             this.egid = egid;
             version = 0;
         }
+
+        internal EntityReferenceMapElement(EGID egid, uint version)
+        {
+            this.egid = egid;
+            this.version = version;
+        }
     }
 }

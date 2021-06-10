@@ -22,7 +22,7 @@ namespace Svelto.ECS.Experimental
             return ref _resources[(int) id - 1];
         }
 
-        internal static uint ToECS(T resource)
+        internal static uint ToECS(in T resource)
         {
             _resources.Add(resource);
 

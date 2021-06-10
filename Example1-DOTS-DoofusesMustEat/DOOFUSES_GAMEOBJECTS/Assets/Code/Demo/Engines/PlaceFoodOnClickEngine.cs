@@ -4,6 +4,7 @@ using System.Threading;
 using Svelto.Common;
 using Svelto.ECS.Extensions.Unity;
 using Svelto.ECS.MiniExamples.GameObjectsLayer;
+using Svelto.ECS.Native;
 using Svelto.Tasks;
 using Svelto.Tasks.Enumerators;
 using Svelto.Tasks.ExtraLean;

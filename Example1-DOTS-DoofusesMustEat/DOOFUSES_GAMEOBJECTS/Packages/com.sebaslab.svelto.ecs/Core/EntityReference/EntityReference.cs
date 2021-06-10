@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 #pragma warning disable 660,661
@@ -13,6 +14,8 @@ namespace Svelto.ECS
         [FieldOffset(0)] public readonly uint uniqueID;
         [FieldOffset(4)] public readonly uint version;
         [FieldOffset(0)] readonly ulong _GID;
+
+        internal uint index => uniqueID - 1;
 
         public static bool operator ==(EntityReference obj1, EntityReference obj2)
         {
@@ -31,13 +34,6 @@ namespace Svelto.ECS
             _GID = MAKE_GLOBAL_ID(uniqueId, version);
         }
 
-        static ulong MAKE_GLOBAL_ID(uint uniqueId, uint version)
-        {
-            return (ulong)version << 32 | ((ulong)uniqueId & 0xFFFFFFFF);
-        }
-
-        public static EntityReference Invalid => new EntityReference(uint.MaxValue, uint.MaxValue);
-
         public bool Equals(EntityReference other)
         {
             return _GID == other._GID;
@@ -52,5 +48,20 @@ namespace Svelto.ECS
         {
             return "id:".FastConcat(uniqueID).FastConcat(" version:").FastConcat(version);
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public EGID ToEGID(EntitiesDB entitiesDB)
+        {
+            DBC.ECS.Check.Require(this != Invalid, "Invalid Reference Used");
+
+            return entitiesDB.GetEGID(this);
+        }
+
+        static ulong MAKE_GLOBAL_ID(uint uniqueId, uint version)
+        {
+            return (ulong)version << 32 | ((ulong)uniqueId & 0xFFFFFFFF);
+        }
+
+        public static EntityReference Invalid => new EntityReference(0, 0);
     }
 }

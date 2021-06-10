@@ -35,7 +35,8 @@ namespace Svelto.Utilities
         }
 
         public void OnLoggerAdded()
-        {}
+        {
+        }
         
         public static void SystemLog(string txt)
         {

@@ -52,7 +52,12 @@ namespace Svelto.ECS
 
     static class EntityComponentIDMap
     {
-        static readonly FasterList<IFiller> TYPE_IDS = new FasterList<IFiller>();
+        static readonly FasterList<IFiller> TYPE_IDS;
+
+        static EntityComponentIDMap()
+        {
+            TYPE_IDS = new FasterList<IFiller>();
+        }
 
         internal static void Register<T>(IFiller entityBuilder) where T : struct, IEntityComponent
         {

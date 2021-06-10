@@ -1,6 +1,7 @@
 using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.ECS.Extensions.Unity;
+using Svelto.ECS.Native;
 using Unity.Burst;
 using Unity.Collections.LowLevel.Unsafe;
 using Unity.Jobs;

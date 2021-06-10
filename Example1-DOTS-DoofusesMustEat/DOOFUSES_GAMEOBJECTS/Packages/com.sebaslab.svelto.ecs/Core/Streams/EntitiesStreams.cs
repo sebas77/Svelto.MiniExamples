@@ -62,11 +62,11 @@ namespace Svelto.ECS
         public static EntitiesStreams Create()
         {
             var stream = new EntitiesStreams();
-            stream._streams = ManagedSveltoDictionary<RefWrapperType, ITypeSafeStream>.Create();
+            stream._streams = FasterDictionary<RefWrapperType, ITypeSafeStream>.Construct();
 
             return stream;
         }
 
-        ManagedSveltoDictionary<RefWrapperType, ITypeSafeStream> _streams;
+        FasterDictionary<RefWrapperType, ITypeSafeStream> _streams;
     }
 }

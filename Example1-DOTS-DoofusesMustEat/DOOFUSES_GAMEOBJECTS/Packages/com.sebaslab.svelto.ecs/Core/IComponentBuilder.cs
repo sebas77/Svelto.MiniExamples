@@ -6,11 +6,12 @@ namespace Svelto.ECS
 {
     public interface IComponentBuilder
     {
-        void BuildEntityAndAddToList(ref ITypeSafeDictionary dictionary, EGID egid,
+        void BuildEntityAndAddToList(ITypeSafeDictionary dictionary, EGID egid,
             IEnumerable<object> implementors);
-        ITypeSafeDictionary Preallocate(ref ITypeSafeDictionary dictionary, uint size);
+        void Preallocate(ITypeSafeDictionary dictionary, uint size);
+        ITypeSafeDictionary CreateDictionary(uint size);
 
-        Type GetEntityComponentType();
-        bool isUnmanaged { get; }
+        Type                GetEntityComponentType();
+        bool                isUnmanaged { get; }
     }
 }

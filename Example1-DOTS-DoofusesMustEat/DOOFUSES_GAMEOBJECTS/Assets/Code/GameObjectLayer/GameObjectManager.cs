@@ -1,4 +1,3 @@
-using Svelto.Common.DataStructures;
 using Svelto.DataStructures;
 using Svelto.ObjectPool;
 using Unity.Mathematics;

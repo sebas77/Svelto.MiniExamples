@@ -11,15 +11,15 @@ namespace Svelto.ECS.Extensions.Unity
     /// Note unsorted jobs run in parallel
     /// </summary>
     /// <typeparam name="Interface"></typeparam>
-    public abstract class JobifiedEnginesGroup<Interface>:IJobifiedEngine where Interface : class, IJobifiedEngine
+    public abstract class UnsortedJobifiedEnginesGroup<Interface>:IJobifiedEngine where Interface : class, IJobifiedEngine
     {
-        protected JobifiedEnginesGroup(FasterList<Interface> engines)
+        protected UnsortedJobifiedEnginesGroup(FasterList<Interface> engines)
         {
             _name = "JobifiedEnginesGroup - "+this.GetType().Name;
             _engines         = engines;
         }
         
-        protected JobifiedEnginesGroup()
+        protected UnsortedJobifiedEnginesGroup()
         {
             _name    = "JobifiedEnginesGroup - "+this.GetType().Name;
             _engines = new FasterList<Interface>();

@@ -68,7 +68,7 @@ namespace Svelto.Tasks.Unity.Internal
                     var ret = routines[i].MoveNext(profiler);
                     if (ret == false)
                     {
-                        routines.UnorderedRemoveAt(i);
+                        routines.UnorderedRemoveAt((uint)i);
                         i--;
                     }
                 }

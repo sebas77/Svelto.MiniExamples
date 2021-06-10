@@ -50,40 +50,26 @@ namespace Svelto.ECS.Experimental
 
         public QueryResult Except(ExclusiveGroupStruct[] groupsToIgnore)
         {
-            var group = groups.Value.reference;
-            var groupsCount = group.count;
+            var ignoreCount = groupsToIgnore.Length;
 
-            for (int i = 0; i < groupsToIgnore.Length; i++)
-            for (int j = 0; j < groupsCount; j++)
-            {
-                    if (groupsToIgnore[i] == group[j])
-                    {
-                        group.UnorderedRemoveAt(j);
-                        j--;
-                        groupsCount--;
-                    }
-            }
-
-            return new QueryResult(group);
+            return QueryResult(groupsToIgnore, ignoreCount);
         }
         
+        public QueryResult Except(LocalFasterReadOnlyList<ExclusiveGroupStruct> groupsToIgnore)
+        {
+            var ignoreCount = groupsToIgnore.count;
+
+            return QueryResult(groupsToIgnore.ToArrayFast(out var count), (int) count);
+        }
+
         public QueryResult Except(FasterList<ExclusiveGroupStruct> groupsToIgnore)
         {
-            var group = groups.Value.reference;
-            var groupsCount = group.count;
-
-            for (int i = 0; i < groupsToIgnore.count; i++)
-            for (int j = 0; j < groupsCount; j++)
-            {
-                if (groupsToIgnore[i] == group[j])
-                {
-                    group.UnorderedRemoveAt(j);
-                    j--;
-                    groupsCount--;
-                }
-            }
-
-            return new QueryResult(group);
+            return QueryResult(groupsToIgnore.ToArrayFast(out var count), (int) count);
+        }
+        
+        public QueryResult Except(FasterReadOnlyList<ExclusiveGroupStruct> groupsToIgnore)
+        {
+            return QueryResult(groupsToIgnore.ToArrayFast(out var count), (int) count);
         }
         
         public QueryResult Except(ExclusiveGroupStruct groupsToIgnore)
@@ -91,7 +77,7 @@ namespace Svelto.ECS.Experimental
             var group       = groups.Value.reference;
             var groupsCount = group.count;
 
-            for (int j = 0; j < groupsCount; j++)
+            for (uint j = 0; j < groupsCount; j++)
                 if (groupsToIgnore == group[j])
                 {
                     group.UnorderedRemoveAt(j);
@@ -123,7 +109,7 @@ namespace Svelto.ECS.Experimental
             var group       = groups.Value.reference;
             var groupsCount = group.count;
 
-            for (var i = 0; i < groupsCount; i++)
+            for (uint i = 0; i < groupsCount; i++)
             {
                 if (entitiesDB.Count<T>(group[i]) == 0)
                 {
@@ -140,6 +126,25 @@ namespace Svelto.ECS.Experimental
         public void Add(ExclusiveGroupStruct group)
         {
             groups.Value.reference.Add(group);
+        }
+        
+        static QueryResult QueryResult(ExclusiveGroupStruct[] groupsToIgnore, int ignoreCount)
+        {
+            var group       = groups.Value.reference;
+            var groupsCount = @group.count;
+
+            for (int i = 0; i < ignoreCount; i++)
+            for (uint j = 0; j < groupsCount; j++)
+            {
+                if (groupsToIgnore[i] == @group[j])
+                {
+                    @group.UnorderedRemoveAt(j);
+                    j--;
+                    groupsCount--;
+                }
+            }
+
+            return new QueryResult(@group);
         }
     }
 

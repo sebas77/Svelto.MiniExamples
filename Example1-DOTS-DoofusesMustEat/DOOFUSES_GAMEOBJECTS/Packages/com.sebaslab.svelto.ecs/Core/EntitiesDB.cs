@@ -12,12 +12,14 @@ namespace Svelto.ECS
 {
     public partial class EntitiesDB
     {
-        internal EntitiesDB(EnginesRoot enginesRoot)
+        internal EntitiesDB(EnginesRoot enginesRoot, EnginesRoot.LocatorMap entityLocator)
         {
-            _enginesRoot = enginesRoot;
+            _enginesRoot   = enginesRoot;
+            _entityLocator = entityLocator;
         }
 
-        EntityCollection<T> InternalQueryEntities<T>(FasterDictionary<RefWrapperType, ITypeSafeDictionary> entitiesInGroupPerType)
+        EntityCollection<T> InternalQueryEntities<T>
+            (FasterDictionary<RefWrapperType, ITypeSafeDictionary> entitiesInGroupPerType)
             where T : struct, IEntityComponent
         {
             uint       count = 0;
@@ -58,19 +60,21 @@ namespace Svelto.ECS
         {
             if (groupEntityComponentsDB.TryGetValue(groupStruct, out var entitiesInGroupPerType) == false)
             {
-                return new EntityCollection<T1, T2>(new EntityCollection<T1>(RetrieveEmptyEntityComponentArray<T1>(), 0),
-                    new EntityCollection<T2>(RetrieveEmptyEntityComponentArray<T2>(), 0));
+                return new EntityCollection<T1, T2>(new EntityCollection<T1>(RetrieveEmptyEntityComponentArray<T1>(), 0)
+                                                  , new EntityCollection<T2>(
+                                                        RetrieveEmptyEntityComponentArray<T2>(), 0));
             }
-            
+
             var T1entities = InternalQueryEntities<T1>(entitiesInGroupPerType);
             var T2entities = InternalQueryEntities<T2>(entitiesInGroupPerType);
 #if DEBUG && !PROFILE_SVELTO
             if (T1entities.count != T2entities.count)
                 throw new ECSException("Entity components count do not match in group. Entity 1: ' count: "
-                   .FastConcat(T1entities.count).FastConcat(" ", typeof(T1).ToString())
-                   .FastConcat("'. Entity 2: ' count: ".FastConcat(T2entities.count)
-                       .FastConcat(" ", typeof(T2).ToString())
-                       .FastConcat("' group: ", groupStruct.ToName())));
+                                      .FastConcat(T1entities.count).FastConcat(" ", typeof(T1).ToString())
+                                      .FastConcat("'. Entity 2: ' count: ".FastConcat(T2entities.count)
+                                                                          .FastConcat(" ", typeof(T2).ToString())
+                                                                          .FastConcat(
+                                                                               "' group: ", groupStruct.ToName())));
 #endif
 
             return new EntityCollection<T1, T2>(T1entities, T2entities);
@@ -82,55 +86,59 @@ namespace Svelto.ECS
             if (groupEntityComponentsDB.TryGetValue(groupStruct, out var entitiesInGroupPerType) == false)
             {
                 return new EntityCollection<T1, T2, T3>(
-                    new EntityCollection<T1>(RetrieveEmptyEntityComponentArray<T1>(), 0),
-                    new EntityCollection<T2>(RetrieveEmptyEntityComponentArray<T2>(), 0),
-                    new EntityCollection<T3>(RetrieveEmptyEntityComponentArray<T3>(), 0));
+                    new EntityCollection<T1>(RetrieveEmptyEntityComponentArray<T1>(), 0)
+                  , new EntityCollection<T2>(RetrieveEmptyEntityComponentArray<T2>(), 0)
+                  , new EntityCollection<T3>(RetrieveEmptyEntityComponentArray<T3>(), 0));
             }
-            
+
             var T1entities = InternalQueryEntities<T1>(entitiesInGroupPerType);
             var T2entities = InternalQueryEntities<T2>(entitiesInGroupPerType);
             var T3entities = InternalQueryEntities<T3>(entitiesInGroupPerType);
 #if DEBUG && !PROFILE_SVELTO
             if (T1entities.count != T2entities.count || T2entities.count != T3entities.count)
                 throw new ECSException("Entity components count do not match in group. Entity 1: "
-                   .FastConcat(typeof(T1).ToString()).FastConcat(" count: ")
-                   .FastConcat(T1entities.count).FastConcat(
-                        " Entity 2: "
-                           .FastConcat(typeof(T2).ToString()).FastConcat(" count: ")
-                           .FastConcat(T2entities.count)
-                           .FastConcat(" Entity 3: ".FastConcat(typeof(T3).ToString()))
-                           .FastConcat(" count: ").FastConcat(T3entities.count)));
+                                      .FastConcat(typeof(T1).ToString()).FastConcat(" count: ")
+                                      .FastConcat(T1entities.count).FastConcat(
+                                           " Entity 2: ".FastConcat(typeof(T2).ToString()).FastConcat(" count: ")
+                                                        .FastConcat(T2entities.count)
+                                                        .FastConcat(" Entity 3: ".FastConcat(typeof(T3).ToString()))
+                                                        .FastConcat(" count: ").FastConcat(T3entities.count)));
 #endif
 
             return new EntityCollection<T1, T2, T3>(T1entities, T2entities, T3entities);
         }
-        
+
         public EntityCollection<T1, T2, T3, T4> QueryEntities<T1, T2, T3, T4>(ExclusiveGroupStruct groupStruct)
-            where T1 : struct, IEntityComponent where T2 : struct, IEntityComponent where T3 : struct, IEntityComponent where T4 : struct, IEntityComponent
+            where T1 : struct, IEntityComponent
+            where T2 : struct, IEntityComponent
+            where T3 : struct, IEntityComponent
+            where T4 : struct, IEntityComponent
         {
             if (groupEntityComponentsDB.TryGetValue(groupStruct, out var entitiesInGroupPerType) == false)
             {
                 return new EntityCollection<T1, T2, T3, T4>(
-                    new EntityCollection<T1>(RetrieveEmptyEntityComponentArray<T1>(), 0),
-                    new EntityCollection<T2>(RetrieveEmptyEntityComponentArray<T2>(), 0),
-                    new EntityCollection<T3>(RetrieveEmptyEntityComponentArray<T3>(), 0),
-                    new EntityCollection<T4>(RetrieveEmptyEntityComponentArray<T4>(), 0));
+                    new EntityCollection<T1>(RetrieveEmptyEntityComponentArray<T1>(), 0)
+                  , new EntityCollection<T2>(RetrieveEmptyEntityComponentArray<T2>(), 0)
+                  , new EntityCollection<T3>(RetrieveEmptyEntityComponentArray<T3>(), 0)
+                  , new EntityCollection<T4>(RetrieveEmptyEntityComponentArray<T4>(), 0));
             }
-            
+
             var T1entities = InternalQueryEntities<T1>(entitiesInGroupPerType);
             var T2entities = InternalQueryEntities<T2>(entitiesInGroupPerType);
             var T3entities = InternalQueryEntities<T3>(entitiesInGroupPerType);
             var T4entities = InternalQueryEntities<T4>(entitiesInGroupPerType);
 #if DEBUG && !PROFILE_SVELTO
-            if (T1entities.count != T2entities.count || T2entities.count != T3entities.count)
+            if (T1entities.count != T2entities.count || T2entities.count != T3entities.count
+                                                     || T3entities.count != T4entities.count)
                 throw new ECSException("Entity components count do not match in group. Entity 1: "
-                   .FastConcat(typeof(T1).ToString()).FastConcat(" count: ")
-                   .FastConcat(T1entities.count).FastConcat(
-                        " Entity 2: "
-                           .FastConcat(typeof(T2).ToString()).FastConcat(" count: ")
-                           .FastConcat(T2entities.count)
-                           .FastConcat(" Entity 3: ".FastConcat(typeof(T3).ToString()))
-                           .FastConcat(" count: ").FastConcat(T3entities.count)));
+                                      .FastConcat(typeof(T1).ToString()).FastConcat(" count: ")
+                                      .FastConcat(T1entities.count).FastConcat(
+                                           " Entity 2: ".FastConcat(typeof(T2).ToString()).FastConcat(" count: ")
+                                                        .FastConcat(T2entities.count)
+                                                        .FastConcat(" Entity 3: ".FastConcat(typeof(T3).ToString()))
+                                                        .FastConcat(" count: ").FastConcat(T3entities.count)
+                                                        .FastConcat(" Entity 4: ".FastConcat(typeof(T4).ToString()))
+                                                        .FastConcat(" count: ").FastConcat(T4entities.count)));
 #endif
 
             return new EntityCollection<T1, T2, T3, T4>(T1entities, T2entities, T3entities, T4entities);
@@ -148,7 +156,8 @@ namespace Svelto.ECS
             return new GroupsEnumerable<T1, T2>(this, groups);
         }
 
-        public GroupsEnumerable<T1, T2, T3> QueryEntities<T1, T2, T3>(in LocalFasterReadOnlyList<ExclusiveGroupStruct> groups)
+        public GroupsEnumerable<T1, T2, T3> QueryEntities<T1, T2, T3>
+            (in LocalFasterReadOnlyList<ExclusiveGroupStruct> groups)
             where T1 : struct, IEntityComponent where T2 : struct, IEntityComponent where T3 : struct, IEntityComponent
         {
             return new GroupsEnumerable<T1, T2, T3>(this, groups);
@@ -156,8 +165,10 @@ namespace Svelto.ECS
 
         public GroupsEnumerable<T1, T2, T3, T4> QueryEntities<T1, T2, T3, T4>
             (in LocalFasterReadOnlyList<ExclusiveGroupStruct> groups)
-            where T1 : struct, IEntityComponent where T2 : struct, IEntityComponent
-            where T3 : struct, IEntityComponent where T4 : struct, IEntityComponent
+            where T1 : struct, IEntityComponent
+            where T2 : struct, IEntityComponent
+            where T3 : struct, IEntityComponent
+            where T4 : struct, IEntityComponent
         {
             return new GroupsEnumerable<T1, T2, T3, T4>(this, groups);
         }
@@ -167,7 +178,7 @@ namespace Svelto.ECS
             where T : struct, IEntityComponent
         {
             if (SafeQueryEntityDictionary<T>(groupStructId, out var typeSafeDictionary) == false)
-                throw new EntityGroupNotFoundException(typeof(T) , groupStructId.ToName());
+                throw new EntityGroupNotFoundException(typeof(T), groupStructId.ToName());
 
             return (typeSafeDictionary as ITypeSafeDictionary<T>).ToEGIDMapper(groupStructId);
         }
@@ -239,11 +250,12 @@ namespace Svelto.ECS
         public bool IsDisposing => _enginesRoot._isDisposing;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal bool SafeQueryEntityDictionary<T>(out ITypeSafeDictionary typeSafeDictionary,
-            FasterDictionary<RefWrapperType, ITypeSafeDictionary> entitiesInGroupPerType)
-            where T : IEntityComponent
+        internal bool SafeQueryEntityDictionary<T>
+        (out ITypeSafeDictionary typeSafeDictionary
+       , FasterDictionary<RefWrapperType, ITypeSafeDictionary> entitiesInGroupPerType) where T : IEntityComponent
         {
-            if (entitiesInGroupPerType.TryGetValue(new RefWrapperType(TypeCache<T>.type), out var safeDictionary) == false)
+            if (entitiesInGroupPerType.TryGetValue(new RefWrapperType(TypeCache<T>.type), out var safeDictionary)
+             == false)
             {
                 typeSafeDictionary = default;
                 return false;
@@ -254,10 +266,10 @@ namespace Svelto.ECS
 
             return true;
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal bool SafeQueryEntityDictionary<T>(ExclusiveGroupStruct group, out ITypeSafeDictionary typeSafeDictionary)
-            where T : IEntityComponent
+        internal bool SafeQueryEntityDictionary<T>
+            (ExclusiveGroupStruct group, out ITypeSafeDictionary typeSafeDictionary) where T : IEntityComponent
         {
             if (UnsafeQueryEntityDictionary(group, TypeCache<T>.type, out var safeDictionary) == false)
             {
@@ -272,7 +284,8 @@ namespace Svelto.ECS
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal bool UnsafeQueryEntityDictionary(ExclusiveGroupStruct group, Type type, out ITypeSafeDictionary typeSafeDictionary)
+        internal bool UnsafeQueryEntityDictionary
+            (ExclusiveGroupStruct group, Type type, out ITypeSafeDictionary typeSafeDictionary)
         {
             //search for the group
             if (groupEntityComponentsDB.TryGetValue(group, out var entitiesInGroupPerType) == false)
@@ -290,7 +303,7 @@ namespace Svelto.ECS
             EGID entityGID = new EGID(entityID, @group);
 
             index = default;
-            
+
             if (UnsafeQueryEntityDictionary(@group, type, out var safeDictionary) == false)
                 return false;
 
@@ -303,7 +316,7 @@ namespace Svelto.ECS
         internal uint GetIndex(uint entityID, ExclusiveGroupStruct @group, Type type)
         {
             EGID entityGID = new EGID(entityID, @group);
-            
+
             if (UnsafeQueryEntityDictionary(@group, type, out var safeDictionary) == false)
             {
                 throw new EntityNotFoundException(entityGID, type);
@@ -353,14 +366,17 @@ namespace Svelto.ECS
         //group, then indexable per type, then indexable per EGID. however the TypeSafeDictionary can return an array of
         //values directly, that can be iterated over, so that is possible to iterate over all the entity components of
         //a specific type inside a specific group.
-FasterDictionary<ExclusiveGroupStruct, FasterDictionary<RefWrapperType, ITypeSafeDictionary>>
+        FasterDictionary<ExclusiveGroupStruct, FasterDictionary<RefWrapperType, ITypeSafeDictionary>>
             groupEntityComponentsDB => _enginesRoot._groupEntityComponentsDB;
 
-//for each entity view type, return the groups (dictionary of entities indexed by entity id) where they are
-//found indexed by group id. TypeSafeDictionary are never created, they instead point to the ones hold
-//by _groupEntityComponentsDB
-//                        <EntityComponentType                            <groupID  <entityID, EntityComponent>>>  
+        //for each entity view type, return the groups (dictionary of entities indexed by entity id) where they are
+        //found indexed by group id. TypeSafeDictionary are never created, they instead point to the ones hold
+        //by _groupEntityComponentsDB
+        //                        <EntityComponentType                            <groupID  <entityID, EntityComponent>>>
         FasterDictionary<RefWrapperType, FasterDictionary<ExclusiveGroupStruct, ITypeSafeDictionary>> groupsPerEntity =>
             _enginesRoot._groupsPerEntity;
+
+        EnginesRoot.LocatorMap _entityLocator;
+        
     }
 }

@@ -1,2 +1,2 @@
 # Svelto.Common
-Shared code between the Svelto repository
+Shared code between the Svelto repositories
