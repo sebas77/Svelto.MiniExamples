@@ -1,6 +1,6 @@
 using Svelto.ECS.Hybrid;
 
-namespace Svelto.ECS.Example.Survive.Characters.Enemies
+namespace Svelto.ECS.Example.Survive.Enemies
 {
     /// <summary>
     /// This design is old and I have never refactored it (also because the demo is pretty simple)

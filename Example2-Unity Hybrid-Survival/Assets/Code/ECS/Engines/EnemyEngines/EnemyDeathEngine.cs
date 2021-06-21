@@ -3,21 +3,21 @@ using Svelto.Common;
 using Svelto.DataStructures;
 using UnityEngine;
 
-namespace Svelto.ECS.Example.Survive.Characters.Enemies
+namespace Svelto.ECS.Example.Survive.Enemies
 {
     [Sequenced(nameof(EnemyEnginesNames.EnemyDeathEngine))]
     public class EnemyDeathEngine : IQueryingEntitiesEngine, IStepEngine, IReactOnSwap<EnemyEntityViewComponent>
     {
-        public EnemyDeathEngine(IEntityFunctions entityFunctions, IEntityStreamConsumerFactory consumerFactory, 
-                                ITime time, WaitForSubmissionEnumerator waitForSubmission)
+        public EnemyDeathEngine
+        (IEntityFunctions entityFunctions, IEntityStreamConsumerFactory consumerFactory, ITime time
+       , WaitForSubmissionEnumerator waitForSubmission)
         {
             _entityFunctions   = entityFunctions;
             _consumerFactory   = consumerFactory;
             _time              = time;
             _waitForSubmission = waitForSubmission;
             _animations        = new FasterList<IEnumerator>();
-            _consumer = _consumerFactory.GenerateConsumer<DeathComponent>(
-                ECSGroups.EnemiesGroup, "EnemyDeathEngine", 10);
+            _consumer = _consumerFactory.GenerateConsumer<DeathComponent>("EnemyDeathEngine", 10);
         }
 
         public EntitiesDB entitiesDB { get; set; }
@@ -28,14 +28,18 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
         {
             while (_consumer.TryDequeue(out _, out EGID egid))
             {
-                _animations.Add(StartSeparateAnimation(egid));
+                //publisher/consumer pattern will be replaces with better patterns in future for these cases.
+                //The problem is obvious, DeathComponent is abstract and could have came from the player
+                if (AliveEnemies.Includes(egid.groupID)) 
+                    _animations.Add(StartSeparateAnimation(egid));
             }
-            
-            for (int i = 0; i < _animations.count; i++)
+
+            for (uint i = 0; i < _animations.count; i++)
                 if (_animations[i].MoveNext() == false)
                     _animations.UnorderedRemoveAt(i--);
         }
-        public string name   => nameof(EnemyDeathEngine);
+
+        public string name => nameof(EnemyDeathEngine);
 
         /// <summary>
         /// One of the available form of communication in Svelto.ECS: React On Swap allow to do what it says
@@ -45,7 +49,7 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
         /// <param name="egid"></param>
         public void MovedTo(ref EnemyEntityViewComponent enemyView, ExclusiveGroupStruct previousGroup, EGID egid)
         {
-            if (egid.groupID == ECSGroups.EnemiesDeadGroup)
+            if (DeadEnemies.Includes(egid.groupID))
             {
                 enemyView.layerComponent.layer                  = GAME_LAYERS.NOT_SHOOTABLE_MASK;
                 enemyView.movementComponent.navMeshEnabled      = false;
@@ -61,7 +65,7 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
 
             //Any build/swap/remove do not happen immediately, but at specific sync points
             //swapping group because we don't want any engine to pick up this entity while it's animating for death
-            _entityFunctions.SwapEntityGroup<EnemyEntityDescriptor>(egid, ECSGroups.EnemiesDeadGroup);
+            _entityFunctions.SwapEntityGroup<EnemyEntityDescriptor>(egid, DeadEnemies.BuildGroup);
 
             //wait for the swap to happen
             while (_waitForSubmission.MoveNext())
@@ -78,7 +82,7 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
             }
 
             //new egid after the swap
-            var entityGid = new EGID(egid.entityID, ECSGroups.EnemiesDeadGroup);
+            var entityGid = new EGID(egid.entityID, DeadEnemies.BuildGroup);
 
             var enemyType = entitiesDB.QueryEntity<EnemyComponent>(entityGid).enemyType;
 
@@ -90,9 +94,8 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
         readonly IEntityFunctions             _entityFunctions;
         readonly IEntityStreamConsumerFactory _consumerFactory;
         readonly ITime                        _time;
-
-        Consumer<DeathComponent>         _consumer;
-        WaitForSubmissionEnumerator      _waitForSubmission;
-        readonly FasterList<IEnumerator> _animations;
+        Consumer<DeathComponent>              _consumer;
+        WaitForSubmissionEnumerator           _waitForSubmission;
+        readonly FasterList<IEnumerator>      _animations;
     }
 }

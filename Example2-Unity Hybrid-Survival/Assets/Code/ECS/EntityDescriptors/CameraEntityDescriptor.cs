@@ -1,6 +1,6 @@
 namespace Svelto.ECS.Example.Survive.Camera
 {
-    public class CameraEntityDescriptor : GenericEntityDescriptor<CameraEntityViewComponent>
+    public class CameraEntityDescriptor : GenericEntityDescriptor<CameraEntityViewComponent, CameraTargetEntityReferenceComponent>
     {
     }
 }

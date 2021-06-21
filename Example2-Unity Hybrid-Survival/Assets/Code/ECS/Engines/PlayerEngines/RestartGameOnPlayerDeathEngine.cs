@@ -1,6 +1,5 @@
-using System;
 using System.Collections;
-using Svelto.ECS.Example.Survive.Characters.Player;
+using Svelto.ECS.Example.Survive.Player;
 using Svelto.ECS.Example.Survive.HUD;
 using UnityEngine.SceneManagement;
 

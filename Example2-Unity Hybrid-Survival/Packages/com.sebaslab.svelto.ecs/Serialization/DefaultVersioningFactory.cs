@@ -19,7 +19,7 @@ namespace Svelto.ECS.Serialization
        , int serializationType, IEntitySerialization entitySerialization, IEntityFactory factory
        , bool enginesRootIsDeserializationOnly)
         {
-            var entityDescriptorEntitiesToSerialize = enginesRootIsDeserializationOnly ? entityDescriptor.entitiesToSerialize : entityDescriptor.componentsToBuild;
+            var entityDescriptorEntitiesToSerialize = enginesRootIsDeserializationOnly ? entityDescriptor.componentsToSerialize : entityDescriptor.componentsToBuild;
 
             var initializer = factory.BuildEntity(egid, entityDescriptorEntitiesToSerialize, TypeCache<T>.type, _implementors);
 

@@ -28,14 +28,9 @@ namespace Svelto.ECS
 
         public EGID(uint entityID, ExclusiveGroupStruct groupID) : this()
         {
-            _GID = MAKE_GLOBAL_ID(entityID, groupID);
+            _GID = MAKE_GLOBAL_ID(entityID, (uint) groupID);
         }
         
-        public EGID(uint entityID, ExclusiveBuildGroup groupID) : this()
-        {
-            _GID = MAKE_GLOBAL_ID(entityID, groupID.group);
-        }
-
         static ulong MAKE_GLOBAL_ID(uint entityId, uint groupId)
         {
             return (ulong)groupId << 32 | ((ulong)entityId & 0xFFFFFFFF);

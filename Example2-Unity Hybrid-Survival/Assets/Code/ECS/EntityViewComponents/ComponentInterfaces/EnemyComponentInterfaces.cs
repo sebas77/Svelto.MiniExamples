@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Svelto.ECS.Example.Survive.Characters.Enemies
+namespace Svelto.ECS.Example.Survive.Enemies
 {
     public interface IEnemyMovementComponent
     {
@@ -17,10 +17,10 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
 
     public struct EnemyCollisionData : IEquatable<EnemyCollisionData>
     {
-        public          EGID otherEntityID;
+        public          EntityReference otherEntityID;
         public readonly bool collides;
 
-        public EnemyCollisionData(EGID otherEntityID, bool collides)
+        public EnemyCollisionData(EntityReference otherEntityID, bool collides)
         {
             this.otherEntityID = otherEntityID;
             this.collides      = collides;

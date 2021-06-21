@@ -1,7 +1,5 @@
 using System.Collections;
-using Svelto.ECS.Example.Survive.Characters;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace Svelto.ECS.Example.Survive.HUD
 {
@@ -57,20 +55,24 @@ namespace Svelto.ECS.Example.Survive.HUD
 
         IEnumerator CheckForDamage()
         {
-            var _consumerHealth = _consumerFactory.GenerateConsumer<HealthComponent>(ECSGroups.PlayersGroup, "HUDEngine", 1);
+            var _consumerHealth = _consumerFactory.GenerateConsumer<HealthComponent>("HUDEngine", 1);
             
             while (true)
             {
-                while (_consumerHealth.TryDequeue(out var health))
+                while (_consumerHealth.TryDequeue(out var health, out var egid))
                 {
-                    //An engine should never assume how many entities will be used, so we iterate over all the
-                    //HUDEntityViews even if we know there is just one
-                    var guiEntityView = entitiesDB.QueryUniqueEntity<HUDEntityViewComponent>(ECSGroups.GUICanvas);
-        
-                    var damageComponent = guiEntityView.damageImageComponent;
-                    damageComponent.imageColor = damageComponent.flashColor;
-        
-                    guiEntityView.healthSliderComponent.value = health.currentHealth;
+                    //this is a design mistake as this engine shouldn't be aware of the Player
+                    if (Player.Player.Includes(egid.groupID))
+                    {
+                        //An engine should never assume how many entities will be used, so we iterate over all the
+                        //HUDEntityViews even if we know there is just one
+                        var guiEntityView = entitiesDB.QueryUniqueEntity<HUDEntityViewComponent>(ECSGroups.GUICanvas);
+
+                        var damageComponent = guiEntityView.damageImageComponent;
+                        damageComponent.imageColor = damageComponent.flashColor;
+
+                        guiEntityView.healthSliderComponent.value = health.currentHealth;
+                    }
                 }
 
                 yield return null;

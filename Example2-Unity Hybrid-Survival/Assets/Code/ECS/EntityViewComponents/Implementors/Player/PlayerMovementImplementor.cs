@@ -1,7 +1,7 @@
 using Svelto.ECS.Hybrid;
 using UnityEngine;
 
-namespace Svelto.ECS.Example.Survive.Characters.Player
+namespace Svelto.ECS.Example.Survive.Player
 {
     public class PlayerMovementImplementor : MonoBehaviour, IImplementor, IRigidBodyComponent, ITransformComponent
     {

@@ -1,4 +1,4 @@
-namespace Svelto.ECS.Example.Survive.Characters
+namespace Svelto.ECS.Example.Survive
 {
     /// <summary>
     ///     The responsibility of this engine is to apply the damage to any damageable entity. If the logic applied to

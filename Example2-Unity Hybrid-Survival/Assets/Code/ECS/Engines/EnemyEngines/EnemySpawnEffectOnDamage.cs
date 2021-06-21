@@ -1,7 +1,7 @@
 using System.Collections;
 using Svelto.Common;
 
-namespace Svelto.ECS.Example.Survive.Characters.Enemies
+namespace Svelto.ECS.Example.Survive.Enemies
 {
     [Sequenced(nameof(EnemyEnginesNames.EnemySpawnEffectOnDamage))]
     public class EnemySpawnEffectOnDamage: IQueryingEntitiesEngine, IStepEngine
@@ -9,7 +9,7 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
         public EnemySpawnEffectOnDamage(IEntityStreamConsumerFactory consumerFactory)
         {
             //this consumer will process only changes from DamageableComponent published from the EnemiesGroup
-            _consumerHealth = consumerFactory.GenerateConsumer<DamageableComponent>(ECSGroups.EnemiesGroup, "EnemyAnimationEngine", 15);
+            _consumerHealth = consumerFactory.GenerateConsumer<DamageableComponent>("EnemyAnimationEngine", 15);
             _checkForEnemyDamage = SpawnEffectOnDamage();
         }
 
@@ -37,7 +37,10 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
             {
                 while (_consumerHealth.TryDequeue(out var component, out var egid))
                 {
-                    CheckDamageEnemy(egid, component);
+                    //publisher/consumer pattern will be replaces with better patterns in future for these cases.
+                    //The problem is obvious, DeathComponent is abstract and could have came from the player
+                    if (AliveEnemies.Includes(egid.groupID))
+                        CheckDamageEnemy(egid, component);
                 }
 
                 yield return null;

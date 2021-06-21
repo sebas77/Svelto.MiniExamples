@@ -1,4 +1,4 @@
-namespace Svelto.ECS.Example.Survive.Characters.Player
+namespace Svelto.ECS.Example.Survive.Player
 {
     public enum PlayerTargetType
     {

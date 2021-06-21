@@ -1,6 +1,6 @@
 using System.Collections;
 
-namespace Svelto.ECS.Example.Survive.Characters.Player.Gun
+namespace Svelto.ECS.Example.Survive.Player.Gun
 {
     public class PlayerGunShootingFXsEngine : IQueryingEntitiesEngine, IStepEngine
     {

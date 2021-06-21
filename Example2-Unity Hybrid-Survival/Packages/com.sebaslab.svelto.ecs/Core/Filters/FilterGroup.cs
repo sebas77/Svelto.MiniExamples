@@ -23,7 +23,7 @@ namespace Svelto.ECS
             //from the index, find the entityID
             _reverseEIDs = new NativeDynamicArrayCast<uint>(NativeDynamicArray.Alloc<uint>(Allocator.Persistent));
             //from the entityID, find the index
-            _indexOfEntityInDenseList                 = new SharedSveltoDictionaryNative<uint, uint>(0, Allocator.Persistent);
+            _indexOfEntityInDenseList                 = new SharedSveltoDictionaryNative<uint, uint>(0);
             _exclusiveGroupStruct = exclusiveGroupStruct;
             _ID = ID;
         }
@@ -69,6 +69,15 @@ namespace Svelto.ECS
                     $"trying to remove a not existing entity {new EGID(entityID, _exclusiveGroupStruct)} from filter");
 #endif
             InternalRemove(entityID);
+        }
+        
+        public bool Exists(uint entityID)
+        {
+#if DEBUG && !PROFILE_SVELTO
+            if (_denseListOfIndicesToEntityComponentArray.isValid == false)
+                throw new ECSException($"invalid Filter");
+#endif
+            return _indexOfEntityInDenseList.ContainsKey(entityID);
         }
 
         public bool TryRemove(uint entityID)

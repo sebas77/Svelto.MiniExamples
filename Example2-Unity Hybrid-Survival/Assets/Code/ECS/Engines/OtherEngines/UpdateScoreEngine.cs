@@ -1,6 +1,6 @@
 using System.Collections;
 using Svelto.Common;
-using Svelto.ECS.Example.Survive.Characters;
+using Svelto.ECS.Example.Survive.Enemies;
 
 namespace Svelto.ECS.Example.Survive.HUD
 {
@@ -19,7 +19,7 @@ namespace Svelto.ECS.Example.Survive.HUD
 
         IEnumerator ListenForEnemyDeath()
         {
-            var consumer = _consumerFactory.GenerateConsumer<DeathComponent>(ECSGroups.EnemiesGroup, "ScoreEngine", 1);
+            var consumer = _consumerFactory.GenerateConsumer<DeathComponent>("ScoreEngine", 1);
 
             while (entitiesDB.HasAny<HUDEntityViewComponent>(ECSGroups.GUICanvas) == false)
                 yield return null;
@@ -30,9 +30,17 @@ namespace Svelto.ECS.Example.Survive.HUD
             {
                 while (consumer.TryDequeue(out _, out var egid))
                 {
-                    var playerTargets = entitiesDB.QueryEntitiesAndIndex<ScoreValueComponent>(egid, out var index);
+                    //todo: this would be considered a design mistake, I will need to fix this with future refactoring
+                    //this engine cannot be aware of the concept of Enemy. It shouldn't be aware of the concept
+                    //of Death either. The scoring system and what cause the score to change must be decoupled
+                    //on the other hand, it would be also wrong to let the death/enemy engines be aware of what
+                    //event causes a score change.
+                    if (egid.groupID.FoundIn(AliveEnemies.Groups))
+                    {
+                        var playerTargets = entitiesDB.QueryEntitiesAndIndex<ScoreValueComponent>(egid, out var index);
 
-                    hudEntityView.scoreComponent.score += playerTargets[index].scoreValue;
+                        hudEntityView.scoreComponent.score += playerTargets[index].scoreValue;
+                    }
                 }
 
                 yield return null;

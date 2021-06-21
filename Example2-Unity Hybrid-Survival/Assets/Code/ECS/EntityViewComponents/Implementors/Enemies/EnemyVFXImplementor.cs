@@ -1,7 +1,7 @@
 using Svelto.ECS.Hybrid;
 using UnityEngine;
 
-namespace Svelto.ECS.Example.Survive.Characters.Enemies
+namespace Svelto.ECS.Example.Survive.Enemies
 {
     public class EnemyVFXImplementor : MonoBehaviour, IImplementor, IEnemyVFXComponent
     {

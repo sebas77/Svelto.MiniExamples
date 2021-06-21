@@ -19,7 +19,7 @@ namespace Svelto.ECS
     /// </summary>
     
     ///To debug it use in your debug window: Svelto.ECS.Debugger.EGID.GetGroupNameFromId(groupID)
-    public class ExclusiveGroup
+    public sealed class ExclusiveGroup
     {
         public const uint MaxNumberOfExclusiveGroups = 2 << 20; 
         
@@ -50,7 +50,7 @@ namespace Svelto.ECS
         
         public static explicit operator uint(ExclusiveGroup group)
         {
-            return group._group;
+            return (uint) @group._group;
         }
 
         public static ExclusiveGroupStruct operator+(ExclusiveGroup a, uint b)

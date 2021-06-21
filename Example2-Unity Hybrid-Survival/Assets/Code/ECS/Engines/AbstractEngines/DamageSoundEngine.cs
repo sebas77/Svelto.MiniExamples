@@ -1,4 +1,4 @@
-namespace Svelto.ECS.Example.Survive.Characters.Sounds
+namespace Svelto.ECS.Example.Survive.Sounds
 {
     public class DamageSoundEngine : IQueryingEntitiesEngine, IStepEngine, IReactOnAddAndRemove<DamageSoundEntityViewComponent>
     {

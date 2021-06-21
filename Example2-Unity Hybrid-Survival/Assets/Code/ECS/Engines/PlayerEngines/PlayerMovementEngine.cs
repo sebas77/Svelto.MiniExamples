@@ -2,7 +2,7 @@ using System.Collections;
 using Svelto.ECS.Example.Survive.Camera;
 using UnityEngine;
 
-namespace Svelto.ECS.Example.Survive.Characters.Player
+namespace Svelto.ECS.Example.Survive.Player
 {
     public class PlayerMovementEngine : IQueryingEntitiesEngine, IStepEngine
     {
@@ -22,22 +22,25 @@ namespace Svelto.ECS.Example.Survive.Characters.Player
 
         IEnumerator Tick()
         {
-            while (true)
+            void EnsureRefIsValid()
             {
                 //Exploit everywhere the power of deconstruct to tuples. Every query entities can be deconstruct
                 //to what you are going to use directly
-                var (playersInput, speedInfos, playerViews, count) =
-                    entitiesDB.QueryEntities<PlayerInputDataComponent, SpeedComponent, PlayerEntityViewComponent>(
-                        ECSGroups.PlayersGroup);
-
-                //this demo has just one player, but I tried to abstract the assumption.
-                for (int i = 0; i < count; i++)
+                foreach (var ((playersInput, speedInfos, cameraReference, playerViews, count), _) in entitiesDB
+                   .QueryEntities<PlayerInputDataComponent, SpeedComponent, CameraReferenceComponent,
+                        PlayerEntityViewComponent>(Player.Groups))
                 {
-                    Movement(playersInput[i], ref playerViews[i], speedInfos[i]);
-                    Turning(
-                        ref entitiesDB.QueryEntity<CameraEntityViewComponent>(
-                            playerViews[i].ID.entityID, ECSGroups.Camera), ref playerViews[i]);
+                    for (int i = 0; i < count; i++)
+                    {
+                        Movement(playersInput[i], ref playerViews[i], speedInfos[i]);
+                        Turning(ref entitiesDB.QueryEntity<CameraEntityViewComponent>(cameraReference[i].cameraReference.ToEGID(entitiesDB)), ref playerViews[i]);
+                    }
                 }
+            }
+
+            while (true)
+            {
+                EnsureRefIsValid();
 
                 yield return null; //don't forget to yield or you will enter in an infinite loop!
             }
@@ -87,7 +90,9 @@ namespace Svelto.ECS.Example.Survive.Characters.Player
 
         readonly IRayCaster _rayCaster;
 
-        readonly int floorMask = LayerMask.GetMask("Floor"); // A layer mask so that a ray can be cast just at gameobjects on the floor layer.
+        readonly int
+            floorMask = LayerMask
+               .GetMask("Floor"); // A layer mask so that a ray can be cast just at gameobjects on the floor layer.
 
         readonly IEnumerator _tick;
     }

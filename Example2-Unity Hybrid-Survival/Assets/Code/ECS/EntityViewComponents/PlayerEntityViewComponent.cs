@@ -1,6 +1,6 @@
 using Svelto.ECS.Hybrid;
 
-namespace Svelto.ECS.Example.Survive.Characters.Player
+namespace Svelto.ECS.Example.Survive.Player
 {
     public struct PlayerEntityViewComponent : IEntityViewComponent
     {

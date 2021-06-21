@@ -2,7 +2,7 @@ using System.Collections;
 using Svelto.Common;
 using UnityEngine;
 
-namespace Svelto.ECS.Example.Survive.Characters.Player.Gun
+namespace Svelto.ECS.Example.Survive.Player.Gun
 {
     [Sequenced(nameof(PlayerEnginesNames.PlayerGunShootingEngine))]
     public class PlayerGunShootingEngine : IQueryingEntitiesEngine, IStepEngine
@@ -23,24 +23,24 @@ namespace Svelto.ECS.Example.Survive.Characters.Player.Gun
         {
             void Shoot()
             {
-                var (playersInputs, egids, count) =
-                    entitiesDB.QueryEntities<PlayerInputDataComponent, PlayerEntityViewComponent>(
-                        ECSGroups.PlayersGroup);
-
-                for (var i = 0; i < count; i++)
+                //probable design issue: player and gun is too coupled
+                foreach (var ((playersInputs, weapons, count), _) in entitiesDB
+                   .QueryEntities<PlayerInputDataComponent, PlayerWeaponComponent>(Player.Groups))
                 {
-                    var input = playersInputs[i];
-                    if (input.fire)
+                    for (var i = 0; i < count; i++)
                     {
-                        ref var playerGunComponent = ref entitiesDB.QueryEntity<GunAttributesComponent>(
-                            (uint) egids[i].ID, ECSGroups.PlayersGunsGroup);
-                        ref var playerGunViewComponent = ref entitiesDB.QueryEntity<GunEntityViewComponent>(
-                            (uint) egids[i].ID, ECSGroups.PlayersGunsGroup);
-                        
-                        playerGunComponent.timer += _time.deltaTime;
+                        var input = playersInputs[i];
+                        if (input.fire)
+                        {
+                            var     gunEGID          = weapons[i].weapon.ToEGID(entitiesDB);
+                            ref var playerGunComponent = ref entitiesDB.QueryEntity<GunAttributesComponent>(gunEGID);
+                            ref var playerGunViewComponent = ref entitiesDB.QueryEntity<GunEntityViewComponent>(gunEGID);
 
-                        if (playerGunComponent.timer >= playerGunComponent.timeBetweenBullets)
-                            this.Shoot(ref playerGunComponent, playerGunViewComponent);
+                            playerGunComponent.timer += _time.deltaTime;
+
+                            if (playerGunComponent.timer >= playerGunComponent.timeBetweenBullets)
+                                this.Shoot(ref playerGunComponent, playerGunViewComponent);
+                        }
                     }
                 }
             }
@@ -65,19 +65,20 @@ namespace Svelto.ECS.Example.Survive.Characters.Player.Gun
             playerGunEntityView.timer = 0;
 
             Ray shootRay = gunFxComponent.gunFXComponent.shootRay;
-            var entityHit = _rayCaster.CheckHit(shootRay, playerGunEntityView.range, GAME_LAYERS.ENEMY_LAYER
+            
+            //CheckHit returns the EGID of the entity linked to the gameobject hit
+            var hit = _rayCaster.CheckHit(shootRay, playerGunEntityView.range, GAME_LAYERS.ENEMY_LAYER
                                               , GAME_LAYERS.SHOOTABLE_MASK | GAME_LAYERS.ENEMY_MASK, out var point
-                                              , out var instanceID);
+                                              , out var referenceID);
 
-            if (entityHit)
+            //invalid entity reference is a valid return from CheckHit, it means that something has been hit but it's not an entity
+            if (hit && referenceID != EntityReference.Invalid)
             {
                 var damageInfo = new DamageInfo(playerGunEntityView.damagePerShot, point);
 
-                //note how the GameObject GetInstanceID is used to identify the entity as well
-                if (instanceID != default)
+                var instanceID = referenceID.ToEGID(entitiesDB);
                 {
-                    entitiesDB.QueryEntity<DamageableComponent>((uint) instanceID, ECSGroups.PlayerTargetsGroup)
-                              .damageInfo = damageInfo;
+                    entitiesDB.QueryEntity<DamageableComponent>(instanceID).damageInfo = damageInfo;
 
                     entitiesDB.PublishEntityChange<DamageableComponent>(instanceID);
                 }

@@ -1,4 +1,4 @@
-namespace Svelto.ECS.Example.Survive.Characters
+namespace Svelto.ECS.Example.Survive
 {
     public struct DeathComponent : IEntityComponent
     {

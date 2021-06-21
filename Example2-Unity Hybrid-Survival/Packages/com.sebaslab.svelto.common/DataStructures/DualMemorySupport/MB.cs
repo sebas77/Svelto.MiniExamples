@@ -6,6 +6,9 @@ namespace Svelto.DataStructures
     /// <summary>
     /// MB stands for ManagedBuffer
     ///
+    /// MBs are note meant to be resized ore freed. They are constant size arrays.
+    /// MBs always wrap external arrays, they are not meant to allocate memory by themselves.
+    ///
     /// MB are wrappers of arrays. Are not meant to resize or free
     /// MBs cannot have a count, because a count of the meaningful number of items is not tracked.
     /// Example: an MB could be initialized with a size 10 and count 0. Then the buffer is used to fill entities
@@ -14,7 +17,7 @@ namespace Svelto.DataStructures
     /// <typeparam name="T"></typeparam>
     public struct MB<T>:IBuffer<T> 
     {
-        public MB(T[]  array) : this()
+        internal MB(T[]  array) : this()
         {
             _buffer = array;
         }
@@ -24,6 +27,12 @@ namespace Svelto.DataStructures
             _buffer = array;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void CopyFrom(T[] collection, uint actualSize)
+        {
+            Array.Copy(collection, 0, _buffer, 0, actualSize);
+        }
+        
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void CopyTo(uint sourceStartIndex, T[] destination, uint destinationStartIndex, uint count)
         {
@@ -68,6 +77,6 @@ namespace Svelto.DataStructures
             get => ref _buffer[index];
         }
 
-        T[] _buffer;
+        T[]         _buffer;
     }
 }

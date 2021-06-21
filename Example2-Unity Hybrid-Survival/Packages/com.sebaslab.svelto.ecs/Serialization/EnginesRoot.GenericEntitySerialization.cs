@@ -18,7 +18,7 @@ namespace Svelto.ECS
 
                 SerializationDescriptorMap serializationDescriptorMap = _enginesRoot.serializationDescriptorMap;
                 var entityDescriptor = serializationDescriptorMap.GetDescriptorFromHash(descriptorHash);
-                var entityComponentsToSerialise = entityDescriptor.entitiesToSerialize;
+                var entityComponentsToSerialise = entityDescriptor.componentsToSerialize;
 
                 var header =
                     new SerializableEntityHeader(descriptorHash, egid, (byte) entityComponentsToSerialise.Length);
@@ -69,27 +69,40 @@ namespace Svelto.ECS
             (ISerializationData serializationData, ISerializableEntityDescriptor entityDescriptor
            , ref EntityInitializer initializer, int serializationType)
             {
-                foreach (var serializableEntityBuilder in entityDescriptor.entitiesToSerialize)
+                foreach (var serializableEntityBuilder in entityDescriptor.componentsToSerialize)
                 {
                     serializationData.BeginNextEntityComponent();
                     serializableEntityBuilder.Deserialize(serializationData, initializer, serializationType);
                 }
             }
 
+            /// <summary>
+            /// Note this has been left undocumented and forgot over the months. The initial version was obviously
+            /// wrong, as it wasn't looking for T but only assuming that T was the first component in the entity.
+            /// It's also weird or at least must be revalidated, the fact that serializationData works only as
+            /// a tape, so we need to reset datapos in case we do not want to forward the head.
+            /// </summary>
+            /// <param name="serializationData"></param>
+            /// <param name="entityDescriptor"></param>
+            /// <param name="serializationType"></param>
+            /// <typeparam name="T"></typeparam>
+            /// <returns></returns>
             public T DeserializeEntityComponent<T>
             (ISerializationData serializationData, ISerializableEntityDescriptor entityDescriptor
            , int serializationType) where T : unmanaged, IEntityComponent
             {
                 var readPos         = serializationData.dataPos;
                 T   entityComponent = default;
-                foreach (var serializableEntityBuilder in entityDescriptor.entitiesToSerialize)
+                foreach (var serializableEntityBuilder in entityDescriptor.componentsToSerialize)
                 {
                     if (serializableEntityBuilder is SerializableComponentBuilder<T> entityBuilder)
                     {
                         entityBuilder.Deserialize(serializationData, ref entityComponent, serializationType);
-                    }
 
-                    break;
+                        break;
+                    }
+                    else
+                        serializationData.dataPos += serializableEntityBuilder.Size(serializationType);
                 }
 
                 serializationData.dataPos = readPos;
@@ -168,7 +181,7 @@ namespace Svelto.ECS
                  == false)
                     throw new Exception("Entity Serialization failed");
 
-                foreach (var serializableEntityBuilder in entityDescriptor.entitiesToSerialize)
+                foreach (var serializableEntityBuilder in entityDescriptor.componentsToSerialize)
                 {
                     entitiesInGroupPerType.TryGetValue(
                         new RefWrapperType(serializableEntityBuilder.GetEntityComponentType()), out var safeDictionary);

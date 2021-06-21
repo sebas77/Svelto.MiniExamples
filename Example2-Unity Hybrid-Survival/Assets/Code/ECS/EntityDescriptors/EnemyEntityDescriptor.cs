@@ -1,7 +1,6 @@
 ﻿using Svelto.ECS.Example.Survive.HUD;
-using Svelto.ECS.Extensions.Unity;
 
-namespace Svelto.ECS.Example.Survive.Characters.Enemies
+namespace Svelto.ECS.Example.Survive.Enemies
 {
     public class EnemyEntityDescriptor : ExtendibleEntityDescriptor<DamageableEntityDescriptor>
     {
@@ -13,7 +12,6 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
                 new ComponentBuilder<EnemyEntityViewComponent>(),
                 new ComponentBuilder<ScoreValueComponent>(),
                 new ComponentBuilder<EnemyAttackComponent>(),
-                new ComponentBuilder<EGIDTrackerViewComponent>()
             });
         }
     }

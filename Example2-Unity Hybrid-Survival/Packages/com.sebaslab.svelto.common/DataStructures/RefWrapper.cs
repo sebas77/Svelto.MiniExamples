@@ -31,24 +31,29 @@ namespace Svelto.DataStructures
         readonly int  _hashCode;
     }
     
-    public readonly struct RefWrapper<T>: IEquatable<RefWrapper<T>> where T:class
+    public readonly struct RefWrapper<T>: IEquatable<RefWrapper<T>>, IEquatable<T> where T:class
     {
         public RefWrapper(T obj)
         {
-            _value = obj;
+            _value    = obj;
             _hashCode = _value.GetHashCode();
         }
 
         public bool Equals(RefWrapper<T> other)
         {
-            return _value == other._value;
+            return _value.Equals(other._value);
         }
-        
+
+        public bool Equals(T other)
+        {
+            return _value.Equals(other);
+        }
+
         public override int GetHashCode()
         {
             return _hashCode;
         }
-        
+
         public static implicit operator T(RefWrapper<T> t) => t._value;
         public static implicit operator RefWrapper<T>(T t) => new RefWrapper<T>(t);
 

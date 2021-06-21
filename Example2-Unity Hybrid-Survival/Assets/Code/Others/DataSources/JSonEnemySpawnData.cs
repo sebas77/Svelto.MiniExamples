@@ -1,5 +1,5 @@
 using System;
-using Svelto.ECS.Example.Survive.Characters.Player;
+using Svelto.ECS.Example.Survive.Player;
 using UnityEngine;
 
 namespace Svelto.ECS.Example.Survive

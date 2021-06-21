@@ -1,6 +1,6 @@
 using System.Collections;
 
-namespace Svelto.ECS.Example.Survive.Characters.Enemies
+namespace Svelto.ECS.Example.Survive.Enemies
 {
     public class EnemyMovementEngine : IQueryingEntitiesEngine, IStepEngine
     {
@@ -10,24 +10,28 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
 
         IEnumerator Tick()
         {
+            void RefHelper()
+            {
+                foreach (var ((enemiesTarget, _), _) in entitiesDB.QueryEntities<EnemyTargetEntityViewComponent>())
+                {
+                    //If there were more than one player, this must be smarter, for example choose the target
+                    //according the distance
+                    foreach (var ((enemies, enemiesCount), _) in entitiesDB.QueryEntities<EnemyEntityViewComponent>(
+                        AliveEnemies.Groups))
+                    {
+                        //using always the first target because in this case I know there can be only one, but if 
+                        //there were more, I could use different strategies, like choose the closest. This is 
+                        //for a very simple AI scenario of course.
+                        for (var i = 0; i < enemiesCount; i++)
+                            enemies[i].movementComponent.navMeshDestination =
+                                enemiesTarget[0].targetPositionComponent.position;
+                    }
+                }
+            }
+
             while (true)
             {
-                while (entitiesDB.HasAny<EnemyTargetEntityViewComponent>(ECSGroups.EnemiesTargetGroup) == false)
-                    yield return null;
-
-                //there is only one enemy target in this demo. If there were multiple, this code would look
-                //very different
-                var enemyTarget =
-                    entitiesDB.QueryUniqueEntity<EnemyTargetEntityViewComponent>(ECSGroups.EnemiesTargetGroup);
-
-                var (enemies, enemiesCount) =
-                    entitiesDB.QueryEntities<EnemyEntityViewComponent>(ECSGroups.EnemiesGroup);
-
-                //using always the first target because in this case I know there can be only one, but if 
-                //there were more, I could use different strategies, like choose the closest. This is 
-                //for a very simple AI scenario of course.
-                for (var i = 0; i < enemiesCount; i++)
-                    enemies[i].movementComponent.navMeshDestination = enemyTarget.targetPositionComponent.position;
+                RefHelper();
 
                 yield return null;
             }

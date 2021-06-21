@@ -25,7 +25,7 @@ public static class ExclusiveGroupDebugger
                         {
                             var group = (ExclusiveGroup) field.GetValue(null);
                             string name  = $"{type.FullName}.{field.Name} ({(uint)group})";
-                            GroupMap.idToName[(ExclusiveGroupStruct) group] = name;
+                            GroupMap.idToName[(uint) @group] = name;
                         }
 
                         if (field.IsStatic && typeof(ExclusiveGroupStruct).IsAssignableFrom(field.FieldType))
@@ -33,7 +33,7 @@ public static class ExclusiveGroupDebugger
                             var group = (ExclusiveGroupStruct) field.GetValue(null);
 
                             string name  = $"{type.FullName}.{field.Name} ({(uint)group})";
-                            GroupMap.idToName[@group] = name;
+                            GroupMap.idToName[(uint) @group] = name;
                         }
                     }
                 }
@@ -43,7 +43,7 @@ public static class ExclusiveGroupDebugger
     
     public static string ToName(this in ExclusiveGroupStruct group)
     {
-        if (GroupMap.idToName.TryGetValue(group, out var name) == false)
+        if (GroupMap.idToName.TryGetValue((uint) @group, out var name) == false)
             name = $"<undefined:{((uint)group).ToString()}>";
 
         return name;

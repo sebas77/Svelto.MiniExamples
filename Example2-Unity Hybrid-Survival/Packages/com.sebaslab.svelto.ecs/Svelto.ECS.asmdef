@@ -52,16 +52,6 @@
             "name": "com.unity.collections",
             "expression": "",
             "define": "UNITY_NATIVE"
-        },
-        {
-            "name": "com.unity.burst",
-            "expression": "",
-            "define": "UNITY_JOBS"
-        },
-        {
-            "name": "com.sebaslab.svelto.ecs",
-            "expression": "",
-            "define": "UNITY_JOBS"
         }
     ],
     "noEngineReferences": false

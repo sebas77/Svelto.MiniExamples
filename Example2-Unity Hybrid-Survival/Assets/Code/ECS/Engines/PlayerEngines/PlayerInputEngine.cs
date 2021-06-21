@@ -2,7 +2,7 @@
 using Svelto.ECS.Example.Survive.Camera;
 using UnityEngine;
 
-namespace Svelto.ECS.Example.Survive.Characters.Player
+namespace Svelto.ECS.Example.Survive.Player
 {
     /// <summary>
     ///     if you need to test input, you can mock this class alternatively you can mock the implementor.
@@ -19,21 +19,24 @@ namespace Svelto.ECS.Example.Survive.Characters.Player
         {
             void IteratePlayersInput()
             {
-                var (playerComponents, playersCount) = entitiesDB.QueryEntities<PlayerInputDataComponent>(ECSGroups.PlayersGroup);
-
-                for (int i = 0; i < playersCount; i++)
+                foreach (var ((playerComponents, playersCount), _) in entitiesDB.QueryEntities<PlayerInputDataComponent>(Player.Groups))
                 {
-                    var h = Input.GetAxisRaw("Horizontal");
-                    var v = Input.GetAxisRaw("Vertical");
+                    for (int i = 0; i < playersCount; i++)
+                    {
+                        var h = Input.GetAxisRaw("Horizontal");
+                        var v = Input.GetAxisRaw("Vertical");
 
-                    playerComponents[i].input = new Vector3(h, 0f, v);
-                    playerComponents[i].fire = Input.GetButton("Fire1");
+                        playerComponents[i].input = new Vector3(h, 0f, v);
+                        playerComponents[i].fire  = Input.GetButton("Fire1");
+                    }
                 }
-                
-                var (cameraComponents, camerasCount) = entitiesDB.QueryEntities<CameraEntityViewComponent>(ECSGroups.Camera);
 
-                for (int i = 0; i < camerasCount; i++)
-                    cameraComponents[i].cameraComponent.camRayInput = Input.mousePosition;
+                foreach (var ((cameraComponents, camerasCount), _) in entitiesDB
+                   .QueryEntities<CameraEntityViewComponent>(Camera.Camera.Groups))
+                {
+                    for (int i = 0; i < camerasCount; i++)
+                        cameraComponents[i].cameraComponent.camRayInput = Input.mousePosition;
+                }
             }
 
             while (true)

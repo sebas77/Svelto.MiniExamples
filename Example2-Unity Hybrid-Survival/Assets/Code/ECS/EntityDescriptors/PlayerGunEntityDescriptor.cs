@@ -1,6 +1,6 @@
-﻿using Svelto.ECS.Example.Survive.Characters.Player.Gun;
+﻿using Svelto.ECS.Example.Survive.Player.Gun;
 
-namespace Svelto.ECS.Example.Survive.Characters.Player
+namespace Svelto.ECS.Example.Survive.Player
 {
     public class PlayerGunEntityDescriptor : GenericEntityDescriptor<GunEntityViewComponent, GunAttributesComponent>
     {

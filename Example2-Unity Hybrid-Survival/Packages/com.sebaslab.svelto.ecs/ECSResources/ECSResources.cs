@@ -2,7 +2,7 @@ using Svelto.DataStructures;
 
 namespace Svelto.ECS.Experimental
 {
-    public struct ECSResources<T>
+    struct ECSResources<T>
     {
         internal uint id;
         
@@ -22,7 +22,7 @@ namespace Svelto.ECS.Experimental
             return ref _resources[(int) id - 1];
         }
 
-        internal static uint ToECS(T resource)
+        internal static uint ToECS(in T resource)
         {
             _resources.Add(resource);
 
@@ -37,15 +37,4 @@ namespace Svelto.ECS.Experimental
             return default;
         }
     }   
-
-    public static class ResourceExtensions
-    {
-        public static void Set<T>(ref this ECSResources<T> resource, T newText)
-        {
-            if (resource.id != 0)
-                ResourcesECSDB<T>.resources(resource.id) = newText;
-            else
-                resource.id = ResourcesECSDB<T>.ToECS(newText);
-        }
-    }
 }

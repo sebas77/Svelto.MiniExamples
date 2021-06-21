@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Svelto.ECS.Example.Survive.Characters
+namespace Svelto.ECS.Example.Survive
 {
     public static class GAME_LAYERS
     {

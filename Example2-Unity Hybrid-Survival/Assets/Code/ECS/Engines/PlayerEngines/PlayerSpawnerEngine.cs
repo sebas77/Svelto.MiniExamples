@@ -1,16 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
-using Svelto.ECS.Example.Survive;
 using Svelto.ECS.Example.Survive.Camera;
-using Svelto.ECS.Example.Survive.Characters;
-using Svelto.ECS.Example.Survive.Characters.Player;
-using Svelto.ECS.Example.Survive.Characters.Player.Gun;
+using Svelto.ECS.Example.Survive.Player.Gun;
 using Svelto.ECS.Example.Survive.ResourceManager;
 using Svelto.ECS.Extensions.Unity;
 using Svelto.ECS.Hybrid;
 using UnityEngine;
 
-namespace Svelto.ECS.Example.Player
+namespace Svelto.ECS.Example.Survive.Player
 {
     public class PlayerSpawnerEngine : IQueryingEntitiesEngine, IStepEngine
     {
@@ -49,12 +46,14 @@ namespace Svelto.ECS.Example.Player
             
             //EghidHolderImplementor is a special framework provided implementor that tracks the EGID 
             //of the entity linked to the implementor
-            IImplementor egidHoldImplementor = player.AddComponent<EGIDHolderImplementor>();
+            EntityReferenceHolderImplementor egidHoldImplementor = player.AddComponent<EntityReferenceHolderImplementor>();
             implementors.Add(egidHoldImplementor);
             
             BuildPlayerEntity(implementors, out var playerInitializer);
             BuildGunEntity(playerInitializer, implementors);
-            BuildCameraEntity(playerInitializer, camera);
+            BuildCameraEntity(ref playerInitializer, camera);
+
+            egidHoldImplementor.reference = playerInitializer.reference;
         }
 
         void BuildPlayerEntity(List<IImplementor> implementors, out EntityInitializer playerInitializer)
@@ -65,13 +64,13 @@ namespace Svelto.ECS.Example.Player
             //entity from the outcome of unity callbacks (like collisions). While you can do so, you must not think
             //it's the only way to go. For this reason I decide instead to use 0 for this example and show how
             //to handle the situation.
-            //ECSGroups.PlayersGroup is the group where the entity player will be built. I usually expect a 
+            //ECSGroups.Player is the group where the entity player will be built. I usually expect a 
             //group for entity descriptor. It is the safest way to go, but advanced users may decide to use different
             //groups layout if needed.
             //if the Svelto entity is linked to an external OOP resource, like the GameObject in this case, the
             //relative implementor must be passed to the BuildEntity method.
             //Pure ECS (no OOP) entities do not need implementors passed.
-            playerInitializer = _entityFactory.BuildEntity<PlayerEntityDescriptor>(0, ECSGroups.PlayersGroup, implementors);
+            playerInitializer = _entityFactory.BuildEntity<PlayerEntityDescriptor>(0, Player.BuildGroup, implementors);
 
             //BuildEntity returns an initializer that can be used to initialise all the entity components generated
             //by the entity descriptor. In this case I am initializing just the Health.
@@ -88,8 +87,12 @@ namespace Svelto.ECS.Example.Player
             //Gun and player are two different entities, but they are linked by the EGID
             //in this case we assume that we know at all the time the ID of the gun and the group where the gun is
             //but this is not often the case when groups must be swapped.
+            
+            //Note: in the last refactoring I changed the code to not rely on the knowledge that the ID is known
+            //as this trick cannot be used to determine an EGID anymore once group compounds are used. 
+            //therefore I switched to the use of EntityReferences.
             var init = _entityFactory.BuildEntity<PlayerGunEntityDescriptor>(playerInitializer.EGID.entityID
-                                                                           , ECSGroups.PlayersGunsGroup, implementors);
+                                                                           , Survive.Weapons.Gun.BuildGroup, implementors);
 
             //being lazy here, it should be read from json file
             init.Init(new GunAttributesComponent()
@@ -99,6 +102,12 @@ namespace Svelto.ECS.Example.Player
               , damagePerShot      = 20
                ,
             });
+            
+            playerInitializer.Init(new PlayerWeaponComponent()
+            {
+                weapon = init.reference
+            });
+            
         }
 
         /// <summary>
@@ -106,15 +115,20 @@ namespace Svelto.ECS.Example.Player
         /// screen scenario. 
         /// <param name="playerID"></param>
         /// <param name="gameObject"></param>
-        void BuildCameraEntity(EntityInitializer playerID, GameObject camera)
+        void BuildCameraEntity(ref EntityInitializer playerID, GameObject camera)
         {
             //implementors can be attatched at run time, while not? Check the player spawner engine to 
             //read more about implementors
-            var implementor = camera.AddComponent<CameraImplementor>();
-            implementor.offset = camera.transform.position - playerID.Get<CameraTargetEntityViewComponent>().targetComponent.position;
+            var implementor                     = camera.AddComponent<CameraImplementor>();
+            var cameraTargetEntityViewComponent = playerID.Get<CameraTargetEntityViewComponent>();
+            implementor.offset = camera.transform.position - cameraTargetEntityViewComponent.targetComponent.position;
 
-            _entityFactory.BuildEntity<CameraEntityDescriptor>((uint) playerID.EGID.entityID, ECSGroups.Camera
+            var init = _entityFactory.BuildEntity<CameraEntityDescriptor>(playerID.EGID.entityID, Camera.Camera.BuildGroup
                                                             , new[] {implementor});
+            
+            init.Init(new CameraTargetEntityReferenceComponent() { targetEntity = playerID.reference } );
+            
+            playerID.Init(new CameraReferenceComponent() { cameraReference = init.reference } );
         }
         
         readonly IEntityFactory    _entityFactory;

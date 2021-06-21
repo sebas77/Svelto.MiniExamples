@@ -1,7 +1,7 @@
-using Svelto.ECS.Example.Survive.Characters.Sounds;
+using Svelto.ECS.Example.Survive.Sounds;
 
-namespace Svelto.ECS.Example.Survive.Characters
+namespace Svelto.ECS.Example.Survive
 {
     public class
-        DamageableEntityDescriptor : GenericEntityDescriptor<DamageableComponent, HealthComponent, DeathComponent, DamageSoundEntityViewComponent> { }
+        DamageableEntityDescriptor : GenericEntityDescriptor<DamageableComponent, HealthComponent, DeathComponent, DamageSoundEntityViewComponent, EGIDComponent> { }
 }

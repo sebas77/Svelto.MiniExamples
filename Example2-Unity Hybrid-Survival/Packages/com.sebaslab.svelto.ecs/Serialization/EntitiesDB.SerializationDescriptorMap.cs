@@ -23,12 +23,12 @@ namespace Svelto.ECS
 
                 using (new StandardProfiler("Assemblies Scan"))
                 {
-                    Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
+                    List<Assembly> assemblies = AssemblyUtility.GetCompatibleAssemblies();
 
                     Type d1 = typeof(DefaultVersioningFactory<>);
                     foreach (Assembly assembly in assemblies)
                     {
-                        foreach (Type type in GetTypesSafe(assembly))
+                        foreach (Type type in AssemblyUtility.GetTypesSafe(assembly))
                         {
                             if (type != null && type.IsClass && type.IsAbstract == false && type.BaseType != null
                              && type.BaseType.IsGenericType && type.BaseType.GetGenericTypeDefinition()
@@ -42,20 +42,6 @@ namespace Svelto.ECS
                     }
                 }
             } 
-
-            static IEnumerable<Type> GetTypesSafe(Assembly assembly)
-            {
-                try
-                {
-                    Type[] types = assembly.GetTypes();
-
-                    return types;
-                }
-                catch (ReflectionTypeLoadException e)
-                {
-                    return e.Types;
-                }
-            }
 
             void RegisterEntityDescriptor(ISerializableEntityDescriptor descriptor, Type type, Type d1)
             {

@@ -1,6 +1,6 @@
 using Svelto.ECS.Hybrid;
 
-namespace Svelto.ECS.Example.Survive.Characters.Enemies
+namespace Svelto.ECS.Example.Survive.Enemies
 {
     public struct EnemyTargetEntityViewComponent : IEntityViewComponent
     {

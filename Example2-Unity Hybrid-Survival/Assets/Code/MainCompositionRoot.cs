@@ -1,12 +1,11 @@
 using Svelto.Context;
 using Svelto.DataStructures;
-using Svelto.ECS.Example.Player;
 using Svelto.ECS.Example.Survive.Camera;
 using Svelto.ECS.Example.Survive.Characters;
-using Svelto.ECS.Example.Survive.Characters.Enemies;
-using Svelto.ECS.Example.Survive.Characters.Player;
-using Svelto.ECS.Example.Survive.Characters.Player.Gun;
-using Svelto.ECS.Example.Survive.Characters.Sounds;
+using Svelto.ECS.Example.Survive.Enemies;
+using Svelto.ECS.Example.Survive.Player;
+using Svelto.ECS.Example.Survive.Player.Gun;
+using Svelto.ECS.Example.Survive.Sounds;
 using Svelto.ECS.Example.Survive.HUD;
 using Svelto.ECS.Example.Survive.ResourceManager;
 using Svelto.ECS.Extensions.Unity;
@@ -54,7 +53,7 @@ namespace Svelto.ECS.Example.Survive
 
         public void OnContextInitialized<T>(T contextHolder) { CompositionRoot(contextHolder as UnityContext); }
 
-        public void OnContextDestroyed()
+        public void OnContextDestroyed(bool hasBeenActivated)
         {
             //final clean up
             _enginesRoot?.Dispose();
@@ -128,7 +127,7 @@ namespace Svelto.ECS.Example.Survive
             //Factory is one of the few OOP patterns that work very well with ECS. Its use is highly encouraged
             var enemyFactory = new EnemyFactory(gameObjectFactory, entityFactory);
             //Enemy related engines
-            var enemyAnimationEngine = new EnemyChangeAnimationOnPlayerDeath();
+            var enemyAnimationEngine = new EnemyChangeAnimationOnPlayerDeathEngine();
             var enemyDamageFX        = new EnemySpawnEffectOnDamage(entityStreamConsumerFactory);
             var enemyAttackEngine    = new EnemyAttackEngine(time);
             var enemyMovementEngine  = new EnemyMovementEngine();

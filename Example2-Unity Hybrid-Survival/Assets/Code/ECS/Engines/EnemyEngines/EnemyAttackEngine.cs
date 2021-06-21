@@ -2,7 +2,7 @@ using System;
 using Svelto.Common;
 using UnityEngine;
 
-namespace Svelto.ECS.Example.Survive.Characters.Enemies
+namespace Svelto.ECS.Example.Survive.Enemies
 {
     [Sequenced(nameof(EnemyEnginesNames.EnemyAttackEngine))]
     public class EnemyAttackEngine : IReactOnAddAndRemove<EnemyEntityViewComponent>
@@ -50,10 +50,11 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
         public void MovedTo
             (ref EnemyEntityViewComponent entityViewComponent, ExclusiveGroupStruct previousGroup, EGID egid)
         {
-            if (egid.groupID == ECSGroups.EnemiesGroup)
-                entityViewComponent.targetTriggerComponent.hitChange.ResumeNotify();
-            else
+            //If the enemy is dead, we pause the collision triggering, it will be renabled if the GO is recycled
+            if (egid.groupID.FoundIn(Dead.Groups))
                 entityViewComponent.targetTriggerComponent.hitChange.PauseNotify();
+            else
+                entityViewComponent.targetTriggerComponent.hitChange.ResumeNotify();
         }
 
         /// <summary>
@@ -69,35 +70,30 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
 
         public void Step()
         {
-            // The engine is querying the EnemyTargets group instead of the PlayersGroup.
-            // this is more than a sophistication, it's the implementation of the rule that every engine must use
-            // its own set of groups to promote encapsulation and modularity
-            var buffer =
-                entitiesDB.QueryEntities<DamageableComponent>(ECSGroups.EnemiesTargetGroup);
-
-            if (buffer.count == 0)
-                return;
-                
-            var (enemiesAttackData, enemiesCount) =
-                entitiesDB.QueryEntities<EnemyAttackComponent>(ECSGroups.EnemiesGroup);
-            
-            if (enemiesCount == 0)
-                return;
-
-            for (var enemyIndex = 0; enemyIndex < enemiesCount; enemyIndex++)
+            foreach (var ((enemiesAttackData, enemiesCount), _) in entitiesDB.QueryEntities<EnemyAttackComponent>(
+                AliveEnemies.Groups))
             {
-                ref var enemyAttackComponent = ref enemiesAttackData[enemyIndex];
-                ref var enemyCollisionData   = ref enemyAttackComponent.entityInRange;
-
-                if (enemyCollisionData.collides)
+                for (var enemyIndex = 0; enemyIndex < enemiesCount; enemyIndex++)
                 {
-                    enemyAttackComponent.timer += _time.deltaTime;
+                    ref var enemyAttackComponent = ref enemiesAttackData[enemyIndex];
+                    ref var enemyCollisionData   = ref enemyAttackComponent.entityInRange;
 
-                    if (enemyAttackComponent.timer >= enemyAttackComponent.timeBetweenAttack)
+                    if (enemyCollisionData.collides == true)
                     {
-                        enemyAttackComponent.timer = 0.0f;
+                        enemyAttackComponent.timer += _time.deltaTime;
 
-                        DamageTargetInsideRange(enemyCollisionData.otherEntityID, enemyAttackComponent.attackDamage);
+                        if (enemyAttackComponent.timer >= enemyAttackComponent.timeBetweenAttack)
+                        {
+                            enemyAttackComponent.timer = 0.0f;
+
+                            //if this fails, it means that the target entity doesn't exist anymore. 
+                            //Unluckily Unity doesn't trigger OnTriggerExit on RB disabled and any way to find
+                            //a work around it, would have been much more complex than just this if
+                            if (enemyCollisionData.otherEntityID.ToEGID(entitiesDB, out var otherEntityID) == true)
+                            {
+                                DamageTargetInsideRange(otherEntityID, enemyAttackComponent.attackDamage);
+                            }
+                        }
                     }
                 }
             }

@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using Svelto.ECS.Example.Survive.Characters;
-using Svelto.ECS.Example.Survive.Characters.Enemies;
+using Svelto.ECS.Example.Survive.Enemies;
 using Svelto.ECS.Example.Survive.HUD;
 using Svelto.ECS.Example.Survive.ResourceManager;
 using Svelto.ECS.Extensions.Unity;
@@ -32,14 +31,16 @@ namespace Svelto.ECS.Example.Survive
 
             List<IImplementor> implementors = new List<IImplementor>();
             enemyGO.GetComponentsInChildren(implementors);
-            implementors.Add(enemyGO.AddComponent<EGIDHolderImplementor>());
+            var egidHolderImplementor = enemyGO.AddComponent<EntityReferenceHolderImplementor>();
+            implementors.Add(egidHolderImplementor);
 
             //using the GameObject GetInstanceID() as entityID would help to directly use the result of Unity functions
             //to index the entity in the Svelto database. However I want in this demo how to not rely on it.
             var initializer =
-                _entityFactory.BuildEntity<EnemyEntityDescriptor>(new EGID(_enemiesCreated++, ECSGroups.EnemiesGroup)
+                _entityFactory.BuildEntity<EnemyEntityDescriptor>(new EGID(_enemiesCreated++, AliveEnemies.BuildGroup)
                                                                 , implementors);
 
+            egidHolderImplementor.reference = initializer.reference;
             //Initialize the pure EntityStructs. This should be the preferred pattern, there is much less boiler plate
             //too
             initializer.Init(EnemyAttackComponent);
@@ -61,14 +62,6 @@ namespace Svelto.ECS.Example.Survive
 
             enemyGO.SetActive(true);
             transform.position = spawnPoint;
-        }
-
-        /// <summary>
-        /// small optimization, not necessary at all, it just preallocate the entities array
-        /// </summary>
-        public void Preallocate()
-        {
-            _entityFactory.PreallocateEntitySpace<EnemyEntityDescriptor>(ECSGroups.EnemiesGroup, 10);
         }
 
         readonly IEntityFactory    _entityFactory;

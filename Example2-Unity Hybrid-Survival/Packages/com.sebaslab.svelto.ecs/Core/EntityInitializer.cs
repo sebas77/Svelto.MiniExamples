@@ -5,13 +5,15 @@ namespace Svelto.ECS
 {
     public readonly ref struct EntityInitializer
     {
-        public EntityInitializer(EGID id, FasterDictionary<RefWrapperType, ITypeSafeDictionary> group)
+        public EntityInitializer(EGID id, FasterDictionary<RefWrapperType, ITypeSafeDictionary> group, in EntityReference reference)
         {
-            _group = group;
-            _ID = id;
+            _group    = group;
+            _ID       = id;
+            this.reference = reference;
         }
 
-        public EGID EGID => _ID;
+        public EGID            EGID => _ID;
+        public readonly EntityReference reference;
 
         public void Init<T>(T initializer) where T : struct, IEntityComponent
         {

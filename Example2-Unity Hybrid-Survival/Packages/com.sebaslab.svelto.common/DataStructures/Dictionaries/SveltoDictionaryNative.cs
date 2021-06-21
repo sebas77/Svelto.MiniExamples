@@ -5,7 +5,7 @@ using Svelto.Common;
 namespace Svelto.DataStructures
 {
     public ref struct SveltoDictionaryNative<TKey, TValue> 
-        where TKey : unmanaged, IEquatable<TKey> where TValue : unmanaged
+        where TKey : unmanaged, IEquatable<TKey> where TValue : struct
     {
         public SveltoDictionaryNative(uint size) : this(size, Allocator.Persistent) { }
 

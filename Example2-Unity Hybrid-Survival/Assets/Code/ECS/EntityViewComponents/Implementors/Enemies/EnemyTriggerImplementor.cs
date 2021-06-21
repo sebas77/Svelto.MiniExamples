@@ -2,7 +2,7 @@ using Svelto.ECS.Extensions.Unity;
 using Svelto.ECS.Hybrid;
 using UnityEngine;
 
-namespace Svelto.ECS.Example.Survive.Characters.Enemies
+namespace Svelto.ECS.Example.Survive.Enemies
 {
     //Implementors act as bridge between Svelto.ECS Engines and third party platforms.
     //This feature is of fundamental importance to mix ECS with OOP libraries. If you need unity to communicate with the
@@ -24,19 +24,19 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
         {
             if (hitChange != null && other.attachedRigidbody != null)
             {
-                EGIDHolderImplementor enemyTargetEntityViewComponent = other.gameObject.GetComponent<EGIDHolderImplementor>();
+                EntityReferenceHolderImplementor enemyTargetEntityViewComponent = other.gameObject.GetComponent<EntityReferenceHolderImplementor>();
                 if (enemyTargetEntityViewComponent != null)
-                    hitChange.value = new EnemyCollisionData(enemyTargetEntityViewComponent.ID, true);
+                    hitChange.value = new EnemyCollisionData(enemyTargetEntityViewComponent.reference, true);
             }
         }
-
+        
         void OnTriggerExit(Collider other)
         {
             if (hitChange != null && other.attachedRigidbody != null)
             {
-                EGIDHolderImplementor enemyTargetEntityViewComponent = other.gameObject.GetComponent<EGIDHolderImplementor>();
-                    if (enemyTargetEntityViewComponent != null)
-                        hitChange.value = new EnemyCollisionData(enemyTargetEntityViewComponent.ID, false);
+                EntityReferenceHolderImplementor enemyTargetEntityViewComponent = other.gameObject.GetComponent<EntityReferenceHolderImplementor>();
+                if (enemyTargetEntityViewComponent != null)
+                    hitChange.value = new EnemyCollisionData(enemyTargetEntityViewComponent.reference, false);
             }
         }
     }

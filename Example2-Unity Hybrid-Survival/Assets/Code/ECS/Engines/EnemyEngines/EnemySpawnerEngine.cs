@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
-namespace Svelto.ECS.Example.Survive.Characters.Enemies
+namespace Svelto.ECS.Example.Survive.Enemies
 {
     public class EnemySpawnerEngine : IQueryingEntitiesEngine, IReactOnSwap<EnemyEntityViewComponent>, IStepEngine
     {
@@ -24,7 +24,8 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
 
         public void MovedTo(ref EnemyEntityViewComponent entityComponent, ExclusiveGroupStruct previousGroup, EGID egid)
         {
-            if (previousGroup == ECSGroups.EnemiesDeadGroup)
+            //is the enemy dead?
+            if (egid.groupID.FoundIn(DeadEnemies.Groups))
             {
                 _numberOfEnemyToSpawn++;
             }
@@ -56,8 +57,6 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
 
             for (var i = enemiestoSpawn.Length - 1; i >= 0 && _numberOfEnemyToSpawn > 0; --i)
                 spawningTimes[i] = enemiestoSpawn[i].enemySpawnData.spawnTime;
-
-            _enemyFactory.Preallocate();
 
             while (true)
             {
@@ -141,7 +140,7 @@ namespace Svelto.ECS.Example.Survive.Characters.Enemies
                 enemyViews[0].layerComponent.layer                  = GAME_LAYERS.ENEMY_LAYER;
                 enemyViews[0].animationComponent.reset              = true;
 
-                _entityFunctions.SwapEntityGroup<EnemyEntityDescriptor>(enemyViews[0].ID, ECSGroups.EnemiesGroup);
+                _entityFunctions.SwapEntityGroup<EnemyEntityDescriptor>(enemyViews[0].ID, AliveEnemies.BuildGroup);
             }
         }
 

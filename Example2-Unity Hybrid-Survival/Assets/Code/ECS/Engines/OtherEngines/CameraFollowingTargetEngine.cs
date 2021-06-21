@@ -26,23 +26,25 @@ namespace Svelto.ECS.Example.Survive.Camera
 
             void TrackCameraTarget()
             {
-                var (cameras, count) = entitiesDB.QueryEntities<CameraEntityViewComponent>(ECSGroups.Camera);
-
-                for (var i = 0; i < count; i++)
+                foreach (var ((targets, cameras, count), _) in entitiesDB
+                   .QueryEntities<CameraTargetEntityReferenceComponent, CameraEntityViewComponent>(Camera.Groups))
                 {
-                    ref var camera = ref cameras[i];
-
-                    //The camera target can be destroyed while the camera is still active
-                    if (entitiesDB.TryQueryEntitiesAndIndex<CameraTargetEntityViewComponent>(
-                        camera.ID.entityID, ECSGroups.PlayersGroup, out var index, out var targets))
+                    for (uint i = 0; i < count; i++)
                     {
-                        var cameraTarget = targets[index];
+                        ref var camera = ref cameras[i];
 
-                        var targetCameraPos = cameraTarget.targetComponent.position + camera.cameraComponent.offset;
+                        EntityReference entityReference = targets[i].targetEntity;
+                        //The camera target can be destroyed while the camera is still active
+                        if (entityReference.ToEGID(entitiesDB, out var targetEGID))
+                        {
+                            ref var cameraTarget =
+                                ref entitiesDB.QueryEntity<CameraTargetEntityViewComponent>(targetEGID);
 
-                        camera.transformComponent.position =
-                            Vector3.Lerp(camera.positionComponent.position, targetCameraPos
-                                       , smoothing * _time.deltaTime);
+                            var targetCameraPos = cameraTarget.targetComponent.position + camera.cameraComponent.offset;
+
+                            camera.transformComponent.position = Vector3.Lerp(
+                                camera.positionComponent.position, targetCameraPos, smoothing * _time.deltaTime);
+                        }
                     }
                 }
             }

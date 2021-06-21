@@ -2,7 +2,7 @@ using Svelto.ECS.Hybrid;
 using UnityEngine;
 using UnityEngine.AI;
 
-namespace Svelto.ECS.Example.Survive.Characters.Enemies
+namespace Svelto.ECS.Example.Survive.Enemies
 {
     public class EnemyMovementImplementor
         : MonoBehaviour, IImplementor, IEnemyMovementComponent, ITransformComponent, ILayerComponent
