@@ -41,7 +41,6 @@ I used the Survival Shooter Unity Demo to show how an ECS framework could work i
 Most of the source code has been rewritten to work with Svelto.ECS framework. The Survival Demo is tested with the latest version of Unity, so I cannot guarantee that it always works, but it should work with all the versions from 5.3 and above.
 
 * Note: This demo shows just one way to abstract OOP code, it is not _THE WAY_. Other strategies are in fact listed in the Example 6. 
-* Note: This demo code is old and it's still using ExclusiveGroups instead of GroupCompounds. You should use GroupCompunds.
 * Note: The purposes of this demo is NOT to show how to write fast code. In fact most of the solutions you will find in this demo are not optimal at all. Svelto ECS is used only to wrap high level code as all the low level functionalities are executed through standard gameobjects.
 
 ## Example 3: GUI and Service Layer (Hybrid ECS for GUI)
