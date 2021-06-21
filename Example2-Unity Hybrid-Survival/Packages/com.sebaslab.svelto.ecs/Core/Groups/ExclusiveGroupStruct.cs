@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace Svelto.ECS
@@ -17,6 +18,7 @@ namespace Svelto.ECS
             return (int) _id;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(ExclusiveGroupStruct c1, ExclusiveGroupStruct c2)
         {
             return c1.Equals(c2);
@@ -27,6 +29,7 @@ namespace Svelto.ECS
             return c1.Equals(c2) == false;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Equals(ExclusiveGroupStruct other)
         {
             return other._id == _id;

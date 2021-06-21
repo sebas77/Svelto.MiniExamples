@@ -21,9 +21,9 @@ namespace Svelto.ECS
         {
             _entitiesOperations            = new FasterDictionary<ulong, EntitySubmitOperation>();
 #if UNITY_NATIVE //because of the thread count, ATM this is only for unity            
-            _nativeSwapOperationQueue      = new AtomicNativeBags(Allocator.Persistent);
-            _nativeRemoveOperationQueue    = new AtomicNativeBags(Allocator.Persistent);
-            _nativeAddOperationQueue       = new AtomicNativeBags(Allocator.Persistent);
+            _nativeSwapOperationQueue   = new DataStructures.AtomicNativeBags(Allocator.Persistent);
+            _nativeRemoveOperationQueue = new DataStructures.AtomicNativeBags(Allocator.Persistent);
+            _nativeAddOperationQueue    = new DataStructures.AtomicNativeBags(Allocator.Persistent);
 #endif            
             serializationDescriptorMap     = new SerializationDescriptorMap();
             _maxNumberOfOperationsPerFrame = uint.MaxValue;

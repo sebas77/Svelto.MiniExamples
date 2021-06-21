@@ -41,6 +41,11 @@ namespace Svelto.ECS.Experimental
                 sets.Remove(groupsToIgnore[i]);
             }
         }
+        
+        public void Exclude(ExclusiveGroupStruct groupsToIgnore)
+        {
+            sets.Remove(groupsToIgnore);
+        }
 
         public void EnsureCapacity(uint preparecount)
         {
@@ -107,7 +112,18 @@ namespace Svelto.ECS.Experimental
             
             return this;
         }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public QueryGroups Except(ExclusiveGroupStruct group)
+        {
+            var groupsValue = groups.Value;
+            
+            groupsValue.Exclude(group);
 
+            return this;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public QueryGroups Except(ExclusiveGroupStruct[] groupsToIgnore)
         {
             var groupsValue = QueryGroups.groups.Value;
@@ -117,6 +133,7 @@ namespace Svelto.ECS.Experimental
             return this;
         }
         
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public QueryGroups Except(LocalFasterReadOnlyList<ExclusiveGroupStruct> groupsToIgnore)
         {
             var groupsValue = QueryGroups.groups.Value;
@@ -126,6 +143,7 @@ namespace Svelto.ECS.Experimental
             return this;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public QueryGroups Except(FasterList<ExclusiveGroupStruct> groupsToIgnore)
         {
             var groupsValue = QueryGroups.groups.Value;
@@ -135,6 +153,7 @@ namespace Svelto.ECS.Experimental
             return this;
         }
         
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public QueryGroups Except(FasterReadOnlyList<ExclusiveGroupStruct> groupsToIgnore)
         {
             var groupsValue = QueryGroups.groups.Value;
