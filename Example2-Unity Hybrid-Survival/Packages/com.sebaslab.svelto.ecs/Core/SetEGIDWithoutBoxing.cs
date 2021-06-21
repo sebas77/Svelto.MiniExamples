@@ -43,7 +43,7 @@ namespace Svelto.ECS.Internal
              return (ref T target, EntityReference reference) =>
              {
                  var needEgid = (target as INeedEntityReference);
-                 needEgid.reference = reference;
+                 needEgid.selfReference = reference;
                  target                   = (T) needEgid;
              };
 #endif
