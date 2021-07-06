@@ -11,6 +11,9 @@ namespace Svelto.ECS.Example.Survive
 namespace Svelto.ECS.Example.Survive.Weapons
 {
     public class Gun : GroupTag<Gun> { };
+
+    public class AmmoTag : GroupTag<AmmoTag> { };
+
 }
 
 namespace Svelto.ECS.Example.Survive.Player

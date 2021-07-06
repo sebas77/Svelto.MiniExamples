@@ -15,7 +15,7 @@ namespace Svelto.ECS.Example.Survive.Player.Gun
         }
 
         public EntitiesDB entitiesDB { set; private get; }
-        public void       Ready()    { }
+        public void       Ready()    {}
         public void       Step()     { _shootTick.MoveNext(); }
         public string     name       => nameof(PlayerGunShootingEngine);
 
@@ -38,7 +38,7 @@ namespace Svelto.ECS.Example.Survive.Player.Gun
 
                             playerGunComponent.timer += _time.deltaTime;
 
-                            if (playerGunComponent.timer >= playerGunComponent.timeBetweenBullets)
+                            if (playerGunComponent.timer >= playerGunComponent.timeBetweenBullets && playerGunComponent.ammoLeft > 0)
                                 this.Shoot(ref playerGunComponent, playerGunViewComponent);
                         }
                     }
@@ -63,6 +63,8 @@ namespace Svelto.ECS.Example.Survive.Player.Gun
         void Shoot(ref GunAttributesComponent playerGunEntityView, in GunEntityViewComponent gunFxComponent)
         {
             playerGunEntityView.timer = 0;
+
+            playerGunEntityView.ammoLeft--;
 
             Ray shootRay = gunFxComponent.gunFXComponent.shootRay;
             

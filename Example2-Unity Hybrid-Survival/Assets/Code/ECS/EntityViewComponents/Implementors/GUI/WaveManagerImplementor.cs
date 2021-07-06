@@ -27,15 +27,6 @@ namespace Svelto.ECS.Example.Survive.Implementors.HUD
             }
         }
 
-        public int enemiesTotal
-        {
-            get => _enemiesTotal;
-            set
-            {
-                _enemiesTotal = value;
-            }
-        }
-
         void SetText()
         {
             _text.text = "Wave: " + (_wave + 1) + "\nEnemies left: " + _enemies;
@@ -52,7 +43,6 @@ namespace Svelto.ECS.Example.Survive.Implementors.HUD
 
         int  _wave;
         int  _enemies;
-        int  _enemiesTotal;
         Text _text;
     }
 }

@@ -4,6 +4,5 @@ namespace Svelto.ECS.Example.Survive
     {
         public int waveValue;
         public int enemyCount;
-        public int enemyTotal;
     }
 }

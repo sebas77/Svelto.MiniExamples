@@ -17,6 +17,10 @@ namespace Svelto.ECS.Example.Survive.HUD
             _consumerFactory = consumerFactory;
             _animateUI = AnimateUI();
             _checkForDamage= CheckForDamage();
+            _checkForWaveChange = CheckForWaveChange();
+            _checkForAmmoChange = CheckForAmmoChange();
+            _wavenum = 0;
+            _announceActive = true;
         }
 
         public EntitiesDB entitiesDB { set; private get; }
@@ -28,6 +32,8 @@ namespace Svelto.ECS.Example.Survive.HUD
         {
             _animateUI.MoveNext();
             _checkForDamage.MoveNext();
+            _checkForWaveChange.MoveNext();
+            _checkForAmmoChange.MoveNext();
         }
         public string name   => nameof(HUDEngine);
 
@@ -38,10 +44,26 @@ namespace Svelto.ECS.Example.Survive.HUD
                 var (buffer, count) = entitiesDB.QueryEntities<HUDEntityViewComponent>(ECSGroups.GUICanvas);
                 for (int i = 0; i < count; ++i)
                 {
+                    //Damage flashing
                     var damageComponent = buffer[i].damageImageComponent;
 
                     damageComponent.imageColor = Color.Lerp(damageComponent.imageColor, Color.clear
                                                           , damageComponent.speed * UnityEngine.Time.deltaTime);
+
+                    //Next wave incoming announcement animation
+                    var announcementComponent = buffer[i].announcementHUDComponent;
+
+                    if (_announceActive && announcementComponent.textColor.a >= 0.99f)
+                    {
+                        _announceActive = false;
+                        announcementComponent.targetColor = new Color(1f, 0f, 0f, 0f);
+                    }
+
+                    announcementComponent.textColor = Color.Lerp(announcementComponent.textColor, announcementComponent.targetColor, announcementComponent.speed * UnityEngine.Time.deltaTime);
+
+                    //Ammo update
+                    var ammoComponent = buffer[i].ammoComponent;
+                    //ammoComponent.ammo = 5;
                 }
             }
 
@@ -79,8 +101,67 @@ namespace Svelto.ECS.Example.Survive.HUD
             }
         }
 
+        IEnumerator CheckForWaveChange()
+        {
+            var _consumerWave = _consumerFactory.GenerateConsumer<WaveDataComponent>("HUDEngine", 1);
+
+            while (true)
+            {
+                while (_consumerWave.TryDequeue(out var wave, out var egid))
+                {
+                    var (buffer, count) = entitiesDB.QueryEntities<HUDEntityViewComponent>(ECSGroups.GUICanvas);
+
+                    for (int i = 0; i < count; ++i)
+                    {
+                        //Check for wave change
+                        var announcementComponent = buffer[i].announcementHUDComponent;
+                        if (wave.waveValue > _wavenum)
+                        {
+                            _announceActive = true;
+                            announcementComponent.speed = 2f;
+                            announcementComponent.targetColor = new Color(1f, 0f, 0f, 1f);
+                            _wavenum = wave.waveValue;
+                        }
+
+                        //update UI
+                        var waveImp = buffer[i].waveDataComponent;
+                        waveImp.enemies = wave.enemyCount;
+                        waveImp.wave = wave.waveValue;
+                    }
+                }
+
+                yield return null;
+            }
+        }
+
+        IEnumerator CheckForAmmoChange()
+        {
+            var _consumerAmmo = _consumerFactory.GenerateConsumer<Player.Gun.GunAttributesComponent>("HUDEngine", 1);
+
+            while (true)
+            {
+                while (_consumerAmmo.TryDequeue(out var gunAttributes, out var egid))
+                {
+                    var (buffer, count) = entitiesDB.QueryEntities<HUDEntityViewComponent>(ECSGroups.GUICanvas);
+
+                    for (int i = 0; i < count; ++i)
+                    {
+                        var ammoImp = buffer[i].ammoComponent;
+                        ammoImp.ammo = gunAttributes.ammoLeft;
+                    }
+                }
+                yield return null;
+            }
+        }
+
         readonly IEntityStreamConsumerFactory _consumerFactory;
         readonly IEnumerator                  _animateUI;
         readonly IEnumerator                  _checkForDamage;
+
+        readonly IEnumerator                  _checkForWaveChange;
+        readonly IEnumerator                  _checkForAmmoChange;
+
+        int _wavenum;
+        bool _announceActive;
     }
 }

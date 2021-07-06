@@ -31,7 +31,13 @@ namespace Svelto.ECS.Example.Survive.Enemies
             {
                 _numberOfEnemyToSpawn++;
                 _deadCount++;
-                entitiesDB.QueryUniqueEntity<HUD.HUDEntityViewComponent>(ECSGroups.GUICanvas).waveDataComponent.enemies = _currentWaveMax - _deadCount;
+
+                var (buffer, count) = entitiesDB.QueryEntities<HUD.HUDEntityViewComponent>(ECSGroups.GUICanvas);
+                var hudEntityView = buffer[0];
+                var (wave, count2) = entitiesDB.QueryEntities<WaveDataComponent>(ECSGroups.GUICanvas);
+                wave[0].enemyCount = _currentWaveMax - _deadCount;
+                entitiesDB.PublishEntityChange<WaveDataComponent>(hudEntityView.ID);
+                
                 if (_deadCount >= _currentWaveMax)
                 {
                     _waveOver = true;
@@ -80,10 +86,12 @@ namespace Svelto.ECS.Example.Survive.Enemies
             }
 
             //Wave Data component update
-            var hudEntityView = entitiesDB.QueryUniqueEntity<HUD.HUDEntityViewComponent>(ECSGroups.GUICanvas);
-            hudEntityView.waveDataComponent.wave = 0;
-            hudEntityView.waveDataComponent.enemies = _currentWaveMax;
-            hudEntityView.waveDataComponent.enemiesTotal = _currentWaveMax;
+            var (buffer, count) = entitiesDB.QueryEntities<HUD.HUDEntityViewComponent>(ECSGroups.GUICanvas);
+            var hudEntityView = buffer[0];
+            var (wave, count2) = entitiesDB.QueryEntities<WaveDataComponent>(ECSGroups.GUICanvas);
+            wave[0].waveValue = 0;
+            wave[0].enemyCount = _currentWaveMax;
+            entitiesDB.PublishEntityChange<WaveDataComponent>(hudEntityView.ID);
 
             //Setup Spawntimes
             for (var i = enemiestoSpawn.Length - 1; i >= 0 && _numberOfEnemyToSpawn > 0; --i)
@@ -93,21 +101,29 @@ namespace Svelto.ECS.Example.Survive.Enemies
             {
                 if (_waveOver)
                 {
-                    hudEntityView.waveDataComponent.wave++;
-                    if (hudEntityView.waveDataComponent.wave >= enemyWaveData.Length) hudEntityView.waveDataComponent.wave = enemyWaveData.Length - 1;
+                    ref var wavecomponent = ref entitiesDB.QueryEntity<WaveDataComponent>(hudEntityView.ID);
+                    wavecomponent.waveValue++;
+
+                    if (wavecomponent.waveValue >= enemyWaveData.Length)
+                        waveData = enemyWaveData[enemyWaveData.Length - 1];
+                    else
+                        waveData = enemyWaveData[wavecomponent.waveValue];
+
                     _deadCount = 0;
                     _currentWaveMax = 0;
 
-                    waveData = enemyWaveData[hudEntityView.waveDataComponent.wave];
                     for (var i = enemiestoSpawn.Length - 1; i >= 0; --i)
                     {
                         amountToSpawnEach[i] = (int)waveData.enemyWaveData.amountToSpawn[i];
                         _currentWaveMax += (int)waveData.enemyWaveData.amountToSpawn[i];
                     }
-                    hudEntityView.waveDataComponent.enemies = _currentWaveMax;
 
+                    //reset spawn timers
                     for (var i = enemiestoSpawn.Length - 1; i >= 0 && _numberOfEnemyToSpawn > 0; --i)
                         spawningTimes[i] = enemiestoSpawn[i].enemySpawnData.spawnTime + 5;
+                    
+                    wavecomponent.enemyCount = _currentWaveMax;
+                    entitiesDB.PublishEntityChange<WaveDataComponent>(hudEntityView.ID);
 
                     _waveOver = false;
                 }
