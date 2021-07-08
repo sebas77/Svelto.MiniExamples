@@ -11,6 +11,8 @@ namespace Svelto.ECS.Example.Survive.Weapons
         public int ammoValue { get; set; }
         public Quaternion rotation { get => _transform.rotation; set => _transform.rotation = value; }
 
+        public Vector3 position { get => _transform.position; set => _transform.position = value; }
+
         void Awake()
         {
             _transform = transform;
@@ -33,9 +35,9 @@ namespace Svelto.ECS.Example.Survive.Weapons
         {
             if (hitChange != null && other.attachedRigidbody != null)
             {
-                EntityReferenceHolderImplementor ammoEntityViewComponent = other.gameObject.GetComponent<EntityReferenceHolderImplementor>();
-                if (ammoEntityViewComponent != null)
-                    hitChange.value = new AmmoCollisionData(ammoEntityViewComponent.reference, false);
+                EntityReferenceHolderImplementor otherEntityReferenceImp = other.gameObject.GetComponent<EntityReferenceHolderImplementor>();
+                if (otherEntityReferenceImp != null)
+                    hitChange.value = new AmmoCollisionData(otherEntityReferenceImp.reference, false);
             }
         }
 

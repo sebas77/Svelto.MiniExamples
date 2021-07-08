@@ -63,7 +63,6 @@ namespace Svelto.ECS.Example.Survive.Weapons
                 foreach (var ((ammo, ammoCount), _) in entitiesDB.QueryEntities<AmmoEntityViewComponent>(
                         AmmoTag.Groups))
                 {
-                    //Svelto.Console.LogDebug(ammo[0].ID + "");
                     ammo[0].ammoComponent.rotation *= Quaternion.Euler(Vector3.up * 1);
                 }
 

@@ -100,7 +100,6 @@ namespace Svelto.ECS.Example.Survive.Player
                 timeBetweenBullets = 0.15f
               , range              = 100f
               , damagePerShot      = 20
-              , ammoLeft           = 10
             });
             
             playerInitializer.Init(new PlayerWeaponComponent()

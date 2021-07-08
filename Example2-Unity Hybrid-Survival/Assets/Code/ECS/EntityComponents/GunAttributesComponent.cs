@@ -10,6 +10,6 @@ namespace Svelto.ECS.Example.Survive.Player.Gun
         public float   timer;
         public Vector3 lastTargetPosition;
 
-        public int     ammoLeft;
+        //public int     ammoLeft;
     }
 }

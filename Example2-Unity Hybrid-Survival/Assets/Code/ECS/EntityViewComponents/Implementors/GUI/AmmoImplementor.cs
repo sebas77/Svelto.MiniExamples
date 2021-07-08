@@ -21,7 +21,6 @@ namespace Svelto.ECS.Example.Survive.Implementors.HUD
         {
             // Set up the reference.
             _text = GetComponent<Text>();
-            _ammo = -1;
         }
 
         int _ammo;

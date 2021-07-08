@@ -136,18 +136,18 @@ namespace Svelto.ECS.Example.Survive.HUD
 
         IEnumerator CheckForAmmoChange()
         {
-            var _consumerAmmo = _consumerFactory.GenerateConsumer<Player.Gun.GunAttributesComponent>("HUDEngine", 1);
+            var _consumerAmmo = _consumerFactory.GenerateConsumer<Weapons.AmmoValueComponent>("HUDEngine", 10);
 
             while (true)
             {
-                while (_consumerAmmo.TryDequeue(out var gunAttributes, out var egid))
+                while (_consumerAmmo.TryDequeue(out var ammoValue, out var egid))
                 {
                     var (buffer, count) = entitiesDB.QueryEntities<HUDEntityViewComponent>(ECSGroups.GUICanvas);
 
                     for (int i = 0; i < count; ++i)
                     {
                         var ammoImp = buffer[i].ammoComponent;
-                        ammoImp.ammo = gunAttributes.ammoLeft;
+                        ammoImp.ammo = ammoValue.ammoValue;
                     }
                 }
                 yield return null;

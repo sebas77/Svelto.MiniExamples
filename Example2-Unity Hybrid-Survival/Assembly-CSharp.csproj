@@ -131,6 +131,7 @@
     <Compile Include="Assets\Code\ECS\EntityDescriptors\PlayerGunEntityDescriptor.cs" />
     <Compile Include="Assets\Code\ECS\Engines\PlayerEngines\RestartGameOnPlayerDeathEngine.cs" />
     <Compile Include="Assets\Code\ECS\Engines\OtherEngines\AmmoSpawnerEngine.cs" />
+    <Compile Include="Assets\Code\ECS\Engines\OtherEngines\AmmoCollisionEngine.cs" />
     <Compile Include="Assets\Code\ECS\EntityDescriptors\EnemyEntityDescriptor.cs" />
     <Compile Include="Assets\Code\Others\ITime.cs" />
     <Compile Include="Assets\Code\ECS\Engines\EnemyEngines\EnemyChangeAnimationOnPlayerDeathEngine.cs" />
@@ -156,7 +157,6 @@
     <Compile Include="Assets\Code\ECS\EntityDescriptors\HudEntityDescriptorHolder.cs" />
     <Compile Include="Assets\Code\Factories\GameObjectFactory.cs" />
     <Compile Include="Assets\Code\ECS\EntityComponents\GunAttributesComponent.cs" />
-    <Compile Include="Assets\Code\ECS\Engines\OtherEngines\AmmoCollisionEngine.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Fonts\LuckiestGuy\LICENSE.txt" />

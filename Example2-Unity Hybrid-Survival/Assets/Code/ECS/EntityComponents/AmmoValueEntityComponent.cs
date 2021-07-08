@@ -4,4 +4,10 @@ namespace Svelto.ECS.Example.Survive.Weapons
     {
         public int ammoValue;
     }
+
+    public struct AmmoCollisionComponent : IEntityComponent
+    {
+        public AmmoCollisionData entityInRange;
+        public EGID originEGID;
+    }
 }
