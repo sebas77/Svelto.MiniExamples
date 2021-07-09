@@ -32,11 +32,12 @@ namespace Svelto.ECS.Example.Survive.Enemies
                 _numberOfEnemyToSpawn++;
                 _deadCount++;
 
+                //update wave component of hud
                 var (buffer, count) = entitiesDB.QueryEntities<HUD.HUDEntityViewComponent>(ECSGroups.GUICanvas);
-                var hudEntityView = buffer[0];
+                var hudEGID = buffer[0].ID;
                 var (wave, count2) = entitiesDB.QueryEntities<WaveDataComponent>(ECSGroups.GUICanvas);
                 wave[0].enemyCount = _currentWaveMax - _deadCount;
-                entitiesDB.PublishEntityChange<WaveDataComponent>(hudEntityView.ID);
+                entitiesDB.PublishEntityChange<WaveDataComponent>(hudEGID);
                 
                 if (_deadCount >= _currentWaveMax)
                 {
@@ -87,11 +88,11 @@ namespace Svelto.ECS.Example.Survive.Enemies
 
             //Wave Data component update
             var (buffer, count) = entitiesDB.QueryEntities<HUD.HUDEntityViewComponent>(ECSGroups.GUICanvas);
-            var hudEntityView = buffer[0];
+            var hudEGID = buffer[0].ID;
             var (wave, count2) = entitiesDB.QueryEntities<WaveDataComponent>(ECSGroups.GUICanvas);
             wave[0].waveValue = 0;
             wave[0].enemyCount = _currentWaveMax;
-            entitiesDB.PublishEntityChange<WaveDataComponent>(hudEntityView.ID);
+            entitiesDB.PublishEntityChange<WaveDataComponent>(hudEGID);
 
             //Setup Spawntimes
             for (var i = enemiestoSpawn.Length - 1; i >= 0 && _numberOfEnemyToSpawn > 0; --i)
@@ -101,7 +102,7 @@ namespace Svelto.ECS.Example.Survive.Enemies
             {
                 if (_waveOver)
                 {
-                    ref var wavecomponent = ref entitiesDB.QueryEntity<WaveDataComponent>(hudEntityView.ID);
+                    ref var wavecomponent = ref entitiesDB.QueryEntity<WaveDataComponent>(hudEGID);
                     wavecomponent.waveValue++;
 
                     if (wavecomponent.waveValue >= enemyWaveData.Length)
@@ -123,7 +124,7 @@ namespace Svelto.ECS.Example.Survive.Enemies
                         spawningTimes[i] = enemiestoSpawn[i].enemySpawnData.spawnTime + 5;
                     
                     wavecomponent.enemyCount = _currentWaveMax;
-                    entitiesDB.PublishEntityChange<WaveDataComponent>(hudEntityView.ID);
+                    entitiesDB.PublishEntityChange<WaveDataComponent>(hudEGID);
 
                     _waveOver = false;
                 }

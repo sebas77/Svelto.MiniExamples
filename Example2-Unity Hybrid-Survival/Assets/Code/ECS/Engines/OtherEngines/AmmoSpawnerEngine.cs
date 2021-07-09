@@ -31,7 +31,7 @@ namespace Svelto.ECS.Example.Survive.Weapons
 
         IEnumerator MainTick()
         {
-            Vector3 GetPosition()
+            static Vector3 GetPosition()
             {
                 Vector3 spawnPos = new Vector3(UnityEngine.Random.Range(-15f, 15f), 1, UnityEngine.Random.Range(-15f, 15f));
                 var hitColliders = Physics.OverlapSphere(spawnPos, 0.9f);
@@ -42,6 +42,7 @@ namespace Svelto.ECS.Example.Survive.Weapons
 
             while (true)
             {
+                //wait random range between 2 and 6 seconds
                 var waitForSecondsEnumerator = new WaitForSecondsEnumerator(UnityEngine.Random.Range(2f, 6f));
                 while (waitForSecondsEnumerator.MoveNext())
                     yield return null;
@@ -49,7 +50,6 @@ namespace Svelto.ECS.Example.Survive.Weapons
                 //check for dead ammo and reuse them
                 if (entitiesDB.HasAny<AmmoEntityViewComponent>(AmmoDocile.BuildGroup))
                 {
-                    Svelto.Console.LogDebug("reusing ammo");
                     var (ammoValue, ammoCollision, ammoView, count) = entitiesDB.QueryEntities<AmmoValueComponent, AmmoCollisionComponent, AmmoEntityViewComponent>(AmmoDocile.BuildGroup);
 
                     if (count > 0)
@@ -63,7 +63,6 @@ namespace Svelto.ECS.Example.Survive.Weapons
                 //else create a new ammo entity if room
                 else if (_ammoCreated < MAX_NUMBER_AMMO_CRATES)
                 {
-                    Svelto.Console.LogDebug("Made new ammo");
                     IEnumerator<GameObject> ammoLoading = _gameobjectFactory.Build("AmmoCrate");
 
                     while (ammoLoading.MoveNext()) yield return null;

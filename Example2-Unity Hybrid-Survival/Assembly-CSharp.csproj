@@ -112,7 +112,7 @@
     <Compile Include="Assets\Code\ECS\EntityViewComponents\DamageSoundEntityViewComponent.cs" />
     <Compile Include="Assets\Code\MainContext.cs" />
     <Compile Include="Assets\Code\ECS\EntityViewComponents\AmmoEntityViewComponent.cs" />
-    <Compile Include="Assets\Code\ECS\EntityViewComponents\Implementors\GUI\AmmoImplementor.cs" />
+    <Compile Include="Assets\Code\ECS\EntityViewComponents\Implementors\GUI\AmmoHUDImplementor.cs" />
     <Compile Include="Assets\Code\ECS\Engines\AbstractEngines\ApplyDamageToDamageableEntitiesEngine.cs" />
     <Compile Include="Assets\Code\Others\AudioType.cs" />
     <Compile Include="Assets\Code\ECS\EntityComponents\HealthComponent.cs" />

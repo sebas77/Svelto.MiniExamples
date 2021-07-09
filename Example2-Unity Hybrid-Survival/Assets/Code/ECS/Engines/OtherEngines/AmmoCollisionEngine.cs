@@ -53,14 +53,13 @@ namespace Svelto.ECS.Example.Survive.Weapons
 
         void OnCollidedWithTarget(EGID sender, AmmoCollisionData ammoCollisionData)
         {
+            //sender egid doesn't update when the entity gets swapped to a different group, need to update the reference holder
             if (entitiesDB.Exists<AmmoCollisionComponent>(sender))
             {
                 ref var ammoCollisionComponent = ref entitiesDB.QueryEntity<AmmoCollisionComponent>(sender);
                 ammoCollisionComponent.entityInRange = ammoCollisionData;
                 ammoCollisionComponent.originEGID = sender;
             }
-            
-            
         }
 
         public string name => nameof(AmmoCollisionEngine);
