@@ -5,7 +5,6 @@ namespace Svelto.ECS.Example.Survive.Weapons
 {
     public interface IAmmoComponent
     {
-        int ammoValue { get; set; }
         Quaternion rotation { get; set; }
 
         Vector3 position { get; set; }

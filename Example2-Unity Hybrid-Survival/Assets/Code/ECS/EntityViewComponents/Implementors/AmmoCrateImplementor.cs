@@ -8,7 +8,6 @@ namespace Svelto.ECS.Example.Survive.Weapons
     {
         public DispatchOnChange<AmmoCollisionData> hitChange { get; set; }
 
-        public int ammoValue { get; set; }
         public Quaternion rotation { get => _transform.rotation; set => _transform.rotation = value; }
 
         public Vector3 position { get => _transform.position; set => _transform.position = value; }

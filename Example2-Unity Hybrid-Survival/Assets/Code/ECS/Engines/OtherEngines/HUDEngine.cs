@@ -60,10 +60,6 @@ namespace Svelto.ECS.Example.Survive.HUD
                     }
 
                     announcementComponent.textColor = Color.Lerp(announcementComponent.textColor, announcementComponent.targetColor, announcementComponent.speed * UnityEngine.Time.deltaTime);
-
-                    //Ammo update
-                    var ammoComponent = buffer[i].ammoComponent;
-                    //ammoComponent.ammo = 5;
                 }
             }
 
