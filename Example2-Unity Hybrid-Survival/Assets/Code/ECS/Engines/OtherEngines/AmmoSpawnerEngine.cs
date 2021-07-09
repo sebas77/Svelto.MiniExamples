@@ -1,7 +1,6 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine.AddressableAssets;
 using Svelto.ECS.Example.Survive.ResourceManager;
 using Svelto.ECS.Extensions.Unity;
 using Svelto.ECS.Hybrid;
@@ -10,67 +9,86 @@ namespace Svelto.ECS.Example.Survive.Weapons
 {
     public class AmmoSpawnerEngine : IQueryingEntitiesEngine, IStepEngine
     {
-        public AmmoSpawnerEngine(GameObjectFactory gameobjectFactory, IEntityFactory entityFactory)
+        const int MAX_NUMBER_AMMO_CRATES = 5;
+
+        public AmmoSpawnerEngine(GameObjectFactory gameobjectFactory, IEntityFactory entityFactory, IEntityFunctions entityFunctions)
         {
             _gameobjectFactory = gameobjectFactory;
             _entityFactory = entityFactory;
+            _entityFunctions = entityFunctions;
         }
 
         public EntitiesDB entitiesDB { private get; set; }
 
         public void Ready() { 
-            _spawnAmmo = SpawnAmmo();
-            _rotateAmmo = RotateAmmo();
+            _mainTick = MainTick();
         }
 
         public void Step() { 
-            _spawnAmmo.MoveNext();
-            _rotateAmmo.MoveNext();
+            _mainTick.MoveNext();
         }
         public string name => nameof(AmmoSpawnerEngine);
 
-        IEnumerator SpawnAmmo()
+        IEnumerator MainTick()
         {
-            IEnumerator<GameObject> ammoLoading = _gameobjectFactory.Build("AmmoCrate");
-
-            while(ammoLoading.MoveNext()) yield return null;
-
-            GameObject ammoObject = ammoLoading.Current;
-
-            //Implementors
-            List<IImplementor> implementors = new List<IImplementor>();
-            ammoObject.GetComponentsInChildren(true, implementors);
-
-            //EGID
-            EntityReferenceHolderImplementor egidHoldImplementor = ammoObject.AddComponent<EntityReferenceHolderImplementor>();
-            implementors.Add(egidHoldImplementor);
-
-            //initialise
-            EntityInitializer ammoInitializer = _entityFactory.BuildEntity<AmmoEntityDescriptor>(0, AmmoTag.BuildGroup, implementors);
-            ammoInitializer.Init(new AmmoValueComponent
+            Vector3 GetPosition()
             {
-                ammoValue = 20
-            });
-            //ammoObject.transform.position = new Vector3(10, 0.75f, 10);
+                Vector3 spawnPos = new Vector3(UnityEngine.Random.Range(-15f, 15f), 1, UnityEngine.Random.Range(-15f, 15f));
+                var hitColliders = Physics.OverlapSphere(spawnPos, 0.9f);
+                if (hitColliders.Length > 0.1f) spawnPos = GetPosition();
 
-            egidHoldImplementor.reference = ammoInitializer.reference;
-        }
-
-        IEnumerator RotateAmmo()
-        {
-            void Rotate()
-            {
-                foreach (var ((ammo, ammoCount), _) in entitiesDB.QueryEntities<AmmoEntityViewComponent>(
-                        AmmoTag.Groups))
-                {
-                    ammo[0].ammoComponent.rotation *= Quaternion.Euler(Vector3.up * 1);
-                }
-
+                return spawnPos;
             }
 
             while (true)
             {
-                Rotate();
+                var waitForSecondsEnumerator = new WaitForSecondsEnumerator(UnityEngine.Random.Range(2f, 6f));
+                while (waitForSecondsEnumerator.MoveNext())
+                    yield return null;
+
+                //check for dead ammo and reuse them
+                if (entitiesDB.HasAny<AmmoEntityViewComponent>(AmmoDocile.BuildGroup))
+                {
+                    Svelto.Console.LogDebug("reusing ammo");
+                    var (ammoValue, ammoCollision, ammoView, count) = entitiesDB.QueryEntities<AmmoValueComponent, AmmoCollisionComponent, AmmoEntityViewComponent>(AmmoDocile.BuildGroup);
+
+                    if (count > 0)
+                    {
+                        ammoValue[0].ammoValue = 20;
+                        ammoCollision[0].entityInRange = new AmmoCollisionData(new EntityReference(), false);
+                        ammoView[0].ammoComponent.position = GetPosition();
+                        _entityFunctions.SwapEntityGroup<AmmoEntityDescriptor>(ammoView[0].ID, AmmoActive.BuildGroup);
+                    }
+                }
+                //else create a new ammo entity if room
+                else if (_ammoCreated < MAX_NUMBER_AMMO_CRATES)
+                {
+                    Svelto.Console.LogDebug("Made new ammo");
+                    IEnumerator<GameObject> ammoLoading = _gameobjectFactory.Build("AmmoCrate");
+
+                    while (ammoLoading.MoveNext()) yield return null;
+
+                    GameObject ammoObject = ammoLoading.Current;
+
+                    //Implementors
+                    List<IImplementor> implementors = new List<IImplementor>();
+                    ammoObject.GetComponentsInChildren(true, implementors);
+
+                    //EGID
+                    EntityReferenceHolderImplementor egidHoldImplementor = ammoObject.AddComponent<EntityReferenceHolderImplementor>();
+                    implementors.Add(egidHoldImplementor);
+
+                    //initialise
+                    EntityInitializer ammoInitializer = _entityFactory.BuildEntity<AmmoEntityDescriptor>(_ammoCreated++, AmmoActive.BuildGroup, implementors);
+                    ammoInitializer.Init(new AmmoValueComponent
+                    {
+                        ammoValue = 20
+                    });
+                    ammoObject.transform.position = GetPosition();
+
+                    egidHoldImplementor.reference = ammoInitializer.reference;
+                }
+                
 
                 yield return null;
             }
@@ -78,7 +96,8 @@ namespace Svelto.ECS.Example.Survive.Weapons
 
         readonly IEntityFactory      _entityFactory;
         readonly GameObjectFactory   _gameobjectFactory;
-        IEnumerator                  _spawnAmmo;
-        IEnumerator                  _rotateAmmo;
+        readonly IEntityFunctions    _entityFunctions;
+        IEnumerator                  _mainTick;
+        uint                         _ammoCreated;
     }
 }

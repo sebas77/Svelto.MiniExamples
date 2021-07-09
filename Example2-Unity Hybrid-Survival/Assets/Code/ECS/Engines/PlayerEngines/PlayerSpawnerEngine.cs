@@ -101,6 +101,10 @@ namespace Svelto.ECS.Example.Survive.Player
               , range              = 100f
               , damagePerShot      = 20
             });
+            init.Init(new Weapons.AmmoValueComponent()
+            {
+                ammoValue = 50
+            });
             
             playerInitializer.Init(new PlayerWeaponComponent()
             {

@@ -62,6 +62,7 @@
     <Compile Include="Assets\Code\ECS\Engines\PlayerEngines\PlayerInputEngine.cs" />
     <Compile Include="Assets\Code\ECS\EntityDescriptors\CameraEntityDescriptor.cs" />
     <Compile Include="Assets\Code\Others\RayCaster.cs" />
+    <Compile Include="Assets\Code\ECS\Engines\OtherEngines\AmmoVisualEngine.cs" />
     <Compile Include="Assets\Code\Others\DamangeInfo.cs" />
     <Compile Include="Assets\Code\ECS\EntityViewComponents\EnemyEntityViewComponent.cs" />
     <Compile Include="Assets\Code\ECS\EntityViewComponents\Implementors\GUI\DamageHUDImplementor.cs" />

@@ -7,8 +7,9 @@ namespace Svelto.ECS.Example.Survive.Weapons
 {
     public class AmmoCollisionEngine : IReactOnAddAndRemove<AmmoEntityViewComponent>, IQueryingEntitiesEngine, IStepEngine
     {
-        public AmmoCollisionEngine() {
+        public AmmoCollisionEngine(IEntityFunctions entityFunctions) {
             _onCollidedWithTarget = OnCollidedWithTarget;
+            _entityFunctions = entityFunctions;
         }
 
         public EntitiesDB entitiesDB { set; private get; }
@@ -27,29 +28,44 @@ namespace Svelto.ECS.Example.Survive.Weapons
 
         public void Step()
         {
+            foreach (var ((ammoCollisionComponent, count), _) in entitiesDB.QueryEntities<AmmoCollisionComponent>(AmmoActive.Groups))
+            {
+                for (var i = 0; i < count; i++)
+                {
+                    var collisionData = ammoCollisionComponent[i].entityInRange;
 
+                    if (collisionData.collides && collisionData.otherEntityID.ToEGID(entitiesDB, out var otherEntityID) && Player.Player.Includes(otherEntityID.groupID))
+                    {
+                        var weaponEGID = entitiesDB.QueryEntity<Player.PlayerWeaponComponent>(otherEntityID).weapon.ToEGID(entitiesDB);
+                        ref var ammoComponent = ref entitiesDB.QueryEntity<AmmoValueComponent>(weaponEGID);
+                        ref var placedAmmoComponent = ref entitiesDB.QueryEntity<AmmoValueComponent>(ammoCollisionComponent[i].originEGID);
+                        ammoComponent.ammoValue += placedAmmoComponent.ammoValue;
+
+                        var ammoEntityViewComponent = entitiesDB.QueryEntity<AmmoEntityViewComponent>(ammoCollisionComponent[i].originEGID);
+                        ammoEntityViewComponent.ammoComponent.position -= new Vector3(0, 10, 0);
+                        entitiesDB.PublishEntityChange<AmmoValueComponent>(weaponEGID);
+
+                        _entityFunctions.SwapEntityGroup<AmmoEntityDescriptor>(ammoCollisionComponent[i].originEGID, AmmoDocile.BuildGroup);
+                    }
+                }
+            }
         }
 
         void OnCollidedWithTarget(EGID sender, AmmoCollisionData ammoCollisionData)
         {
-            var ammoCollisionComponent = entitiesDB.QueryEntity<AmmoCollisionComponent>(sender);
-            ammoCollisionComponent.entityInRange = ammoCollisionData;
-            ammoCollisionComponent.originEGID = sender;
-
-            if (ammoCollisionData.collides && ammoCollisionData.otherEntityID.ToEGID(entitiesDB, out var otherEntityID))
+            if (entitiesDB.Exists<AmmoCollisionComponent>(sender))
             {
-                var weaponEGID = entitiesDB.QueryEntity<Player.PlayerWeaponComponent>(otherEntityID).weapon.ToEGID(entitiesDB);
-                ref var ammoComponent = ref entitiesDB.QueryEntity<AmmoValueComponent>(weaponEGID);
-                ref var placedAmmoComponent = ref entitiesDB.QueryEntity<AmmoValueComponent>(ammoCollisionComponent.originEGID);
-                ammoComponent.ammoValue += placedAmmoComponent.ammoValue;
-                var ammoEntityViewComponent = entitiesDB.QueryEntity<AmmoEntityViewComponent>(ammoCollisionComponent.originEGID);
-                ammoEntityViewComponent.ammoComponent.position = new Vector3(UnityEngine.Random.Range(-10f, 10f), 1, UnityEngine.Random.Range(-10f, 10f));
-                entitiesDB.PublishEntityChange<AmmoValueComponent>(weaponEGID);
+                ref var ammoCollisionComponent = ref entitiesDB.QueryEntity<AmmoCollisionComponent>(sender);
+                ammoCollisionComponent.entityInRange = ammoCollisionData;
+                ammoCollisionComponent.originEGID = sender;
             }
+            
+            
         }
 
         public string name => nameof(AmmoCollisionEngine);
 
+        readonly IEntityFunctions _entityFunctions;
         readonly Action<EGID, AmmoCollisionData> _onCollidedWithTarget;
     }
 }

@@ -167,10 +167,12 @@ namespace Svelto.ECS.Example.Survive
             _enginesRoot.AddEngine(scoreEngine);
 
             //Ammo engine
-            var ammoSpawnerEngine = new AmmoSpawnerEngine(gameObjectFactory, entityFactory);
-            var ammoCollisionEngine = new AmmoCollisionEngine();
+            var ammoSpawnerEngine = new AmmoSpawnerEngine(gameObjectFactory, entityFactory, entityFunctions);
+            var ammoCollisionEngine = new AmmoCollisionEngine(entityFunctions);
+            var ammoVisualEngine = new AmmoVisualEngine();
             _enginesRoot.AddEngine(ammoSpawnerEngine);
             _enginesRoot.AddEngine(ammoCollisionEngine);
+            _enginesRoot.AddEngine(ammoVisualEngine);
 
             var unsortedEngines = new SurvivalUnsortedEnginesGroup(new FasterList<IStepEngine>(
                 new IStepEngine[]
@@ -186,7 +188,8 @@ namespace Svelto.ECS.Example.Survive
                     hudEngine,
                     restartGameOnPlayerDeath,
                     ammoSpawnerEngine,
-                    ammoCollisionEngine
+                    ammoCollisionEngine,
+                    ammoVisualEngine
                 }
             ));
             
