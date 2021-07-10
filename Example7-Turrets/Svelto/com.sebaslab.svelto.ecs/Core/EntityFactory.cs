@@ -28,11 +28,11 @@ namespace Svelto.ECS.Internal
         static FasterDictionary<RefWrapperType, ITypeSafeDictionary> FetchEntityGroup
             (ExclusiveGroupStruct groupID, EnginesRoot.DoubleBufferedEntitiesToAdd groupEntityComponentsByType)
         {
-            if (groupEntityComponentsByType.current.TryGetValue(groupID, out var group) == false)
+            if (groupEntityComponentsByType.current.TryGetValue((uint) groupID, out var group) == false)
             {
                 group = new FasterDictionary<RefWrapperType, ITypeSafeDictionary>();
 
-                groupEntityComponentsByType.current.Add(groupID, group);
+                groupEntityComponentsByType.current.Add((uint) groupID, group);
             }
 
             //track the number of entities created so far in the group.
@@ -52,7 +52,6 @@ namespace Svelto.ECS.Internal
 #if DEBUG && !PROFILE_SVELTO            
             DBC.ECS.Check.Require(componentBuilders != null, $"Invalid Entity Descriptor {descriptorType}");
 #endif            
-            
             var numberOfComponents = componentBuilders.Length;
 
 #if DEBUG && !PROFILE_SVELTO

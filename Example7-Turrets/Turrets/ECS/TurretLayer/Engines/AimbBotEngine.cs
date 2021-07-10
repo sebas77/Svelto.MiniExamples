@@ -17,7 +17,7 @@ namespace Svelto.ECS.MiniExamples.Turrets
             float y                    = (float) (0.3f * Math.Sin(updateTimeFrameCount));
 
             foreach (var ((trs, interpolatedPositions, count), _) in entitiesDB
-               .QueryEntities<TRSComponent, StartPositionsComponent>(TurretTag.Groups))
+               .QueryEntities<PositionComponent, StartPositionsComponent>(TurretTag.Groups))
             {
                 for (int i = 0; i < count; i++)
                 {

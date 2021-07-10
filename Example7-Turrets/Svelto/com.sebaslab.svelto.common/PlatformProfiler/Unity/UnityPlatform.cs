@@ -78,6 +78,35 @@ namespace Svelto.Common
         {
             maker?.End();
         }
+
+        public void Pause()
+        {
+            maker?.End();
+        }
+
+        public void Resume()
+        {
+            maker.Value.Begin();
+        }
+
+        public PauseProfiler Yield() { return new PauseProfiler(maker.Value); }
+    }
+
+    public readonly struct PauseProfiler : IDisposable
+    {
+        public PauseProfiler(ProfilerMarker maker)
+        {
+            _maker = maker;
+            _maker.End();
+        }
+
+        public void Dispose()
+        {
+            _maker.Begin();
+        }
+        
+        readonly ProfilerMarker _maker;
+
     }
 }
 #endif

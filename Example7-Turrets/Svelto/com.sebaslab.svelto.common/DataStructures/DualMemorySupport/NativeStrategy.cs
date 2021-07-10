@@ -89,6 +89,11 @@ namespace Svelto.DataStructures
             _invalidHandle = true;
         }
 
+        public void CopyTo(IBufferStrategy<T> destBuffer)
+        {
+            
+        }
+
         public void Clear() => _realBuffer.Clear();
 
         public ref T this[uint index]
@@ -147,7 +152,7 @@ namespace Svelto.DataStructures
 
         Allocator _nativeAllocator;
         NB<T>     _realBuffer;
-#if UNITY_NATIVE
+#if UNITY_COLLECTIONS
         [Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction]
 #endif
         GCHandle _buffer;

@@ -1,4 +1,3 @@
-using DBC.ECS;
 using Svelto.DataStructures;
 
 namespace Svelto.ECS
@@ -37,20 +36,11 @@ namespace Svelto.ECS
                 //attention, the while is necessary to skip empty groups
                 while (++_indexGroup < _groups.count)
                 {
-                    var entityCollection1 = _entitiesDB.QueryEntities<T1, T2, T3>(_groups[_indexGroup]);
-                    if (entityCollection1.count == 0)
-                        continue;
-                    var entityCollection2 = _entitiesDB.QueryEntities<T4>(_groups[_indexGroup]);
-                    if (entityCollection2.count == 0)
-                        continue;
-
-                    Check.Assert(entityCollection1.count == entityCollection2.count
-                               , "congratulation, you found a bug in Svelto, please report it");
+                    var entityCollection1 = _entitiesDB.QueryEntities<T1, T2, T3, T4>(_groups[_indexGroup]);
 
                     var array  = entityCollection1;
-                    var array2 = entityCollection2;
                     _buffers = new EntityCollection<T1, T2, T3, T4>(array.buffer1, array.buffer2, array.buffer3
-                                                                  , array2);
+                                                                  , array.buffer4);
                     break;
                 }
 

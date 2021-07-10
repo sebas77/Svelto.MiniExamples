@@ -33,18 +33,18 @@ namespace Svelto.ECS
         /// </summary>
         public FilteredIndices filteredIndices => new FilteredIndices(_denseListOfIndicesToEntityComponentArray);
 
-        public void Add<N>(uint entityID, N mapper)  where N:IEGIDMapper
+        public bool Add<N>(uint entityID, N mapper)  where N:IEGIDMapper
         {
 #if DEBUG && !PROFILE_SVELTO
             if (_denseListOfIndicesToEntityComponentArray.isValid == false)
                 throw new ECSException($"using an invalid filter");
-            if (_indexOfEntityInDenseList.ContainsKey(entityID) == true)
-                throw new ECSException(
-                    $"trying to add an existing entity {entityID} to filter {mapper.entityType} - {_ID} with group {mapper.groupID}");
             if (mapper.Exists(entityID) == false)
                 throw new ECSException(
                     $"trying adding an entity {entityID} to filter {mapper.entityType} - {_ID} with group {mapper.groupID}, but entity is not found! ");
 #endif
+            if (_indexOfEntityInDenseList.ContainsKey(entityID) == true)
+                return false;
+
             //Get the index of the Entity in the component array
             var indexOfEntityInBufferComponent = mapper.GetIndex(entityID);
 
@@ -57,6 +57,8 @@ namespace Svelto.ECS
 
             //remember the entities indices. This is needed to remove entities from the filter
             _indexOfEntityInDenseList.Add(entityID, lastIndex);
+
+            return true;
         }
 
         public void Remove(uint entityID)
@@ -70,7 +72,7 @@ namespace Svelto.ECS
 #endif
             InternalRemove(entityID);
         }
-        
+
         public bool Exists(uint entityID)
         {
 #if DEBUG && !PROFILE_SVELTO
@@ -108,7 +110,7 @@ namespace Svelto.ECS
         /// point to entities that were not the original ones. On structural changes
         /// (specifically entities swapped or removed)
         /// the filters must then be rebuilt. It would be too slow to add this in the standard flow of Svelto in
-        /// the current state, so calling this method is a user responsibility. 
+        /// the current state, so calling this method is a user responsibility.
         /// </summary>
         public void RebuildIndicesOnStructuralChange<N>(N mapper) where N:IEGIDMapper
         {
@@ -166,7 +168,7 @@ namespace Svelto.ECS
                     var indexInDenseListFromEGID = _indexOfEntityInDenseList[entityID];
                     //get the entityID of the last entity in the filter array
                     uint entityIDToMove = _reverseEIDs[count - 1];
-                    
+
                     //the last index of the last entity is updated to the slot of the deleted entity
                     if (entityIDToMove != entityID)
                     {
@@ -174,13 +176,13 @@ namespace Svelto.ECS
                         //the reverseEGID is updated accordingly
                         _reverseEIDs[indexInDenseListFromEGID] = entityIDToMove;
                     }
-                    
+
                     //
                     _reverseEIDs.UnorderedRemoveAt(count - 1);
 
                     //finally remove the deleted entity from the filters array
                     _denseListOfIndicesToEntityComponentArray.UnorderedRemoveAt(indexInDenseListFromEGID);
-                    
+
                     //remove the entity to delete from the tracked Entity
                     _indexOfEntityInDenseList.Remove(entityID);
                 }

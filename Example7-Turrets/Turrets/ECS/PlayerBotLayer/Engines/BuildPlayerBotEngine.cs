@@ -20,7 +20,9 @@ namespace Svelto.ECS.MiniExamples.Turrets
             var entityResourceID = _ecsStrideEntityManager.RegisterStrideEntity(mainBotEntity);
 
             var init = _entityFactory.BuildEntity<PlayerBotEntityDescriptor>(entityResourceID, PlayerBotTag.BuildGroup);
-            init.Init(new TRSComponent(Vector3.Zero, Quaternion.Identity, new Vector3(0.3f, 0.3f, 0.3f)));
+            init.Init(new RotationComponent(Quaternion.Identity));
+            init.Init(new ScalingComponent(new Vector3(0.3f, 0.3f, 0.3f)));
+            init.Init(new DirectionComponent() { vector = Vector3.UnitX});
             
             SceneSystem.SceneInstance.RootScene.Entities.Add(mainBotEntity);
 

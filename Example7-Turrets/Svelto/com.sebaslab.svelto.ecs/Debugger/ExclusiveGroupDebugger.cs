@@ -1,50 +1,60 @@
 using Svelto.ECS;
-
-#if DEBUG
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 
+#if DEBUG
 public static class ExclusiveGroupDebugger
 {
     static ExclusiveGroupDebugger()
     {
         Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
+
         foreach (Assembly assembly in assemblies)
         {
-            Type[] types = assembly.GetTypes();
-
-            foreach (Type type in types)
+            try
             {
-                if (type != null && type.IsClass && type.IsSealed && type.IsAbstract) //this means only static classes
+                Type[] types = assembly.GetTypes();
+
+                foreach (Type type in types)
                 {
-                    var fields = type.GetFields();
-                    foreach (var field in fields)
+                    if (type != null && type.IsClass && type.IsSealed
+                     && type.IsAbstract) //this means only static classes
                     {
-                        if (field.IsStatic && typeof(ExclusiveGroup).IsAssignableFrom(field.FieldType))
+                        var fields = type.GetFields();
+                        foreach (var field in fields)
                         {
-                            var group = (ExclusiveGroup) field.GetValue(null);
-                            string name  = $"{type.FullName}.{field.Name} ({(uint)group})";
-                            GroupMap.idToName[(ExclusiveGroupStruct) group] = name;
-                        }
+                            if (field.IsStatic && typeof(ExclusiveGroup).IsAssignableFrom(field.FieldType))
+                            {
+                                var    group = (ExclusiveGroup) field.GetValue(null);
+                                string name  = $"{type.FullName}.{field.Name} ({(uint) group})";
+                                GroupMap.idToName[(uint) @group] = name;
+                            }
 
-                        if (field.IsStatic && typeof(ExclusiveGroupStruct).IsAssignableFrom(field.FieldType))
-                        {
-                            var group = (ExclusiveGroupStruct) field.GetValue(null);
+                            if (field.IsStatic && typeof(ExclusiveGroupStruct).IsAssignableFrom(field.FieldType))
+                            {
+                                var group = (ExclusiveGroupStruct) field.GetValue(null);
 
-                            string name  = $"{type.FullName}.{field.Name} ({(uint)group})";
-                            GroupMap.idToName[@group] = name;
+                                string name = $"{type.FullName}.{field.Name} ({(uint) group})";
+                                GroupMap.idToName[(uint) @group] = name;
+                            }
                         }
                     }
                 }
             }
+            catch
+            {
+                Svelto.Console.LogDebugWarning(
+                    "something went wrong while gathering group names on the assembly: ".FastConcat(assembly.FullName));
+            }
         }
     }
-    
+
     public static string ToName(this in ExclusiveGroupStruct group)
     {
-        if (GroupMap.idToName.TryGetValue(group, out var name) == false)
-            name = $"<undefined:{((uint)group).ToString()}>";
+        var idToName = GroupMap.idToName;
+        if (idToName.TryGetValue((uint) @group, out var name) == false)
+            name = $"<undefined:{((uint) group).ToString()}>";
 
         return name;
     }
@@ -52,10 +62,7 @@ public static class ExclusiveGroupDebugger
 
 public static class GroupMap
 {
-    static GroupMap()
-    {
-        GroupMap.idToName = new Dictionary<uint, string>();
-    }
+    static GroupMap() { GroupMap.idToName = new Dictionary<uint, string>(); }
 
     internal static readonly Dictionary<uint, string> idToName;
 }

@@ -167,7 +167,7 @@ namespace Svelto.ECS
                 void PreallocateDictionaries(FasterDictionary<uint, FasterDictionary<RefWrapperType, ITypeSafeDictionary>> fasterDictionary1)
                 {
                     FasterDictionary<RefWrapperType, ITypeSafeDictionary> group =
-                        fasterDictionary1.GetOrCreate(groupID, () => new FasterDictionary<RefWrapperType, ITypeSafeDictionary>());
+                        fasterDictionary1.GetOrCreate((uint) groupID, () => new FasterDictionary<RefWrapperType, ITypeSafeDictionary>());
 
                     foreach (var componentBuilder in entityComponentsToBuild)
                     {

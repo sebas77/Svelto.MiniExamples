@@ -1,37 +1,45 @@
 using System;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using Svelto.DataStructures;
 
 namespace Svelto.ECS
 {
     [StructLayout(LayoutKind.Explicit, Size = 4)]
     //the type doesn't implement IEqualityComparer, what implements it is a custom comparer
-    public struct ExclusiveGroupStruct : IEquatable<ExclusiveGroupStruct>, IComparable<ExclusiveGroupStruct>
+    public struct ExclusiveGroupStruct : IEquatable<ExclusiveGroupStruct>, IComparable<ExclusiveGroupStruct>, IConvertToUInt
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override bool Equals(object obj)
         {
             return obj is ExclusiveGroupStruct other && Equals(other);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override int GetHashCode()
         {
             return (int) _id;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(ExclusiveGroupStruct c1, ExclusiveGroupStruct c2)
         {
             return c1.Equals(c2);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(ExclusiveGroupStruct c1, ExclusiveGroupStruct c2)
         {
             return c1.Equals(c2) == false;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Equals(ExclusiveGroupStruct other)
         {
             return other._id == _id;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int CompareTo(ExclusiveGroupStruct other)
         {
             return other._id.CompareTo(_id);
@@ -41,6 +49,9 @@ namespace Svelto.ECS
         {
             return this.ToName();
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public uint ToUint() { return _id;  }
 
         internal static ExclusiveGroupStruct Generate(byte bitmask = 0)
         {
@@ -83,11 +94,13 @@ namespace Svelto.ECS
             DBC.ECS.Check.Ensure(_id < _globalId, "Invalid group ID deserialiased");
         }
 
-        public static implicit operator uint(ExclusiveGroupStruct groupStruct)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator uint(ExclusiveGroupStruct groupStruct)
         {
             return groupStruct._id;
         }
         
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ExclusiveGroupStruct operator+(ExclusiveGroupStruct a, uint b)
         {
             var group = new ExclusiveGroupStruct {_id = a._id + b};

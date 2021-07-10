@@ -6,6 +6,9 @@ using System.Runtime.InteropServices;
 
 namespace Svelto.ECS
 {
+    /// <summary>
+    /// Todo: EntityReference shouldn't map EGIDs as dictionaries keys but directly the indices in the EntityDB arrays
+    /// </summary>
     [Serialization.DoNotSerialize]
     [Serializable]
     [StructLayout(LayoutKind.Explicit)]
@@ -14,6 +17,8 @@ namespace Svelto.ECS
         [FieldOffset(0)] public readonly uint uniqueID;
         [FieldOffset(4)] public readonly uint version;
         [FieldOffset(0)] readonly ulong _GID;
+
+        internal uint index => uniqueID - 1;
 
         public static bool operator ==(EntityReference obj1, EntityReference obj2)
         {
@@ -50,14 +55,24 @@ namespace Svelto.ECS
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public EGID ToEGID(EntitiesDB entitiesDB)
         {
-            return entitiesDB.GetEGID(this);
+            DBC.ECS.Check.Require(this != Invalid, "Invalid Reference Used");
+
+            return entitiesDB.GetEntityLocator().GetEGID(this);
         }
         
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool ToEGID(EntitiesDB entitiesDB, out EGID egid)
+        {
+            DBC.ECS.Check.Require(this != Invalid, "Invalid Reference Used");
+
+            return entitiesDB.TryGetEGID(this, out egid);
+        }
+
         static ulong MAKE_GLOBAL_ID(uint uniqueId, uint version)
         {
             return (ulong)version << 32 | ((ulong)uniqueId & 0xFFFFFFFF);
         }
 
-        public static EntityReference Invalid => new EntityReference(uint.MaxValue, uint.MaxValue);
+        public static EntityReference Invalid => new EntityReference(0, 0);
     }
 }

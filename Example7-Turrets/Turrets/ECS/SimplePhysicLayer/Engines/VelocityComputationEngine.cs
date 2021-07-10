@@ -2,7 +2,7 @@ using Stride.Engine;
 
 namespace Svelto.ECS.MiniExamples.Turrets
 {
-    class MovementEngine : SyncScript, IQueryingEntitiesEngine
+    class VelocityComputationEngine : SyncScript, IQueryingEntitiesEngine
     {
         public override void Update()
         {

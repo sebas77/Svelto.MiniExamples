@@ -111,7 +111,7 @@ namespace Svelto.DataStructures
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetCapacity(uint size)
         {
-            _dictionary.SetCapacity(size);
+            _dictionary.ExpandTo(size);
         }
 
         public TValue this[TKey key]
@@ -174,7 +174,7 @@ namespace Svelto.DataStructures
             }
         }
 
-#if UNITY_NATIVE
+#if UNITY_COLLECTIONS
         [Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction]
 #endif
         IntPtr _sharedDictionary;

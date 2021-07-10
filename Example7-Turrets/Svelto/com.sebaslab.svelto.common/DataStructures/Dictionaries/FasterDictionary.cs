@@ -28,11 +28,8 @@ namespace Svelto.DataStructures
 
             _dictionary = dictionary;
         }
-        
-        public static FasterDictionary<TKey, TValue> Construct()
-        {
-            return new FasterDictionary<TKey, TValue>(0);
-        }
+
+        public static FasterDictionary<TKey, TValue> Construct() { return new FasterDictionary<TKey, TValue>(0); }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public MB<TValue> GetValues(out uint count)
@@ -54,8 +51,8 @@ namespace Svelto.DataStructures
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public SveltoDictionaryKeyValueEnumerator<TKey, TValue, ManagedStrategy<SveltoDictionaryNode<TKey>>, ManagedStrategy<TValue>,
-            ManagedStrategy<int>> GetEnumerator()
+        public SveltoDictionaryKeyValueEnumerator<TKey, TValue, ManagedStrategy<SveltoDictionaryNode<TKey>>,
+            ManagedStrategy<TValue>, ManagedStrategy<int>> GetEnumerator()
         {
             return _dictionary.GetEnumerator();
         }
@@ -98,7 +95,7 @@ namespace Svelto.DataStructures
         {
             return ref _dictionary.GetOrCreate(key, builder);
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref TValue GetOrCreate<W>(TKey key, FuncRef<W, TValue> builder, ref W parameter)
         {
@@ -112,7 +109,7 @@ namespace Svelto.DataStructures
         public ref TValue GetValueByRef(TKey key) { return ref _dictionary.GetValueByRef(key); }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void SetCapacity(uint size) { _dictionary.SetCapacity(size); }
+        public void SetCapacity(uint size) { _dictionary.ExpandTo(size); }
 
         public TValue this[TKey key]
         {
@@ -135,6 +132,10 @@ namespace Svelto.DataStructures
         public uint GetIndex(TKey key) { return _dictionary.GetIndex(key); }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Intersect<OTValue>
+            (in FasterDictionary<TKey, OTValue> otherDicKeys) => _dictionary.Intersect(otherDicKeys._dictionary);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Dispose() { _dictionary.Dispose(); }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -149,11 +150,29 @@ namespace Svelto.DataStructures
             Array.Copy(GetValues(out var count).ToManagedArray(), 0, values, index, count);
         }
 
-#if UNITY_NATIVE
+        // [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        // public void CopyValuesTo(FasterDictionary<TKey, TValue> destDic)
+        // {
+        //     _dictionary.CopyValuesTo(destDic._dictionary);            
+        // }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void ExpandTo(uint newSize) { _dictionary.ExpandTo(newSize); }
+
+        public SveltoDictionary<TKey, TValue, ManagedStrategy<SveltoDictionaryNode<TKey>>, ManagedStrategy<TValue>,
+            ManagedStrategy<int>>.SveltoDictionaryKeyEnumerable keys
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => _dictionary.keys;
+        }
+
+#if UNITY_COLLECTIONS
         [Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction]
 #endif
 
         SveltoDictionary<TKey, TValue, ManagedStrategy<SveltoDictionaryNode<TKey>>, ManagedStrategy<TValue>,
             ManagedStrategy<int>> _dictionary;
+
+
     }
 }

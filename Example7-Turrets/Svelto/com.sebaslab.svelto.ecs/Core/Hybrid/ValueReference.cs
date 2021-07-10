@@ -1,3 +1,4 @@
+using System;
 using System.Runtime.InteropServices;
 
 namespace Svelto.ECS.Hybrid
@@ -15,6 +16,9 @@ namespace Svelto.ECS.Hybrid
 
         public static explicit operator T(ValueReference<T> t) => (T) t._pointer.Target;
 
+        public void Dispose() { _pointer.Free(); }
+        
         GCHandle _pointer;
+
     }
 }

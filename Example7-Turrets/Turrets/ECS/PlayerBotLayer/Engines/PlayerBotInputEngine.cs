@@ -4,36 +4,55 @@ using Stride.Input;
 
 namespace Svelto.ECS.MiniExamples.Turrets
 {
-    //Should be an input engine for each player bot state?
-    //in theory an input engine should never set values, should only switch groups
-    //
-    
-    //TODO an input engine can store any kind of value, because at the end of the day values are states, but on input related components only
+    /// <summary>
+    /// When input is involved, creating an InputEngine is part of the Svelto patterns. The Input engine has
+    /// the sole responsibility to translate system input into input components. The data held by the input components
+    /// can be re-contextualised according their purpose. The input components are then used by other engines to
+    /// handle the single entities logic.
+    /// </summary>
     class PlayerBotInputEngine : SyncScript, IQueryingEntitiesEngine
     {
         public override void Update()
         {
             if (Input.HasKeyboard)
             {
-                foreach (var ((speeds, directions, count), _) in entitiesDB
+                foreach (var ((speeds, directions, _), _) in entitiesDB
                    .QueryEntities<SpeedComponent, DirectionComponent>(PlayerBotTag.Groups))
                 {
+                    speeds[0].value = 0.0f;
+
+                    bool directionChanged = false;
+                    
                     if (Input.IsKeyDown(Keys.W))
                     {
-                        for (int i = 0; i < count; i++)
-                        {
-                            speeds[i].value      = 1.0f;
-                            directions[i].vector = new Vector3(1, 0, 0);
-                        }
+                        speeds[0].value      =  1.0f;
+                        directions[0].vector += new Vector3(-1.0f, 0.0f, 0.0f);
+                        directionChanged     =  true;
                     }
                     else
+                    if (Input.IsKeyDown(Keys.S))
                     {
-                        for (int i = 0; i < count; i++)
-                        {
-                            speeds[i].value      = 0.0f;
-                            directions[i].vector = new Vector3(0, 0, 0);
-                        }
+                        speeds[0].value      =  1.0f;
+                        directions[0].vector += new Vector3(1.0f, 0.0f, 0.0f);
+                        directionChanged     =  true;
                     }
+                    
+                    if (Input.IsKeyDown(Keys.A))
+                    {
+                        speeds[0].value      =  1.0f;
+                        directions[0].vector += new Vector3(0.0f, 0.0f, 1.0f);
+                        directionChanged     =  true;
+                    }
+                    else
+                    if (Input.IsKeyDown(Keys.D))
+                    {
+                        speeds[0].value      =  1.0f;
+                        directions[0].vector += new Vector3(0.0f, 0.0f, -1.0f);
+                        directionChanged     =  true;
+                    }
+                    
+                    if (directionChanged)
+                        directions[0].vector.Normalize();
                 }
             }
         }

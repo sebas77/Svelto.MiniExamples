@@ -110,7 +110,7 @@ namespace Svelto.ECS
                                             groupID, groupDB, wrapper, targetTypeSafeDictionary);
 
                                         //Fill the DB with the entity components generated this frame.
-                                        dbDic.AddEntitiesFromDictionary(targetTypeSafeDictionary, groupID, this);
+                                        dbDic.AddEntitiesFromDictionary(targetTypeSafeDictionary, (uint) groupID, this);
                                     }
                                 }
                             }

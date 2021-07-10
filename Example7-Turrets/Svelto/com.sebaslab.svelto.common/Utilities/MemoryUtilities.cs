@@ -1,18 +1,23 @@
 #if DEBUG && !PROFILE_SVELTO
 #define DEBUG_MEMORY
 #endif
-#if UNITY_EDITOR
-#if UNITY_2019_3_OR_NEWER
-#define USE_UNITY_NATIVE
-#else
+
+#if UNITY_5_3_OR_NEWER
+#if !UNITY_2019_3_OR_NEWER
 #error Svelto.ECS 3.0 supports Unity 2019_3 and above only
+#else
+// Unity.Collections.LowLevel.Unsafe.UnsafeUtility is not part of Unity Collection but it comes with Unity
+#define UNITY_COLLECTIONS
 #endif
+#endif
+
+#if !UNITY_COLLECTIONS
+using System.Runtime.InteropServices;
 #endif
 
 using System;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 
 namespace Svelto.Common
 {
@@ -87,7 +92,7 @@ namespace Svelto.Common
         {
             var signedCapacity = (int) SignedCapacity(newCapacityInBytes);
             IntPtr newPointer = IntPtr.Zero;
-#if UNITY_2019_3_OR_NEWER
+#if UNITY_COLLECTIONS
             var allocator1 = (Unity.Collections.Allocator) allocator;
             unsafe
             {
@@ -168,7 +173,7 @@ namespace Svelto.Common
         {
             ptr = CheckAndReturnPointerToFree(ptr);
 
-#if UNITY_2019_3_OR_NEWER
+#if UNITY_COLLECTIONS
             unsafe
             {
                 Unity.Collections.LowLevel.Unsafe.UnsafeUtility.Free(
@@ -180,12 +185,12 @@ namespace Svelto.Common
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void MemClear<T>(IntPtr destination, uint sizeOf) where T : struct
+        public static void MemClear<T>(IntPtr destination, uint size) where T : struct
         {
             unsafe
             {
-                var sizeOfInBytes = (uint) (SizeOf<T>() * sizeOf);
-#if UNITY_2019_3_OR_NEWER
+                var sizeOfInBytes = (uint) (SizeOf<T>() * size);
+#if UNITY_COLLECTIONS
                 Unity.Collections.LowLevel.Unsafe.UnsafeUtility.MemClear((void*) destination, sizeOfInBytes);
 #else
                 Unsafe.InitBlock((void*) destination, 0, sizeOfInBytes);
@@ -198,7 +203,7 @@ namespace Svelto.Common
         {
             unsafe
             {
-#if UNITY_2019_3_OR_NEWER
+#if UNITY_COLLECTIONS
                 Unity.Collections.LowLevel.Unsafe.UnsafeUtility.MemClear((void*) destination, sizeOfInBytes);
 #else
                 Unsafe.InitBlock((void*) destination, 0, sizeOfInBytes);
@@ -236,7 +241,7 @@ namespace Svelto.Common
             }
         }
 
-#if UNITY_2019_3_OR_NEWER
+#if UNITY_COLLECTIONS
         static class OptimalAlignment
         {
             internal static readonly uint alignment;
@@ -278,7 +283,7 @@ namespace Svelto.Common
 
         public static int GetFieldOffset(FieldInfo field)
         {
-#if UNITY_2019_3_OR_NEWER
+#if UNITY_COLLECTIONS
             return Unity.Collections.LowLevel.Unsafe.UnsafeUtility.GetFieldOffset(field);
 #else
             int GetFieldOffset(RuntimeFieldHandle h)

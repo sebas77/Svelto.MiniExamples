@@ -19,20 +19,20 @@ using Svelto.Common;
             {
                 return _enginesRoot.Target.BuildEntity(new EGID(entityID, groupStructId)
                                                      , EntityDescriptorTemplate<T>.descriptor.componentsToBuild
-                                                     , TypeCache<T>.type, implementors);
+                                                     , TypeCache<T>.Type, implementors);
             }
 
             public EntityInitializer BuildEntity<T>(EGID egid, IEnumerable<object> implementors = null)
                 where T : IEntityDescriptor, new()
             {
                 return _enginesRoot.Target.BuildEntity(
-                    egid, EntityDescriptorTemplate<T>.descriptor.componentsToBuild, TypeCache<T>.type, implementors);
+                    egid, EntityDescriptorTemplate<T>.descriptor.componentsToBuild, TypeCache<T>.Type, implementors);
             }
 
             public EntityInitializer BuildEntity<T>
                 (EGID egid, T entityDescriptor, IEnumerable<object> implementors) where T : IEntityDescriptor
             {
-                return _enginesRoot.Target.BuildEntity(egid, entityDescriptor.componentsToBuild, TypeCache<T>.type, implementors);
+                return _enginesRoot.Target.BuildEntity(egid, entityDescriptor.componentsToBuild, TypeCache<T>.Type, implementors);
             }
 
             public EntityInitializer BuildEntity<T>
@@ -40,7 +40,7 @@ using Svelto.Common;
                 where T : IEntityDescriptor
             {
                 return _enginesRoot.Target.BuildEntity(new EGID(entityID, groupStructId)
-                                                     , descriptorEntity.componentsToBuild, TypeCache<T>.type, implementors);
+                                                     , descriptorEntity.componentsToBuild, TypeCache<T>.Type, implementors);
             }
 
             public void PreallocateEntitySpace<T>(ExclusiveGroupStruct groupStructId, uint numberOfEntities)

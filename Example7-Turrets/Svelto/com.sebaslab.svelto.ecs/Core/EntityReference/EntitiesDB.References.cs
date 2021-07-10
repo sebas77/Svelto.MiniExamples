@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using Svelto.ECS.Reference;
 
 namespace Svelto.ECS
 {
@@ -7,19 +8,25 @@ namespace Svelto.ECS
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool TryGetEGID(EntityReference entityReference, out EGID egid)
         {
-            return _enginesRoot.TryGetEGID(entityReference, out egid);
+            return _entityReferencesMap.TryGetEGID(entityReference, out egid);
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public EGID GetEGID(EntityReference entityReference)
         {
-            return _enginesRoot.GetEGID(entityReference);
+            return _entityReferencesMap.GetEGID(entityReference);
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public EnginesRoot.LocatorMap GetEntityLocator()
+        {
+            return _entityReferencesMap;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public EntityReference GetEntityReference(EGID egid)
         {
-            return _enginesRoot.GetEntityReference(egid);
+            return _entityReferencesMap.GetEntityReference(egid);
         }
     }
 }

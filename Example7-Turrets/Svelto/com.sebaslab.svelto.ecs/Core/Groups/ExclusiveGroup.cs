@@ -50,7 +50,7 @@ namespace Svelto.ECS
         
         public static explicit operator uint(ExclusiveGroup group)
         {
-            return group._group;
+            return (uint) @group._group;
         }
 
         public static ExclusiveGroupStruct operator+(ExclusiveGroup a, uint b)

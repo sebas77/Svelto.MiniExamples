@@ -48,9 +48,18 @@ namespace Svelto.Common
         {
             return default;
         }
+        
+        public PauseProfiler Yield() { return default; }
 
         public void Dispose()
         {}
+        
+        public readonly struct PauseProfiler : IDisposable
+        {
+            public void Dispose()
+            {
+            }
+        }
     }
 #endif
 }

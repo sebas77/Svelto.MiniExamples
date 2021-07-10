@@ -20,6 +20,11 @@ namespace Svelto.ECS
         public EnginesRoot(EntitiesSubmissionScheduler entitiesComponentScheduler)
         {
             _entitiesOperations            = new FasterDictionary<ulong, EntitySubmitOperation>();
+#if UNITY_NATIVE //because of the thread count, ATM this is only for unity            
+            _nativeSwapOperationQueue   = new DataStructures.AtomicNativeBags(Allocator.Persistent);
+            _nativeRemoveOperationQueue = new DataStructures.AtomicNativeBags(Allocator.Persistent);
+            _nativeAddOperationQueue    = new DataStructures.AtomicNativeBags(Allocator.Persistent);
+#endif            
             serializationDescriptorMap     = new SerializationDescriptorMap();
             _maxNumberOfOperationsPerFrame = uint.MaxValue;
             _reactiveEnginesAddRemove      = new FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer>>();
@@ -40,9 +45,8 @@ namespace Svelto.ECS
             _entityStreams = EntitiesStreams.Create();
             _groupFilters =
                 new FasterDictionary<RefWrapperType, FasterDictionary<ExclusiveGroupStruct, GroupFilters>>();
-            _entitiesDB = new EntitiesDB(this);
-
-            InitEntityReferenceMap();
+            _entityLocator.InitEntityReferenceMap();
+            _entitiesDB = new EntitiesDB(this,_entityLocator);
 
             scheduler        = entitiesComponentScheduler;
             scheduler.onTick = new EntitiesSubmitter(this);
@@ -130,8 +134,8 @@ namespace Svelto.ECS
 
                 _groupedEntityToAdd.Dispose();
 
-                DisposeEntityReferenceMap();
-
+                _entityLocator.DisposeEntityReferenceMap();
+                
                 _entityStreams.Dispose();
                 scheduler.Dispose();
             }
@@ -283,7 +287,12 @@ namespace Svelto.ECS
                                 {
                                     _privateSubmitEntities.MoveNext();
                                     if (_privateSubmitEntities.Current == true)
-                                        yield return true;
+                                    {
+                                        using (profiler.Yield())
+                                        {
+                                            yield return true;
+                                        }
+                                    }
                                     else
                                         break;
                                 }

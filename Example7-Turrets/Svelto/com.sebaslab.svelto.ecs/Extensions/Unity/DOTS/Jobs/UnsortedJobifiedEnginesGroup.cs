@@ -5,8 +5,6 @@ using Unity.Jobs;
 
 namespace Svelto.ECS.Extensions.Unity
 {
-    public interface IJobifiedGroupEngine<T> : IJobifiedEngine<T>
-    { }
     /// <summary>
     /// Note unsorted jobs run in parallel
     /// </summary>

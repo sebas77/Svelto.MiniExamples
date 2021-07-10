@@ -4,12 +4,10 @@ namespace Svelto.DataStructures
 {
     public readonly struct FasterReadOnlyList<T> 
     {
-        public static FasterReadOnlyList<T> DefaultEmptyList = new FasterReadOnlyList<T>(
-            FasterList<T>.DefaultEmptyList);
+        public static FasterReadOnlyList<T> DefaultEmptyList = new FasterReadOnlyList<T>(new FasterList<T>(0));
 
         public int  count    => (int) _list.count;
-        public uint capacity => _list.capacity;
-
+        
         public FasterReadOnlyList(FasterList<T> list)
         {
             _list = list;

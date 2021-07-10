@@ -6,8 +6,8 @@ namespace Svelto.ECS.MiniExamples.Turrets
     {
         public override void Update()
         {
-            var groups = entitiesDB.FindGroups<VelocityComponent, TRSComponent>();
-            foreach (var ((velocities, positions, count), _) in entitiesDB.QueryEntities<VelocityComponent, TRSComponent>(groups))
+            var groups = entitiesDB.FindGroups<VelocityComponent, PositionComponent>();
+            foreach (var ((velocities, positions, count), _) in entitiesDB.QueryEntities<VelocityComponent, PositionComponent>(groups))
             {
                 for (int i = 0; i < count; i++)
                 {

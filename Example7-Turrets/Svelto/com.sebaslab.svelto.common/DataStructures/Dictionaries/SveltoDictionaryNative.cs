@@ -70,7 +70,7 @@ namespace Svelto.DataStructures
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref TValue GetValueByRef(TKey key)         { return ref _dictionary.GetValueByRef(key); }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public     void   SetCapacity(uint size)          { _dictionary.SetCapacity(size); }
+        public     void   SetCapacity(uint size)          { _dictionary.ExpandTo(size); }
 
         public TValue this[TKey key]
         {

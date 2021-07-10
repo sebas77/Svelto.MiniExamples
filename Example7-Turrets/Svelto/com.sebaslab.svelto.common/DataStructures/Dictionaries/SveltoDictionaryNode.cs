@@ -2,10 +2,10 @@ namespace Svelto.DataStructures
 {
     public struct SveltoDictionaryNode<TKey>
     {
-        public readonly TKey key;
-        public readonly int  hashcode;
-        public          int  previous;
-        public          int  next;
+        public readonly   TKey key;
+        internal readonly int  hashcode;
+        internal          int  previous;
+        internal          int  next;
 
         public SveltoDictionaryNode(ref TKey key, int hash, int previousNode)
         {

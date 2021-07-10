@@ -20,23 +20,25 @@ namespace Svelto.ECS.MiniExamples.Turrets
         {
             var sveltoEntityID      = _ecsManager.RegisterStrideEntity(turretStrideEntity);
             var sveltoEntityIDChild = _ecsManager.RegisterStrideEntity(turretStrideEntityComponent.child);
-
+            
             var botInitializer = _entityFactory.BuildEntity(new EGID(sveltoEntityIDChild, BotTag.BuildGroup)
                                                           , turretStrideEntityComponent.GetChildDescriptor());
             var turretInitializer = _entityFactory.BuildEntity(new EGID(sveltoEntityID, TurretTag.BuildGroup)
                                                              , turretStrideEntityComponent.GetDescriptor());
             var botStrideEntityTransform    = turretStrideEntityComponent.child.Transform;
             var turretStrideEntityTransform = turretStrideEntity.Transform;
-
+            
             botInitializer.Init(new ChildComponent(turretInitializer.reference));
-            botInitializer.Init(new TRSComponent(botStrideEntityTransform.Position / turretStrideEntityTransform.Scale
-                                               , botStrideEntityTransform.Rotation
-                                               , botStrideEntityTransform.Scale / turretStrideEntityTransform.Scale));
+            botInitializer.Init(new PositionComponent(botStrideEntityTransform.Position / turretStrideEntityTransform.Scale));
+            botInitializer.Init(new RotationComponent(botStrideEntityTransform.Rotation));
+            botInitializer.Init(new ScalingComponent(botStrideEntityTransform.Scale / turretStrideEntityTransform.Scale));
+            
             turretInitializer.Init(new StartPositionsComponent(turretStrideEntityTransform.Position));
-            turretInitializer.Init(new TRSComponent(turretStrideEntityTransform.Position
-                                                  , turretStrideEntityTransform.Rotation
-                                                  , turretStrideEntityTransform.Scale));
-
+            
+            turretInitializer.Init(new PositionComponent(turretStrideEntityTransform.Position));
+            turretInitializer.Init(new RotationComponent(turretStrideEntityTransform.Rotation));
+            turretInitializer.Init(new ScalingComponent(turretStrideEntityTransform.Scale));
+            
             turretStrideEntityTransform.UseTRS = false;
             botStrideEntityTransform.UseTRS    = false;
         }

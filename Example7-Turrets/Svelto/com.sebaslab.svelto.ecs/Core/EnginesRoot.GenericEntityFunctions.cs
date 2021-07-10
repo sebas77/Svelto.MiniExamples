@@ -28,9 +28,9 @@ namespace Svelto.ECS
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public void RemoveEntity<T>(EGID entityEGID) where T : IEntityDescriptor, new()
             {
-                DBC.ECS.Check.Require(entityEGID.groupID != 0, "invalid group detected");
+                DBC.ECS.Check.Require((uint)entityEGID.groupID != 0, "invalid group detected");
                 var descriptorComponentsToBuild = EntityDescriptorTemplate<T>.descriptor.componentsToBuild;
-                _enginesRoot.Target.CheckRemoveEntityID(entityEGID, TypeCache<T>.type);
+                _enginesRoot.Target.CheckRemoveEntityID(entityEGID, TypeCache<T>.Type);
 
                 _enginesRoot.Target.QueueEntitySubmitOperation<T>(
                     new EntitySubmitOperation(EntitySubmitOperationType.Remove, entityEGID, entityEGID,
@@ -40,7 +40,7 @@ namespace Svelto.ECS
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public void RemoveEntitiesFromGroup(ExclusiveBuildGroup groupID)
             {
-                DBC.ECS.Check.Require(groupID != 0, "invalid group detected");
+                DBC.ECS.Check.Require((uint)groupID != 0, "invalid group detected");
                 _enginesRoot.Target.RemoveGroupID(groupID);
 
                 _enginesRoot.Target.QueueEntitySubmitOperation(
@@ -85,8 +85,8 @@ namespace Svelto.ECS
 
                     dictionary.KeysEvaluator((key) =>
                     {
-                        _enginesRoot.Target.CheckRemoveEntityID(new EGID(key, fromGroupID), TypeCache<T>.type);
-                        _enginesRoot.Target.CheckAddEntityID(new EGID(key, toGroupID), TypeCache<T>.type);
+                        _enginesRoot.Target.CheckRemoveEntityID(new EGID(key, fromGroupID), TypeCache<T>.Type);
+                        _enginesRoot.Target.CheckAddEntityID(new EGID(key, toGroupID), TypeCache<T>.Type);
                     });
 
 #endif
@@ -147,14 +147,14 @@ namespace Svelto.ECS
             public void SwapEntityGroup<T>(EGID fromID, EGID toID)
                 where T : IEntityDescriptor, new()
             {
-                DBC.ECS.Check.Require(fromID.groupID != 0, "invalid group detected");
-                DBC.ECS.Check.Require(toID.groupID != 0, "invalid group detected");
+                DBC.ECS.Check.Require((uint)fromID.groupID != 0, "invalid group detected");
+                DBC.ECS.Check.Require((uint)toID.groupID != 0, "invalid group detected");
 
                 var enginesRootTarget           = _enginesRoot.Target;
                 var descriptorComponentsToBuild = EntityDescriptorTemplate<T>.descriptor.componentsToBuild;
                 
-                enginesRootTarget.CheckRemoveEntityID(fromID, TypeCache<T>.type);
-                enginesRootTarget.CheckAddEntityID(toID, TypeCache<T>.type);
+                enginesRootTarget.CheckRemoveEntityID(fromID, TypeCache<T>.Type);
+                enginesRootTarget.CheckAddEntityID(toID, TypeCache<T>.Type);
 
                 enginesRootTarget.QueueEntitySubmitOperation<T>(
                     new EntitySubmitOperation(EntitySubmitOperationType.Swap,

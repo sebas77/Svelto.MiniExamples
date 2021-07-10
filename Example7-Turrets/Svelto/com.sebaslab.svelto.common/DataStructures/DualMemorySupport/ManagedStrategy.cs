@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using DBC.Common;
 using Svelto.Common;
 
@@ -49,7 +50,7 @@ namespace Svelto.DataStructures
             _realBuffer = b;
             _buffer     = _realBuffer;
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void AllocateMore(uint newSize, uint numberOfItemsToCopy, bool clear = true)
         {
@@ -128,8 +129,8 @@ namespace Svelto.DataStructures
         }
 
         public void Dispose() {}
-
-        IBuffer<T> _buffer;
-        MB<T>      _realBuffer;
+        
+        IBuffer<T>  _buffer;
+        MB<T>       _realBuffer;
     }
 }

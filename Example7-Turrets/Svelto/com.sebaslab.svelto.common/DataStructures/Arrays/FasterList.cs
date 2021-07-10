@@ -4,11 +4,9 @@ using System.Runtime.CompilerServices;
 
 namespace Svelto.DataStructures
 {
-    //Warning: the burst compatible version of a dynamic array is found in Svelto.ECS and is called NativeDynamicArray/Cast
+    //Note: the burst compatible version of a dynamic array is found in Svelto.ECS and is called NativeDynamicArray/Cast
     public class FasterList<T>
     {
-        internal static readonly FasterList<T> DefaultEmptyList = new FasterList<T>();
-        
         public int count => (int) _count;
         public uint capacity => (uint) _buffer.Length;
         
@@ -141,6 +139,14 @@ namespace Svelto.DataStructures
 
             return this;
         }
+        
+        // [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        // public FasterList<T> AddRange(in LocalFasterReadOnlyList<T> items)
+        // {
+        //     AddRange(items._list, (uint) items.count);
+        //
+        //     return this;
+        // }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void AddRange(T[] items, uint count)
@@ -180,7 +186,7 @@ namespace Svelto.DataStructures
         public void FastClear()
         {
 #if DEBUG && !PROFILE_SVELTO
-            if (Svelto.Common.TypeCache<T>.type.IsClass)
+            if (Svelto.Common.TypeCache<T>.Type.IsClass)
                 Console.LogWarning(
                     "Warning: objects held by this list won't be garbage collected. Use ResetToReuse or Clear " +
                     "to avoid this warning");

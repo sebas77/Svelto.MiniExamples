@@ -14,7 +14,10 @@ namespace Svelto.ECS.Extensions.Unity
     {
         public readonly uint group;
 
-        public UECSSveltoGroupID(uint exclusiveGroup) { @group = exclusiveGroup; }
+        public UECSSveltoGroupID(ExclusiveGroupStruct exclusiveGroup)
+        {
+            @group = (uint) exclusiveGroup;
+        }
 
         public static implicit operator ExclusiveGroupStruct(UECSSveltoGroupID group)
         {

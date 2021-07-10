@@ -133,7 +133,7 @@ namespace Svelto.ECS.DataStructures
             _writeIndex = count;
         }
         
-#if UNITY_NATIVE
+#if UNITY_COLLECTIONS
         [global::Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction]
 #endif
         unsafe byte* _ptr;

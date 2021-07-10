@@ -2,8 +2,8 @@ using Stride.Core.Mathematics;
 
 namespace Svelto.ECS.MiniExamples.Turrets
 {
-    struct DirectionComponent : IEntityComponent
+    public struct VelocityComponent : IEntityComponent
     {
-        public Vector3 vector;
+        public Vector3 velocity;
     }
 }

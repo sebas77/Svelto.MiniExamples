@@ -1,3 +1,4 @@
+using System;
 using System.Runtime.CompilerServices;
 
 namespace Svelto.DataStructures
@@ -8,21 +9,23 @@ namespace Svelto.DataStructures
 
         public LocalFasterReadOnlyList(FasterList<T> list)
         {
-            _list = list.ToArrayFast(out _count);
+            _list  = list.ToArrayFast(out var count);
+            _count = (uint) count;
+        }
+        
+        public LocalFasterReadOnlyList(FasterReadOnlyList<T> list)
+        {
+            _list  = list.ToArrayFast(out var count);
+            _count = (uint) count;
         }
 
-        LocalFasterReadOnlyList(T[] list)
+        public LocalFasterReadOnlyList(T[] list, uint count)
         {
             _list  = list;
-            _count = list.Length;
+            _count = count;
         }
-        
+
         public static implicit operator LocalFasterReadOnlyList<T>(FasterList<T> list)
-        {
-            return new LocalFasterReadOnlyList<T>(list);
-        }
-        
-        public static implicit operator LocalFasterReadOnlyList<T>(T[] list)
         {
             return new LocalFasterReadOnlyList<T>(list);
         }
@@ -45,8 +48,16 @@ namespace Svelto.DataStructures
             get => ref _list[index];
         }
 
-        readonly T[]  _list;
-        readonly int _count;
+        public T[] ToArrayFast(out int count)
+        {
+            count = this.count;
+            return _list;
+        }
+
+        readonly T[]                      _list;
+        readonly uint                     _count;
+        
+        
     }
 
     public struct LocalFasterReadonlyListEnumerator<T>

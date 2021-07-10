@@ -24,18 +24,19 @@ namespace Svelto.ECS.MiniExamples.Turrets
             //Player Context
             AddEngine(new PlayerBotInputEngine());
             AddEngine(new BuildPlayerBotEngine(ecsStrideEntityManager, generateEntityFactory));
+            AddEngine(new PlayerBotLookAtEngine());
             
             //TurretsContext
             AddEngine(new MoveTurretEngine());
+            
+            //SimplePhysicContext
+            AddEngine(new VelocityComputationEngine());
+            AddEngine(new VelocityToPositionEngine());
             
             //TransformableContext
             AddEngine(new ComputeTransformsEngine());
             //HierarchicalTransformableContext
             AddEngine(new ComputeHierarchicalTransformsEngine());
-            
-            //SimplePhysicContext
-            AddEngine(new MovementEngine());
-            AddEngine(new VelocityToPositionEngine());
             
             //Stride Abstraction Layer
             AddEngine(new SetTransformsEngine(ecsStrideEntityManager));

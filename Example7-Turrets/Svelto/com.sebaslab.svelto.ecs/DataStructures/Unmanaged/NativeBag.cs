@@ -273,7 +273,7 @@ namespace Svelto.ECS.DataStructures
 #if ENABLE_THREAD_SAFE_CHECKS
         int _threadSentinel;
 #endif
-#if UNITY_NATIVE
+#if UNITY_COLLECTIONS
         [global::Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction]
 #endif
         unsafe UnsafeBlob* _queue;

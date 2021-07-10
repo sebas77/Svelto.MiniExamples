@@ -9,12 +9,6 @@ namespace Svelto.ECS.DataStructures
 {
     public unsafe struct AtomicNativeBags:IDisposable
     {
-        [global::Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction]
-        
-        NativeBag* _data;
-        readonly Allocator _allocator;
-        readonly uint _threadsCount;
-
         public uint count => _threadsCount;
 
         public AtomicNativeBags(Allocator allocator)
@@ -77,6 +71,13 @@ namespace Svelto.ECS.DataStructures
                 GetBuffer(i).Clear();
             }
         }
+        
+#if UNITY_COLLECTIONS
+        [global::Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction]
+#endif
+        NativeBag* _data;
+        readonly Allocator _allocator;
+        readonly uint      _threadsCount;
     }
 }
 #endif

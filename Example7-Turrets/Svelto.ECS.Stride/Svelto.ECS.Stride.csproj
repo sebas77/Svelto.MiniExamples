@@ -6,6 +6,6 @@
     <ProjectReference Include="..\Svelto\com.sebaslab.svelto.ecs\Svelto.ECS.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Stride.Engine" Version="4.1.0.1457-beta" />
+    <PackageReference Include="Stride.Engine" Version="4.1.0.1459-beta" />
   </ItemGroup>
 </Project>
