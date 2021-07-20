@@ -298,7 +298,7 @@ namespace Svelto.ECS
         (out ITypeSafeDictionary typeSafeDictionary
        , FasterDictionary<RefWrapperType, ITypeSafeDictionary> entitiesInGroupPerType) where T : IEntityComponent
         {
-            if (entitiesInGroupPerType.TryGetValue(new RefWrapperType(TypeCache<T>.Type), out var safeDictionary)
+            if (entitiesInGroupPerType.TryGetValue(new RefWrapperType(TypeCache<T>.type), out var safeDictionary)
              == false)
             {
                 typeSafeDictionary = default;
@@ -315,7 +315,7 @@ namespace Svelto.ECS
         internal bool SafeQueryEntityDictionary<T>
             (ExclusiveGroupStruct group, out ITypeSafeDictionary typeSafeDictionary) where T : IEntityComponent
         {
-            if (UnsafeQueryEntityDictionary(group, TypeCache<T>.Type, out var safeDictionary) == false)
+            if (UnsafeQueryEntityDictionary(group, TypeCache<T>.type, out var safeDictionary) == false)
             {
                 typeSafeDictionary = default;
                 return false;

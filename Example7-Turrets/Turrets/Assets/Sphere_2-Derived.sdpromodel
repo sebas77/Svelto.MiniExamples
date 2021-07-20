@@ -1,0 +1,12 @@
+!ProceduralModelAsset
+Id: fcdf000c-e962-4818-af27-3897facd912b
+SerializedVersion: {Stride: 2.0.0.0}
+Tags: []
+Archetype: 2ed87c25-5b77-498d-a913-452276a19a97:Sphere_2
+Type: !SphereProceduralModel
+    Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+    UvScale: {X: 1.0, Y: 1.0}
+    LocalOffset: {X: 0.0, Y: 0.0, Z: 0.0}
+    NumberOfTextureCoordinates: 10
+    MaterialInstance:
+        Material: b5937f37-8fa5-4c0c-9a21-9d563ee1bffc:Materials/RedCoating

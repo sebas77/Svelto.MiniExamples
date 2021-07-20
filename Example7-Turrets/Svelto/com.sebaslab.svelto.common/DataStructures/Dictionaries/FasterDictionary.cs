@@ -134,6 +134,13 @@ namespace Svelto.DataStructures
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Intersect<OTValue>
             (in FasterDictionary<TKey, OTValue> otherDicKeys) => _dictionary.Intersect(otherDicKeys._dictionary);
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Intersect
+            (in FasterDictionary<TKey, TValue> otherDicKeys) => _dictionary.Intersect(otherDicKeys._dictionary);
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Exclude(FasterDictionary<TKey, TValue> otherDicKeys)  => _dictionary.Exclude(otherDicKeys._dictionary);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Dispose() { _dictionary.Dispose(); }
@@ -150,15 +157,9 @@ namespace Svelto.DataStructures
             Array.Copy(GetValues(out var count).ToManagedArray(), 0, values, index, count);
         }
 
-        // [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        // public void CopyValuesTo(FasterDictionary<TKey, TValue> destDic)
-        // {
-        //     _dictionary.CopyValuesTo(destDic._dictionary);            
-        // }
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ExpandTo(uint newSize) { _dictionary.ExpandTo(newSize); }
-
+        
         public SveltoDictionary<TKey, TValue, ManagedStrategy<SveltoDictionaryNode<TKey>>, ManagedStrategy<TValue>,
             ManagedStrategy<int>>.SveltoDictionaryKeyEnumerable keys
         {

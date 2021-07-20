@@ -17,3 +17,4 @@ TemplateFolders: []
 RootAssets:
     - 83020843-3487-4627-9313-da5ce4430747:StandsPrefabs/Turret
     - 931aeeeb-ba92-4873-9638-fa7489610d46:StandsPrefabs/Hover
+    - a84006e1-040a-45fc-bc6e-042d2dbf9a19:Bullet

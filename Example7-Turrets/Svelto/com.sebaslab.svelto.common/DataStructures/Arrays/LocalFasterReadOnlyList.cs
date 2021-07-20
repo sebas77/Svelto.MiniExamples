@@ -50,14 +50,20 @@ namespace Svelto.DataStructures
 
         public T[] ToArrayFast(out int count)
         {
-            count = this.count;
+            count = (int)_count;
             return _list;
+        }
+
+        public T[] ToArray()
+        {
+            var array = new T[_count];
+            Array.Copy(_list, 0, array, 0, _count);
+            
+            return array;
         }
 
         readonly T[]                      _list;
         readonly uint                     _count;
-        
-        
     }
 
     public struct LocalFasterReadonlyListEnumerator<T>

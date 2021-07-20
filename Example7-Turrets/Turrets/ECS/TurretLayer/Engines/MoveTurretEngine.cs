@@ -16,12 +16,12 @@ namespace Svelto.ECS.MiniExamples.Turrets
             float x                    = (float) (0.3f * Math.Cos(updateTimeFrameCount));
             float y                    = (float) (0.3f * Math.Sin(updateTimeFrameCount));
 
-            foreach (var ((trs, interpolatedPositions, count), _) in entitiesDB
+            foreach (var ((positions, startPositions, count), _) in entitiesDB
                .QueryEntities<PositionComponent, StartPositionsComponent>(TurretTag.Groups))
             {
                 for (int i = 0; i < count; i++)
                 {
-                    trs[i].position = interpolatedPositions[i].startPosition + new Vector3(x, 0, y);
+                    positions[i].position = startPositions[i].startPosition + new Vector3(x, 0, y);
                 }
             }
         }

@@ -10,7 +10,7 @@ namespace Svelto.DataStructures
 #if DEBUG && !PROFILE_SVELTO
         static NativeStrategy()
         {
-            if (TypeCache<T>.IsUnmanaged == false)
+            if (TypeCache<T>.isUnmanaged == false)
                 throw new DBC.Common.PreconditionException("Only unmanaged data can be stored natively");
         }
 #endif
@@ -33,21 +33,18 @@ namespace Svelto.DataStructures
             _realBuffer = b;
         }
 
-        public void AllocateMore(uint newSize, uint numberOfItemsToCopy, bool clear = true)
+        public void Resize(uint newSize, bool copyContent = true)
         {
-#if DEBUG && !PROFILE_SVELTO
-            if (newSize <= capacity)
-                throw new DBC.Common.PreconditionException("can't alloc more to a smaller or equal size");
-            if (numberOfItemsToCopy > capacity)
-                throw new DBC.Common.PreconditionException("out of bounds number of elements to copy");
-#endif
-            var pointer = _realBuffer.ToNativeArray(out _);
-            pointer = MemoryUtilities.Realloc<T>(pointer, newSize, _nativeAllocator, numberOfItemsToCopy, true, clear);
-            NB<T> b = new NB<T>(pointer, newSize);
-            _realBuffer    = b;
-            _invalidHandle = true;
+            if (newSize != capacity)
+            {
+                var pointer = _realBuffer.ToNativeArray(out _);
+                pointer = MemoryUtilities.Realloc<T>(pointer, newSize, _nativeAllocator, (uint) newSize > capacity ? (uint) capacity : newSize, copyContent);
+                NB<T> b = new NB<T>(pointer, newSize);
+                _realBuffer    = b;
+                _invalidHandle = true;
+            }
         }
-
+        
         public void ShiftLeft(uint index, uint count)
         {
             DBC.Common.Check.Require(index < capacity, "out of bounds index");
@@ -79,20 +76,6 @@ namespace Svelto.DataStructures
         }
 
         public bool isValid => _realBuffer.isValid;
-
-        public void Resize(uint newCapacity, bool copyContent = true)
-        {
-            var pointer = _realBuffer.ToNativeArray(out _);
-            pointer = MemoryUtilities.Realloc<T>(pointer, newCapacity, _nativeAllocator, (uint) capacity, copyContent);
-            NB<T> b = new NB<T>(pointer, newCapacity);
-            _realBuffer    = b;
-            _invalidHandle = true;
-        }
-
-        public void CopyTo(IBufferStrategy<T> destBuffer)
-        {
-            
-        }
 
         public void Clear() => _realBuffer.Clear();
 

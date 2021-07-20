@@ -210,6 +210,15 @@ namespace Svelto.Common
 #endif
             }
         }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void MemSet(IntPtr destination, uint sizeOfInBytes, byte value)
+        {
+            unsafe
+            {
+                Unsafe.InitBlock((void*) destination, value, sizeOfInBytes);
+            }
+        }
 
         /// <summary>
         /// Like Memcpy but safe when memory overlaps

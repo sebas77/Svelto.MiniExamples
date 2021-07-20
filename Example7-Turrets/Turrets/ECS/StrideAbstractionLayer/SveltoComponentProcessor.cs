@@ -1,4 +1,6 @@
+using Stride.Core.Mathematics;
 using Stride.Engine;
+using Matrix = BulletSharp.Math.Matrix;
 
 namespace Svelto.ECS.MiniExamples.Turrets
 {
@@ -20,27 +22,48 @@ namespace Svelto.ECS.MiniExamples.Turrets
         {
             var sveltoEntityID      = _ecsManager.RegisterStrideEntity(turretStrideEntity);
             var sveltoEntityIDChild = _ecsManager.RegisterStrideEntity(turretStrideEntityComponent.child);
-            
+
             var botInitializer = _entityFactory.BuildEntity(new EGID(sveltoEntityIDChild, BotTag.BuildGroup)
                                                           , turretStrideEntityComponent.GetChildDescriptor());
             var turretInitializer = _entityFactory.BuildEntity(new EGID(sveltoEntityID, TurretTag.BuildGroup)
                                                              , turretStrideEntityComponent.GetDescriptor());
             var botStrideEntityTransform    = turretStrideEntityComponent.child.Transform;
             var turretStrideEntityTransform = turretStrideEntity.Transform;
+
+            turretStrideEntityTransform.UpdateWorldMatrix();
+            botStrideEntityTransform.UpdateWorldMatrix();
+
+            var turretWorldMatrix    = turretStrideEntityTransform.WorldMatrix;
+            var turretBotWorldMatrix = botStrideEntityTransform.WorldMatrix;
+
+            turretWorldMatrix.Decompose(out Vector3 scaleA, out Quaternion rotationA, out Vector3 translationA);
+            turretWorldMatrix.Invert();
+            turretBotWorldMatrix *= turretWorldMatrix;
+            turretBotWorldMatrix.Decompose(out Vector3 scaleB, out Quaternion rotationB, out Vector3 translationB);
             
+
             botInitializer.Init(new ChildComponent(turretInitializer.reference));
-            botInitializer.Init(new PositionComponent(botStrideEntityTransform.Position / turretStrideEntityTransform.Scale));
-            botInitializer.Init(new RotationComponent(botStrideEntityTransform.Rotation));
-            botInitializer.Init(new ScalingComponent(botStrideEntityTransform.Scale / turretStrideEntityTransform.Scale));
-            
-            turretInitializer.Init(new StartPositionsComponent(turretStrideEntityTransform.Position));
-            
-            turretInitializer.Init(new PositionComponent(turretStrideEntityTransform.Position));
-            turretInitializer.Init(new RotationComponent(turretStrideEntityTransform.Rotation));
-            turretInitializer.Init(new ScalingComponent(turretStrideEntityTransform.Scale));
-            
+            botInitializer.Init(new PositionComponent(translationB));
+            botInitializer.Init(new RotationComponent(rotationB));
+            botInitializer.Init(new ScalingComponent(scaleB));
+            botInitializer.Init(new DirectionComponent()
+            {
+                vector = Vector3.UnitX
+            });
+
+            turretInitializer.Init(new StartPositionsComponent(translationA));
+            turretInitializer.Init(new PositionComponent(translationA));
+            turretInitializer.Init(new RotationComponent(rotationA));
+            turretInitializer.Init(new ScalingComponent(scaleA));
+
             turretStrideEntityTransform.UseTRS = false;
             botStrideEntityTransform.UseTRS    = false;
+            //
+            // turretStrideEntityTransform.WorldMatrix = Stride.Core.Mathematics.Matrix.Identity;
+            // botStrideEntityTransform.WorldMatrix    = Stride.Core.Mathematics.Matrix.Identity;
+            //
+            // botStrideEntityTransform.UpdateLocalFromWorld();
+            // turretStrideEntityTransform.UpdateLocalFromWorld();
         }
 
         IEntityFactory         _entityFactory;

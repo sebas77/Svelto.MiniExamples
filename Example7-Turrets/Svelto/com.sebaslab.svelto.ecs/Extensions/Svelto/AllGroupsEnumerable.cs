@@ -29,7 +29,7 @@ namespace Svelto.ECS
         {
             public GroupsIterator(EntitiesDB db) : this()
             {
-                _db = db.FindGroups_INTERNAL(TypeCache<T1>.Type).GetEnumerator();
+                _db = db.FindGroups_INTERNAL(TypeCache<T1>.type).GetEnumerator();
             }
 
             public bool MoveNext()

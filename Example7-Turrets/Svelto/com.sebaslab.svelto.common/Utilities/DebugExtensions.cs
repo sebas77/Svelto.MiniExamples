@@ -4,7 +4,7 @@ namespace Svelto.Common.Internal
     {
         public static string TypeName<T>(this T any)
         {
-            return TypeCache<T>.Type.Name;
+            return TypeCache<T>.type.Name;
         }
     }
 }

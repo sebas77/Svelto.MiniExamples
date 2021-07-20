@@ -484,7 +484,22 @@ namespace Svelto.DataStructures
                 }
             }
         }
-
+        
+        public void Exclude<OTValue, OTKeyStrategy, OTValueStrategy, OTBucketStrategy> (SveltoDictionary<TKey, OTValue, OTKeyStrategy, OTValueStrategy, OTBucketStrategy> otherDicKeys)   
+            where OTKeyStrategy : struct, IBufferStrategy<SveltoDictionaryNode<TKey>>
+            where OTValueStrategy : struct, IBufferStrategy<OTValue>
+            where OTBucketStrategy : struct, IBufferStrategy<int>
+        {
+            for (int i = 0; i < count; i++)
+            {
+                var tKey = unsafeKeys[i].key;
+                if (otherDicKeys.ContainsKey(tKey) == true)
+                {
+                    this.Remove(tKey);
+                }
+            }
+        }
+        
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         static uint Reduce(uint x, uint N)
         {
@@ -566,19 +581,6 @@ namespace Svelto.DataStructures
 
         uint        _freeValueCellIndex;
         uint        _collisions;
-
-        // public void CopyValuesTo(SveltoDictionary<TKey, TValue, TKeyStrategy, TValueStrategy, TBucketStrategy> destDic)
-        // {
-        //     destDic.ExpandTo((uint) count);
-        //     destDic.FastClear();
-        //
-        //     destDic._freeValueCellIndex = _freeValueCellIndex;
-        //     destDic._collisions         = _collisions;
-        //
-        //     _valuesInfo.CopyTo(destDic._valuesInfo);
-        //     _values.CopyTo(destDic._values);
-        //     _buckets.CopyTo(destDic._buckets);
-        // }
     }
 
     public class SveltoDictionaryException : Exception

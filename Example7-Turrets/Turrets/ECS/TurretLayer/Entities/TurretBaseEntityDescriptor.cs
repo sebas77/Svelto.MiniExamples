@@ -4,7 +4,7 @@ namespace Svelto.ECS.MiniExamples.Turrets
     {
         public TurretBaseEntityDescriptor()
         {
-            Add<StartPositionsComponent, EGIDComponent>();
+            Add<StartPositionsComponent>();
         }
     }
 }

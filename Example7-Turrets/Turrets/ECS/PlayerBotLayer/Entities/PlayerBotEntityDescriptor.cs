@@ -5,7 +5,7 @@ namespace Svelto.ECS.MiniExamples.Turrets
         public PlayerBotEntityDescriptor()
         {
             ExtendWith<TransformableEntityDescriptor>();
-            Add<EGIDComponent>();
+            Add<TurretTargetComponent>();
         }
     }
 }

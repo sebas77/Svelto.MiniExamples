@@ -1,5 +1,4 @@
 using System;
-using Stride.Core.Mathematics;
 using Stride.Engine;
 
 namespace Svelto.ECS.MiniExamples.Turrets
@@ -12,16 +11,20 @@ namespace Svelto.ECS.MiniExamples.Turrets
 
         public override void Update()
         {
-            var   updateTimeFrameCount = ((Game.UpdateTime.Total.TotalMilliseconds % 5000.0f) / 5000.0f) * Math.PI * 2;
-            float x                    = (float) (0.3f * Math.Cos(updateTimeFrameCount));
-            float y                    = (float) (0.3f * Math.Sin(updateTimeFrameCount));
+            var targetGroups = entitiesDB.FindGroups<PositionComponent, TurretTargetComponent>();
 
-            foreach (var ((trs, interpolatedPositions, count), _) in entitiesDB
-               .QueryEntities<PositionComponent, StartPositionsComponent>(TurretTag.Groups))
+            foreach (var ((matrix, directionComponent, count), _) in entitiesDB
+               .QueryEntities<MatrixComponent, DirectionComponent>(BotTag.Groups))
             {
-                for (int i = 0; i < count; i++)
+                foreach (var ((targetPosition, countTargets), _) in entitiesDB
+                   .QueryEntities<PositionComponent>(targetGroups))
                 {
-                    trs[i].position = interpolatedPositions[i].startPosition + new Vector3(x, 0, y);
+                    for (int i = 0; i < count; i++)
+                    {
+                        var j = i < countTargets - 1 ? i : countTargets - 1;
+                        directionComponent[i].vector = targetPosition[j].position - matrix[i].matrix.TranslationVector;
+                        directionComponent[i].vector.Normalize();
+                    }
                 }
             }
         }

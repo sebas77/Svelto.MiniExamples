@@ -10,7 +10,7 @@ using Svelto.Utilities;
 
 namespace Svelto.ECS
 {
-    class ComponentBuilderComparer : IEqualityComparer<IComponentBuilder>
+    struct ComponentBuilderComparer : IEqualityComparer<IComponentBuilder>
     {
         public bool Equals(IComponentBuilder x, IComponentBuilder y)
         {

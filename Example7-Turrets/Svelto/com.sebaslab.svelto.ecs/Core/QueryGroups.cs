@@ -187,16 +187,15 @@ namespace Svelto.ECS.Experimental
         readonly FasterReadOnlyList<ExclusiveGroupStruct> _group;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int Count<T>
-            (EntitiesDB entitiesDB, in LocalFasterReadOnlyList<ExclusiveGroupStruct> groups)
+        public int Count<T>(EntitiesDB entitiesDB)
             where T : struct, IEntityComponent
         {
             int count = 0;
 
-            var groupsCount = groups.count;
+            var groupsCount = result.count;
             for (int i = 0; i < groupsCount; ++i)
             {
-                count += entitiesDB.Count<T>(groups[i]);
+                count += entitiesDB.Count<T>(result[i]);
             }
 
             return count;

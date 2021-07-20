@@ -1,0 +1,22 @@
+!PrefabAsset
+Id: a84006e1-040a-45fc-bc6e-042d2dbf9a19
+SerializedVersion: {Stride: 3.1.0.1}
+Tags: []
+Hierarchy:
+    RootParts:
+        - ref!! 4245e768-efa3-4a90-ac25-38c9ae0e724a
+    Parts:
+        -   Entity:
+                Id: 4245e768-efa3-4a90-ac25-38c9ae0e724a
+                Name: Sphere_2
+                Components:
+                    a8ba9b9de28fdcb9120d4ab03b379156: !TransformComponent
+                        Id: a03021c2-8762-4b1f-9785-4ae8a460ada9
+                        Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    9624dcbc7d692b8fb44603512c57633c: !ModelComponent
+                        Id: 7b2f4d96-9daf-4868-8733-f3614f0690a1
+                        Model: 2ed87c25-5b77-498d-a913-452276a19a97:Sphere_2
+                        Materials: {}

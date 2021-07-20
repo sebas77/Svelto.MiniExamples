@@ -13,7 +13,7 @@ namespace Svelto.ECS
     {
         NativeEntityRemove ProvideNativeEntityRemoveQueue<T>(string memberName) where T : IEntityDescriptor, new()
         {
-            //DBC.ECS.Check.Require(EntityDescriptorTemplate<T>.descriptor.IsUnmanaged(), "can't remove entities with not native types");
+            //DBC.ECS.Check.Require(EntityDescriptorTemplate<T>.descriptor.isUnmanaged(), "can't remove entities with not native types");
             //todo: remove operation array and store entity descriptor hash in the return value
             //todo I maybe able to provide a  _nativeSwap.SwapEntity<entityDescriptor>
             _nativeRemoveOperations.Add(new NativeOperationRemove(
@@ -25,7 +25,7 @@ namespace Svelto.ECS
 
         NativeEntitySwap ProvideNativeEntitySwapQueue<T>(string memberName) where T : IEntityDescriptor, new()
         {
-           // DBC.ECS.Check.Require(EntityDescriptorTemplate<T>.descriptor.IsUnmanaged(), "can't swap entities with not native types");
+           // DBC.ECS.Check.Require(EntityDescriptorTemplate<T>.descriptor.isUnmanaged(), "can't swap entities with not native types");
             //todo: remove operation array and store entity descriptor hash in the return value
             _nativeSwapOperations.Add(new NativeOperationSwap(EntityDescriptorTemplate<T>.descriptor.componentsToBuild
                                                             , TypeCache<T>.type, memberName));

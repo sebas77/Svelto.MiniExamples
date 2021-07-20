@@ -5,8 +5,6 @@ namespace Svelto.ECS.MiniExamples.Turrets
 {
     public class SetTransformsEngine : SyncScript, IQueryingEntitiesEngine
     {
-        readonly ECSStrideEntityManager _ECSStrideEntityManager;
-
         public SetTransformsEngine(ECSStrideEntityManager ecsStrideEntityManager)
         {
             _ECSStrideEntityManager = ecsStrideEntityManager;
@@ -18,18 +16,19 @@ namespace Svelto.ECS.MiniExamples.Turrets
 
         public override void Update()
         {
-            //TODO EGIDCOMPONENT MUST BECOME STRIDEENTITYCOMPONENT
-            LocalFasterReadOnlyList<ExclusiveGroupStruct> groups =
-                entitiesDB.FindGroups<EGIDComponent, MatrixComponent>();
+            var groups = entitiesDB.FindGroups<EGIDComponent, MatrixComponent>();
             foreach (var ((egids, transforms, count), _) in
                 entitiesDB.QueryEntities<EGIDComponent, MatrixComponent>(groups))
             {
                 for (int i = 0; i < count; i++)
                 {
-                    _ECSStrideEntityManager.GetStrideEntity(egids[i].ID.entityID).Transform.LocalMatrix =
-                        transforms[i].matrix;
+                    var transformComponent = _ECSStrideEntityManager.GetStrideEntity(egids[i].ID.entityID).Transform;
+                    transformComponent.WorldMatrix = transforms[i].matrix;
+                    transformComponent.UpdateLocalFromWorld();
                 }
             }
         }
+
+        readonly ECSStrideEntityManager _ECSStrideEntityManager;
     }
 }

@@ -313,8 +313,8 @@ namespace Svelto.ECS
                 buffers = _buffers;
             }
 
-            public readonly EntityCollection<T1> _buffers;
-            public readonly ExclusiveGroupStruct _group;
+            internal readonly EntityCollection<T1> _buffers;
+            internal readonly ExclusiveGroupStruct _group;
         }
     }
 }

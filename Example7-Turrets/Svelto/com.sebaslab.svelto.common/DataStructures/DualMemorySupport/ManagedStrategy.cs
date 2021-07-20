@@ -35,37 +35,23 @@ namespace Svelto.DataStructures
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Resize(uint newCapacity, bool copyContent = true)
+        public void Resize(uint newSize, bool copyContent = true)
         {
-            Check.Require(newCapacity >= 0, "Resize requires a size greater or equal to 0");
+            if (newSize != capacity)
+            {
+                var realBuffer = _realBuffer.ToManagedArray();
+                if (copyContent == true)
+                    Array.Resize(ref realBuffer, (int) newSize);
+                else
+                    realBuffer = new T[newSize];
 
-            var realBuffer = _realBuffer.ToManagedArray();
-            if (copyContent == true)
-                Array.Resize(ref realBuffer, (int) newCapacity);
-            else
-                realBuffer = new T[newCapacity];
-
-            var b =  default(MB<T>);
-            b.Set(realBuffer);
-            _realBuffer = b;
-            _buffer     = _realBuffer;
+                var b = default(MB<T>);
+                b.Set(realBuffer);
+                _realBuffer = b;
+                _buffer     = _realBuffer;
+            }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void AllocateMore(uint newSize, uint numberOfItemsToCopy, bool clear = true)
-        {
-            DBC.Common.Check.Require(newSize > _buffer.capacity);
-            
-            var b =  default(MB<T>);
-            b.Set(new T[newSize]);
-
-            if (this.capacity > 0)
-                b.CopyFrom(_buffer.ToManagedArray(), numberOfItemsToCopy);
-            
-            _realBuffer = b;
-            _buffer     = _realBuffer;
-        }
-        
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ShiftLeft(uint index, uint count)
         {

@@ -14,7 +14,7 @@ namespace Svelto.ECS
     {
         public uint                 length          => _map.count;
         public ExclusiveGroupStruct groupID         { get; }
-        public Type                 entityType            => TypeCache<T>.Type;
+        public Type                 entityType            => TypeCache<T>.type;
 
         internal EGIDMapper(ExclusiveGroupStruct groupStructId, ITypeSafeDictionary<T> dic) : this()
         {

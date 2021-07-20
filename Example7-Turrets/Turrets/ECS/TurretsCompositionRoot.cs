@@ -11,35 +11,36 @@ namespace Svelto.ECS.MiniExamples.Turrets
 
         void CreateCompositionRoot(object sender, EventArgs e)
         { 
-            _scheduler   = new SimpleEntitiesSubmissionScheduler();
-            _enginesRoot = new EnginesRoot(_scheduler);
+             _scheduler   = new SimpleEntitiesSubmissionScheduler();
+             _enginesRoot = new EnginesRoot(_scheduler);
             
-            var ecsStrideEntityManager = new ECSStrideEntityManager();
-            var generateEntityFactory = _enginesRoot.GenerateEntityFactory();
+             var ecsStrideEntityManager = new ECSStrideEntityManager();
+             var generateEntityFactory = _enginesRoot.GenerateEntityFactory();
             
-            Services.AddService(generateEntityFactory);
-            Services.AddService(_enginesRoot.GenerateEntityFunctions());
-            Services.AddService(ecsStrideEntityManager);
+             Services.AddService(generateEntityFactory);
+             Services.AddService(_enginesRoot.GenerateEntityFunctions());
+             Services.AddService(ecsStrideEntityManager);
 
-            //Player Context
-            AddEngine(new PlayerBotInputEngine());
-            AddEngine(new BuildPlayerBotEngine(ecsStrideEntityManager, generateEntityFactory));
-            AddEngine(new PlayerBotLookAtEngine());
+             //Player Context
+             AddEngine(new PlayerBotInputEngine());
+             AddEngine(new BuildPlayerBotEngine(ecsStrideEntityManager, generateEntityFactory));
             
-            //TurretsContext
-            AddEngine(new MoveTurretEngine());
+             //TurretsContext
+             AddEngine(new MoveTurretEngine());
+             AddEngine(new AimbBotEngine());
             
-            //SimplePhysicContext
-            AddEngine(new VelocityComputationEngine());
-            AddEngine(new VelocityToPositionEngine());
+             //SimplePhysicContext
+             AddEngine(new VelocityComputationEngine());
+             AddEngine(new VelocityToPositionEngine());
             
-            //TransformableContext
-            AddEngine(new ComputeTransformsEngine());
-            //HierarchicalTransformableContext
-            AddEngine(new ComputeHierarchicalTransformsEngine());
+             //TransformableContext
+             AddEngine(new LookAtEngine());
+             AddEngine(new ComputeTransformsEngine());
+             //HierarchicalTransformableContext
+             AddEngine(new ComputeHierarchicalTransformsEngine());
             
-            //Stride Abstraction Layer
-            AddEngine(new SetTransformsEngine(ecsStrideEntityManager));
+             //Stride Abstraction Layer
+             AddEngine(new SetTransformsEngine(ecsStrideEntityManager));
             
             GameStarted -= CreateCompositionRoot;
         }
