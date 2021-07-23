@@ -132,7 +132,8 @@ namespace Svelto.ECS.Example.Survive
             var enemyAttackEngine    = new EnemyAttackEngine(time);
             var enemyMovementEngine  = new EnemyMovementEngine();
             //Spawner engines are factories engines that can build entities
-            var enemySpawnerEngine = new EnemySpawnerEngine(enemyFactory, entityFunctions);
+            //var enemySpawnerEngine = new EnemySpawnerEngine(enemyFactory, entityFunctions);
+            var enemySpawnerEngine = new EnemyWaveSpawnerEngine(enemyFactory, entityFunctions);
             var enemyDeathEngine = new EnemyDeathEngine(entityFunctions, entityStreamConsumerFactory, time
                                                       , new WaitForSubmissionEnumerator(
                                                             unityEntitySubmissionScheduler));
