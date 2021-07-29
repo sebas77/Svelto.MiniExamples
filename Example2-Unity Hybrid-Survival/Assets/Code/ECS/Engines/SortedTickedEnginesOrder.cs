@@ -6,7 +6,8 @@ namespace Svelto.ECS.Example.Survive
     {
         SurvivalUnsortedEngines
       , UpdateScoreEngine
-       , DamageUnsortedEngines
+      , UpdateWaveHUDEngine
+      , DamageUnsortedEngines
     }
 
     public enum PlayerEnginesNames
@@ -34,6 +35,7 @@ namespace Svelto.ECS.Example.Survive
           , nameof(EnemyEnginesNames.EnemyDeathEngine)
           , nameof(PlayerEnginesNames.PlayerDeathEngine)
           , nameof(EnginesNames.UpdateScoreEngine)
+          , nameof(EnginesNames.UpdateWaveHUDEngine)
         };
     }
 }

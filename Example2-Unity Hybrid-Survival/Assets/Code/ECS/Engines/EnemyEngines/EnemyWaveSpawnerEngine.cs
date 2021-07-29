@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Svelto.ECS.Example.Survive.Wave;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
@@ -19,6 +20,7 @@ namespace Svelto.ECS.Example.Survive.Enemies
             _enemyFactory         = enemyFactory;
             SetWave(0);
             _numberOfDeadEnemies    = _numberOfEnemiesThisWave;
+
         }
 
         public EntitiesDB entitiesDB { private get; set; }
@@ -33,14 +35,16 @@ namespace Svelto.ECS.Example.Survive.Enemies
             if (egid.groupID.FoundIn(DeadEnemies.Groups))
             {
                 _numberOfDeadEnemies++;
+                _waveEntity.enemiesLeft--;
+
             }
         }
         
         void SetWave(int wave) {
             _wave = wave;
+            _waveEntity.wave = wave;
             if (wave <= DIFFICULTY_WAVE_LIMIT)
                 _numberOfEnemiesThisWave = STARTING_WAVE_ENEMY_COUNT + (int)((wave - 1) * DIFFICULTY_GRADIENT);
-            Debug.Log("Incresing number of enemies to: " + _numberOfEnemiesThisWave + "    (" + wave + ")");
         }
 
 
@@ -60,10 +64,10 @@ namespace Svelto.ECS.Example.Survive.Enemies
             float[] spawningFrequency = new float[spawningTimes.Length];
 
             int numberOfDifferentEnemies = spawningTimes.Length;
+
             for (int i = 0; i < numberOfDifferentEnemies; i++)
             {
-                spawningFrequency[i] = largestSpawningTime / spawningTimes[i];
-                //spawningFrequency[i] = 1 / spawningTimes[i];
+                spawningFrequency[i] = 1 / spawningTimes[i];
             }
 
             float totalSpawningFrequency = 0.0f;
@@ -78,11 +82,9 @@ namespace Svelto.ECS.Example.Survive.Enemies
             {
                 float probability = spawningFrequency[i] / totalSpawningFrequency;
                 int numberOfEnemiesToSpawn = (int)(probability * numberOfEnemiesThisWave);
-                Debug.Log("no_en_spwn: " + numberOfEnemiesToSpawn);
                 for (int n = 0; n < numberOfEnemiesToSpawn; n++)
                 {
                     enemiesToSpawn.Add(i);
-                    //Debug.Log(i);
                 }
             }
             
@@ -104,6 +106,8 @@ namespace Svelto.ECS.Example.Survive.Enemies
             IEnumerator<JSonEnemySpawnData[]>  enemiestoSpawnJsons  = ReadEnemySpawningDataServiceRequest();
             IEnumerator<JSonEnemyAttackData[]> enemyAttackDataJsons = ReadEnemyAttackDataServiceRequest();
 
+
+
             while (enemiestoSpawnJsons.MoveNext())
                 yield return null;
             while (enemyAttackDataJsons.MoveNext())
@@ -113,6 +117,14 @@ namespace Svelto.ECS.Example.Survive.Enemies
             var enemyAttackData = enemyAttackDataJsons.Current;
 
             var spawningTimes = new float[enemiesSpawnData.Length];
+
+            while (entitiesDB.HasAny<WaveComponent>(ECSGroups.Waves) == false)
+            {
+                yield return null;
+            }
+
+            _waveEntity = entitiesDB.QueryUniqueEntity<WaveComponent>(ECSGroups.Waves);
+
 
             for (var i = enemiesSpawnData.Length - 1; i >= 0; --i)
                 spawningTimes[i] = enemiesSpawnData[i].enemySpawnData.spawnTime;
@@ -125,10 +137,6 @@ namespace Svelto.ECS.Example.Survive.Enemies
                 var waitForSecondsEnumerator = new WaitForSecondsEnumerator(SECONDS_BETWEEN_CHECKS);
                 while (waitForSecondsEnumerator.MoveNext())
                     yield return null;
-
-                Debug.Log("Number of Dead Enemies: " + _numberOfDeadEnemies);
-                Debug.Log("Number of Enemies this Wave: " + _numberOfEnemiesThisWave);
-                Debug.Log(_numberOfDeadEnemies >= _numberOfEnemiesThisWave);
 
 
                 // Check if the wave is over
@@ -143,6 +151,9 @@ namespace Svelto.ECS.Example.Survive.Enemies
                     // Spawn enemies for this wave
                     var enemiesToSpawn = calculateEnemiesToSpawn(_numberOfEnemiesThisWave, spawningTimes); 
                     _numberOfEnemiesThisWave = enemiesToSpawn.Count;
+                    _waveEntity.enemiesLeft = _numberOfEnemiesThisWave;
+                    Debug.Log(_waveEntity.enemiesLeft);
+                    Debug.Log(_numberOfEnemiesThisWave);
                     _numberOfDeadEnemies = 0;
                     for (int i = 0; i < enemiesToSpawn.Count; i++)
                     {
@@ -231,6 +242,7 @@ namespace Svelto.ECS.Example.Survive.Enemies
         readonly EnemyFactory     _enemyFactory;
         readonly IEntityFunctions _entityFunctions;
 
+        WaveComponent _waveEntity;
         int         _numberOfDeadEnemies;
         int         _numberOfEnemiesThisWave;
         int         _wave;

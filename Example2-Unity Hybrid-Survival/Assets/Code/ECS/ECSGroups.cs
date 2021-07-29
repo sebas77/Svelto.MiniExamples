@@ -49,9 +49,13 @@ namespace Svelto.ECS.Example.Survive
     public static class ECSGroups
     {
         public static readonly ExclusiveGroup GUICanvas = new ExclusiveGroup();
-
         public static EGID   HUD = new EGID(0, GUICanvas);
+
+        
+        public static readonly ExclusiveGroup Waves = new ExclusiveGroup();
+        public static EGID WaveState = new EGID(0, Waves);
+
         //Reserve a book range, as many groups as the possible number of player enemies
-        public static readonly ExclusiveGroup                           EnemiesToRecycleGroups = new ExclusiveGroup((ushort) Enum.GetNames(typeof(PlayerTargetType)).Length);
+        public static readonly ExclusiveGroup EnemiesToRecycleGroups = new ExclusiveGroup((ushort) Enum.GetNames(typeof(PlayerTargetType)).Length);
     }
 }

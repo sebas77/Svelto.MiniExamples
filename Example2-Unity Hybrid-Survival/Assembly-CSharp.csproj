@@ -85,6 +85,7 @@
     <Compile Include="Assets\Code\ECS\EntityViewComponents\Implementors\Enemies\EnemyMovementImplementor.cs" />
     <Compile Include="Assets\Code\ECS\Engines\AbstractEngines\DispatchKilledEntitiesEngine.cs" />
     <Compile Include="Assets\Code\ECS\EntityViewComponents\ComponentInterfaces\EnemyComponentInterfaces.cs" />
+    <Compile Include="Assets\Code\ECS\EntityViewComponents\Implementors\GUI\WaveProgressManagerImplementor.cs" />
     <Compile Include="Assets\Code\ECS\Engines\PlayerEngines\Gun\PlayerGunShootingEngine.cs" />
     <Compile Include="Assets\Code\ECS\EntityDescriptors\PlayerEntityDescriptor.cs" />
     <Compile Include="Assets\Code\ECS\EntityViewComponents\Implementors\GUI\ScoreManagerImplementor.cs" />
@@ -119,6 +120,7 @@
     <Compile Include="Assets\Code\ECS\EntityComponents\CameraReferenceComponent.cs" />
     <Compile Include="Assets\Code\ECS\Engines\EnemyEngines\EnemyAttackEngine.cs" />
     <Compile Include="Assets\Code\ECS\EntityViewComponents\Implementors\CameraImplementor.cs" />
+    <Compile Include="Assets\Code\ECS\Engines\OtherEngines\UpdateWaveHUDEngine.cs" />
     <Compile Include="Assets\Code\ECS\Engines\SortedTickedEnginesOrder.cs" />
     <Compile Include="Assets\Code\ECS\Engines\EnemyEngines\EnemySpawnerEngine.cs" />
     <Compile Include="Assets\Code\ECS\EntityDescriptors\PlayerGunEntityDescriptor.cs" />
@@ -132,6 +134,7 @@
     <Compile Include="Assets\Code\ECS\Engines\PlayerEngines\Gun\PlayerGunShootingFXsEngine.cs" />
     <Compile Include="Assets\Code\ECS\EntityViewComponents\Implementors\Enemies\EnemyTriggerImplementor.cs" />
     <Compile Include="Assets\Code\ECS\Engines\EnemyEngines\EnemyDeathEngine.cs" />
+    <Compile Include="Assets\Code\ECS\EntityDescriptors\WaveEntityDescriptor.cs" />
     <Compile Include="Assets\Code\ECS\EntityComponents\PlayerInputDataComponent.cs" />
     <Compile Include="Assets\Code\ECS\EntityViewComponents\Implementors\Player\PlayerMovementImplementor.cs" />
     <Compile Include="Assets\Code\ECS\Engines\EnemyEngines\EnemySpawnEffectOnDamage.cs" />
@@ -141,6 +144,7 @@
     <Compile Include="Assets\Code\ECS\EntityViewComponents\Implementors\AudioImplementor.cs" />
     <Compile Include="Assets\Code\ECS\Engines\OtherEngines\CameraFollowingTargetEngine.cs" />
     <Compile Include="Assets\Code\Others\AnimationState.cs" />
+    <Compile Include="Assets\Code\ECS\EntityComponents\WaveComponent.cs" />
     <Compile Include="Assets\Code\Others\PlayerTargetType.cs" />
     <Compile Include="Assets\Code\ECS\Engines\PlayerEngines\PlayerAnimationEngine.cs" />
     <Compile Include="Assets\Code\ECS\EntityDescriptors\HudEntityDescriptorHolder.cs" />

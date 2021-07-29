@@ -8,6 +8,7 @@ using Svelto.ECS.Example.Survive.Player.Gun;
 using Svelto.ECS.Example.Survive.Sounds;
 using Svelto.ECS.Example.Survive.HUD;
 using Svelto.ECS.Example.Survive.ResourceManager;
+using Svelto.ECS.Example.Survive.Wave;
 using Svelto.ECS.Extensions.Unity;
 using Svelto.ECS.Schedulers.Unity;
 using UnityEngine;
@@ -160,11 +161,13 @@ namespace Svelto.ECS.Example.Survive
             var hudEngine         = new HUDEngine(entityStreamConsumerFactory);
             var damageSoundEngine = new DamageSoundEngine(entityStreamConsumerFactory);
             var scoreEngine       = new UpdateScoreEngine(entityStreamConsumerFactory);
+            var waveHUDEngine     = new UpdateWaveHUDEngine();
 
             //other engines
             _enginesRoot.AddEngine(damageSoundEngine);
             _enginesRoot.AddEngine(hudEngine);
             _enginesRoot.AddEngine(scoreEngine);
+            _enginesRoot.AddEngine(waveHUDEngine);
 
             var unsortedEngines = new SurvivalUnsortedEnginesGroup(new FasterList<IStepEngine>(
                 new IStepEngine[]
@@ -203,6 +206,7 @@ namespace Svelto.ECS.Example.Survive
                , playerDeathEngine
                , enemyDeathEngine
                , scoreEngine
+               , waveHUDEngine
             })));
 
             BuildGUIEntitiesFromScene(contextHolder, entityFactory);
@@ -224,6 +228,7 @@ namespace Svelto.ECS.Example.Survive
         {
             SveltoGUIHelper.Create<HudEntityDescriptorHolder>(ECSGroups.HUD, contextHolder.transform, entityFactory
                                                             , true);
+            entityFactory.BuildEntity<WaveEntityDescriptor>(ECSGroups.WaveState);
         }
     }
 }
