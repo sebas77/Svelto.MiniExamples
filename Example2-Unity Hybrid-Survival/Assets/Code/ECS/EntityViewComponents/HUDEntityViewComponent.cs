@@ -9,6 +9,7 @@ namespace Svelto.ECS.Example.Survive.HUD
         public IHealthSliderComponent       healthSliderComponent;
         public IScoreComponent              scoreComponent;
         public IWaveProgressionComponent    waveProgressionComponent;
+        public IAmmoComponent               ammoComponent;
         public EGID                         ID { get; set; }
     }
 }

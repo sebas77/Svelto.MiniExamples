@@ -7,6 +7,7 @@ namespace Svelto.ECS.Example.Survive
         SurvivalUnsortedEngines
       , UpdateScoreEngine
       , UpdateWaveHUDEngine
+      , UpdateAmmoEngine 
       , DamageUnsortedEngines
     }
 
@@ -36,6 +37,7 @@ namespace Svelto.ECS.Example.Survive
           , nameof(PlayerEnginesNames.PlayerDeathEngine)
           , nameof(EnginesNames.UpdateScoreEngine)
           , nameof(EnginesNames.UpdateWaveHUDEngine)
+          , nameof(EnginesNames.UpdateAmmoEngine)
         };
     }
 }

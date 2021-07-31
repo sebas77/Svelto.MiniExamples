@@ -102,6 +102,7 @@
     <Compile Include="Assets\Code\ECS\EntityViewComponents\ComponentInterfaces\GUIComponentInterfaces.cs" />
     <Compile Include="Assets\Code\ECS\EntityViewComponents\Implementors\GUI\HealthSliderImplementor.cs" />
     <Compile Include="Assets\Code\ECS\EntityViewComponents\CameraTargetEntityViewComponent.cs" />
+    <Compile Include="Assets\Code\ECS\Engines\OtherEngines\UpdateAmmoEngine.cs" />
     <Compile Include="Assets\Code\ECS\Engines\EnemyEngines\EnemyChangeAnimationOnPlayerDeathEngine.cs" />
     <Compile Include="Assets\Code\ECS\Engines\DamageUnsortedEngines.cs" />
     <Compile Include="Assets\Code\ECS\EntityViewComponents\DamageSoundEntityViewComponent.cs" />
@@ -150,6 +151,7 @@
     <Compile Include="Assets\Code\ECS\EntityDescriptors\HudEntityDescriptorHolder.cs" />
     <Compile Include="Assets\Code\Factories\GameObjectFactory.cs" />
     <Compile Include="Assets\Code\ECS\EntityComponents\GunAttributesComponent.cs" />
+    <Compile Include="Assets\Code\ECS\EntityViewComponents\Implementors\GUI\AmmoManagerImplementor.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Fonts\LuckiestGuy\LICENSE.txt" />

@@ -162,12 +162,15 @@ namespace Svelto.ECS.Example.Survive
             var damageSoundEngine = new DamageSoundEngine(entityStreamConsumerFactory);
             var scoreEngine       = new UpdateScoreEngine(entityStreamConsumerFactory);
             var waveHUDEngine     = new UpdateWaveHUDEngine();
+            var ammoEngine       = new UpdateAmmoEngine(entityStreamConsumerFactory);
 
             //other engines
             _enginesRoot.AddEngine(damageSoundEngine);
             _enginesRoot.AddEngine(hudEngine);
             _enginesRoot.AddEngine(scoreEngine);
             _enginesRoot.AddEngine(waveHUDEngine);
+            _enginesRoot.AddEngine(ammoEngine);
+
 
             var unsortedEngines = new SurvivalUnsortedEnginesGroup(new FasterList<IStepEngine>(
                 new IStepEngine[]
@@ -207,6 +210,7 @@ namespace Svelto.ECS.Example.Survive
                , enemyDeathEngine
                , scoreEngine
                , waveHUDEngine
+               , ammoEngine 
             })));
 
             BuildGUIEntitiesFromScene(contextHolder, entityFactory);

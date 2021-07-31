@@ -38,8 +38,9 @@ namespace Svelto.ECS.Example.Survive.Player.Gun
 
                             playerGunComponent.timer += _time.deltaTime;
 
-                            if (playerGunComponent.timer >= playerGunComponent.timeBetweenBullets)
-                                this.Shoot(ref playerGunComponent, playerGunViewComponent);
+                            if (playerGunComponent.timer >= playerGunComponent.timeBetweenBullets
+                                && playerGunComponent.ammo > 0)
+                                this.Shoot(ref playerGunComponent, playerGunViewComponent, gunEGID);
                         }
                     }
                 }
@@ -60,9 +61,11 @@ namespace Svelto.ECS.Example.Survive.Player.Gun
         ///     Svelto and ECS help immensely to abstract only when it's actually needed
         /// </summary>
         /// <param name="playerGunEntityView"></param>
-        void Shoot(ref GunAttributesComponent playerGunEntityView, in GunEntityViewComponent gunFxComponent)
+        void Shoot(ref GunAttributesComponent playerGunEntityView, in GunEntityViewComponent gunFxComponent, EGID gunEGID)
         {
             playerGunEntityView.timer = 0;
+
+            playerGunEntityView.ammo--;
 
             Ray shootRay = gunFxComponent.gunFXComponent.shootRay;
             
