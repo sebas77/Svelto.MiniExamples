@@ -1,6 +1,9 @@
 using System.Collections;
 using Svelto.Common;
 using Svelto.ECS.Example.Survive.Player.Gun;
+using Svelto.ECS.Example.Survive.Player;
+
+
 
 namespace Svelto.ECS.Example.Survive.HUD
 {
@@ -12,6 +15,8 @@ namespace Svelto.ECS.Example.Survive.HUD
         public void Ready()
         {
             _listenForEnemyDeath = ListenForEnemyDeath();
+
+
         }
         
         public void   Step() { _listenForEnemyDeath.MoveNext(); }
@@ -26,12 +31,24 @@ namespace Svelto.ECS.Example.Survive.HUD
             
             var hudEntityView = entitiesDB.QueryUniqueEntity<HUDEntityViewComponent>(ECSGroups.GUICanvas);
             
+            // Select first weapon to display to HUD
+            while (entitiesDB.HasAny<PlayerWeaponComponent>(Player.Player.Groups[0]) == false)
+                yield return null;
+
+            var weapon = entitiesDB.QueryUniqueEntity<PlayerWeaponComponent>(Player.Player.Groups[0]);
+
+            var gunEGID            = weapon.weapon.ToEGID(entitiesDB);
+            var playerGunComponent = entitiesDB.QueryEntity<GunAttributesComponent>(gunEGID);
+            hudEntityView.ammoComponent.ammo = playerGunComponent.ammo;
+
             while (true)
             {
                 while (consumer.TryDequeue(out _, out var egid))
                 {
-                    var gunComponent = entitiesDB.QueryEntity<GunAttributesComponent>(egid);
-                    hudEntityView.ammoComponent.ammo = gunComponent.ammo;
+                    if (egid == gunEGID) {
+                        playerGunComponent = entitiesDB.QueryEntity<GunAttributesComponent>(gunEGID);
+                        hudEntityView.ammoComponent.ammo = playerGunComponent.ammo;
+                    }
                 }
 
                 yield return null;
