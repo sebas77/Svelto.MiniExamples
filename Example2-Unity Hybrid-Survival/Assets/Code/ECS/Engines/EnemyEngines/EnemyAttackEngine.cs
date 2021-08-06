@@ -47,8 +47,7 @@ namespace Svelto.ECS.Example.Survive.Enemies
         ///     They are called on entity swap (when leaving a group and moving to the new one)
         /// </summary>
         /// <param name="entityViewComponent"></param>
-        public void MovedTo
-            (ref EnemyEntityViewComponent entityViewComponent, ExclusiveGroupStruct previousGroup, EGID egid)
+        public void MovedTo (ref EnemyEntityViewComponent entityViewComponent, ExclusiveGroupStruct previousGroup, EGID egid)
         {
             //If the enemy is dead, we pause the collision triggering, it will be renabled if the GO is recycled
             if (egid.groupID.FoundIn(Dead.Groups))
@@ -101,10 +100,13 @@ namespace Svelto.ECS.Example.Survive.Enemies
 
         void DamageTargetInsideRange(in EGID otherEntityID, int attackDamage)
         {
-            entitiesDB.QueryEntity<DamageableComponent>(otherEntityID).damageInfo =
-                new DamageInfo(attackDamage, Vector3.zero);
+            if (otherEntityID.groupID.FoundIn(Damageable.Groups))
+            {
+                entitiesDB.QueryEntity<DamageableComponent>(otherEntityID).damageInfo =
+                    new DamageInfo(attackDamage, Vector3.zero);
 
-            entitiesDB.PublishEntityChange<DamageableComponent>(otherEntityID);
+                entitiesDB.PublishEntityChange<DamageableComponent>(otherEntityID);
+            }
         }
 
         public string name => nameof(EnemyAttackEngine);

@@ -6,11 +6,23 @@ namespace Svelto.ECS.Example.Survive
     public class Dead : GroupTag<Dead> { };
 
     public class Damageable : GroupTag<Damageable> { };
+
 }
 
 namespace Svelto.ECS.Example.Survive.Weapons
 {
     public class Gun : GroupTag<Gun> { };
+}
+
+namespace Svelto.ECS.Example.Survive.Pickups
+{
+    public class PickupTag : GroupTag<PickupTag> { };
+    public class Recyclable : GroupTag<Recyclable> { };
+
+    public class Ammo : GroupTag<Ammo> { };
+
+    public class AmmoPickups: GroupCompound<PickupTag, Ammo> { };
+    public class RecyclableAmmoPickups: GroupCompound<Recyclable, Ammo> { };
 }
 
 namespace Svelto.ECS.Example.Survive.Player

@@ -24,15 +24,18 @@ namespace Svelto.ECS.Example.Survive.HUD
                 || entitiesDB.HasAny<WaveComponent>(ECSGroups.Waves) == false)
                 {yield return null;}
             
-            var waveEntity = entitiesDB.QueryUniqueEntity<WaveComponent>(ECSGroups.Waves);
             var hudEntityView = entitiesDB.QueryUniqueEntity<HUDEntityViewComponent>(ECSGroups.GUICanvas);
             
             while (true)
             {
+                var waitForSecondsEnumerator = new WaitForSecondsEnumerator(0.2f);
+                while (waitForSecondsEnumerator.MoveNext())
+                    yield return null;
+
+                var waveEntity = entitiesDB.QueryUniqueEntity<WaveComponent>(ECSGroups.Waves);
                 if (waveEntity.enemiesLeft != hudEntityView.waveProgressionComponent.enemiesLeft)
                     hudEntityView.waveProgressionComponent.enemiesLeft = waveEntity.enemiesLeft;
 
-                //Debug.Log(waveEntity.enemiesLeft + " : " + hudEntityView.waveProgressionComponent.enemiesLeft);
 
                 yield return null;
             }

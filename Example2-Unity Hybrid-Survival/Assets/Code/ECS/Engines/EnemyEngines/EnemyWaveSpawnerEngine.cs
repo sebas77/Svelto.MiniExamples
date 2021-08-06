@@ -18,7 +18,7 @@ namespace Svelto.ECS.Example.Survive.Enemies
         {
             _entityFunctions      = entityFunctions;
             _enemyFactory         = enemyFactory;
-            SetWave(0);
+            _wave                 = 0;
             _numberOfDeadEnemies    = _numberOfEnemiesThisWave;
 
         }
@@ -35,14 +35,15 @@ namespace Svelto.ECS.Example.Survive.Enemies
             if (egid.groupID.FoundIn(DeadEnemies.Groups))
             {
                 _numberOfDeadEnemies++;
-                _waveEntity.enemiesLeft--;
-
+                ref WaveComponent waveEntity = ref entitiesDB.QueryUniqueEntity<WaveComponent>(ECSGroups.Waves);
+                waveEntity.enemiesLeft--;
             }
         }
         
         void SetWave(int wave) {
             _wave = wave;
-            _waveEntity.wave = wave;
+            ref WaveComponent waveEntity = ref entitiesDB.QueryUniqueEntity<WaveComponent>(ECSGroups.Waves);
+            waveEntity.wave = wave;
             if (wave <= DIFFICULTY_WAVE_LIMIT)
                 _numberOfEnemiesThisWave = STARTING_WAVE_ENEMY_COUNT + (int)((wave - 1) * DIFFICULTY_GRADIENT);
         }
@@ -123,7 +124,6 @@ namespace Svelto.ECS.Example.Survive.Enemies
                 yield return null;
             }
 
-            _waveEntity = entitiesDB.QueryUniqueEntity<WaveComponent>(ECSGroups.Waves);
 
 
             for (var i = enemiesSpawnData.Length - 1; i >= 0; --i)
@@ -148,12 +148,12 @@ namespace Svelto.ECS.Example.Survive.Enemies
                         yield return null;
 
                     SetWave(++_wave);
+                    var waveEntity = entitiesDB.QueryUniqueEntity<WaveComponent>(ECSGroups.Waves);
+
                     // Spawn enemies for this wave
                     var enemiesToSpawn = calculateEnemiesToSpawn(_numberOfEnemiesThisWave, spawningTimes); 
                     _numberOfEnemiesThisWave = enemiesToSpawn.Count;
-                    _waveEntity.enemiesLeft = _numberOfEnemiesThisWave;
-                    Debug.Log(_waveEntity.enemiesLeft);
-                    Debug.Log(_numberOfEnemiesThisWave);
+                    SetWaveEnemiesLeft(_numberOfEnemiesThisWave);
                     _numberOfDeadEnemies = 0;
                     for (int i = 0; i < enemiesToSpawn.Count; i++)
                     {
@@ -184,6 +184,11 @@ namespace Svelto.ECS.Example.Survive.Enemies
             }
         }
 
+        void SetWaveEnemiesLeft(int enemiesLeft)
+        {
+            ref WaveComponent waveEntity = ref entitiesDB.QueryUniqueEntity<WaveComponent>(ECSGroups.Waves);
+            waveEntity.enemiesLeft = enemiesLeft;
+        }
         /// <summary>
         ///     Reset all the component values when an Enemy is ready to be recycled.
         ///     it's important to not forget to reset all the states.
@@ -242,7 +247,6 @@ namespace Svelto.ECS.Example.Survive.Enemies
         readonly EnemyFactory     _enemyFactory;
         readonly IEntityFunctions _entityFunctions;
 
-        WaveComponent _waveEntity;
         int         _numberOfDeadEnemies;
         int         _numberOfEnemiesThisWave;
         int         _wave;

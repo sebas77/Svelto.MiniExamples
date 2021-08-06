@@ -20,6 +20,11 @@ static class JsonHelper
         return JsonUtility.ToJson(wrapper);
     }
 
+    public static T getJsonObject<T>(string json)
+    {
+        return JsonUtility.FromJson<T>(json);
+    }
+
     [Serializable]
     class Wrapper<T>
     {

@@ -9,6 +9,7 @@ using Svelto.ECS.Example.Survive.Sounds;
 using Svelto.ECS.Example.Survive.HUD;
 using Svelto.ECS.Example.Survive.ResourceManager;
 using Svelto.ECS.Example.Survive.Wave;
+using Svelto.ECS.Example.Survive.Pickups;
 using Svelto.ECS.Extensions.Unity;
 using Svelto.ECS.Schedulers.Unity;
 using UnityEngine;
@@ -147,6 +148,14 @@ namespace Svelto.ECS.Example.Survive
             _enginesRoot.AddEngine(enemyDeathEngine);
             _enginesRoot.AddEngine(enemyDamageFX);
             
+            //ammo pickup engines
+            var ammoFactory = new AmmoPickupFactory(gameObjectFactory, entityFactory);
+            var ammoSpawnerEngine = new AmmoSpawnerEngine(ammoFactory, entityFunctions);
+            var ammoPickupEngine = new AmmoPickupEngine(entityFunctions);
+            _enginesRoot.AddEngine(ammoSpawnerEngine);
+            _enginesRoot.AddEngine(ammoPickupEngine);
+
+
             //abstract engines
             var applyDamageEngine        = new ApplyDamageToDamageableEntitiesEngine(entityStreamConsumerFactory);
             var cameraFollowTargetEngine = new CameraFollowingTargetEngine(time);
@@ -182,6 +191,7 @@ namespace Svelto.ECS.Example.Survive
                     playerAnimationEngine,
                     enemySpawnerEngine,
                     enemyMovementEngine,
+                    ammoSpawnerEngine,
                     cameraFollowTargetEngine,
                     hudEngine,
                     restartGameOnPlayerDeath

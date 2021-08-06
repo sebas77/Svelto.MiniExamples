@@ -24,7 +24,7 @@ namespace Svelto.ECS.Example.Survive.HUD
 
         IEnumerator ListenForEnemyDeath()
         {
-            var consumer = _consumerFactory.GenerateConsumer<GunAttributesComponent>("GunFireConsumer2", 1);
+            var consumer = _consumerFactory.GenerateConsumer<AmmoGunComponent>("GunAmmoConsumer1", 1);
 
             while (entitiesDB.HasAny<HUDEntityViewComponent>(ECSGroups.GUICanvas) == false)
                 yield return null;
@@ -38,17 +38,15 @@ namespace Svelto.ECS.Example.Survive.HUD
             var weapon = entitiesDB.QueryUniqueEntity<PlayerWeaponComponent>(Player.Player.Groups[0]);
 
             var gunEGID            = weapon.weapon.ToEGID(entitiesDB);
-            var playerGunComponent = entitiesDB.QueryEntity<GunAttributesComponent>(gunEGID);
+            var playerGunComponent = entitiesDB.QueryEntity<AmmoGunComponent>(gunEGID);
             hudEntityView.ammoComponent.ammo = playerGunComponent.ammo;
 
             while (true)
             {
                 while (consumer.TryDequeue(out _, out var egid))
                 {
-                    if (egid == gunEGID) {
-                        playerGunComponent = entitiesDB.QueryEntity<GunAttributesComponent>(gunEGID);
-                        hudEntityView.ammoComponent.ammo = playerGunComponent.ammo;
-                    }
+                    playerGunComponent = entitiesDB.QueryEntity<AmmoGunComponent>(gunEGID);
+                    hudEntityView.ammoComponent.ammo = playerGunComponent.ammo;
                 }
 
                 yield return null;

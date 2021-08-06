@@ -23,8 +23,9 @@ namespace Svelto.ECS.Example.Survive.HUD
     {
         int enemiesLeft { set; get; }
     }
+
     public interface IAmmoComponent
     {
-        int ammo { set; get; }
+        int ammo {get; set;}
     }
 }

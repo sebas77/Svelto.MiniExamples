@@ -2,7 +2,7 @@
 
 namespace Svelto.ECS.Example.Survive.Player
 {
-    public class PlayerGunEntityDescriptor : GenericEntityDescriptor<GunEntityViewComponent, GunAttributesComponent>
+    public class PlayerGunEntityDescriptor : GenericEntityDescriptor<GunEntityViewComponent, GunAttributesComponent, AmmoGunComponent>
     {
     }
 }

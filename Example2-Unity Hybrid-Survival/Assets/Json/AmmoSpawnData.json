@@ -1,0 +1,17 @@
+{
+	"spawnLocations": [
+		{
+			"x": 0,
+			"y": 0.5,
+			"z": 5
+		},
+		{
+			"x": 5,
+			"y": 0.5,
+			"z": 0
+		}
+	],
+	"secondsBetweenSpawns": 5,
+	"ammoPerPickup": 10,
+    "ammoPrefab": "Ammo"
+}

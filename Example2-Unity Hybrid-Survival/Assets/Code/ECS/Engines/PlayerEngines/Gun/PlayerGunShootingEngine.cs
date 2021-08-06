@@ -34,13 +34,14 @@ namespace Svelto.ECS.Example.Survive.Player.Gun
                         {
                             var     gunEGID          = weapons[i].weapon.ToEGID(entitiesDB);
                             ref var playerGunComponent = ref entitiesDB.QueryEntity<GunAttributesComponent>(gunEGID);
+                            ref var playerAmmoComponent = ref entitiesDB.QueryEntity<AmmoGunComponent>(gunEGID);
                             ref var playerGunViewComponent = ref entitiesDB.QueryEntity<GunEntityViewComponent>(gunEGID);
 
                             playerGunComponent.timer += _time.deltaTime;
 
                             if (playerGunComponent.timer >= playerGunComponent.timeBetweenBullets
-                                && playerGunComponent.ammo > 0)
-                                this.Shoot(ref playerGunComponent, playerGunViewComponent, gunEGID);
+                                && playerAmmoComponent.ammo > 0)
+                                this.Shoot(ref playerGunComponent, ref playerAmmoComponent, playerGunViewComponent, gunEGID);
                         }
                     }
                 }
@@ -61,11 +62,12 @@ namespace Svelto.ECS.Example.Survive.Player.Gun
         ///     Svelto and ECS help immensely to abstract only when it's actually needed
         /// </summary>
         /// <param name="playerGunEntityView"></param>
-        void Shoot(ref GunAttributesComponent playerGunEntityView, in GunEntityViewComponent gunFxComponent, EGID gunEGID)
+        void Shoot(ref GunAttributesComponent playerGunEntityView, ref AmmoGunComponent playerAmmoComponent,in GunEntityViewComponent gunFxComponent, EGID gunEGID)
         {
             playerGunEntityView.timer = 0;
 
-            playerGunEntityView.ammo--;
+            playerAmmoComponent.ammo--;
+            entitiesDB.PublishEntityChange<AmmoGunComponent>(gunEGID);
 
             Ray shootRay = gunFxComponent.gunFXComponent.shootRay;
             
@@ -93,6 +95,7 @@ namespace Svelto.ECS.Example.Survive.Player.Gun
                     shootRay.origin + shootRay.direction * playerGunEntityView.range;
 
             entitiesDB.PublishEntityChange<GunAttributesComponent>(gunFxComponent.ID);
+
         }
 
         /// <summary>
