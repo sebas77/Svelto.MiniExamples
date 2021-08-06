@@ -24,6 +24,13 @@ namespace Svelto.ECS.Example.Survive.HUD
         int enemiesLeft { set; get; }
     }
 
+    public interface IWaveComponent
+    {
+        int wave { set; get; }
+        bool showHUD { set; }
+    }
+
+
     public interface IAmmoComponent
     {
         int ammo {get; set;}

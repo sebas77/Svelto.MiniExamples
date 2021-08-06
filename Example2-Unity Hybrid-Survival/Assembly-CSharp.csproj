@@ -162,6 +162,7 @@
     <Compile Include="Assets\Code\ECS\EntityComponents\GunAttributesComponent.cs" />
     <Compile Include="Assets\Code\ECS\EntityComponents\AmmoPickupComponent.cs" />
     <Compile Include="Assets\Code\ECS\EntityComponents\AmmoGunComponent.cs" />
+    <Compile Include="Assets\Code\ECS\EntityViewComponents\Implementors\GUI\WaveImplementor.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Fonts\LuckiestGuy\LICENSE.txt" />

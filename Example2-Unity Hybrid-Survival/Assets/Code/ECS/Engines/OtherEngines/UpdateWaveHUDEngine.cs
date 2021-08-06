@@ -25,24 +25,33 @@ namespace Svelto.ECS.Example.Survive.HUD
                 {yield return null;}
             
             var hudEntityView = entitiesDB.QueryUniqueEntity<HUDEntityViewComponent>(ECSGroups.GUICanvas);
+
+            var consumer = _consumerFactory.GenerateConsumer<WaveComponent>("WaveConsumer1", 1);
+
             
             while (true)
             {
-                var waitForSecondsEnumerator = new WaitForSecondsEnumerator(0.2f);
-                while (waitForSecondsEnumerator.MoveNext())
-                    yield return null;
-
-                var waveEntity = entitiesDB.QueryUniqueEntity<WaveComponent>(ECSGroups.Waves);
-                if (waveEntity.enemiesLeft != hudEntityView.waveProgressionComponent.enemiesLeft)
+                while (consumer.TryDequeue(out var waveEntity, out var egid))
+                {
                     hudEntityView.waveProgressionComponent.enemiesLeft = waveEntity.enemiesLeft;
-
+                    if (hudEntityView.waveComponent.wave != waveEntity.wave)
+                    {
+                        hudEntityView.waveComponent.wave = waveEntity.wave;
+                        hudEntityView.waveComponent.showHUD = true;
+                        var waitForSecondsEnumerator = new WaitForSecondsEnumerator(1.5f);
+                        while (waitForSecondsEnumerator.MoveNext())
+                            yield return null;
+                        hudEntityView.waveComponent.showHUD = false;
+                    }
+                }
 
                 yield return null;
             }
         }
 
-        public UpdateWaveHUDEngine() {}
+        public UpdateWaveHUDEngine(IEntityStreamConsumerFactory consumerFactory) { _consumerFactory = consumerFactory; }
         
+        IEntityStreamConsumerFactory          _consumerFactory;
         IEnumerator                           _updateWaveHUD;
     }
 }

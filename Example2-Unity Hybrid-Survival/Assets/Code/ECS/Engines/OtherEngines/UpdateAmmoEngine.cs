@@ -14,15 +14,15 @@ namespace Svelto.ECS.Example.Survive.HUD
 
         public void Ready()
         {
-            _listenForEnemyDeath = ListenForEnemyDeath();
+            _listenForAmmo = ListenForAmmo();
 
 
         }
         
-        public void   Step() { _listenForEnemyDeath.MoveNext(); }
+        public void   Step() { _listenForAmmo.MoveNext(); }
         public string name   => nameof(UpdateAmmoEngine);
 
-        IEnumerator ListenForEnemyDeath()
+        IEnumerator ListenForAmmo()
         {
             var consumer = _consumerFactory.GenerateConsumer<AmmoGunComponent>("GunAmmoConsumer1", 1);
 
@@ -56,6 +56,6 @@ namespace Svelto.ECS.Example.Survive.HUD
         public UpdateAmmoEngine(IEntityStreamConsumerFactory consumerFactory) { _consumerFactory = consumerFactory; }
         
         readonly IEntityStreamConsumerFactory _consumerFactory;
-        IEnumerator                           _listenForEnemyDeath;
+        IEnumerator                           _listenForAmmo;
     }
 }

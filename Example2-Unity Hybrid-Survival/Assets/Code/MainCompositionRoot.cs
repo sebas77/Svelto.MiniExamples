@@ -170,7 +170,7 @@ namespace Svelto.ECS.Example.Survive
             var hudEngine         = new HUDEngine(entityStreamConsumerFactory);
             var damageSoundEngine = new DamageSoundEngine(entityStreamConsumerFactory);
             var scoreEngine       = new UpdateScoreEngine(entityStreamConsumerFactory);
-            var waveHUDEngine     = new UpdateWaveHUDEngine();
+            var waveHUDEngine     = new UpdateWaveHUDEngine(entityStreamConsumerFactory);
             var ammoEngine       = new UpdateAmmoEngine(entityStreamConsumerFactory);
 
             //other engines

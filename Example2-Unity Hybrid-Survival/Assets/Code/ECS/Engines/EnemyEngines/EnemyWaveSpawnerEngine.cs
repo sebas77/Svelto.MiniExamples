@@ -37,6 +37,7 @@ namespace Svelto.ECS.Example.Survive.Enemies
                 _numberOfDeadEnemies++;
                 ref WaveComponent waveEntity = ref entitiesDB.QueryUniqueEntity<WaveComponent>(ECSGroups.Waves);
                 waveEntity.enemiesLeft--;
+                entitiesDB.PublishEntityChange<WaveComponent>(ECSGroups.WaveState);
             }
         }
         
@@ -44,6 +45,7 @@ namespace Svelto.ECS.Example.Survive.Enemies
             _wave = wave;
             ref WaveComponent waveEntity = ref entitiesDB.QueryUniqueEntity<WaveComponent>(ECSGroups.Waves);
             waveEntity.wave = wave;
+            entitiesDB.PublishEntityChange<WaveComponent>(ECSGroups.WaveState);
             if (wave <= DIFFICULTY_WAVE_LIMIT)
                 _numberOfEnemiesThisWave = STARTING_WAVE_ENEMY_COUNT + (int)((wave - 1) * DIFFICULTY_GRADIENT);
         }
@@ -188,6 +190,7 @@ namespace Svelto.ECS.Example.Survive.Enemies
         {
             ref WaveComponent waveEntity = ref entitiesDB.QueryUniqueEntity<WaveComponent>(ECSGroups.Waves);
             waveEntity.enemiesLeft = enemiesLeft;
+            entitiesDB.PublishEntityChange<WaveComponent>(ECSGroups.WaveState);
         }
         /// <summary>
         ///     Reset all the component values when an Enemy is ready to be recycled.
