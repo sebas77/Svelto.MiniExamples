@@ -5,6 +5,10 @@ using UnityEngine.AddressableAssets;
 
 namespace Svelto.ECS.Example.Survive.Pickups
 {
+    /// <summary>
+    /// Handles the spawning of the ammo.
+    /// At the start of the game we build all the entities and then spawn them in, one by one.
+    /// </summary>
     public class AmmoSpawnerEngine : IQueryingEntitiesEngine, IReactOnSwap<AmmoPickupEntityViewComponent>, IStepEngine
     {
         const int SECONDS_BETWEEN_SPAWNS = 1;
@@ -63,9 +67,6 @@ namespace Svelto.ECS.Example.Survive.Pickups
 
             while (true)
             {
-                //Svelto.Tasks can yield Unity YieldInstructions but this comes with a performance hit
-                //so the fastest solution is always to use custom enumerators. To be honest the hit is minimal
-                //but it's better to not abuse it.                
                 var waitForSecondsEnumerator = new WaitForSecondsEnumerator(secondsBetweenSpawn);
                 while (waitForSecondsEnumerator.MoveNext())
                     yield return null;
@@ -77,10 +78,8 @@ namespace Svelto.ECS.Example.Survive.Pickups
         }
 
         /// <summary>
-        ///     Reset all the component values when an Enemy is ready to be recycled.
-        ///     it's important to not forget to reset all the states.
-        ///     note that the only reason why we pool it the entities here is to reuse the implementors,
-        ///     pure entity structs entities do not need pool and can be just recreated
+        /// When a pickup is respawned we just need to move it to the AmmoPickups group and
+        /// set its spawned component to true.
         /// </summary>
         /// <param name="spawnData"></param>
         /// <returns></returns>

@@ -46,7 +46,7 @@ namespace Svelto.ECS.Example.Survive.Pickups
 
         // Collider trigger
 
-        public DispatchOnChange<AmmoCollisionData> hitChange { get; set; }
+        public DispatchOnChange<EntityReference> hitChange { get; set; }
 
 
         void OnTriggerEnter(Collider other)
@@ -55,23 +55,12 @@ namespace Svelto.ECS.Example.Survive.Pickups
             {
                 EntityReferenceHolderImplementor targetEntityViewComponent = other.gameObject.GetComponent<EntityReferenceHolderImplementor>();
                 if (targetEntityViewComponent != null)
-                    hitChange.value = new AmmoCollisionData(targetEntityViewComponent.reference, true);
+                    hitChange.value = targetEntityViewComponent.reference;
             }
         }
         
-        void OnTriggerExit(Collider other)
-        {
-            if (hitChange != null && other.attachedRigidbody != null)
-            {
-                EntityReferenceHolderImplementor targetEntityViewComponent = other.gameObject.GetComponent<EntityReferenceHolderImplementor>();
-                if (targetEntityViewComponent != null)
-                    hitChange.value = new AmmoCollisionData(targetEntityViewComponent.reference, false);
-            }
-        }
-
         bool      _spawned;
         Transform _ammoTransform;
         Collider  _ammoCollider;
-        AmmoCollisionData _hit;
     }
 }

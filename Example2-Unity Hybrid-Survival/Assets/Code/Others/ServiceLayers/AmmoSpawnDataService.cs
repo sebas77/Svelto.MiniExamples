@@ -5,7 +5,9 @@ using UnityEngine.AddressableAssets;
 
 namespace Svelto.ECS.Example.Survive
 {
-    // This class is a service layer for retrieving ammo spawn data.
+    /// <summary>
+    /// This class is a service layer for retrieving ammo spawn data.
+    /// </summary>
     public class AmmoSpawnDataService
     {
         public static IEnumerator<JsonAmmoSpawnData> Load()

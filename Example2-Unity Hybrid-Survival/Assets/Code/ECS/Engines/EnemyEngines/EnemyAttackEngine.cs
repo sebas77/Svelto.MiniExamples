@@ -100,6 +100,7 @@ namespace Svelto.ECS.Example.Survive.Enemies
 
         void DamageTargetInsideRange(in EGID otherEntityID, int attackDamage)
         {
+            // So we dont try and damage ammo pickups which aren't damagable.
             if (otherEntityID.groupID.FoundIn(Damageable.Groups))
             {
                 entitiesDB.QueryEntity<DamageableComponent>(otherEntityID).damageInfo =

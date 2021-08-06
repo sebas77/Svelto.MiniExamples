@@ -11,8 +11,8 @@ namespace Svelto.ECS.Example.Survive.Enemies
         const int SECONDS_BETWEEN_CHECKS = 1;
         const int SECONDS_BEFORE_NEXT_WAVE = 1;
         const int STARTING_WAVE_ENEMY_COUNT = 12;
-        const float DIFFICULTY_GRADIENT = 2.0f; // The increase of difficulty between waves
-        const int DIFFICULTY_WAVE_LIMIT = 5;    // The wave the difficulty will no longer increase after this wave
+        const float DIFFICULTY_GRADIENT = 5.0f; // The increase of difficulty between waves
+        const int DIFFICULTY_WAVE_LIMIT = 10;    // The wave the difficulty will no longer increase after this wave
 
         public EnemyWaveSpawnerEngine(EnemyFactory enemyFactory, IEntityFunctions entityFunctions)
         {
@@ -55,6 +55,9 @@ namespace Svelto.ECS.Example.Survive.Enemies
         // Each element in the list is the index of the enemy in the list of all enemies.
         List<int> calculateEnemiesToSpawn(int numberOfEnemiesThisWave, float[] spawningTimes)
         {
+            int numberOfDifferentEnemies = spawningTimes.Length;
+
+            // Obtain largest spawning time
             float largestSpawningTime = 0.0f;
             foreach(float t in spawningTimes)
             {
@@ -64,15 +67,14 @@ namespace Svelto.ECS.Example.Survive.Enemies
                 }
             }
             
+            // Create list of spawning frequencies
             float[] spawningFrequency = new float[spawningTimes.Length];
-
-            int numberOfDifferentEnemies = spawningTimes.Length;
-
             for (int i = 0; i < numberOfDifferentEnemies; i++)
             {
                 spawningFrequency[i] = 1 / spawningTimes[i];
             }
 
+            // Obtain total spawning frequency
             float totalSpawningFrequency = 0.0f;
             foreach(float t in spawningFrequency)
             {
@@ -97,19 +99,8 @@ namespace Svelto.ECS.Example.Survive.Enemies
 
         IEnumerator IntervaledTick()
         {
-            //this is of fundamental importance: Never create implementors as Monobehaviour just to hold 
-            //data (especially if read only data). Data should always been retrieved through a service layer
-            //regardless the data source.
-            //The benefits are numerous, including the fact that changing data source would require
-            //only changing the service code. In this simple example I am not using a Service Layer
-            //but you can see the point.          
-            //Also note that I am loading the data only once per application run, outside the 
-            //main loop. You can always exploit this pattern when you know that the data you need
-            //to use will never change            
             IEnumerator<JSonEnemySpawnData[]>  enemiestoSpawnJsons  = ReadEnemySpawningDataServiceRequest();
             IEnumerator<JSonEnemyAttackData[]> enemyAttackDataJsons = ReadEnemyAttackDataServiceRequest();
-
-
 
             while (enemiestoSpawnJsons.MoveNext())
                 yield return null;
@@ -125,8 +116,6 @@ namespace Svelto.ECS.Example.Survive.Enemies
             {
                 yield return null;
             }
-
-
 
             for (var i = enemiesSpawnData.Length - 1; i >= 0; --i)
                 spawningTimes[i] = enemiesSpawnData[i].enemySpawnData.spawnTime;
@@ -186,12 +175,16 @@ namespace Svelto.ECS.Example.Survive.Enemies
             }
         }
 
+        /// <summary>
+        /// Set enemiesLeft field in WaveComponent and publishes the change
+        /// </summary>
         void SetWaveEnemiesLeft(int enemiesLeft)
         {
             ref WaveComponent waveEntity = ref entitiesDB.QueryUniqueEntity<WaveComponent>(ECSGroups.Waves);
             waveEntity.enemiesLeft = enemiesLeft;
             entitiesDB.PublishEntityChange<WaveComponent>(ECSGroups.WaveState);
         }
+
         /// <summary>
         ///     Reset all the component values when an Enemy is ready to be recycled.
         ///     it's important to not forget to reset all the states.

@@ -4,6 +4,9 @@ using Svelto.ECS.Example.Survive.Player;
 
 namespace Svelto.ECS.Example.Survive.Pickups
 {
+    /// <summary>
+    /// This engine handles logic behind the pickup of ammo
+    /// </summary>
     public class AmmoPickupEngine : IReactOnAddAndRemove<AmmoPickupEntityViewComponent>
                                    , IReactOnSwap<AmmoPickupEntityViewComponent>, IQueryingEntitiesEngine
     {
@@ -27,12 +30,7 @@ namespace Svelto.ECS.Example.Survive.Pickups
         /// <param name="previousGroup">where the entity is coming from</param>
         public void Add(ref AmmoPickupEntityViewComponent entityViewComponent, EGID egid)
         {
-            //for each new enemy entity added, we register a new DispatchOnChange
-            //DispatchOnChange is a simple solution to let implementors communicate with engine
-            //An Implementor can communicate only with an appointed engine and the engine can broadcast the information
-            //if necessary.
-            //set what callback must be called when the implementor dispatch the value change
-            entityViewComponent.targetTriggerComponent.hitChange = new DispatchOnChange<AmmoCollisionData>(egid, _onCollidedWithTarget);
+            entityViewComponent.targetTriggerComponent.hitChange = new DispatchOnChange<EntityReference>(egid, _onCollidedWithTarget);
         }
 
         public void Remove(ref AmmoPickupEntityViewComponent entityViewComponent, EGID egid)
@@ -41,14 +39,9 @@ namespace Svelto.ECS.Example.Survive.Pickups
             entityViewComponent.targetTriggerComponent.hitChange = null;
         }
 
-        /// <summary>
-        ///     MovedTo callbacks are enabled by the IReactOnSwap interface
-        ///     They are called on entity swap (when leaving a group and moving to the new one)
-        /// </summary>
-        /// <param name="entityViewComponent"></param>
         public void MovedTo (ref AmmoPickupEntityViewComponent entityViewComponent, ExclusiveGroupStruct previousGroup, EGID egid)
         {
-            entityViewComponent.targetTriggerComponent.hitChange = new DispatchOnChange<AmmoCollisionData>(egid, _onCollidedWithTarget);
+            entityViewComponent.targetTriggerComponent.hitChange = new DispatchOnChange<EntityReference>(egid, _onCollidedWithTarget);
             //entityViewComponent.targetTriggerComponent.hitChange.value = value;
             //If the enemy is dead, we pause the collision triggering, it will be renabled if the GO is recycled
             if (egid.groupID.FoundIn(RecyclableAmmoPickups.Groups))
@@ -63,9 +56,9 @@ namespace Svelto.ECS.Example.Survive.Pickups
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="enemyCollisionData"></param>
-        void OnCollidedWithTarget(EGID sender, AmmoCollisionData ammoCollisionData)
+        void OnCollidedWithTarget(EGID pickup, EntityReference other)
         {
-            if (ammoCollisionData.otherEntityID.ToEGID(entitiesDB, out var otherEntityID))
+            if (other.ToEGID(entitiesDB, out var otherEntityID))
             {
                 if (otherEntityID.groupID.FoundIn(Player.Player.Groups)) // Check if collision with player
                 {
@@ -73,14 +66,14 @@ namespace Svelto.ECS.Example.Survive.Pickups
                     var weapon = entitiesDB.QueryUniqueEntity<PlayerWeaponComponent>(Player.Player.Groups[0]);
                     var gunEGID            = weapon.weapon.ToEGID(entitiesDB);
                     ref AmmoGunComponent playerGunComponent = ref entitiesDB.QueryEntity<AmmoGunComponent>(gunEGID);
-                    var ammo = entitiesDB.QueryEntity<AmmoPickupComponent>(sender).ammo;
+                    var ammo = entitiesDB.QueryEntity<AmmoPickupComponent>(pickup).ammo;
                     playerGunComponent.ammo += ammo;
                     entitiesDB.PublishEntityChange<AmmoGunComponent>(gunEGID);
 
 
                     // Remove pickup
-                    _entityFunctions.SwapEntityGroup<AmmoEntityDescriptor>(sender, RecyclableAmmoPickups.BuildGroup);
-                    var AmmoPickupEntityViewComponent = entitiesDB.QueryEntity<AmmoPickupEntityViewComponent>(sender);
+                    _entityFunctions.SwapEntityGroup<AmmoEntityDescriptor>(pickup, RecyclableAmmoPickups.BuildGroup);
+                    var AmmoPickupEntityViewComponent = entitiesDB.QueryEntity<AmmoPickupEntityViewComponent>(pickup);
                     AmmoPickupEntityViewComponent.spawnedComponent.spawned = false;
                 }
             }
@@ -89,7 +82,7 @@ namespace Svelto.ECS.Example.Survive.Pickups
 
         public string name => nameof(AmmoPickupEngine);
 
-        readonly Action<EGID, AmmoCollisionData> _onCollidedWithTarget;
+        readonly Action<EGID, EntityReference> _onCollidedWithTarget;
         readonly IEntityFunctions  _entityFunctions;
     }
 }

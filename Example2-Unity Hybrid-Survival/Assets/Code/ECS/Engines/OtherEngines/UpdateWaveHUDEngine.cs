@@ -36,6 +36,7 @@ namespace Svelto.ECS.Example.Survive.HUD
                     hudEntityView.waveProgressionComponent.enemiesLeft = waveEntity.enemiesLeft;
                     if (hudEntityView.waveComponent.wave != waveEntity.wave)
                     {
+                        // Briefly show the wave number on screen
                         hudEntityView.waveComponent.wave = waveEntity.wave;
                         hudEntityView.waveComponent.showHUD = true;
                         var waitForSecondsEnumerator = new WaitForSecondsEnumerator(1.5f);

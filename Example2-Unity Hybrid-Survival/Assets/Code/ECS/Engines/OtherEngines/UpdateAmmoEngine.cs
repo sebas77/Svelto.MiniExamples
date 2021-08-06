@@ -7,6 +7,9 @@ using Svelto.ECS.Example.Survive.Player;
 
 namespace Svelto.ECS.Example.Survive.HUD
 {
+    /// <summary>
+    /// Updates the players HUD with the current ammo
+    /// </summary>
     [Sequenced(nameof(EnginesNames.UpdateAmmoEngine))]
     public class UpdateAmmoEngine : IQueryingEntitiesEngine, IStepEngine
     {
@@ -31,7 +34,7 @@ namespace Svelto.ECS.Example.Survive.HUD
             
             var hudEntityView = entitiesDB.QueryUniqueEntity<HUDEntityViewComponent>(ECSGroups.GUICanvas);
             
-            // Select first weapon to display to HUD
+            // Select first weapon to display to HUD (Will need to reimplement if there are multiple weapons/ players)
             while (entitiesDB.HasAny<PlayerWeaponComponent>(Player.Player.Groups[0]) == false)
                 yield return null;
 
