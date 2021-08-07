@@ -500,6 +500,17 @@ namespace Svelto.DataStructures
             }
         }
         
+        public void Union<OTKeyStrategy, OTValueStrategy, OTBucketStrategy> (SveltoDictionary<TKey, TValue, OTKeyStrategy, OTValueStrategy, OTBucketStrategy> otherDicKeys)   
+            where OTKeyStrategy : struct, IBufferStrategy<SveltoDictionaryNode<TKey>>
+            where OTValueStrategy : struct, IBufferStrategy<TValue>
+            where OTBucketStrategy : struct, IBufferStrategy<int>
+        {
+            foreach (var other in otherDicKeys)
+            {
+                this[other.Key] = other.Value;
+            }
+        }
+        
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         static uint Reduce(uint x, uint N)
         {

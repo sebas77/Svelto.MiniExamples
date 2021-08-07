@@ -13,7 +13,7 @@ namespace Svelto.ECS.Extensions.Unity
     /// This is a JobifiedEngine and as such it expect to be ticked. Normally it must be executed in a
     /// SortedEnginesGroup as step that happens after the Svelto jobified engines run. The flow should be:
     /// Svelto Engines Run
-    /// This Engine runs, which causeS:
+    /// This Engine runs, which causes:
     /// Jobs to be completed (it's a sync point)
     /// Synchronizations engines to be executed (Svelto to UECS)
     /// Submission of Entities to be executed
@@ -22,6 +22,8 @@ namespace Svelto.ECS.Extensions.Unity
     /// UECS engines to executed
     /// Synchronizations engines to be executed (UECS To Svelto)
     /// </summary>
+    ///
+    ///TODO REVIEW WHY THIS IS A GROUP 
     [Sequenced(nameof(JobifiedSveltoEngines.SveltoOverUECS))]
     public class SveltoOverUECSEnginesGroup: IJobifiedEngine
     {

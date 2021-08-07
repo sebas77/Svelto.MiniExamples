@@ -20,13 +20,6 @@ namespace Svelto.ECS.MiniExamples.Turrets
         protected override void OnEntityComponentAdding
             (Entity turretStrideEntity, TurretEntityHolder turretStrideEntityComponent, TurretEntityHolder data)
         {
-            var sveltoEntityID      = _ecsManager.RegisterStrideEntity(turretStrideEntity);
-            var sveltoEntityIDChild = _ecsManager.RegisterStrideEntity(turretStrideEntityComponent.child);
-
-            var botInitializer = _entityFactory.BuildEntity(new EGID(sveltoEntityIDChild, BotTag.BuildGroup)
-                                                          , turretStrideEntityComponent.GetChildDescriptor());
-            var turretInitializer = _entityFactory.BuildEntity(new EGID(sveltoEntityID, TurretTag.BuildGroup)
-                                                             , turretStrideEntityComponent.GetDescriptor());
             var botStrideEntityTransform    = turretStrideEntityComponent.child.Transform;
             var turretStrideEntityTransform = turretStrideEntity.Transform;
 
@@ -41,16 +34,21 @@ namespace Svelto.ECS.MiniExamples.Turrets
             turretBotWorldMatrix *= turretWorldMatrix;
             turretBotWorldMatrix.Decompose(out Vector3 scaleB, out Quaternion rotationB, out Vector3 translationB);
             
+            var sveltoEntityID      = _ecsManager.RegisterStrideEntity(turretStrideEntity);
+            var sveltoEntityIDChild = _ecsManager.RegisterStrideEntity(turretStrideEntityComponent.child);
+
+            var botInitializer = _entityFactory.BuildEntity(new EGID(sveltoEntityIDChild, BotTag.BuildGroup)
+                                                          , turretStrideEntityComponent.GetChildDescriptor());
+            var turretInitializer = _entityFactory.BuildEntity(new EGID(sveltoEntityID, TurretTag.BuildGroup)
+                                                             , turretStrideEntityComponent.GetDescriptor());
+
 
             botInitializer.Init(new ChildComponent(turretInitializer.reference));
             botInitializer.Init(new PositionComponent(translationB));
             botInitializer.Init(new RotationComponent(rotationB));
             botInitializer.Init(new ScalingComponent(scaleB));
-            botInitializer.Init(new DirectionComponent()
-            {
-                vector = Vector3.UnitX
-            });
-
+            botInitializer.Init(new DirectionComponent() { vector  = Vector3.UnitX });
+            
             turretInitializer.Init(new StartPositionsComponent(translationA));
             turretInitializer.Init(new PositionComponent(translationA));
             turretInitializer.Init(new RotationComponent(rotationA));
@@ -58,12 +56,6 @@ namespace Svelto.ECS.MiniExamples.Turrets
 
             turretStrideEntityTransform.UseTRS = false;
             botStrideEntityTransform.UseTRS    = false;
-            //
-            // turretStrideEntityTransform.WorldMatrix = Stride.Core.Mathematics.Matrix.Identity;
-            // botStrideEntityTransform.WorldMatrix    = Stride.Core.Mathematics.Matrix.Identity;
-            //
-            // botStrideEntityTransform.UpdateLocalFromWorld();
-            // turretStrideEntityTransform.UpdateLocalFromWorld();
         }
 
         IEntityFactory         _entityFactory;

@@ -9,8 +9,6 @@ namespace Svelto.ECS.MiniExamples.Turrets
         public EntitiesDB entitiesDB { get; set; }
 
         public void Ready() { }
-        // static readonly Quaternion rotationAxis =
-        //     Quaternion.RotationAxis(Vector3.UnitY, MathUtil.DegreesToRadians(180.0f));
 
         public override void Update()
         {
@@ -29,37 +27,6 @@ namespace Svelto.ECS.MiniExamples.Turrets
 
     public static class EntityExtensions
     {
-        // public static void LookAtA(this ref Quaternion e, Vector3 sourcePoint, Vector3 destPoint)
-        //     {
-        //         Vector3 forwardVector = Vector3.Normalize(destPoint - sourcePoint);
-        //         Vector3 cross         = Vector3.Normalize(Vector3.Cross(forwardVector, Vector3.UnitY));
-        //         Vector3 U             = Vector3.Cross(cross, forwardVector);                  // rotatedup
-        //         
-        //         Matrix  m        = new Matrix(); 
-        //         m.Row1 = new Vector4(cross, 0);
-        //         m.Row2 = new Vector4(U, 0);
-        //         m.Row3 = new Vector4(forwardVector, 0);
-        //     
-        //         Quaternion.RotationMatrix(ref m, out var e);
-        //     }
-        //
-        // public static void LookAtB(this ref Quaternion e, Vector3 sourcePoint, Vector3 destPoint)
-        // {
-        //     Vector3 forwardVector = Vector3.Normalize(destPoint - sourcePoint);
-        //
-        //     //compute rotation axis
-        //     Vector3 rotAxis = Vector3.Normalize(Vector3.Cross(forwardVector, Vector3.UnitZ));
-        //     if (rotAxis.LengthSquared() == 0)
-        //         rotAxis = Vector3.UnitY;
-        //
-        //     //find the angle around rotation axis
-        //     float dot = Vector3.Dot(Vector3.UnitZ, forwardVector);
-        //     float ang = System.MathF.Cos(dot);
-        //
-        //     //convert axis angle to quaternion
-        //     e = Quaternion.RotationAxis(rotAxis, ang);
-        // }
-
         public static void LookAt(this ref Quaternion e, Vector3 sourcePoint, Vector3 destPoint)
         {
             float altitude = 0;

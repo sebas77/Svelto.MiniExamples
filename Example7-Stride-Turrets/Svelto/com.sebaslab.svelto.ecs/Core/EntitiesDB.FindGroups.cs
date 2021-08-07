@@ -22,7 +22,11 @@ namespace Svelto.ECS
 
             for (int j = 0; j < result1Count; j++)
             {
-                result.Add(new ExclusiveGroupStruct(fasterDictionaryNodes1[j].key));
+                var group = fasterDictionaryNodes1[j].key;
+                if (group.IsEnabled())
+                {
+                    result.Add(group);
+                }
             }
 
             return result;
@@ -50,6 +54,8 @@ namespace Svelto.ECS
             for (int i = 0; i < result1Count; i++)
             {
                 var groupID = fasterDictionaryNodes1[i].key;
+                if (!groupID.IsEnabled()) continue;
+
                 for (int j = 0; j < result2Count; j++)
                 {
                     //if the same group is found used with both T1 and T2
@@ -82,7 +88,7 @@ namespace Svelto.ECS
         {
             FasterList<FasterDictionary<ExclusiveGroupStruct, ITypeSafeDictionary>> localArray =
                 localgroups.Value.listOfGroups;
-            
+
             if (groupsPerEntity.TryGetValue(TypeRefWrapper<T1>.wrapper, out localArray[0]) == false || localArray[0].count == 0)
                 return new LocalFasterReadOnlyList<ExclusiveGroupStruct>(
                     FasterReadOnlyList<ExclusiveGroupStruct>.DefaultEmptyList);
@@ -108,7 +114,12 @@ namespace Svelto.ECS
                 }
 
             foreach (var value in localArray[startIndex])
-                localGroups.Add(value.Key, value.Key);
+            {
+                if (value.Key.IsEnabled())
+                {
+                    localGroups.Add(value.Key, value.Key);
+                }
+            }
 
             var groupData = localArray[++startIndex % 3];
             localGroups.Intersect(groupData);
@@ -122,7 +133,7 @@ namespace Svelto.ECS
                                                                    , (uint) localGroups.count);
         }
 
-        public LocalFasterReadOnlyList<ExclusiveGroupStruct> FindGroups<T1, T2, T3, T4>() 
+        public LocalFasterReadOnlyList<ExclusiveGroupStruct> FindGroups<T1, T2, T3, T4>()
             where T1 : IEntityComponent
             where T2 : IEntityComponent
             where T3 : IEntityComponent
@@ -159,7 +170,12 @@ namespace Svelto.ECS
                 }
 
             foreach (var value in localArray[startIndex])
-                localGroups.Add(value.Key, value.Key);
+            {
+                if (value.Key.IsEnabled())
+                {
+                    localGroups.Add(value.Key, value.Key);
+                }
+            }
 
             var groupData = localArray[++startIndex & 3]; //&3 == %4
             localGroups.Intersect(groupData);

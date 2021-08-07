@@ -16,120 +16,60 @@ namespace Svelto.ECS
             var defaultEntities = EntityDescriptorTemplate<TType>.descriptor.componentsToBuild;
             var length          = defaultEntities.Length;
 
-            ComponentsToBuild = new IComponentBuilder[length + 1];
+            _componentsToBuild = new IComponentBuilder[length + 1];
 
-            Array.Copy(defaultEntities, 0, ComponentsToBuild, 0, length);
+            Array.Copy(defaultEntities, 0, _componentsToBuild, 0, length);
 
             //assign it after otherwise the previous copy will overwrite the value in case the item
             //is already present
-            ComponentsToBuild[length] = new ComponentBuilder<EntityInfoComponent>(new EntityInfoComponent
+            _componentsToBuild[length] = new ComponentBuilder<EntityInfoComponent>(new EntityInfoComponent
             {
-                componentsToBuild = ComponentsToBuild
+                componentsToBuild = _componentsToBuild
             });
         }
 
-        public DynamicEntityDescriptor(IComponentBuilder[] extraEntityBuilders) : this()
+        public DynamicEntityDescriptor(IComponentBuilder[] extraEntityBuilders) : this(true)
         {
             var extraEntitiesLength = extraEntityBuilders.Length;
 
-            ComponentsToBuild = Construct(extraEntitiesLength, extraEntityBuilders
-                                        , EntityDescriptorTemplate<TType>.descriptor.componentsToBuild);
+            _componentsToBuild = Construct(extraEntitiesLength, extraEntityBuilders);
         }
 
-        public DynamicEntityDescriptor(FasterList<IComponentBuilder> extraEntityBuilders) : this()
+        public DynamicEntityDescriptor(FasterList<IComponentBuilder> extraEntityBuilders) : this(true)
         {
             var extraEntities       = extraEntityBuilders.ToArrayFast(out _);
             var extraEntitiesLength = extraEntityBuilders.count;
 
-            ComponentsToBuild = Construct((int)extraEntitiesLength, extraEntities
-                                        , EntityDescriptorTemplate<TType>.descriptor.componentsToBuild);
+            _componentsToBuild = Construct((int)extraEntitiesLength, extraEntities);
         }
 
         public void ExtendWith<T>() where T : IEntityDescriptor, new()
         {
-            var newEntitiesToBuild = EntityDescriptorTemplate<T>.descriptor.componentsToBuild;
+            var extraEntities = EntityDescriptorTemplate<T>.descriptor.componentsToBuild;
 
-            ComponentsToBuild = Construct(newEntitiesToBuild.Length, newEntitiesToBuild, ComponentsToBuild);
+            _componentsToBuild = Construct(extraEntities.Length, extraEntities);
         }
 
         public void ExtendWith(IComponentBuilder[] extraEntities)
         {
-            ComponentsToBuild = Construct(extraEntities.Length, extraEntities, ComponentsToBuild);
+            _componentsToBuild = Construct(extraEntities.Length, extraEntities);
         }
 
         public void ExtendWith(FasterList<IComponentBuilder> extraEntities)
         {
-            ComponentsToBuild = Construct(extraEntities.count, extraEntities.ToArrayFast(out _), ComponentsToBuild);
-        }
-
-        static IComponentBuilder[] Construct
-            (int extraComponentsLength, IComponentBuilder[] extraComponents, IComponentBuilder[] startingComponents)
-        {
-            int RemoveDuplicates()
-            {
-                var components = new FasterDictionary<RefWrapper<IComponentBuilder, ComponentBuilderComparer>,
-                            IComponentBuilder>();
-                var xtraComponents = new FasterDictionary<RefWrapper<IComponentBuilder, ComponentBuilderComparer>,
-                            IComponentBuilder>();
-
-                for (uint i = 0; i < startingComponents.Length; i++)
-                    components[new RefWrapper<IComponentBuilder, ComponentBuilderComparer>(startingComponents[i])] =
-                        startingComponents[i];
-
-                for (uint i = 0; i < extraComponentsLength; i++)
-                    xtraComponents[new RefWrapper<IComponentBuilder, ComponentBuilderComparer>(extraComponents[i])] =
-                        extraComponents[i];
-
-                xtraComponents.Exclude(components);
-
-                if (extraComponentsLength != xtraComponents.count)
-                {
-                    extraComponentsLength = xtraComponents.count;
-
-                    uint index = 0;
-                    foreach (var couple in xtraComponents)
-                        extraComponents[index++] = couple.Key.value;
-                }
-
-                return extraComponentsLength;
-            }
-
-            IComponentBuilder[] localEntitiesToBuild;
-
-            if (extraComponentsLength == 0)
-            {
-                localEntitiesToBuild = startingComponents;
-                return localEntitiesToBuild;
-            }
-
-            extraComponentsLength = RemoveDuplicates();
-
-            var entityInfoComponentIndex =
-                SetupEntityInfoComponent(startingComponents, out localEntitiesToBuild, extraComponentsLength);
-
-            Array.Copy(extraComponents, 0, localEntitiesToBuild, startingComponents.Length, extraComponentsLength);
-
-            //assign it after otherwise the previous copy will overwrite the value in case the item
-            //is already present
-            localEntitiesToBuild[entityInfoComponentIndex] = new ComponentBuilder<EntityInfoComponent>(
-                new EntityInfoComponent
-                {
-                    componentsToBuild = localEntitiesToBuild
-                });
-
-            return localEntitiesToBuild;
+            _componentsToBuild = Construct(extraEntities.count, extraEntities.ToArrayFast(out _));
         }
 
         public void Add<T>() where T : struct, IEntityComponent
         {
             IComponentBuilder[] extraEntities = { new ComponentBuilder<T>() };
-            ComponentsToBuild = Construct(extraEntities.Length, extraEntities, ComponentsToBuild);
+            _componentsToBuild = Construct(extraEntities.Length, extraEntities);
         }
 
         public void Add<T, U>() where T : struct, IEntityComponent where U : struct, IEntityComponent
         {
             IComponentBuilder[] extraEntities = { new ComponentBuilder<T>(), new ComponentBuilder<U>() };
-            ComponentsToBuild = Construct(extraEntities.Length, extraEntities, ComponentsToBuild);
+            _componentsToBuild = Construct(extraEntities.Length, extraEntities);
         }
 
         public void Add<T, U, V>() where T : struct, IEntityComponent
@@ -140,40 +80,74 @@ namespace Svelto.ECS
             {
                 new ComponentBuilder<T>(), new ComponentBuilder<U>(), new ComponentBuilder<V>()
             };
-            ComponentsToBuild = Construct(extraEntities.Length, extraEntities, ComponentsToBuild);
+            _componentsToBuild = Construct(extraEntities.Length, extraEntities);
         }
-
-        static int SetupEntityInfoComponent
-            (IComponentBuilder[] defaultEntities, out IComponentBuilder[] componentsToBuild, int extraLenght)
+        
+        IComponentBuilder[] Construct(int extraComponentsLength, IComponentBuilder[] extraComponents)
         {
-            int length = defaultEntities.Length;
-            int index  = -1;
-
-            for (var i = 0; i < length; i++)
+            static IComponentBuilder[] MergeLists
+                (IComponentBuilder[] extraComponents, IComponentBuilder[] startingComponents, int extraComponentsLength)
             {
-                //the special entity already exists
-                if (defaultEntities[i].GetEntityComponentType() == ComponentBuilderUtilities.ENTITY_INFO_COMPONENT)
+                var startComponents =
+                    new FasterDictionary<RefWrapper<IComponentBuilder, ComponentBuilderComparer>, IComponentBuilder>();
+                var mergedComponents =
+                    new FasterDictionary<RefWrapper<IComponentBuilder, ComponentBuilderComparer>, IComponentBuilder>();
+
+                for (uint i = 0; i < startingComponents.Length; i++)
+                    startComponents
+                            [new RefWrapper<IComponentBuilder, ComponentBuilderComparer>(startingComponents[i])] =
+                        startingComponents[i];
+
+                for (uint i = 0; i < extraComponentsLength; i++)
+                    mergedComponents[new RefWrapper<IComponentBuilder, ComponentBuilderComparer>(extraComponents[i])] =
+                        extraComponents[i];
+
+                mergedComponents.Union(startComponents);
+
+                IComponentBuilder[] componentBuilders = new IComponentBuilder[mergedComponents.count];
+                
+                mergedComponents.CopyValuesTo(componentBuilders);
+                
+                var entityInfoComponentIndex = FetchEntityInfoComponent(componentBuilders);
+
+                componentBuilders[entityInfoComponentIndex] = new ComponentBuilder<EntityInfoComponent>(new EntityInfoComponent
                 {
-                    index = i;
-                    break;
-                }
+                    componentsToBuild = componentBuilders
+                });
+
+                return componentBuilders;
             }
 
-            if (index == -1)
+            static int FetchEntityInfoComponent(IComponentBuilder[] defaultEntities)
             {
-                index             = length + extraLenght;
-                componentsToBuild = new IComponentBuilder[index + 1];
+                int length = defaultEntities.Length;
+                int index  = -1;
+
+                for (var i = 0; i < length; i++)
+                {
+                    //the special entity already exists
+                    if (defaultEntities[i].GetEntityComponentType() == ComponentBuilderUtilities.ENTITY_INFO_COMPONENT)
+                    {
+                        index = i;
+                        break;
+                    }
+                }
+                
+                DBC.ECS.Check.Ensure(index != -1);
+
+                return index;
             }
-            else
-                componentsToBuild = new IComponentBuilder[length + extraLenght];
 
-            Array.Copy(defaultEntities, 0, componentsToBuild, 0, length);
+            if (extraComponentsLength == 0)
+            {
+                return _componentsToBuild;
+            }
 
-            return index;
+            return MergeLists(extraComponents, _componentsToBuild, extraComponentsLength);
         }
 
-        public IComponentBuilder[] componentsToBuild => ComponentsToBuild;
+        public IComponentBuilder[] componentsToBuild => _componentsToBuild;
 
-        IComponentBuilder[] ComponentsToBuild;
+        IComponentBuilder[] _componentsToBuild;
     }
 }

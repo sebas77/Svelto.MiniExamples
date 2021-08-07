@@ -1,4 +1,5 @@
-﻿using Svelto.Common;
+﻿using System.Runtime.CompilerServices;
+using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.ECS.DataStructures;
 
@@ -36,29 +37,12 @@ namespace Svelto.ECS
         public bool Add<N>(uint entityID, N mapper)  where N:IEGIDMapper
         {
 #if DEBUG && !PROFILE_SVELTO
-            if (_denseListOfIndicesToEntityComponentArray.isValid == false)
-                throw new ECSException($"using an invalid filter");
             if (mapper.Exists(entityID) == false)
                 throw new ECSException(
                     $"trying adding an entity {entityID} to filter {mapper.entityType} - {_ID} with group {mapper.groupID}, but entity is not found! ");
 #endif
-            if (_indexOfEntityInDenseList.ContainsKey(entityID) == true)
-                return false;
 
-            //Get the index of the Entity in the component array
-            var indexOfEntityInBufferComponent = mapper.GetIndex(entityID);
-
-            //add the index in the list of filtered indices
-            _denseListOfIndicesToEntityComponentArray.Add(indexOfEntityInBufferComponent);
-
-            //inverse map: need to get the entityID from the index. This wouldn't be needed with a real sparseset
-            var lastIndex = (uint) (_denseListOfIndicesToEntityComponentArray.Count() - 1);
-            _reverseEIDs.AddAt(lastIndex) = entityID;
-
-            //remember the entities indices. This is needed to remove entities from the filter
-            _indexOfEntityInDenseList.Add(entityID, lastIndex);
-
-            return true;
+            return InternalAdd(entityID, mapper.GetIndex(entityID));
         }
 
         public void Remove(uint entityID)
@@ -157,6 +141,29 @@ namespace Svelto.ECS
             _reverseEIDs.Dispose();
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal bool InternalAdd(uint entityID, uint indexOfEntityInBufferComponent)
+        {
+        #if DEBUG && !PROFILE_SVELTO
+            if (_denseListOfIndicesToEntityComponentArray.isValid == false)
+                throw new ECSException($"using an invalid filter");
+        #endif
+            if (_indexOfEntityInDenseList.ContainsKey(entityID) == true)
+                return false;
+
+            //add the index in the list of filtered indices
+            _denseListOfIndicesToEntityComponentArray.Add(indexOfEntityInBufferComponent);
+
+            //inverse map: need to get the entityID from the index. This wouldn't be needed with a real sparseset
+            var lastIndex = (uint) (_denseListOfIndicesToEntityComponentArray.Count() - 1);
+            _reverseEIDs.AddAt(lastIndex) = entityID;
+
+            //remember the entities indices. This is needed to remove entities from the filter
+            _indexOfEntityInDenseList.Add(entityID, lastIndex);
+
+            return true;
+        }
+
         void InternalRemove(uint entityID)
         {
             var count = (uint) _denseListOfIndicesToEntityComponentArray.Count();
@@ -199,7 +206,7 @@ namespace Svelto.ECS
         NativeDynamicArrayCast<uint>            _reverseEIDs; //forced to use this because it's not a real sparse set
         SharedSveltoDictionaryNative<uint, uint> _indexOfEntityInDenseList;
 
-        readonly ExclusiveGroupStruct _exclusiveGroupStruct;
-        readonly int                  _ID;
+        internal readonly ExclusiveGroupStruct _exclusiveGroupStruct;
+        internal readonly int                  _ID;
     }
 }

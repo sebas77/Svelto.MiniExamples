@@ -1,9 +1,10 @@
 using System;
+using System.Text.RegularExpressions;
 using Stride.Engine;
 
 namespace Svelto.ECS.MiniExamples.Turrets
 {
-    public class AimbBotEngine : SyncScript, IQueryingEntitiesEngine
+    public class AimBotEngine : SyncScript, IQueryingEntitiesEngine
     {
         public EntitiesDB entitiesDB { get; set; }
 
@@ -22,8 +23,8 @@ namespace Svelto.ECS.MiniExamples.Turrets
                     for (int i = 0; i < count; i++)
                     {
                         var j = i < countTargets - 1 ? i : countTargets - 1;
-                        directionComponent[i].vector = targetPosition[j].position - matrix[i].matrix.TranslationVector;
-                        directionComponent[i].vector.Normalize();
+                        directionComponent[i].vector =
+                            targetPosition[j].position - matrix[i].matrix.TranslationVector;
                     }
                 }
             }

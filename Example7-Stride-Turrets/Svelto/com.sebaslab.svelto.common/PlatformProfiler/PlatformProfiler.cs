@@ -13,6 +13,8 @@ namespace Svelto.Common
     {
         public void Dispose()
         {}
+
+        public PauseProfiler Yield() { return default; }
     }
     
     public struct PlatformProfilerMT : IPlatformProfiler
@@ -53,13 +55,13 @@ namespace Svelto.Common
 
         public void Dispose()
         {}
-        
-        public readonly struct PauseProfiler : IDisposable
+    }
+    
+    public readonly struct PauseProfiler : IDisposable
         {
             public void Dispose()
             {
             }
         }
-    }
 #endif
 }

@@ -45,6 +45,24 @@ namespace Svelto.ECS
             return other._id.CompareTo(_id);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool IsEnabled()
+        {
+            return (_bytemask & (byte)ExclusiveGroupBitmask.DISABLED_BIT) == 0;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal void Disable()
+        {
+            _bytemask |= (byte)ExclusiveGroupBitmask.DISABLED_BIT;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal void Enable()
+        {
+            _bytemask &= (byte)(~ExclusiveGroupBitmask.DISABLED_BIT);
+        }
+
         public override string ToString()
         {
             return this.ToName();
@@ -96,7 +114,7 @@ namespace Svelto.ECS
         {
             return groupStruct._id;
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ExclusiveGroupStruct operator+(ExclusiveGroupStruct a, uint b)
         {

@@ -267,7 +267,12 @@ namespace Svelto.ECS
             _GroupsHashSet = new HashSet<ExclusiveGroupStruct>(_Groups.ToArrayFast(out _));
 
 #if DEBUG
-            GroupMap.idToName[(uint) group] = $"Compound: {typeof(T).Name} ID {(uint) group}";
+            var typeInfo         = typeof(T);
+            var typeInfoBaseType = typeInfo.BaseType;
+            if (typeInfoBaseType.GenericTypeArguments[0] != typeInfo)
+                throw new ECSException("Invalid Group Tag declared");
+            
+            GroupMap.idToName[(uint) group] = $"Compound: {typeInfo.Name} ID {(uint) group}";
 #endif
         }
 

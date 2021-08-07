@@ -27,7 +27,7 @@ namespace Svelto.ECS
                 return ref CreateOrGetFilterForGroup(filterID, groupID, refWrapper);
             }
 
-            ref FilterGroup CreateOrGetFilterForGroup
+            internal ref FilterGroup CreateOrGetFilterForGroup
                 (int filterID, ExclusiveGroupStruct groupID, RefWrapperType refWrapper)
             {
                 var fasterDictionary =

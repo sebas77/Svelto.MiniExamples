@@ -1,5 +1,4 @@
 using Stride.Engine;
-using Svelto.DataStructures;
 
 namespace Svelto.ECS.MiniExamples.Turrets
 {

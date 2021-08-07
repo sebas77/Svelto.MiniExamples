@@ -24,7 +24,7 @@ namespace Svelto.ECS
 
                 if (_entitiesOperations.count > 0)
                 {
-                    using (profiler.Sample("Remove and Swap operations"))
+                    using (var sample = profiler.Sample("Remove and Swap operations"))
                     {
                         _transientEntitiesOperations.FastClear();
                         _entitiesOperations.CopyValuesTo(_transientEntitiesOperations);
@@ -75,6 +75,7 @@ namespace Svelto.ECS
 
                             if ((uint) numberOfOperations >= (uint) _maxNumberOfOperationsPerFrame)
                             {
+                                using (sample.Yield())
                                 yield return true;
 
                                 numberOfOperations = 0;
@@ -87,7 +88,7 @@ namespace Svelto.ECS
 
                 if (_groupedEntityToAdd.AnyOtherEntityCreated())
                 {
-                    using (profiler.Sample("Add operations"))
+                    using (var outerSampler = profiler.Sample("Add operations"))
                     {
                         try
                         {
@@ -117,7 +118,7 @@ namespace Svelto.ECS
 
                             //then submit everything in the engines, so that the DB is up to date with all the entity components
                             //created by the entity built
-                            using (profiler.Sample("Add entities to engines"))
+                            using (var sampler = profiler.Sample("Add entities to engines"))
                             {
                                 foreach (var groupToSubmit in _groupedEntityToAdd.other)
                                 {
@@ -137,7 +138,11 @@ namespace Svelto.ECS
 
                                         if (numberOfOperations >= _maxNumberOfOperationsPerFrame)
                                         {
-                                            yield return true;
+                                            using (outerSampler.Yield())
+                                            using (sampler.Yield())
+                                            {
+                                                yield return true;
+                                            }
 
                                             numberOfOperations = 0;
                                         }

@@ -104,7 +104,10 @@ namespace Svelto.ECS.Extensions.Unity
                     }
 
                     if (submitEntitiesAsync.Current == true)
-                        yield return null;
+                    {
+                        using (profiler.Yield())
+                            yield return null;
+                    }
                     else
                         break;
                 }

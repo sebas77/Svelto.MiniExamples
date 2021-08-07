@@ -251,7 +251,7 @@ namespace Svelto.ECS
             {
                 _enginesRoot = new Svelto.DataStructures.WeakReference<EnginesRoot>(enginesRoot);
                 _privateSubmitEntities =
-                    _enginesRoot.Target.SingleSubmission(new PlatformProfiler("Svelto.ECS - Entities Submission"));
+                    _enginesRoot.Target.SingleSubmission(new PlatformProfiler());
                 submitEntities = Invoke(); //this must be last to capture all the variables
             }
 

@@ -6,6 +6,7 @@ namespace Svelto.ECS.MiniExamples.Turrets
         {
             new ComponentBuilder<ChildComponent>()
           , new ComponentBuilder<DirectionComponent>()
+          , new ComponentBuilder<ShootingComponent>()
         })
         { }
     }

@@ -141,6 +141,9 @@ namespace Svelto.DataStructures
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Exclude(FasterDictionary<TKey, TValue> otherDicKeys)  => _dictionary.Exclude(otherDicKeys._dictionary);
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Union(FasterDictionary<TKey, TValue> otherDicKeys) => _dictionary.Union(otherDicKeys._dictionary);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Dispose() { _dictionary.Dispose(); }
@@ -173,7 +176,5 @@ namespace Svelto.DataStructures
 
         SveltoDictionary<TKey, TValue, ManagedStrategy<SveltoDictionaryNode<TKey>>, ManagedStrategy<TValue>,
             ManagedStrategy<int>> _dictionary;
-
-
     }
 }

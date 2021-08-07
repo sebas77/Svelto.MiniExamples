@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 #pragma warning disable 660,661
 
@@ -17,20 +18,20 @@ namespace Svelto.ECS
     ///     public static ExclusiveGroup[] GroupOfGroups = { MyExclusiveGroup1, ...}; //for each on this!
     /// }
     /// </summary>
-    
+
     ///To debug it use in your debug window: Svelto.ECS.Debugger.EGID.GetGroupNameFromId(groupID)
     public sealed class ExclusiveGroup
     {
-        public const uint MaxNumberOfExclusiveGroups = 2 << 20; 
-        
-        public ExclusiveGroup()
+        public const uint MaxNumberOfExclusiveGroups = 2 << 20;
+
+        public ExclusiveGroup(ExclusiveGroupBitmask bitmask = 0)
         {
-            _group = ExclusiveGroupStruct.Generate();
+            _group = ExclusiveGroupStruct.Generate((byte)bitmask);
         }
 
-        public ExclusiveGroup(string recognizeAs)
+        public ExclusiveGroup(string recognizeAs, ExclusiveGroupBitmask bitmask = 0)
         {
-            _group = ExclusiveGroupStruct.Generate();
+            _group = ExclusiveGroupStruct.Generate((byte)bitmask);
 
             _knownGroups.Add(recognizeAs, _group);
         }
@@ -43,11 +44,23 @@ namespace Svelto.ECS
 #endif
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Disable()
+        {
+            _group.Disable();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Enable()
+        {
+            _group.Enable();
+        }
+
         public static implicit operator ExclusiveGroupStruct(ExclusiveGroup group)
         {
             return group._group;
         }
-        
+
         public static explicit operator uint(ExclusiveGroup group)
         {
             return (uint) @group._group;
@@ -63,7 +76,7 @@ namespace Svelto.ECS
 #endif
             return a._group + b;
         }
-        
+
         //todo document the use case for this method
         public static ExclusiveGroupStruct Search(string holderGroupName)
         {
@@ -84,7 +97,7 @@ namespace Svelto.ECS
 #if DEBUG
         readonly ushort _range;
 #endif
-        readonly ExclusiveGroupStruct _group;
+        ExclusiveGroupStruct _group;
     }
 }
 

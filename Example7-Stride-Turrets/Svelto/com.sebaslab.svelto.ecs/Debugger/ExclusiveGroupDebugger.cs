@@ -60,9 +60,9 @@ public static class ExclusiveGroupDebugger
     }
 }
 
-public static class GroupMap
+static class GroupMap
 {
-    static GroupMap() { GroupMap.idToName = new Dictionary<uint, string>(); }
+    static GroupMap() { idToName = new Dictionary<uint, string>(); }
 
     internal static readonly Dictionary<uint, string> idToName;
 }

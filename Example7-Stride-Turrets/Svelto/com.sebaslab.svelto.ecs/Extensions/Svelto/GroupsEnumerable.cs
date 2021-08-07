@@ -36,7 +36,11 @@ namespace Svelto.ECS
                 //attention, the while is necessary to skip empty groups
                 while (++_indexGroup < _groups.count)
                 {
-                    var entityCollection1 = _entitiesDB.QueryEntities<T1, T2, T3, T4>(_groups[_indexGroup]);
+                    var exclusiveGroupStruct = _groups[_indexGroup];
+                    if (!exclusiveGroupStruct.IsEnabled())
+                        continue;
+
+                    var entityCollection1 = _entitiesDB.QueryEntities<T1, T2, T3, T4>(exclusiveGroupStruct);
 
                     var array  = entityCollection1;
                     _buffers = new EntityCollection<T1, T2, T3, T4>(array.buffer1, array.buffer2, array.buffer3
@@ -112,7 +116,11 @@ namespace Svelto.ECS
                 //attention, the while is necessary to skip empty groups
                 while (++_indexGroup < _groups.count)
                 {
-                    var entityCollection = _entitiesDB.QueryEntities<T1, T2, T3>(_groups[_indexGroup]);
+                    var exclusiveGroupStruct = _groups[_indexGroup];
+                    if (!exclusiveGroupStruct.IsEnabled())
+                        continue;
+
+                    var entityCollection = _entitiesDB.QueryEntities<T1, T2, T3>(exclusiveGroupStruct);
                     if (entityCollection.count == 0)
                         continue;
 
@@ -187,7 +195,11 @@ namespace Svelto.ECS
                 //attention, the while is necessary to skip empty groups
                 while (++_indexGroup < _groups.count)
                 {
-                    var entityCollection = _db.QueryEntities<T1, T2>(_groups[_indexGroup]);
+                    var exclusiveGroupStruct = _groups[_indexGroup];
+                    if (!exclusiveGroupStruct.IsEnabled())
+                        continue;
+
+                    var entityCollection = _db.QueryEntities<T1, T2>(exclusiveGroupStruct);
                     if (entityCollection.count == 0)
                         continue;
 
@@ -261,14 +273,19 @@ namespace Svelto.ECS
                 //attention, the while is necessary to skip empty groups
                 while (++_indexGroup < _groups.count)
                 {
-                    var entityCollection = _db.QueryEntities<T1>(_groups[_indexGroup]);
+                    var exclusiveGroupStruct = _groups[_indexGroup];
+                    
+                    if (!exclusiveGroupStruct.IsEnabled())
+                        continue;
+
+                    var entityCollection = _db.QueryEntities<T1>(exclusiveGroupStruct);
                     if (entityCollection.count == 0)
                         continue;
 
                     _buffer = entityCollection;
                     break;
                 }
-                
+
                 var moveNext = _indexGroup < _groups.count;
 
                 if (moveNext == false)
@@ -307,7 +324,7 @@ namespace Svelto.ECS
                 buffers = _buffers;
                 group   = _group;
             }
-            
+
             public void Deconstruct(out EntityCollection<T1> buffers)
             {
                 buffers = _buffers;
