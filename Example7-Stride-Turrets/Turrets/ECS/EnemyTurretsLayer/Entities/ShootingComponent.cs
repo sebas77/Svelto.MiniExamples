@@ -4,6 +4,7 @@ namespace Svelto.ECS.MiniExamples.Turrets
 {
     public struct ShootingComponent : IEntityComponent
     {
-        public DateTime time;
+        public float  time;
+        public int randomTime;
     }
 }

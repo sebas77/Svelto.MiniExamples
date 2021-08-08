@@ -1,3 +1,4 @@
+using System;
 using Stride.Core.Mathematics;
 using Stride.Engine;
 using Matrix = BulletSharp.Math.Matrix;
@@ -48,6 +49,10 @@ namespace Svelto.ECS.MiniExamples.Turrets
             botInitializer.Init(new RotationComponent(rotationB));
             botInitializer.Init(new ScalingComponent(scaleB));
             botInitializer.Init(new DirectionComponent() { vector  = Vector3.UnitX });
+            botInitializer.Init(new ShootingComponent()
+            {
+                randomTime =  _rand.Next(2, 5)
+            });
             
             turretInitializer.Init(new StartPositionsComponent(translationA));
             turretInitializer.Init(new PositionComponent(translationA));
@@ -60,5 +65,6 @@ namespace Svelto.ECS.MiniExamples.Turrets
 
         IEntityFactory         _entityFactory;
         ECSStrideEntityManager _ecsManager;
+        readonly Random        _rand = new Random();
     }
 }

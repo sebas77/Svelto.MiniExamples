@@ -37,9 +37,6 @@ namespace Svelto.ECS.MiniExamples.Turrets
              AddEngine(new AimBotEngine());
              AddEngine(new FireBotEngine(bulletFactory));
              
-             //BulletsContext
-             AddEngine(new BulletSpawningEngine(bulletFactory, ecsStrideEntityManager));
-            
              //SimplePhysicContext
              AddEngine(new VelocityComputationEngine());
              AddEngine(new VelocityToPositionEngine());
@@ -49,6 +46,10 @@ namespace Svelto.ECS.MiniExamples.Turrets
              AddEngine(new ComputeTransformsEngine());
              //HierarchicalTransformableContext
              AddEngine(new ComputeHierarchicalTransformsEngine());
+             
+             //BulletsContext
+             AddEngine(new BulletSpawningEngine(bulletFactory, ecsStrideEntityManager));
+             AddEngine(new BulletLifeEngine(entityFunctions));
             
              //Stride Abstraction Layer
              AddEngine(new SetTransformsEngine(ecsStrideEntityManager));

@@ -4,6 +4,11 @@ using Stride.Engine;
 
 namespace Svelto.ECS.MiniExamples.Turrets
 {
+    /// <summary>
+    /// Should LookAtEngine be abstract or not? If it's abstract DirectionComponent cannot be provided by
+    /// the PhysicLayer otherwise LookAtEngine would be more specialised than it.
+    /// Alternatively it should have a LookAtComponent. I went for the latter.
+    /// </summary>
     class LookAtEngine : SyncScript, IQueryingEntitiesEngine
     {
         public EntitiesDB entitiesDB { get; set; }
@@ -12,10 +17,10 @@ namespace Svelto.ECS.MiniExamples.Turrets
 
         public override void Update()
         {
-            var groups = entitiesDB.FindGroups<DirectionComponent, RotationComponent>();
+            var groups = entitiesDB.FindGroups<LookAtComponent, RotationComponent>();
 
             foreach (var ((directions, rotation, count), _) in entitiesDB
-               .QueryEntities<DirectionComponent, RotationComponent>(groups))
+               .QueryEntities<LookAtComponent, RotationComponent>(groups))
             {
                 for (int i = 0; i < count; i++)
                 {

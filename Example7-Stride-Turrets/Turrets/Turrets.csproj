@@ -5,16 +5,16 @@
         <RootNamespace>Svelto.ECS.MiniExamples.Turrets</RootNamespace>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Stride.Engine" Version="4.1.0.1459-beta"/>
-        <PackageReference Include="Stride.Video" Version="4.1.0.1459-beta"/>
-        <PackageReference Include="Stride.Physics" Version="4.1.0.1459-beta"/>
-        <PackageReference Include="Stride.Navigation" Version="4.1.0.1459-beta"/>
-        <PackageReference Include="Stride.Particles" Version="4.1.0.1459-beta"/>
-        <PackageReference Include="Stride.UI" Version="4.1.0.1459-beta"/>
-        <PackageReference Include="Stride.Core.Assets.CompilerApp" Version="4.1.0.1459-beta" IncludeAssets="build;buildTransitive"/>
+        <PackageReference Include="Stride.Engine" Version="4.1.0.1459-beta" />
+        <PackageReference Include="Stride.Video" Version="4.1.0.1459-beta" />
+        <PackageReference Include="Stride.Physics" Version="4.1.0.1459-beta" />
+        <PackageReference Include="Stride.Navigation" Version="4.1.0.1459-beta" />
+        <PackageReference Include="Stride.Particles" Version="4.1.0.1459-beta" />
+        <PackageReference Include="Stride.UI" Version="4.1.0.1459-beta" />
+        <PackageReference Include="Stride.Core.Assets.CompilerApp" Version="4.1.0.1459-beta" IncludeAssets="build;buildTransitive" />
     </ItemGroup>
     <ItemGroup>
-        <ProjectReference Include="..\Svelto\com.sebaslab.svelto.common\Svelto.Common.csproj"/>
-        <ProjectReference Include="..\Svelto\com.sebaslab.svelto.ecs\Svelto.ECS.csproj"/>
+        <ProjectReference Include="..\Svelto\com.sebaslab.svelto.common\Svelto.Common.csproj" />
+        <ProjectReference Include="..\Svelto\com.sebaslab.svelto.ecs\Svelto.ECS.csproj" />
     </ItemGroup>
 </Project>

@@ -4,6 +4,7 @@ namespace Svelto.ECS.MiniExamples.Turrets
     {
         public BulletEntityDescriptor()
         {
+            ExtendWith<PhysicEntityDescriptor>();
             Add<BulletComponent>();
         }
     }

@@ -82,15 +82,24 @@ namespace Svelto.ECS
             };
             _componentsToBuild = Construct(extraEntities.Length, extraEntities);
         }
-        
+
+        /// <summary>
+        /// Note: unluckily I didn't design the serialization system to be component order independent, so unless
+        /// I do something about it, this method cannot be optimized, the logic of the component order must stay
+        /// untouched (no reordering, no use of dictionaries). Components order must stay as it comes, as
+        /// well as extracomponents order.
+        /// Speed, however, is not a big issue for this class, as the data is always composed once per entity descriptor
+        /// at static constructor time
+        /// </summary>
+        /// <returns></returns>
         IComponentBuilder[] Construct(int extraComponentsLength, IComponentBuilder[] extraComponents)
         {
             static IComponentBuilder[] MergeLists
-                (IComponentBuilder[] extraComponents, IComponentBuilder[] startingComponents, int extraComponentsLength)
+                (IComponentBuilder[] startingComponents, IComponentBuilder[] extraComponents, int extraComponentsLength)
             {
                 var startComponents =
                     new FasterDictionary<RefWrapper<IComponentBuilder, ComponentBuilderComparer>, IComponentBuilder>();
-                var mergedComponents =
+                var xtraComponents =
                     new FasterDictionary<RefWrapper<IComponentBuilder, ComponentBuilderComparer>, IComponentBuilder>();
 
                 for (uint i = 0; i < startingComponents.Length; i++)
@@ -99,21 +108,33 @@ namespace Svelto.ECS
                         startingComponents[i];
 
                 for (uint i = 0; i < extraComponentsLength; i++)
-                    mergedComponents[new RefWrapper<IComponentBuilder, ComponentBuilderComparer>(extraComponents[i])] =
+                    xtraComponents[new RefWrapper<IComponentBuilder, ComponentBuilderComparer>(extraComponents[i])] =
                         extraComponents[i];
 
-                mergedComponents.Union(startComponents);
+                xtraComponents.Exclude(startComponents);
 
-                IComponentBuilder[] componentBuilders = new IComponentBuilder[mergedComponents.count];
-                
-                mergedComponents.CopyValuesTo(componentBuilders);
-                
+                if (extraComponentsLength != xtraComponents.count)
+                {
+                    extraComponentsLength = xtraComponents.count;
+
+                    uint index = 0;
+                    foreach (var couple in xtraComponents)
+                        extraComponents[index++] = couple.Key.value;
+                }
+
+                IComponentBuilder[] componentBuilders =
+                    new IComponentBuilder[extraComponentsLength + startingComponents.Length];
+
+                Array.Copy(startingComponents, 0, componentBuilders, 0, startingComponents.Length);
+                Array.Copy(extraComponents, 0, componentBuilders, startingComponents.Length, extraComponentsLength);
+
                 var entityInfoComponentIndex = FetchEntityInfoComponent(componentBuilders);
 
-                componentBuilders[entityInfoComponentIndex] = new ComponentBuilder<EntityInfoComponent>(new EntityInfoComponent
-                {
-                    componentsToBuild = componentBuilders
-                });
+                componentBuilders[entityInfoComponentIndex] = new ComponentBuilder<EntityInfoComponent>(
+                    new EntityInfoComponent
+                    {
+                        componentsToBuild = componentBuilders
+                    });
 
                 return componentBuilders;
             }
@@ -132,7 +153,7 @@ namespace Svelto.ECS
                         break;
                     }
                 }
-                
+
                 DBC.ECS.Check.Ensure(index != -1);
 
                 return index;
@@ -143,7 +164,10 @@ namespace Svelto.ECS
                 return _componentsToBuild;
             }
 
-            return MergeLists(extraComponents, _componentsToBuild, extraComponentsLength);
+            var safeCopyOfExtraComponents = new IComponentBuilder[extraComponentsLength];
+            Array.Copy(extraComponents, safeCopyOfExtraComponents, extraComponentsLength);
+
+            return MergeLists(_componentsToBuild, safeCopyOfExtraComponents, extraComponentsLength);
         }
 
         public IComponentBuilder[] componentsToBuild => _componentsToBuild;

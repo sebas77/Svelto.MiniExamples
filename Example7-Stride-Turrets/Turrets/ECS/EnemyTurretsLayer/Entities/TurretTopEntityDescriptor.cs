@@ -5,7 +5,7 @@ namespace Svelto.ECS.MiniExamples.Turrets
         public TurretTopEntityDescriptor() : base(new IComponentBuilder[]
         {
             new ComponentBuilder<ChildComponent>()
-          , new ComponentBuilder<DirectionComponent>()
+          , new ComponentBuilder<LookAtComponent>()
           , new ComponentBuilder<ShootingComponent>()
         })
         { }

@@ -24,7 +24,7 @@ namespace Svelto.ECS.MiniExamples.Turrets
             turretStrideEntityTransform.LocalMatrix.Decompose(out _bulletScaling, out Quaternion _, out _);
         }
 
-        public void CreateBullet()
+        public EntityInitializer CreateBullet()
         {
             var bullet           = _bulletPrefab.Clone();
             var entityResourceID = _ecsStrideEntityManager.RegisterStrideEntity(bullet);
@@ -36,6 +36,8 @@ namespace Svelto.ECS.MiniExamples.Turrets
             });
 
             bullet.Transform.UseTRS = false;
+
+            return init;
         }
 
         readonly ECSStrideEntityManager _ecsStrideEntityManager;
@@ -46,6 +48,6 @@ namespace Svelto.ECS.MiniExamples.Turrets
 
     public interface IBulletFactory
     {
-        void CreateBullet();
+        EntityInitializer CreateBullet();
     }
 }
