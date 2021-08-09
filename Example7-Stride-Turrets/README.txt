@@ -7,6 +7,4 @@ This awkward miniexample doesn't give justice to Stride, but it's enough for lea
 You can't really do much, I decided to not complete the demo to something meaningful because each new feature won't add anything to the purpose of the example itself.
 You can move the main character with WASD.
 
-You need to download stride to run this project, although it may even run without stride as all the libraries are distributed with the example itself. 
-
-You can install Stride from https://stride3d.net/
+You need to download stride to run this project, You can install Stride from https://stride3d.net/
