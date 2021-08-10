@@ -15,6 +15,8 @@ Clone the repo, build then run the `MiniExamples.DeterministicPhysicDemo` projec
 ## Controls
 This contains a super simple simulation setup, will start up SDL2 and bounce some boxes around.
 
+to run it open the file Example4-SDL.sln
+
 The following key bindings are set:
 * Ecs - Closes the program
 * ` - Sets simulation speed to 10
