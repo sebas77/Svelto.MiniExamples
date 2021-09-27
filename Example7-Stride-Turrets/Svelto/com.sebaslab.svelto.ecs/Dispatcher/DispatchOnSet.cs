@@ -2,32 +2,47 @@ using System;
 
 namespace Svelto.ECS
 {
+    /// <summary>
+    /// Reasons why unfortunately this cannot be a struct:
+    /// the user must remember to create interface with ref getters
+    /// ref getters cannot have set, while we sometimes use set to initialise values
+    /// the struct will be valid even if it has not ever been initialised
+    ///
+    /// 1 and 3 are possibly solvable, but 2 is a problem
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class DispatchOnSet<T>
     {
-        public DispatchOnSet(EGID senderID, Action<EGID, T> callback):this(senderID)
+        public DispatchOnSet
+        (EntityReference senderID, Action<EntityReference, T> callback, T initialValue = default(T)
+       , bool notifyImmediately = false)
         {
-            NotifyOnValueSet(callback);
+            _subscriber = callback;
+
+            if (notifyImmediately)
+                _subscriber(_senderID, initialValue);
+
+            _senderID = senderID;
+            _value    = initialValue;
         }
-        public DispatchOnSet(EGID senderID) { _senderID = senderID; }
 
         public T value
         {
             set
             {
-                _value = value;
-
                 if (_paused == false)
                     _subscriber(_senderID, value);
+
+                //all the subscribers relies on the actual value not being changed yet, as the second parameter
+                //is the new value
+                _value = value;
             }
+            get => _value;
         }
 
-        public void NotifyOnValueSet(Action<EGID, T> action)
+        public void SetValueWithoutNotify(in T value)
         {
-#if DEBUG && !PROFILE_SVELTO
-            DBC.ECS.Check.Require(_subscriber == null, $"{this.GetType().Name}: listener already registered");
-#endif
-            _subscriber = action;
-            _paused     = false;
+            _value = value;
         }
 
         public void StopNotify()
@@ -36,13 +51,20 @@ namespace Svelto.ECS
             _paused     = true;
         }
 
-        public void PauseNotify()  { _paused = true; }
-        public void ResumeNotify() { _paused = false; }
+        public void PauseNotify()
+        {
+            _paused = true;
+        }
 
-        protected T    _value;
-        readonly  EGID _senderID;
+        public void ResumeNotify()
+        {
+            _paused = false;
+        }
 
-        Action<EGID, T> _subscriber;
-        bool            _paused;
+        protected T               _value;
+        readonly  EntityReference _senderID;
+
+        Action<EntityReference, T> _subscriber;
+        bool                       _paused;
     }
 }

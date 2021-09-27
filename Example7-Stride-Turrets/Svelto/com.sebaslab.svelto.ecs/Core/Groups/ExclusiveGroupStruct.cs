@@ -9,6 +9,20 @@ namespace Svelto.ECS
     //the type doesn't implement IEqualityComparer, what implements it is a custom comparer
     public struct ExclusiveGroupStruct : IEquatable<ExclusiveGroupStruct>, IComparable<ExclusiveGroupStruct>
     {
+        public static readonly ExclusiveGroupStruct Invalid = default; //must stay here because of Burst
+
+        public ExclusiveGroupStruct(byte[] data, uint pos):this()
+        {
+            _id = (uint)(
+                data[pos]
+              | data[++pos] << 8
+              | data[++pos] << 16
+            );
+            _bytemask = (byte) (data[++pos] << 24);
+
+            DBC.ECS.Check.Ensure(_id < _globalId, "Invalid group ID deserialiased");
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override bool Equals(object obj)
         {
@@ -46,7 +60,7 @@ namespace Svelto.ECS
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool IsEnabled()
+        public readonly bool IsEnabled()
         {
             return (_bytemask & (byte)ExclusiveGroupBitmask.DISABLED_BIT) == 0;
         }
@@ -66,6 +80,20 @@ namespace Svelto.ECS
         public override string ToString()
         {
             return this.ToName();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator uint(ExclusiveGroupStruct groupStruct)
+        {
+            return groupStruct._id;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ExclusiveGroupStruct operator+(ExclusiveGroupStruct a, uint b)
+        {
+            var group = new ExclusiveGroupStruct {_id = a._id + b};
+
+            return @group;
         }
 
         internal static ExclusiveGroupStruct Generate(byte bitmask = 0)
@@ -95,32 +123,6 @@ namespace Svelto.ECS
         internal ExclusiveGroupStruct(uint groupID):this()
         {
             _id = groupID;
-        }
-
-        public ExclusiveGroupStruct(byte[] data, uint pos):this()
-        {
-            _id = (uint)(
-                            data[pos]
-                          | data[++pos] << 8
-                          | data[++pos] << 16
-                        );
-            _bytemask = (byte) (data[++pos] << 24);
-
-            DBC.ECS.Check.Ensure(_id < _globalId, "Invalid group ID deserialiased");
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator uint(ExclusiveGroupStruct groupStruct)
-        {
-            return groupStruct._id;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ExclusiveGroupStruct operator+(ExclusiveGroupStruct a, uint b)
-        {
-            var group = new ExclusiveGroupStruct {_id = a._id + b};
-
-            return @group;
         }
 
         [FieldOffset(0)] uint _id;

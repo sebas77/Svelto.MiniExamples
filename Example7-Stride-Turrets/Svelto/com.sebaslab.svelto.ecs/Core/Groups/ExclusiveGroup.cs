@@ -22,7 +22,7 @@ namespace Svelto.ECS
     ///To debug it use in your debug window: Svelto.ECS.Debugger.EGID.GetGroupNameFromId(groupID)
     public sealed class ExclusiveGroup
     {
-        public const uint MaxNumberOfExclusiveGroups = 2 << 20;
+        public const           uint                 MaxNumberOfExclusiveGroups = 2 << 20;
 
         public ExclusiveGroup(ExclusiveGroupBitmask bitmask = 0)
         {
@@ -100,81 +100,3 @@ namespace Svelto.ECS
         ExclusiveGroupStruct _group;
     }
 }
-
-#if future
-        public static void ConstructStaticGroups()
-        {
-            Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
-
-            // Assemblies or types aren't guaranteed to be returned in the same order,
-            // and I couldn't find proof that `GetTypes()` returns them in fixed order either,
-            // even for builds made with the exact same source code.
-            // So will sort reflection results by name before constructing groups.
-            var groupFields = new List<KeyValuePair<string, FieldInfo>>();
-
-            foreach (Assembly assembly in assemblies)
-            {
-                Type[] types = GetTypesSafe(assembly);
-
-                foreach (Type type in types)
-                {
-                    if (type == null || !type.IsClass)
-                    {
-                        continue;
-                    }
-
-                    // Groups defined as static members in static classes
-                    if (type.IsSealed && type.IsAbstract)
-                    {
-                        FieldInfo[] fields = type.GetFields();
-                        foreach(var field in fields)
-                        {
-                            if (field.IsStatic && typeof(ExclusiveGroup).IsAssignableFrom(field.FieldType))
-                            {
-                                groupFields.Add(new KeyValuePair<string, FieldInfo>($"{type.FullName}.{field.Name}", field));
-                            }
-                        }
-                    }
-                    // Groups defined as classes
-                    else if (type.BaseType != null
-                             && type.BaseType.IsGenericType
-                             && type.BaseType.GetGenericTypeDefinition() == typeof(ExclusiveGroup<>))
-                    {
-                        FieldInfo field = type.GetField("Group",
-                            BindingFlags.Static | BindingFlags.Public | BindingFlags.FlattenHierarchy);
-
-                        groupFields.Add(new KeyValuePair<string, FieldInfo>(type.FullName, field));
-                    }
-                }
-            }
-
-            groupFields.Sort((a, b) => string.CompareOrdinal(a.Key, b.Key));
-
-            for (int i = 0; i < groupFields.Count; ++i)
-            {
-                groupFields[i].Value.GetValue(null);
-#if DEBUG
-                var group = (ExclusiveGroup) groupFields[i].Value.GetValue(null);
-                groupNames[(uint) group] = groupFields[i].Key;
-#endif
-            }
-        }
-
-        static Type[] GetTypesSafe(Assembly assembly)
-        {
-            try
-            {
-                Type[] types = assembly.GetTypes();
-
-                return types;
-            }
-            catch (ReflectionTypeLoadException e)
-            {
-                return e.Types;
-            }
-        }
-
-#if DEBUG
-        static string[] groupNames = new string[ExclusiveGroup.MaxNumberOfExclusiveGroups];
-#endif
-#endif

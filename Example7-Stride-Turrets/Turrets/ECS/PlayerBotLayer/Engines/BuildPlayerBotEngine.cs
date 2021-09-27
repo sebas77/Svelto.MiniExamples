@@ -1,35 +1,33 @@
-using System;
 using Stride.Core.Mathematics;
 using Stride.Engine;
 
 namespace Svelto.ECS.MiniExamples.Turrets
 {
-    class BuildPlayerBotEngine : StartupScript, IEngine
+    class BuildPlayerBotEngine : IGetReadyEngine
     {
-        public BuildPlayerBotEngine(ECSStrideEntityManager ecsStrideEntityManager, IEntityFactory entityFactory)
+        public BuildPlayerBotEngine(ECSStrideEntityManager ecsStrideEntityManager, IEntityFactory entityFactory, SceneSystem sceneSystem)
         {
             _ecsStrideEntityManager = ecsStrideEntityManager;
-            _entityFactory         = entityFactory;
+            _entityFactory          = entityFactory;
+            _sceneSystem     = sceneSystem;
         }
-
-        public override void Start()
+        
+        public void Ready()
         {
-            var mainBot = Content.Load<Prefab>("StandsPrefabs/Hover");
-
-            var mainBotEntity    = mainBot.Entities[0];
-            var entityResourceID = _ecsStrideEntityManager.RegisterStrideEntity(mainBotEntity);
+            var mainBotPrefabID  = _ecsStrideEntityManager.LoadAndRegisterPrefab("StandsPrefabs/Hover", out _);
+            var entityResourceID = _ecsStrideEntityManager.InstantiateEntity(mainBotPrefabID, false);
+            var mainBotEntity    = _ecsStrideEntityManager.GetStrideEntity(entityResourceID);
 
             var init = _entityFactory.BuildEntity<PlayerBotEntityDescriptor>(entityResourceID, PlayerBotTag.BuildGroup);
             init.Init(new RotationComponent(Quaternion.Identity));
             init.Init(new ScalingComponent(new Vector3(0.3f, 0.3f, 0.3f)));
             init.Init(new DirectionComponent() { vector = Vector3.UnitX});
             
-            SceneSystem.SceneInstance.RootScene.Entities.Add(mainBotEntity);
-
-            mainBotEntity.Transform.UseTRS = false;
+            _sceneSystem.SceneInstance.RootScene.Entities.Add(mainBotEntity);
         }
 
         readonly ECSStrideEntityManager _ecsStrideEntityManager;
         readonly IEntityFactory         _entityFactory;
+        readonly SceneSystem            _sceneSystem;
     }
 }

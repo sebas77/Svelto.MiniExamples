@@ -1,10 +1,13 @@
 using Stride.Engine;
+using Svelto.Common.Internal;
 
 namespace Svelto.ECS.MiniExamples.Turrets
 {
-    class VelocityComputationEngine : SyncScript, IQueryingEntitiesEngine
+    class VelocityComputationEngine : IQueryingEntitiesEngine, IUpdateEngine
     {
-        public override void Update()
+        public string name => this.TypeName();
+        
+        public void Step(in float deltaTime)
         {
             var groups = entitiesDB.FindGroups<VelocityComponent, DirectionComponent, SpeedComponent>();
             foreach (var ((velocities, directions, speeds, count), _) in entitiesDB
@@ -17,7 +20,9 @@ namespace Svelto.ECS.MiniExamples.Turrets
             }
         }
 
-        public EntitiesDB entitiesDB { get; set; }
-        public void       Ready()    { }
+        public EntitiesDB entitiesDB            { get; set; }
+        public void       Ready()               { }
+
+        
     }
 }

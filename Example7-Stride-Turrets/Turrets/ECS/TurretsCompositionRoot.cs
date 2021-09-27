@@ -1,5 +1,7 @@
 using System;
-using Stride.Core.Serialization.Contents;
+using System.Reflection.Metadata.Ecma335;
+using System.Threading.Tasks;
+using Stride.Core;
 using Stride.Engine;
 using Stride.Games;
 using Svelto.ECS.Schedulers;
@@ -12,55 +14,70 @@ namespace Svelto.ECS.MiniExamples.Turrets
         {
             GameStarted += CreateCompositionRoot;
         }
-
+        
         void CreateCompositionRoot(object sender, EventArgs e)
-        { 
-             _scheduler   = new SimpleEntitiesSubmissionScheduler();
-             _enginesRoot = new EnginesRoot(_scheduler);
-            
-             var ecsStrideEntityManager  = new ECSStrideEntityManager();
-             var entityFactory           = _enginesRoot.GenerateEntityFactory();
-             var entityFunctions = _enginesRoot.GenerateEntityFunctions();
-            
-             Services.AddService(entityFactory);
-             Services.AddService(entityFunctions);
-             Services.AddService(ecsStrideEntityManager);
-             
-             var bulletFactory = new BulletFactory(ecsStrideEntityManager, entityFactory);
+        {
+            //Create a SimpleSubmission scheduler to take control over the entities submission ticking
+            _scheduler = new SimpleEntitiesSubmissionScheduler();
+            //create the engines root
+            _enginesRoot = new EnginesRoot(_scheduler);
+            //create the Manager that interfaces Stride Objects with Svelto Entities
+            _ecsStrideEntityManager = new ECSStrideEntityManager(Content);
 
-             //Player Context
-             AddEngine(new PlayerBotInputEngine());
-             AddEngine(new BuildPlayerBotEngine(ecsStrideEntityManager, entityFactory));
-            
-             //TurretsContext
-             AddEngine(new MoveTurretEngine());
-             AddEngine(new AimBotEngine());
-             AddEngine(new FireBotEngine(bulletFactory));
-             
-             //SimplePhysicContext
-             AddEngine(new VelocityComputationEngine());
-             AddEngine(new VelocityToPositionEngine());
-            
-             //TransformableContext
-             AddEngine(new LookAtEngine());
-             AddEngine(new ComputeTransformsEngine());
-             //HierarchicalTransformableContext
-             AddEngine(new ComputeHierarchicalTransformsEngine());
-             
-             //BulletsContext
-             AddEngine(new BulletSpawningEngine(bulletFactory, ecsStrideEntityManager));
-             AddEngine(new BulletLifeEngine(entityFunctions));
-            
-             //Stride Abstraction Layer
-             AddEngine(new SetTransformsEngine(ecsStrideEntityManager));
-            
+            var entityFactory   = _enginesRoot.GenerateEntityFactory();
+            var entityFunctions = _enginesRoot.GenerateEntityFunctions();
+
+            _mainEngineGroup = new TurretsMainEnginesGroup();
+
+            //Services is a simple Service Locator Provider. EntityFactory, EntityFunctions and ecsStrideEnttiyManager
+            //can be fetched by Stride systems through the service Locator once they are registered.
+            //There is a 1:1 relationship with the Game class and the Services, this means that if multiple
+            //engines roots per Game need to be used, a different approach may be necessary. 
+            Services.AddService(entityFactory);
+            Services.AddService(entityFunctions);
+            Services.AddService(_ecsStrideEntityManager);
+
             GameStarted -= CreateCompositionRoot;
         }
 
-        void AddEngine<T>(T engine) where T:ScriptComponent, IEngine 
+        void AddEngine<T>(T engine) where T : class, IGetReadyEngine
         {
-            Script.Add(engine);
             _enginesRoot.AddEngine(engine);
+            if (engine is IUpdateEngine updateEngine)
+                _mainEngineGroup.Add(updateEngine);
+        }
+
+        protected override void BeginRun()
+        {
+            var entityFactory   = _enginesRoot.GenerateEntityFactory();
+            var entityFunctions = _enginesRoot.GenerateEntityFunctions();
+
+            //SimplePhysicContext
+            AddEngine(new VelocityComputationEngine());
+            AddEngine(new VelocityToPositionEngine());
+
+            //TransformableContext
+            AddEngine(new LookAtEngine());
+            AddEngine(new ComputeTransformsEngine());
+            //HierarchicalTransformableContext
+            AddEngine(new ComputeHierarchicalTransformsEngine());
+
+            //Stride Abstraction Layer
+            AddEngine(new SetTransformsEngine(_ecsStrideEntityManager));
+
+            //Player Context
+            AddEngine(new PlayerBotInputEngine(this.Input));
+            AddEngine(new BuildPlayerBotEngine(_ecsStrideEntityManager, entityFactory, SceneSystem));
+
+            //BulletsContext
+            var bulletFactory = new BulletFactory(_ecsStrideEntityManager, entityFactory);
+            AddEngine(new BulletSpawningEngine(bulletFactory, _ecsStrideEntityManager, SceneSystem));
+            AddEngine(new BulletLifeEngine(entityFunctions));
+
+            //TurretsContext
+            AddEngine(new MoveTurretEngine());
+            AddEngine(new AimBotEngine());
+            AddEngine(new FireBotEngine(bulletFactory));
         }
 
         protected override void Update(GameTime gameTime)
@@ -69,9 +86,20 @@ namespace Svelto.ECS.MiniExamples.Turrets
             _scheduler.SubmitEntities();
             //run stride logic
             base.Update(gameTime);
+
+            _mainEngineGroup.Step(gameTime.Elapsed.Milliseconds);
+        }
+
+        protected override void Destroy()
+        {
+            _ecsStrideEntityManager.Dispose();
         }
 
         EnginesRoot                       _enginesRoot;
         SimpleEntitiesSubmissionScheduler _scheduler;
+        TurretsMainEnginesGroup           _mainEngineGroup;
+        ECSStrideEntityManager            _ecsStrideEntityManager;
+
+        class TurretsMainEnginesGroup : UnsortedEnginesGroup<IUpdateEngine, float> { }
     }
 }

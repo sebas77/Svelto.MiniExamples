@@ -14,7 +14,7 @@ namespace Svelto.ECS
     ///     one only
     ///     - you want to communicate between EnginesRoots
     /// </summary>
-    internal struct EntitiesStreams : IDisposable
+    struct EntitiesStreams : IDisposable
     {
         internal Consumer<T> GenerateConsumer<T>(string name, uint capacity)
             where T : unmanaged, IEntityComponent
@@ -34,16 +34,6 @@ namespace Svelto.ECS
             var typeSafeStream = (EntityStream<T>) _streams[TypeRefWrapper<T>.wrapper];
             return typeSafeStream.GenerateConsumer(group, name, capacity);
         }
-#if later
-        public ThreadSafeNativeEntityStream<T> GenerateThreadSafePublisher<T>(EntitiesDB entitiesDB) where T: unmanaged, IEntityComponent
-        {
-            var threadSafeNativeEntityStream = new ThreadSafeNativeEntityStream<T>(entitiesDB);
-            
-            _streams[TypeRefWrapper<T>.wrapper] = threadSafeNativeEntityStream;
-
-            return threadSafeNativeEntityStream;
-        }
-#endif
 
         internal void PublishEntity<T>(ref T entity, EGID egid) where T : unmanaged, IEntityComponent
         {

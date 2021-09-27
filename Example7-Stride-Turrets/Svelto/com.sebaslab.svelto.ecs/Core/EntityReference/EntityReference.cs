@@ -57,7 +57,7 @@ namespace Svelto.ECS
         {
             DBC.ECS.Check.Require(this != Invalid, "Invalid Reference Used");
 
-            return entitiesDB.GetEntityLocator().GetEGID(this);
+            return entitiesDB.GetEGID(this);
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -73,6 +73,6 @@ namespace Svelto.ECS
             return (ulong)version << 32 | ((ulong)uniqueId & 0xFFFFFFFF);
         }
 
-        public static EntityReference Invalid => new EntityReference(0, 0);
+        public static EntityReference Invalid => default;
     }
 }

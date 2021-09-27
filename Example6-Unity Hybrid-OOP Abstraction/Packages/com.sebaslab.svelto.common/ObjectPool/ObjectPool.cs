@@ -1,6 +1,9 @@
 using System;
-using System.Collections.Generic;
 using Svelto.DataStructures;
+#if DEBUG && !PROFILE_SVELTO
+using System.Collections.Generic;
+#endif
+
 
 namespace Svelto.ObjectPool
 {

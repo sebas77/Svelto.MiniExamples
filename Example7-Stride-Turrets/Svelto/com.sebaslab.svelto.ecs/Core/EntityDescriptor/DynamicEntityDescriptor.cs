@@ -7,6 +7,8 @@ namespace Svelto.ECS
     /// DynamicEntityDescriptor can be used to add entity components to an existing EntityDescriptor that act as flags,
     /// at building time.
     /// This method allocates, so it shouldn't be abused
+    /// TODO:Unit test cases where there could be duplicates of components, especially EntityInfoComponent.
+    /// Test DynamicED of DynamicED
     /// </summary>
     /// <typeparam name="TType"></typeparam>
     public struct DynamicEntityDescriptor<TType> : IDynamicEntityDescriptor where TType : IEntityDescriptor, new()
@@ -16,16 +18,24 @@ namespace Svelto.ECS
             var defaultEntities = EntityDescriptorTemplate<TType>.descriptor.componentsToBuild;
             var length          = defaultEntities.Length;
 
-            _componentsToBuild = new IComponentBuilder[length + 1];
-
-            Array.Copy(defaultEntities, 0, _componentsToBuild, 0, length);
-
-            //assign it after otherwise the previous copy will overwrite the value in case the item
-            //is already present
-            _componentsToBuild[length] = new ComponentBuilder<EntityInfoComponent>(new EntityInfoComponent
+            if (FetchEntityInfoComponent(defaultEntities) == -1)
             {
-                componentsToBuild = _componentsToBuild
-            });
+                _componentsToBuild = new IComponentBuilder[length + 1];
+
+                Array.Copy(defaultEntities, 0, _componentsToBuild, 0, length);
+                //assign it after otherwise the previous copy will overwrite the value in case the item
+                //is already present
+                _componentsToBuild[length] = new ComponentBuilder<EntityInfoComponent>(new EntityInfoComponent
+                {
+                    componentsToBuild = _componentsToBuild
+                });
+            }
+            else
+            {
+                _componentsToBuild = new IComponentBuilder[length];
+
+                Array.Copy(defaultEntities, 0, _componentsToBuild, 0, length);
+            }
         }
 
         public DynamicEntityDescriptor(IComponentBuilder[] extraEntityBuilders) : this(true)
@@ -94,8 +104,8 @@ namespace Svelto.ECS
         /// <returns></returns>
         IComponentBuilder[] Construct(int extraComponentsLength, IComponentBuilder[] extraComponents)
         {
-            static IComponentBuilder[] MergeLists
-                (IComponentBuilder[] startingComponents, IComponentBuilder[] extraComponents, int extraComponentsLength)
+            IComponentBuilder[] MergeLists
+                (IComponentBuilder[] startingComponents, IComponentBuilder[] newComponents, int newComponentsLength)
             {
                 var startComponents =
                     new FasterDictionary<RefWrapper<IComponentBuilder, ComponentBuilderComparer>, IComponentBuilder>();
@@ -107,28 +117,30 @@ namespace Svelto.ECS
                             [new RefWrapper<IComponentBuilder, ComponentBuilderComparer>(startingComponents[i])] =
                         startingComponents[i];
 
-                for (uint i = 0; i < extraComponentsLength; i++)
-                    xtraComponents[new RefWrapper<IComponentBuilder, ComponentBuilderComparer>(extraComponents[i])] =
-                        extraComponents[i];
+                for (uint i = 0; i < newComponentsLength; i++)
+                    xtraComponents[new RefWrapper<IComponentBuilder, ComponentBuilderComparer>(newComponents[i])] =
+                        newComponents[i];
 
                 xtraComponents.Exclude(startComponents);
 
-                if (extraComponentsLength != xtraComponents.count)
+                if (newComponentsLength != xtraComponents.count)
                 {
-                    extraComponentsLength = xtraComponents.count;
+                    newComponentsLength = xtraComponents.count;
 
                     uint index = 0;
                     foreach (var couple in xtraComponents)
-                        extraComponents[index++] = couple.Key.value;
+                        newComponents[index++] = couple.Key.value;
                 }
 
                 IComponentBuilder[] componentBuilders =
-                    new IComponentBuilder[extraComponentsLength + startingComponents.Length];
+                    new IComponentBuilder[newComponentsLength + startingComponents.Length];
 
                 Array.Copy(startingComponents, 0, componentBuilders, 0, startingComponents.Length);
-                Array.Copy(extraComponents, 0, componentBuilders, startingComponents.Length, extraComponentsLength);
+                Array.Copy(newComponents, 0, componentBuilders, startingComponents.Length, newComponentsLength);
 
                 var entityInfoComponentIndex = FetchEntityInfoComponent(componentBuilders);
+                
+                DBC.ECS.Check.Assert(entityInfoComponentIndex != -1);
 
                 componentBuilders[entityInfoComponentIndex] = new ComponentBuilder<EntityInfoComponent>(
                     new EntityInfoComponent
@@ -137,26 +149,6 @@ namespace Svelto.ECS
                     });
 
                 return componentBuilders;
-            }
-
-            static int FetchEntityInfoComponent(IComponentBuilder[] defaultEntities)
-            {
-                int length = defaultEntities.Length;
-                int index  = -1;
-
-                for (var i = 0; i < length; i++)
-                {
-                    //the special entity already exists
-                    if (defaultEntities[i].GetEntityComponentType() == ComponentBuilderUtilities.ENTITY_INFO_COMPONENT)
-                    {
-                        index = i;
-                        break;
-                    }
-                }
-
-                DBC.ECS.Check.Ensure(index != -1);
-
-                return index;
             }
 
             if (extraComponentsLength == 0)
@@ -168,6 +160,24 @@ namespace Svelto.ECS
             Array.Copy(extraComponents, safeCopyOfExtraComponents, extraComponentsLength);
 
             return MergeLists(_componentsToBuild, safeCopyOfExtraComponents, extraComponentsLength);
+        }
+
+        static int FetchEntityInfoComponent(IComponentBuilder[] defaultEntities)
+        {
+            int length = defaultEntities.Length;
+            int index  = -1;
+
+            for (var i = 0; i < length; i++)
+            {
+                //the special entity already exists
+                if (defaultEntities[i].GetEntityComponentType() == ComponentBuilderUtilities.ENTITY_INFO_COMPONENT)
+                {
+                    index = i;
+                    break;
+                }
+            }
+
+            return index;
         }
 
         public IComponentBuilder[] componentsToBuild => _componentsToBuild;

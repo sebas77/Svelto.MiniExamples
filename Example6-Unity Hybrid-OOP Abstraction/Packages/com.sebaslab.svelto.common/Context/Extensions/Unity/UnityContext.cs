@@ -18,22 +18,11 @@ namespace Svelto.Context
             _applicationRoot = new T();
 
             _applicationRoot.OnContextCreated(this);
-
-            Application.wantsToQuit += IsQuitting;
         }
         
-        bool IsQuitting() 
-        { 
-            _isQuitting = true;
-            _applicationRoot.OnContextDestroyed();
-            
-            return true;
-        }
-
         void OnDestroy()
         {
-            if (_isQuitting == false)
-                _applicationRoot.OnContextDestroyed();
+            _applicationRoot.OnContextDestroyed(_hasBeenInitialised);
         }
 
         void Start()
@@ -47,11 +36,13 @@ namespace Svelto.Context
             //let's wait until the end of the frame, so we are sure that all the awake and starts are called
             yield return new WaitForEndOfFrame();
 
+            _hasBeenInitialised = true;
+
             _applicationRoot.OnContextInitialized(this);
         }
 
         T    _applicationRoot;
-        bool _isQuitting;
+        bool _hasBeenInitialised;
     }
 }
 #endif

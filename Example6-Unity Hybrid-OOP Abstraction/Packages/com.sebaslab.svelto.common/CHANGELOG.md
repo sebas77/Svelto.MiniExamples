@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file. I created this file with Svelto.Common version 3.1.
 
+## [3.1.3]
+
+### Fixed
+
+* fixed serious mistake in the RefWrapper equality logic that could affect certains kind of keys in the new FasterDictionary (most notable strings)
+
 ## [3.1.0]
 
 ### Changed

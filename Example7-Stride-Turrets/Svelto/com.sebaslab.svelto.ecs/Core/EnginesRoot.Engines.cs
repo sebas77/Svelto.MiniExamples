@@ -7,8 +7,14 @@ using Svelto.ECS.Schedulers;
 
 namespace Svelto.ECS
 {
-    public sealed partial class EnginesRoot
+    public partial class EnginesRoot
     {
+        static EnginesRoot()
+        {
+            GroupHashMap.Init();
+            SerializationDescriptorMap.Init();
+        }
+
         /// <summary>
         ///     Engines root contextualize your engines and entities. You don't need to limit yourself to one EngineRoot
         ///     as multiple engines root could promote separation of scopes. The EntitySubmissionScheduler checks
@@ -19,13 +25,13 @@ namespace Svelto.ECS
         /// </summary>
         public EnginesRoot(EntitiesSubmissionScheduler entitiesComponentScheduler)
         {
-            _entitiesOperations            = new FasterDictionary<ulong, EntitySubmitOperation>();
+            _entitiesOperations = new FasterDictionary<ulong, EntitySubmitOperation>();
 #if UNITY_NATIVE //because of the thread count, ATM this is only for unity            
-            _nativeSwapOperationQueue   = new DataStructures.AtomicNativeBags(Allocator.Persistent);
+            _nativeSwapOperationQueue = new DataStructures.AtomicNativeBags(Allocator.Persistent);
             _nativeRemoveOperationQueue = new DataStructures.AtomicNativeBags(Allocator.Persistent);
-            _nativeAddOperationQueue    = new DataStructures.AtomicNativeBags(Allocator.Persistent);
-#endif            
-            serializationDescriptorMap     = new SerializationDescriptorMap();
+            _nativeAddOperationQueue = new DataStructures.AtomicNativeBags(Allocator.Persistent);
+#endif
+            _serializationDescriptorMap    = new SerializationDescriptorMap();
             _maxNumberOfOperationsPerFrame = uint.MaxValue;
             _reactiveEnginesAddRemove      = new FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer>>();
             _reactiveEnginesAddRemoveOnDispose =
@@ -36,17 +42,18 @@ namespace Svelto.ECS
             _enginesTypeSet              = new HashSet<Type>();
             _disposableEngines           = new FasterList<IDisposable>();
             _transientEntitiesOperations = new FasterList<EntitySubmitOperation>();
-
             _groupEntityComponentsDB =
                 new FasterDictionary<ExclusiveGroupStruct, FasterDictionary<RefWrapperType, ITypeSafeDictionary>>();
             _groupsPerEntity =
                 new FasterDictionary<RefWrapperType, FasterDictionary<ExclusiveGroupStruct, ITypeSafeDictionary>>();
             _groupedEntityToAdd = new DoubleBufferedEntitiesToAdd();
-            _entityStreams = EntitiesStreams.Create();
             _groupFilters =
                 new FasterDictionary<RefWrapperType, FasterDictionary<ExclusiveGroupStruct, GroupFilters>>();
+
+            _entityStreams = EntitiesStreams.Create();
+            
             _entityLocator.InitEntityReferenceMap();
-            _entitiesDB = new EntitiesDB(this,_entityLocator);
+            _entitiesDB = new EntitiesDB(this, _entityLocator);
 
             scheduler        = entitiesComponentScheduler;
             scheduler.onTick = new EntitiesSubmitter(this);
@@ -56,10 +63,10 @@ namespace Svelto.ECS
         }
 
         public EnginesRoot
-            (EntitiesSubmissionScheduler entitiesComponentScheduler, bool isDeserializationOnly) :
-            this(entitiesComponentScheduler)
+            (EntitiesSubmissionScheduler entitiesComponentScheduler, bool enginesWaitForReady) : this(
+            entitiesComponentScheduler)
         {
-            _isDeserializationOnly = isDeserializationOnly;
+            _enginesWaitForReady = enginesWaitForReady;
         }
 
         public EntitiesSubmissionScheduler scheduler { get; }
@@ -135,7 +142,7 @@ namespace Svelto.ECS
                 _groupedEntityToAdd.Dispose();
 
                 _entityLocator.DisposeEntityReferenceMap();
-                
+
                 _entityStreams.Dispose();
                 scheduler.Dispose();
             }
@@ -174,15 +181,27 @@ namespace Svelto.ECS
                     _disposableEngines.Add(engine as IDisposable);
 
                 if (engine is IQueryingEntitiesEngine queryableEntityComponentEngine)
-                {
                     queryableEntityComponentEngine.entitiesDB = _entitiesDB;
-                    queryableEntityComponentEngine.Ready();
-                }
+
+                if (_enginesWaitForReady == false && engine is IGetReadyEngine getReadyEngine)
+                    getReadyEngine.Ready();
             }
             catch (Exception e)
             {
                 throw new ECSException("Code crashed while adding engine ".FastConcat(engine.GetType().ToString(), " ")
                                      , e);
+            }
+        }
+
+        public void Ready()
+        {
+            DBC.ECS.Check.Require(_enginesWaitForReady == true
+                                , "The engine has not been initialise to wait for an external ready trigger");
+
+            foreach (var engine in _enginesSet)
+            {
+                if (engine is IGetReadyEngine getReadyEngine)
+                    getReadyEngine.Ready();
             }
         }
 
@@ -236,6 +255,7 @@ namespace Svelto.ECS
         }
 
         internal bool                    _isDisposing;
+        readonly bool                    _enginesWaitForReady;
         readonly FasterList<IDisposable> _disposableEngines;
         readonly FasterList<IEngine>     _enginesSet;
         readonly HashSet<Type>           _enginesTypeSet;
@@ -249,10 +269,9 @@ namespace Svelto.ECS
         {
             public EntitiesSubmitter(EnginesRoot enginesRoot) : this()
             {
-                _enginesRoot = new Svelto.DataStructures.WeakReference<EnginesRoot>(enginesRoot);
-                _privateSubmitEntities =
-                    _enginesRoot.Target.SingleSubmission(new PlatformProfiler());
-                submitEntities = Invoke(); //this must be last to capture all the variables
+                _enginesRoot           = new Svelto.DataStructures.WeakReference<EnginesRoot>(enginesRoot);
+                _privateSubmitEntities = _enginesRoot.Target.SingleSubmission(new PlatformProfiler());
+                submitEntities         = Invoke(); //this must be last to capture all the variables
             }
 
             IEnumerator<bool> Invoke()

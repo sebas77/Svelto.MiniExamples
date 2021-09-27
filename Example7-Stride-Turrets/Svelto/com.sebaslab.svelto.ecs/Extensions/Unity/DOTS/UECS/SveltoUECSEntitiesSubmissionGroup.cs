@@ -202,7 +202,7 @@ namespace Svelto.ECS.Extensions.Unity
             {
                 NativeEGIDMultiMapper<UECSEntityComponent> mapper =
                     entitiesDB.QueryNativeMappedEntities<UECSEntityComponent>(
-                        entitiesDB.FindGroups<UECSEntityComponent>());
+                        entitiesDB.FindGroups<UECSEntityComponent>(), Allocator.TempJob);
 
                 Entities.ForEach((Entity id, ref UpdateUECSEntityAfterSubmission egidComponent) =>
                 {

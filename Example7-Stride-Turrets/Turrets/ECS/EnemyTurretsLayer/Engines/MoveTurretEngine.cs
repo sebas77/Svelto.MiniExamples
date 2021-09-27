@@ -1,18 +1,23 @@
 using System;
 using Stride.Core.Mathematics;
 using Stride.Engine;
+using Svelto.Common.Internal;
 
 namespace Svelto.ECS.MiniExamples.Turrets
 {
-    public class MoveTurretEngine : SyncScript, IQueryingEntitiesEngine
+    public class MoveTurretEngine : IQueryingEntitiesEngine, IUpdateEngine
     {
         public EntitiesDB entitiesDB { get; set; }
 
         public void Ready() { }
 
-        public override void Update()
+        public string name => this.TypeName();
+        
+        public void Step(in float deltaTime)
         {
-            var   updateTimeFrameCount = ((Game.UpdateTime.Total.TotalMilliseconds % 5000.0f) / 5000.0f) * Math.PI * 2;
+            _totalTime += deltaTime;
+            
+            var   updateTimeFrameCount = ((_totalTime % 5000.0f) / 5000.0f) * Math.PI * 2.0f;
             float x                    = (float) (0.3f * Math.Cos(updateTimeFrameCount));
             float y                    = (float) (0.3f * Math.Sin(updateTimeFrameCount));
 
@@ -25,5 +30,7 @@ namespace Svelto.ECS.MiniExamples.Turrets
                 }
             }
         }
+
+        float _totalTime;
     }
 }

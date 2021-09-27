@@ -1,6 +1,4 @@
 using Stride.Core.Mathematics;
-using Stride.Core.Serialization.Contents;
-using Stride.Engine;
 
 namespace Svelto.ECS.MiniExamples.Turrets
 {
@@ -13,21 +11,16 @@ namespace Svelto.ECS.MiniExamples.Turrets
             _factory                = factory;
         }
 
-        public void Init(IContentManager contentManager)
+        public void LoadBullet()
         {
-            var prefab = contentManager.Load<Prefab>("Bullet");
+            _bulletPrefabID = _ecsStrideEntityManager.LoadAndRegisterPrefab("Bullet", out var turretStrideEntityTransform);
 
-            _bulletPrefab = prefab.Entities[0];
-
-            var turretStrideEntityTransform = _bulletPrefab.Transform;
-
-            turretStrideEntityTransform.LocalMatrix.Decompose(out _bulletScaling, out Quaternion _, out _);
+            turretStrideEntityTransform.Decompose(out _bulletScaling, out Quaternion _, out _);
         }
 
         public EntityInitializer CreateBullet()
         {
-            var bullet           = _bulletPrefab.Clone();
-            var entityResourceID = _ecsStrideEntityManager.RegisterStrideEntity(bullet);
+            var entityResourceID = _ecsStrideEntityManager.InstantiateEntity(_bulletPrefabID, false);
             var init             = _factory.BuildEntity<BulletEntityDescriptor>(entityResourceID, BulletTag.BuildGroup);
 
             init.Init(new ScalingComponent()
@@ -35,15 +28,13 @@ namespace Svelto.ECS.MiniExamples.Turrets
                 scaling = _bulletScaling
             });
 
-            bullet.Transform.UseTRS = false;
-
             return init;
         }
 
         readonly ECSStrideEntityManager _ecsStrideEntityManager;
-        Entity                          _bulletPrefab;
         readonly IEntityFactory         _factory;
         Vector3                         _bulletScaling;
+        uint                            _bulletPrefabID;
     }
 
     public interface IBulletFactory

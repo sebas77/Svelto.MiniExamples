@@ -5,7 +5,7 @@ namespace Svelto.ECS.MiniExamples.Turrets
     /// <summary>
     /// This may evolve in something similar to the GenericEntityDescriptorHolder if makes sense
     /// </summary>
-    [SveltoEntityComponentProcessorAttribute(typeof(SveltoComponentProcessor))]
+    [SveltoEntityComponentProcessorAttribute(typeof(TurretEntityHolderComponentProcessor))]
     public class TurretEntityHolder : ScriptComponent
     {
         public TurretBaseEntityDescriptor GetDescriptor()

@@ -6,8 +6,8 @@ using Svelto.ECS.Internal;
 namespace Svelto.ECS
 {
     /// <summary>
-    /// Note: does mono devirtualize sealed classes? If so it could be worth to use TypeSafeDictionary instead of
-    /// the interface 
+    /// Todo: revaluate this struct. Why did I introduce it? Shouldn't always be the equivalent of doing
+    /// QueryEntity? 
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public readonly struct EGIDMapper<T>: IEGIDMapper where T : struct, IEntityComponent

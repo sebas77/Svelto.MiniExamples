@@ -1,15 +1,18 @@
 using Stride.Core.Mathematics;
 using Stride.Engine;
+using Svelto.Common.Internal;
 
 namespace Svelto.ECS.MiniExamples.Turrets
 {
-    public class ComputeTransformsEngine : SyncScript, IQueryingEntitiesEngine
+    public class ComputeTransformsEngine : IQueryingEntitiesEngine, IUpdateEngine
     {
         public EntitiesDB entitiesDB { get; set; }
 
         public void Ready() { }
 
-        public override void Update()
+        public string name => this.TypeName();
+        
+        public void Step(in float deltaTime)
         {
             var groups =
                 entitiesDB.FindGroups<PositionComponent, ScalingComponent, RotationComponent, MatrixComponent>();

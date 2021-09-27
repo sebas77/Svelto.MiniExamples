@@ -341,36 +341,36 @@ namespace Svelto.ECS
             //search for the indexed entities in the group
             return entitiesInGroupPerType.TryGetValue(new RefWrapperType(type), out typeSafeDictionary);
         }
-
-        internal bool FindIndex(uint entityID, ExclusiveGroupStruct @group, Type type, out uint index)
-        {
-            EGID entityGID = new EGID(entityID, @group);
-
-            index = default;
-
-            if (UnsafeQueryEntityDictionary(@group, type, out var safeDictionary) == false)
-                return false;
-
-            if (safeDictionary.TryFindIndex(entityGID.entityID, out index) == false)
-                return false;
-
-            return true;
-        }
-
-        internal uint GetIndex(uint entityID, ExclusiveGroupStruct @group, Type type)
-        {
-            EGID entityGID = new EGID(entityID, @group);
-
-            if (UnsafeQueryEntityDictionary(@group, type, out var safeDictionary) == false)
-            {
-                throw new EntityNotFoundException(entityGID, type);
-            }
-
-            if (safeDictionary.TryFindIndex(entityGID.entityID, out var index) == false)
-                throw new EntityNotFoundException(entityGID, type);
-
-            return index;
-        }
+        
+        // internal bool FindIndex(uint entityID, ExclusiveGroupStruct @group, Type type, out uint index)
+        // {
+        //     EGID entityGID = new EGID(entityID, @group);
+        //
+        //     index = default;
+        //
+        //     if (UnsafeQueryEntityDictionary(@group, type, out var safeDictionary) == false)
+        //         return false;
+        //
+        //     if (safeDictionary.TryFindIndex(entityGID.entityID, out index) == false)
+        //         return false;
+        //
+        //     return true;
+        // }
+        //
+        // internal uint GetIndex(uint entityID, ExclusiveGroupStruct @group, Type type)
+        // {
+        //     EGID entityGID = new EGID(entityID, @group);
+        //
+        //     if (UnsafeQueryEntityDictionary(@group, type, out var safeDictionary) == false)
+        //     {
+        //         throw new EntityNotFoundException(entityGID, type);
+        //     }
+        //
+        //     if (safeDictionary.TryFindIndex(entityGID.entityID, out var index) == false)
+        //         throw new EntityNotFoundException(entityGID, type);
+        //
+        //     return index;
+        // }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         static IBuffer<T> RetrieveEmptyEntityComponentArray<T>() where T : struct, IEntityComponent

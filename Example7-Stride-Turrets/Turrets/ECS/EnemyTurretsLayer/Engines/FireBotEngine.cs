@@ -1,23 +1,26 @@
 using System;
 using Stride.Core.Mathematics;
 using Stride.Engine;
+using Svelto.Common.Internal;
 
 namespace Svelto.ECS.MiniExamples.Turrets
 {
-    public class FireBotEngine : SyncScript, IQueryingEntitiesEngine
+    public class FireBotEngine : IQueryingEntitiesEngine, IUpdateEngine
     {
         public FireBotEngine(IBulletFactory bulletFactory) { _bulletFactory = bulletFactory; }
         public EntitiesDB entitiesDB { get; set; }
 
         public void Ready() { }
 
-        public override void Update()
+        public string name => this.TypeName();
+        
+        public void Step(in float deltaTime)
         {
             foreach (var ((shooting, directions, matrices, count), _) in entitiesDB
                .QueryEntities<ShootingComponent, LookAtComponent, MatrixComponent>(BotTag.Groups))
                 for (var i = 0; i < count; i++)
                 {
-                    shooting[i].time += (float)Game.UpdateTime.Elapsed.TotalSeconds;   
+                    shooting[i].time += (float)deltaTime / 1000.0f;   
                     if (shooting[i].time > shooting[i].randomTime)
                     {
                         var init = _bulletFactory.CreateBullet();

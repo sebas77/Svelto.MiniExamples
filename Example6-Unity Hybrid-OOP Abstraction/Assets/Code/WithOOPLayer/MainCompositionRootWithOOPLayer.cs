@@ -10,10 +10,10 @@ namespace Svelto.ECS.Example.OOPAbstraction.WithOOPLayer
     {
         public void OnContextCreated<T>(T contextHolder) { }
 
-        public void OnContextDestroyed()
+        public void OnContextDestroyed(bool hasBeenInitialised)
         {
-            //final clean up
-            _enginesRoot?.Dispose();
+            if (hasBeenInitialised)
+                _enginesRoot.Dispose();
         }
 
         public void OnContextInitialized<T>(T contextHolder)

@@ -159,7 +159,7 @@ namespace Svelto.DataStructures.Experimental
         }
 
         readonly NativeStrategy<T>   _dense; //Dense set of elements
-        readonly NativeStrategy<int> _sparse; //Map of elements to dense set indices
+        readonly NativeStrategy<int> _sparse; //Map of elements to dense set indices //Should this be a bitset?
         int                          _count;
     }
 }

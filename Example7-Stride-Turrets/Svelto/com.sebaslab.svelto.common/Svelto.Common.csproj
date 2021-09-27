@@ -3,7 +3,7 @@
         <AssemblyName>Svelto.Common</AssemblyName>
         <LangVersion>8</LangVersion>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <TargetFramework>netstandard2.0</TargetFramework>
+        <TargetFramework>netstandard2.1</TargetFramework>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -21,7 +21,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="System.Memory" Version="4.5.2" />
+        <PackageReference Include="System.Memory" Version="4.5.4" />
         <None Remove="**\*.meta" />
     </ItemGroup>
 </Project>

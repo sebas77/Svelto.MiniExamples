@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 #pragma warning disable 660,661
@@ -14,8 +15,6 @@ namespace Svelto.ECS
         [FieldOffset(4)] public readonly ExclusiveGroupStruct groupID;
         [FieldOffset(0)]        readonly ulong                _GID;
 
-        public static readonly EGID Empty = new EGID();
-        
         public static bool operator ==(EGID obj1, EGID obj2)
         {
             return obj1._GID == obj2._GID;
@@ -28,6 +27,11 @@ namespace Svelto.ECS
 
         public EGID(uint entityID, ExclusiveGroupStruct groupID) : this()
         {
+#if DEBUG && !PROFILE_SVELTO            
+            if (groupID == (ExclusiveGroupStruct)default)
+             throw new Exception("Trying to use a not initialised group ID");
+#endif            
+            
             _GID = MAKE_GLOBAL_ID(entityID, (uint) groupID);
         }
         
@@ -79,6 +83,12 @@ namespace Svelto.ECS
             var value = groupID.ToName();
             
             return "id ".FastConcat(entityID).FastConcat(" group ").FastConcat(value);
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public EntityReference ToEntityReference(EntitiesDB entitiesDB)
+        {
+            return entitiesDB.GetEntityReference(this);
         }
     }
 }

@@ -4,6 +4,9 @@
         <LangVersion>latest</LangVersion>
         <RootNamespace>Svelto.ECS.MiniExamples.Turrets</RootNamespace>
     </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+      <PlatformTarget>x64</PlatformTarget>
+    </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="Stride.Engine" Version="4.1.0.1459-beta" />
         <PackageReference Include="Stride.Video" Version="4.1.0.1459-beta" />

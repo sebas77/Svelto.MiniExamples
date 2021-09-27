@@ -1,3 +1,4 @@
+using System;
 using Svelto.ECS.Hybrid;
 using UnityEngine;
 
@@ -15,7 +16,7 @@ namespace Svelto.ECS.Example.OOPAbstraction.EntityViewComponents
 
         public ValueReference<ITransformImplementor> parent
         {
-            set => transform.SetParent(((TransformImplementor) value).transform, false);
+            set => transform.SetParent(value.Convert(this).transform, false);
         }
     }
 }

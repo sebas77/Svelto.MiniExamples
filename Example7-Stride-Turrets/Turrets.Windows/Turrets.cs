@@ -1,5 +1,3 @@
-using Stride.Engine;
-
 namespace Svelto.ECS.MiniExamples.Turrets
 {
     static class Turrets

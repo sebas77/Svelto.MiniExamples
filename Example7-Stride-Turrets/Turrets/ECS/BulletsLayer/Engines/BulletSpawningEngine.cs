@@ -1,31 +1,35 @@
-using System.Threading.Tasks;
 using Stride.Engine;
 
 namespace Svelto.ECS.MiniExamples.Turrets
 {
-    public class BulletSpawningEngine : StartupScript, IReactOnAddAndRemove<BulletComponent>
+    public class BulletSpawningEngine : IGetReadyEngine, IReactOnAddAndRemove<BulletComponent>
     {
-        public BulletSpawningEngine(BulletFactory bulletFactory, ECSStrideEntityManager ecsStrideEntityManager)
+        public BulletSpawningEngine
+            (BulletFactory bulletFactory, ECSStrideEntityManager ecsStrideEntityManager, SceneSystem sceneSystem)
         {
             _bulletFactory          = bulletFactory;
             _ecsStrideEntityManager = ecsStrideEntityManager;
+            _sceneSystem            = sceneSystem;
         }
 
-        public override void Start() { _bulletFactory.Init(Content); }
+        public void Ready()
+        {
+            _bulletFactory.LoadBullet();
+        }
 
         public void Add(ref BulletComponent entityComponent, EGID egid)
         {
-            SceneSystem.SceneInstance.RootScene.Entities.Add(
-                _ecsStrideEntityManager.GetStrideEntity(egid.entityID));
+            _sceneSystem.SceneInstance.RootScene.Entities.Add(_ecsStrideEntityManager.GetStrideEntity(egid.entityID));
         }
 
         public void Remove(ref BulletComponent entityComponent, EGID egid)
         {
-            SceneSystem.SceneInstance.RootScene.Entities.Remove(
+            _sceneSystem.SceneInstance.RootScene.Entities.Remove(
                 _ecsStrideEntityManager.GetStrideEntity(egid.entityID));
         }
 
         readonly BulletFactory          _bulletFactory;
         readonly ECSStrideEntityManager _ecsStrideEntityManager;
+        readonly SceneSystem            _sceneSystem;
     }
 }

@@ -51,6 +51,27 @@ namespace Svelto.ECS
 
             return false;
         }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool TryGetEntity<T>(this EntitiesDB entitiesDb, uint entityID, ExclusiveGroupStruct @group, out T value)
+            where T : unmanaged, IEntityComponent
+        {
+            if (TryQueryEntitiesAndIndex<T>(entitiesDb, entityID, group, out var index, out var array))
+            {
+                value = array[index];
+                return true;
+            }
+
+            value = default;
+            return false;
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool TryGetEntity<T>(this EntitiesDB entitiesDb, EGID egid, out T value)
+            where T : unmanaged, IEntityComponent
+        {
+            return TryGetEntity<T>(entitiesDb, egid.entityID, egid.groupID, out value);
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         static bool QueryEntitiesAndIndexInternal<T>
@@ -128,29 +149,6 @@ namespace Svelto.ECS
 
             array = default;
             return false;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Native.EGIDMultiMapper<T> QueryMappedEntities<T>
-            (this EntitiesDB entitiesDb, LocalFasterReadOnlyList<ExclusiveGroupStruct> groups)
-            where T : unmanaged, IEntityComponent
-        {
-            var dictionary = new SveltoDictionary<ExclusiveGroupStruct, //key 
-                SveltoDictionary<uint, T, NativeStrategy<SveltoDictionaryNode<uint>>, NativeStrategy<T>,
-                    NativeStrategy<int>>, //value 
-                ManagedStrategy<SveltoDictionaryNode<ExclusiveGroupStruct>>, //strategy to store the key
-                ManagedStrategy<SveltoDictionary<uint, T, NativeStrategy<SveltoDictionaryNode<uint>>
-                  , //strategy to store the value
-                    NativeStrategy<T>, NativeStrategy<int>>>, NativeStrategy<int>>((uint) groups.count, Allocator.Persistent);
-
-            foreach (var group in groups)
-            {
-                if (entitiesDb.SafeQueryEntityDictionary<T>(group, out var typeSafeDictionary) == true)
-                    if (typeSafeDictionary.count > 0)
-                        dictionary.Add(group, ((TypeSafeDictionary<T>) typeSafeDictionary).implUnmgd);
-            }
-
-            return new Svelto.ECS.Native.EGIDMultiMapper<T>(dictionary);
         }
     }
 }

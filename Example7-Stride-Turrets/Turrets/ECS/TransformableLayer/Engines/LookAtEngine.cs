@@ -1,6 +1,7 @@
 using System;
 using Stride.Core.Mathematics;
 using Stride.Engine;
+using Svelto.Common.Internal;
 
 namespace Svelto.ECS.MiniExamples.Turrets
 {
@@ -9,13 +10,15 @@ namespace Svelto.ECS.MiniExamples.Turrets
     /// the PhysicLayer otherwise LookAtEngine would be more specialised than it.
     /// Alternatively it should have a LookAtComponent. I went for the latter.
     /// </summary>
-    class LookAtEngine : SyncScript, IQueryingEntitiesEngine
+    class LookAtEngine : IQueryingEntitiesEngine, IUpdateEngine
     {
         public EntitiesDB entitiesDB { get; set; }
 
         public void Ready() { }
 
-        public override void Update()
+        public string name => this.TypeName();
+        
+        public void Step(in float deltaTime)
         {
             var groups = entitiesDB.FindGroups<LookAtComponent, RotationComponent>();
 
