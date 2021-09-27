@@ -84,3 +84,6 @@ Basic Platform Agnostic Svelto.ECS 3.0 example
 * Goal: showing Svelto working with Stride Engine (svelto can work with any engine that supports c# natively)
 * Goal: showing how to use EntityReferences to transform hierarchies
 * Foundation of my new article
+
+![image](https://user-images.githubusercontent.com/945379/134925979-145e5b0e-fd5d-4562-abc3-07bafca2fbe6.png)
+
