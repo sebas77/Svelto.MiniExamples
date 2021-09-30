@@ -1,7 +1,4 @@
 using System;
-using System.Reflection.Metadata.Ecma335;
-using System.Threading.Tasks;
-using Stride.Core;
 using Stride.Engine;
 using Stride.Games;
 using Svelto.ECS.Schedulers;
@@ -25,16 +22,15 @@ namespace Svelto.ECS.MiniExamples.Turrets
             _ecsStrideEntityManager = new ECSStrideEntityManager(Content);
 
             var entityFactory   = _enginesRoot.GenerateEntityFactory();
-            var entityFunctions = _enginesRoot.GenerateEntityFunctions();
 
             _mainEngineGroup = new TurretsMainEnginesGroup();
 
-            //Services is a simple Service Locator Provider. EntityFactory, EntityFunctions and ecsStrideEnttiyManager
-            //can be fetched by Stride systems through the service Locator once they are registered.
-            //There is a 1:1 relationship with the Game class and the Services, this means that if multiple
+            //Stride Services object is a simple Service Locator Provider.
+            //EntityFactory and ecsStrideEnttiyManager can be fetched by Stride systems through
+            //the service Locator once they are registered.
+            //There is a 1:1 relationship between the Game object and the Services, this means that if multiple
             //engines roots per Game need to be used, a different approach may be necessary. 
             Services.AddService(entityFactory);
-            Services.AddService(entityFunctions);
             Services.AddService(_ecsStrideEntityManager);
 
             GameStarted -= CreateCompositionRoot;
@@ -86,7 +82,7 @@ namespace Svelto.ECS.MiniExamples.Turrets
             _scheduler.SubmitEntities();
             //run stride logic
             base.Update(gameTime);
-
+            //step the Svelto game engines. We are taking control over the ticking system
             _mainEngineGroup.Step(gameTime.Elapsed.Milliseconds);
         }
 
