@@ -1,4 +1,3 @@
-using SharpDX.MediaFoundation;
 using Stride.Core.Mathematics;
 using Stride.Core.Serialization.Contents;
 using Stride.Engine;

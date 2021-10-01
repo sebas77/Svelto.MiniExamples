@@ -1,11 +1,13 @@
 using System;
 using Stride.Core.Mathematics;
-using Stride.Engine;
 using Svelto.Common.Internal;
 
 namespace Svelto.ECS.MiniExamples.Turrets
 {
-    public class MoveTurretEngine : IQueryingEntitiesEngine, IUpdateEngine
+    /// <summary>
+    /// Move all the turret bases using a circular motion
+    /// </summary>
+    class MoveTurretEngine : IQueryingEntitiesEngine, IUpdateEngine
     {
         public EntitiesDB entitiesDB { get; set; }
 

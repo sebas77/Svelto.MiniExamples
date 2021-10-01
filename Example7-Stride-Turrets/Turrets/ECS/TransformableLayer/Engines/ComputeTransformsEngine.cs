@@ -1,10 +1,13 @@
 using Stride.Core.Mathematics;
-using Stride.Engine;
 using Svelto.Common.Internal;
 
 namespace Svelto.ECS.MiniExamples.Turrets
 {
-    public class ComputeTransformsEngine : IQueryingEntitiesEngine, IUpdateEngine
+    /// <summary>
+    /// Iterate all the entities that can be transformed and compute the transformation matrices out the transformation
+    /// parameters
+    /// </summary>
+    class ComputeTransformsEngine : IQueryingEntitiesEngine, IUpdateEngine
     {
         public EntitiesDB entitiesDB { get; set; }
 

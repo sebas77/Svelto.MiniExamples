@@ -1,16 +1,18 @@
-using Stride.Engine;
 using Svelto.Common.Internal;
 
 namespace Svelto.ECS.MiniExamples.Turrets
 {
-    public class BulletLifeEngine : IQueryingEntitiesEngine, IUpdateEngine
+    /// <summary>
+    /// Iterate all the bullets and remove them if they are under the floor
+    /// </summary>
+    class BulletLifeEngine : IQueryingEntitiesEngine, IUpdateEngine
     {
         public BulletLifeEngine(IEntityFunctions entityFunctions) { _entityFunctions = entityFunctions; }
         public EntitiesDB entitiesDB { get; set; }
         public void       Ready()    { }
 
         public string name => this.TypeName();
-        
+
         public void Step(in float deltaTime)
         {
             foreach (var ((position, egids, count), _) in entitiesDB.QueryEntities<PositionComponent, EGIDComponent>(

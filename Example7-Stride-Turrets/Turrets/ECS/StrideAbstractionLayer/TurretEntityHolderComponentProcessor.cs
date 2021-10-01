@@ -1,7 +1,6 @@
 using System;
 using Stride.Core.Mathematics;
 using Stride.Engine;
-using Matrix = BulletSharp.Math.Matrix;
 
 namespace Svelto.ECS.MiniExamples.Turrets
 {

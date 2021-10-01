@@ -1,9 +1,12 @@
-using Stride.Engine;
 using Svelto.Common.Internal;
 
 namespace Svelto.ECS.MiniExamples.Turrets
 {
-    public class SetTransformsEngine : IQueryingEntitiesEngine, IUpdateEngine
+    /// <summary>
+    /// Iterate all the entities that have matrices and, assuming they are stride objects, set the matrices to the
+    /// matrix to the Stride Entity
+    /// </summary>
+    class SetTransformsEngine : IQueryingEntitiesEngine, IUpdateEngine
     {
         public SetTransformsEngine(ECSStrideEntityManager ecsStrideEntityManager)
         {
@@ -15,7 +18,7 @@ namespace Svelto.ECS.MiniExamples.Turrets
         public void Ready() { }
 
         public string name => this.TypeName();
-        
+
         public void Step(in float deltaTime)
         {
             var groups = entitiesDB.FindGroups<EGIDComponent, MatrixComponent>();

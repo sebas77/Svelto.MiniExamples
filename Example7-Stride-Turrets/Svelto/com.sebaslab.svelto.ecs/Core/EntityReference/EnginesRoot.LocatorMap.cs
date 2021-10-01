@@ -1,5 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using Svelto.Common;
+﻿using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.ECS.DataStructures;
 using Svelto.ECS.Reference;

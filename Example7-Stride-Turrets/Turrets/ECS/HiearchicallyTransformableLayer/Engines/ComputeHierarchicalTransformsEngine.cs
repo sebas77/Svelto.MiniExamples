@@ -1,9 +1,12 @@
-using Stride.Engine;
 using Svelto.Common.Internal;
 
 namespace Svelto.ECS.MiniExamples.Turrets
 {
-    public class ComputeHierarchicalTransformsEngine : IQueryingEntitiesEngine, IUpdateEngine
+    /// <summary>
+    /// Use EntityReferences to create a relationship parent child between svelto Entities.
+    /// Compute the hierarchical matrix.
+    /// </summary>
+    class ComputeHierarchicalTransformsEngine : IQueryingEntitiesEngine, IUpdateEngine
     {
         public EntitiesDB entitiesDB { get; set; }
 

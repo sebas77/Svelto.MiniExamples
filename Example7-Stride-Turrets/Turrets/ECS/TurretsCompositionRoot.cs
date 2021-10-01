@@ -11,7 +11,7 @@ namespace Svelto.ECS.MiniExamples.Turrets
         {
             GameStarted += CreateCompositionRoot;
         }
-        
+
         void CreateCompositionRoot(object sender, EventArgs e)
         {
             //Create a SimpleSubmission scheduler to take control over the entities submission ticking
@@ -21,7 +21,7 @@ namespace Svelto.ECS.MiniExamples.Turrets
             //create the Manager that interfaces Stride Objects with Svelto Entities
             _ecsStrideEntityManager = new ECSStrideEntityManager(Content);
 
-            var entityFactory   = _enginesRoot.GenerateEntityFactory();
+            var entityFactory = _enginesRoot.GenerateEntityFactory();
 
             _mainEngineGroup = new TurretsMainEnginesGroup();
 
@@ -36,7 +36,7 @@ namespace Svelto.ECS.MiniExamples.Turrets
             GameStarted -= CreateCompositionRoot;
         }
 
-        void AddEngine<T>(T engine) where T : class, IGetReadyEngine
+        void AddEngine<T>(T engine) where T : class, IEngine
         {
             _enginesRoot.AddEngine(engine);
             if (engine is IUpdateEngine updateEngine)
@@ -67,7 +67,9 @@ namespace Svelto.ECS.MiniExamples.Turrets
 
             //BulletsContext
             var bulletFactory = new BulletFactory(_ecsStrideEntityManager, entityFactory);
-            AddEngine(new BulletSpawningEngine(bulletFactory, _ecsStrideEntityManager, SceneSystem));
+            bulletFactory.LoadBullet();
+            
+            AddEngine(new BulletSpawningEngine(_ecsStrideEntityManager, SceneSystem));
             AddEngine(new BulletLifeEngine(entityFunctions));
 
             //TurretsContext

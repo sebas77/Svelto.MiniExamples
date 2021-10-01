@@ -4,8 +4,7 @@ namespace Svelto.ECS.MiniExamples.Turrets
 {
     public class BulletFactory : IBulletFactory
     {
-        public BulletFactory
-            (ECSStrideEntityManager ecsStrideEntityManager, IEntityFactory factory)
+        public BulletFactory(ECSStrideEntityManager ecsStrideEntityManager, IEntityFactory factory)
         {
             _ecsStrideEntityManager = ecsStrideEntityManager;
             _factory                = factory;
@@ -13,7 +12,8 @@ namespace Svelto.ECS.MiniExamples.Turrets
 
         public void LoadBullet()
         {
-            _bulletPrefabID = _ecsStrideEntityManager.LoadAndRegisterPrefab("Bullet", out var turretStrideEntityTransform);
+            _bulletPrefabID =
+                _ecsStrideEntityManager.LoadAndRegisterPrefab("Bullet", out var turretStrideEntityTransform);
 
             turretStrideEntityTransform.Decompose(out _bulletScaling, out Quaternion _, out _);
         }

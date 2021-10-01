@@ -1,5 +1,4 @@
 using Stride.Core.Mathematics;
-using Stride.Engine;
 using Stride.Input;
 using Svelto.Common.Internal;
 

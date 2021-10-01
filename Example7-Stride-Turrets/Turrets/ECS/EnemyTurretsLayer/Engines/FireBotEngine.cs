@@ -1,11 +1,14 @@
 using System;
 using Stride.Core.Mathematics;
-using Stride.Engine;
 using Svelto.Common.Internal;
 
 namespace Svelto.ECS.MiniExamples.Turrets
 {
-    public class FireBotEngine : IQueryingEntitiesEngine, IUpdateEngine
+    /// <summary>
+    /// Iterate all the bots and if enough time is passed, let them shoot. The bullet is initialised using
+    /// the current direction the bot is aiming at.
+    /// </summary>
+    class FireBotEngine : IQueryingEntitiesEngine, IUpdateEngine
     {
         public FireBotEngine(IBulletFactory bulletFactory) { _bulletFactory = bulletFactory; }
         public EntitiesDB entitiesDB { get; set; }
