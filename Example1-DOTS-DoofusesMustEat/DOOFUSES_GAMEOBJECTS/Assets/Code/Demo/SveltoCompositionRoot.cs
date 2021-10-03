@@ -8,6 +8,9 @@ using Svelto.ECS.MiniExamples.GameObjectsLayer;
 using Svelto.ECS.Schedulers;
 using UnityEngine;
 
+#if !PROFILE_SVELTO
+#warning for maximum performance you need to enable PROFILE_SVELTO (this is not needed for a release client)
+#endif
 namespace Svelto.ECS.MiniExamples.Example1C
 {
     public class SveltoCompositionRoot : ICompositionRoot
@@ -33,6 +36,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
 
         public void OnContextDestroyed(bool hasBeenInitialised) 
         {
+            _gameObjectManager.Dispose();
             _enginesRoot.Dispose();
             _mainLoop.Dispose();
             _simpleSubmitScheduler.Dispose();

@@ -15,7 +15,7 @@ namespace Svelto.DataStructures
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
-    public readonly struct ReadonlySveltoDictionaryNative<TKey, TValue> 
+    public struct ReadonlySveltoDictionaryNative<TKey, TValue>
         where TKey : unmanaged, IEquatable<TKey> where TValue : unmanaged
     {
         public ReadonlySveltoDictionaryNative(uint size) : this(size, Allocator.Persistent) { }
@@ -23,23 +23,14 @@ namespace Svelto.DataStructures
         public ReadonlySveltoDictionaryNative(uint size, Allocator nativeAllocator)
         {
             _dictionary =
-                new SveltoDictionary<TKey, TValue, NativeStrategy<SveltoDictionaryNode<TKey>>, NativeStrategy<TValue>, NativeStrategy<int>>(
-                    size, nativeAllocator);
+                new SveltoDictionary<TKey, TValue, NativeStrategy<SveltoDictionaryNode<TKey>>, NativeStrategy<TValue>,
+                    NativeStrategy<int>>(size, nativeAllocator);
         }
 
-        public static implicit operator ReadonlySveltoDictionaryNative<TKey, TValue>
-            (SveltoDictionary<TKey, TValue, NativeStrategy<SveltoDictionaryNode<TKey>>, NativeStrategy<TValue>, NativeStrategy<int>> dic)
-        {
-            return new ReadonlySveltoDictionaryNative<TKey, TValue>(dic);
-        }
-        
-        public static implicit operator ReadonlySveltoDictionaryNative<TKey, TValue>(SveltoDictionaryNative<TKey, TValue> dic)
-        {
-            return new ReadonlySveltoDictionaryNative<TKey, TValue>(dic);
-        }
-        
-        ReadonlySveltoDictionaryNative
-            (SveltoDictionary<TKey, TValue, NativeStrategy<SveltoDictionaryNode<TKey>>, NativeStrategy<TValue>, NativeStrategy<int>> dic)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal ReadonlySveltoDictionaryNative
+        (SveltoDictionary<TKey, TValue, NativeStrategy<SveltoDictionaryNode<TKey>>, NativeStrategy<TValue>,
+             NativeStrategy<int>> dic)
         {
             _dictionary = dic;
         }
@@ -58,16 +49,28 @@ namespace Svelto.DataStructures
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public     bool   ContainsKey(TKey key)                    { return _dictionary.ContainsKey(key); }
+        public bool ContainsKey(TKey key)
+        {
+            return _dictionary.ContainsKey(key);
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public     bool   TryGetValue(TKey key, out TValue result) { return _dictionary.TryGetValue(key, out result); }
+        public bool TryGetValue(TKey key, out TValue result)
+        {
+            return _dictionary.TryGetValue(key, out result);
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ref TValue GetDirectValueByRef(uint index) { return ref _dictionary.GetDirectValueByRef(index); }
+        public ref TValue GetDirectValueByRef(uint index)
+        {
+            return ref _dictionary.GetDirectValueByRef(index);
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ref TValue GetValueByRef(TKey key)         { return ref _dictionary.GetValueByRef(key); }
+        public ref TValue GetValueByRef(TKey key)
+        {
+            return ref _dictionary.GetValueByRef(key);
+        }
 
         public TValue this[TKey key]
         {
@@ -76,14 +79,24 @@ namespace Svelto.DataStructures
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool TryFindIndex(TKey key, out uint findIndex) { return _dictionary.TryFindIndex(key, out findIndex); }
+        public bool TryFindIndex(TKey key, out uint findIndex)
+        {
+            return _dictionary.TryFindIndex(key, out findIndex);
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public uint GetIndex(TKey key)                         { return _dictionary.GetIndex(key); }
+        public uint GetIndex(TKey key)
+        {
+            return _dictionary.GetIndex(key);
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Dispose() { _dictionary.Dispose(); }
+        public void Dispose()
+        {
+            _dictionary.Dispose();
+        }
 
-        readonly SveltoDictionary<TKey, TValue, NativeStrategy<SveltoDictionaryNode<TKey>>, NativeStrategy<TValue>, NativeStrategy<int>> _dictionary;
+        readonly SveltoDictionary<TKey, TValue, NativeStrategy<SveltoDictionaryNode<TKey>>, NativeStrategy<TValue>,
+            NativeStrategy<int>> _dictionary;
     }
 }

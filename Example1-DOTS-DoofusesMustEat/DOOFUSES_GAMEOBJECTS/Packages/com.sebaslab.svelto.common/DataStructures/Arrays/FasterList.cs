@@ -4,13 +4,11 @@ using System.Runtime.CompilerServices;
 
 namespace Svelto.DataStructures
 {
-    //Warning: the burst compatible version of a dynamic array is found in Svelto.ECS and is called NativeDynamicArray/Cast
+    //Note: the burst compatible version of a dynamic array is found in Svelto.ECS and is called NativeDynamicArray/Cast
     public class FasterList<T>
     {
-        internal static readonly FasterList<T> DefaultEmptyList = new FasterList<T>();
-        
         public int count => (int) _count;
-        public uint capacity => (uint) _buffer.Length;
+        public int capacity => _buffer.Length;
         
         public static explicit operator FasterList<T>(T[] array)
         {
@@ -102,7 +100,7 @@ namespace Svelto.DataStructures
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                DBC.Common.Check.Require(index < _count, "out of bound index");
+                DBC.Common.Check.Require(index < _count, $"out of bound index. index {index} - count {_count}");
                 return ref _buffer[index];
             }
         }

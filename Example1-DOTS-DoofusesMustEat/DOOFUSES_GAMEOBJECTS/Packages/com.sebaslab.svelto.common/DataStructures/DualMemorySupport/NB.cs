@@ -7,24 +7,24 @@ namespace Svelto.DataStructures
 {
     sealed class NBDebugProxy<T> where T : struct
     {
-        NB<T> m_Array;
-
         public NBDebugProxy(NB<T> array)
         {
-            this.m_Array = array;
+            this._array = array;
         }
 
         public T[] Items
         {
             get
             {
-                T[] array = new T[m_Array.capacity];
+                T[] array = new T[_array.capacity];
                 
-                m_Array.CopyTo(0, array, 0, (uint) m_Array.capacity);
+                _array.CopyTo(0, array, 0, (uint) _array.capacity);
 
                 return array;
             }
         }
+        
+        NB<T> _array;
     }
 
     /// <summary>
@@ -48,7 +48,7 @@ namespace Svelto.DataStructures
     {
         static NB()
         {
-            if (TypeCache<T>.IsUnmanaged == false)
+            if (TypeCache<T>.isUnmanaged == false)
                 throw new Exception("NativeBuffer (NB) supports only unmanaged types");
         }
         
@@ -124,9 +124,10 @@ namespace Svelto.DataStructures
                 }
             }
         }
-
+        
         readonly uint _capacity;
-#if UNITY_NATIVE
+
+#if UNITY_COLLECTIONS || UNITY_JOBS || UNITY_BURST
         //todo can I remove this from here? it should be used outside
         [Unity.Burst.NoAlias]
         [Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction]

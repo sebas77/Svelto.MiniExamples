@@ -6,8 +6,7 @@ namespace Svelto.ECS
 {
     public interface IComponentBuilder
     {
-        void BuildEntityAndAddToList(ITypeSafeDictionary dictionary, EGID egid,
-            IEnumerable<object> implementors);
+        void BuildEntityAndAddToList(ITypeSafeDictionary dictionary, EGID egid, IEnumerable<object> implementors);
         void Preallocate(ITypeSafeDictionary dictionary, uint size);
         ITypeSafeDictionary CreateDictionary(uint size);
 

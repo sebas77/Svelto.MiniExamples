@@ -2,12 +2,12 @@ using Svelto.DataStructures;
 
 namespace Svelto.ECS.Experimental
 {
-    public struct ECSResources<T>
-    {
-        internal uint id;
-        
-        public static implicit operator T(ECSResources<T> ecsString) { return ResourcesECSDB<T>.FromECS(ecsString.id); }
-    }
+    // struct ECSResources<T>
+    // {
+    //     internal uint id;
+    //     
+    //     public static implicit operator T(ECSResources<T> ecsString) { return ResourcesECSDB<T>.FromECS(ecsString.id); }
+    // }
     
     /// <summary>
     /// To do. Or we reuse the ID or we need to clear this
@@ -37,15 +37,4 @@ namespace Svelto.ECS.Experimental
             return default;
         }
     }   
-
-    public static class ResourceExtensions
-    {
-        public static void Set<T>(ref this ECSResources<T> resource, T newText)
-        {
-            if (resource.id != 0)
-                ResourcesECSDB<T>.resources(resource.id) = newText;
-            else
-                resource.id = ResourcesECSDB<T>.ToECS(newText);
-        }
-    }
 }

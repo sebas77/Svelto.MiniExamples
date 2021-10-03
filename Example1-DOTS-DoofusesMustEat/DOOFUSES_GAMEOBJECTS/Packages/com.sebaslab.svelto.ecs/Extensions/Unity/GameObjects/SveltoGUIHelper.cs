@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace Svelto.ECS.Extensions.Unity
 {
+    // "New Svelto GUI Patterns are now available"
     public static class SveltoGUIHelper
     {
         /// <summary>

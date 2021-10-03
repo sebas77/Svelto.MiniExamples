@@ -50,7 +50,7 @@ namespace Svelto.ECS
         {
             if (_multipleOperationOnSameEGIDChecker.ContainsKey(egid) == true)
                 throw new ECSException(
-                    "Executing multiple structural changes (build) in one submission on the same entity is not supported "
+                    "Executing multiple structural changes (build) on the same entity is not supported "
                        .FastConcat(" caller: ", caller, " ").FastConcat(egid.entityID).FastConcat(" groupid: ")
                        .FastConcat(egid.groupID.ToName()).FastConcat(" type: ")
                        .FastConcat(entityDescriptorType != null ? entityDescriptorType.Name : "not available")

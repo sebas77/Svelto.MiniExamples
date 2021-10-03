@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using System;
 using Svelto.Common;
 
 namespace Svelto.DataStructures
@@ -10,7 +10,6 @@ namespace Svelto.DataStructures
         Allocator allocationStrategy { get; }
 
         void Alloc(uint size, Allocator allocator, bool clear = true);
-        void AllocateMore(uint newSize, uint numberOfItemsToCopy, bool clear = true);
         void ShiftRight(uint index, uint count);
         void ShiftLeft(uint index, uint count);
         void Resize(uint newCapacity, bool copyContent = true);

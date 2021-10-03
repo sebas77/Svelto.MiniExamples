@@ -3,13 +3,12 @@ using System;
 namespace Svelto.DataStructures
 {
     /// <summary>
-    ///   original code: http://devplanet.com/blogs/brianr/archive/2008/09/29/thread-safe-dictionary-update.aspx
-    ///   simplified (not an IDictionary) and apdated (uses NewFasterList)
+    ///     original code: http://devplanet.com/blogs/brianr/archive/2008/09/29/thread-safe-dictionary-update.aspx
     /// </summary>
-    /// <typeparam name = "TKey"></typeparam>
-    /// <typeparam name = "TValue"></typeparam>
-
-    public sealed class ThreadSafeDictionary<TKey, TValue> where TKey : struct, IEquatable<TKey>
+    /// <typeparam name="TKey"></typeparam>
+    /// <typeparam name="TValue"></typeparam>
+    public sealed class ThreadSafeDictionary<TKey, TValue> : ISveltoDictionary<TKey, TValue>
+        where TKey : struct, IEquatable<TKey>
     {
         public ThreadSafeDictionary(int size)
         {
@@ -21,15 +20,19 @@ namespace Svelto.DataStructures
             _dict = new FasterDictionary<TKey, TValue>();
         }
 
-        // setup the lock;
-        public uint Count
+        public void Dispose()
+        {
+            _dict.Dispose();
+        }
+
+        public int count
         {
             get
             {
                 _lockQ.EnterReadLock();
                 try
                 {
-                    return (uint)_dict.count;
+                    return _dict.count;                    
                 }
                 finally
                 {
@@ -37,21 +40,147 @@ namespace Svelto.DataStructures
                 }
             }
         }
-        
-        // setup the lock;
-        public uint count
+
+        public void Add(TKey key, in TValue value)
         {
-            get
+            _lockQ.EnterWriteLock();
+            try
             {
-                _lockQ.EnterReadLock();
-                try
-                {
-                    return (uint)_dict.count;
-                }
-                finally
-                {
-                    _lockQ.ExitReadLock();
-                }
+                _dict.Add(key, in value);
+            }
+            finally
+            {
+                _lockQ.EnterWriteLock();
+            }
+        }
+
+        public void Set(TKey key, in TValue value)
+        {
+            _lockQ.EnterWriteLock();
+            try
+            {
+                _dict.Set(key, in value);
+            }
+            finally
+            {
+                _lockQ.EnterWriteLock();
+            }
+        }
+
+        public void Clear()
+        {
+            _lockQ.EnterWriteLock();
+            try
+            {
+                _dict.Clear();
+            }
+            finally
+            {
+                _lockQ.EnterWriteLock();
+            }
+        }
+
+        public void FastClear()
+        {
+            _lockQ.EnterWriteLock();
+            try
+            {
+                _dict.FastClear();
+            }
+            finally
+            {
+                _lockQ.EnterWriteLock();
+            }
+        }
+
+        public bool ContainsKey(TKey key)
+        {
+            _lockQ.EnterReadLock();
+            try
+            {
+                return _dict.ContainsKey(key);                
+            }
+            finally
+            {
+                _lockQ.ExitReadLock();
+            }
+        }
+
+        public bool TryGetValue(TKey key, out TValue result)
+        {
+            _lockQ.EnterReadLock();
+            try
+            {
+                return _dict.TryGetValue(key, out result);
+            }
+            finally
+            {
+                _lockQ.ExitReadLock();
+            }
+        }
+
+        public ref TValue GetOrCreate(TKey key)
+        {
+            _lockQ.EnterWriteLock();
+            try
+            {
+                return ref _dict.GetOrCreate(key);
+            }
+            finally
+            {
+                _lockQ.EnterWriteLock();
+            }
+        }
+
+        public ref TValue GetOrCreate(TKey key, Func<TValue> builder)
+        {
+            _lockQ.EnterWriteLock();
+            try
+            {
+                return ref _dict.GetOrCreate(key, builder);
+            }
+            finally
+            {
+                _lockQ.EnterWriteLock();
+            }
+        }
+
+        public ref TValue GetDirectValueByRef(uint index)
+        {
+            _lockQ.EnterReadLock();
+            try
+            {
+                return ref _dict.GetDirectValueByRef(index);
+            }
+            finally
+            {
+                _lockQ.ExitReadLock();
+            }
+        }
+
+        public ref TValue GetValueByRef(TKey key)
+        {
+            _lockQ.EnterReadLock();
+            try
+            {
+                return ref _dict.GetValueByRef(key);
+            }
+            finally
+            {
+                _lockQ.ExitReadLock();
+            }
+        }
+
+        public void ResizeTo(uint size)
+        {
+            _lockQ.EnterWriteLock();
+            try
+            {
+                _dict.ResizeTo(size);
+            }
+            finally
+            {
+                _lockQ.EnterWriteLock();
             }
         }
 
@@ -69,7 +198,6 @@ namespace Svelto.DataStructures
                     _lockQ.ExitReadLock();
                 }
             }
-
             set
             {
                 _lockQ.EnterWriteLock();
@@ -79,60 +207,8 @@ namespace Svelto.DataStructures
                 }
                 finally
                 {
-                    _lockQ.ExitWriteLock();
+                    _lockQ.EnterWriteLock();
                 }
-            }
-        }
-
-        public void Clear()
-        {
-            _lockQ.EnterWriteLock();
-            try
-            {
-                _dict.Clear();
-            }
-            finally
-            {
-                _lockQ.ExitWriteLock();
-            }
-        }
-
-        public void Add(TKey key, TValue value)
-        {
-            _lockQ.EnterWriteLock();
-            try
-            {
-                _dict.Add(key, value);
-            }
-            finally
-            {
-                _lockQ.ExitWriteLock();
-            }
-        }
-        
-        public void Add(TKey key, ref TValue value)
-        {
-            _lockQ.EnterWriteLock();
-            try
-            {
-                _dict.Add(key, value);
-            }
-            finally
-            {
-                _lockQ.ExitWriteLock();
-            }
-        }
-
-        public bool ContainsKey(TKey key)
-        {
-            _lockQ.EnterReadLock();
-            try
-            {
-                return _dict.ContainsKey(key);
-            }
-            finally
-            {
-                _lockQ.ExitReadLock();
             }
         }
 
@@ -145,16 +221,29 @@ namespace Svelto.DataStructures
             }
             finally
             {
-                _lockQ.ExitWriteLock();
+                _lockQ.EnterWriteLock();
             }
         }
 
-        public bool TryGetValue(TKey key, out TValue value)
+        public void Trim()
+        {
+            _lockQ.EnterWriteLock();
+            try
+            {
+                _dict.Trim();
+            }
+            finally
+            {
+                _lockQ.EnterWriteLock();
+            }
+        }
+
+        public bool TryFindIndex(TKey key, out uint findIndex)
         {
             _lockQ.EnterReadLock();
             try
             {
-                return _dict.TryGetValue(key, out value);
+                return _dict.TryFindIndex(key, out findIndex);
             }
             finally
             {
@@ -162,113 +251,20 @@ namespace Svelto.DataStructures
             }
         }
 
-        /// <summary>
-        ///   Merge does a blind remove, and then add.  Basically a blind Upsert.
-        /// </summary>
-        /// <param name = "key">Key to lookup</param>
-        /// <param name = "newValue">New Value</param>
-        public void MergeSafe(TKey key, TValue newValue)
-        {
-            _lockQ.EnterWriteLock();
-            try
-            {
-                // take a writelock immediately since we will always be writing
-                if (_dict.ContainsKey(key))
-                    _dict.Remove(key);
-
-                _dict.Add(key, newValue);
-            }
-            finally
-            {
-                _lockQ.ExitWriteLock();
-            }
-        }
-
-        /// <summary>
-        ///   This is a blind remove. Prevents the need to check for existence first.
-        /// </summary>
-        /// <param name = "key">Key to remove</param>
-        public void RemoveSafe(TKey key)
+        public uint GetIndex(TKey key)
         {
             _lockQ.EnterReadLock();
             try
             {
-                if (_dict.ContainsKey(key))
-                    _lockQ.EnterWriteLock();
-                try
-                {
-                    _dict.Remove(key);
-                }
-                finally
-                {
-                    _lockQ.ExitWriteLock();
-                }
+                return _dict.GetIndex(key);
             }
             finally
             {
                 _lockQ.ExitReadLock();
-            }
-        }
-
-        public void Update(TKey key, ref TValue value)
-        {
-            _lockQ.EnterWriteLock();
-            try
-            {
-                _dict[key] = value;
-            }
-            finally
-            {
-                _lockQ.ExitWriteLock();
-            }
-        }
-
-        public void Set(TKey key, TValue value)
-        {
-            _lockQ.EnterWriteLock();
-            try
-            {
-                _dict.Set(key, value);
-            }
-            finally
-            {
-                _lockQ.ExitWriteLock();
-            }
-        }
-        
-        public void CopyValuesTo(TValue[] tasks, uint index)
-        {
-            _lockQ.EnterReadLock();
-            try
-            {
-                _dict.CopyValuesTo(tasks, index);
-            }
-            finally
-            {
-                _lockQ.ExitReadLock();
-            }
-        }
-
-        public void CopyValuesTo(FasterList<TValue> values)
-        {
-            values.ExpandTo((uint) _dict.count);
-            CopyValuesTo(values.ToArrayFast(out _), 0);
-        }
-
-        public void FastClear()
-        {
-            _lockQ.EnterWriteLock();
-            try
-            {
-                _dict.FastClear();
-            }
-            finally
-            {
-                _lockQ.ExitWriteLock();
             }
         }
 
         readonly FasterDictionary<TKey, TValue> _dict;
-        readonly ReaderWriterLockSlimEx _lockQ = ReaderWriterLockSlimEx.Create();
+        readonly ReaderWriterLockSlimEx         _lockQ = ReaderWriterLockSlimEx.Create();
     }
 }

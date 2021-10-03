@@ -1,22 +1,31 @@
+using System;
 using Svelto.DataStructures;
 using Svelto.ObjectPool;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Jobs;
+using Object = UnityEngine.Object;
 
 namespace Svelto.ECS.MiniExamples.GameObjectsLayer
 {
-    public class GameObjectManager
+    public class GameObjectManager : IDisposable
     {
         public GameObjectManager()
         {
             _pool                 = new GameObjectPool();
             _prefabs              = new FasterList<GameObject>();
-            _instancesMap         = new FasterDictionary<int, SparseSet>();
+            _instancesMap         = new FasterDictionary<int, FasterDictionary<int, int>>();
             _transformAccessArray = new FasterDictionary<int, TransformAccessArray>();
         }
 
-        internal TransformAccessArray Transforms(int ID) => _transformAccessArray[ID];
+        public void Dispose()
+        {
+            _pool?.Dispose();
+            _instancesMap?.Dispose();
+            for (int i = 0; i < _transformAccessArray.count; i++)
+                _transformAccessArray.unsafeValues[i].Dispose();
+                    
+        }
 
         public int RegisterPrefab(GameObject prefab)
         {
@@ -25,21 +34,19 @@ namespace Svelto.ECS.MiniExamples.GameObjectsLayer
             return _prefabs.count - 1;
         }
 
-        internal void SetPosition(int gameobjectID, int poolID, float3 position)
-        {
-            _transformAccessArray[poolID][_instancesMap[poolID].sparse[gameobjectID]].position = position;
-        }
-
         internal int FetchGameObject(int prefabID, int poolID)
         {
             //optimization alert: this will allocate every time is used, not good. However it's used only 
             //when entities are created so..meh
-            GameObject ONFirstUse() => GameObject.Instantiate(_prefabs[prefabID]);
+            GameObject OnFirstUse()
+            {
+                return Object.Instantiate(_prefabs[prefabID]);
+            }
 
-            var go = _pool.Use(poolID, ONFirstUse);
+            var go = _pool.Use(poolID, OnFirstUse);
             go.SetActive(true);
 
-            _instancesMap.GetOrCreate(poolID, () => new SparseSet()).insert(_lastIndex);
+            _instancesMap.GetOrCreate(poolID, () => new FasterDictionary<int, int>()).Add(_lastIndex, _lastIndex);
             _transformAccessArray.GetOrCreate(poolID, () => new TransformAccessArray(1)).Add(go.transform);
 
             return _lastIndex++;
@@ -48,19 +55,30 @@ namespace Svelto.ECS.MiniExamples.GameObjectsLayer
         internal void Recycle(int gameObjectID, int poolID)
         {
             var sparseSet            = _instancesMap[poolID];
-            var index                = sparseSet.sparse[gameObjectID];
+            var index                = sparseSet.GetIndex(gameObjectID);
             var transformAccessArray = _transformAccessArray[poolID];
-            var go                   = transformAccessArray[index].gameObject;
-            _pool.Recycle(go, (int) poolID);
+            var go                   = transformAccessArray[(int) index].gameObject;
+            _pool.Recycle(go, poolID);
             go.SetActive(false);
 
-            sparseSet.erase(gameObjectID);
-            transformAccessArray.RemoveAtSwapBack(index);
+            sparseSet.Remove(gameObjectID);
+            transformAccessArray.RemoveAtSwapBack((int) index);
         }
+
+        internal void SetPosition(int gameobjectID, int poolID, float3 position)
+        {
+            _transformAccessArray[poolID][(int) _instancesMap[poolID].GetIndex(gameobjectID)].position = position;
+        }
+
+        internal TransformAccessArray Transforms(int ID)
+        {
+            return _transformAccessArray[ID];
+        }
+
+        readonly FasterDictionary<int, FasterDictionary<int, int>> _instancesMap;
 
         readonly GameObjectPool                              _pool;
         readonly FasterList<GameObject>                      _prefabs;
-        readonly FasterDictionary<int, SparseSet>            _instancesMap;
         readonly FasterDictionary<int, TransformAccessArray> _transformAccessArray;
         int                                                  _lastIndex;
     }

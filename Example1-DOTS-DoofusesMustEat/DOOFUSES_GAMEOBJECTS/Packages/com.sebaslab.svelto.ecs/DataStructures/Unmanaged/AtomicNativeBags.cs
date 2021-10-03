@@ -72,7 +72,9 @@ namespace Svelto.ECS.DataStructures
             }
         }
         
+#if UNITY_COLLECTIONS || UNITY_JOBS || UNITY_BURST
         [global::Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction]
+#endif
         NativeBag* _data;
         readonly Allocator _allocator;
         readonly uint      _threadsCount;

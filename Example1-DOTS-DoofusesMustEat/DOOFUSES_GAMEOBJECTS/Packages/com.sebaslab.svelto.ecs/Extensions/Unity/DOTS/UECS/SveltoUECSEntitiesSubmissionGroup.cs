@@ -104,7 +104,10 @@ namespace Svelto.ECS.Extensions.Unity
                     }
 
                     if (submitEntitiesAsync.Current == true)
-                        yield return null;
+                    {
+                        using (profiler.Yield())
+                            yield return null;
+                    }
                     else
                         break;
                 }
@@ -199,7 +202,7 @@ namespace Svelto.ECS.Extensions.Unity
             {
                 NativeEGIDMultiMapper<UECSEntityComponent> mapper =
                     entitiesDB.QueryNativeMappedEntities<UECSEntityComponent>(
-                        entitiesDB.FindGroups<UECSEntityComponent>());
+                        entitiesDB.FindGroups<UECSEntityComponent>(), Allocator.TempJob);
 
                 Entities.ForEach((Entity id, ref UpdateUECSEntityAfterSubmission egidComponent) =>
                 {

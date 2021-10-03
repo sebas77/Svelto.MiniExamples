@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.CompilerServices;
+using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.ECS.Hybrid;
 
@@ -52,11 +53,46 @@ namespace Svelto.ECS
                     && _dic.GetDirectValueByRef(index).TryGetValue(entity.entityID, out component);
             }
 
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public bool FindIndex(ExclusiveGroupStruct group, uint entityID, out uint index)
+            {
+                index = 0;
+                return _dic.TryFindIndex(group, out var groupIndex) &&
+                       _dic.GetDirectValueByRef(groupIndex).TryFindIndex(entityID, out index);
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public uint GetIndex(ExclusiveGroupStruct group, uint entityID)
+            {
+                uint groupIndex = _dic.GetIndex(group);
+                return _dic.GetDirectValueByRef(groupIndex).GetIndex(entityID);
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public bool Exists(ExclusiveGroupStruct group, uint entityID)
+            {
+                return _dic.TryFindIndex(group, out var groupIndex) &&
+                       _dic.GetDirectValueByRef(groupIndex).ContainsKey(entityID);
+            }
+
+			public Type entityType => TypeCache<T>.type;
+
             SveltoDictionary<ExclusiveGroupStruct,
                 SveltoDictionary<uint, T, NativeStrategy<SveltoDictionaryNode<uint>>, NativeStrategy<T>,
                     NativeStrategy<int>>, ManagedStrategy<SveltoDictionaryNode<ExclusiveGroupStruct>>,
                 ManagedStrategy<SveltoDictionary<uint, T, NativeStrategy<SveltoDictionaryNode<uint>>, NativeStrategy<T>,
                     NativeStrategy<int>>>, NativeStrategy<int>> _dic;
+        }
+
+        public interface IEGIDMultiMapper
+        {
+            bool FindIndex(ExclusiveGroupStruct group, uint entityID, out uint index);
+
+            uint GetIndex(ExclusiveGroupStruct group, uint entityID);
+
+            bool Exists(ExclusiveGroupStruct group, uint entityID);
+
+			Type entityType { get; }
         }
     }
 

@@ -41,11 +41,12 @@ namespace Svelto.ECS.MiniExamples.Example1C
 
         public string name => nameof(ConsumingFoodEngine);
 
-        JobHandle CreateJobForDoofusesAndFood(JobHandle inputDeps, in LocalFasterReadOnlyList<ExclusiveGroupStruct> 
-                doofusesEatingGroups, ExclusiveBuildGroup foodEatenGroup, in LocalFasterReadOnlyList<ExclusiveGroupStruct> foodGroup)
+        JobHandle CreateJobForDoofusesAndFood
+        (JobHandle inputDeps, in LocalFasterReadOnlyList<ExclusiveGroupStruct> doofusesEatingGroups
+       , ExclusiveBuildGroup foodEatenGroup, in LocalFasterReadOnlyList<ExclusiveGroupStruct> foodGroup)
         {
-            var foodPositionMapper = entitiesDB.QueryNativeMappedEntities<PositionEntityComponent>(foodGroup);
-            
+            var foodPositionMapper = entitiesDB.QueryNativeMappedEntities<PositionEntityComponent>(foodGroup, Allocator.TempJob);
+
             //against all the doofuses
             JobHandle deps = inputDeps;
             foreach (var (doofusesBuffer, _) in entitiesDB
@@ -56,9 +57,9 @@ namespace Svelto.ECS.MiniExamples.Example1C
                 var doofusesCount = doofuses.count;
 
                 //schedule the job
-                deps = JobHandle.CombineDependencies(
-                    deps, new ConsumingFoodJob(doofuses, foodPositionMapper, _nativeSwap, _nativeRemove, foodEatenGroup)
-                       .ScheduleParallel(doofusesCount, inputDeps));
+                deps = JobHandle.CombineDependencies(deps
+                    , new ConsumingFoodJob(doofuses, foodPositionMapper, _nativeSwap, _nativeRemove, foodEatenGroup)
+                                                        .ScheduleParallel(doofusesCount, inputDeps));
             }
 
             foodPositionMapper.ScheduleDispose(deps);
@@ -100,10 +101,10 @@ namespace Svelto.ECS.MiniExamples.Example1C
 
         public void Execute(int index)
         {
-            ref EGID   mealInfoEGID = ref _doofuses.buffer3[index].targetMeal;
-            ref float3 doofusPosition    = ref _doofuses.buffer1[index].position;
-            ref float3 velocity          = ref _doofuses.buffer2[index].velocity;
-            ref float3 foodPosition      = ref _foodPositionMapper.Entity(mealInfoEGID).position;
+            ref EGID   mealInfoEGID   = ref _doofuses.buffer3[index].targetMeal;
+            ref float3 doofusPosition = ref _doofuses.buffer1[index].position;
+            ref float3 velocity       = ref _doofuses.buffer2[index].velocity;
+            ref float3 foodPosition   = ref _foodPositionMapper.Entity(mealInfoEGID).position;
 
             var computeDirection = foodPosition - doofusPosition;
             var sqrModule        = computeDirection.x * computeDirection.x + computeDirection.z * computeDirection.z;

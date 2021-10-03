@@ -24,7 +24,7 @@ namespace Svelto.ECS.MiniExamples.GameObjectsLayer
             foreach (var ((positions, count), group) in entitiesDB.QueryEntities<PositionEntityComponent>())
             {
                 Check.Require(_goManager.Transforms((int) (uint) group).length == count
-                            , $"component array length doesn't match. Expected {count} - found {_goManager.Transforms((int) (uint) group).length} - group {group.ToName()}");
+                            , $"component array length doesn't match. Expected {count} - found {_goManager.Transforms((int) (uint) group).length} - group {group.ToString()}");
                 combineDependencies = JobHandle.CombineDependencies(inputDeps, new ParallelLabelTransformJob()
                 {
                     _position = positions

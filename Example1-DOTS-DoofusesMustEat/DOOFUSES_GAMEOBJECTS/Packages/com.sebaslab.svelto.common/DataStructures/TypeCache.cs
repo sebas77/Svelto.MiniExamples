@@ -4,8 +4,8 @@ namespace Svelto.Common
 {
     public class TypeCache<T>
     {
-        public static readonly Type type = typeof(T);
-        public static readonly bool IsUnmanaged = type.IsUnmanagedEx();
+        public static readonly Type type        = typeof(T);
+        public static readonly bool isUnmanaged = type.IsUnmanagedEx();
     }
 
     public class TypeHash<T>

@@ -50,16 +50,6 @@
             "name": "com.unity.collections",
             "expression": "",
             "define": "UNITY_NATIVE"
-        },
-        {
-            "name": "com.unity.burst",
-            "expression": "",
-            "define": "UNITY_JOBS"
-        },
-        {
-            "name": "com.unity.entities",
-            "expression": "",
-            "define": "UNITY_JOBS"
         }
     ],
     "noEngineReferences": false

@@ -13,11 +13,5 @@ namespace Svelto.ECS
             //moment of the consumption, but it's instead to store a copy of the entity at the moment of the publishing
             _entityStream.PublishEntity(ref this.QueryEntity<T>(egid), egid);
         }
-#if later
-        public ThreadSafeNativeEntityStream<T> GenerateThreadSafePublisher<T>() where T: unmanaged, IEntityComponent
-        {
-            return _entityStream.GenerateThreadSafePublisher<T>(this);
-        }
-#endif
     }
 }

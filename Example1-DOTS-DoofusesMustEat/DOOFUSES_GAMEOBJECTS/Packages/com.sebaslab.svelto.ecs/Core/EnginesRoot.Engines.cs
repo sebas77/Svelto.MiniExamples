@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Svelto.Common;
 using Svelto.DataStructures;
-using Svelto.ECS.DataStructures;
 using Svelto.ECS.Internal;
 using Svelto.ECS.Schedulers;
 
@@ -10,6 +9,11 @@ namespace Svelto.ECS
 {
     public sealed partial class EnginesRoot
     {
+        static EnginesRoot()
+        {
+            GroupHashMap.Init();
+            SerializationDescriptorMap.Init();
+        }
         /// <summary>
         ///     Engines root contextualize your engines and entities. You don't need to limit yourself to one EngineRoot
         ///     as multiple engines root could promote separation of scopes. The EntitySubmissionScheduler checks
@@ -21,12 +25,12 @@ namespace Svelto.ECS
         public EnginesRoot(EntitiesSubmissionScheduler entitiesComponentScheduler)
         {
             _entitiesOperations            = new FasterDictionary<ulong, EntitySubmitOperation>();
-            
-            _nativeSwapOperationQueue      = new AtomicNativeBags(Allocator.Persistent);
-            _nativeRemoveOperationQueue    = new AtomicNativeBags(Allocator.Persistent);
-            _nativeAddOperationQueue       = new AtomicNativeBags(Allocator.Persistent);
-            
-            serializationDescriptorMap     = new SerializationDescriptorMap();
+#if UNITY_NATIVE //because of the thread count, ATM this is only for unity            
+            _nativeSwapOperationQueue   = new DataStructures.AtomicNativeBags(Allocator.Persistent);
+            _nativeRemoveOperationQueue = new DataStructures.AtomicNativeBags(Allocator.Persistent);
+            _nativeAddOperationQueue    = new DataStructures.AtomicNativeBags(Allocator.Persistent);
+#endif            
+            _serializationDescriptorMap     = new SerializationDescriptorMap();
             _maxNumberOfOperationsPerFrame = uint.MaxValue;
             _reactiveEnginesAddRemove      = new FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer>>();
             _reactiveEnginesAddRemoveOnDispose =
@@ -252,7 +256,7 @@ namespace Svelto.ECS
             {
                 _enginesRoot = new Svelto.DataStructures.WeakReference<EnginesRoot>(enginesRoot);
                 _privateSubmitEntities =
-                    _enginesRoot.Target.SingleSubmission(new PlatformProfiler("Svelto.ECS - Entities Submission"));
+                    _enginesRoot.Target.SingleSubmission(new PlatformProfiler());
                 submitEntities = Invoke(); //this must be last to capture all the variables
             }
 
@@ -288,7 +292,12 @@ namespace Svelto.ECS
                                 {
                                     _privateSubmitEntities.MoveNext();
                                     if (_privateSubmitEntities.Current == true)
-                                        yield return true;
+                                    {
+                                        using (profiler.Yield())
+                                        {
+                                            yield return true;
+                                        }
+                                    }
                                     else
                                         break;
                                 }

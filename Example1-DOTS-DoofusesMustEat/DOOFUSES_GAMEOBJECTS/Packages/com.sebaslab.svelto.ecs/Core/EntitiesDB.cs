@@ -12,10 +12,10 @@ namespace Svelto.ECS
 {
     public partial class EntitiesDB
     {
-        internal EntitiesDB(EnginesRoot enginesRoot, EnginesRoot.LocatorMap entityLocator)
+        internal EntitiesDB(EnginesRoot enginesRoot, EnginesRoot.LocatorMap entityReferencesMap)
         {
             _enginesRoot   = enginesRoot;
-            _entityLocator = entityLocator;
+            _entityReferencesMap = entityReferencesMap;
         }
 
         EntityCollection<T> InternalQueryEntities<T>
@@ -79,7 +79,7 @@ namespace Svelto.ECS
 
             return new EntityCollection<T1, T2>(T1entities, T2entities);
         }
-
+        
         public EntityCollection<T1, T2, T3> QueryEntities<T1, T2, T3>(ExclusiveGroupStruct groupStruct)
             where T1 : struct, IEntityComponent where T2 : struct, IEntityComponent where T3 : struct, IEntityComponent
         {
@@ -150,11 +150,17 @@ namespace Svelto.ECS
             return new GroupsEnumerable<T>(this, groups);
         }
 
+        /// <summary>
+        /// Note: Remember that EntityViewComponents are always put at the end of the generic parameters tuple.
+        /// It won't compile otherwise
+        /// </summary>
+        /// <returns></returns>
         public GroupsEnumerable<T1, T2> QueryEntities<T1, T2>(in LocalFasterReadOnlyList<ExclusiveGroupStruct> groups)
             where T1 : struct, IEntityComponent where T2 : struct, IEntityComponent
         {
             return new GroupsEnumerable<T1, T2>(this, groups);
         }
+        
 
         public GroupsEnumerable<T1, T2, T3> QueryEntities<T1, T2, T3>
             (in LocalFasterReadOnlyList<ExclusiveGroupStruct> groups)
@@ -298,36 +304,6 @@ namespace Svelto.ECS
             return entitiesInGroupPerType.TryGetValue(new RefWrapperType(type), out typeSafeDictionary);
         }
 
-        internal bool FindIndex(uint entityID, ExclusiveGroupStruct @group, Type type, out uint index)
-        {
-            EGID entityGID = new EGID(entityID, @group);
-
-            index = default;
-
-            if (UnsafeQueryEntityDictionary(@group, type, out var safeDictionary) == false)
-                return false;
-
-            if (safeDictionary.TryFindIndex(entityGID.entityID, out index) == false)
-                return false;
-
-            return true;
-        }
-
-        internal uint GetIndex(uint entityID, ExclusiveGroupStruct @group, Type type)
-        {
-            EGID entityGID = new EGID(entityID, @group);
-
-            if (UnsafeQueryEntityDictionary(@group, type, out var safeDictionary) == false)
-            {
-                throw new EntityNotFoundException(entityGID, type);
-            }
-
-            if (safeDictionary.TryFindIndex(entityGID.entityID, out var index) == false)
-                throw new EntityNotFoundException(entityGID, type);
-
-            return index;
-        }
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         static IBuffer<T> RetrieveEmptyEntityComponentArray<T>() where T : struct, IEntityComponent
         {
@@ -376,7 +352,6 @@ namespace Svelto.ECS
         FasterDictionary<RefWrapperType, FasterDictionary<ExclusiveGroupStruct, ITypeSafeDictionary>> groupsPerEntity =>
             _enginesRoot._groupsPerEntity;
 
-        EnginesRoot.LocatorMap _entityLocator;
-        
+        EnginesRoot.LocatorMap _entityReferencesMap;
     }
 }
