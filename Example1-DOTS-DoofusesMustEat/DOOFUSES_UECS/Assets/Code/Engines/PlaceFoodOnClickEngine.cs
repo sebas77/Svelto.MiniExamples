@@ -1,6 +1,4 @@
-using System;
 using System.Collections;
-using System.Threading;
 using Svelto.Common;
 using Svelto.ECS.EntityComponents;
 using Svelto.ECS.Extensions.Unity;
@@ -8,6 +6,8 @@ using Svelto.ECS.Native;
 using Svelto.Tasks;
 using Svelto.Tasks.Enumerators;
 using Svelto.Tasks.ExtraLean;
+using Unity.Burst;
+using Unity.Collections.LowLevel.Unsafe;
 using Unity.Entities;
 using Unity.Jobs;
 using Unity.Mathematics;
@@ -37,50 +37,29 @@ namespace Svelto.ECS.MiniExamples.Example1C
 
             while (true)
             {
+                _inputDeps = default;
                 //note: in a complex project an engine shouldn't ever poll input directly, it should instead poll
                 //entity states
                 if (Input.GetMouseButton(0) || Input.GetMouseButton(1) == true)
                 {
-                    var _random = new Random((uint) DateTime.Now.Ticks);
                     //I am cheating a bit with the MouseToPosition function, but for the purposes of this demo
                     //creating a Camera Entity was an overkill
                     if (UnityUtilities.MouseToPosition(out Vector3 position))
                     {
-                        //BuildEntity returns an EntityInitialized that is used to set the default values of the
-                        //entity that will be built.
-                        for (int i = 0; i < MaxMeals; i++)
+                        if (Input.GetMouseButton(0))
                         {
-                            NativeEntityInitializer init; 
-
-                            var randX       = position.x + _random.NextFloat(-50, 50);
-                            var randZ       = position.z + _random.NextFloat(-50, 50);
-                            var newposition = new float3(randX, position.y, randZ);
-
-                            bool isRed;
-
-                            if (Input.GetMouseButton(0))
-                            {
-                                init = _entityFactory.BuildEntity(
-                                    new EGID(_foodPlaced++, GameGroups.RED_FOOD_NOT_EATEN.BuildGroup)
-                                  , Thread.CurrentThread.ManagedThreadId);
-                                isRed = true;
-                            }
-                            else
-                            {
-                                init = _entityFactory.BuildEntity(
-                                    new EGID(_foodPlaced++, GameGroups.BLUE_FOOD_NOT_EATEN.BuildGroup)
-                                  , Thread.CurrentThread.ManagedThreadId);
-
-                                isRed = false;
-                            }
-
-                            init.Init(new PositionEntityComponent
-                            {
-                                position = newposition
-                            });
-                            //these structs are used for ReactOnAdd callback to create unity Entities later
-                            init.Init(new SpawnPointEntityComponent(isRed ? _redfood : _bluefood, newposition));
+                            _inputDeps =
+                                new PlaceFood(position, _entityFactory, GameGroups.RED_FOOD_NOT_EATEN.BuildGroup
+                                            , _redfood, _foodPlaced).ScheduleParallel(MaxMeals, _inputDeps);
                         }
+                        else
+                        {
+                            _inputDeps =
+                                new PlaceFood(position, _entityFactory, GameGroups.BLUE_FOOD_NOT_EATEN.BuildGroup
+                                            , _bluefood, _foodPlaced).ScheduleParallel(MaxMeals, _inputDeps);
+                        }
+
+                        _foodPlaced += MaxMeals;
 
                         while (timer.IsDone() == false)
                             yield return Yield.It;
@@ -91,10 +70,58 @@ namespace Svelto.ECS.MiniExamples.Example1C
             }
         }
 
+        [BurstCompile]
+        struct PlaceFood : IJobParallelFor
+        {
+            readonly                        Vector3                  _position;
+            readonly                        NativeEntityFactory      _entityFactory;
+            readonly                        ExclusiveBuildGroup      _exclusiveBuildGroup;
+            readonly                        Entity                      _prefabID;
+            readonly                        uint                     _foodPlaced;
+            public                          Unity.Mathematics.Random _random;
+            [NativeSetThreadIndex] readonly int                      _threadIndex;
+
+            public PlaceFood
+            (Vector3 position, NativeEntityFactory factory, ExclusiveBuildGroup exclusiveBuildGroup, Entity prefabID
+           , uint foodPlaced) : this()
+            {
+                _position            = position;
+                _entityFactory       = factory;
+                _exclusiveBuildGroup = exclusiveBuildGroup;
+                _prefabID            = prefabID;
+                _foodPlaced          = foodPlaced;
+                _random              = new Random(foodPlaced + 1);
+            }
+
+            public void Execute(int index)
+            {
+                //BuildEntity returns an EntityInitialized that is used to set the default values of the
+                //entity that will be built.
+                NativeEntityInitializer init;
+
+                var randX       = _position.x + _random.NextFloat(-50, 50);
+                var randZ       = _position.z + _random.NextFloat(-50, 50);
+                var newposition = new float3(randX, _position.y, randZ);
+
+                init = _entityFactory.BuildEntity(new EGID((uint) (_foodPlaced + index), _exclusiveBuildGroup)
+                                                , _threadIndex);
+
+                init.Init(new PositionEntityComponent
+                {
+                    position = newposition
+                });
+                //these structs are used for ReactOnAdd callback to create unity Entities later
+                init.Init(new SpawnPointEntityComponent(_prefabID, newposition));
+            }
+        }
+
         public EntitiesDB entitiesDB { private get; set; }
 
-        public void Ready() { CheckClick().RunOn(UIInteractionRunner); }
-        
+        public void Ready()
+        {
+            CheckClick().RunOn(UIInteractionRunner);
+        }
+
         /// <summary>
         /// Beware of this engine. Reading directly the input like I am doing in this class is a bad practice
         /// The input should always be read in separate input specialised classes and translated in pure ECS values,
@@ -108,19 +135,22 @@ namespace Svelto.ECS.MiniExamples.Example1C
         /// </summary>
         /// <param name="inputDeps"></param>
         /// <returns></returns>
-        public JobHandle Execute(JobHandle _jobHandle)
+        public JobHandle Execute(JobHandle inputDeps)
         {
+            _inputDeps = inputDeps;
+
             UIInteractionRunner.Step();
 
-            return _jobHandle;
+            return _inputDeps;
         }
 
         static readonly SteppableRunner UIInteractionRunner = new SteppableRunner("UIInteraction");
 
-        readonly NativeEntityFactory _entityFactory;
-        readonly Entity         _redfood;
-        readonly Entity         _bluefood;
+        readonly Entity _redfood;
+        readonly Entity _bluefood;
+        uint         _foodPlaced;
 
-        uint _foodPlaced;
+        readonly NativeEntityFactory _entityFactory;
+        JobHandle                    _inputDeps;
     }
 }

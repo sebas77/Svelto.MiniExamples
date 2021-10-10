@@ -1,6 +1,4 @@
-using System;
 using System.Collections;
-using System.Threading;
 using Svelto.Common;
 using Svelto.ECS.Extensions.Unity;
 using Svelto.ECS.MiniExamples.GameObjectsLayer;
