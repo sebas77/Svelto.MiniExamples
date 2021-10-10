@@ -43,8 +43,10 @@
   <ItemGroup>
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Components\EGIDComponent.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Components\EntityHierarchyComponent.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.ecs\Components\EntityReferenceComponent.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Components\LinkedEntityComponent.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\AllowMultipleAttribute.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\AssemblyUtility.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\CheckEntityUtilities.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\ComponentBuilder.CheckFields.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\ComponentBuilder.cs" />
@@ -76,6 +78,10 @@
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\EntityInfoView.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\EntityInitializer.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\EntityNotFoundException.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\EntityReference\EnginesRoot.LocatorMap.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\EntityReference\EntitiesDB.References.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\EntityReference\EntityReference.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\EntityReference\EntityReferenceMapElement.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\EntitySubmissionScheduler.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\EntitySubmitOperation.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\EntityViewUtility.cs" />
@@ -84,8 +90,11 @@
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Filters\FilteredIndices.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Filters\GroupFilters.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\GlobalTypeID.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\GroupHashMap.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\GroupNamesMap.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Groups\ExclusiveBuildGroup.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Groups\ExclusiveGroup.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Groups\ExclusiveGroupBitmask.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Groups\ExclusiveGroupStruct.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Groups\GroupCompound.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Groups\NamedExclusiveGroup.cs" />
@@ -100,8 +109,10 @@
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\IEntityFactory.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\IEntityFunctions.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\INeedEGID.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\INeedEntityReference.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\IQueryingEntitiesEngine.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\QueryGroups.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\ReactEngineContainer.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\SetEGIDWithoutBoxing.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\SimpleEntitiesSubmissionScheduler.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\SpecialEnumerators\DoubleIterationEnumerator.cs" />
@@ -114,9 +125,7 @@
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Streams\GenericentityStreamConsumerFactory.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Streams\ThreadSafeNativeEntityStream.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\TypeSafeDictionaryFactory.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.ecs\DataStructures\FastTypeSafeDictionary.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\DataStructures\ITypeSafeDictionary.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.ecs\DataStructures\ThreadSafeNativeBagTest.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\DataStructures\TypeSafeDictionary.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\DataStructures\TypeSafeDictionaryException.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\DataStructures\TypeSafeDictionaryUtilities.cs" />
@@ -126,26 +135,27 @@
      <Compile Include="Packages\com.sebaslab.svelto.ecs\DataStructures\Unmanaged\NativeDynamicArrayCast.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\DataStructures\Unmanaged\NativeDynamicArrayUnityExtension.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\DataStructures\Unmanaged\SharedNativeInt.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.ecs\DataStructures\Unmanaged\ThreadSafeNativeBag.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\DataStructures\Unmanaged\UnsafeArray.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\DataStructures\Unmanaged\UnsafeBlob.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.ecs\Debugger\ExclusiveGroupDebugger.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.ecs\Dispatcher\DispatchOnChange.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.ecs\Dispatcher\DispatchOnSet.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.ecs\Dispatcher\ReactiveValue.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\ECSResources\ECSResources.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\ECSResources\ECSString.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\DisposeDisposablesEngine.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\ProcessorCount.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Svelto\AllGroupsEnumerable.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Svelto\EGIDMultiMapper.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Svelto\EntitiesDBFiltersExtension.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Svelto\EntityCollectionExtension.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Svelto\EntityManagedDBExtensions.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Svelto\EntityNativeDBExtensions.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Svelto\ExclusiveGroupExtensions.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Svelto\FilterGroupExtensions.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Svelto\GroupsEnumerable.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\DOTS\Jobs\DisposeJob.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\DOTS\Jobs\IJobifiedEngine.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\DOTS\Jobs\JobifiedEnginesGroup.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\DOTS\Jobs\SortedJobifiedEnginesGroup.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\DOTS\Jobs\UnityJobExtensions.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\DOTS\Jobs\UnsortedJobifiedEnginesGroup.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\DOTS\Native\EnginesRoot.NativeOperation.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\DOTS\Native\NativeEGIDMapper.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\DOTS\Native\NativeEGIDMultiMapper.cs" />
@@ -153,7 +163,7 @@
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\DOTS\Native\NativeEntityInitializer.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\DOTS\Native\NativeEntityRemove.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\DOTS\Native\NativeEntitySwap.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\DOTS\Native\UnityEntityDBExtensions.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\DOTS\Native\UnityNativeEntityDBExtensions.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\DOTS\UECS\JobifiedSveltoEngines.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\DOTS\UECS\SubmissionEngine.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\DOTS\UECS\SveltoOverUECSEnginesGroup.cs" />
@@ -161,10 +171,13 @@
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\DOTS\UECS\SyncSveltoToUECSGroup.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\DOTS\UECS\SyncUECSToSveltoGroup.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\DOTS\UECS\UECSSveltoEGID.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\EGIDHolderImplementor.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\EntityDescriptorHolderHelper.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\GenericEntityDescriptorHolder.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\SveltoGUIHelper.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\GameObjects\AbstractionLayer\GOManager.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\GameObjects\EntityDescriptorHolder.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\GameObjects\GenericEntityDescriptorHolder.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\GameObjects\Implementors\EntityReferenceHolderImplementor.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\GameObjects\ListToPopupDrawer.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\GameObjects\SveltoGUIHelper.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\MonoScheduler.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\UnityEntitiesSubmissionScheduler.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Serialization\ComposedComponentSerializer.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Serialization\DefaultSerializer.cs" />
@@ -189,7 +202,9 @@
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Serialization\SerializationEntityDescriptorTemplate.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Serialization\SerializerExt.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Serialization\SimpleSerializationData.cs" />
+     <None Include="Packages\com.sebaslab.svelto.ecs\version.json" />
      <None Include="Packages\com.sebaslab.svelto.ecs\Svelto.ECS.asmdef" />
+     <None Include="Packages\com.sebaslab.svelto.ecs\package.json" />
      <Reference Include="UnityEngine">
      <HintPath>C:/Program Files/Unity/Hub/Editor/2019.4.31f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
      </Reference>
@@ -382,8 +397,11 @@
      <Reference Include="UnityEditor.WindowsStandalone.Extensions">
      <HintPath>C:/Program Files/Unity/Hub/Editor/2019.4.31f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll</HintPath>
      </Reference>
+     <Reference Include="UnityEditor.WebGL.Extensions">
+     <HintPath>C:/Program Files/Unity/Hub/Editor/2019.4.31f1/Editor/Data/PlaybackEngines/WebGLSupport/UnityEditor.WebGL.Extensions.dll</HintPath>
+     </Reference>
      <Reference Include="System.Runtime.CompilerServices.Unsafe">
-     <HintPath>C:/Prgdir/Svelto/Svelto.MiniExamples/Example3-Unity Hybrid-GUI/Packages/com.sebaslab.svelto.unsafe@4.7.1/System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+     <HintPath>C:/Prgdir/Svelto/Svelto.MiniExamples/Example3-Unity Hybrid-GUI/Packages/com.sebaslab.svelto.unsafe/System.Runtime.CompilerServices.Unsafe.dll</HintPath>
      </Reference>
      <Reference Include="netstandard">
      <HintPath>C:/Program Files/Unity/Hub/Editor/2019.4.31f1/Editor/Data/NetStandard/ref/2.0.0/netstandard.dll</HintPath>

@@ -9,12 +9,6 @@ namespace Svelto.ECS.DataStructures
 {
     public unsafe struct AtomicNativeBags:IDisposable
     {
-        [global::Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction]
-        
-        NativeBag* _data;
-        readonly Allocator _allocator;
-        readonly uint _threadsCount;
-
         public uint count => _threadsCount;
 
         public AtomicNativeBags(Allocator allocator)
@@ -40,18 +34,22 @@ namespace Svelto.ECS.DataStructures
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ref NativeBag GetBuffer(int index)
+        public readonly ref NativeBag GetBuffer(int index)
         {
+#if DEBUG            
             if (_data == null)
                 throw new Exception("using invalid AtomicNativeBags");
+#endif            
             
             return ref MemoryUtilities.ArrayElementAsRef<NativeBag>((IntPtr) _data, index);
         }
 
         public void Dispose()
         {
+#if DEBUG            
             if (_data == null)
                 throw new Exception("using invalid AtomicNativeBags");
+#endif            
             
             for (int i = 0; i < _threadsCount; i++)
             {
@@ -63,14 +61,27 @@ namespace Svelto.ECS.DataStructures
 
         public void Clear()
         {
+#if DEBUG            
             if (_data == null)
                 throw new Exception("using invalid AtomicNativeBags");
+#endif            
             
             for (int i = 0; i < _threadsCount; i++)
             {
                 GetBuffer(i).Clear();
             }
         }
+        
+        readonly Allocator _allocator;
+        readonly uint      _threadsCount;
+        
+#if UNITY_COLLECTIONS || UNITY_JOBS || UNITY_BURST    
+#if UNITY_BURST
+        [Unity.Burst.NoAlias]
+#endif
+        [Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction]
+#endif
+        NativeBag* _data;
     }
 }
 #endif

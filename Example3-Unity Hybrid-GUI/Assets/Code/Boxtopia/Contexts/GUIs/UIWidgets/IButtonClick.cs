@@ -4,7 +4,7 @@ namespace Boxtopia.GUIs.Generic
 {
     public interface IButtonClick
     {
-        DispatchOnSet<ButtonEvents> buttonEvent { get; set; }
+        ReactiveValue<ButtonEvents> buttonEvent { get; set; }
         
         ButtonEvents action { set; }
     }

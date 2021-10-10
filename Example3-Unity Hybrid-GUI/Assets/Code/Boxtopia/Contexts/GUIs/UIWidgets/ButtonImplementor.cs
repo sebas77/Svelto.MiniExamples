@@ -19,7 +19,7 @@ namespace Boxtopia.GUIs.Generic
     public class ButtonImplementor : MonoBehaviour, IButtonClick, IUIState, IImplementor
     {
         public ButtonEvents message;
-        public DispatchOnSet<ButtonEvents> buttonEvent { get; set; }
+        public ReactiveValue<ButtonEvents> buttonEvent { get; set; }
         public ButtonEvents action { set => message = value; }
 
         void Awake()

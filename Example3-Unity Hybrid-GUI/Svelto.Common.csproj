@@ -54,18 +54,12 @@
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Arrays\FasterList.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Arrays\FasterListEnumerator.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Arrays\FasterReadOnlyList.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Arrays\IBuffer.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Arrays\LocalFasterReadOnlyList.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Arrays\MB.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Arrays\NB.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Arrays\ThreadSafeFasterList.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Dictionaries\FasterDictionary.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Dictionaries\IBufferStrategy.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Dictionaries\IFasterDictionary.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Dictionaries\ISveltoDictionary.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Dictionaries\ManagedStrategy.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Dictionaries\ManagedSveltoDictionary.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Dictionaries\NativeStrategy.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Dictionaries\LocalReadonlySveltoDictionaryNative.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Dictionaries\LocalSveltoDictionaryNative.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Dictionaries\ReadonlySveltoDictionaryNative.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Dictionaries\SharedSveltoDictionaryNative.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Dictionaries\SparseSet.cs" />
@@ -73,8 +67,13 @@
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Dictionaries\SveltoDictionaryNative.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Dictionaries\SveltoDictionaryNode.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Dictionaries\ThreadSafeDictionary.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\DualMemorySupport\IBuffer.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\DualMemorySupport\IBufferStrategy.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\DualMemorySupport\MB.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\DualMemorySupport\ManagedStrategy.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\DualMemorySupport\NB.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\DualMemorySupport\NativeStrategy.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\HashHelpers.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\ReadOnlyCollectionStruct.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\RefWrapper.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\RingBuffer.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\TypeCache.cs" />
@@ -87,7 +86,6 @@
      <Compile Include="Packages\com.sebaslab.svelto.common\ObjectPool\Unity\PoolDebugger.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\PlatformProfiler\PlatformProfiler.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\PlatformProfiler\StandardProfiler.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.common\PlatformProfiler\Unity\OldUnityPlatform.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\PlatformProfiler\Unity\UnityPlatform.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\Sequencer\Sequence.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\Utilities\ActionRef.cs" />
@@ -108,6 +106,8 @@
      <Compile Include="Packages\com.sebaslab.svelto.common\Utilities\TypeToString.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\Utilities\UnmanagedTypeExtensions.cs" />
      <None Include="Packages\com.sebaslab.svelto.common\Svelto.Common.asmdef" />
+     <None Include="Packages\com.sebaslab.svelto.common\version.json" />
+     <None Include="Packages\com.sebaslab.svelto.common\package.json" />
      <Reference Include="UnityEngine">
      <HintPath>C:/Program Files/Unity/Hub/Editor/2019.4.31f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
      </Reference>
@@ -300,8 +300,11 @@
      <Reference Include="UnityEditor.WindowsStandalone.Extensions">
      <HintPath>C:/Program Files/Unity/Hub/Editor/2019.4.31f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll</HintPath>
      </Reference>
+     <Reference Include="UnityEditor.WebGL.Extensions">
+     <HintPath>C:/Program Files/Unity/Hub/Editor/2019.4.31f1/Editor/Data/PlaybackEngines/WebGLSupport/UnityEditor.WebGL.Extensions.dll</HintPath>
+     </Reference>
      <Reference Include="System.Runtime.CompilerServices.Unsafe">
-     <HintPath>C:/Prgdir/Svelto/Svelto.MiniExamples/Example3-Unity Hybrid-GUI/Packages/com.sebaslab.svelto.unsafe@4.7.1/System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+     <HintPath>C:/Prgdir/Svelto/Svelto.MiniExamples/Example3-Unity Hybrid-GUI/Packages/com.sebaslab.svelto.unsafe/System.Runtime.CompilerServices.Unsafe.dll</HintPath>
      </Reference>
      <Reference Include="netstandard">
      <HintPath>C:/Program Files/Unity/Hub/Editor/2019.4.31f1/Editor/Data/NetStandard/ref/2.0.0/netstandard.dll</HintPath>

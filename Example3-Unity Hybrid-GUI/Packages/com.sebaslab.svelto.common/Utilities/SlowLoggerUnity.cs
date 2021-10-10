@@ -128,10 +128,10 @@ namespace Svelto.Utilities
         public void OnLoggerAdded()
         {
             projectFolder = Application.dataPath.Replace("Assets", "");
-
+#if !UNITY_EDITOR
             Application.SetStackTraceLogType(UnityEngine.LogType.Warning, StackTraceLogType.None);
             Application.SetStackTraceLogType(UnityEngine.LogType.Log, StackTraceLogType.None);
-
+#endif
             Console.Log("Slow Unity Logger added");
         }
 

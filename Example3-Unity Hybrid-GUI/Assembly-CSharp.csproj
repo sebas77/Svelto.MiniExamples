@@ -110,6 +110,7 @@
      <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_Bitmap-Mobile.shader" />
      <None Include="Assets\TextMesh Pro\Fonts\LiberationSans - OFL.txt" />
      <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Mobile.shader" />
+     <None Include="Assets\TextMesh Pro\Sprites\EmojiOne.json" />
      <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_Sprite.shader" />
      <Reference Include="UnityEngine">
      <HintPath>C:/Program Files/Unity/Hub/Editor/2019.4.31f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
@@ -295,7 +296,7 @@
      <HintPath>C:/Program Files/Unity/Hub/Editor/2019.4.31f1/Editor/Data/Managed/UnityEditor.dll</HintPath>
      </Reference>
      <Reference Include="System.Runtime.CompilerServices.Unsafe">
-     <HintPath>C:/Prgdir/Svelto/Svelto.MiniExamples/Example3-Unity Hybrid-GUI/Packages/com.sebaslab.svelto.unsafe@4.7.1/System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+     <HintPath>C:/Prgdir/Svelto/Svelto.MiniExamples/Example3-Unity Hybrid-GUI/Packages/com.sebaslab.svelto.unsafe/System.Runtime.CompilerServices.Unsafe.dll</HintPath>
      </Reference>
      <Reference Include="netstandard">
      <HintPath>C:/Program Files/Unity/Hub/Editor/2019.4.31f1/Editor/Data/NetStandard/ref/2.0.0/netstandard.dll</HintPath>

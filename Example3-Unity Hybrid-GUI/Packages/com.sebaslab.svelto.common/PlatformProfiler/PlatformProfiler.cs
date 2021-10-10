@@ -13,6 +13,8 @@ namespace Svelto.Common
     {
         public void Dispose()
         {}
+
+        public PauseProfiler Yield() { return default; }
     }
     
     public struct PlatformProfilerMT : IPlatformProfiler
@@ -22,12 +24,12 @@ namespace Svelto.Common
         
         public DisposableSampler Sample(string samplerName, string samplerInfo = null)
         {
-            return new DisposableSampler();
+            return default;
         }
 
         public DisposableSampler Sample<T>(T sampled, string samplerInfo = null)
         {
-            return new DisposableSampler();
+            return default;
         }
 
         public void Dispose()
@@ -41,16 +43,25 @@ namespace Svelto.Common
 
         public DisposableSampler Sample(string samplerName, string samplerInfo = null)
         {
-            return new DisposableSampler();
+            return default;
         }
         
         public DisposableSampler Sample<T>(T samplerName, string samplerInfo = null)
         {
-            return new DisposableSampler();
+            return default;
         }
+        
+        public PauseProfiler Yield() { return default; }
 
         public void Dispose()
         {}
     }
+    
+    public readonly struct PauseProfiler : IDisposable
+        {
+            public void Dispose()
+            {
+            }
+        }
 #endif
 }

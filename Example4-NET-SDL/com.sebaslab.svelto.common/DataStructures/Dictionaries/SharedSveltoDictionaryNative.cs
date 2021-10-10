@@ -2,7 +2,7 @@ using System;
 using System.Runtime.CompilerServices;
 using Svelto.Common;
 
-namespace Svelto.DataStructures
+namespace Svelto.DataStructures.Native
 {
     /// <summary>
     /// This dictionary has been created for just one reason: I needed a dictionary that would have let me iterate
@@ -15,22 +15,17 @@ namespace Svelto.DataStructures
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
-    public struct SharedSveltoDictionaryNative<TKey, TValue>
+    public struct SharedSveltoDictionaryNative<TKey, TValue>: ISveltoDictionary<TKey, TValue>
         where TKey : unmanaged, IEquatable<TKey> where TValue : struct
     {
-        public SharedSveltoDictionaryNative(uint size) : this(size, Allocator.Persistent)
-        {
-        }
-
-        public SharedSveltoDictionaryNative(uint size, Allocator nativeAllocator)
+        public SharedSveltoDictionaryNative(uint size)
         {
             var dictionary =
                 new SveltoDictionary<TKey, TValue, NativeStrategy<SveltoDictionaryNode<TKey>>, NativeStrategy<TValue>,
-                NativeStrategy<int>>(
-                    size, nativeAllocator);
-            int structSize = MemoryUtilities.SizeOf<SveltoDictionary<TKey, TValue, NativeStrategy<SveltoDictionaryNode<TKey>>, NativeStrategy<TValue>,
-                NativeStrategy<int>>>();
-            _sharedDictionary = MemoryUtilities.Alloc((uint) structSize, Allocator.Persistent);
+                NativeStrategy<int>>(size, Allocator.Persistent);
+            
+            _sharedDictionary = MemoryUtilities.Alloc<SveltoDictionary<TKey, TValue, NativeStrategy<SveltoDictionaryNode<TKey>>, NativeStrategy<TValue>,
+                NativeStrategy<int>>>(1, Allocator.Persistent);
 
             _dictionary = dictionary;
         }
@@ -42,9 +37,8 @@ namespace Svelto.DataStructures
             return _dictionary._values.ToRealBuffer();
         }
 
-        public SveltoDictionary<TKey, TValue, NativeStrategy<SveltoDictionaryNode<TKey>>, NativeStrategy<TValue>,
-            NativeStrategy<int>>.
-            SveltoDictionaryKeyValueEnumerator GetEnumerator() => _dictionary.GetEnumerator();
+        public SveltoDictionaryKeyValueEnumerator<TKey, TValue, NativeStrategy<SveltoDictionaryNode<TKey>>,
+            NativeStrategy<TValue>, NativeStrategy<int>> GetEnumerator() => _dictionary.GetEnumerator();
 
         public int count
         {
@@ -115,9 +109,9 @@ namespace Svelto.DataStructures
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void SetCapacity(uint size)
+        public void ResizeTo(uint size)
         {
-            _dictionary.SetCapacity(size);
+            _dictionary.ResizeTo(size);
         }
 
         public TValue this[TKey key]
@@ -155,8 +149,15 @@ namespace Svelto.DataStructures
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Dispose()
         {
+#if DEBUG && !PROFILE_SVELTO
+            if (_sharedDictionary == null)
+                throw new Exception("SharedSveltoDictionary: try to dispose an already disposed array");
+#endif                
+            
             _dictionary.Dispose();
+            
             MemoryUtilities.Free(_sharedDictionary, Allocator.Persistent);
+            _sharedDictionary = IntPtr.Zero;
         }
 
         ref SveltoDictionary<TKey, TValue, NativeStrategy<SveltoDictionaryNode<TKey>>, NativeStrategy<TValue>, NativeStrategy<int>>
@@ -173,9 +174,9 @@ namespace Svelto.DataStructures
             }
         }
 
-#if UNITY_NATIVE
+#if UNITY_COLLECTIONS || UNITY_JOBS || UNITY_BURST
         [Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction]
 #endif
-        readonly IntPtr _sharedDictionary;
+        IntPtr _sharedDictionary;
     }
 }

@@ -20,7 +20,7 @@ namespace Svelto.Tasks
         event Action                onComplete;
         event Func<Exception, bool> onException;
 
-        ref IEnumerator CurrentStack { get; }
+        ref T CurrentStack { get; }
         
         void Add(in T enumerator);
         void Clear();
@@ -29,7 +29,7 @@ namespace Svelto.Tasks
     }
 
     public abstract partial class TaskCollection<T>:ITaskCollection<T>
-       where T:class, IEnumerator<TaskContract> //eventually this could go back to IEnumerator if makes sense
+       where T:IEnumerator<TaskContract> //eventually this could go back to IEnumerator if makes sense
     {
         public event Action                onComplete;
         public event Func<Exception, bool> onException;
@@ -125,7 +125,7 @@ namespace Svelto.Tasks
             _currentStackIndex = 0;
         }
 
-        public ref IEnumerator CurrentStack => ref _listOfStacks[_currentStackIndex].Peek();
+        public ref T CurrentStack => ref _listOfStacks[_currentStackIndex].Peek();
 
         public TaskContract Current
         {
@@ -166,7 +166,7 @@ namespace Svelto.Tasks
             if (isDone == true)
                 return TaskState.doneIt;
 
-            if (enumerator is IEnumerator<TaskContract> taskContractEn)
+            if (enumerator is T taskContractEn)
             {
                 //Svelto.Tasks Tasks IEnumerator are always IEnumerator returning an object so Current is always an object
                 //can yield for one iteration
@@ -177,10 +177,8 @@ namespace Svelto.Tasks
                 if (taskContractEn.Current.breakIt == Break.It || taskContractEn.Current.breakIt == Break.AndStop)
                     return TaskState.breakIt;
 
-                if (taskContractEn.Current.enumerator != null) //can be a compatible IEnumerator
                     //careful it must be the array and not the list as it returns a struct!!
-                    listOfStacks[_currentStackIndex]
-                        .Push(taskContractEn.Current.enumerator); //push the new yielded task and execute it immediately
+                 listOfStacks[_currentStackIndex].Push(taskContractEn); //push the new yielded task and execute it immediately
             }
 
             return TaskState.continueIt;

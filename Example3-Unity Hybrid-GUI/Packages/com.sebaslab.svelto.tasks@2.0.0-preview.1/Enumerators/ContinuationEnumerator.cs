@@ -3,7 +3,7 @@ using Svelto.Tasks.Internal;
 
 namespace Svelto.Tasks.Enumerators
 {
-    public struct ContinuationEnumerator
+    public readonly struct ContinuationEnumerator
     {
         internal readonly ContinuationEnumeratorInternal ce;
         
@@ -13,9 +13,9 @@ namespace Svelto.Tasks.Enumerators
             ce = continuator;
         }
 
-        public bool isRunning => ce.MoveNext(ref _signature);
+        public bool isRunning => ce.MoveNext(_signature);
 
-        DateTime _signature;
+        readonly DateTime _signature;
     }
     
     /// <summary>
@@ -28,7 +28,7 @@ namespace Svelto.Tasks.Enumerators
             signature = DateTime.Now;
         }
         
-        public bool MoveNext(ref DateTime signature)
+        public bool MoveNext(in DateTime signature)
         {
             return signature == this.signature;
         }

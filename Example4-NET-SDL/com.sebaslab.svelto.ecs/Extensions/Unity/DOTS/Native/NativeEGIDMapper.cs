@@ -3,26 +3,37 @@ using System;
 using System.Runtime.CompilerServices;
 using Svelto.Common;
 using Svelto.DataStructures;
+using Svelto.DataStructures.Native;
 
-namespace Svelto.ECS
+namespace Svelto.ECS.Native
 {
-    public readonly struct NativeEGIDMapper<T>:IEGIDMapper where T : unmanaged, IEntityComponent
+    /// <summary>
+    /// Note: this class should really be ref struct by design. It holds the reference of a dictionary that can become
+    /// invalid. Unfortunately it can be a ref struct, because Jobs needs to hold if by paramater. So the deal is
+    /// that a job can use it as long as nothing else is modifying the entities database and the NativeEGIDMapper
+    /// is disposed right after the use.
+    /// </summary>
+    public readonly struct NativeEGIDMapper<T> : IEGIDMapper where T : unmanaged, IEntityComponent
     {
         public NativeEGIDMapper
-        (ExclusiveGroupStruct groupStructId, SveltoDictionaryNative<uint, T> toNative) : this()
+        (ExclusiveGroupStruct groupStructId
+       , SveltoDictionary<uint, T, NativeStrategy<SveltoDictionaryNode<uint>>, NativeStrategy<T>, NativeStrategy<int>>
+             toNative) : this()
         {
             groupID = groupStructId;
-            _map     = toNative;
+            _map    = new SveltoDictionaryNative<uint, T>();
+            
+            _map.UnsafeCast(toNative);
         }
 
-        public int   count => _map.count;
-        public Type entityType  => TypeCache<T>.type;
-        public   ExclusiveGroupStruct                    groupID { get; }
+        public int                  count      => _map.count;
+        public Type                 entityType => TypeCache<T>.type;
+        public ExclusiveGroupStruct groupID    { get; }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref T Entity(uint entityID)
         {
-#if DEBUG && !PROFILE_SVELTO
+#if DEBUG
             if (_map.TryFindIndex(entityID, out var findIndex) == false)
                 throw new Exception("Entity not found in this group ".FastConcat(typeof(T).ToString()));
 #else
@@ -35,14 +46,12 @@ namespace Svelto.ECS
         public bool TryGetEntity(uint entityID, out T value)
         {
             if (_map.count > 0 && _map.TryFindIndex(entityID, out var index))
-            {
                 unsafe
                 {
                     value = Unsafe.AsRef<T>(Unsafe.Add<T>((void*) _map.GetValues(out _).ToNativeArray(out _)
                                                         , (int) index));
                     return true;
                 }
-            }
 
             value = default;
             return false;
@@ -52,11 +61,13 @@ namespace Svelto.ECS
         public NB<T> GetArrayAndEntityIndex(uint entityID, out uint index)
         {
             if (_map.TryFindIndex(entityID, out index))
-            {
                 return new NB<T>(_map.GetValues(out var count).ToNativeArray(out _), count);
-            }
 
+#if DEBUG
             throw new ECSException("Entity not found");
+#else
+            return default;
+#endif
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -90,8 +101,8 @@ namespace Svelto.ECS
         {
             return _map.TryFindIndex(valueKey, out index);
         }
-        
-        readonly ReadonlySveltoDictionaryNative<uint, T> _map;
+
+        readonly SveltoDictionaryNative<uint, T> _map;
     }
 }
 #endif

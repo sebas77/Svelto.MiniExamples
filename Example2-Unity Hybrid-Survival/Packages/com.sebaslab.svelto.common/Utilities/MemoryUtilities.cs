@@ -93,17 +93,17 @@ namespace Svelto.Common
             var signedCapacity = (int) SignedCapacity(newCapacityInBytes);
             IntPtr newPointer = IntPtr.Zero;
 #if UNITY_COLLECTIONS
-            var allocator1 = (Unity.Collections.Allocator) allocator;
+            var castedAllocator = (Unity.Collections.Allocator) allocator;
             unsafe
             {
                 var tempPointer =
                     Unity.Collections.LowLevel.Unsafe.UnsafeUtility.Malloc(
-                        signedCapacity, (int) OptimalAlignment.alignment, allocator1);
+                        signedCapacity, (int) OptimalAlignment.alignment, castedAllocator);
 
                 newPointer = (IntPtr) tempPointer;
             }
 #else
-            newPointer = Marshal.AllocHGlobal(signedCapacity);
+            newPointer = Marshal.AllocHGlobal(signedCapacity); //this is guaranteed to be aligned by design
 #endif
             //Note MemClear is actually necessary
             if (clear && newCapacityInBytes > 0)
@@ -305,7 +305,12 @@ namespace Svelto.Common
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static uint Align4(uint input) { return (uint) (Math.Ceiling(input / 4.0) * 4); }
+        //todo unit test
+        public static uint Align4(uint input) => (uint) ((input + (4 - 1)) & ~(4 - 1));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        //todo unit test
+        public static uint Pad4(uint input) => (uint) (-input & (4 - 1));
 
         static long SignedCapacity(uint newCapacity)
         {

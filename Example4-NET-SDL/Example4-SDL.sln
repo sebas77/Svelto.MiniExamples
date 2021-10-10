@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Svelto-3.1", "Svelto-3.1", "{A4408A6A-8DEB-493E-A53B-4B1A1C76AFB5}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Svelto", "Svelto", "{A4408A6A-8DEB-493E-A53B-4B1A1C76AFB5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{2C0520A6-50F0-440D-933D-1E40EA9F49B4}"
 ProjectSection(SolutionItems) = preProject

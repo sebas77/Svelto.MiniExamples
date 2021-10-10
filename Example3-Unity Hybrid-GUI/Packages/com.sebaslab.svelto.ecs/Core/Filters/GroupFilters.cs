@@ -1,4 +1,5 @@
 ﻿using Svelto.DataStructures;
+using Svelto.DataStructures.Native;
 
 namespace Svelto.ECS
 {
@@ -40,8 +41,8 @@ namespace Svelto.ECS
             return filters.TryGetValue(filterIndex, out filter);
         }
 
-        public SveltoDictionary<int, FilterGroup, NativeStrategy<SveltoDictionaryNode<int>>, NativeStrategy<FilterGroup>
-          , NativeStrategy<int>>.SveltoDictionaryKeyValueEnumerator GetEnumerator()
+        public SveltoDictionaryKeyValueEnumerator<int, FilterGroup, NativeStrategy<SveltoDictionaryNode<int>>, NativeStrategy<FilterGroup>
+          , NativeStrategy<int>> GetEnumerator()
         {
             return filters.GetEnumerator();
         }

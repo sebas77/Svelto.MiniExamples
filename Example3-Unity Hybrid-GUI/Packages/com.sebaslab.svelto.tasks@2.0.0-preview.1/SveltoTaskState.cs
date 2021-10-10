@@ -1,5 +1,3 @@
-using Svelto.Utilities;
-
 namespace Svelto.Tasks
 {
         internal struct SveltoTaskState

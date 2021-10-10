@@ -58,7 +58,7 @@ namespace Boxtopia.GUIs.DisplayName
                 ExclusiveGroups.DisplayName, holder.transform, generateEntityFactory);
         }
 
-        public void OnContextDestroyed()
+        public void OnContextDestroyed(bool isInit)
         {
             BoxtopiaSchedulers.StopAllCoroutines();
 

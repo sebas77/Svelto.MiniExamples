@@ -1,8 +1,11 @@
 #if DISABLE_DBC || !DEBUG || PROFILE_SVELTO
 #define DISABLE_CHECKS
-using System.Diagnostics;
+#endif
+#if !ENABLE_PARANOID_CHECKS
+#define DISABLE_PARANOID_CHECKS
 #endif
 using System;
+
 namespace DBC.Common
 {
 	/// <summary>
@@ -60,7 +63,7 @@ namespace DBC.Common
 		/// Precondition check.
 		/// </summary>
 #if DISABLE_CHECKS
-		[Conditional("__NEVER_DEFINED__")]
+		[System.Diagnostics.Conditional("__NEVER_DEFINED__")]
 #endif
 		public static void Require(bool assertion, string message)
 		{
@@ -75,7 +78,7 @@ namespace DBC.Common
 		/// </summary>
 		/// 
 #if DISABLE_CHECKS
-		[Conditional("__NEVER_DEFINED__")]
+		[System.Diagnostics.Conditional("__NEVER_DEFINED__")]
 #endif
 		public static void Require(bool assertion, string message, Exception inner)
 		{
@@ -90,7 +93,7 @@ namespace DBC.Common
 		/// </summary>
 		/// 
 #if DISABLE_CHECKS
-		[Conditional("__NEVER_DEFINED__")]
+		[System.Diagnostics.Conditional("__NEVER_DEFINED__")]
 #endif
 		public static void Require(bool assertion)
 		{
@@ -99,13 +102,21 @@ namespace DBC.Common
 					throw new PreconditionException("Precondition failed.");
 			}
 		}
+#if DISABLE_PARANOID_CHECKS
+		[System.Diagnostics.Conditional("__PARANOID_NEVER_DEFINED__")]
+#endif
+		public static void ParanoidRequire(bool assertion, string message)
+		{
+			if (!assertion)	
+				throw new PreconditionException(message);
+		}		
 		
 		/// <summary>
 		/// Postcondition check.
 		/// </summary>
 		/// 
 #if DISABLE_CHECKS
-		[Conditional("__NEVER_DEFINED__")]
+		[System.Diagnostics.Conditional("__NEVER_DEFINED__")]
 #endif
 		public static void Ensure(bool assertion, string message)
 		{
@@ -120,7 +131,7 @@ namespace DBC.Common
 		/// </summary>
 		/// 
 #if DISABLE_CHECKS
-		[Conditional("__NEVER_DEFINED__")]
+		[System.Diagnostics.Conditional("__NEVER_DEFINED__")]
 #endif
 		public static void Ensure(bool assertion, string message, Exception inner)
 		{
@@ -135,7 +146,7 @@ namespace DBC.Common
 		/// </summary>
 		/// 
 #if DISABLE_CHECKS
-		[Conditional("__NEVER_DEFINED__")]
+		[System.Diagnostics.Conditional("__NEVER_DEFINED__")]
 #endif
 		public static void Ensure(bool assertion)
 		{
@@ -150,7 +161,7 @@ namespace DBC.Common
 		/// </summary>
 		/// 
 #if DISABLE_CHECKS
-		[Conditional("__NEVER_DEFINED__")]
+		[System.Diagnostics.Conditional("__NEVER_DEFINED__")]
 #endif
 		public static void Invariant(bool assertion, string message)
 		{
@@ -165,7 +176,7 @@ namespace DBC.Common
 		/// </summary>
 		/// 
 #if DISABLE_CHECKS
-		[Conditional("__NEVER_DEFINED__")]
+		[System.Diagnostics.Conditional("__NEVER_DEFINED__")]
 #endif
 		public static void Invariant(bool assertion, string message, Exception inner)
 		{
@@ -180,7 +191,7 @@ namespace DBC.Common
 		/// </summary>
 		/// 
 #if DISABLE_CHECKS
-		[Conditional("__NEVER_DEFINED__")]
+		[System.Diagnostics.Conditional("__NEVER_DEFINED__")]
 #endif
 		public static void Invariant(bool assertion)
 		{
@@ -194,7 +205,7 @@ namespace DBC.Common
 		/// Assertion check.
 		/// </summary>
 #if DISABLE_CHECKS
-		[Conditional("__NEVER_DEFINED__")]
+		[System.Diagnostics.Conditional("__NEVER_DEFINED__")]
 #endif
 		public static void Assert(bool assertion, string message)
 		{
@@ -209,7 +220,7 @@ namespace DBC.Common
 		/// </summary>
 		/// 
 #if DISABLE_CHECKS
-		[Conditional("__NEVER_DEFINED__")]
+		[System.Diagnostics.Conditional("__NEVER_DEFINED__")]
 #endif
 		public static void Assert(bool assertion, string message, Exception inner)
 		{
@@ -224,7 +235,7 @@ namespace DBC.Common
 		/// </summary>
 		/// 
 #if DISABLE_CHECKS
-		[Conditional("__NEVER_DEFINED__")]
+		[System.Diagnostics.Conditional("__NEVER_DEFINED__")]
 #endif
 		public static void Assert(bool assertion)
 		{
@@ -261,7 +272,6 @@ namespace DBC.Common
 		static bool useAssertions = false;
 
 		#endregion // Implementation
-
 	} // End Check
 
     #region Exceptions

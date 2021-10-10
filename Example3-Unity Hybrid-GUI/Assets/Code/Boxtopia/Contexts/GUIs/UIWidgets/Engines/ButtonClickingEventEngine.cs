@@ -14,9 +14,7 @@ namespace Boxtopia.GUIs.Generic
 
         public void Add(ref ButtonEntityViewComponent entityView, EGID egid)
         {
-            entityView.buttonClick.buttonEvent = new DispatchOnSet<ButtonEvents>(egid);
-            
-            entityView.buttonClick.buttonEvent.NotifyOnValueSet(_enqueueButtonChange);
+            entityView.buttonClick.buttonEvent = new ReactiveValue<ButtonEvents>(egid.ToEntityReference(entitiesDB), _enqueueButtonChange);
         }
 
         public void Remove(ref ButtonEntityViewComponent entityView, EGID egid)
@@ -24,13 +22,14 @@ namespace Boxtopia.GUIs.Generic
             entityView.buttonClick.buttonEvent.StopNotify();
         }
 
-        void EnqueueButtonChange(EGID egid, ButtonEvents value)
+        void EnqueueButtonChange(EntityReference reference, ButtonEvents value)
         {
+            var egid = reference.ToEGID(entitiesDB);
             entitiesDB.QueryEntity<ButtonEntityComponent>(egid) = new ButtonEntityComponent(egid, value);
             
             entitiesDB.PublishEntityChange<ButtonEntityComponent>(egid);
         }
         
-        Action<EGID, ButtonEvents> _enqueueButtonChange;
+        Action<EntityReference, ButtonEvents> _enqueueButtonChange;
    }
 }

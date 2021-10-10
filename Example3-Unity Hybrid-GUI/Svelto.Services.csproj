@@ -52,6 +52,7 @@
      <Compile Include="Packages\com.sebaslab.svelto.services@1.0.0-preview1\Unity\Web\IResponseHandler.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.services@1.0.0-preview1\Unity\Web\StandardWebRequest.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.services@1.0.0-preview1\Unity\Web\UnityDownloadHandler.cs" />
+     <None Include="Packages\com.sebaslab.svelto.services@1.0.0-preview1\package.json" />
      <None Include="Packages\com.sebaslab.svelto.services@1.0.0-preview1\Svelto.Services.asmdef" />
      <Reference Include="UnityEngine">
      <HintPath>C:/Program Files/Unity/Hub/Editor/2019.4.31f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
@@ -245,8 +246,11 @@
      <Reference Include="UnityEditor.WindowsStandalone.Extensions">
      <HintPath>C:/Program Files/Unity/Hub/Editor/2019.4.31f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll</HintPath>
      </Reference>
+     <Reference Include="UnityEditor.WebGL.Extensions">
+     <HintPath>C:/Program Files/Unity/Hub/Editor/2019.4.31f1/Editor/Data/PlaybackEngines/WebGLSupport/UnityEditor.WebGL.Extensions.dll</HintPath>
+     </Reference>
      <Reference Include="System.Runtime.CompilerServices.Unsafe">
-     <HintPath>C:/Prgdir/Svelto/Svelto.MiniExamples/Example3-Unity Hybrid-GUI/Packages/com.sebaslab.svelto.unsafe@4.7.1/System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+     <HintPath>C:/Prgdir/Svelto/Svelto.MiniExamples/Example3-Unity Hybrid-GUI/Packages/com.sebaslab.svelto.unsafe/System.Runtime.CompilerServices.Unsafe.dll</HintPath>
      </Reference>
      <Reference Include="netstandard">
      <HintPath>C:/Program Files/Unity/Hub/Editor/2019.4.31f1/Editor/Data/NetStandard/ref/2.0.0/netstandard.dll</HintPath>

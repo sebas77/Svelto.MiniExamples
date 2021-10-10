@@ -8,32 +8,32 @@ namespace Svelto.Common
     {
         static readonly ThreadLocal<Stopwatch> _stopwatch = new ThreadLocal<Stopwatch>(() => new Stopwatch());
 
-        readonly long   _startTime;
         readonly string _info;
 
+        static StandardProfiler()
+        {
+            _stopwatch.Value.Start();
+        }
+
+        //It doesn't make any sense to profile with two different patterns, either it's trough the main struct
+        //or through the Sample method. If both are provided, Sample is basically never used.
         public StandardProfiler(string info)
         {
             _info = info;
-            _stopwatch.Value.Start();
-            _startTime = _stopwatch.Value.ElapsedTicks;
         }
 
         public StandardDisposableSampler Sample(string samplerName, string samplerInfo = null)
         {
-            return new StandardDisposableSampler(samplerName, _stopwatch.Value);
+            return new StandardDisposableSampler(samplerName.FastConcat("-",_info), _stopwatch.Value);
         }
 
         public StandardDisposableSampler Sample<T>(T samplerName, string samplerInfo = null)
         {
-            return new StandardDisposableSampler(samplerName.ToString(), _stopwatch.Value);
+            return new StandardDisposableSampler(samplerName.ToString().FastConcat("-",_info), _stopwatch.Value);
         }
 
         public void Dispose()
-        {
-            _stopwatch.Value.Stop();
-            var stopwatchElapsedTicks = (_stopwatch.Value.ElapsedTicks - _startTime);
-            Svelto.Console.Log(_info.FastConcat(" -> ").FastConcat(stopwatchElapsedTicks / 10000.0));
-        }
+        { }
     }
 
     public class StandardDisposableSampler : IDisposable

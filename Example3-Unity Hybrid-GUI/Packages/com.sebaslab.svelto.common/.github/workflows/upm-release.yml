@@ -1,12 +1,16 @@
 name: Svelto.Common UPM Release 
 
 on:
+  workflow_dispatch:
+    inputs:
+      name:
+        description: 'Reason'
+        default: 'Manual workflow triggering'
   push:
     branches:
       - master
     paths:
       - version.json
-      - ".github/workflows/upm-release.yml"
 
 jobs:
   build:
