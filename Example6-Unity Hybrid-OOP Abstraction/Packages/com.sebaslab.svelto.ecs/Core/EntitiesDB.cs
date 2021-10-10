@@ -6,6 +6,7 @@ using System;
 using System.Runtime.CompilerServices;
 using Svelto.Common;
 using Svelto.DataStructures;
+using Svelto.DataStructures.Native;
 using Svelto.ECS.Internal;
 
 namespace Svelto.ECS
@@ -161,44 +162,6 @@ namespace Svelto.ECS
             return new GroupsEnumerable<T1, T2>(this, groups);
         }
         
-        // public EntityCollection<T1, T2> QueryEntities<T1, T2>
-        //     (FasterReadOnlyList<ExclusiveGroupStruct> groups, QueryPredicate<T1, T2> predicate) 
-        //     where T1 : struct, IEntityComponent where T2 : struct, IEntityComponent
-        // {
-        //     var filters        = GetFilters();
-        //     var preditcateType = predicate.GetType();
-        //     foreach (var (buffers, exclusiveGroupStruct) in QueryEntities<T1, T2>(groups))
-        //     {
-        //         if (predicate.Predicate(buffers))
-        //         {
-        //             
-        //         }
-        //     }
-        //
-        //     throw new Exception();
-        // }
-        //
-        //I Decided to stop because I realised that to do this maybe I even need a QueryEntitiesAndEGIDs first
-        //
-        // public EntityCollection<T1> QueryEntities<T1>
-        //     (FasterReadOnlyList<ExclusiveGroupStruct> groups, QueryPredicate<T1> predicate) 
-        //     where T1 : struct, IEntityComponent
-        // {
-        //     var filters        = GetFilters();
-        //     var preditcateType = predicate.GetType().GetHashCode();
-        //     foreach (var (buffers, group) in QueryEntities<T1>(groups))
-        //     {
-        //         var filter     = filters.CreateOrGetFilterForGroup<T1>(preditcateType, group);
-        //         var egidMapper = QueryMappedEntities<T1>(group);
-        //
-        //         if (predicate.Predicate(buffers))
-        //         {
-        //             filter.Add(egidMapper);     
-        //         }
-        //     }
-        //
-        //     throw new Exception();
-        // }
 
         public GroupsEnumerable<T1, T2, T3> QueryEntities<T1, T2, T3>
             (in LocalFasterReadOnlyList<ExclusiveGroupStruct> groups)
@@ -341,36 +304,6 @@ namespace Svelto.ECS
             //search for the indexed entities in the group
             return entitiesInGroupPerType.TryGetValue(new RefWrapperType(type), out typeSafeDictionary);
         }
-        
-        // internal bool FindIndex(uint entityID, ExclusiveGroupStruct @group, Type type, out uint index)
-        // {
-        //     EGID entityGID = new EGID(entityID, @group);
-        //
-        //     index = default;
-        //
-        //     if (UnsafeQueryEntityDictionary(@group, type, out var safeDictionary) == false)
-        //         return false;
-        //
-        //     if (safeDictionary.TryFindIndex(entityGID.entityID, out index) == false)
-        //         return false;
-        //
-        //     return true;
-        // }
-        //
-        // internal uint GetIndex(uint entityID, ExclusiveGroupStruct @group, Type type)
-        // {
-        //     EGID entityGID = new EGID(entityID, @group);
-        //
-        //     if (UnsafeQueryEntityDictionary(@group, type, out var safeDictionary) == false)
-        //     {
-        //         throw new EntityNotFoundException(entityGID, type);
-        //     }
-        //
-        //     if (safeDictionary.TryFindIndex(entityGID.entityID, out var index) == false)
-        //         throw new EntityNotFoundException(entityGID, type);
-        //
-        //     return index;
-        // }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         static IBuffer<T> RetrieveEmptyEntityComponentArray<T>() where T : struct, IEntityComponent

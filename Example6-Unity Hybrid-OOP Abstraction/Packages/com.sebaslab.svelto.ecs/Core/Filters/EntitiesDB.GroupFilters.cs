@@ -1,4 +1,5 @@
 using Svelto.DataStructures;
+using Svelto.DataStructures.Native;
 
 namespace Svelto.ECS
 {
@@ -204,15 +205,6 @@ namespace Svelto.ECS
 
         public Filters GetFilters() { return new Filters(_filters); }
 
-        // public abstract class QueryPredicate<T1, T2> where T1: struct, IEntityComponent where T2: struct, IEntityComponent
-        // {
-        //     public abstract bool Predicate(in EntityCollection<T1, T2> components);
-        // }
-        //
-        // public abstract class QueryPredicate<T1> where T1: struct, IEntityComponent
-        // {
-        //     public abstract bool Predicate(in EntityCollection<T1> components);
-        // }
 
         FasterDictionary<RefWrapperType, FasterDictionary<ExclusiveGroupStruct, GroupFilters>> _filters =>
             _enginesRoot._groupFilters;

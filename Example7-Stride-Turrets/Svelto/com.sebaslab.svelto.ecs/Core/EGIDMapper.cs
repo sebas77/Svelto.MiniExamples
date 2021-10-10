@@ -6,8 +6,6 @@ using Svelto.ECS.Internal;
 namespace Svelto.ECS
 {
     /// <summary>
-    /// Todo: revaluate this struct. Why did I introduce it? Shouldn't always be the equivalent of doing
-    /// QueryEntity? 
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public readonly struct EGIDMapper<T>: IEGIDMapper where T : struct, IEntityComponent

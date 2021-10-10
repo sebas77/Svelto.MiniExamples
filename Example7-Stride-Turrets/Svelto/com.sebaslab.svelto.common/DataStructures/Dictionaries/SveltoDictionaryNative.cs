@@ -2,9 +2,9 @@ using System;
 using System.Runtime.CompilerServices;
 using Svelto.Common;
 
-namespace Svelto.DataStructures
+namespace Svelto.DataStructures.Native
 {
-    public ref struct SveltoDictionaryNative<TKey, TValue>
+    public struct SveltoDictionaryNative<TKey, TValue>
         where TKey : unmanaged, IEquatable<TKey> where TValue : struct
     {
         public SveltoDictionaryNative(uint size) : this(size, Allocator.Persistent) { }
@@ -14,23 +14,6 @@ namespace Svelto.DataStructures
             _dictionary =
                 new SveltoDictionary<TKey, TValue, NativeStrategy<SveltoDictionaryNode<TKey>>, NativeStrategy<TValue>,
                     NativeStrategy<int>>(size, nativeAllocator);
-        }
-
-        public static implicit operator SveltoDictionaryNative<TKey, TValue>
-        (SveltoDictionary<TKey, TValue, NativeStrategy<SveltoDictionaryNode<TKey>>, NativeStrategy<TValue>,
-             NativeStrategy<int>> dic)
-        {
-            return new SveltoDictionaryNative<TKey, TValue>()
-            {
-                _dictionary = dic
-            };
-        }
-
-        public static implicit operator
-            SveltoDictionary<TKey, TValue, NativeStrategy<SveltoDictionaryNode<TKey>>, NativeStrategy<TValue>,
-                NativeStrategy<int>>(SveltoDictionaryNative<TKey, TValue> dic)
-        {
-            return dic._dictionary;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -80,7 +63,7 @@ namespace Svelto.DataStructures
         public ref TValue GetValueByRef(TKey key) { return ref _dictionary.GetValueByRef(key); }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void SetCapacity(uint size) { _dictionary.ExpandTo(size); }
+        public void ResizeTo(uint size) { _dictionary.ResizeTo(size); }
 
         public TValue this[TKey key]
         {
@@ -104,6 +87,17 @@ namespace Svelto.DataStructures
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Dispose() { _dictionary.Dispose(); }
+        
+        /// <summary>
+        /// this is necessary for Svelto.ECS otherwise it shouldn't be here at all
+        /// </summary>
+        /// <param name="dic"></param>
+        public void UnsafeCast 
+        (SveltoDictionary<TKey, TValue, NativeStrategy<SveltoDictionaryNode<TKey>>, NativeStrategy<TValue>,
+             NativeStrategy<int>> dic)
+        {
+            _dictionary = dic;
+        }
 
         SveltoDictionary<TKey, TValue, NativeStrategy<SveltoDictionaryNode<TKey>>, NativeStrategy<TValue>,
             NativeStrategy<int>> _dictionary;

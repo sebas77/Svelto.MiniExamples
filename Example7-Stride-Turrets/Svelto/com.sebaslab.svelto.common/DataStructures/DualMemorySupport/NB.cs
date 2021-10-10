@@ -124,11 +124,14 @@ namespace Svelto.DataStructures
                 }
             }
         }
-
+        
         readonly uint _capacity;
-#if UNITY_COLLECTIONS
+
         //todo can I remove this from here? it should be used outside
+#if UNITY_COLLECTIONS || UNITY_JOBS || UNITY_BURST    
+#if UNITY_BURST
         [Unity.Burst.NoAlias]
+#endif
         [Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction]
 #endif
         readonly IntPtr _ptr; 

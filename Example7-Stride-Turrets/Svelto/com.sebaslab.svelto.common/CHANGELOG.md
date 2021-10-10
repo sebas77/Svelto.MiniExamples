@@ -1,5 +1,15 @@
 # Changelog
-All notable changes to this project will be documented in this file. I created this file with Svelto.Common version 3.1.
+All notable changes to this project will be documented in this file. Changes are listed in random order of importance.
+
+## [3.2.0]
+
+* ICompositionRoot OnContextDestroyed now receive a flag to know if the OnContextInitialized ever had the chance to be called
+* Fix some naming case issues, not following the Svelto convention
+* Improve FasterList interface
+* Add Intersect/Exclude/Union methods to FasterDictionary to work with Sets
+* Improve all the SveltoDictionary and derivates interfaces
+* Changed (again and still not final) the logic behind the PlatformProfiler markers
+* Refactor MemoryUtilities functionalities
 
 ## [3.1.3]
 

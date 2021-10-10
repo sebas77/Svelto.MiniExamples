@@ -17,7 +17,7 @@ namespace Svelto.DataStructures
         ref TValue GetOrCreate(TKey key, Func<TValue> builder);
         ref TValue GetDirectValueByRef(uint index);
         ref TValue GetValueByRef(TKey key);
-        void       ExpandTo(uint size);
+        void       ResizeTo(uint size);
 
         TValue this[TKey key]
         {

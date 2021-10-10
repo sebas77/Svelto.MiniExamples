@@ -2,7 +2,7 @@ using System;
 using System.Runtime.CompilerServices;
 using Svelto.Common;
 
-namespace Svelto.DataStructures
+namespace Svelto.DataStructures.Native
 {
     /// <summary>
     /// This dictionary has been created for just one reason: I needed a dictionary that would have let me iterate
@@ -15,7 +15,7 @@ namespace Svelto.DataStructures
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
-    public struct SharedSveltoDictionaryNative<TKey, TValue>
+    public struct SharedSveltoDictionaryNative<TKey, TValue>: ISveltoDictionary<TKey, TValue>
         where TKey : unmanaged, IEquatable<TKey> where TValue : struct
     {
         public SharedSveltoDictionaryNative(uint size)
@@ -109,9 +109,9 @@ namespace Svelto.DataStructures
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void SetCapacity(uint size)
+        public void ResizeTo(uint size)
         {
-            _dictionary.ExpandTo(size);
+            _dictionary.ResizeTo(size);
         }
 
         public TValue this[TKey key]
@@ -174,7 +174,7 @@ namespace Svelto.DataStructures
             }
         }
 
-#if UNITY_COLLECTIONS
+#if UNITY_COLLECTIONS || UNITY_JOBS || UNITY_BURST
         [Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction]
 #endif
         IntPtr _sharedDictionary;

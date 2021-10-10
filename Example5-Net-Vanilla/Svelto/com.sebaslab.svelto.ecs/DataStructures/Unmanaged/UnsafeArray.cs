@@ -88,16 +88,19 @@ namespace Svelto.ECS.DataStructures
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal void Realloc(uint newCapacity, Allocator allocator)
+        internal void Realloc<T>(uint newCapacity, Allocator allocator) where T : struct
         {
             unsafe
             {
-                if (_ptr == null)
-                    _ptr = (byte*) MemoryUtilities.Alloc(newCapacity, allocator);
-                else
-                    _ptr = (byte*) MemoryUtilities.Realloc((IntPtr) _ptr, (uint) count, newCapacity, allocator);
+                var structSize = (uint) MemoryUtilities.SizeOf<T>();
 
-                _capacity = newCapacity;
+                uint newCapacityInBytes = structSize * newCapacity;
+                if (_ptr == null)
+                    _ptr = (byte*) MemoryUtilities.Alloc(newCapacityInBytes, allocator);
+                else
+                    _ptr = (byte*) MemoryUtilities.Realloc((IntPtr) _ptr, newCapacityInBytes, allocator, (uint) count);
+
+                _capacity = newCapacityInBytes;
             }
         }
 
@@ -106,9 +109,12 @@ namespace Svelto.ECS.DataStructures
         {
             unsafe
             {
-                if (ptr != null)
-                    MemoryUtilities.Free((IntPtr) ptr, allocator);
-
+#if DEBUG && !PROFILE_SVELTO
+                if (ptr == null)
+                    throw new Exception("UnsafeArray: try to dispose an already disposed array");
+#endif                
+                 MemoryUtilities.Free((IntPtr) ptr, allocator);
+                 
                 _ptr        = null;
                 _writeIndex = 0;
                 _capacity = 0;
@@ -127,8 +133,11 @@ namespace Svelto.ECS.DataStructures
             _writeIndex = count;
         }
         
-#if UNITY_NATIVE
-        [global::Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction]
+#if UNITY_COLLECTIONS || UNITY_JOBS || UNITY_BURST    
+#if UNITY_BURST
+        [Unity.Burst.NoAlias]
+#endif
+        [Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction]
 #endif
         unsafe byte* _ptr;
         

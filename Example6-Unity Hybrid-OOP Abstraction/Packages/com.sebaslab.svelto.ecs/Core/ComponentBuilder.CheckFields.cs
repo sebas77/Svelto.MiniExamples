@@ -66,8 +66,7 @@ namespace Svelto.ECS
                         if (properties[j].PropertyType.IsGenericType)
                         {
                             Type genericTypeDefinition = properties[j].PropertyType.GetGenericTypeDefinition();
-                            if (genericTypeDefinition == DISPATCHONSETTYPE
-                             || genericTypeDefinition == DISPATCHONCHANGETYPE)
+                            if (genericTypeDefinition == RECATIVEVALUETYPE)
                             {
                                 continue;
                             }
@@ -125,8 +124,7 @@ namespace Svelto.ECS
             throw new ECSException(message, entityComponentType);
         }
 
-        static readonly Type DISPATCHONCHANGETYPE       = typeof(DispatchOnChange<>);
-        static readonly Type DISPATCHONSETTYPE          = typeof(DispatchOnSet<>);
+        static readonly Type RECATIVEVALUETYPE       = typeof(ReactiveValue<>);
         static readonly Type EGIDType                   = typeof(EGID);
         static readonly Type EXCLUSIVEGROUPSTRUCTTYPE   = typeof(ExclusiveGroupStruct);
         static readonly Type SERIALIZABLE_ENTITY_STRUCT = typeof(SerializableEntityComponent);

@@ -6,11 +6,11 @@ namespace Svelto.DataStructures
     public struct ReaderWriterLockSlimEx
     {
         public void EnterReadLock()           { _slimLock.EnterReadLock(); }
-        public void ExitReadLock()            { _slimLock.ExitReadLock(); }
+        public void QuittingReadLock()            { _slimLock.ExitReadLock(); }
         public void EnterUpgradableReadLock() { _slimLock.EnterUpgradeableReadLock(); }
         public void ExitUpgradableReadLock()  { _slimLock.ExitUpgradeableReadLock(); }
         public void EnterWriteLock()          { _slimLock.EnterWriteLock(); }
-        public void ExitWriteLock()           { _slimLock.ExitWriteLock(); }
+        public void QuittingWriteLock()           { _slimLock.ExitWriteLock(); }
 
         ReaderWriterLockSlim _slimLock;
 
@@ -22,13 +22,13 @@ namespace Svelto.DataStructures
 #else
     public struct ReaderWriterLockSlimEx
     {
-        public void EnterReadLock() { ThrowOnMoreThanOne(ref _readLock); }
-        public void ExitReadLock() { ReleaseLock(ref _readLock); }
+        public void EnterReadLock()    { ThrowOnMoreThanOne(ref _readLock); }
+        public void QuittingReadLock() { ReleaseLock(ref _readLock); }
         
         public void EnterUpgradableReadLock() { ThrowOnMoreThanOne(ref _upgradableReadLock); }
         public void ExitUpgradableReadLock()  { ReleaseLock(ref _upgradableReadLock); }
         public void EnterWriteLock()          { ThrowOnMoreThanOne(ref _writeLock); }
-        public void ExitWriteLock()           { ReleaseLock(ref _writeLock); }
+        public void QuittingWriteLock()       { ReleaseLock(ref _writeLock); }
         
         void ThrowOnMoreThanOne(ref int readLock)
         {

@@ -6,7 +6,7 @@ namespace Svelto.DataStructures
     /// <summary>
     /// MB stands for ManagedBuffer
     ///
-    /// MBs are note meant to be resized ore freed. They are constant size arrays.
+    /// MBs are note meant to be resized or freed. They are wrappers of constant size arrays.
     /// MBs always wrap external arrays, they are not meant to allocate memory by themselves.
     ///
     /// MB are wrappers of arrays. Are not meant to resize or free
@@ -68,13 +68,29 @@ namespace Svelto.DataStructures
         public ref T this[uint index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => ref _buffer[index];
+            get
+            {
+#if DEBUG && ENABLE_PARANOID_CHECKS                
+                if (index >= _buffer.Length)
+                    throw new IndexOutOfRangeException("Paranoid check failed!");
+#endif
+                
+                return ref _buffer[index];
+            }
         }
-        
+
         public ref T this[int index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => ref _buffer[index];
+            get
+            {
+#if DEBUG && ENABLE_PARANOID_CHECKS                
+                if (index >= _buffer.Length)
+                    throw new IndexOutOfRangeException("Paranoid check failed!");
+#endif
+
+                return ref _buffer[index];
+            }
         }
 
         T[]         _buffer;

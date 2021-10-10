@@ -3,8 +3,12 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Svelto.Common;
 
-namespace Svelto.DataStructures
+namespace Svelto.DataStructures.Native
 {
+    /// <summary>
+    /// They are called strategy because they abstract the handling of the memory type used.
+    /// Through the IBufferStrategy interface, external datastructure can use interchangeably native and managed memory. 
+    /// </summary>
     public struct NativeStrategy<T> : IBufferStrategy<T> where T : struct
     {
 #if DEBUG && !PROFILE_SVELTO
@@ -14,12 +18,15 @@ namespace Svelto.DataStructures
                 throw new DBC.Common.PreconditionException("Only unmanaged data can be stored natively");
         }
 #endif
-        public NativeStrategy(uint size, Allocator allocator, bool clear = true) : this() { Alloc(size, allocator, clear); }
+        public NativeStrategy(uint size, Allocator allocator, bool clear = true) : this()
+        {
+            Alloc(size, allocator, clear);
+        }
 
         public int       capacity           => _realBuffer.capacity;
         public Allocator allocationStrategy => _nativeAllocator;
 
-        public void Alloc(uint newCapacity, Allocator allocator, bool clear = true)
+        public void Alloc(uint newCapacity, Allocator allocator, bool clear)
         {
 #if DEBUG && !PROFILE_SVELTO
             if (!(this._realBuffer.ToNativeArray(out _) == IntPtr.Zero))
@@ -27,24 +34,26 @@ namespace Svelto.DataStructures
 #endif
             _nativeAllocator = allocator;
 
-            var   realBuffer = MemoryUtilities.Alloc<T>(newCapacity, _nativeAllocator, clear);
+            IntPtr   realBuffer = MemoryUtilities.Alloc<T>(newCapacity, _nativeAllocator, clear);
             NB<T> b          = new NB<T>(realBuffer, newCapacity);
-            _buffer     = default;
-            _realBuffer = b;
+            _invalidHandle = true;
+            _realBuffer    = b;
         }
 
         public void Resize(uint newSize, bool copyContent = true)
         {
             if (newSize != capacity)
             {
-                var pointer = _realBuffer.ToNativeArray(out _);
-                pointer = MemoryUtilities.Realloc<T>(pointer, newSize, _nativeAllocator, (uint) newSize > capacity ? (uint) capacity : newSize, copyContent);
+                IntPtr pointer = _realBuffer.ToNativeArray(out _);
+                pointer = MemoryUtilities.Realloc<T>(pointer, newSize, _nativeAllocator
+                                                   , (uint) newSize > capacity ? (uint) capacity : newSize
+                                                   , copyContent);
                 NB<T> b = new NB<T>(pointer, newSize);
                 _realBuffer    = b;
                 _invalidHandle = true;
             }
         }
-        
+
         public void ShiftLeft(uint index, uint count)
         {
             DBC.Common.Check.Require(index < capacity, "out of bounds index");
@@ -91,54 +100,57 @@ namespace Svelto.DataStructures
             get => ref _realBuffer[index];
         }
 
+        /// <summary>
+        /// Note on the code of this method. Interfaces cannot be held by this structure as it must be used by Burst.
+        /// This method could return directly _realBuffer, but this would cost of a boxing allocation.
+        /// Using the GCHandle.Alloc I will occur to the boxing, but only once as long as the native handle is still
+        /// valid
+        /// </summary>
+        /// <returns></returns>
         IBuffer<T> IBufferStrategy<T>.ToBuffer()
         {
-            //To use this struct in Burst it cannot hold interfaces. This weird looking code is to
-            //be able to store _realBuffer as a c# reference.
-            if (_invalidHandle == true && ((IntPtr) _buffer != IntPtr.Zero))
+            //handle has been invalidated, dispose of the hold GCHandle (if exists)
+            if (_invalidHandle == true && ((IntPtr) _cachedReference != IntPtr.Zero))
             {
-                _buffer.Free();
-                _buffer = default;
+                _cachedReference.Free();
+                _cachedReference = default;
             }
 
             _invalidHandle = false;
-            if (((IntPtr) _buffer == IntPtr.Zero))
+            if (((IntPtr) _cachedReference == IntPtr.Zero))
             {
-                _buffer = GCHandle.Alloc(_realBuffer, GCHandleType.Normal);
+                _cachedReference = GCHandle.Alloc(_realBuffer, GCHandleType.Normal);
             }
 
-            return (IBuffer<T>) _buffer.Target;
+            return (IBuffer<T>) _cachedReference.Target;
         }
 
         public NB<T> ToRealBuffer()
         {
-            DBC.Common.Check.Require(_buffer != null, "Buffer not found in expected state");
-
             return _realBuffer;
         }
 
         public void Dispose()
         {
-            if ((IntPtr) _buffer != IntPtr.Zero)
-                _buffer.Free();
+            if ((IntPtr) _cachedReference != IntPtr.Zero)
+                _cachedReference.Free();
 
             if (_realBuffer.ToNativeArray(out _) != IntPtr.Zero)
-            {
                 MemoryUtilities.Free(_realBuffer.ToNativeArray(out _), Allocator.Persistent);
-            }
             else
                 throw new Exception("trying to dispose disposed buffer");
 
-            _buffer     = default;
-            _realBuffer = default;
+            _cachedReference = default;
+            _realBuffer      = default;
         }
 
         Allocator _nativeAllocator;
-        NB<T>     _realBuffer;
-#if UNITY_COLLECTIONS
+        NB<T>      _realBuffer;
+        bool       _invalidHandle;
+
+#if UNITY_COLLECTIONS || UNITY_JOBS || UNITY_BURST
         [Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction]
 #endif
-        GCHandle _buffer;
-        bool     _invalidHandle;
+        GCHandle _cachedReference;
     }
 }

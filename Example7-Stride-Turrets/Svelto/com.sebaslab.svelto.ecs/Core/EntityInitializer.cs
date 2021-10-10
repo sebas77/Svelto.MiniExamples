@@ -1,5 +1,6 @@
 ﻿using Svelto.DataStructures;
 using Svelto.ECS.Internal;
+using Svelto.ECS.Reference;
 
 namespace Svelto.ECS
 {

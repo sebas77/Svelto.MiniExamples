@@ -1,5 +1,7 @@
-﻿using Svelto.Common;
+﻿using System.Runtime.CompilerServices;
+using Svelto.Common;
 using Svelto.DataStructures;
+using Svelto.DataStructures.Native;
 using Svelto.ECS.DataStructures;
 using Svelto.ECS.Reference;
 
@@ -128,7 +130,7 @@ namespace Svelto.ECS
                 _egidToReferenceMap.Remove(groupId);
             }
 
-            internal void UpdateAllGroupReferenceLocators(ExclusiveGroupStruct fromGroupId, uint toGroupId)
+            internal void UpdateAllGroupReferenceLocators(ExclusiveGroupStruct fromGroupId, ExclusiveGroupStruct toGroupId)
             {
                 if (_egidToReferenceMap.TryGetValue(fromGroupId, out var groupMap) == false)
                     return;
@@ -187,7 +189,7 @@ namespace Svelto.ECS
             {
                 _egidToReferenceMap
                    .GetOrCreate(groupID, () => new SharedSveltoDictionaryNative<uint, EntityReference>(size))
-                   .SetCapacity(size);
+                   .ResizeTo(size);
 
                 _entityReferenceMap.Resize(size);
             }
@@ -221,6 +223,7 @@ namespace Svelto.ECS
         }
 
         internal LocatorMap entityLocator => _entityLocator;
+        
         LocatorMap          _entityLocator;
     }
 }

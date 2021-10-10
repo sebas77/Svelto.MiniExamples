@@ -1,6 +1,21 @@
 # Changelog
+All notable changes to this project will be documented in this file. Changes are listed in random order of importance.
 
-All notable changes to this project will be documented in this file. I created this file with Svelto.ECS version 3.1.
+## [3.2.0]
+
+* Improved checks on Svelto rules for the declaration of components and view components. This set of rules is not final yet (ideally one day they should be moved to static analyzers)
+* Introduce the concept of Entity Reference. It's a very light weight identifier to keep track of entities EGID that can change dynamically (EGIDs change when groups are swapped), Entity References never change. The underlying code will be optimised even further in future.
+* Introduced the concept of Disabled Group. Once a group is marked as disabled, queries will always ignore it.
+* Merged DispatchOnSet and DispatchOnChange and renamed to ReactiveValue. This class will be superseded by better patterns in future.
+* Added FindGroups with 4 components
+* Improved QueryGroups interface
+* Improved DynamicEntityDescriptor interface
+* Improved ExtendibleEntityDescriptor interface
+* Improved Native memory support
+* Improved Svelto and Unity DOTS integration
+* Improved and fixed Serialization code
+* Ensure that the creation of static groups is deterministic (GroupHashMap)
+
 
 ## [3.1.3]
 

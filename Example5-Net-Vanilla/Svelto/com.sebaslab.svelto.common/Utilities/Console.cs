@@ -17,16 +17,17 @@ namespace Svelto
 {
     public static class Console
     {
-        static readonly ThreadLocal<StringBuilder> _stringBuilder = new ThreadLocal<StringBuilder>
-            (() => new StringBuilder(256));
+        static readonly ThreadLocal<StringBuilder> _stringBuilder;
 
-        static readonly FasterList<ILogger> _loggers = new FasterList<ILogger>();
-
-        static readonly ILogger _standardLogger = new SimpleLogger();
+        static readonly FasterList<ILogger> _loggers;
 
         static Console()
         {
-            AddLogger(_standardLogger);
+            _stringBuilder = new ThreadLocal<StringBuilder>
+                (() => new StringBuilder(256));
+            _loggers        = new FasterList<ILogger>();
+
+            AddLogger(new SimpleLogger());
         }
 
         public static void SetLogger(ILogger log)
@@ -114,10 +115,16 @@ namespace Svelto
         {
             InternalLog(txt.FastConcat(extradebug.ToString()), LogType.LogDebug);
         }
-
+        [Conditional("DEBUG")]
         public static void LogDebugWarning(string txt)
         {
             InternalLog(txt, LogType.Warning); 
+        }
+        [Conditional("DEBUG")]
+        public static void LogDebugWarning(bool assertion, string txt)
+        {
+            if (assertion == false)
+                InternalLog(txt, LogType.Warning); 
         }
 
         /// <summary>

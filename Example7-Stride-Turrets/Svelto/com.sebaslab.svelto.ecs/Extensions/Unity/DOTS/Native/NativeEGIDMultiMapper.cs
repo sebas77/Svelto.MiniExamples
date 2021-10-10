@@ -1,9 +1,16 @@
 #if UNITY_NATIVE
 using System;
 using Svelto.DataStructures;
+using Svelto.DataStructures.Native;
 
 namespace Svelto.ECS.Native
 {
+    /// <summary>
+    /// Note: this class should really be ref struct by design. It holds the reference of a dictionary that can become
+    /// invalid. Unfortunately it can be a ref struct, because Jobs needs to hold if by paramater. So the deal is
+    /// that a job can use it as long as nothing else is modifying the entities database and the NativeEGIDMultiMapper
+    /// is disposed right after the use.
+    /// </summary>
     public struct NativeEGIDMultiMapper<T> : IDisposable where T : unmanaged, IEntityComponent
     {
         public NativeEGIDMultiMapper
