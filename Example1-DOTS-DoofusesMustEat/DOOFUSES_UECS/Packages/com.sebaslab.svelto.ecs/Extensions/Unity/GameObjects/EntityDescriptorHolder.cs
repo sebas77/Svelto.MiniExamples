@@ -1,6 +1,7 @@
 #if UNITY_5 || UNITY_5_3_OR_NEWER
 using System;
 using System.Collections.Generic;
+using Svelto.ECS.Hybrid;
 using UnityEngine;
 
 namespace Svelto.ECS.Extensions.Unity
@@ -18,7 +19,8 @@ namespace Svelto.ECS.Extensions.Unity
     }
     /// <summary>
     /// I introduced this option thinking it could be a good idea, but I am not sure anymore. Although it's slightly
-    /// more annoying, extending GenericEntityDescriptorHolder is wiser than using this class
+    /// more annoying, extending GenericEntityDescriptorHolder is wiser than using this class.
+    /// Consider this experimental
     /// Todo: sort in alphabetic order
     /// Todo: hide inner descriptors
     /// </summary>

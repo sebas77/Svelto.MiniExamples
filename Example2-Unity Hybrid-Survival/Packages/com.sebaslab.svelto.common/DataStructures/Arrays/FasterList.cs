@@ -4,13 +4,11 @@ using System.Runtime.CompilerServices;
 
 namespace Svelto.DataStructures
 {
-    //Warning: the burst compatible version of a dynamic array is found in Svelto.ECS and is called NativeDynamicArray/Cast
+    //Note: the burst compatible version of a dynamic array is found in Svelto.ECS and is called NativeDynamicArray/Cast
     public class FasterList<T>
     {
-        internal static readonly FasterList<T> DefaultEmptyList = new FasterList<T>();
-        
         public int count => (int) _count;
-        public uint capacity => (uint) _buffer.Length;
+        public int capacity => _buffer.Length;
         
         public static explicit operator FasterList<T>(T[] array)
         {
@@ -102,7 +100,7 @@ namespace Svelto.DataStructures
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                DBC.Common.Check.Require(index < _count, "out of bound index");
+                DBC.Common.Check.Require(index < _count, $"out of bound index. index {index} - count {_count}");
                 return ref _buffer[index];
             }
         }
@@ -141,14 +139,6 @@ namespace Svelto.DataStructures
 
             return this;
         }
-        
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public FasterList<T> AddRange(in LocalFasterReadOnlyList<T> items)
-        {
-            AddRange(items._list, (uint) items.count);
-
-            return this;
-        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void AddRange(T[] items, uint count)
@@ -171,10 +161,8 @@ namespace Svelto.DataStructures
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Contains(T item)
         {
-            var comp = EqualityComparer<T>.Default;
-
             for (uint index = 0; index < _count; index++)
-                if (comp.Equals(_buffer[index], item))
+                if (_comp.Equals(_buffer[index], item))
                     return true;
 
             return false;
@@ -478,8 +466,9 @@ namespace Svelto.DataStructures
             _buffer = newList;
         }
 
-        T[]         _buffer;
-        uint        _count;
+        T[]                          _buffer;
+        uint                         _count;
+        static readonly EqualityComparer<T> _comp = EqualityComparer<T>.Default;
 
         public static class NoVirt
         {

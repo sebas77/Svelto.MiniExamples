@@ -50,7 +50,7 @@ namespace Svelto.ECS
         {
             if (_multipleOperationOnSameEGIDChecker.ContainsKey(egid) == true)
                 throw new ECSException(
-                    "Executing multiple structural changes (build) in one submission on the same entity is not supported "
+                    "Executing multiple structural changes (build) on the same entity is not supported "
                        .FastConcat(" caller: ", caller, " ").FastConcat(egid.entityID).FastConcat(" groupid: ")
                        .FastConcat(egid.groupID.ToName()).FastConcat(" type: ")
                        .FastConcat(entityDescriptorType != null ? entityDescriptorType.Name : "not available")
@@ -67,7 +67,6 @@ namespace Svelto.ECS
                                                       : "not available"));
             hash.Add(egid.entityID);
             _multipleOperationOnSameEGIDChecker.Add(egid, 1);
-            
         }
 
 #if DONT_USE
@@ -80,7 +79,7 @@ namespace Svelto.ECS
 #endif
         void ClearChecks() { _multipleOperationOnSameEGIDChecker.FastClear(); }
 
-        readonly FasterDictionary<EGID, uint> _multipleOperationOnSameEGIDChecker = new FasterDictionary<EGID, uint>();
-        readonly FasterDictionary<uint, HashSet<uint>> _idChecker = new FasterDictionary<uint, HashSet<uint>>();
+        readonly FasterDictionary<EGID, uint>                          _multipleOperationOnSameEGIDChecker;
+        readonly FasterDictionary<ExclusiveGroupStruct, HashSet<uint>> _idChecker;
     }
 }

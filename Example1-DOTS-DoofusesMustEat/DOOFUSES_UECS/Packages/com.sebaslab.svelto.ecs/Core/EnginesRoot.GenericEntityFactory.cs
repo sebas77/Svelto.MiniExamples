@@ -1,8 +1,8 @@
-﻿﻿using System;
+﻿using System;
 using System.Collections.Generic;
 using Svelto.Common;
 
-namespace Svelto.ECS
+ namespace Svelto.ECS
 {
     public partial class EnginesRoot
     {
@@ -34,12 +34,7 @@ namespace Svelto.ECS
             {
                 return _enginesRoot.Target.BuildEntity(egid, entityDescriptor.componentsToBuild, TypeCache<T>.type, implementors);
             }
-#if UNITY_NATIVE
-            public NativeEntityFactory ToNative<T>(string callerName) where T : IEntityDescriptor, new()
-            {
-                return _enginesRoot.Target.ProvideNativeEntityFactoryQueue<T>(callerName);
-            }
-#endif            
+
             public EntityInitializer BuildEntity<T>
                 (uint entityID, ExclusiveBuildGroup groupStructId, T descriptorEntity, IEnumerable<object> implementors)
                 where T : IEntityDescriptor
@@ -58,6 +53,13 @@ namespace Svelto.ECS
             {
                 return _enginesRoot.Target.BuildEntity(egid, componentsToBuild, type, implementors);
             }
+            
+#if UNITY_NATIVE
+            public Svelto.ECS.Native.NativeEntityFactory ToNative<T>(string callerName) where T : IEntityDescriptor, new()
+            {
+                return _enginesRoot.Target.ProvideNativeEntityFactoryQueue<T>(callerName);
+            }
+#endif            
 
             //enginesRoot is a weakreference because GenericEntityStreamConsumerFactory can be injected inside
             //engines of other enginesRoot

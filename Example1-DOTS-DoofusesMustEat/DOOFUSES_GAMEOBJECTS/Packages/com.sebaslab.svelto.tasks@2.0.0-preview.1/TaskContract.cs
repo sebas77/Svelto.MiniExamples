@@ -7,16 +7,40 @@ namespace Svelto.Tasks
 {
     public struct TaskContract
     {
-        internal TaskContract(int number) : this()
+        public  TaskContract(int number) : this()
         {
             _currentState      = states.value;
             _returnValue.int32 = number;
         }
 
-        internal TaskContract(ulong number) : this()
+        public  TaskContract(ulong number) : this()
         {
             _currentState       = states.value;
             _returnValue.uint64 = number;
+        }
+        
+        public TaskContract(float val) : this()
+        {
+            _currentState       = states.value;
+            _returnValue.single = val;
+        }
+        
+        public TaskContract(uint val) : this()
+        {
+            _currentState       = states.value;
+            _returnValue.uint32 = val;
+        }
+        
+        public TaskContract(string val) : this()
+        {
+            _currentState            = states.value;
+            _returnObjects.reference = val;
+        }
+        
+        public TaskContract(object o) : this()
+        {
+            _currentState            = states.reference;
+            _returnObjects.reference = o;
         }
 
         internal TaskContract(ContinuationEnumerator continuation) : this()
@@ -48,30 +72,17 @@ namespace Svelto.Tasks
             _currentState = states.yieldit;
         }
 
-        TaskContract(float val) : this()
-        {
-            _currentState       = states.value;
-            _returnValue.single = val;
-        }
-
-        TaskContract(string val) : this()
-        {
-            _currentState            = states.value;
-            _returnObjects.reference = val;
-        }
-        
-        public TaskContract(object o) : this()
-        {
-            _currentState          = states.reference;
-            _returnObjects.reference = o;
-        }
-
         public static implicit operator TaskContract(int number)
         {
             return new TaskContract(number);
         }
 
         public static implicit operator TaskContract(ulong number)
+        {
+            return new TaskContract(number);
+        }
+        
+        public static implicit operator TaskContract(long number)
         {
             return new TaskContract(number);
         }
@@ -101,28 +112,12 @@ namespace Svelto.Tasks
             return new TaskContract(payload);
         }
         
-        public int ToInt()
-        {
-            return _returnValue.int32;
-        }
+        public int ToInt() => _returnValue.int32;
+        public ulong ToUlong() => _returnValue.uint64;
+        public uint ToUInt() => _returnValue.uint32;
+        public float ToFloat() => _returnValue.single;
+        public T ToRef<T>() where T : class => _returnObjects.reference as T;
 
-        public ulong ToUlong()
-        {
-            return _returnValue.uint64;
-        }
-
-        public uint ToUInt() { return _returnValue.uint32; }
-        
-        public float ToFloat()
-        {
-            return _returnValue.single;
-        }
-
-        public T ToRef<T>() where T : class
-        {
-            return _returnObjects.reference as T;
-        }
-        
         internal Break breakIt => _currentState == states.breakit ? _returnObjects.breakIt : null;
 
         internal IEnumerator enumerator => _currentState == states.leanEnumerator || 

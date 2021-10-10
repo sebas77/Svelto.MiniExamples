@@ -1,6 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using Svelto.Common;
 using Svelto.DataStructures;
+using Svelto.DataStructures.Native;
 using Svelto.ECS.DataStructures;
 using Svelto.ECS.Reference;
 
@@ -13,7 +14,7 @@ namespace Svelto.ECS
     {
         public struct LocatorMap
         {
-            internal EntityReference ClaimReference()
+            internal readonly EntityReference ClaimReference()
             {
                 int  tempFreeIndex;
                 int  newFreeIndex;
@@ -129,7 +130,7 @@ namespace Svelto.ECS
                 _egidToReferenceMap.Remove(groupId);
             }
 
-            internal void UpdateAllGroupReferenceLocators(ExclusiveGroupStruct fromGroupId, uint toGroupId)
+            internal void UpdateAllGroupReferenceLocators(ExclusiveGroupStruct fromGroupId, ExclusiveGroupStruct toGroupId)
             {
                 if (_egidToReferenceMap.TryGetValue(fromGroupId, out var groupMap) == false)
                     return;

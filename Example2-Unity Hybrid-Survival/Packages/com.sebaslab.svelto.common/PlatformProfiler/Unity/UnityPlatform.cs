@@ -22,6 +22,8 @@ namespace Svelto.Common
         {
             _marker.End();
         }
+        
+        public PauseProfiler Yield() { return new PauseProfiler(_marker); }
     }
 
     public struct PlatformProfilerMT : IPlatformProfiler
@@ -51,12 +53,12 @@ namespace Svelto.Common
 
     public struct PlatformProfiler : IPlatformProfiler
     {
-        readonly ProfilerMarker? maker;
+        readonly ProfilerMarker? _marker;
 
         public PlatformProfiler(string info)
         {
-            maker = new ProfilerMarker(info);
-            maker.Value.Begin();
+            _marker = new ProfilerMarker(info);
+            _marker.Value.Begin();
         }
 
         public DisposableSampler Sample(string samplerName, string samplerInfo = null)
@@ -76,8 +78,36 @@ namespace Svelto.Common
 
         public void Dispose()
         {
-            maker?.End();
+            _marker?.End();
         }
+
+        public void Pause()
+        {
+            _marker?.End();
+        }
+
+        public void Resume()
+        {
+            _marker.Value.Begin();
+        }
+
+        public PauseProfiler Yield() { return new PauseProfiler(_marker.Value); }
+    }
+
+    public readonly struct PauseProfiler : IDisposable
+    {
+        public PauseProfiler(ProfilerMarker maker)
+        {
+            _maker = maker;
+            _maker.End();
+        }
+
+        public void Dispose()
+        {
+            _maker.Begin();
+        }
+        
+        readonly ProfilerMarker _maker;
     }
 }
 #endif

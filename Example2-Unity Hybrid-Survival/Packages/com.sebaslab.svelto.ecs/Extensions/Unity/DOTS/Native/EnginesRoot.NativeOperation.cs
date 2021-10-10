@@ -13,7 +13,7 @@ namespace Svelto.ECS
     {
         NativeEntityRemove ProvideNativeEntityRemoveQueue<T>(string memberName) where T : IEntityDescriptor, new()
         {
-            //DBC.ECS.Check.Require(EntityDescriptorTemplate<T>.descriptor.IsUnmanaged(), "can't remove entities with not native types");
+            //DBC.ECS.Check.Require(EntityDescriptorTemplate<T>.descriptor.isUnmanaged(), "can't remove entities with not native types");
             //todo: remove operation array and store entity descriptor hash in the return value
             //todo I maybe able to provide a  _nativeSwap.SwapEntity<entityDescriptor>
             _nativeRemoveOperations.Add(new NativeOperationRemove(
@@ -25,7 +25,7 @@ namespace Svelto.ECS
 
         NativeEntitySwap ProvideNativeEntitySwapQueue<T>(string memberName) where T : IEntityDescriptor, new()
         {
-           // DBC.ECS.Check.Require(EntityDescriptorTemplate<T>.descriptor.IsUnmanaged(), "can't swap entities with not native types");
+           // DBC.ECS.Check.Require(EntityDescriptorTemplate<T>.descriptor.isUnmanaged(), "can't swap entities with not native types");
             //todo: remove operation array and store entity descriptor hash in the return value
             _nativeSwapOperations.Add(new NativeOperationSwap(EntityDescriptorTemplate<T>.descriptor.componentsToBuild
                                                             , TypeCache<T>.type, memberName));
@@ -105,7 +105,7 @@ namespace Svelto.ECS
                         var reference       = buffer.Dequeue<EntityReference>();
                         var componentCounts = buffer.Dequeue<uint>();
 
-                        Check.Require((uint)egid.groupID != 0, "invalid group detected, are you using new ExclusiveGroupStruct() instead of new ExclusiveGroup()?");
+                        Check.Require(egid.groupID.isInvalid == false, "invalid group detected, are you using new ExclusiveGroupStruct() instead of new ExclusiveGroup()?");
 
                         var componentBuilders    = _nativeAddOperations[componentsIndex].components;
 #if DEBUG && !PROFILE_SVELTO
@@ -114,7 +114,6 @@ namespace Svelto.ECS
 #endif
 
                         _entityLocator.SetReference(reference, egid);
-
                         var dic = EntityFactory.BuildGroupedEntities(egid, _groupedEntityToAdd, componentBuilders
                                                                    , null
 #if DEBUG && !PROFILE_SVELTO
@@ -132,7 +131,6 @@ namespace Svelto.ECS
                             var typeID = buffer.Dequeue<uint>();
 
                             IFiller entityBuilder = EntityComponentIDMap.GetTypeFromID(typeID);
-
                             //after the typeID, I expect the serialized component
                             entityBuilder.FillFromByteArray(init, buffer);
                         }

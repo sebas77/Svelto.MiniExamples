@@ -2,6 +2,7 @@ using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.ECS.EntityComponents;
 using Svelto.ECS.Extensions.Unity;
+using Svelto.ECS.Native;
 using Unity.Burst;
 using Unity.Collections.LowLevel.Unsafe;
 using Unity.Jobs;
@@ -42,7 +43,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
         JobHandle CreateJobForDoofusesAndFood(JobHandle inputDeps, in LocalFasterReadOnlyList<ExclusiveGroupStruct> 
                 doofusesEatingGroups, ExclusiveBuildGroup foodEatenGroup, in LocalFasterReadOnlyList<ExclusiveGroupStruct> foodGroup)
         {
-            var foodPositionMapper = entitiesDB.QueryNativeMappedEntities<PositionEntityComponent>(foodGroup);
+            var foodPositionMapper = entitiesDB.QueryNativeMappedEntities<PositionEntityComponent>(foodGroup, Allocator.TempJob);
             
             //against all the doofuses
             JobHandle deps = inputDeps;

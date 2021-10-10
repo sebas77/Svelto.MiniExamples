@@ -1,13 +1,17 @@
 {
   "MonoBehaviour": {
-    "Version": 2,
+    "Version": 4,
     "EnableBurstCompilation": true,
     "EnableOptimisations": true,
     "EnableSafetyChecks": false,
+    "EnableDebugInAllBuilds": false,
     "UsePlatformSDKLinker": false,
-    "CpuMinTargetX32": 1,
-    "CpuMaxTargetX32": 2,
-    "CpuMinTargetX64": 3,
-    "CpuMaxTargetX64": 6
+    "CpuMinTargetX32": 0,
+    "CpuMaxTargetX32": 0,
+    "CpuMinTargetX64": 0,
+    "CpuMaxTargetX64": 0,
+    "CpuTargetsX32": 6,
+    "CpuTargetsX64": 120,
+    "OptimizeFor": 1
   }
 }

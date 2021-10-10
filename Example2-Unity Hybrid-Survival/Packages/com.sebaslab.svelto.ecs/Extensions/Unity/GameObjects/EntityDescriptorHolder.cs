@@ -1,6 +1,7 @@
 #if UNITY_5 || UNITY_5_3_OR_NEWER
 using System;
 using System.Collections.Generic;
+using Svelto.ECS.Hybrid;
 using UnityEngine;
 
 namespace Svelto.ECS.Extensions.Unity

@@ -18,6 +18,7 @@ namespace Svelto.Tasks.Unity.Internal
         {
             using (var platform = new PlatformProfiler("Early tasks")) 
                 ExecuteRoutines(_earlyProcesses, platform);
+            
             using (var platform = new PlatformProfiler("Update tasks")) 
                 ExecuteRoutines(_updateProcesses, platform);
         }

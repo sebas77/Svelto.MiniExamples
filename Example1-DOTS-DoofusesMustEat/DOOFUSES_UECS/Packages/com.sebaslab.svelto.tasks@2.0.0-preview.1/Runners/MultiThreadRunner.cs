@@ -20,27 +20,19 @@ namespace Svelto.Tasks
     {
         public sealed class MultiThreadRunner : MultiThreadRunner<IEnumerator<TaskContract>>
         {
-            public MultiThreadRunner(string name, bool relaxed = false, bool tightTasks = false) : base(name, relaxed,
-                tightTasks)
-            {
-            }
+            public MultiThreadRunner
+                (string name, bool relaxed = false, bool tightTasks = false) : base(name, relaxed, tightTasks) { }
 
-            public MultiThreadRunner(string name, float intervalInMs) : base(name, intervalInMs)
-            {
-            }
+            public MultiThreadRunner(string name, float intervalInMs) : base(name, intervalInMs) { }
         }
 
         public class MultiThreadRunner<T> : Svelto.Tasks.MultiThreadRunner<LeanSveltoTask<T>>
             where T : IEnumerator<TaskContract>
         {
-            public MultiThreadRunner(string name, bool relaxed = false, bool tightTasks = false) : base(name, relaxed,
-                tightTasks)
-            {
-            }
+            public MultiThreadRunner
+                (string name, bool relaxed = false, bool tightTasks = false) : base(name, relaxed, tightTasks) { }
 
-            public MultiThreadRunner(string name, float intervalInMs) : base(name, intervalInMs)
-            {
-            }
+            public MultiThreadRunner(string name, float intervalInMs) : base(name, intervalInMs) { }
         }
     }
 
@@ -48,40 +40,29 @@ namespace Svelto.Tasks
     {
         public sealed class MultiThreadRunner : MultiThreadRunner<IEnumerator>
         {
-            public MultiThreadRunner(string name, bool relaxed = false, bool tightTasks = false) : base(name, relaxed,
-                tightTasks)
-            {
-            }
+            public MultiThreadRunner
+                (string name, bool relaxed = false, bool tightTasks = false) : base(name, relaxed, tightTasks) { }
 
-            public MultiThreadRunner(string name, float intervalInMs) : base(name, intervalInMs)
-            {
-            }
+            public MultiThreadRunner(string name, float intervalInMs) : base(name, intervalInMs) { }
         }
 
         public class MultiThreadRunner<T> : Svelto.Tasks.MultiThreadRunner<ExtraLeanSveltoTask<T>> where T : IEnumerator
         {
-            public MultiThreadRunner(string name, bool relaxed = false, bool tightTasks = false) : base(name, relaxed,
-                tightTasks)
-            {
-            }
+            public MultiThreadRunner
+                (string name, bool relaxed = false, bool tightTasks = false) : base(name, relaxed, tightTasks) { }
 
-            public MultiThreadRunner(string name, float intervalInMs) : base(name, intervalInMs)
-            {
-            }
+            public MultiThreadRunner(string name, float intervalInMs) : base(name, intervalInMs) { }
         }
     }
 
     public class MultiThreadRunner<TTask> : MultiThreadRunner<TTask, StandardRunningInfo> where TTask : ISveltoTask
     {
-        public MultiThreadRunner(string name, bool relaxed = false, bool tightTasks = false) :
-            base(name, new StandardRunningInfo(), relaxed, tightTasks)
-        {
-        }
+        public MultiThreadRunner
+            (string name, bool relaxed = false, bool tightTasks = false) : base(
+            name, new StandardRunningInfo(), relaxed, tightTasks) { }
 
-        public MultiThreadRunner(string name, float intervalInMs) : base(name, new StandardRunningInfo(),
-            intervalInMs)
-        {
-        }
+        public MultiThreadRunner
+            (string name, float intervalInMs) : base(name, new StandardRunningInfo(), intervalInMs) { }
     }
 
     /// <summary>
@@ -119,51 +100,31 @@ namespace Svelto.Tasks
             Init(runnerData);
         }
 
-        public void Pause()
+        ~MultiThreadRunner()
         {
-            _runnerData.isPaused = true;
+            Console.LogWarning("MultiThreadRunner has been garbage collected, this could have serious"
+                             + "consequences, are you sure you want this? ".FastConcat(_runnerData.name));
+
+            Dispose();
         }
 
-        public void Resume()
-        {
-            _runnerData.isPaused = false;
-        }
+        public bool isStopping => _runnerData.waitForStop;
 
-        public bool paused => _runnerData.isPaused;
+        public bool isKilled                => _runnerData == null;
+        public bool paused                  => _runnerData.isPaused;
+        public uint numberOfRunningTasks    => _runnerData.Count;
+        public uint numberOfQueuedTasks     => _runnerData.newTaskRoutines.count;
+        public uint numberOfProcessingTasks => _runnerData.Count + _runnerData.newTaskRoutines.count;
+        public bool hasTasks                => numberOfProcessingTasks != 0;
 
-        public bool isStopping
-        {
-            get
-            {
-                Interlocked.MemoryBarrier();
-                return _runnerData.waitForFlush;
-            }
-        }
+        public override string ToString() { return _runnerData.name; }
 
-        public bool isKilled => _runnerData == null;
+        public void Pause()  { _runnerData.isPaused = true; }
+        public void Resume() { _runnerData.isPaused = false; }
 
         public void Flush()
         {
-            Stop();
-        }
-
-        public uint numberOfRunningTasks => _runnerData.Count;
-        public uint numberOfQueuedTasks => _runnerData.newTaskRoutines.Count;
-        public uint numberOfProcessingTasks => _runnerData.Count + _runnerData.newTaskRoutines.Count;
-        
-        public bool hasTasks => numberOfProcessingTasks != 0;
-
-        public override string ToString()
-        {
-            return _runnerData.name;
-        }
-
-        ~MultiThreadRunner()
-        {
-            Console.LogWarning("MultiThreadRunner has been garbage collected, this could have serious" +
-                               "consequences, are you sure you want this? ".FastConcat(_runnerData.name));
-
-            Dispose();
+            _runnerData.StopAndFlush();
         }
 
         public void Dispose()
@@ -172,17 +133,6 @@ namespace Svelto.Tasks
                 Kill(null);
 
             GC.SuppressFinalize(this);
-        }
-
-        void Init(RunnerData runnerData)
-        {
-            _runnerData = runnerData;
-#if !NETFX_CORE
-            //threadpool doesn't work well with Unity apparently it seems to choke when too meany threads are started
-            new Thread(() => runnerData.RunCoroutineFiber()) {IsBackground = true}.Start();
-#else
-            Task.Factory.StartNew(() => runnerData.RunCoroutineFiber(), TaskCreationOptions.LongRunning);
-#endif
         }
 
         public void StartCoroutine(in TTask task)
@@ -199,13 +149,10 @@ namespace Svelto.Tasks
             if (isKilled == true)
                 return;
 
-            _runnerData.newTaskRoutines.Clear();
-            _runnerData.waitForFlush = true;
-
-            Interlocked.MemoryBarrier();
+            _runnerData.Stop();
         }
 
-        internal void Kill(Action onThreadKilled)
+        public void Kill(Action onThreadKilled)
         {
             if (isKilled == true)
                 throw new MultiThreadRunnerException("Trying to kill an already killed runner");
@@ -223,24 +170,36 @@ namespace Svelto.Tasks
             _runnerData = null;
         }
 
-        RunnerData _runnerData;
+        void Init(RunnerData runnerData)
+        {
+            _runnerData = runnerData;
+#if !NETFX_CORE
+            //threadpool doesn't work well with Unity apparently it seems to choke when too meany threads are started
+            new Thread(runnerData.RunCoroutineFiber)
+            {
+                IsBackground = true
+            }.Start();
+#else
+            Task.Factory.StartNew(() => runnerData.RunCoroutineFiber(), TaskCreationOptions.LongRunning);
+#endif
+        }
 
         class RunnerData
         {
-            public RunnerData(bool relaxed, float interval, string name, bool isRunningTightTasks,
-                TFlowModifier modifier)
+            public RunnerData
+                (bool relaxed, float interval, string name, bool isRunningTightTasks, TFlowModifier modifier)
             {
-                _mevent = new ManualResetEventSlim();
-                _watch = new Stopwatch();
-                _coroutines = new FasterList<TTask>();
-                newTaskRoutines = new ThreadSafeQueue<TTask>();
-                _interval = (long) (interval * 10000);
-                this.name = name;
+                _mevent              = new ManualResetEventSlim();
+                _watch               = new Stopwatch();
+                _coroutines          = new FasterList<TTask>();
+                newTaskRoutines      = new ThreadSafeQueue<TTask>();
+                _interval            = (long) (interval * 10000);
+                this.name            = name;
                 _isRunningTightTasks = isRunningTightTasks;
-                _flushingOperation = new SveltoTaskRunner<TTask>.FlushingOperation();
-                modifier.runnerName = name;
-                _process = new SveltoTaskRunner<TTask>.Process<TFlowModifier>
-                    (newTaskRoutines, _coroutines, _flushingOperation, modifier);
+                _flushingOperation   = new SveltoTaskRunner<TTask>.FlushingOperation();
+                modifier.runnerName  = name;
+                _process = new SveltoTaskRunner<TTask>.Process<TFlowModifier>(
+                    newTaskRoutines, _coroutines, _flushingOperation, modifier);
 
                 if (relaxed)
                     _lockingMechanism = RelaxedLockingMechanism;
@@ -248,7 +207,7 @@ namespace Svelto.Tasks
                     _lockingMechanism = QuickLockingMechanism;
             }
 
-            public uint Count
+            internal uint Count
             {
                 get
                 {
@@ -257,26 +216,153 @@ namespace Svelto.Tasks
                     return (uint) _coroutines.count;
                 }
             }
-            
+
+            internal void Stop()
+            {
+                _flushingOperation.Stop(name);
+                //unlocking thread as otherwise the stopping flag will never be reset
+                UnlockThread();
+            }
+
+            internal void StopAndFlush()
+            {
+                _flushingOperation.StopAndFlush();
+                
+                //unlocking thread as otherwise the stopping flag will never be reset
+                UnlockThread();
+            }
+
+            internal void Kill(Action onThreadKilled)
+            {
+                _flushingOperation.Kill(name);
+                
+                if (_mevent != null) //already disposed
+                {
+                    _onThreadKilled = onThreadKilled;
+                    Interlocked.MemoryBarrier();
+
+                    UnlockThread();
+                }
+
+                if (_watch != null)
+                {
+                    _watch.Stop();
+                    _watch = null;
+                }
+            }
+
+            internal void UnlockThread()
+            {
+                _interlock = 1;
+
+                _mevent.Set();
+
+                Interlocked.MemoryBarrier();
+            }
+
+            internal void RunCoroutineFiber()
+            {
+                Interlocked.MemoryBarrier();
+
+                using (var profiler = new PlatformProfilerMT(name))
+                {
+                    try
+                    {
+                        while (true)
+                        {
+                            if (_process.MoveNext(profiler) == false)
+                                break;
+
+                            //If the runner is not killed
+                            if (_flushingOperation.stopping == false)
+                            {
+                                //if the runner is paused enable the locking mechanism
+                                if (_flushingOperation.paused)
+                                    _lockingMechanism();
+
+                                //if there is an interval time between calls we need to wait for it
+                                if (_interval > 0)
+                                    WaitForInterval();
+
+                                //if there aren't task left we put the thread in pause
+                                if (_coroutines.count == 0)
+                                {
+                                    if (newTaskRoutines.count == 0)
+                                        _lockingMechanism();
+                                    else
+                                        ThreadUtility.Wait(ref _yieldingCount, 16);
+                                }
+                                else
+                                {
+                                    if (_isRunningTightTasks)
+                                        ThreadUtility.Wait(ref _yieldingCount, 16);
+                                }
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        Kill(null);
+                        
+                        //the process must always complete naturally, otherwise the continuators won't be released.
+                        while (_process.MoveNext(profiler) == true);
+
+                        throw;
+                    }
+                    finally
+                    {
+                        _onThreadKilled?.Invoke();
+
+                        if (_mevent != null)
+                        {
+                            _mevent.Dispose();
+                            _mevent = null;
+
+                            Interlocked.MemoryBarrier();
+                        }
+                    }
+                }
+            }
+
+            internal bool isPaused
+            {
+                get => _flushingOperation.paused;
+                set
+                {
+                    _flushingOperation.Pause(name);
+
+                    if (value == false)
+                        UnlockThread();
+                }
+            }
+
+            internal bool waitForStop    => _flushingOperation.stopping;
+
+            /// <summary>
+            /// More reacting pause/resuming system. It spins for a while before reverting to the relaxing locking 
+            /// </summary>
             void QuickLockingMechanism()
             {
                 var quickIterations = 0;
-                var frequency = 1024;
+                var frequency       = 1024;
 
-                while (System.Threading.Volatile.Read(ref _interlock) != 1 && quickIterations < 4096)
+                while (Volatile.Read(ref _interlock) != 1 && quickIterations < 4096)
                 {
                     ThreadUtility.Wait(ref quickIterations, frequency);
 
-                    if (System.Threading.Volatile.Read(ref _flushingOperation.kill) == true)
+                    if (waitForStop)
                         return;
                 }
 
-                if (_interlock == 0 && System.Threading.Volatile.Read(ref _flushingOperation.kill) == false)
+                if (_interlock == 0 && waitForStop == false)
                     RelaxedLockingMechanism();
                 else
                     _interlock = 0;
             }
 
+            /// <summary>
+            /// Resuming a manual even can take a long time, but allow the thread to be pause and the core to be used by other threads
+            /// </summary>
             void RelaxedLockingMechanism()
             {
                 _mevent.Wait();
@@ -296,126 +382,37 @@ namespace Svelto.Tasks
                     else
                         ThreadUtility.TakeItEasy();
 
-                    if (System.Threading.Volatile.Read(ref _flushingOperation.kill) == true) return;
+                    if (waitForStop == true)
+                        return;
                 }
 
                 _watch.Reset();
             }
 
-            internal void UnlockThread()
-            {
-                _interlock = 1;
-
-                _mevent.Set();
-
-                Interlocked.MemoryBarrier();
-            }
-
-            public void Kill(Action onThreadKilled)
-            {
-                if (_mevent != null) //already disposed
-                {
-                    _onThreadKilled = onThreadKilled;
-                    _flushingOperation.kill = true;
-                    Interlocked.MemoryBarrier();
-
-                    UnlockThread();
-                }
-
-                if (_watch != null)
-                {
-                    _watch.Stop();
-                    _watch = null;
-                }
-            }
-
-            internal void RunCoroutineFiber()
-            {
-                Interlocked.MemoryBarrier();
-
-                using (var profiler = new PlatformProfilerMT(name))
-                {
-                    while (true)
-                    {
-                        if (_process.MoveNext(profiler) == false)
-                            break;
-
-                        if (_flushingOperation.kill == false)
-                        {
-                            if (_flushingOperation.paused)
-                                _lockingMechanism();
-
-                            if (_interval > 0)
-                                WaitForInterval();
-
-                            if (_coroutines.count == 0)
-                            {
-                                if (newTaskRoutines.Count == 0)
-                                    _lockingMechanism();
-                                else
-                                    ThreadUtility.Wait(ref _yieldingCount, 16);
-                            }
-                            else
-                            {
-                                if (_isRunningTightTasks)
-                                    ThreadUtility.Wait(ref _yieldingCount, 16);
-                            }
-                        }
-                    }
-                }
-
-                if (_onThreadKilled != null)
-                    _onThreadKilled();
-
-                if (_mevent != null)
-                {
-                    _mevent.Dispose();
-                    _mevent = null;
-
-                    Interlocked.MemoryBarrier();
-                }
-            }
-
-            internal bool isPaused
-            {
-                get => _flushingOperation.paused;
-                set
-                {
-                    System.Threading.Volatile.Write(ref _flushingOperation.paused, value);
-
-                    if (value == false) UnlockThread();
-                }
-            }
-
-            internal bool waitForFlush
-            {
-                get => _flushingOperation.stopping;
-                set => System.Threading.Volatile.Write(ref _flushingOperation.stopping, value);
-            }
-
             internal readonly ThreadSafeQueue<TTask> newTaskRoutines;
             internal readonly string                 name;
 
-            readonly FasterList<TTask> _coroutines;
-            readonly long              _interval;
-            readonly bool              _isRunningTightTasks;
-            readonly Action            _lockingMechanism;
+            readonly          FasterList<TTask>      _coroutines;
+            readonly          long                   _interval;
+            readonly          bool                   _isRunningTightTasks;
+            readonly          Action                 _lockingMechanism;
 
-            ManualResetEventSlim _mevent;
-            Action             _onThreadKilled;
-            Stopwatch          _watch;
-            int                _interlock;
-            int                _yieldingCount;
+            ManualResetEventSlim       _mevent;
+            Action                     _onThreadKilled;
+            Stopwatch                  _watch;
+            int                        _interlock;
+            int                        _yieldingCount;
 
-            readonly SveltoTaskRunner<TTask>.FlushingOperation      _flushingOperation;
+            readonly SveltoTaskRunner<TTask>.FlushingOperation _flushingOperation;
+
             readonly SveltoTaskRunner<TTask>.Process<TFlowModifier> _process;
         }
+
+        RunnerData _runnerData;
     }
 
     public class MultiThreadRunnerException : Exception
     {
-        public MultiThreadRunnerException(string message) : base(message)
-        {
-        }
+        public MultiThreadRunnerException(string message) : base(message) { }
     }
 }

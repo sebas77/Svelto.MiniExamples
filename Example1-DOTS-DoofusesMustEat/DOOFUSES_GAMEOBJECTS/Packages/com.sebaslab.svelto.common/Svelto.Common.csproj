@@ -12,19 +12,29 @@
     <PropertyGroup>
         <PackageId>Svelto.Common</PackageId>
         <Authors>Sebastiano Mandala</Authors>
+        <RepositoryUrl>https://github.com/sebas77/Svelto.Common</RepositoryUrl>
     </PropertyGroup>
     
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
         <PlatformTarget>AnyCPU</PlatformTarget>
         <UseSharedCompilation>false</UseSharedCompilation>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
         <PlatformTarget>AnyCPU</PlatformTarget>
         <UseSharedCompilation>false</UseSharedCompilation>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)' == 'NugetPack' "> <!-- Do not delete. Used for nuget packing -->
+        <NuspecFile>Svelto.Common.nuspec</NuspecFile>
+        <NuspecProperties>version=$(PackageVersion)</NuspecProperties>
+        <PlatformTarget>AnyCPU</PlatformTarget>
+        <UseSharedCompilation>false</UseSharedCompilation>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="System.Memory" Version="4.5.2" />
+        <PackageReference Include="System.Memory" Version="4.5.4" />
         <None Remove="**\*.meta" />
     </ItemGroup>
 </Project>

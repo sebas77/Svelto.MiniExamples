@@ -16,7 +16,7 @@ namespace Svelto.DataStructures
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
-    public sealed class FasterDictionary<TKey, TValue> where TKey : struct, IEquatable<TKey>
+    public sealed class FasterDictionary<TKey, TValue>: ISveltoDictionary<TKey, TValue> where TKey : struct, IEquatable<TKey>
     {
         public FasterDictionary() : this(1) { }
 
@@ -28,11 +28,8 @@ namespace Svelto.DataStructures
 
             _dictionary = dictionary;
         }
-        
-        public static FasterDictionary<TKey, TValue> Construct()
-        {
-            return new FasterDictionary<TKey, TValue>(0);
-        }
+
+        public static FasterDictionary<TKey, TValue> Construct() { return new FasterDictionary<TKey, TValue>(0); }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public MB<TValue> GetValues(out uint count)
@@ -54,8 +51,8 @@ namespace Svelto.DataStructures
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public SveltoDictionaryKeyValueEnumerator<TKey, TValue, ManagedStrategy<SveltoDictionaryNode<TKey>>, ManagedStrategy<TValue>,
-            ManagedStrategy<int>> GetEnumerator()
+        public SveltoDictionaryKeyValueEnumerator<TKey, TValue, ManagedStrategy<SveltoDictionaryNode<TKey>>,
+            ManagedStrategy<TValue>, ManagedStrategy<int>> GetEnumerator()
         {
             return _dictionary.GetEnumerator();
         }
@@ -98,7 +95,7 @@ namespace Svelto.DataStructures
         {
             return ref _dictionary.GetOrCreate(key, builder);
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref TValue GetOrCreate<W>(TKey key, FuncRef<W, TValue> builder, ref W parameter)
         {
@@ -112,7 +109,7 @@ namespace Svelto.DataStructures
         public ref TValue GetValueByRef(TKey key) { return ref _dictionary.GetValueByRef(key); }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void SetCapacity(uint size) { _dictionary.SetCapacity(size); }
+        public void ResizeTo(uint size) { _dictionary.ResizeTo(size); }
 
         public TValue this[TKey key]
         {
@@ -135,6 +132,20 @@ namespace Svelto.DataStructures
         public uint GetIndex(TKey key) { return _dictionary.GetIndex(key); }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Intersect<OTValue>
+            (in FasterDictionary<TKey, OTValue> otherDicKeys) => _dictionary.Intersect(otherDicKeys._dictionary);
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Intersect
+            (in FasterDictionary<TKey, TValue> otherDicKeys) => _dictionary.Intersect(otherDicKeys._dictionary);
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Exclude(FasterDictionary<TKey, TValue> otherDicKeys)  => _dictionary.Exclude(otherDicKeys._dictionary);
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Union(FasterDictionary<TKey, TValue> otherDicKeys) => _dictionary.Union(otherDicKeys._dictionary);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Dispose() { _dictionary.Dispose(); }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -149,7 +160,17 @@ namespace Svelto.DataStructures
             Array.Copy(GetValues(out var count).ToManagedArray(), 0, values, index, count);
         }
 
-#if UNITY_COLLECTIONS
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void ExpandTo(uint newSize) { _dictionary.ResizeTo(newSize); }
+        
+        public SveltoDictionary<TKey, TValue, ManagedStrategy<SveltoDictionaryNode<TKey>>, ManagedStrategy<TValue>,
+            ManagedStrategy<int>>.SveltoDictionaryKeyEnumerable keys
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => _dictionary.keys;
+        }
+
+#if UNITY_COLLECTIONS || UNITY_JOBS || UNITY_BURST
         [Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction]
 #endif
 

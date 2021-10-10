@@ -18,7 +18,7 @@ namespace Svelto.Tasks.Unity.Internal
                 {
                     GameObject go = GameObject.Find("Svelto.Tasks.UnityScheduler");
                     if (go != null)
-                        GameObject.DestroyImmediate(go);
+                        Object.DestroyImmediate(go);
                     go = new GameObject("Svelto.Tasks.UnityScheduler");
                     _runnerBehaviour = go.AddComponent<RunnerBehaviourUpdate>();
 

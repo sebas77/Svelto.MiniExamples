@@ -12,7 +12,7 @@ namespace Svelto.ECS.Example.Survive.Enemies
 
     public interface IEnemyTriggerComponent
     {
-        DispatchOnChange<EnemyCollisionData> hitChange { get; set; }
+        ReactiveValue<EnemyCollisionData> hitChange { get; set; }
     }
 
     public struct EnemyCollisionData : IEquatable<EnemyCollisionData>

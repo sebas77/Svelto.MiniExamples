@@ -64,13 +64,12 @@ namespace Svelto.DataStructures
         readonly int _hashCode;
     }
     
-    public readonly struct RefWrapper<T, Comparer>: IEquatable<RefWrapper<T, Comparer>>, IEquatable<T> where T:class
-    where Comparer: struct, IEqualityComparer<T>
+    public readonly struct RefWrapper<T, Comparer>: IEquatable<RefWrapper<T, Comparer>>, IEquatable<T> 
+        where T:class where Comparer: struct, IEqualityComparer<T>
     {
         public RefWrapper(T obj)
         {
             _value    = obj;
-            _hashCode = _value.GetHashCode();
             _comparer = default;
         }
 
@@ -95,7 +94,6 @@ namespace Svelto.DataStructures
         public static implicit operator RefWrapper<T, Comparer>(T t) => new RefWrapper<T, Comparer>(t);
 
         readonly T        _value;
-        readonly int      _hashCode;
         readonly Comparer _comparer;
     }
 }

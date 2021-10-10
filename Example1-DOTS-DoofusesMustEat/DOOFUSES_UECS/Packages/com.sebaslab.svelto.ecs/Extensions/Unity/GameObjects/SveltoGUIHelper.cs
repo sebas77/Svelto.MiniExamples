@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace Svelto.ECS.Extensions.Unity
 {
+    // "New Svelto GUI Patterns are now available"
     public static class SveltoGUIHelper
     {
         /// <summary>
@@ -63,10 +64,6 @@ namespace Svelto.ECS.Extensions.Unity
             return startIndex;
         }
 
-        /// <summary>
-        /// This creates just one entity out of the implementors found in the prefab, that can be either just on the root
-        /// or children of it. 
-        /// </summary>
         public static EntityInitializer Create<T>(EGID ID, Transform contextHolder, IEntityFactory factory, out T holder
                            , bool searchImplementorsInChildren = false) where T : MonoBehaviour, IEntityDescriptorHolder
         {

@@ -14,8 +14,11 @@ namespace Svelto.ECS
         static NamedExclusiveGroup()
         {
 #if DEBUG        
-            GroupMap.idToName[(uint) Group] = $"{name} ID {(uint)Group}";
+            GroupNamesMap.idToName[Group] = $"{name} ID {Group.id}";
 #endif            
+            //The hashname is independent from the actual group ID. this is fundamental because it is want
+            //guarantees the hash to be the same across different machines
+            GroupHashMap.RegisterGroup(Group, $"{name}");
         }
         //      protected NamedExclusiveGroup(string recognizeAs) : base(recognizeAs)  {}
         //    protected NamedExclusiveGroup(ushort range) : base(range) {}

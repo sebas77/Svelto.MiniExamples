@@ -3,7 +3,7 @@ using System.Collections.Generic;
 namespace Svelto.Tasks.Lean
 {
     struct SveltoTaskWrapper<TTask, TRunner>
-        where TTask : IEnumerator<TaskContract> where TRunner : class, IRunner<Lean.LeanSveltoTask<TTask>>
+        where TTask : IEnumerator<TaskContract> where TRunner : class, IRunner<LeanSveltoTask<TTask>>
     {
         public SveltoTaskWrapper(ref TTask task, TRunner runner) : this()
         {

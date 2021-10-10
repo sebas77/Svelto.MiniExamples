@@ -45,10 +45,11 @@ namespace Svelto.ECS.MiniExamples.Example1C
         (JobHandle inputDeps, in LocalFasterReadOnlyList<ExclusiveGroupStruct> doofusesEatingGroups
        , ExclusiveBuildGroup foodEatenGroup, in LocalFasterReadOnlyList<ExclusiveGroupStruct> foodGroup)
         {
-            var foodPositionMapper = entitiesDB.QueryNativeMappedEntities<PositionEntityComponent>(foodGroup, Allocator.TempJob);
+            var foodPositionMapper =
+                entitiesDB.QueryNativeMappedEntities<PositionEntityComponent>(foodGroup, Allocator.TempJob);
 
             //against all the doofuses
-            JobHandle deps = inputDeps;
+            JobHandle deps = default;
             foreach (var (doofusesBuffer, _) in entitiesDB
                .QueryEntities<PositionEntityComponent, VelocityEntityComponent, MealInfoComponent, EGIDComponent>(
                     doofusesEatingGroups))
@@ -57,9 +58,9 @@ namespace Svelto.ECS.MiniExamples.Example1C
                 var doofusesCount = doofuses.count;
 
                 //schedule the job
-                deps = JobHandle.CombineDependencies(deps
-                    , new ConsumingFoodJob(doofuses, foodPositionMapper, _nativeSwap, _nativeRemove, foodEatenGroup)
-                                                        .ScheduleParallel(doofusesCount, inputDeps));
+                deps = JobHandle.CombineDependencies(inputDeps, new ConsumingFoodJob(
+                                                         doofuses, foodPositionMapper, _nativeSwap, _nativeRemove
+                                                       , foodEatenGroup).ScheduleParallel(doofusesCount, inputDeps));
             }
 
             foodPositionMapper.ScheduleDispose(deps);

@@ -11,9 +11,11 @@ namespace Svelto.ECS.Extensions.Unity
     /// with UECS. However this is designed to make it work almost out of the box, but it should be eventually
     /// substituted by project customized code.
     /// This is a JobifiedEngine and as such it expect to be ticked. Normally it must be executed in a
-    /// SortedEnginesGroup as step that happens after the Svelto jobified engines run. The flow should be:
-    /// Svelto Engines Run
-    /// This Engine runs, which causeS:
+    /// SortedEnginesGroup as step that happens after the Svelto jobified engines run.
+    ///
+    /// The flow should be:
+    /// Svelto (GameLogic) Engines Run first
+    /// Then this Engine runs, which causes:
     /// Jobs to be completed (it's a sync point)
     /// Synchronizations engines to be executed (Svelto to UECS)
     /// Submission of Entities to be executed

@@ -1,6 +1,8 @@
-﻿using Svelto.Common;
+﻿using System.Runtime.CompilerServices;
+using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.ECS.DataStructures;
+using Svelto.ECS.Reference;
 
 namespace Svelto.ECS
 {
@@ -13,8 +15,8 @@ namespace Svelto.ECS
         {
             internal EntityReference ClaimReference()
             {
-                int tempFreeIndex;
-                int newFreeIndex;
+                int  tempFreeIndex;
+                int  newFreeIndex;
                 uint version;
 
                 do
@@ -24,24 +26,24 @@ namespace Svelto.ECS
                     if ((uint)tempFreeIndex >= _entityReferenceMap.count)
                     {
                         newFreeIndex = tempFreeIndex + 1;
-                        version = 0;
+                        version      = 0;
                     }
                     else
                     {
                         ref EntityReferenceMapElement element = ref _entityReferenceMap[tempFreeIndex];
                         // The recycle entities form a linked list, using the egid.entityID to store the next element.
                         newFreeIndex = (int)element.egid.entityID;
-                        version = element.version;
+                        version      = element.version;
                     }
-                }  while (tempFreeIndex != _nextFreeIndex.CompareExchange(newFreeIndex, tempFreeIndex));
+                } while (tempFreeIndex != _nextFreeIndex.CompareExchange(newFreeIndex, tempFreeIndex));
 
-            #if DEBUG && !SVELTO_PROFILE
+#if DEBUG && !PROFILE_SVELTO
                 // This code should be safe since we own the tempFreeIndex, this allows us to later check that nothing went wrong.
                 if (tempFreeIndex < _entityReferenceMap.count)
                 {
                     _entityReferenceMap[tempFreeIndex] = new EntityReferenceMapElement(new EGID(0, 0), version);
                 }
-            #endif
+#endif
 
                 return new EntityReference((uint)tempFreeIndex + 1, version);
             }
@@ -52,30 +54,31 @@ namespace Svelto.ECS
                 // so we need to resize instead of add.
                 if (reference.index >= _entityReferenceMap.count)
                 {
-                #if DEBUG && !SVELTO_PROFILE
+#if DEBUG && !PROFILE_SVELTO //THIS IS TO VALIDATE DATE DBC LIKE
                     for (var i = _entityReferenceMap.count; i <= reference.index; i++)
                     {
-                        _entityReferenceMap.Add(new EntityReferenceMapElement(EGID.Empty, 0));
+                        _entityReferenceMap.Add(new EntityReferenceMapElement(default, 0));
                     }
-                #else
+#else
                     _entityReferenceMap.AddAt(reference.index);
-                #endif
+#endif
                 }
 
-            #if DEBUG && !SVELTO_PROFILE
+#if DEBUG && !PROFILE_SVELTO
                 // These debug tests should be enough to detect if indices are being used correctly under native factories
                 if (_entityReferenceMap[reference.index].version != reference.version ||
-                    _entityReferenceMap[reference.index].egid != EGID.Empty)
+                    _entityReferenceMap[reference.index].egid.groupID != ExclusiveGroupStruct.Invalid)
                 {
                     throw new ECSException("Entity reference already set. This should never happen, please report it.");
                 }
-            #endif
+#endif
 
                 _entityReferenceMap[reference.index] = new EntityReferenceMapElement(egid, reference.version);
 
                 // Update reverse map from egid to locator.
-                var groupMap = _egidToReferenceMap
-                    .GetOrCreate(egid.groupID, () => new SharedSveltoDictionaryNative<uint, EntityReference>(0));
+                var groupMap =
+                    _egidToReferenceMap.GetOrCreate(egid.groupID
+                                                  , () => new SharedSveltoDictionaryNative<uint, EntityReference>(0));
                 groupMap[egid.entityID] = reference;
             }
 
@@ -85,8 +88,9 @@ namespace Svelto.ECS
 
                 _entityReferenceMap[reference.index].egid = to;
 
-                var groupMap = _egidToReferenceMap
-                    .GetOrCreate(to.groupID, () => new SharedSveltoDictionaryNative<uint, EntityReference>(0));
+                var groupMap =
+                    _egidToReferenceMap.GetOrCreate(
+                        to.groupID, () => new SharedSveltoDictionaryNative<uint, EntityReference>(0));
                 groupMap[to.entityID] = reference;
             }
 
@@ -125,7 +129,7 @@ namespace Svelto.ECS
                 _egidToReferenceMap.Remove(groupId);
             }
 
-            internal void UpdateAllGroupReferenceLocators(ExclusiveGroupStruct fromGroupId, uint toGroupId)
+            internal void UpdateAllGroupReferenceLocators(ExclusiveGroupStruct fromGroupId, ExclusiveGroupStruct toGroupId)
             {
                 if (_egidToReferenceMap.TryGetValue(fromGroupId, out var groupMap) == false)
                     return;
@@ -144,9 +148,9 @@ namespace Svelto.ECS
                 {
                     if (groupMap.TryGetValue(egid.entityID, out var locator))
                         return locator;
-                #if DEBUG && !SVELTO_PROFILE
+#if DEBUG && !PROFILE_SVELTO
                     else throw new ECSException($"Entity {egid} does not exist. Are you creating it? Try getting it from initializer.reference.");
-                #endif
+#endif
                 }
 
                 return EntityReference.Invalid;
@@ -184,7 +188,7 @@ namespace Svelto.ECS
             {
                 _egidToReferenceMap
                    .GetOrCreate(groupID, () => new SharedSveltoDictionaryNative<uint, EntityReference>(size))
-                   .SetCapacity(size);
+                   .ResizeTo(size);
 
                 _entityReferenceMap.Resize(size);
             }
@@ -210,7 +214,7 @@ namespace Svelto.ECS
                 _egidToReferenceMap.Dispose();
             }
 
-            SharedNativeInt _nextFreeIndex;
+            SharedNativeInt                                   _nextFreeIndex;
             NativeDynamicArrayCast<EntityReferenceMapElement> _entityReferenceMap;
 
             SharedSveltoDictionaryNative<ExclusiveGroupStruct, SharedSveltoDictionaryNative<uint, EntityReference>>
@@ -218,6 +222,7 @@ namespace Svelto.ECS
         }
 
         internal LocatorMap entityLocator => _entityLocator;
-        LocatorMap _entityLocator;
+        
+        LocatorMap          _entityLocator;
     }
 }

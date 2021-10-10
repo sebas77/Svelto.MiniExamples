@@ -33,7 +33,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
             _mainLoop.Run();
         }
 
-        public void OnContextDestroyed()
+        public void OnContextDestroyed(bool isInitialized)
         {
             _sveltoOverUecsEnginesGroupEnginesGroup.Dispose();
             _enginesRoot.Dispose();

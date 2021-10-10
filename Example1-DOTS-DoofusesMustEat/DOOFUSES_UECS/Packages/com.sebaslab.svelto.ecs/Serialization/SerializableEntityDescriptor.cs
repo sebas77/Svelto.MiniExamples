@@ -96,7 +96,7 @@ namespace Svelto.ECS.Serialization
         public IComponentBuilder[]             componentsToBuild   => ComponentsToBuild;
         public uint                            hash                => Hash;
         public Type                            realType            => Type;
-        public ISerializableComponentBuilder[] entitiesToSerialize => EntitiesToSerialize;
+        public ISerializableComponentBuilder[] componentsToSerialize => EntitiesToSerialize;
 
         static readonly IComponentBuilder[]                                             ComponentsToBuild;
         static readonly FasterDictionary<RefWrapperType, ISerializableComponentBuilder> EntityComponentsToSerializeMap;

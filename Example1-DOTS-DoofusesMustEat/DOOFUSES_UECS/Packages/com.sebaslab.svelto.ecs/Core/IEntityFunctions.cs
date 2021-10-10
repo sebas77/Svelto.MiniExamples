@@ -1,5 +1,3 @@
-using System.Runtime.CompilerServices;
-
 namespace Svelto.ECS
 {
     public interface IEntityFunctions
@@ -19,7 +17,7 @@ namespace Svelto.ECS
 
         void SwapEntityGroup<T>(EGID fromID, ExclusiveBuildGroup toGroupID) where T : IEntityDescriptor, new();
 
-        void SwapEntityGroup<T>(EGID fromID, ExclusiveBuildGroup toGroupID, ExclusiveBuildGroup mustBeFromGroup)
+        void SwapEntityGroup<T>(EGID fromID, ExclusiveBuildGroup fromGroup, ExclusiveBuildGroup toGroupID)
             where T : IEntityDescriptor, new();
 
         void SwapEntityGroup<T>(EGID fromID, EGID toId) where T : IEntityDescriptor, new();
@@ -27,8 +25,8 @@ namespace Svelto.ECS
         void SwapEntityGroup<T>(EGID fromID, EGID toId, ExclusiveBuildGroup mustBeFromGroup)
             where T : IEntityDescriptor, new();
 #if UNITY_NATIVE
-        NativeEntityRemove ToNativeRemove<T>(string memberName)  where T : IEntityDescriptor, new();
-        NativeEntitySwap ToNativeSwap<T>(string memberName)  where T : IEntityDescriptor, new();
+        Svelto.ECS.Native.NativeEntityRemove                 ToNativeRemove<T>(string memberName)  where T : IEntityDescriptor, new();
+        Svelto.ECS.Native.NativeEntitySwap ToNativeSwap<T>(string memberName)  where T : IEntityDescriptor, new();
 #endif        
     }
 }

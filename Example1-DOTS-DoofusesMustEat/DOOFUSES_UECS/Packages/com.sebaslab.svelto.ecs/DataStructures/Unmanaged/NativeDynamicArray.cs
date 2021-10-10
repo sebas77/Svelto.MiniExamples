@@ -65,6 +65,11 @@ namespace Svelto.ECS.DataStructures
             }
         }
 
+        public static NativeDynamicArray Alloc<T>(uint newLength = 0) where T : struct
+        {
+            return Alloc<T>(Allocator.Persistent, newLength);
+        }
+
         public static NativeDynamicArray Alloc<T>(Allocator allocator, uint newLength = 0) where T : struct
         {
             unsafe
@@ -74,16 +79,13 @@ namespace Svelto.ECS.DataStructures
 #else           
                 NativeDynamicArray rtnStruc = default;
 #endif
-                var sizeOf = MemoryUtilities.SizeOf<T>();
-
-                uint         structSize = (uint) MemoryUtilities.SizeOf<UnsafeArray>();
-                UnsafeArray* listData    = (UnsafeArray*) MemoryUtilities.Alloc(structSize, allocator);
+                UnsafeArray* listData    = (UnsafeArray*) MemoryUtilities.Alloc<UnsafeArray>(1, allocator);
 
                 //clear to nullify the pointers
                 //MemoryUtilities.MemClear((IntPtr) listData, structSize);
 
                 rtnStruc._allocator = allocator;
-                listData->Realloc((uint) (newLength * sizeOf), allocator);
+                listData->Realloc<T>(newLength, allocator);
 
                 rtnStruc._list = listData;
 
@@ -138,6 +140,8 @@ namespace Svelto.ECS.DataStructures
                 throw new Exception("NativeDynamicArray: null-access");
 #endif
             _list->Dispose(_allocator);
+            MemoryUtilities.Free((IntPtr) _list, _allocator);
+            
             _list = null;
         }
 
@@ -152,10 +156,10 @@ namespace Svelto.ECS.DataStructures
                 if (_hashType != TypeHash<T>.hash)
                     throw new Exception("NativeDynamicArray: not expected type used");
 #endif
-                var structSize = (uint) MemoryUtilities.SizeOf<T>();
-
-                if (_list->space - (int) structSize < 0)
-                    _list->Realloc((uint) (((uint) ((Count<T>() + 1) * 1.5f) * (float) structSize)), _allocator);
+                if (Count<T>() == Capacity<T>())
+                {
+                    _list->Realloc<T>((uint) ((Capacity<T>() + 1) * 1.5f), _allocator);
+                }
 
                 _list->Add(item);
             }
@@ -175,7 +179,7 @@ namespace Svelto.ECS.DataStructures
                 var structSize = (uint) MemoryUtilities.SizeOf<T>();
 
                 if (index >= Capacity<T>())
-                    _list->Realloc((uint) (((index + 1) * 1.5f) * structSize), _allocator);
+                    _list->Realloc<T>((uint) ((index + 1) * 1.5f), _allocator);
 
                 var writeIndex = (index + 1) * structSize;
                 if (_list->count < writeIndex)
@@ -185,7 +189,7 @@ namespace Svelto.ECS.DataStructures
             }
         }
         
-        public void Grow<T>(uint newCapacity) where T : struct
+        public void Resize<T>(uint newCapacity) where T : struct
         {
             unsafe
             {
@@ -194,13 +198,8 @@ namespace Svelto.ECS.DataStructures
                     throw new Exception("NativeDynamicArray: null-access");
                 if (_hashType != TypeHash<T>.hash)
                     throw new Exception("NativeDynamicArray: not expected type used");
-                if (newCapacity <= Capacity<T>())
-                    throw new Exception("New capacity must be greater than current one");
 #endif
-                uint structSize = (uint) MemoryUtilities.SizeOf<T>();
-
-                uint size = (uint) (newCapacity * structSize);
-                _list->Realloc((uint) size, _allocator);
+                _list->Realloc<T>((uint) newCapacity, _allocator);
             }
         }
 
@@ -378,8 +377,11 @@ namespace Svelto.ECS.DataStructures
             }
         }
         
-#if UNITY_NATIVE
-        [global::Unity.Burst.NoAlias] [global::Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction]
+#if UNITY_COLLECTIONS || UNITY_JOBS || UNITY_BURST    
+#if UNITY_BURST
+        [Unity.Burst.NoAlias]
+#endif
+        [Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction]
 #endif
         unsafe UnsafeArray* _list;
 #if DEBUG && !PROFILE_SVELTO

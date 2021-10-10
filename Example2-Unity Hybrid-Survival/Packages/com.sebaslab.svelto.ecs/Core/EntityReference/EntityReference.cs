@@ -73,6 +73,6 @@ namespace Svelto.ECS
             return (ulong)version << 32 | ((ulong)uniqueId & 0xFFFFFFFF);
         }
 
-        public static EntityReference Invalid => new EntityReference(0, 0);
+        public static EntityReference Invalid => default;
     }
 }

@@ -14,16 +14,16 @@ namespace Svelto.ECS.MiniExamples.GameObjectsLayer
 
         public void Add(ref GameObjectEntityComponent entityComponent, EGID egid)
         {
-            var gameObjectID = _goManager.FetchGameObject(entityComponent.prefabID, (int)(uint)egid.groupID);
+            var gameObjectID = _goManager.FetchGameObject(entityComponent.prefabID, (int)(uint)egid.groupID.id);
 
-            _goManager.SetPosition(gameObjectID, (int)(uint)egid.groupID, entityComponent.spawnPosition);
+            _goManager.SetPosition(gameObjectID, (int)(uint)egid.groupID.id, entityComponent.spawnPosition);
 
             entityComponent.gameObjectID = gameObjectID;
         }
 
         public void Remove(ref GameObjectEntityComponent entityComponent, EGID egid)
         {
-            _goManager.Recycle(entityComponent.gameObjectID, (int)(uint)egid.groupID);
+            _goManager.Recycle(entityComponent.gameObjectID, (int)(uint)egid.groupID.id);
         }
 
         public void MovedTo

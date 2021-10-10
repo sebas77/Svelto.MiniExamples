@@ -13,7 +13,7 @@ namespace Svelto.ECS.Example.Survive.Enemies
     //This is the case when implementor can and should be Monobehaviours. Here an example:
     public class EnemyTriggerImplementor : MonoBehaviour, IImplementor, IEnemyTriggerComponent
     {
-        public DispatchOnChange<EnemyCollisionData> hitChange { get; set; }
+        public ReactiveValue<EnemyCollisionData> hitChange { get; set; }
 
         /// <summary>
         /// it's annoying that there isn't a physic matrix dedicated for triggers. This means that OnTriggerEnter

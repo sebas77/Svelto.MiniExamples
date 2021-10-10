@@ -35,7 +35,7 @@ namespace Svelto.DataStructures
             _buckets = default;
             _buckets.Alloc((uint) HashHelpers.GetPrime((int) size), allocator);
         }
-        
+
         public TKeyStrategy unsafeKeys
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -107,7 +107,10 @@ namespace Svelto.DataStructures
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool ContainsKey(TKey key) { return TryFindIndex(key, out _); }
+        public bool ContainsKey(TKey key)
+        {
+            return TryFindIndex(key, out _);
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public SveltoDictionaryKeyValueEnumerator<TKey, TValue, TKeyStrategy, TValueStrategy, TBucketStrategy>
@@ -171,7 +174,10 @@ namespace Svelto.DataStructures
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ref TValue GetDirectValueByRef(uint index) { return ref _values[index]; }
+        public ref TValue GetDirectValueByRef(uint index)
+        {
+            return ref _values[index];
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref TValue GetValueByRef(TKey key)
@@ -428,8 +434,10 @@ namespace Svelto.DataStructures
         //I avoid to initialize the array to -1
         public bool TryFindIndex(TKey key, out uint findIndex)
         {
-            int  hash        = key.GetHashCode();
-            
+            DBC.Common.Check.Require(_buckets.capacity > 0, "Dictionary arrays are not correctly initialized (0 size)");
+
+            int hash = key.GetHashCode();
+
             uint bucketIndex = Reduce((uint) hash, (uint) _buckets.capacity);
 
             int valueIndex = _buckets[bucketIndex] - 1;
@@ -470,7 +478,8 @@ namespace Svelto.DataStructures
 #endif
         }
 
-        public void Intersect<OTValue, OTKeyStrategy, OTValueStrategy, OTBucketStrategy> (SveltoDictionary<TKey, OTValue, OTKeyStrategy, OTValueStrategy, OTBucketStrategy> otherDicKeys)   
+        public void Intersect<OTValue, OTKeyStrategy, OTValueStrategy, OTBucketStrategy>
+            (SveltoDictionary<TKey, OTValue, OTKeyStrategy, OTValueStrategy, OTBucketStrategy> otherDicKeys)
             where OTKeyStrategy : struct, IBufferStrategy<SveltoDictionaryNode<TKey>>
             where OTValueStrategy : struct, IBufferStrategy<OTValue>
             where OTBucketStrategy : struct, IBufferStrategy<int>
@@ -484,8 +493,9 @@ namespace Svelto.DataStructures
                 }
             }
         }
-        
-        public void Exclude<OTValue, OTKeyStrategy, OTValueStrategy, OTBucketStrategy> (SveltoDictionary<TKey, OTValue, OTKeyStrategy, OTValueStrategy, OTBucketStrategy> otherDicKeys)   
+
+        public void Exclude<OTValue, OTKeyStrategy, OTValueStrategy, OTBucketStrategy>
+            (SveltoDictionary<TKey, OTValue, OTKeyStrategy, OTValueStrategy, OTBucketStrategy> otherDicKeys)
             where OTKeyStrategy : struct, IBufferStrategy<SveltoDictionaryNode<TKey>>
             where OTValueStrategy : struct, IBufferStrategy<OTValue>
             where OTBucketStrategy : struct, IBufferStrategy<int>
@@ -499,8 +509,9 @@ namespace Svelto.DataStructures
                 }
             }
         }
-        
-        public void Union<OTKeyStrategy, OTValueStrategy, OTBucketStrategy> (SveltoDictionary<TKey, TValue, OTKeyStrategy, OTValueStrategy, OTBucketStrategy> otherDicKeys)   
+
+        public void Union<OTKeyStrategy, OTValueStrategy, OTBucketStrategy>
+            (SveltoDictionary<TKey, TValue, OTKeyStrategy, OTValueStrategy, OTBucketStrategy> otherDicKeys)
             where OTKeyStrategy : struct, IBufferStrategy<SveltoDictionaryNode<TKey>>
             where OTValueStrategy : struct, IBufferStrategy<TValue>
             where OTBucketStrategy : struct, IBufferStrategy<int>
@@ -510,11 +521,11 @@ namespace Svelto.DataStructures
                 this[other.Key] = other.Value;
             }
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         static uint Reduce(uint x, uint N)
         {
-            if (x >= N)
+            if (x >= N) //is the condition return actually an optimization?
                 return x % N;
 
             return x;
@@ -532,9 +543,9 @@ namespace Svelto.DataStructures
                 valuesInfo[previous].next = next;
         }
 
-        public struct SveltoDictionaryKeyEnumerable
+        public readonly struct SveltoDictionaryKeyEnumerable
         {
-            SveltoDictionary<TKey, TValue, TKeyStrategy, TValueStrategy, TBucketStrategy> _dic;
+            readonly SveltoDictionary<TKey, TValue, TKeyStrategy, TValueStrategy, TBucketStrategy> _dic;
 
             public SveltoDictionaryKeyEnumerable
                 (SveltoDictionary<TKey, TValue, TKeyStrategy, TValueStrategy, TBucketStrategy> dic)
@@ -590,8 +601,8 @@ namespace Svelto.DataStructures
         internal TValueStrategy _values;
         TBucketStrategy         _buckets;
 
-        uint        _freeValueCellIndex;
-        uint        _collisions;
+        uint _freeValueCellIndex;
+        uint _collisions;
     }
 
     public class SveltoDictionaryException : Exception

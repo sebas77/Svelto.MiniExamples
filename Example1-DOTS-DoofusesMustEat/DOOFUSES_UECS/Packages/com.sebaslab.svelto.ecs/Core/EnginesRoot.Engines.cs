@@ -9,6 +9,11 @@ namespace Svelto.ECS
 {
     public sealed partial class EnginesRoot
     {
+        static EnginesRoot()
+        {
+            GroupHashMap.Init();
+            SerializationDescriptorMap.Init();
+        }
         /// <summary>
         ///     Engines root contextualize your engines and entities. You don't need to limit yourself to one EngineRoot
         ///     as multiple engines root could promote separation of scopes. The EntitySubmissionScheduler checks
@@ -19,8 +24,15 @@ namespace Svelto.ECS
         /// </summary>
         public EnginesRoot(EntitiesSubmissionScheduler entitiesComponentScheduler)
         {
-            _entitiesOperations            = new FasterDictionary<ulong, EntitySubmitOperation>();
-            serializationDescriptorMap     = new SerializationDescriptorMap();
+            _entitiesOperations                 = new FasterDictionary<ulong, EntitySubmitOperation>();
+            _idChecker                          = new FasterDictionary<ExclusiveGroupStruct, HashSet<uint>>();
+            _multipleOperationOnSameEGIDChecker = new FasterDictionary<EGID, uint>();
+#if UNITY_NATIVE //because of the thread count, ATM this is only for unity            
+            _nativeSwapOperationQueue   = new DataStructures.AtomicNativeBags(Allocator.Persistent);
+            _nativeRemoveOperationQueue = new DataStructures.AtomicNativeBags(Allocator.Persistent);
+            _nativeAddOperationQueue    = new DataStructures.AtomicNativeBags(Allocator.Persistent);
+#endif            
+            _serializationDescriptorMap     = new SerializationDescriptorMap();
             _maxNumberOfOperationsPerFrame = uint.MaxValue;
             _reactiveEnginesAddRemove      = new FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer>>();
             _reactiveEnginesAddRemoveOnDispose =
@@ -37,13 +49,11 @@ namespace Svelto.ECS
             _groupsPerEntity =
                 new FasterDictionary<RefWrapperType, FasterDictionary<ExclusiveGroupStruct, ITypeSafeDictionary>>();
             _groupedEntityToAdd = new DoubleBufferedEntitiesToAdd();
-            _entityReferenceMap = new FasterList<EntityReferenceMapElement>();
-            _egidToReferenceMap = new FasterDictionary<ExclusiveGroupStruct, FasterDictionary<uint, EntityReference>>();
-
             _entityStreams = EntitiesStreams.Create();
             _groupFilters =
                 new FasterDictionary<RefWrapperType, FasterDictionary<ExclusiveGroupStruct, GroupFilters>>();
-            _entitiesDB = new EntitiesDB(this);
+            _entityLocator.InitEntityReferenceMap();
+            _entitiesDB = new EntitiesDB(this,_entityLocator);
 
             scheduler        = entitiesComponentScheduler;
             scheduler.onTick = new EntitiesSubmitter(this);
@@ -93,7 +103,7 @@ namespace Svelto.ECS
                     try
                     {
                         entityList.Value.ExecuteEnginesRemoveCallbacks(_reactiveEnginesAddRemoveOnDispose, profiler
-                                                                     , new ExclusiveGroupStruct(groups.Key));
+                                                                     , groups.Key);
                     }
                     catch (Exception e)
                     {
@@ -131,9 +141,8 @@ namespace Svelto.ECS
 
                 _groupedEntityToAdd.Dispose();
 
-                _entityReferenceMap.Clear();
-                _egidToReferenceMap.Clear();
-
+                _entityLocator.DisposeEntityReferenceMap();
+                
                 _entityStreams.Dispose();
                 scheduler.Dispose();
             }
@@ -249,7 +258,7 @@ namespace Svelto.ECS
             {
                 _enginesRoot = new Svelto.DataStructures.WeakReference<EnginesRoot>(enginesRoot);
                 _privateSubmitEntities =
-                    _enginesRoot.Target.SingleSubmission(new PlatformProfiler("Svelto.ECS - Entities Submission"));
+                    _enginesRoot.Target.SingleSubmission(new PlatformProfiler());
                 submitEntities = Invoke(); //this must be last to capture all the variables
             }
 
@@ -272,23 +281,32 @@ namespace Svelto.ECS
                         {
                             var iterations       = 0;
                             var hasEverSubmitted = false;
-
+#if UNITY_NATIVE
                             enginesRootTarget.FlushNativeOperations(profiler);
-
+#endif
                             //todo: proper unit test structural changes made as result of add/remove callbacks
                             while (enginesRootTarget.HasMadeNewStructuralChangesInThisIteration() && iterations++ < 5)
                             {
                                 hasEverSubmitted = true;
-                                _privateSubmitEntities.MoveNext();
-                                if (_privateSubmitEntities.Current == true)
-                                    yield return true;
-                                else
-                                    break;
-                            }
-                            
-                            if (enginesRootTarget.HasMadeNewStructuralChangesInThisIteration())
 
-                            enginesRootTarget.FlushNativeOperations(profiler);
+                                while (true)
+                                {
+                                    _privateSubmitEntities.MoveNext();
+                                    if (_privateSubmitEntities.Current == true)
+                                    {
+                                        using (profiler.Yield())
+                                        {
+                                            yield return true;
+                                        }
+                                    }
+                                    else
+                                        break;
+                                }
+#if UNITY_NATIVE
+                                if (enginesRootTarget.HasMadeNewStructuralChangesInThisIteration())
+                                    enginesRootTarget.FlushNativeOperations(profiler);
+#endif
+                            }
 
 #if DEBUG && !PROFILE_SVELTO
                             if (iterations == 5)

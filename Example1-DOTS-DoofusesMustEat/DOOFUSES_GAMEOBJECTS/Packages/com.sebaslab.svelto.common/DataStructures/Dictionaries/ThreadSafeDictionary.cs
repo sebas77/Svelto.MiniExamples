@@ -36,7 +36,7 @@ namespace Svelto.DataStructures
                 }
                 finally
                 {
-                    _lockQ.ExitReadLock();
+                    _lockQ.QuittingReadLock();
                 }
             }
         }
@@ -50,7 +50,7 @@ namespace Svelto.DataStructures
             }
             finally
             {
-                _lockQ.EnterWriteLock();
+                _lockQ.QuittingWriteLock();
             }
         }
 
@@ -63,7 +63,7 @@ namespace Svelto.DataStructures
             }
             finally
             {
-                _lockQ.EnterWriteLock();
+                _lockQ.QuittingWriteLock();
             }
         }
 
@@ -76,7 +76,7 @@ namespace Svelto.DataStructures
             }
             finally
             {
-                _lockQ.EnterWriteLock();
+                _lockQ.QuittingWriteLock();
             }
         }
 
@@ -89,7 +89,7 @@ namespace Svelto.DataStructures
             }
             finally
             {
-                _lockQ.EnterWriteLock();
+                _lockQ.QuittingWriteLock();
             }
         }
 
@@ -102,7 +102,7 @@ namespace Svelto.DataStructures
             }
             finally
             {
-                _lockQ.ExitReadLock();
+                _lockQ.QuittingReadLock();
             }
         }
 
@@ -115,7 +115,7 @@ namespace Svelto.DataStructures
             }
             finally
             {
-                _lockQ.ExitReadLock();
+                _lockQ.QuittingReadLock();
             }
         }
 
@@ -128,7 +128,7 @@ namespace Svelto.DataStructures
             }
             finally
             {
-                _lockQ.EnterWriteLock();
+                _lockQ.QuittingWriteLock();
             }
         }
 
@@ -141,7 +141,7 @@ namespace Svelto.DataStructures
             }
             finally
             {
-                _lockQ.EnterWriteLock();
+                _lockQ.QuittingWriteLock();
             }
         }
 
@@ -154,7 +154,7 @@ namespace Svelto.DataStructures
             }
             finally
             {
-                _lockQ.ExitReadLock();
+                _lockQ.QuittingReadLock();
             }
         }
 
@@ -167,7 +167,7 @@ namespace Svelto.DataStructures
             }
             finally
             {
-                _lockQ.ExitReadLock();
+                _lockQ.QuittingReadLock();
             }
         }
 
@@ -195,7 +195,7 @@ namespace Svelto.DataStructures
                 }
                 finally
                 {
-                    _lockQ.ExitReadLock();
+                    _lockQ.QuittingReadLock();
                 }
             }
             set
@@ -207,7 +207,7 @@ namespace Svelto.DataStructures
                 }
                 finally
                 {
-                    _lockQ.EnterWriteLock();
+                    _lockQ.QuittingWriteLock();
                 }
             }
         }
@@ -221,7 +221,7 @@ namespace Svelto.DataStructures
             }
             finally
             {
-                _lockQ.EnterWriteLock();
+                _lockQ.QuittingWriteLock();
             }
         }
 
@@ -234,7 +234,7 @@ namespace Svelto.DataStructures
             }
             finally
             {
-                _lockQ.EnterWriteLock();
+                _lockQ.QuittingWriteLock();
             }
         }
 
@@ -247,7 +247,7 @@ namespace Svelto.DataStructures
             }
             finally
             {
-                _lockQ.ExitReadLock();
+                _lockQ.QuittingReadLock();
             }
         }
 
@@ -260,7 +260,7 @@ namespace Svelto.DataStructures
             }
             finally
             {
-                _lockQ.ExitReadLock();
+                _lockQ.QuittingReadLock();
             }
         }
 

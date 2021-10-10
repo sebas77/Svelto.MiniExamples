@@ -1,5 +1,4 @@
 #if UNITY_5 || UNITY_5_3_OR_NEWER
-using System;
 using System.Collections;
 using Svelto.Common;
 using Svelto.DataStructures;
@@ -19,6 +18,7 @@ namespace Svelto.Tasks.Unity.Internal
         {
             using (var platform = new PlatformProfiler("Early tasks")) 
                 ExecuteRoutines(_earlyProcesses, platform);
+            
             using (var platform = new PlatformProfiler("Update tasks")) 
                 ExecuteRoutines(_updateProcesses, platform);
         }
@@ -69,7 +69,7 @@ namespace Svelto.Tasks.Unity.Internal
                     var ret = routines[i].MoveNext(profiler);
                     if (ret == false)
                     {
-                        routines.UnorderedRemoveAt(i);
+                        routines.UnorderedRemoveAt((uint)i);
                         i--;
                     }
                 }

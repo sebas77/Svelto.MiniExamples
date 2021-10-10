@@ -185,11 +185,11 @@ namespace Svelto.Common
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void MemClear<T>(IntPtr destination, uint sizeOf) where T : struct
+        public static void MemClear<T>(IntPtr destination, uint size) where T : struct
         {
             unsafe
             {
-                var sizeOfInBytes = (uint) (SizeOf<T>() * sizeOf);
+                var sizeOfInBytes = (uint) (SizeOf<T>() * size);
 #if UNITY_COLLECTIONS
                 Unity.Collections.LowLevel.Unsafe.UnsafeUtility.MemClear((void*) destination, sizeOfInBytes);
 #else
@@ -208,6 +208,15 @@ namespace Svelto.Common
 #else
                 Unsafe.InitBlock((void*) destination, 0, sizeOfInBytes);
 #endif
+            }
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void MemSet(IntPtr destination, uint sizeOfInBytes, byte value)
+        {
+            unsafe
+            {
+                Unsafe.InitBlock((void*) destination, value, sizeOfInBytes);
             }
         }
 

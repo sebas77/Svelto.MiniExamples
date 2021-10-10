@@ -161,10 +161,8 @@ namespace Svelto.DataStructures
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Contains(T item)
         {
-            var comp = EqualityComparer<T>.Default;
-
             for (uint index = 0; index < _count; index++)
-                if (comp.Equals(_buffer[index], item))
+                if (_comp.Equals(_buffer[index], item))
                     return true;
 
             return false;
@@ -468,8 +466,9 @@ namespace Svelto.DataStructures
             _buffer = newList;
         }
 
-        T[]         _buffer;
-        uint        _count;
+        T[]                          _buffer;
+        uint                         _count;
+        static readonly EqualityComparer<T> _comp = EqualityComparer<T>.Default;
 
         public static class NoVirt
         {

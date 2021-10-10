@@ -4,12 +4,11 @@ using System.Runtime.CompilerServices;
 
 namespace Svelto.DataStructures
 {
+    //Note: the burst compatible version of a dynamic array is found in Svelto.ECS and is called NativeDynamicArray/Cast
     public class FasterList<T>
     {
-        internal static readonly FasterList<T> DefaultEmptyList = new FasterList<T>();
-        
         public int count => (int) _count;
-        public uint capacity => (uint) _buffer.Length;
+        public int capacity => _buffer.Length;
         
         public static explicit operator FasterList<T>(T[] array)
         {
@@ -101,7 +100,7 @@ namespace Svelto.DataStructures
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                DBC.Common.Check.Require(index < _count, "out of bound index");
+                DBC.Common.Check.Require(index < _count, $"out of bound index. index {index} - count {_count}");
                 return ref _buffer[index];
             }
         }
@@ -147,7 +146,7 @@ namespace Svelto.DataStructures
             if (count == 0) return;
 
             if (_count + count > _buffer.Length)
-                AllocateMore(_count + count);
+                AllocateTo(_count + count);
 
             Array.Copy(items, 0, _buffer, _count, count);
             _count += count;
@@ -162,10 +161,8 @@ namespace Svelto.DataStructures
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Contains(T item)
         {
-            var comp = EqualityComparer<T>.Default;
-
             for (uint index = 0; index < _count; index++)
-                if (comp.Equals(_buffer[index], item))
+                if (_comp.Equals(_buffer[index], item))
                     return true;
 
             return false;
@@ -292,7 +289,7 @@ namespace Svelto.DataStructures
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Insert(int index, in T item)
+        public void InsertAt(uint index, in T item)
         {
             DBC.Common.Check.Require(index <= _count, "out of bound index");
 
@@ -305,7 +302,7 @@ namespace Svelto.DataStructures
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void RemoveAt(int index)
+        public void RemoveAt(uint index)
         {
             DBC.Common.Check.Require(index < _count, "out of bound index");
 
@@ -341,15 +338,15 @@ namespace Svelto.DataStructures
         /// </summary>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public T[] ToArrayFast(out uint count)
+        public T[] ToArrayFast(out int count)
         {
-            count = _count;
+            count = (int) _count;
 
             return _buffer;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool UnorderedRemoveAt(int index)
+        public bool UnorderedRemoveAt(uint index)
         {
             DBC.Common.Check.Require(index < _count && _count > 0, "out of bound index");
 
@@ -386,7 +383,7 @@ namespace Svelto.DataStructures
             uint count = _count + increment;
 
             if (_buffer.Length < count)
-                AllocateMore(count);
+                AllocateTo(count);
 
             _count = count;
         }
@@ -394,8 +391,7 @@ namespace Svelto.DataStructures
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ExpandTo(uint newSize)
         {
-            if (_buffer.Length < newSize)
-                AllocateMore(newSize);
+            EnsureCapacity(newSize);
 
             if (_count < newSize)
                 _count = newSize;
@@ -404,13 +400,13 @@ namespace Svelto.DataStructures
         public void EnsureCapacity(uint newSize)
         {
             if (_buffer.Length < newSize)
-                AllocateMore(newSize);
+                AllocateTo(newSize);
         }
         
         public void EnsureExtraCapacity(uint newSize)
         {
             if (_buffer.Length < _count + newSize)
-                AllocateMore(_count + newSize);
+                AllocateTo(_count + newSize);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -459,9 +455,20 @@ namespace Svelto.DataStructures
             if (_count > 0) Array.Copy(_buffer, newList, _count);
             _buffer = newList;
         }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        void AllocateTo(uint newSize)
+        {
+            DBC.Common.Check.Require(newSize > _buffer.Length);
+            
+            var newList = new T[newSize];
+            if (_count > 0) Array.Copy(_buffer, newList, _count);
+            _buffer = newList;
+        }
 
-        T[]         _buffer;
-        uint        _count;
+        T[]                          _buffer;
+        uint                         _count;
+        static readonly EqualityComparer<T> _comp = EqualityComparer<T>.Default;
 
         public static class NoVirt
         {

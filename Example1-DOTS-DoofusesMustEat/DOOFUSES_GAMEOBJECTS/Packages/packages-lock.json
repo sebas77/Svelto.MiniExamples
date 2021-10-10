@@ -13,7 +13,7 @@
       "depth": 0,
       "source": "embedded",
       "dependencies": {
-        "com.sebaslab.svelto.common": "3.2.0"
+        "com.sebaslab.svelto.common": "3.2.2"
       }
     },
     "com.sebaslab.svelto.tasks": {
@@ -25,7 +25,7 @@
       }
     },
     "com.sebaslab.svelto.unsafe": {
-      "version": "file:com.sebaslab.svelto.unsafe@4.7.1",
+      "version": "file:com.sebaslab.svelto.unsafe",
       "depth": 0,
       "source": "embedded",
       "dependencies": {}
@@ -85,7 +85,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.mathematics": {
-      "version": "1.2.1",
+      "version": "1.2.4",
       "depth": 0,
       "source": "registry",
       "dependencies": {},
@@ -121,7 +121,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.scriptablebuildpipeline": {
-      "version": "1.19.1",
+      "version": "1.19.2",
       "depth": 0,
       "source": "registry",
       "dependencies": {},

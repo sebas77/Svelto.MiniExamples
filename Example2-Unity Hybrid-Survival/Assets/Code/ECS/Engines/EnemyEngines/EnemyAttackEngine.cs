@@ -33,7 +33,7 @@ namespace Svelto.ECS.Example.Survive.Enemies
             //An Implementor can communicate only with an appointed engine and the engine can broadcast the information
             //if necessary.
             //set what callback must be called when the implementor dispatch the value change
-            entityViewComponent.targetTriggerComponent.hitChange = new DispatchOnChange<EnemyCollisionData>(egid, _onCollidedWithTarget);
+            entityViewComponent.targetTriggerComponent.hitChange = new ReactiveValue<EnemyCollisionData>(egid.ToEntityReference(entitiesDB), _onCollidedWithTarget);
         }
 
         public void Remove(ref EnemyEntityViewComponent entityViewComponent, EGID egid)
@@ -63,9 +63,9 @@ namespace Svelto.ECS.Example.Survive.Enemies
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="enemyCollisionData"></param>
-        void OnCollidedWithTarget(EGID sender, EnemyCollisionData enemyCollisionData)
+        void OnCollidedWithTarget(EntityReference sender, EnemyCollisionData enemyCollisionData)
         {
-            entitiesDB.QueryEntity<EnemyAttackComponent>(sender).entityInRange = enemyCollisionData;
+            entitiesDB.QueryEntity<EnemyAttackComponent>(sender.ToEGID(entitiesDB)).entityInRange = enemyCollisionData;
         }
 
         public void Step()
@@ -109,7 +109,7 @@ namespace Svelto.ECS.Example.Survive.Enemies
 
         public string name => nameof(EnemyAttackEngine);
 
-        readonly Action<EGID, EnemyCollisionData> _onCollidedWithTarget;
+        readonly Action<EntityReference, EnemyCollisionData> _onCollidedWithTarget;
         readonly ITime                            _time;
     }
 }

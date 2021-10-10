@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Svelto.Common;
 using Svelto.DataStructures;
-using Svelto.ECS.Internal;
 
 namespace Svelto.ECS
 {
@@ -27,7 +24,7 @@ namespace Svelto.ECS
 
                 if (_entitiesOperations.count > 0)
                 {
-                    using (profiler.Sample("Remove and Swap operations"))
+                    using (var sample = profiler.Sample("Remove and Swap operations"))
                     {
                         _transientEntitiesOperations.FastClear();
                         _entitiesOperations.CopyValuesTo(_transientEntitiesOperations);
@@ -78,7 +75,8 @@ namespace Svelto.ECS
 
                             if ((uint) numberOfOperations >= (uint) _maxNumberOfOperationsPerFrame)
                             {
-                                yield return true;
+                                using (sample.Yield())
+                                    yield return true;
 
                                 numberOfOperations = 0;
                             }
@@ -90,7 +88,7 @@ namespace Svelto.ECS
 
                 if (_groupedEntityToAdd.AnyOtherEntityCreated())
                 {
-                    using (profiler.Sample("Add operations"))
+                    using (var outerSampler = profiler.Sample("Add operations"))
                     {
                         try
                         {
@@ -99,7 +97,7 @@ namespace Svelto.ECS
                                 //each group is indexed by entity view type. for each type there is a dictionary indexed by entityID
                                 foreach (var groupToSubmit in _groupedEntityToAdd.other)
                                 {
-                                    var groupID = new ExclusiveGroupStruct(groupToSubmit.Key);
+                                    var groupID = groupToSubmit.Key;
                                     var groupDB = GetOrCreateDBGroup(groupID);
 
                                     //add the entityComponents in the group
@@ -112,19 +110,19 @@ namespace Svelto.ECS
                                         var dbDic = GetOrCreateTypeSafeDictionary(
                                             groupID, groupDB, wrapper, targetTypeSafeDictionary);
 
-                                        //Fill the DB with the entity components generate this frame.
-                                        dbDic.AddEntitiesFromDictionary(targetTypeSafeDictionary, groupID);
+                                        //Fill the DB with the entity components generated this frame.
+                                        dbDic.AddEntitiesFromDictionary(targetTypeSafeDictionary, groupID, this);
                                     }
                                 }
                             }
 
                             //then submit everything in the engines, so that the DB is up to date with all the entity components
                             //created by the entity built
-                            using (profiler.Sample("Add entities to engines"))
+                            using (var sampler = profiler.Sample("Add entities to engines"))
                             {
                                 foreach (var groupToSubmit in _groupedEntityToAdd.other)
                                 {
-                                    var groupID = new ExclusiveGroupStruct(groupToSubmit.Key);
+                                    var groupID = groupToSubmit.Key;
                                     var groupDB = GetDBGroup(groupID);
 //entityComponentsToSubmit is the array of components found in the groupID per component type. 
 //if there are N entities to submit, and M components type to add for each entity, this foreach will run NxM times. 
@@ -133,14 +131,17 @@ namespace Svelto.ECS
                                         var realDic = groupDB[new RefWrapperType(entityComponentsToSubmit.Key)];
 
                                         entityComponentsToSubmit.Value.ExecuteEnginesAddOrSwapCallbacks(
-                                            _reactiveEnginesAddRemove, realDic, null, new ExclusiveGroupStruct(groupID)
-                                          , in profiler);
+                                            _reactiveEnginesAddRemove, realDic, null, groupID, in profiler);
 
                                         numberOfOperations += entityComponentsToSubmit.Value.count;
 
                                         if (numberOfOperations >= _maxNumberOfOperationsPerFrame)
                                         {
-                                            yield return true;
+                                            using (outerSampler.Yield())
+                                            using (sampler.Yield())
+                                            {
+                                                yield return true;
+                                            }
 
                                             numberOfOperations = 0;
                                         }

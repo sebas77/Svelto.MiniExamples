@@ -27,7 +27,7 @@ namespace Svelto.ECS
                 return ref CreateOrGetFilterForGroup(filterID, groupID, refWrapper);
             }
 
-            ref FilterGroup CreateOrGetFilterForGroup
+            internal ref FilterGroup CreateOrGetFilterForGroup
                 (int filterID, ExclusiveGroupStruct groupID, RefWrapperType refWrapper)
             {
                 var fasterDictionary =
@@ -191,12 +191,12 @@ namespace Svelto.ECS
                 filter.Remove(egid.entityID);
             }
 
-            public void AddEntityToFilter<N>(int filtersID, EGID egid, N mapper) where N : IEGIDMapper
+            public bool AddEntityToFilter<N>(int filtersID, EGID egid, N mapper) where N : IEGIDMapper
             {
                 ref var filter =
                     ref CreateOrGetFilterForGroup(filtersID, egid.groupID, new RefWrapperType(mapper.entityType));
 
-                filter.Add(egid.entityID, mapper);
+                return filter.Add(egid.entityID, mapper);
             }
 
             readonly FasterDictionary<RefWrapperType, FasterDictionary<ExclusiveGroupStruct, GroupFilters>> _filters;
@@ -204,15 +204,6 @@ namespace Svelto.ECS
 
         public Filters GetFilters() { return new Filters(_filters); }
 
-        // public abstract class QueryPredicate<T1, T2> where T1: struct, IEntityComponent where T2: struct, IEntityComponent
-        // {
-        //     public abstract bool Predicate(in EntityCollection<T1, T2> components);
-        // }
-        //
-        // public abstract class QueryPredicate<T1> where T1: struct, IEntityComponent
-        // {
-        //     public abstract bool Predicate(in EntityCollection<T1> components);
-        // }
 
         FasterDictionary<RefWrapperType, FasterDictionary<ExclusiveGroupStruct, GroupFilters>> _filters =>
             _enginesRoot._groupFilters;

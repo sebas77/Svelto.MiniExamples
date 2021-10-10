@@ -43,7 +43,7 @@ namespace Svelto.ECS.Native
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static NativeEGIDMultiMapper<T> QueryNativeMappedEntities<T>(this EntitiesDB entitiesDb,
-                                                                    LocalFasterReadOnlyList<ExclusiveGroupStruct> groups)
+                                                                    LocalFasterReadOnlyList<ExclusiveGroupStruct> groups, Allocator allocator)
             where T : unmanaged, IEntityComponent
         {
             var dictionary = new SveltoDictionary<ExclusiveGroupStruct, //key 
@@ -51,7 +51,7 @@ namespace Svelto.ECS.Native
                         NativeStrategy<SveltoDictionaryNode<uint>>, NativeStrategy<T>, NativeStrategy<int>>, //value 
                         NativeStrategy<SveltoDictionaryNode<ExclusiveGroupStruct>>, //strategy to store the key
                     NativeStrategy<SveltoDictionary<uint, T, NativeStrategy<SveltoDictionaryNode<uint>>, NativeStrategy<T>, NativeStrategy<int>>>, NativeStrategy<int>> //strategy to store the value 
-                    ((uint) groups.count, Allocator.TempJob);
+                    ((uint) groups.count, allocator);
         
             foreach (var group in groups)
             {

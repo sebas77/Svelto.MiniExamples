@@ -24,7 +24,7 @@ namespace Svelto.Tasks.DataStructures
             }
             finally
             {
-                _lockQ.ExitWriteLock();
+                _lockQ.QuittingWriteLock();
             }
         }
 
@@ -37,7 +37,7 @@ namespace Svelto.Tasks.DataStructures
             }
             finally
             {
-                _lockQ.ExitWriteLock();
+                _lockQ.QuittingWriteLock();
             }
         }
 
@@ -56,7 +56,7 @@ namespace Svelto.Tasks.DataStructures
             }
             finally
             {
-                _lockQ.ExitWriteLock();
+                _lockQ.QuittingWriteLock();
             }
         }
 
@@ -71,7 +71,7 @@ namespace Svelto.Tasks.DataStructures
             }   
             finally
             {
-                _lockQ.ExitWriteLock();
+                _lockQ.QuittingWriteLock();
             }
         }
 
@@ -87,7 +87,7 @@ namespace Svelto.Tasks.DataStructures
             }
             finally
             {
-                _lockQ.ExitReadLock();
+                _lockQ.QuittingReadLock();
             }
             
             return item;
@@ -102,7 +102,7 @@ namespace Svelto.Tasks.DataStructures
             }
             finally
             {
-                _lockQ.ExitWriteLock();
+                _lockQ.QuittingWriteLock();
             }
         }
 
@@ -120,7 +120,7 @@ namespace Svelto.Tasks.DataStructures
                     }
                     finally
                     {
-                        _lockQ.ExitWriteLock();
+                        _lockQ.QuittingWriteLock();
                     }
                     return true;
                 }
@@ -135,7 +135,7 @@ namespace Svelto.Tasks.DataStructures
             }
         }
 
-        public uint Count
+        public uint count
         {
             get
             {
@@ -146,7 +146,7 @@ namespace Svelto.Tasks.DataStructures
                 }
                 finally
                 {
-                    _lockQ.ExitReadLock();
+                    _lockQ.QuittingReadLock();
                 }
             }
         }

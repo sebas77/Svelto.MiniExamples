@@ -1,6 +1,6 @@
 namespace Svelto.DataStructures
 {
-    public struct FasterListEnumerator<T>
+    public ref struct FasterListEnumerator<T>
     {
         public T Current =>
             _buffer[(uint) _counter - 1];

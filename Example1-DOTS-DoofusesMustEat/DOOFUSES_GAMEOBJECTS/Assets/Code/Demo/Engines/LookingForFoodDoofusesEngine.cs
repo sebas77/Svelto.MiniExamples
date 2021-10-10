@@ -48,7 +48,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
        , FasterReadOnlyList<ExclusiveGroupStruct> availableDoofuses, ExclusiveBuildGroup eatingDoofusesGroup
        , ExclusiveBuildGroup eatenFoodGroup)
         {
-            JobHandle combinedDeps = inputDeps;
+            JobHandle combinedDeps = default;
 
             foreach (var ((foodEntities, availableFoodCount), _) in entitiesDB.QueryEntities<EGIDComponent>(
                 availableFood))
@@ -59,7 +59,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
                     var willEatDoofuses = math.min(availableFoodCount, doofusesCount);
 
                     //schedule the job
-                    combinedDeps = JobHandle.CombineDependencies(combinedDeps, new LookingForFoodDoofusesJob()
+                    combinedDeps = JobHandle.CombineDependencies(inputDeps, new LookingForFoodDoofusesJob()
                     {
                         _doofuses               = doofuses
                       , _doofusesegids          = egids
