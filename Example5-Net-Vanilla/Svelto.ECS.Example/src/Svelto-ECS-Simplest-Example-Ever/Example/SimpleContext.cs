@@ -40,7 +40,7 @@ namespace Svelto.ECS.Vanilla.Example
             var behaviourForEntityClassEngine = new BehaviourForEntityClassEngine(entityFunctions);
             _enginesRoot.AddEngine(behaviourForEntityClassEngine);
 
-            //build Entity with ID 1 in group 0
+            //build Entity with ID 0 in group0
             entityFactory.BuildEntity<SimpleEntityDescriptor>(new EGID(0, ExclusiveGroups.group0));
 
             //as we are using a basic scheduler, we need to schedule the entity submission ourselves
