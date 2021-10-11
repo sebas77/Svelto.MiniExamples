@@ -9,44 +9,24 @@ Recordings/
 Example2-Survival/webgl/
 Example2-Survival/Build/
 Example2-Survival/Packages/packages-lock.json
-Example1-DoofusesMustEat/Iteration2-Burst/Build/
-Example1-DoofusesMustEat/Iteration3-Jobs/Build/
-Example1-DoofusesMustEat/Iteration3-Jobs/UserSettings/
-Example1-DoofusesMustEat/Iteration3-Jobs/IL2CPP/
-Example1-DoofusesMustEat/Iteration3-Jobs/Logs/
-Example2-Survival/Assets/StreamingAssets/
-Example4-SDL/com.sebaslab.svelto.ecs@3.0.0/bin/
-Example4-SDL/SDL/bin/
-Example4-SDL/SveltoDeterministic2DPhysicsDemo/bin/
-Example4-SDL/FixedMath/bin/
-Example4-SDL/com.sebaslab.svelto.ecs@3.1.0/bin/
 Example1-DOTS-DoofusesMustEat/Iteration3-Jobs/IL2CPP/
 Example2-Unity Hybrid-Survival/Build/
-Example4-NET-SDL/SveltoDeterministic2DPhysicsDemo/bin/Debug/netcoreapp3.1/Svelto.Common.pdb
 Example4-NET-SDL/SDL/bin/
 Example4-NET-SDL/FixedMath/bin/
 Example4-NET-SDL/SveltoDeterministic2DPhysicsDemo/bin/
-Example4-NET-SDL/com.sebaslab.svelto.ecs@3.1.0/bin/Debug/netstandard2.0/Svelto.Common.pdb
 Example4-NET-SDL/com.sebaslab.svelto.ecs@3.1.0/bin/
 Example2-Unity Hybrid-Survival/UserSettings/
-Example4-NET-SDL/*.meta
+Example4-NET-SDL/**/*.meta
+Example5-NET-Vanilla/**/*.meta
+Example7-Stride-Turrets/**/*.meta
 Example2-Unity Hybrid-Survival/Logs/
 Example6-Unity Hybrid-OOP Abstraction/UserSettings/
 Example6-Unity Hybrid-OOP Abstraction/Logs/
-Example1-DOTS-DoofusesMustEat/DOOFUSES_UECS/IL2CPP/Svelto.ECS.MiniExamples_BackUpThisFolder_ButDontShipItWithYourGame/Managed/Unity.Mathematics.Extensions.dll
 Example1-DOTS-DoofusesMustEat/DOOFUSES_UECS/IL2CPP/
-Example1-DOTS-DoofusesMustEat/DOOFUSES_GAMEOBJECTS/Build/
-Example1-DOTS-DoofusesMustEat/DOOFUSES_GAMEOBJECTS/Assembly-CSharp.csproj
-Example1-DOTS-DoofusesMustEat/DOOFUSES_GAMEOBJECTS/Assembly-CSharp-Editor.csproj
-Example1-DOTS-DoofusesMustEat/DOOFUSES_GAMEOBJECTS/Svelto.Common.csproj
-Example1-DOTS-DoofusesMustEat/DOOFUSES_GAMEOBJECTS/Svelto.ECS.csproj
-Example1-DOTS-DoofusesMustEat/DOOFUSES_GAMEOBJECTS/Svelto.Pool.Debugger.csproj
-Example1-DOTS-DoofusesMustEat/DOOFUSES_GAMEOBJECTS/Svelto.Tasks.csproj
 Example1-DOTS-DoofusesMustEat/DOOFUSES_GAMEOBJECTS/UserSettings/
 Example1-DOTS-DoofusesMustEat/DOOFUSES_GAMEOBJECTS/Logs/
 Example1-DOTS-DoofusesMustEat/DOOFUSES_UECS/UserSettings/
 Example1-DOTS-DoofusesMustEat/DOOFUSES_UECS/Logs/
-*.meta
 Example5-Net-Vanilla/Svelto.ECS.Example/bin/
 Example4-NET-SDL/com.sebaslab.svelto.ecs/bin/
 Example1-DOTS-DoofusesMustEat/DOOFUSES_UECS/Mono/
