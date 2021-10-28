@@ -1,9 +1,8 @@
 # Svelto.ECS.MiniExamples
 
-New Mini Examples for Svelto.ECS and Svelto.Tasks.
+New Mini Examples for Svelto.ECS.
 
 * Svelto.ECS: https://github.com/sebas77/Svelto.ECS
-* Svelto.Tasks: https://github.com/sebas77/Svelto.Tasks (Svelto.Tasks 1.5 doesn't work with the latest Svelto.Common and Svelto.Tasks 2.0 is not production ready)
 
 These examples use the last beta version of unity available at the moment of the update.
 
