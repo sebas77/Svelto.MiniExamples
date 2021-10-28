@@ -4,9 +4,9 @@ using Svelto.Common;
 namespace Svelto.ECS.Example.Survive.Enemies
 {
     [Sequenced(nameof(EnemyEnginesNames.EnemySpawnEffectOnDamage))]
-    public class EnemySpawnEffectOnDamage: IQueryingEntitiesEngine, IStepEngine
+    public class EnemySpawnEffectOnDamageEngine: IQueryingEntitiesEngine, IStepEngine
     {
-        public EnemySpawnEffectOnDamage(IEntityStreamConsumerFactory consumerFactory)
+        public EnemySpawnEffectOnDamageEngine(IEntityStreamConsumerFactory consumerFactory)
         {
             //this consumer will process only changes from DamageableComponent published from the EnemiesGroup
             _consumerHealth = consumerFactory.GenerateConsumer<DamageableComponent>("EnemyAnimationEngine", 15);
@@ -17,7 +17,7 @@ namespace Svelto.ECS.Example.Survive.Enemies
         {
             _checkForEnemyDamage.MoveNext();
         }
-        public string name => nameof(EnemySpawnEffectOnDamage);
+        public string name => nameof(EnemySpawnEffectOnDamageEngine);
 
         public EntitiesDB entitiesDB { set; private get; }
 

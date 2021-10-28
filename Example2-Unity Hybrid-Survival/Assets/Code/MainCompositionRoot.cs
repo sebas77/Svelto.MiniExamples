@@ -15,7 +15,7 @@ using UnityEngine;
 //Note on this example:
 //When developing with svelto the user would need to plan a bit what entities need to be used and
 //what behaviours these entities will have. Engines can be added over the time, so the key is to have
-//a good idea of the entities to work on. All the reasonings should always start from the EntityDescriptors
+//a good idea of the entities to work on. All the reasoning should always start from the EntityDescriptors
 //Entity Components can be added over the time of course, but it's important to establish what entities
 //will come into play.
 //The key entities (and relative entity descriptors) for this demo are:
@@ -47,11 +47,17 @@ namespace Svelto.ECS.Example.Survive
     {
         EnginesRoot _enginesRoot;
 
-        public MainCompositionRoot() { QualitySettings.vSyncCount = 1; }
+        public MainCompositionRoot()
+        {
+            QualitySettings.vSyncCount = 1;
+        }
 
         public void OnContextCreated<T>(T contextHolder) { }
 
-        public void OnContextInitialized<T>(T contextHolder) { CompositionRoot(contextHolder as UnityContext); }
+        public void OnContextInitialized<T>(T contextHolder)
+        {
+            CompositionRoot(contextHolder as UnityContext);
+        }
 
         public void OnContextDestroyed(bool hasBeenActivated)
         {
@@ -128,7 +134,7 @@ namespace Svelto.ECS.Example.Survive
             var enemyFactory = new EnemyFactory(gameObjectFactory, entityFactory);
             //Enemy related engines
             var enemyAnimationEngine = new EnemyChangeAnimationOnPlayerDeathEngine();
-            var enemyDamageFX        = new EnemySpawnEffectOnDamage(entityStreamConsumerFactory);
+            var enemyDamageFXEngine  = new EnemySpawnEffectOnDamageEngine(entityStreamConsumerFactory);
             var enemyAttackEngine    = new EnemyAttackEngine(time);
             var enemyMovementEngine  = new EnemyMovementEngine();
             //Spawner engines are factories engines that can build entities
@@ -143,8 +149,8 @@ namespace Svelto.ECS.Example.Survive
             _enginesRoot.AddEngine(enemyMovementEngine);
             _enginesRoot.AddEngine(enemyAnimationEngine);
             _enginesRoot.AddEngine(enemyDeathEngine);
-            _enginesRoot.AddEngine(enemyDamageFX);
-            
+            _enginesRoot.AddEngine(enemyDamageFXEngine);
+
             //abstract engines
             var applyDamageEngine        = new ApplyDamageToDamageableEntitiesEngine(entityStreamConsumerFactory);
             var cameraFollowTargetEngine = new CameraFollowingTargetEngine(time);
@@ -166,42 +172,40 @@ namespace Svelto.ECS.Example.Survive
             _enginesRoot.AddEngine(scoreEngine);
 
             var unsortedEngines = new SurvivalUnsortedEnginesGroup(new FasterList<IStepEngine>(
-                new IStepEngine[]
-                {
-                    playerMovementEngine,
-                    playerInputEngine,
-                    playerGunShootingFXsEngine,
-                    playerSpawnerEngine,
-                    playerAnimationEngine,
-                    enemySpawnerEngine,
-                    enemyMovementEngine,
-                    cameraFollowTargetEngine,
-                    hudEngine,
-                    restartGameOnPlayerDeath
-                }
-            ));
-            
+                                                                       new IStepEngine[]
+                                                                       {
+                                                                           playerMovementEngine
+                                                                         , playerInputEngine
+                                                                         , playerGunShootingFXsEngine
+                                                                         , playerSpawnerEngine
+                                                                         , playerAnimationEngine
+                                                                         , enemySpawnerEngine
+                                                                         , enemyMovementEngine
+                                                                         , cameraFollowTargetEngine
+                                                                         , hudEngine
+                                                                         , restartGameOnPlayerDeath
+                                                                       }));
+
             var unsortedDamageEngines = new DamageUnsortedEngines(new FasterList<IStepEngine>(
-                new IStepEngine[]
-                {
-                    applyDamageEngine,
-                    damageSoundEngine,
-                    deathEngine
-                }
-            ));
+                                                                      new IStepEngine[]
+                                                                      {
+                                                                          applyDamageEngine
+                                                                        , damageSoundEngine
+                                                                        , deathEngine
+                                                                      }));
 
             //Svelto ECS doesn't provide a tick system, hence it doesn't provide a solution to solve the order of execution
             //However it provides some option if you want to use them like the SortedEnginesGroup.
             _enginesRoot.AddEngine(new TickEnginesGroup(new FasterList<IStepEngine>(new IStepEngine[]
             {
                 unsortedEngines
-               , playerShootingEngine
-               , enemyDamageFX
-               , enemyAttackEngine
-               , unsortedDamageEngines            
-               , playerDeathEngine
-               , enemyDeathEngine
-               , scoreEngine
+              , playerShootingEngine
+              , enemyDamageFXEngine
+              , enemyAttackEngine
+              , unsortedDamageEngines
+              , playerDeathEngine
+              , enemyDeathEngine
+              , scoreEngine
             })));
 
             BuildGUIEntitiesFromScene(contextHolder, entityFactory);

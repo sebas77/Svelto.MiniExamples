@@ -51,7 +51,7 @@
      <Compile Include="Assets\Code\ECS\Engines\EnemyEngines\EnemyChangeAnimationOnPlayerDeathEngine.cs" />
      <Compile Include="Assets\Code\ECS\Engines\EnemyEngines\EnemyDeathEngine.cs" />
      <Compile Include="Assets\Code\ECS\Engines\EnemyEngines\EnemyMovementEngine.cs" />
-     <Compile Include="Assets\Code\ECS\Engines\EnemyEngines\EnemySpawnEffectOnDamage.cs" />
+     <Compile Include="Assets\Code\ECS\Engines\EnemyEngines\EnemySpawnEffectOnDamageEngine.cs" />
      <Compile Include="Assets\Code\ECS\Engines\EnemyEngines\EnemySpawnerEngine.cs" />
      <Compile Include="Assets\Code\ECS\Engines\OtherEngines\CameraFollowingTargetEngine.cs" />
      <Compile Include="Assets\Code\ECS\Engines\OtherEngines\HUDEngine.cs" />
