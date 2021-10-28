@@ -67,7 +67,7 @@ Goal of this example
 
 ![Image](https://github.com/sebas77/Svelto.MiniExamples/blob/master/Example4-NET-SDL/2020-12-23%2011-54-54.gif)
 
-## Example 5: Vanilla
+## Example 5: Hello World (previously called Vanilla)
 
 Basic Platform Agnostic Svelto.ECS 3.0 example
 
