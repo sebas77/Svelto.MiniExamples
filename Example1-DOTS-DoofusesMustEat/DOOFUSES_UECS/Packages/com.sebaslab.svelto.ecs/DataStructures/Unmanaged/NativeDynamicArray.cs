@@ -36,7 +36,7 @@ namespace Svelto.ECS.DataStructures
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int Size() 
+        public int SizeInBytes() 
         {
             unsafe
             {

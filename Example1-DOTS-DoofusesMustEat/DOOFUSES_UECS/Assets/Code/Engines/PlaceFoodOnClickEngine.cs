@@ -24,9 +24,12 @@ namespace Svelto.ECS.MiniExamples.Example1C
         public PlaceFoodOnClickEngine(Entity redfood, Entity bluefood, IEntityFactory entityFactory)
         {
             //read why I am using a Native Factory here in the Execute method
-            _entityFactory = entityFactory.ToNative<FoodEntityDescriptor>("PlaceFoodOnClickEngine");
+            _entityFactory = entityFactory.ToNative<FoodEntityDescriptor>();
             _redfood       = redfood;
             _bluefood      = bluefood;
+            
+            entityFactory.PreallocateEntitySpace<FoodEntityDescriptor>(GameGroups.RED_FOOD_NOT_EATEN.BuildGroup, 5000);
+            entityFactory.PreallocateEntitySpace<FoodEntityDescriptor>(GameGroups.BLUE_FOOD_NOT_EATEN.BuildGroup, 5000);
         }
 
         public string name => nameof(PlaceFoodOnClickEngine);
@@ -71,15 +74,15 @@ namespace Svelto.ECS.MiniExamples.Example1C
         }
 
         [BurstCompile]
-        struct PlaceFood : IJobParallelFor
+        readonly struct PlaceFood : IJobParallelFor
         {
-            readonly                        Vector3                  _position;
-            readonly                        NativeEntityFactory      _entityFactory;
-            readonly                        ExclusiveBuildGroup      _exclusiveBuildGroup;
-            readonly                        Entity                      _prefabID;
-            readonly                        uint                     _foodPlaced;
-            public                          Unity.Mathematics.Random _random;
-            [NativeSetThreadIndex] readonly int                      _threadIndex;
+            readonly Vector3                    _position;
+            readonly NativeEntityFactory        _entityFactory;
+            readonly ExclusiveBuildGroup        _exclusiveBuildGroup;
+            readonly Entity                     _prefabID;
+            readonly uint                       _foodPlaced;
+            readonly Random                     _random;
+            [NativeSetThreadIndex] readonly int _threadIndex;
 
             public PlaceFood
             (Vector3 position, NativeEntityFactory factory, ExclusiveBuildGroup exclusiveBuildGroup, Entity prefabID

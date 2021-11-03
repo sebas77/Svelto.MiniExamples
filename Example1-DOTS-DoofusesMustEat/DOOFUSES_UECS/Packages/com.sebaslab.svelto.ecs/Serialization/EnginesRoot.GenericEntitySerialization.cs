@@ -46,7 +46,7 @@ namespace Svelto.ECS
 
                 return factory.BuildDeserializedEntity(egid, serializationData, entityDescriptor, serializationType
                                                      , this, this._enginesRoot.GenerateEntityFactory()
-                                                     , _enginesRoot._isDeserializationOnly);
+                                                     , _enginesRoot is SerializingEnginesRoot);
             }
 
             public void DeserializeEntity(ISerializationData serializationData, int serializationType)
@@ -146,6 +146,31 @@ namespace Svelto.ECS
 
                 _enginesRoot.QueueEntitySubmitOperation(entitySubmitOperation);
             }
+            public void SkipEntityDeserialization(ISerializationData serializationData, int serializationType, int numberOfEntities)
+            {
+                uint dataPositionBeforeHeader = serializationData.dataPos;
+                var serializableEntityHeader = new SerializableEntityHeader(serializationData);
+
+                uint headerSize = serializationData.dataPos - dataPositionBeforeHeader;
+
+                uint descriptorHash = serializableEntityHeader.descriptorHash;
+                SerializationDescriptorMap serializationDescriptorMap = _enginesRoot._serializationDescriptorMap;
+                var entityDescriptor = serializationDescriptorMap.GetDescriptorFromHash(descriptorHash);
+
+                uint componentSizeTotal = 0;
+
+                foreach (var serializableEntityBuilder in entityDescriptor.componentsToSerialize)
+                {
+                    componentSizeTotal += serializableEntityBuilder.Size(serializationType);
+                }
+
+                //When constructing an SerializableEntityHeader the data position of the serializationData is incremented by the size of the header.
+                //Since a header is needed to get the entity descriptor, we need to account for one less header than usual, since the data has already
+                //been incremented once.
+                var totalBytesToSkip = (uint)(headerSize * (numberOfEntities - 1)) + (uint)(componentSizeTotal * numberOfEntities);
+
+                serializationData.dataPos += totalBytesToSkip;
+            }
 
             public uint GetHashFromGroup(ExclusiveGroupStruct groupStruct)
             {
@@ -206,7 +231,5 @@ namespace Svelto.ECS
         }
 
         public IEntitySerialization GenerateEntitySerializer() { return new EntitySerialization(this); }
-
-        readonly bool _isDeserializationOnly;
     }
 }

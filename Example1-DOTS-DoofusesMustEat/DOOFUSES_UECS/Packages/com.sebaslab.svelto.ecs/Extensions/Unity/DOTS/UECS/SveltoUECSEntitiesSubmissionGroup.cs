@@ -1,5 +1,6 @@
 #if UNITY_ECS
 using System.Collections;
+using System.Collections.Generic;
 using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.ECS.Native;
@@ -20,7 +21,8 @@ namespace Svelto.ECS.Extensions.Unity
     /// With Dependency I cannot guarantee that an external container is used before previous jobs working on it are completed
     /// </summary>
     [DisableAutoCreation]
-    public sealed class SveltoUECSEntitiesSubmissionGroup : SystemBase, IQueryingEntitiesEngine , IReactOnAddAndRemove<UECSEntityComponent>
+    public sealed class SveltoUECSEntitiesSubmissionGroup : SystemBase, IQueryingEntitiesEngine
+                                                          , IReactOnAddAndRemove<UECSEntityComponent>
                                                           , IReactOnSwap<UECSEntityComponent>, ISveltoUECSSubmission
     {
         public SveltoUECSEntitiesSubmissionGroup(SimpleEntitiesSubmissionScheduler submissionScheduler)
@@ -29,6 +31,7 @@ namespace Svelto.ECS.Extensions.Unity
             _engines                 = new FasterList<SubmissionEngine>();
             _afterSubmissionEngines  = new FasterList<IUpdateAfterSubmission>();
             _beforeSubmissionEngines = new FasterList<IUpdateBeforeSubmission>();
+            _submitEntitiesAsync     = _submissionScheduler.SubmitEntitiesAsync();
         }
 
         protected override void OnCreate()
@@ -37,10 +40,10 @@ namespace Svelto.ECS.Extensions.Unity
             _entityQuery = GetEntityQuery(typeof(UpdateUECSEntityAfterSubmission));
         }
 
-        public EntitiesDB                        entitiesDB          { get; set; }
+        public EntitiesDB entitiesDB { get; set; }
 
-        public void       Ready()    {  }
-        
+        public void Ready() { }
+
         public void Add(ref UECSEntityComponent entityComponent, EGID egid) { }
 
         public void Remove(ref UECSEntityComponent entityComponent, EGID egid)
@@ -52,11 +55,11 @@ namespace Svelto.ECS.Extensions.Unity
         {
             _ECB.SetSharedComponent(entityComponent.uecsEntity, new UECSSveltoGroupID(egid.groupID));
         }
-        
+
         public void Add(SubmissionEngine engine)
         {
             Svelto.Console.LogDebug($"Add Engine {engine} to the UECS world {_ECBSystem.World.Name}");
-            
+
             _ECBSystem.World.AddSystem(engine);
             if (engine is IUpdateAfterSubmission afterSubmission)
                 _afterSubmissionEngines.Add(afterSubmission);
@@ -70,9 +73,10 @@ namespace Svelto.ECS.Extensions.Unity
             if (_submissionScheduler.paused)
                 return;
 
-            using (var profiler = new PlatformProfiler("SveltoUECSEntitiesSubmissionGroup - PreSubmissionPhase"))
+            using (var profiler = new PlatformProfiler("SveltoUECSEntitiesSubmissionGroup"))
             {
-                PreSubmissionPhase(ref jobHandle, profiler);
+                using (profiler.Sample("PreSubmissionPhase"))
+                    PreSubmissionPhase(ref jobHandle, profiler);
 
                 //Submit Svelto Entities, calls Add/Remove/MoveTo that can be used by the IUECSSubmissionEngines
                 using (profiler.Sample("Submit svelto entities"))
@@ -80,39 +84,34 @@ namespace Svelto.ECS.Extensions.Unity
                     _submissionScheduler.SubmitEntities();
                 }
 
-                AfterSubmissionPhase(profiler);
+                using (profiler.Sample("AfterSubmissionPhase"))
+                    AfterSubmissionPhase(profiler);
             }
         }
 
-        public IEnumerator SubmitEntitiesAsync(JobHandle jobHandle, uint maxEntities)
+        /// <summary>
+        /// Pre and After submission phase are supposed to be called every frame, but MoveNext of the stored
+        /// enumerator will time slice the submission properly. This is why this method doesn't need to be
+        /// an enumerator itself
+        /// </summary>
+        /// <param name="jobHandle"></param>
+        /// <returns></returns>
+        public void SubmitEntitiesSliced(JobHandle jobHandle)
         {
             if (_submissionScheduler.paused)
-                yield break;
+                return;
 
-            using (var profiler = new PlatformProfiler("SveltoUECSEntitiesSubmissionGroup - PreSubmissionPhase"))
+            using (var profiler = new PlatformProfiler("SveltoUECSEntitiesSubmissionGroup"))
             {
-                PreSubmissionPhase(ref jobHandle, profiler);
-
-                var submitEntitiesAsync = _submissionScheduler.SubmitEntitiesAsync(maxEntities);
+                using (profiler.Sample("PreSubmissionPhase"))
+                    PreSubmissionPhase(ref jobHandle, profiler);
 
                 //Submit Svelto Entities, calls Add/Remove/MoveTo that can be used by the IUECSSubmissionEngines
-                while (true)
-                {
-                    using (profiler.Sample("Submit svelto entities async"))
-                    {
-                        submitEntitiesAsync.MoveNext();
-                    }
-
-                    if (submitEntitiesAsync.Current == true)
-                    {
-                        using (profiler.Yield())
-                            yield return null;
-                    }
-                    else
-                        break;
-                }
-
-                AfterSubmissionPhase(profiler);
+                using (profiler.Sample("Submit svelto entities async"))
+                    _submitEntitiesAsync.MoveNext();
+                
+                using (profiler.Sample("AfterSubmissionPhase"))
+                    AfterSubmissionPhase(profiler);
             }
         }
 
@@ -123,7 +122,6 @@ namespace Svelto.ECS.Extensions.Unity
                 JobHandle jobHandle = default;
 
                 //execute submission engines and complete jobs because of this I don't need to do _ECBSystem.AddJobHandleForProducer(Dependency);
-
                 for (var index = 0; index < _beforeSubmissionEngines.count; index++)
                 {
                     ref var engine = ref _beforeSubmissionEngines[index];
@@ -200,7 +198,7 @@ namespace Svelto.ECS.Extensions.Unity
         {
             if (_entityQuery.IsEmpty == false)
             {
-                NativeEGIDMultiMapper<UECSEntityComponent> mapper =
+                var mapper =
                     entitiesDB.QueryNativeMappedEntities<UECSEntityComponent>(
                         entitiesDB.FindGroups<UECSEntityComponent>(), Allocator.TempJob);
 
@@ -226,16 +224,9 @@ namespace Svelto.ECS.Extensions.Unity
 
         protected override void OnUpdate() { }
 
-        EntityQuery         _entityQuery;
-        EntityCommandBuffer _ECB;
-    }
-
-    public interface ISveltoUECSSubmission
-    {
-        void Add(SubmissionEngine engine);
-
-        void        SubmitEntities(JobHandle jobHandle);
-        IEnumerator SubmitEntitiesAsync(JobHandle jobHandle, uint maxEntities);
+        EntityQuery                _entityQuery;
+        EntityCommandBuffer        _ECB;
+        readonly IEnumerator<bool> _submitEntitiesAsync;
     }
 }
 #endif

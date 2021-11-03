@@ -21,9 +21,9 @@ namespace Svelto.ECS.MiniExamples.Example1C
             Cursor.lockState           = CursorLockMode.Locked;
             Cursor.visible             = false;
 
-            _simpleSubmitScheduler                  = new SimpleEntitiesSubmissionScheduler();
-            _enginesRoot                            = new EnginesRoot(_simpleSubmitScheduler);
-            _mainLoop = new MainLoop(_enginesToTick);
+            _simpleSubmitScheduler = new SimpleEntitiesSubmissionScheduler(1000);
+            _enginesRoot           = new EnginesRoot(_simpleSubmitScheduler);
+            _mainLoop              = new MainLoop(_enginesToTick);
         }
 
         public void OnContextInitialized<T>(T contextHolder)
@@ -35,7 +35,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
 
         public void OnContextDestroyed(bool isInitialized)
         {
-            _sveltoOverUecsEnginesGroupEnginesGroup.Dispose();
+            _sveltoOverUECSEnginesGroupEnginesGroup.Dispose();
             _enginesRoot.Dispose();
             _mainLoop.Dispose();
             _simpleSubmitScheduler.Dispose();
@@ -45,11 +45,11 @@ namespace Svelto.ECS.MiniExamples.Example1C
         {
             var entityFactory   = _enginesRoot.GenerateEntityFactory();
             var entityFunctions = _enginesRoot.GenerateEntityFunctions();
-            
-            _sveltoOverUecsEnginesGroupEnginesGroup = new SveltoOverUECSEnginesGroup(_enginesRoot);
-            _enginesToTick.Add(_sveltoOverUecsEnginesGroupEnginesGroup);
-            
-            LoadAssetAndCreatePrefabs(_sveltoOverUecsEnginesGroupEnginesGroup.world, out var redFoodPrefab
+
+            _sveltoOverUECSEnginesGroupEnginesGroup = new SveltoOverUECSEnginesGroup(_enginesRoot);
+            _enginesToTick.Add(_sveltoOverUECSEnginesGroupEnginesGroup);
+
+            LoadAssetAndCreatePrefabs(_sveltoOverUECSEnginesGroupEnginesGroup.world, out var redFoodPrefab
                                     , out var blueFootPrefab, out var redDoofusPrefab, out var blueDoofusPrefab);
 
             AddSveltoEngineToTick(new PlaceFoodOnClickEngine(redFoodPrefab, blueFootPrefab, entityFactory));
@@ -58,8 +58,8 @@ namespace Svelto.ECS.MiniExamples.Example1C
             AddSveltoEngineToTick(new LookingForFoodDoofusesEngine(entityFunctions));
             AddSveltoEngineToTick(new VelocityToPositionDoofusesEngine());
 
-            _sveltoOverUecsEnginesGroupEnginesGroup.AddUECSSubmissionEngine(new SpawnUnityEntityOnSveltoEntityEngine());
-            _sveltoOverUecsEnginesGroupEnginesGroup.AddSveltoToUECSEngine(new RenderingUECSDataSynchronizationEngine());
+            _sveltoOverUECSEnginesGroupEnginesGroup.AddUECSSubmissionEngine(new SpawnUnityEntityOnSveltoEntityEngine());
+            _sveltoOverUECSEnginesGroupEnginesGroup.AddSveltoToUECSEngine(new RenderingUECSDataSynchronizationEngine());
         }
 
         static void LoadAssetAndCreatePrefabs
@@ -96,10 +96,11 @@ namespace Svelto.ECS.MiniExamples.Example1C
             _enginesToTick.Add(engine);
         }
 
-        EnginesRoot                          _enginesRoot;
-        readonly FasterList<IJobifiedEngine> _enginesToTick = new FasterList<IJobifiedEngine>();
-        SimpleEntitiesSubmissionScheduler    _simpleSubmitScheduler;
-        SveltoOverUECSEnginesGroup           _sveltoOverUecsEnginesGroupEnginesGroup;
-        MainLoop                             _mainLoop;
+        EnginesRoot                       _enginesRoot;
+        SimpleEntitiesSubmissionScheduler _simpleSubmitScheduler;
+        SveltoOverUECSEnginesGroup        _sveltoOverUECSEnginesGroupEnginesGroup;
+        MainLoop                          _mainLoop;
+
+        readonly FasterList<IJobifiedEngine> _enginesToTick = new();
     }
 }

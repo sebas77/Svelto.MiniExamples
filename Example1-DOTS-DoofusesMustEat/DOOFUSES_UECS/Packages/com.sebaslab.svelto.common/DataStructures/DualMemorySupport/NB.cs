@@ -46,10 +46,15 @@ namespace Svelto.DataStructures
     [DebuggerTypeProxy(typeof(NBDebugProxy<>))]
     public struct NB<T>:IBuffer<T> where T:struct
     {
+        /// <summary>
+        /// Note: static constructors are NOT compiled by burst as long as there are no static fields in the struct
+        /// </summary>
         static NB()
         {
+#if DEBUG && !PROFILE_SVELTO            
             if (TypeCache<T>.isUnmanaged == false)
                 throw new Exception("NativeBuffer (NB) supports only unmanaged types");
+#endif            
         }
         
         public NB(IntPtr array, uint capacity) : this()
@@ -100,8 +105,7 @@ namespace Svelto.DataStructures
                     if (index >= _capacity)
                         throw new Exception($"NativeBuffer - out of bound access: index {index} - capacity {capacity}");
 #endif
-                    var size = MemoryUtilities.SizeOf<T>();
-                    ref var asRef = ref Unsafe.AsRef<T>((void*) (_ptr + (int) (index * size)));
+                    ref var asRef = ref Unsafe.AsRef<T>((void*) (_ptr + (int) (index * MemoryUtilities.SizeOf<T>())));
                     return ref asRef;
                 }
             }
@@ -118,8 +122,7 @@ namespace Svelto.DataStructures
                     if (index < 0 || index >= _capacity)
                         throw new Exception($"NativeBuffer - out of bound access: index {index} - capacity {capacity}");
 #endif
-                    var size = MemoryUtilities.SizeOf<T>();
-                    ref var asRef = ref Unsafe.AsRef<T>((void*) (_ptr + (int) (index * size)));
+                    ref var asRef = ref Unsafe.AsRef<T>((void*) (_ptr + (int) (index * MemoryUtilities.SizeOf<T>())));
                     return ref asRef;
                 }
             }

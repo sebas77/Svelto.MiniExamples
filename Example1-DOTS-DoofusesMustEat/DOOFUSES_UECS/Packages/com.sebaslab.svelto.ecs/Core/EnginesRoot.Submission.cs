@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Svelto.Common;
 using Svelto.DataStructures;
+using Svelto.ECS.Internal;
 
 namespace Svelto.ECS
 {
@@ -17,10 +19,10 @@ namespace Svelto.ECS
             while (true)
             {
                 DBC.ECS.Check.Require(_maxNumberOfOperationsPerFrame > 0);
-                    
+
                 ClearChecks();
 
-                uint numberOfOperations   = 0;
+                uint numberOfOperations = 0;
 
                 if (_entitiesOperations.count > 0)
                 {
@@ -32,7 +34,7 @@ namespace Svelto.ECS
 
                         EntitySubmitOperation[] entitiesOperations =
                             _transientEntitiesOperations.ToArrayFast(out var count);
-                        
+
                         for (var i = 0; i < count; i++)
                         {
                             try
@@ -64,7 +66,7 @@ namespace Svelto.ECS
 
                                 Svelto.Console.LogError(str.FastConcat(" ")
 #if DEBUG && !PROFILE_SVELTO
-                                                      .FastConcat(entitiesOperations[i].trace.ToString())
+                                                           .FastConcat(entitiesOperations[i].trace.ToString())
 #endif
                                 );
 
@@ -73,7 +75,7 @@ namespace Svelto.ECS
 
                             ++numberOfOperations;
 
-                            if ((uint) numberOfOperations >= (uint) _maxNumberOfOperationsPerFrame)
+                            if (numberOfOperations >= _maxNumberOfOperationsPerFrame)
                             {
                                 using (sample.Yield())
                                     yield return true;
@@ -95,13 +97,13 @@ namespace Svelto.ECS
                             using (profiler.Sample("Add entities to database"))
                             {
                                 //each group is indexed by entity view type. for each type there is a dictionary indexed by entityID
-                                foreach (var groupToSubmit in _groupedEntityToAdd.other)
+                                foreach (var groupToSubmit in _groupedEntityToAdd)
                                 {
-                                    var groupID = groupToSubmit.Key;
+                                    var groupID = groupToSubmit.@group;
                                     var groupDB = GetOrCreateDBGroup(groupID);
 
                                     //add the entityComponents in the group
-                                    foreach (var entityComponentsToSubmit in groupToSubmit.Value)
+                                    foreach (var entityComponentsToSubmit in groupToSubmit.components)
                                     {
                                         var type                     = entityComponentsToSubmit.Key;
                                         var targetTypeSafeDictionary = entityComponentsToSubmit.Value;
@@ -120,31 +122,62 @@ namespace Svelto.ECS
                             //created by the entity built
                             using (var sampler = profiler.Sample("Add entities to engines"))
                             {
-                                foreach (var groupToSubmit in _groupedEntityToAdd.other)
+                                uint totalCountSoFar = 0;
+                                foreach (GroupInfo groupToSubmit in _groupedEntityToAdd)
                                 {
-                                    var groupID = groupToSubmit.Key;
+                                    var groupID = groupToSubmit.group;
                                     var groupDB = GetDBGroup(groupID);
-//entityComponentsToSubmit is the array of components found in the groupID per component type. 
-//if there are N entities to submit, and M components type to add for each entity, this foreach will run NxM times. 
-                                    foreach (var entityComponentsToSubmit in groupToSubmit.Value)
+
+                                    //This loop iterates again all the entity components that have been just submitted to call
+                                    //the Add Callbacks on them. Note that I am iterating the transient buffer of the just
+                                    //added components, but calling the callback on the entities just added in the real buffer
+                                    //Note: it's OK to add new entities while this happens because of the double buffer
+                                    //design of the transient buffer of added entities.
+                                    foreach (var componentsArrayToSubmit in groupToSubmit.components)
                                     {
-                                        var realDic = groupDB[new RefWrapperType(entityComponentsToSubmit.Key)];
+                                        ITypeSafeDictionary databaseDictionaryOfComponents =
+                                            groupDB[new RefWrapperType(componentsArrayToSubmit.Key)];
 
-                                        entityComponentsToSubmit.Value.ExecuteEnginesAddOrSwapCallbacks(
-                                            _reactiveEnginesAddRemove, realDic, null, groupID, in profiler);
+                                        uint startIndex                  = 0;
 
-                                        numberOfOperations += entityComponentsToSubmit.Value.count;
-
-                                        if (numberOfOperations >= _maxNumberOfOperationsPerFrame)
+                                        do 
                                         {
-                                            using (outerSampler.Yield())
-                                            using (sampler.Yield())
+                                            totalCountSoFar += (uint)componentsArrayToSubmit.Value.count;
+
+                                            uint count;
+                                            if (totalCountSoFar >= _maxNumberOfOperationsPerFrame)
                                             {
-                                                yield return true;
+                                                count           = totalCountSoFar - _maxNumberOfOperationsPerFrame;
+                                                totalCountSoFar = _maxNumberOfOperationsPerFrame;
+                                            }
+                                            else
+                                            {
+                                                count = (uint)componentsArrayToSubmit.Value.count;
                                             }
 
-                                            numberOfOperations = 0;
-                                        }
+                                            if (count > 0)
+                                            {
+                                                componentsArrayToSubmit.Value.ExecuteEnginesAddCallbacks(
+                                                    startIndex, count, _reactiveEnginesAddRemove
+                                                  , databaseDictionaryOfComponents, groupID, in profiler);
+                                            }
+
+                                            if (totalCountSoFar == _maxNumberOfOperationsPerFrame)
+                                            {
+                                                using (outerSampler.Yield())
+                                                using (sampler.Yield())
+                                                {
+                                                    yield return true;
+                                                }
+
+                                                totalCountSoFar = 0;
+                                            }
+
+                                            if (startIndex + count < componentsArrayToSubmit.Value.count)
+                                                startIndex += count;
+                                            else
+                                                break;
+                                        } while (true);
                                     }
                                 }
                             }
@@ -163,7 +196,7 @@ namespace Svelto.ECS
                 yield return false;
             }
         }
-        
+
         bool HasMadeNewStructuralChangesInThisIteration()
         {
             return _groupedEntityToAdd.AnyEntityCreated() || _entitiesOperations.count > 0;

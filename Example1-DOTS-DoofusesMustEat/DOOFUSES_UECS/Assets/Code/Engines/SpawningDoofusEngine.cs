@@ -83,6 +83,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
                 var uecsComponent = new SpawnPointEntityComponent(_entity, positionEntityComponent.position);
 
                 var init = _factory.BuildEntity((uint) index, _group, _threadIndex);
+//todo this wont work                var init2 = _factory.BuildEntity((uint) index, _group, _threadIndex);
 
                 init.Init(uecsComponent);
                 init.Init(positionEntityComponent);

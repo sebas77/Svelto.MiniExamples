@@ -12,7 +12,7 @@ namespace Svelto.ECS.Extensions.Unity
         /// This is the suggested way to create GUIs from prefabs now.
         /// </summary>
         public static T CreateFromPrefab<T>
-        (ref uint startIndex, Transform contextHolder, IEntityFactory factory, ExclusiveGroup group
+        (ref uint startIndex, Transform contextHolder, IEntityFactory factory, ExclusiveGroupStruct group
        , bool searchImplementorsInChildren = false, string groupNamePostfix = null)
             where T : MonoBehaviour, IEntityDescriptorHolder
         {
@@ -43,7 +43,7 @@ namespace Svelto.ECS.Extensions.Unity
         /// already present in the scene
         /// </summary>
         public static uint CreateAll<T>
-        (uint startIndex, ExclusiveGroup group, Transform contextHolder, IEntityFactory factory
+        (uint startIndex, ExclusiveGroupStruct group, Transform contextHolder, IEntityFactory factory
        , string groupNamePostfix = null) where T : MonoBehaviour, IEntityDescriptorHolder
         {
             var holders = contextHolder.GetComponentsInChildren<T>(true);
@@ -92,7 +92,7 @@ namespace Svelto.ECS.Extensions.Unity
         /// This is a very specific case and I still need to decide if I want it in the framework
         /// </summary>
         public static uint CreateAllInMatchingGroup<T>
-            (uint startId, ExclusiveGroup exclusiveGroup, Transform contextHolder, IEntityFactory factory)
+            (uint startId, ExclusiveGroupStruct exclusiveGroup, Transform contextHolder, IEntityFactory factory)
             where T : MonoBehaviour, IEntityDescriptorHolder
         {
             var holders = contextHolder.GetComponentsInChildren<T>(true);
@@ -131,7 +131,7 @@ namespace Svelto.ECS.Extensions.Unity
         }
 
         static uint InternalBuildAll
-        (uint startIndex, IEntityDescriptorHolder descriptorHolder, IEntityFactory factory, ExclusiveGroup group
+        (uint startIndex, IEntityDescriptorHolder descriptorHolder, IEntityFactory factory, ExclusiveGroupStruct group
        , IImplementor[] implementors, string groupNamePostfix)
         {
             ExclusiveGroupStruct realGroup = group;

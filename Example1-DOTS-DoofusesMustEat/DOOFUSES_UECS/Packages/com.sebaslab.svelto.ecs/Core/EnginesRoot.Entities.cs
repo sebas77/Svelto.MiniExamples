@@ -237,9 +237,10 @@ namespace Svelto.ECS
 
                     toEntitiesDictionary.AddEntitiesFromDictionary(groupOfEntitiesToCopyAndClear, toGroupId, this);
 
-                    //call all the MoveTo callbacks
-                    dictionaryOfEntities.Value.ExecuteEnginesAddOrSwapCallbacks(_reactiveEnginesSwap
-                      , dictionaryOfEntities.Value, fromIdGroupId, toGroupId, profiler);
+                    //todo: this is wrong, I must add all the entities first and only after then call all the callbacks
+                    if (_reactiveEnginesSwap != null)
+                        dictionaryOfEntities.Value.ExecuteEnginesSwapCallbacks(
+                            _reactiveEnginesSwap, fromIdGroupId, toGroupId, profiler);
 
                     //todo: if it's unmanaged, I can use fastclear
                     groupOfEntitiesToCopyAndClear.Clear();

@@ -142,7 +142,7 @@ namespace Svelto.ECS.DataStructures
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ref T ReserveEnqueue<T>(out UnsafeArrayIndex index) where T : struct
+        public ref T ReserveEnqueue<T>(out UnsafeArrayIndex index) where T : struct //should be unmanaged, but it's not due to Svelto.ECS constraints.
         {
             unsafe
             {
@@ -151,7 +151,7 @@ namespace Svelto.ECS.DataStructures
                 var sizeOf = MemoryUtilities.SizeOf<T>();
                 if (_queue->availableSpace - sizeOf < 0)
                 {
-                    _queue->Realloc((_queue->capacity + (uint)sizeOf) << 1);
+                    _queue->Grow<T>();
                 }
 
 #if ENABLE_THREAD_SAFE_CHECKS
@@ -171,7 +171,7 @@ namespace Svelto.ECS.DataStructures
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Enqueue<T>(in T item) where T : struct
+        public void Enqueue<T>(in T item) where T : struct //should be unmanaged, but it's not due to Svelto.ECS constraints.
         {
             unsafe
             {
@@ -184,9 +184,7 @@ namespace Svelto.ECS.DataStructures
                 var sizeOf = MemoryUtilities.SizeOf<T>();
                 if (_queue->availableSpace - sizeOf < 0)
                 {
-                    var capacityInBytes = (_queue->capacity + (uint)sizeOf);
-
-                    _queue->Realloc(capacityInBytes << 1);
+                    _queue->Grow<T>();
                 }
 
                 _queue->Enqueue(item);
@@ -221,7 +219,7 @@ namespace Svelto.ECS.DataStructures
             }
         }
 
-        public T Dequeue<T>() where T : struct
+        public T Dequeue<T>() where T : struct //should be unmanaged, but it's not due to Svelto.ECS constraints.
         {
             unsafe
             {
@@ -241,7 +239,7 @@ namespace Svelto.ECS.DataStructures
             }
         }
 
-        public ref T AccessReserved<T>(UnsafeArrayIndex reservedIndex) where T : struct
+        public ref T AccessReserved<T>(UnsafeArrayIndex reservedIndex) where T : struct //should be unmanaged, but it's not due to Svelto.ECS constraints.
         {
             unsafe
             {

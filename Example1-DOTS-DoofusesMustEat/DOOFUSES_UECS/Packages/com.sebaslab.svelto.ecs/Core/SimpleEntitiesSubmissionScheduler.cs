@@ -10,11 +10,39 @@ namespace Svelto.ECS.Schedulers
             _enumerator = SubmitEntitiesAsync(maxNumberOfOperationsPerFrame);
         }
 
+        public override bool paused    { get; set; }
+
+        protected internal override EnginesRoot.EntitiesSubmitter onTick
+        {
+            set
+            {
+                DBC.ECS.Check.Require(_onTick == null, "a scheduler can be exclusively used by one enginesRoot only");
+
+                _onTick = value;
+            }
+        }
+
+        public override void Dispose() { }
+
+        public void SubmitEntities()
+        {
+            do
+            {
+                _enumerator.MoveNext();
+            } while (_enumerator.Current == true);
+        }
+
         public IEnumerator<bool> SubmitEntitiesAsync()
         {
             return _enumerator;
         }
 
+        /// <summary>
+        /// This method stays public in case the external code wants to handle the management of the pre allocated
+        /// enumerator
+        /// </summary>
+        /// <param name="maxNumberOfOperations"></param>
+        /// <returns></returns>
         public IEnumerator<bool> SubmitEntitiesAsync(uint maxNumberOfOperations)
         {
             EnginesRoot.EntitiesSubmitter entitiesSubmitter = _onTick.Value;
@@ -33,28 +61,8 @@ namespace Svelto.ECS.Schedulers
             }
         }
 
-        public void SubmitEntities()
-        {
-            do
-            {
-                _enumerator.MoveNext();
-            } while (_enumerator.Current == true);
-        }
-
-        public override bool paused    { get; set; }
-        public override void Dispose() { }
-
-        protected internal override EnginesRoot.EntitiesSubmitter onTick
-        {
-            set
-            {
-                DBC.ECS.Check.Require(_onTick == null, "a scheduler can be exclusively used by one enginesRoot only");
-
-                _onTick = value;
-            }
-        }
+        readonly IEnumerator<bool>     _enumerator;
 
         EnginesRoot.EntitiesSubmitter? _onTick;
-        readonly IEnumerator<bool>     _enumerator;
     }
 }

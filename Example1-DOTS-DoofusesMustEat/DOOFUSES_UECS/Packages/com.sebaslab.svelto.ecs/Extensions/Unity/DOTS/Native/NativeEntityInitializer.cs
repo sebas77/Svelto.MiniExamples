@@ -19,8 +19,10 @@ namespace Svelto.ECS.Native
         {
             uint id = EntityComponentID<T>.ID.Data;
 
-            _unsafeBuffer.AccessReserved<uint>(_index)++;
+            _unsafeBuffer.AccessReserved<uint>(_index)++; //number of components added so far
 
+            //Since NativeEntityInitializer is a ref struct, it guarantees that I am enqueueing components of the
+            //last entity built
             _unsafeBuffer.Enqueue(id);
             _unsafeBuffer.Enqueue(component);
         }

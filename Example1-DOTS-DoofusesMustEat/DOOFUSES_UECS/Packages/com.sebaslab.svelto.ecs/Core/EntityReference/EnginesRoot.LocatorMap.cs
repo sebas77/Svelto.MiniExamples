@@ -14,7 +14,7 @@ namespace Svelto.ECS
     {
         public struct LocatorMap
         {
-            internal readonly EntityReference ClaimReference()
+            internal EntityReference ClaimReference()
             {
                 int  tempFreeIndex;
                 int  newFreeIndex;

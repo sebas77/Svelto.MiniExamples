@@ -14,25 +14,17 @@ namespace Svelto.ECS.Internal
 #endif
         )
         {
-            var group = FetchEntityGroup(egid.groupID, groupEntitiesToAdd);
+            var group = groupEntitiesToAdd.currentComponentsToAddPerGroup.GetOrCreate(
+                egid.groupID, () => new FasterDictionary<RefWrapperType, ITypeSafeDictionary>());
+
+            //track the number of entities created so far in the group.
+            groupEntitiesToAdd.IncrementEntityCount(egid.groupID);
 
             BuildEntitiesAndAddToGroup(egid, group, componentsToBuild, implementors
 #if DEBUG && !PROFILE_SVELTO
                                      , descriptorType
 #endif
             );
-
-            return group;
-        }
-
-        static FasterDictionary<RefWrapperType, ITypeSafeDictionary> FetchEntityGroup
-            (ExclusiveGroupStruct groupID, EnginesRoot.DoubleBufferedEntitiesToAdd groupEntityComponentsByType)
-        {
-            var group = groupEntityComponentsByType.current.GetOrCreate(
-                groupID, () => new FasterDictionary<RefWrapperType, ITypeSafeDictionary>());
-
-            //track the number of entities created so far in the group.
-            groupEntityComponentsByType.IncrementEntityCount(groupID);
 
             return group;
         }

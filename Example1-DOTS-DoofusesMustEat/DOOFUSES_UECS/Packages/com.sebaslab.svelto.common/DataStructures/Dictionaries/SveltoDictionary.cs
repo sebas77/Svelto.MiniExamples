@@ -621,8 +621,9 @@ namespace Svelto.DataStructures
         {
             _dic   = dic;
             _index = -1;
-#if DEBUG && !PROFILE_SVELTO
             _count = (int) dic.count;
+#if DEBUG && !PROFILE_SVELTO
+            _startCount = dic.count;
 #endif
         }
 
@@ -630,10 +631,8 @@ namespace Svelto.DataStructures
         public bool MoveNext()
         {
 #if DEBUG && !PROFILE_SVELTO
-            if (_count != _dic.count)
+            if (_count != _startCount)
                 throw new SveltoDictionaryException("can't modify a dictionary while it is iterated");
-#else
-            var _count = _dic.count;
 #endif
             if (_index < _count - 1)
             {
@@ -649,9 +648,22 @@ namespace Svelto.DataStructures
 
         SveltoDictionary<TKey, TValue, TKeyStrategy, TValueStrategy, TBucketStrategy> _dic;
 #if DEBUG && !PROFILE_SVELTO
-        readonly int _count;
+        int _startCount;
 #endif
-        int _index;
+        int _count;
+
+        int         _index;
+
+        public void SetRange(uint startIndex, uint count)
+        {
+            _index      = (int)startIndex - 1;
+            _count      = (int)count;
+#if DEBUG && !PROFILE_SVELTO         
+            if (_count > _startCount)
+                throw new SveltoDictionaryException("can't set a count greater than the starting one");
+            _startCount = (int)count;
+#endif            
+        }
     }
 
     /// <summary>

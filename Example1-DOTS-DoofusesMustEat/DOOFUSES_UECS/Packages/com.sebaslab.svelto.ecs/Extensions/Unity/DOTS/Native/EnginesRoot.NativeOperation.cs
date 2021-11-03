@@ -33,12 +33,13 @@ namespace Svelto.ECS
             return new NativeEntitySwap(_nativeSwapOperationQueue, _nativeSwapOperations.count - 1);
         }
 
-        NativeEntityFactory ProvideNativeEntityFactoryQueue<T>(string memberName) where T : IEntityDescriptor, new()
+        NativeEntityFactory ProvideNativeEntityFactoryQueue<T>(string caller) where T : IEntityDescriptor, new()
         {
             DBC.ECS.Check.Require(EntityDescriptorTemplate<T>.descriptor.IsUnmanaged(), "can't build entities with not native types");
+            DBC.ECS.Check.Require(string.IsNullOrEmpty(caller) == false, "an invalid caller has been provided");
             //todo: remove operation array and store entity descriptor hash in the return value
             _nativeAddOperations.Add(
-                new NativeOperationBuild(EntityDescriptorTemplate<T>.descriptor.componentsToBuild, TypeCache<T>.type, memberName));
+                new NativeOperationBuild(EntityDescriptorTemplate<T>.descriptor.componentsToBuild, TypeCache<T>.type, caller));
 
             return new NativeEntityFactory(_nativeAddOperationQueue, _nativeAddOperations.count - 1, _entityLocator);
         }

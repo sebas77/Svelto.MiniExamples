@@ -55,9 +55,9 @@ using Svelto.Common;
             }
             
 #if UNITY_NATIVE
-            public Svelto.ECS.Native.NativeEntityFactory ToNative<T>(string callerName) where T : IEntityDescriptor, new()
+            public Svelto.ECS.Native.NativeEntityFactory ToNative<T>([System.Runtime.CompilerServices.CallerMemberName] string caller = null) where T : IEntityDescriptor, new()
             {
-                return _enginesRoot.Target.ProvideNativeEntityFactoryQueue<T>(callerName);
+                return _enginesRoot.Target.ProvideNativeEntityFactoryQueue<T>(caller);
             }
 #endif            
 

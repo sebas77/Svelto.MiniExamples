@@ -24,6 +24,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
 
         public JobHandle Execute(JobHandle _jobHandle)
         {
+            return _jobHandle;
             //Iterate NOEATING RED doofuses to look for RED food and MOVE them to EATING state if food is found
             var handle1 = CreateJobForDoofusesAndFood(_jobHandle, GameGroups.RED_FOOD_NOT_EATEN.Groups
                                                     , GameGroups.RED_DOOFUSES_NOT_EATING.Groups

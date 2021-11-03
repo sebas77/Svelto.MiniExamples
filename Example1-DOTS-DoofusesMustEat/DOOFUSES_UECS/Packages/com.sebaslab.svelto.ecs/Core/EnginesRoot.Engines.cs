@@ -7,7 +7,7 @@ using Svelto.ECS.Schedulers;
 
 namespace Svelto.ECS
 {
-    public sealed partial class EnginesRoot
+    public partial class EnginesRoot
     {
         static EnginesRoot()
         {
@@ -63,10 +63,10 @@ namespace Svelto.ECS
         }
 
         public EnginesRoot
-            (EntitiesSubmissionScheduler entitiesComponentScheduler, bool isDeserializationOnly) :
-            this(entitiesComponentScheduler)
+            (EntitiesSubmissionScheduler entitiesComponentScheduler, EnginesReadyOption enginesWaitForReady) : this(
+            entitiesComponentScheduler)
         {
-            _isDeserializationOnly = isDeserializationOnly;
+            _enginesWaitForReady = enginesWaitForReady;
         }
 
         public EntitiesSubmissionScheduler scheduler { get; }
@@ -181,15 +181,27 @@ namespace Svelto.ECS
                     _disposableEngines.Add(engine as IDisposable);
 
                 if (engine is IQueryingEntitiesEngine queryableEntityComponentEngine)
-                {
                     queryableEntityComponentEngine.entitiesDB = _entitiesDB;
-                    queryableEntityComponentEngine.Ready();
-                }
+
+                if (_enginesWaitForReady == EnginesReadyOption.ReadyAsAdded && engine is IGetReadyEngine getReadyEngine)
+                    getReadyEngine.Ready();
             }
             catch (Exception e)
             {
                 throw new ECSException("Code crashed while adding engine ".FastConcat(engine.GetType().ToString(), " ")
                                      , e);
+            }
+        }
+
+        public void Ready()
+        {
+            DBC.ECS.Check.Require(_enginesWaitForReady == EnginesReadyOption.WaitForReady
+                                , "The engine has not been initialise to wait for an external ready trigger");
+
+            foreach (var engine in _enginesSet)
+            {
+                if (engine is IGetReadyEngine getReadyEngine)
+                    getReadyEngine.Ready();
             }
         }
 
@@ -243,6 +255,7 @@ namespace Svelto.ECS
         }
 
         internal bool                    _isDisposing;
+        readonly EnginesReadyOption                    _enginesWaitForReady;
         readonly FasterList<IDisposable> _disposableEngines;
         readonly FasterList<IEngine>     _enginesSet;
         readonly HashSet<Type>           _enginesTypeSet;
@@ -334,5 +347,11 @@ namespace Svelto.ECS
             internal readonly IEnumerator<bool> submitEntities;
             readonly          IEnumerator<bool> _privateSubmitEntities;
         }
+    }
+
+    public enum EnginesReadyOption
+    {
+        ReadyAsAdded,
+        WaitForReady
     }
 }

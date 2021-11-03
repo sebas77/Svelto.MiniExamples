@@ -20,21 +20,21 @@ namespace Svelto.Common
             if (t.IsPrimitive || t.IsPointer || t.IsEnum)
                 result = true;
             else
-                if (t.IsValueType && t.IsGenericType)
-                {
-                    var areGenericTypesAllBlittable = t.GenericTypeArguments.All(x => IsUnmanagedEx(x));
-                    if (areGenericTypesAllBlittable)
-                        result = t.GetFields(BindingFlags.Public | 
-                                             BindingFlags.NonPublic | BindingFlags.Instance)
-                                  .All(x => IsUnmanagedEx(x.FieldType));
-                    else
-                        return false;
-                }
-                else
-                if (t.IsValueType)
+            if (t.IsValueType && t.IsGenericType)
+            {
+                var areGenericTypesAllBlittable = t.GenericTypeArguments.All(x => IsUnmanagedEx(x));
+                if (areGenericTypesAllBlittable)
                     result = t.GetFields(BindingFlags.Public | 
                                          BindingFlags.NonPublic | BindingFlags.Instance)
                               .All(x => IsUnmanagedEx(x.FieldType));
+                else
+                    return false;
+            }
+            else
+            if (t.IsValueType)
+                result = t.GetFields(BindingFlags.Public | 
+                                     BindingFlags.NonPublic | BindingFlags.Instance)
+                          .All(x => IsUnmanagedEx(x.FieldType));
 
             cachedTypes.Add(t, result);
             return result;
