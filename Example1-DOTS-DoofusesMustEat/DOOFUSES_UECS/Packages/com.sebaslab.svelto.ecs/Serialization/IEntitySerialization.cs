@@ -49,6 +49,15 @@ namespace Svelto.ECS.Serialization
         /// <returns></returns>
         EntityInitializer DeserializeNewEntity(EGID egid, ISerializationData serializationData,
                                                         int serializationType);
+        /// <summary>
+        /// Skips over entities without deserializing them, but incrementing the data position of the serialization data
+        /// as if it had 
+        /// </summary>
+        /// <param name="serializationData"></param>
+        /// <param name="serializationType"></param>
+        /// <param name="numberOfEntities"></param>
+        void SkipEntityDeserialization(ISerializationData serializationData, int serializationType,
+            int numberOfEntities);
 
         /// <summary>
         /// Special Entity Swap method that works without knowing the EntityDescriptor to swap

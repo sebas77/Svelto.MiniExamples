@@ -2,17 +2,15 @@
   "dependencies": {
     "com.sebaslab.svelto.common": "com.sebaslab.svelto.common",
     "com.sebaslab.svelto.ecs": "com.sebaslab.svelto.ecs",
-    "com.sebaslab.svelto.tasks": "com.sebaslab.svelto.tasks@2.0.0-preview.1",
-    "com.sebaslab.svelto.unsafe": "com.sebaslab.svelto.unsafe",
     "com.unity.burst": "1.6.0",
     "com.unity.entities": "0.16.0-preview.21",
     "com.unity.ide.rider": "3.0.7",
     "com.unity.ide.visualstudio": "2.0.11",
-    "com.unity.mathematics": "1.2.4",
+    "com.unity.mathematics": "1.2.5",
     "com.unity.nuget.newtonsoft-json": "2.0.0",
-    "com.unity.render-pipelines.universal": "10.7.0",
+    "com.unity.render-pipelines.universal": "12.1.1",
     "com.unity.rendering.hybrid": "0.11.0-preview.44",
-    "com.unity.scriptablebuildpipeline": "1.19.2",
+    "com.unity.scriptablebuildpipeline": "1.19.3",
     "com.unity.modules.ai": "1.0.0",
     "com.unity.modules.androidjni": "1.0.0",
     "com.unity.modules.animation": "1.0.0",
@@ -44,5 +42,24 @@
     "com.unity.modules.vr": "1.0.0",
     "com.unity.modules.wind": "1.0.0",
     "com.unity.modules.xr": "1.0.0"
-  }
+  },
+  "scopedRegistries": [
+    {
+      "name": "OpenUPM",
+      "url": "https://package.openupm.com",
+      "scopes": [
+        "com.cysharp.unitask",
+        "com.needle.editorpatching",
+        "com.whinarn.unitymeshsimplifier",
+        "com.madsbangh.easybuttons",
+        "com.oddworm.heapexplorer",
+        "com.unity.editoriterationprofiler",
+        "com.example.nuget-consumer",
+        "org.nuget.system.buffers",
+        "org.nuget.system.memory",
+        "org.nuget.system.numerics.vectors",
+        "org.nuget.system.runtime.compilerservices.unsafe"
+      ]
+    }
+  ]
 }

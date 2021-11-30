@@ -94,8 +94,8 @@ namespace Svelto.ObjectPool
 
             for (var enumerator = _pools.GetEnumerator(); enumerator.MoveNext();)
             {
-                FasterList<T> currentValue = enumerator.Current.Value;
-                debugInfo.Add(new ObjectPoolDebugStructure(enumerator.Current.Key, currentValue.count));
+                FasterList<T> currentValue = enumerator.Current.value;
+                debugInfo.Add(new ObjectPoolDebugStructure(enumerator.Current.key, currentValue.count));
             }
 
             return debugInfo;

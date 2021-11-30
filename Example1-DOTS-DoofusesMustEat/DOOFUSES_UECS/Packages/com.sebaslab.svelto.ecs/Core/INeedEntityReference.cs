@@ -1,5 +1,3 @@
-using Svelto.ECS.Reference;
-
 namespace Svelto.ECS
 {
     /// <summary>

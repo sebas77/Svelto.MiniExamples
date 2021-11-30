@@ -143,7 +143,7 @@ namespace Svelto.ECS
                 if (_filters.TryGetValue(TypeRefWrapper<T>.wrapper, out var fasterDictionary) == true)
                 {
                     foreach (var filtersPerGroup in fasterDictionary)
-                        filtersPerGroup.Value.ClearFilter(filterID);
+                        filtersPerGroup.value.ClearFilter(filterID);
                 }
             }
 
@@ -161,7 +161,7 @@ namespace Svelto.ECS
                 if (_filters.TryGetValue(TypeRefWrapper<T>.wrapper, out var fasterDictionary) == true)
                 {
                     foreach (var filtersPerGroup in fasterDictionary)
-                        filtersPerGroup.Value.DisposeFilters();
+                        filtersPerGroup.value.DisposeFilters();
                 }
 
                 _filters.Remove(TypeRefWrapper<T>.wrapper);

@@ -46,10 +46,15 @@ namespace Svelto.DataStructures
     [DebuggerTypeProxy(typeof(NBDebugProxy<>))]
     public struct NB<T>:IBuffer<T> where T:struct
     {
+        /// <summary>
+        /// Note: static constructors are NOT compiled by burst as long as there are no static fields in the struct
+        /// </summary>
         static NB()
         {
+#if DEBUG && !PROFILE_SVELTO            
             if (TypeCache<T>.isUnmanaged == false)
                 throw new Exception("NativeBuffer (NB) supports only unmanaged types");
+#endif            
         }
         
         public NB(IntPtr array, uint capacity) : this()

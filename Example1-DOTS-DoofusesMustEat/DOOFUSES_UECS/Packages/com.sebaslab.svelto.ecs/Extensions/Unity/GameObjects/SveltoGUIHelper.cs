@@ -12,7 +12,7 @@ namespace Svelto.ECS.Extensions.Unity
         /// This is the suggested way to create GUIs from prefabs now.
         /// </summary>
         public static T CreateFromPrefab<T>
-        (ref uint startIndex, Transform contextHolder, IEntityFactory factory, ExclusiveGroup group
+        (ref uint startIndex, Transform contextHolder, IEntityFactory factory, ExclusiveGroupStruct group
        , bool searchImplementorsInChildren = false, string groupNamePostfix = null)
             where T : MonoBehaviour, IEntityDescriptorHolder
         {
@@ -43,7 +43,7 @@ namespace Svelto.ECS.Extensions.Unity
         /// already present in the scene
         /// </summary>
         public static uint CreateAll<T>
-        (uint startIndex, ExclusiveGroup group, Transform contextHolder, IEntityFactory factory
+        (uint startIndex, ExclusiveGroupStruct group, Transform contextHolder, IEntityFactory factory
        , string groupNamePostfix = null) where T : MonoBehaviour, IEntityDescriptorHolder
         {
             var holders = contextHolder.GetComponentsInChildren<T>(true);
@@ -65,7 +65,8 @@ namespace Svelto.ECS.Extensions.Unity
         }
 
         public static EntityInitializer Create<T>(EGID ID, Transform contextHolder, IEntityFactory factory, out T holder
-                           , bool searchImplementorsInChildren = false) where T : MonoBehaviour, IEntityDescriptorHolder
+            , bool searchImplementorsInChildren = false, IECSManager manager = null)
+            where T : MonoBehaviour, IEntityDescriptorHolder
         {
             holder = contextHolder.GetComponentInChildren<T>(true);
             if (holder == null)
@@ -77,14 +78,26 @@ namespace Svelto.ECS.Extensions.Unity
                 ? holder.GetComponents<IImplementor>()
                 : holder.GetComponentsInChildren<IImplementor>(true);
 
+            if (manager != null)
+            {
+                foreach (var implementor in implementors)
+                {
+                    if (implementor is IUseResourceManagerImplementor castedImplementor)
+                    {
+                        castedImplementor.resourceManager = manager;                       
+                    }
+                }
+            }
+
             return factory.BuildEntity(ID, holder.GetDescriptor(), implementors);
         }
 
         public static EntityInitializer Create<T>
-            (EGID ID, Transform contextHolder, IEntityFactory factory, bool searchImplementorsInChildren = false)
+            (EGID ID, Transform contextHolder, IEntityFactory factory, bool searchImplementorsInChildren = false
+            , IECSManager manager = null)
             where T : MonoBehaviour, IEntityDescriptorHolder
         {
-            return Create<T>(ID, contextHolder, factory, out _, searchImplementorsInChildren);
+            return Create<T>(ID, contextHolder, factory, out _, searchImplementorsInChildren, manager);
         }
 
         /// <summary>
@@ -92,7 +105,7 @@ namespace Svelto.ECS.Extensions.Unity
         /// This is a very specific case and I still need to decide if I want it in the framework
         /// </summary>
         public static uint CreateAllInMatchingGroup<T>
-            (uint startId, ExclusiveGroup exclusiveGroup, Transform contextHolder, IEntityFactory factory)
+            (uint startId, ExclusiveGroupStruct exclusiveGroup, Transform contextHolder, IEntityFactory factory)
             where T : MonoBehaviour, IEntityDescriptorHolder
         {
             var holders = contextHolder.GetComponentsInChildren<T>(true);
@@ -131,7 +144,7 @@ namespace Svelto.ECS.Extensions.Unity
         }
 
         static uint InternalBuildAll
-        (uint startIndex, IEntityDescriptorHolder descriptorHolder, IEntityFactory factory, ExclusiveGroup group
+        (uint startIndex, IEntityDescriptorHolder descriptorHolder, IEntityFactory factory, ExclusiveGroupStruct group
        , IImplementor[] implementors, string groupNamePostfix)
         {
             ExclusiveGroupStruct realGroup = group;

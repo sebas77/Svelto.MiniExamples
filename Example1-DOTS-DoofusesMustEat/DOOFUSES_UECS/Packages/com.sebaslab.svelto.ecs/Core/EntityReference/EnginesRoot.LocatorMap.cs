@@ -1,6 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using Svelto.Common;
-using Svelto.DataStructures;
+﻿using Svelto.Common;
 using Svelto.DataStructures.Native;
 using Svelto.ECS.DataStructures;
 using Svelto.ECS.Reference;
@@ -14,7 +12,7 @@ namespace Svelto.ECS
     {
         public struct LocatorMap
         {
-            internal readonly EntityReference ClaimReference()
+            internal EntityReference ClaimReference()
             {
                 int  tempFreeIndex;
                 int  newFreeIndex;
@@ -125,7 +123,7 @@ namespace Svelto.ECS
                 // We need to traverse all entities in the group and remove the locator using the egid.
                 // RemoveLocator would modify the enumerator so this is why we traverse the dictionary from last to first.
                 foreach (var item in groupMap)
-                    RemoveEntityReference(new EGID(item.Key, groupId));
+                    RemoveEntityReference(new EGID(item.key, groupId));
 
                 _egidToReferenceMap.Remove(groupId);
             }
@@ -138,7 +136,7 @@ namespace Svelto.ECS
                 // We need to traverse all entities in the group and update the locator using the egid.
                 // UpdateLocator would modify the enumerator so this is why we traverse the dictionary from last to first.
                 foreach (var item in groupMap)
-                    UpdateEntityReference(new EGID(item.Key, fromGroupId), new EGID(item.Key, toGroupId));
+                    UpdateEntityReference(new EGID(item.key, fromGroupId), new EGID(item.key, toGroupId));
 
                 _egidToReferenceMap.Remove(fromGroupId);
             }
@@ -211,7 +209,7 @@ namespace Svelto.ECS
                 _entityReferenceMap.Dispose();
 
                 foreach (var element in _egidToReferenceMap)
-                    element.Value.Dispose();
+                    element.value.Dispose();
                 _egidToReferenceMap.Dispose();
             }
 

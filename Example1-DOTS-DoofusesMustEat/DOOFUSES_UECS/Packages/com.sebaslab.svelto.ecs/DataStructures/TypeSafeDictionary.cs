@@ -94,20 +94,20 @@ namespace Svelto.ECS.Internal
                 foreach (var tuple in typeSafeDictionary)
                     try
                     {
-                        var egid = new EGID(tuple.Key, groupId);
+                        var egid = new EGID(tuple.key, groupId);
                         if (_hasEgid)
-                            SetEGIDWithoutBoxing<TValue>.SetIDWithoutBoxing(ref tuple.Value, egid);
+                            SetEGIDWithoutBoxing<TValue>.SetIDWithoutBoxing(ref tuple.value, egid);
 
                         if (_hasReference)
                             SetEGIDWithoutBoxing<TValue>.SetRefWithoutBoxing(
-                                ref tuple.Value, enginesRoot.entityLocator.GetEntityReference(egid));
+                                ref tuple.value, enginesRoot.entityLocator.GetEntityReference(egid));
 
-                        implUnmgd.Add(tuple.Key, tuple.Value);
+                        implUnmgd.Add(tuple.key, tuple.value);
                     }
                     catch (Exception e)
                     {
                         Console.LogException(
-                            e, "trying to add an EntityComponent with the same ID more than once Entity: ".FastConcat(typeof(TValue).ToString()).FastConcat(", group ").FastConcat(groupId.ToName()).FastConcat(", id ").FastConcat(tuple.Key));
+                            e, "trying to add an EntityComponent with the same ID more than once Entity: ".FastConcat(typeof(TValue).ToString()).FastConcat(", group ").FastConcat(groupId.ToName()).FastConcat(", id ").FastConcat(tuple.key));
 
                         throw;
                     }
@@ -121,44 +121,162 @@ namespace Svelto.ECS.Internal
                     {
                         if (_hasEgid)
                             SetEGIDWithoutBoxing<TValue>.SetIDWithoutBoxing(
-                                ref tuple.Value, new EGID(tuple.Key, groupId));
+                                ref tuple.value, new EGID(tuple.key, groupId));
 
-                        implMgd.Add(tuple.Key, tuple.Value);
+                        implMgd.Add(tuple.key, tuple.value);
                     }
                     catch (Exception e)
                     {
                         Console.LogException(
-                            e, "trying to add an EntityComponent with the same ID more than once Entity: ".FastConcat(typeof(TValue).ToString()).FastConcat(", group ").FastConcat(groupId.ToName()).FastConcat(", id ").FastConcat(tuple.Key));
+                            e, "trying to add an EntityComponent with the same ID more than once Entity: ".FastConcat(typeof(TValue).ToString()).FastConcat(", group ").FastConcat(groupId.ToName()).FastConcat(", id ").FastConcat(tuple.key));
 
                         throw;
                     }
             }
         }
 
-        public void ExecuteEnginesAddOrSwapCallbacks
+        //Execute Swap callbacks for the subset of entities found in this type safe dictionary
+        //Note: this is at the moment called ONLY to swap all the entities found in a group and not single entities
+        //todo: why is it iterating the dictionary instead to iterate directly the value array?
+        public void ExecuteEnginesSwapCallbacks
         (FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer>> entityComponentEnginesDB
-       , ITypeSafeDictionary realDic, ExclusiveGroupStruct? fromGroup, ExclusiveGroupStruct toGroup
-       , in PlatformProfiler profiler)
+       , ExclusiveGroupStruct fromGroup, ExclusiveGroupStruct toGroup, in PlatformProfiler profiler)
         {
             if (isUnmanaged)
             {
-                var typeSafeDictionary = realDic as ITypeSafeDictionary<TValue>;
-
                 //this can be optimized, should pass all the entities and not restart the process for each one
                 foreach (var value in implUnmgd)
                     ExecuteEnginesAddOrSwapCallbacksOnSingleEntity(entityComponentEnginesDB
-                                                                 , ref typeSafeDictionary[value.Key], fromGroup
-                                                                 , in profiler, new EGID(value.Key, toGroup));
+                                                                 , ref implUnmgd.GetValueByRef(value.key), fromGroup
+                                                                 , in profiler, new EGID(value.key, toGroup));
             }
             else
             {
-                var typeSafeDictionary = realDic as ITypeSafeDictionary<TValue>;
-
                 //this can be optimized, should pass all the entities and not restart the process for each one
                 foreach (var value in implMgd)
                     ExecuteEnginesAddOrSwapCallbacksOnSingleEntity(entityComponentEnginesDB
-                                                                 , ref typeSafeDictionary[value.Key], fromGroup
-                                                                 , in profiler, new EGID(value.Key, toGroup));
+                                                                 , ref implMgd.GetValueByRef(value.key), fromGroup
+                                                                 , in profiler, new EGID(value.key, toGroup));
+            }
+        }
+
+        //Execute Add callbacks for the subset of entities found in this type safe dictionary that were previously
+        //added in destination destinationDatabase 
+        public void ExecuteEnginesAddCallbacks
+        (uint startIndex, uint count
+       , FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer>> entityComponentEnginesDB
+       , ITypeSafeDictionary destinationDatabase, ExclusiveGroupStruct toGroup, in PlatformProfiler profiler)
+        {
+            if (isUnmanaged)
+            {
+                var dictionaryOfComponents = destinationDatabase as ITypeSafeDictionary<TValue>;
+
+                //this can be optimized, should pass all the entities and not restart the process for each one
+                var dictionaryKeyEnumerator = implUnmgd.GetEnumerator();
+                dictionaryKeyEnumerator.SetRange(startIndex, count);
+
+                while (dictionaryKeyEnumerator.MoveNext())
+                {
+                    var key = dictionaryKeyEnumerator.Current.key;
+                    ExecuteEnginesAddOrSwapCallbacksOnSingleEntity(entityComponentEnginesDB
+                                                                 , ref dictionaryOfComponents[key], null
+                                                                 , in profiler, new EGID(key, toGroup));
+                }
+            }
+            else
+            {
+                var typeSafeDictionary = destinationDatabase as ITypeSafeDictionary<TValue>;
+
+                var dictionaryKeyEnumerator = implMgd.GetEnumerator();
+                dictionaryKeyEnumerator.SetRange(startIndex, count);
+                //this can be optimized, should pass all the entities and not restart the process for each one
+                while (dictionaryKeyEnumerator.MoveNext())
+                {
+                    var key = dictionaryKeyEnumerator.Current.key;
+                    ExecuteEnginesAddOrSwapCallbacksOnSingleEntity(entityComponentEnginesDB
+                                                                 , ref typeSafeDictionary[key], null, in profiler
+                                                                 , new EGID(key, toGroup));
+                }
+            }
+        }
+
+        //Execute Remove callbacks for the subset of entities found in this type safe dictionary
+        //todo: why is it iterating the dictionary instead to iterate directly the value array?
+        public void ExecuteEnginesRemoveCallbacks
+        (FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer>> engines, in PlatformProfiler profiler
+       , ExclusiveGroupStruct group)
+        {
+            if (isUnmanaged)
+            {
+                foreach (var value in implUnmgd)
+                    ExecuteEnginesRemoveCallbackOnSingleEntity(engines, ref implUnmgd.GetValueByRef(value.key)
+                                                             , in profiler, new EGID(value.key, group));
+            }
+            else
+            {
+                foreach (var value in implMgd)
+                    ExecuteEnginesRemoveCallbackOnSingleEntity(engines, ref implMgd.GetValueByRef(value.key)
+                                                             , in profiler, new EGID(value.key, group));
+            }
+        }
+
+        //Execute Engines Swap Or Callback for one single entity.
+        //Todo:something wrong with this one, if it's one single entity, it should be taken directly from the toGroup dictionary.
+        public void ExecuteEnginesSwapOrRemoveCallbacks
+        (EGID fromEntityGid, EGID? toEntityID, ITypeSafeDictionary toGroup
+       , FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer>> engines, in PlatformProfiler profiler)
+        {
+            if (isUnmanaged)
+            {
+                var valueIndex = implUnmgd.GetIndex(fromEntityGid.entityID);
+
+                ref var entity = ref implUnmgd.GetDirectValueByRef(valueIndex);
+
+                //move
+                if (toGroup != null)
+                {
+                    var toGroupCasted = toGroup as ITypeSafeDictionary<TValue>;
+                    var previousGroup = fromEntityGid.groupID;
+
+                    //todo: why is setting the EGID if this code just execute callbacks?
+                    if (_hasEgid)
+                        SetEGIDWithoutBoxing<TValue>.SetIDWithoutBoxing(ref entity, toEntityID.Value);
+
+                    var index = toGroupCasted.GetIndex(toEntityID.Value.entityID);
+
+                    ExecuteEnginesAddOrSwapCallbacksOnSingleEntity(engines, ref toGroupCasted.GetDirectValueByRef(index)
+                                                                 , previousGroup, in profiler, toEntityID.Value);
+                }
+                //remove
+                else
+                {
+                    ExecuteEnginesRemoveCallbackOnSingleEntity(engines, ref entity, in profiler, fromEntityGid);
+                }
+            }
+            else
+            {
+                var valueIndex = implMgd.GetIndex(fromEntityGid.entityID);
+
+                ref var entity = ref implMgd.GetDirectValueByRef(valueIndex);
+
+                if (toGroup != null)
+                {
+                    var toGroupCasted = toGroup as ITypeSafeDictionary<TValue>;
+                    var previousGroup = fromEntityGid.groupID;
+
+                    //todo: why is setting the EGID if this code just execute callbacks?
+                    if (_hasEgid)
+                        SetEGIDWithoutBoxing<TValue>.SetIDWithoutBoxing(ref entity, toEntityID.Value);
+
+                    var index = toGroupCasted.GetIndex(toEntityID.Value.entityID);
+
+                    ExecuteEnginesAddOrSwapCallbacksOnSingleEntity(engines, ref toGroupCasted.GetDirectValueByRef(index)
+                                                                 , previousGroup, in profiler, toEntityID.Value);
+                }
+                else
+                {
+                    ExecuteEnginesRemoveCallbackOnSingleEntity(engines, ref entity, in profiler, fromEntityGid);
+                }
             }
         }
 
@@ -272,82 +390,6 @@ namespace Svelto.ECS.Internal
             }
         }
 
-        public void ExecuteEnginesSwapOrRemoveCallbacks
-        (EGID fromEntityGid, EGID? toEntityID, ITypeSafeDictionary toGroup
-       , FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer>> engines, in PlatformProfiler profiler)
-        {
-            if (isUnmanaged)
-            {
-                var valueIndex = implUnmgd.GetIndex(fromEntityGid.entityID);
-
-                ref var entity = ref implUnmgd.GetDirectValueByRef(valueIndex);
-
-                //move
-                if (toGroup != null)
-                {
-                    var toGroupCasted = toGroup as ITypeSafeDictionary<TValue>;
-                    var previousGroup = fromEntityGid.groupID;
-
-                    //todo: why is setting the EGID if this code just execute callbacks?
-                    if (_hasEgid)
-                        SetEGIDWithoutBoxing<TValue>.SetIDWithoutBoxing(ref entity, toEntityID.Value);
-
-                    var index = toGroupCasted.GetIndex(toEntityID.Value.entityID);
-
-                    ExecuteEnginesAddOrSwapCallbacksOnSingleEntity(engines, ref toGroupCasted.GetDirectValueByRef(index)
-                                                                 , previousGroup, in profiler, toEntityID.Value);
-                }
-                //remove
-                else
-                {
-                    ExecuteEnginesRemoveCallbackOnSingleEntity(engines, ref entity, in profiler, fromEntityGid);
-                }
-            }
-            else
-            {
-                var valueIndex = implMgd.GetIndex(fromEntityGid.entityID);
-
-                ref var entity = ref implMgd.GetDirectValueByRef(valueIndex);
-
-                if (toGroup != null)
-                {
-                    var toGroupCasted = toGroup as ITypeSafeDictionary<TValue>;
-                    var previousGroup = fromEntityGid.groupID;
-
-                    //todo: why is setting the EGID if this code just execute callbacks?
-                    if (_hasEgid)
-                        SetEGIDWithoutBoxing<TValue>.SetIDWithoutBoxing(ref entity, toEntityID.Value);
-
-                    var index = toGroupCasted.GetIndex(toEntityID.Value.entityID);
-
-                    ExecuteEnginesAddOrSwapCallbacksOnSingleEntity(engines, ref toGroupCasted.GetDirectValueByRef(index)
-                                                                 , previousGroup, in profiler, toEntityID.Value);
-                }
-                else
-                {
-                    ExecuteEnginesRemoveCallbackOnSingleEntity(engines, ref entity, in profiler, fromEntityGid);
-                }
-            }
-        }
-
-        public void ExecuteEnginesRemoveCallbacks
-        (FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer>> engines, in PlatformProfiler profiler
-       , ExclusiveGroupStruct group)
-        {
-            if (isUnmanaged)
-            {
-                foreach (var value in implUnmgd)
-                    ExecuteEnginesRemoveCallbackOnSingleEntity(engines, ref implUnmgd.GetValueByRef(value.Key)
-                                                             , in profiler, new EGID(value.Key, group));
-            }
-            else
-            {
-                foreach (var value in implMgd)
-                    ExecuteEnginesRemoveCallbackOnSingleEntity(engines, ref implMgd.GetValueByRef(value.Key)
-                                                             , in profiler, new EGID(value.Key, group));
-            }
-        }
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void RemoveEntityFromDictionary(EGID fromEntityGid)
         {
@@ -431,18 +473,18 @@ namespace Svelto.ECS.Internal
             }
         }
 
-        public uint count
+        public int count
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 if (isUnmanaged)
                 {
-                    return (uint) implUnmgd.count;
+                    return implUnmgd.count;
                 }
                 else
                 {
-                    return (uint) implMgd.count;
+                    return implMgd.count;
                 }
             }
         }
@@ -474,7 +516,7 @@ namespace Svelto.ECS.Internal
         }
 
         void ExecuteEnginesAddOrSwapCallbacksOnSingleEntity
-        (FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer>> engines, ref TValue entity
+        (FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer>> engines, ref TValue entityComponent
        , ExclusiveGroupStruct? previousGroup, in PlatformProfiler profiler, EGID egid)
         {
             //get all the engines linked to TValue
@@ -488,7 +530,8 @@ namespace Svelto.ECS.Internal
                     {
                         using (profiler.Sample(entityComponentsEngines[i].name))
                         {
-                            (entityComponentsEngines[i].engine as IReactOnAddAndRemove<TValue>).Add(ref entity, egid);
+                            ((IReactOnAddAndRemove<TValue>)entityComponentsEngines[i].engine).Add(
+                                ref entityComponent, egid);
                         }
                     }
                     catch
@@ -505,8 +548,8 @@ namespace Svelto.ECS.Internal
                     {
                         using (profiler.Sample(entityComponentsEngines[i].name))
                         {
-                            (entityComponentsEngines[i].engine as IReactOnSwap<TValue>).MovedTo(
-                                ref entity, previousGroup.Value, egid);
+                            ((IReactOnSwap<TValue>)entityComponentsEngines[i].engine).MovedTo(
+                                ref entityComponent, previousGroup.Value, egid);
                         }
                     }
                     catch (Exception)

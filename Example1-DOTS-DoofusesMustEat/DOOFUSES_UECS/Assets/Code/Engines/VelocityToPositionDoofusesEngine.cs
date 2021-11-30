@@ -1,7 +1,7 @@
 using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.ECS.EntityComponents;
-using Svelto.ECS.Extensions.Unity;
+using Svelto.ECS.SveltoOnDOTS;
 using Unity.Jobs;
 using UnityEngine;
 

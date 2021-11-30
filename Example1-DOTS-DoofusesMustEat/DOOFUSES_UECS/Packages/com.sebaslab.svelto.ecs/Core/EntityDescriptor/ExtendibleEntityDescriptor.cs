@@ -54,7 +54,6 @@ namespace Svelto.ECS
             return this;
         }
 
-
         protected void Add<T>() where T : struct, IEntityComponent
         {
             _dynamicDescriptor.Add<T>();

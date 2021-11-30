@@ -2,12 +2,12 @@
 #warning the global define PROFILE_SVELTO must be used only when it's necessary to start a profiling session to reduce the overhead of debugging code. Normally remove this define to get insights when errors happen
 #endif
 #if !UNITY_DISABLE_AUTOMATIC_SYSTEM_BOOTSTRAP
-#error this demo takes completely over the UECS initialization and ticking. UNITY_DISABLE_AUTOMATIC_SYSTEM_BOOTSTRAP must be enabled
+#error this demo takes completely over the DOTS initialization and ticking. UNITY_DISABLE_AUTOMATIC_SYSTEM_BOOTSTRAP must be enabled
 #endif
 using Svelto.Context;
 using Svelto.DataStructures;
-using Svelto.ECS.Extensions.Unity;
 using Svelto.ECS.Schedulers;
+using Svelto.ECS.SveltoOnDOTS;
 using Unity.Entities;
 using UnityEngine;
 
@@ -21,21 +21,21 @@ namespace Svelto.ECS.MiniExamples.Example1C
             Cursor.lockState           = CursorLockMode.Locked;
             Cursor.visible             = false;
 
-            _simpleSubmitScheduler                  = new SimpleEntitiesSubmissionScheduler();
-            _enginesRoot                            = new EnginesRoot(_simpleSubmitScheduler);
-            _mainLoop = new MainLoop(_enginesToTick);
+            _simpleSubmitScheduler = new SimpleEntitiesSubmissionScheduler();
+            _enginesRoot           = new EnginesRoot(_simpleSubmitScheduler);
         }
 
         public void OnContextInitialized<T>(T contextHolder)
         {
             ComposeEnginesRoot();
 
+            _mainLoop = new MainLoop(_enginesToTick);
             _mainLoop.Run();
         }
 
         public void OnContextDestroyed(bool isInitialized)
         {
-            _sveltoOverUecsEnginesGroupEnginesGroup.Dispose();
+            _sveltoOverDotsEnginesGroupEnginesGroup.Dispose();
             _enginesRoot.Dispose();
             _mainLoop.Dispose();
             _simpleSubmitScheduler.Dispose();
@@ -45,12 +45,12 @@ namespace Svelto.ECS.MiniExamples.Example1C
         {
             var entityFactory   = _enginesRoot.GenerateEntityFactory();
             var entityFunctions = _enginesRoot.GenerateEntityFunctions();
-            
-            _sveltoOverUecsEnginesGroupEnginesGroup = new SveltoOverUECSEnginesGroup(_enginesRoot);
-            _enginesToTick.Add(_sveltoOverUecsEnginesGroupEnginesGroup);
-            
-            LoadAssetAndCreatePrefabs(_sveltoOverUecsEnginesGroupEnginesGroup.world, out var redFoodPrefab
-                                    , out var blueFootPrefab, out var redDoofusPrefab, out var blueDoofusPrefab);
+
+            _sveltoOverDotsEnginesGroupEnginesGroup = new SveltoOnDOTSEnginesGroup(_enginesRoot);
+            _enginesToTick.Add(_sveltoOverDotsEnginesGroupEnginesGroup);
+
+            LoadAssetAndCreatePrefabs(_sveltoOverDotsEnginesGroupEnginesGroup.world, out var redFoodPrefab
+              , out var blueFootPrefab, out var redDoofusPrefab, out var blueDoofusPrefab);
 
             AddSveltoEngineToTick(new PlaceFoodOnClickEngine(redFoodPrefab, blueFootPrefab, entityFactory));
             AddSveltoEngineToTick(new SpawningDoofusEngine(redDoofusPrefab, blueDoofusPrefab, entityFactory));
@@ -58,13 +58,15 @@ namespace Svelto.ECS.MiniExamples.Example1C
             AddSveltoEngineToTick(new LookingForFoodDoofusesEngine(entityFunctions));
             AddSveltoEngineToTick(new VelocityToPositionDoofusesEngine());
 
-            _sveltoOverUecsEnginesGroupEnginesGroup.AddUECSSubmissionEngine(new SpawnUnityEntityOnSveltoEntityEngine());
-            _sveltoOverUecsEnginesGroupEnginesGroup.AddSveltoToUECSEngine(new RenderingUECSDataSynchronizationEngine());
+            _sveltoOverDotsEnginesGroupEnginesGroup.AddDOTSSubmissionEngine(new SpawnUnityEntityOnSveltoEntityEngine());
+            _sveltoOverDotsEnginesGroupEnginesGroup.AddDOTSHandleLifetimeEngine(
+                new HandleSpawnedEntityLifeTimeEngine());
+            _sveltoOverDotsEnginesGroupEnginesGroup.AddSveltoToDOTSEngine(new RenderingDOTSDataSynchronizationEngine());
         }
 
         static void LoadAssetAndCreatePrefabs
         (World world, out Entity redFoodPrefab, out Entity blueFootPrefab, out Entity redDoofusPrefab
-       , out Entity blueDoofusPrefab)
+          , out Entity blueDoofusPrefab)
         {
             //I believe the proper way to do this now is to create a subscene, but I am not sure how it would
             //work with prefabs, so I am not testing it (yet)
@@ -97,9 +99,9 @@ namespace Svelto.ECS.MiniExamples.Example1C
         }
 
         EnginesRoot                          _enginesRoot;
-        readonly FasterList<IJobifiedEngine> _enginesToTick = new FasterList<IJobifiedEngine>();
+        readonly FasterList<IJobifiedEngine> _enginesToTick = new();
         SimpleEntitiesSubmissionScheduler    _simpleSubmitScheduler;
-        SveltoOverUECSEnginesGroup           _sveltoOverUecsEnginesGroupEnginesGroup;
+        SveltoOnDOTSEnginesGroup             _sveltoOverDotsEnginesGroupEnginesGroup;
         MainLoop                             _mainLoop;
     }
 }

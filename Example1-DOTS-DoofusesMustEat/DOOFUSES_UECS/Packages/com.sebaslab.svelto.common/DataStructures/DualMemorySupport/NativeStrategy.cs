@@ -66,7 +66,7 @@ namespace Svelto.DataStructures.Native
 
             var array = _realBuffer.ToNativeArray(out _);
 
-            MemoryUtilities.Memmove<T>(array, index + 1, index, count - index);
+            MemoryUtilities.MemMove<T>(array, index + 1, index, count - index);
         }
 
         public void ShiftRight(uint index, uint count)
@@ -81,7 +81,7 @@ namespace Svelto.DataStructures.Native
 
             var array = _realBuffer.ToNativeArray(out _);
 
-            MemoryUtilities.Memmove<T>(array, index, index + 1, count - index);
+            MemoryUtilities.MemMove<T>(array, index, index + 1, count - index);
         }
 
         public bool isValid => _realBuffer.isValid;

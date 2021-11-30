@@ -1,6 +1,6 @@
 using Svelto.Common;
 using Svelto.DataStructures;
-using Svelto.ECS.Extensions.Unity;
+using Svelto.ECS.SveltoOnDOTS;
 
 namespace Svelto.ECS.MiniExamples.Example1C
 {
@@ -27,7 +27,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
           , nameof(DoofusesEngineNames.LookingForFoodDoofusesEngine)
           , nameof(DoofusesEngineNames.ConsumingFoodEngine)
           , nameof(DoofusesEngineNames.VelocityToPositionDoofusesEngine)
-          , nameof(JobifiedSveltoEngines.SveltoOverUECS)
+          , nameof(JobifiedSveltoEngines.SveltoOnDOTS)
         };
     }
     //The engines added in this group will need to be marked as Sequenced and signed with the enums used inside

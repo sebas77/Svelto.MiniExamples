@@ -1,11 +1,9 @@
+using System;
 using System.Collections;
 using Svelto.Common;
 using Svelto.ECS.EntityComponents;
-using Svelto.ECS.Extensions.Unity;
 using Svelto.ECS.Native;
-using Svelto.Tasks;
-using Svelto.Tasks.Enumerators;
-using Svelto.Tasks.ExtraLean;
+using Svelto.ECS.SveltoOnDOTS;
 using Unity.Burst;
 using Unity.Collections.LowLevel.Unsafe;
 using Unity.Entities;
@@ -33,8 +31,6 @@ namespace Svelto.ECS.MiniExamples.Example1C
 
         IEnumerator CheckClick()
         {
-            var timer = new ReusableWaitForSecondsEnumerator(0.01f);
-
             while (true)
             {
                 _inputDeps = default;
@@ -61,25 +57,26 @@ namespace Svelto.ECS.MiniExamples.Example1C
 
                         _foodPlaced += MaxMeals;
 
-                        while (timer.IsDone() == false)
-                            yield return Yield.It;
+                        var now = DateTime.Now;
+                        while ((DateTime.Now - now).TotalMilliseconds < 100)
+                            yield return null;
                     }
                 }
 
-                yield return Yield.It;
+                yield return null;
             }
         }
 
         [BurstCompile]
         struct PlaceFood : IJobParallelFor
         {
-            readonly                        Vector3                  _position;
-            readonly                        NativeEntityFactory      _entityFactory;
-            readonly                        ExclusiveBuildGroup      _exclusiveBuildGroup;
-            readonly                        Entity                      _prefabID;
-            readonly                        uint                     _foodPlaced;
-            public                          Unity.Mathematics.Random _random;
-            [NativeSetThreadIndex] readonly int                      _threadIndex;
+            readonly Vector3                    _position;
+            readonly NativeEntityFactory        _entityFactory;
+            readonly ExclusiveBuildGroup        _exclusiveBuildGroup;
+            readonly Entity                     _prefabID;
+            readonly uint                       _foodPlaced;
+            Random                              _random;
+            [NativeSetThreadIndex] readonly int _threadIndex;
 
             public PlaceFood
             (Vector3 position, NativeEntityFactory factory, ExclusiveBuildGroup exclusiveBuildGroup, Entity prefabID
@@ -97,14 +94,13 @@ namespace Svelto.ECS.MiniExamples.Example1C
             {
                 //BuildEntity returns an EntityInitialized that is used to set the default values of the
                 //entity that will be built.
-                NativeEntityInitializer init;
 
                 var randX       = _position.x + _random.NextFloat(-50, 50);
                 var randZ       = _position.z + _random.NextFloat(-50, 50);
                 var newposition = new float3(randX, _position.y, randZ);
 
-                init = _entityFactory.BuildEntity(new EGID((uint) (_foodPlaced + index), _exclusiveBuildGroup)
-                                                , _threadIndex);
+                var init = _entityFactory.BuildEntity(new EGID((uint) (_foodPlaced + index), _exclusiveBuildGroup)
+                  , _threadIndex);
 
                 init.Init(new PositionEntityComponent
                 {
@@ -119,7 +115,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
 
         public void Ready()
         {
-            CheckClick().RunOn(UIInteractionRunner);
+            UIInteractionRunner = CheckClick();
         }
 
         /// <summary>
@@ -139,12 +135,12 @@ namespace Svelto.ECS.MiniExamples.Example1C
         {
             _inputDeps = inputDeps;
 
-            UIInteractionRunner.Step();
+            UIInteractionRunner.MoveNext();
 
             return _inputDeps;
         }
 
-        static readonly SteppableRunner UIInteractionRunner = new SteppableRunner("UIInteraction");
+        static IEnumerator UIInteractionRunner;
 
         readonly Entity _redfood;
         readonly Entity _bluefood;

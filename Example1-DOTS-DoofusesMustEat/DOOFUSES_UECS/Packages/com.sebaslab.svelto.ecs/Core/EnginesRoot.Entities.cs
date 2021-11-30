@@ -228,21 +228,22 @@ namespace Svelto.ECS
 
                 foreach (var dictionaryOfEntities in fromGroup)
                 {
+                    RefWrapperType refWrapperType = dictionaryOfEntities.key;
+                    
+                    ITypeSafeDictionary fromTypeSafeDictionary = dictionaryOfEntities.value;
                     ITypeSafeDictionary toEntitiesDictionary =
-                        GetOrCreateTypeSafeDictionary(toGroupId, toGroup, dictionaryOfEntities.Key
-                                                    , dictionaryOfEntities.Value);
+                        GetOrCreateTypeSafeDictionary(toGroupId, toGroup, refWrapperType
+                                                    , fromTypeSafeDictionary);
 
-                    var groupsOfEntityType = _groupsPerEntity[dictionaryOfEntities.Key];
-                    var groupOfEntitiesToCopyAndClear = groupsOfEntityType[fromIdGroupId];
+                    toEntitiesDictionary.AddEntitiesFromDictionary(fromTypeSafeDictionary, toGroupId, this);
 
-                    toEntitiesDictionary.AddEntitiesFromDictionary(groupOfEntitiesToCopyAndClear, toGroupId, this);
-
-                    //call all the MoveTo callbacks
-                    dictionaryOfEntities.Value.ExecuteEnginesAddOrSwapCallbacks(_reactiveEnginesSwap
-                      , dictionaryOfEntities.Value, fromIdGroupId, toGroupId, profiler);
+                    //todo: this is wrong, I must add all the entities first and only after then call all the callbacks
+                    if (_reactiveEnginesSwap != null)
+                        toEntitiesDictionary.ExecuteEnginesSwapCallbacks(
+                            _reactiveEnginesSwap, fromIdGroupId, toGroupId, profiler);
 
                     //todo: if it's unmanaged, I can use fastclear
-                    groupOfEntitiesToCopyAndClear.Clear();
+                    fromTypeSafeDictionary.Clear();
                 }
             }
         }
@@ -306,11 +307,11 @@ namespace Svelto.ECS
             {
                 foreach (var dictionaryOfEntities in dictionariesOfEntities)
                 {
-                    dictionaryOfEntities.Value.ExecuteEnginesRemoveCallbacks(_reactiveEnginesAddRemove, profiler
+                    dictionaryOfEntities.value.ExecuteEnginesRemoveCallbacks(_reactiveEnginesAddRemove, profiler
                                                                            , groupID);
-                    dictionaryOfEntities.Value.FastClear();
+                    dictionaryOfEntities.value.FastClear();
 
-                    var groupsOfEntityType = _groupsPerEntity[dictionaryOfEntities.Key];
+                    var groupsOfEntityType = _groupsPerEntity[dictionaryOfEntities.key];
                     groupsOfEntityType[groupID].FastClear();
                 }
             }

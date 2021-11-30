@@ -1,10 +1,38 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Svelto.Common;
 using Svelto.Utilities;
 
 namespace Svelto.DataStructures
 {
+    sealed class FasterDictionaryDebugProxy<TKey, TValue> 
+        where TKey : struct, IEquatable<TKey>
+    {
+        public FasterDictionaryDebugProxy(FasterDictionary<TKey, TValue> dic)
+        {
+            this._dic = dic;
+        }
+
+        [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
+        public KeyValuePairFast<TKey,TValue, ManagedStrategy<TValue>>[] keyValues
+        {
+            get
+            {
+                var array = new KeyValuePairFast<TKey, TValue, ManagedStrategy<TValue>>[_dic.count];
+
+                int i = 0;
+                foreach (var keyValue in _dic)
+                {
+                    array[i++] = keyValue;
+                }
+
+                return array;
+            }
+        }
+        
+        readonly FasterDictionary<TKey, TValue> _dic;
+    }
     /// <summary>
     ///     This dictionary has been created for just one reason: I needed a dictionary that would have let me iterate
     ///     over the values as an array, directly, without generating one or using an iterator.
@@ -16,6 +44,7 @@ namespace Svelto.DataStructures
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
+    [DebuggerTypeProxy(typeof(FasterDictionaryDebugProxy<,>))]
     public sealed class FasterDictionary<TKey, TValue> : ISveltoDictionary<TKey, TValue>
         where TKey : struct, IEquatable<TKey>
     {
@@ -231,5 +260,7 @@ namespace Svelto.DataStructures
 #endif
         SveltoDictionary<TKey, TValue, ManagedStrategy<SveltoDictionaryNode<TKey>>, ManagedStrategy<TValue>,
             ManagedStrategy<int>> _dictionary;
+
+        static readonly string name;
     }
 }

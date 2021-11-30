@@ -39,5 +39,7 @@ namespace Svelto.Utilities
             if ((quickIterations++ & (frequency - 1)) == 0)
                 Yield();
         }
+
+        public static string name => Thread.CurrentThread.Name;
     }
 }

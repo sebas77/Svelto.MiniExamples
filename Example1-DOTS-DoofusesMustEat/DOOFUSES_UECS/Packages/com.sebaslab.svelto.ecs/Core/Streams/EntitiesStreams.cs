@@ -46,7 +46,7 @@ namespace Svelto.ECS
         public void Dispose()
         {
             foreach (var stream in _streams)
-                stream.Value.Dispose();
+                stream.value.Dispose();
         }
 
         public static EntitiesStreams Create()

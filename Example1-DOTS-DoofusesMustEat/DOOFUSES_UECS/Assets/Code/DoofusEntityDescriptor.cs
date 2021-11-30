@@ -1,16 +1,14 @@
 using Svelto.ECS.EntityComponents;
-using Svelto.ECS.Extensions.Unity;
+using Svelto.ECS.SveltoOnDOTS;
 
 namespace Svelto.ECS.MiniExamples.Example1C
 {
     class DoofusEntityDescriptor: IEntityDescriptor
     {
-        public IComponentBuilder[] componentsToBuild => staticComponents;
-
-        readonly IComponentBuilder[] staticComponents = 
+        public IComponentBuilder[] componentsToBuild { get; } =
         {
             new ComponentBuilder<PositionEntityComponent>()
-          , new ComponentBuilder<UECSEntityComponent>()
+          , new ComponentBuilder<DOTSEntityComponent>()
           , new ComponentBuilder<SpawnPointEntityComponent>()
           , new ComponentBuilder<VelocityEntityComponent>()
           , new ComponentBuilder<SpeedEntityComponent>()

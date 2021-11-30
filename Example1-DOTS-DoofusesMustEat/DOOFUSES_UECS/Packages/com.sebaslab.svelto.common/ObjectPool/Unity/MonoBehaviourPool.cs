@@ -16,7 +16,7 @@ namespace Svelto.ObjectPool
         public override void OnDispose()
         {
             for (var enumerator = _pools.GetEnumerator(); enumerator.MoveNext();)
-                foreach (var obj in enumerator.Current.Value)
+                foreach (var obj in enumerator.Current.value)
                     GameObject.Destroy(obj);
         }
     }

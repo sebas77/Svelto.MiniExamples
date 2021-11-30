@@ -1,6 +1,5 @@
-using Svelto.ECS.Extensions.Unity;
+using Svelto.ECS.SveltoOnDOTS;
 using Unity.Entities;
-using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Transforms;
 
@@ -11,8 +10,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
     /// destruction.
     /// Note this can be easily moved to using Entity Command Buffer and I should do it at a given point
     /// </summary>
-    [DisableAutoCreation]
-    public class SpawnUnityEntityOnSveltoEntityEngine : SubmissionEngine, IQueryingEntitiesEngine
+    public class SpawnUnityEntityOnSveltoEntityEngine : SveltoOnDOTSHandleCreationEngine, IQueryingEntitiesEngine
                                                       , IReactOnAddAndRemove<SpawnPointEntityComponent>
                                                      
     {
@@ -22,12 +20,9 @@ namespace Svelto.ECS.MiniExamples.Example1C
 
         public void Add(ref SpawnPointEntityComponent entityComponent, EGID egid)
         {
-            Entity uecsEntity = ECB.Instantiate(entityComponent.prefabEntity);
+            Entity dotsEntity = CreateDOTSEntityOnSvelto(entityComponent.prefabEntity, egid);
 
-            //SharedComponentData can be used to group the UECS entities exactly like the Svelto ones
-            ECB.AddSharedComponent(uecsEntity, new UECSSveltoGroupID(egid.groupID));
-            ECB.AddComponent(uecsEntity, new UpdateUECSEntityAfterSubmission(egid));
-            ECB.SetComponent(uecsEntity, new Translation
+            ECB.SetComponent(dotsEntity, new Translation
             {
                 Value = new float3(entityComponent.spawnPosition.x, entityComponent.spawnPosition.y
                                  , entityComponent.spawnPosition.z)

@@ -7,7 +7,7 @@ using Svelto.ECS.Schedulers;
 
 namespace Svelto.ECS
 {
-    public sealed partial class EnginesRoot
+    public partial class EnginesRoot
     {
         static EnginesRoot()
         {
@@ -33,7 +33,6 @@ namespace Svelto.ECS
             _nativeAddOperationQueue    = new DataStructures.AtomicNativeBags(Allocator.Persistent);
 #endif            
             _serializationDescriptorMap     = new SerializationDescriptorMap();
-            _maxNumberOfOperationsPerFrame = uint.MaxValue;
             _reactiveEnginesAddRemove      = new FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer>>();
             _reactiveEnginesAddRemoveOnDispose =
                 new FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer>>();
@@ -63,10 +62,10 @@ namespace Svelto.ECS
         }
 
         public EnginesRoot
-            (EntitiesSubmissionScheduler entitiesComponentScheduler, bool isDeserializationOnly) :
-            this(entitiesComponentScheduler)
+            (EntitiesSubmissionScheduler entitiesComponentScheduler, EnginesReadyOption enginesWaitForReady) : this(
+            entitiesComponentScheduler)
         {
-            _isDeserializationOnly = isDeserializationOnly;
+            _enginesWaitForReady = enginesWaitForReady;
         }
 
         public EntitiesSubmissionScheduler scheduler { get; }
@@ -77,6 +76,12 @@ namespace Svelto.ECS
         ///     It's a clean up process.
         /// </summary>
         public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        void Dispose(bool disposing)
         {
             _isDisposing = true;
 
@@ -99,11 +104,11 @@ namespace Svelto.ECS
                     }
 
                 foreach (var groups in _groupEntityComponentsDB)
-                foreach (var entityList in groups.Value)
+                foreach (var entityList in groups.value)
                     try
                     {
-                        entityList.Value.ExecuteEnginesRemoveCallbacks(_reactiveEnginesAddRemoveOnDispose, profiler
-                                                                     , groups.Key);
+                        entityList.value.ExecuteEnginesRemoveCallbacks(_reactiveEnginesAddRemoveOnDispose, profiler
+                                                                     , groups.key);
                     }
                     catch (Exception e)
                     {
@@ -111,12 +116,12 @@ namespace Svelto.ECS
                     }
 
                 foreach (var groups in _groupEntityComponentsDB)
-                foreach (var entityList in groups.Value)
-                    entityList.Value.Dispose();
+                foreach (var entityList in groups.value)
+                    entityList.value.Dispose();
 
                 foreach (var type in _groupFilters)
-                foreach (var group in type.Value)
-                    group.Value.Dispose();
+                foreach (var group in type.value)
+                    group.value.Dispose();
 
                 _groupFilters.Clear();
 
@@ -146,8 +151,6 @@ namespace Svelto.ECS
                 _entityStreams.Dispose();
                 scheduler.Dispose();
             }
-
-            GC.SuppressFinalize(this);
         }
 
         public void AddEngine(IEngine engine)
@@ -181,15 +184,27 @@ namespace Svelto.ECS
                     _disposableEngines.Add(engine as IDisposable);
 
                 if (engine is IQueryingEntitiesEngine queryableEntityComponentEngine)
-                {
                     queryableEntityComponentEngine.entitiesDB = _entitiesDB;
-                    queryableEntityComponentEngine.Ready();
-                }
+
+                if (_enginesWaitForReady == EnginesReadyOption.ReadyAsAdded && engine is IGetReadyEngine getReadyEngine)
+                    getReadyEngine.Ready();
             }
             catch (Exception e)
             {
                 throw new ECSException("Code crashed while adding engine ".FastConcat(engine.GetType().ToString(), " ")
                                      , e);
+            }
+        }
+
+        public void Ready()
+        {
+            DBC.ECS.Check.Require(_enginesWaitForReady == EnginesReadyOption.WaitForReady
+                                , "The engine has not been initialise to wait for an external ready trigger");
+
+            foreach (var engine in _enginesSet)
+            {
+                if (engine is IGetReadyEngine getReadyEngine)
+                    getReadyEngine.Ready();
             }
         }
 
@@ -204,7 +219,7 @@ namespace Svelto.ECS
         {
             Console.LogWarning("Engines Root has been garbage collected, don't forget to call Dispose()!");
 
-            Dispose();
+            Dispose(false);
         }
 
         void CheckReactEngineComponents<T>
@@ -243,6 +258,7 @@ namespace Svelto.ECS
         }
 
         internal bool                    _isDisposing;
+        readonly EnginesReadyOption                    _enginesWaitForReady;
         readonly FasterList<IDisposable> _disposableEngines;
         readonly FasterList<IEngine>     _enginesSet;
         readonly HashSet<Type>           _enginesTypeSet;
@@ -252,87 +268,65 @@ namespace Svelto.ECS
         readonly FasterList<IReactOnSubmission>                                     _reactiveEnginesSubmission;
         readonly FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer>> _reactiveEnginesSwap;
 
-        public struct EntitiesSubmitter
+        public readonly struct EntitiesSubmitter
         {
             public EntitiesSubmitter(EnginesRoot enginesRoot) : this()
             {
                 _enginesRoot = new Svelto.DataStructures.WeakReference<EnginesRoot>(enginesRoot);
-                _privateSubmitEntities =
-                    _enginesRoot.Target.SingleSubmission(new PlatformProfiler());
-                submitEntities = Invoke(); //this must be last to capture all the variables
             }
 
-            IEnumerator<bool> Invoke()
+            internal void SubmitEntities()
             {
-                while (true)
+                DBC.ECS.Check.Require(_enginesRoot.IsValid, "ticking an GCed engines root?");
+
+                var enginesRootTarget           = _enginesRoot.Target;
+                var entitiesSubmissionScheduler = enginesRootTarget.scheduler;
+
+                if (entitiesSubmissionScheduler.paused == false)
                 {
-                    DBC.ECS.Check.Require(_enginesRoot.IsValid, "ticking an GCed engines root?");
+                    DBC.ECS.Check.Require(entitiesSubmissionScheduler.isRunning == false
+                                        , "A submission started while the previous one was still flushing");
+                    entitiesSubmissionScheduler.isRunning = true;
 
-                    var enginesRootTarget           = _enginesRoot.Target;
-                    var entitiesSubmissionScheduler = enginesRootTarget.scheduler;
-
-                    if (entitiesSubmissionScheduler.paused == false)
+                    using (var profiler = new PlatformProfiler("Svelto.ECS - Entities Submission"))
                     {
-                        DBC.ECS.Check.Require(entitiesSubmissionScheduler.isRunning == false
-                                            , "A submission started while the previous one was still flushing");
-                        entitiesSubmissionScheduler.isRunning = true;
-
-                        using (var profiler = new PlatformProfiler("Svelto.ECS - Entities Submission"))
+                        var iterations       = 0;
+                        var hasEverSubmitted = false;
+#if UNITY_NATIVE
+                        enginesRootTarget.FlushNativeOperations(profiler);
+#endif
+                        //todo: proper unit test structural changes made as result of add/remove callbacks
+                        while (enginesRootTarget.HasMadeNewStructuralChangesInThisIteration() && iterations++ < 5)
                         {
-                            var iterations       = 0;
-                            var hasEverSubmitted = false;
-#if UNITY_NATIVE
-                            enginesRootTarget.FlushNativeOperations(profiler);
-#endif
-                            //todo: proper unit test structural changes made as result of add/remove callbacks
-                            while (enginesRootTarget.HasMadeNewStructuralChangesInThisIteration() && iterations++ < 5)
-                            {
-                                hasEverSubmitted = true;
+                            hasEverSubmitted = true;
 
-                                while (true)
-                                {
-                                    _privateSubmitEntities.MoveNext();
-                                    if (_privateSubmitEntities.Current == true)
-                                    {
-                                        using (profiler.Yield())
-                                        {
-                                            yield return true;
-                                        }
-                                    }
-                                    else
-                                        break;
-                                }
+                            _enginesRoot.Target.SingleSubmission(profiler);
 #if UNITY_NATIVE
-                                if (enginesRootTarget.HasMadeNewStructuralChangesInThisIteration())
-                                    enginesRootTarget.FlushNativeOperations(profiler);
+                            if (enginesRootTarget.HasMadeNewStructuralChangesInThisIteration())
+                                enginesRootTarget.FlushNativeOperations(profiler);
 #endif
-                            }
-
-#if DEBUG && !PROFILE_SVELTO
-                            if (iterations == 5)
-                                throw new ECSException("possible circular submission detected");
-#endif
-                            if (hasEverSubmitted)
-                                enginesRootTarget.NotifyReactiveEnginesOnSubmission();
                         }
 
-                        entitiesSubmissionScheduler.isRunning = false;
-                        ++entitiesSubmissionScheduler.iteration;
+#if DEBUG && !PROFILE_SVELTO
+                        if (iterations == 5)
+                            throw new ECSException("possible circular submission detected");
+#endif
+                        if (hasEverSubmitted)
+                            enginesRootTarget.NotifyReactiveEnginesOnSubmission();
                     }
 
-                    yield return false;
+                    entitiesSubmissionScheduler.isRunning = false;
+                    ++entitiesSubmissionScheduler.iteration;
                 }
             }
 
-            public uint maxNumberOfOperationsPerFrame
-            {
-                set => _enginesRoot.Target._maxNumberOfOperationsPerFrame = value;
-            }
-
             readonly Svelto.DataStructures.WeakReference<EnginesRoot> _enginesRoot;
-
-            internal readonly IEnumerator<bool> submitEntities;
-            readonly          IEnumerator<bool> _privateSubmitEntities;
         }
+    }
+
+    public enum EnginesReadyOption
+    {
+        ReadyAsAdded,
+        WaitForReady
     }
 }

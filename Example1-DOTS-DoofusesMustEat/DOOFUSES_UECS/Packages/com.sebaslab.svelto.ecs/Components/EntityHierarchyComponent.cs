@@ -4,7 +4,7 @@ namespace Svelto.ECS
     {
         public readonly ExclusiveGroupStruct parentGroup;
             
-        public EntityHierarchyComponent(ExclusiveGroup group): this() { parentGroup = group; }
+        public EntityHierarchyComponent(ExclusiveGroupStruct group): this() { parentGroup = group; }
             
         public EGID ID { get; set; }
     }
