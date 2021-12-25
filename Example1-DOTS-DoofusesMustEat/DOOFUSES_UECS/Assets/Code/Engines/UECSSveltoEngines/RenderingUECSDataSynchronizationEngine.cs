@@ -1,12 +1,12 @@
 using Svelto.ECS.EntityComponents;
-using Svelto.ECS.Extensions.Unity;
+using Svelto.ECS.SveltoOnDOTS;
 using Unity.Entities;
 using Unity.Transforms;
 
 namespace Svelto.ECS.MiniExamples.Example1C
 {
     [DisableAutoCreation]
-    public class RenderingUECSDataSynchronizationEngine : SyncSveltoToUECSEngine, IQueryingEntitiesEngine
+    public class RenderingDOTSDataSynchronizationEngine : SyncSveltoToDOTSEngine, IQueryingEntitiesEngine
     {
         public EntitiesDB entitiesDB { get; set; }
         public void       Ready()    { }
@@ -32,10 +32,10 @@ namespace Svelto.ECS.MiniExamples.Example1C
                          }).WithBurst()
                          //In order to fetch the unity entities from the same group of the svelto entities we will set 
                          //the group as a filter
-                        .WithSharedComponentFilter(new UECSSveltoGroupID(@group)).ScheduleParallel();
+                        .WithSharedComponentFilter(new DOTSSveltoGroupID(@group)).ScheduleParallel();
             }
         }
 
-        public override string name => nameof(RenderingUECSDataSynchronizationEngine);
+        public override string name => nameof(RenderingDOTSDataSynchronizationEngine);
     }
 }

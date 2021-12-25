@@ -29,10 +29,7 @@ namespace Svelto.ECS.Schedulers.Unity
         {
             if (paused == false)
             {
-                var enumerator = _onTick.submitEntities;
-                enumerator.MoveNext();
-                    
-                while (enumerator.Current == true) enumerator.MoveNext();
+                _onTick.SubmitEntities();
             }
         }
 

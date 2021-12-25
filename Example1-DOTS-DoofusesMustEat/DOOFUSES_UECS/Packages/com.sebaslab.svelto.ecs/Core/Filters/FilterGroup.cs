@@ -1,6 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
 using Svelto.Common;
-using Svelto.DataStructures;
 using Svelto.DataStructures.Native;
 using Svelto.ECS.DataStructures;
 
@@ -107,11 +106,11 @@ namespace Svelto.ECS
             _reverseEIDs.Clear();
 
             foreach (var value in _indexOfEntityInDenseList)
-                if (mapper.FindIndex(value.Key, out var indexOfEntityInBufferComponent) == true)
+                if (mapper.FindIndex(value.key, out var indexOfEntityInBufferComponent) == true)
                 {
                     _denseListOfIndicesToEntityComponentArray.Add(indexOfEntityInBufferComponent);
                     var lastIndex = (uint) (_denseListOfIndicesToEntityComponentArray.Count() - 1);
-                    _reverseEIDs.AddAt(lastIndex) = value.Key;
+                    _reverseEIDs.AddAt(lastIndex) = value.key;
                 }
 
             _indexOfEntityInDenseList.Clear();

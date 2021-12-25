@@ -3,7 +3,7 @@ using Svelto.DataStructures;
 using Unity.Jobs;
 using Svelto.Common;
 
-namespace Svelto.ECS.Extensions.Unity
+namespace Svelto.ECS.SveltoOnDOTS
 {
     /// <summary>
     /// Note sorted jobs run in serial

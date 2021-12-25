@@ -34,7 +34,7 @@ namespace Svelto.ECS.Native
         {
 #if DEBUG && !PROFILE_SVELTO
             if (Exists(entity) == false)
-                throw new Exception("NativeEGIDMultiMapper: Entity not found");
+                throw new Exception($"NativeEGIDMultiMapper: Entity not found {entity}");
 #endif
             ref var sveltoDictionary = ref _dic.GetValueByRef(entity.groupID);
             return ref sveltoDictionary.GetValueByRef(entity.entityID);

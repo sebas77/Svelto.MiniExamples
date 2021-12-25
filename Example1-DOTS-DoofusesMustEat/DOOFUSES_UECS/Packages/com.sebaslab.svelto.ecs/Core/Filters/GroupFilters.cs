@@ -33,7 +33,7 @@ namespace Svelto.ECS
         public void ClearFilters()
         {
             foreach (var filter in filters)
-                filter.Value.Clear();
+                filter.value.Clear();
         }
 
         public bool TryGetFilter(int filterIndex, out FilterGroup filter)
@@ -67,7 +67,7 @@ namespace Svelto.ECS
         {
             //must release the native buffers!
             foreach (var filter in filters)
-                filter.Value.Dispose();
+                filter.value.Dispose();
 
             filters.FastClear();
         }
@@ -90,7 +90,7 @@ namespace Svelto.ECS
         {
             foreach (var filter in filters)
             {
-                filter.Value.Dispose();
+                filter.value.Dispose();
             }
 
             filters.Dispose();

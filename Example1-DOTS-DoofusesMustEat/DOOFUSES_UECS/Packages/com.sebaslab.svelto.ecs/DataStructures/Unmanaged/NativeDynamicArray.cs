@@ -338,12 +338,11 @@ namespace Svelto.ECS.DataStructures
                     throw new Exception("NativeDynamicArray: not expected type used");
 #endif
                 var capacity            = Capacity<T>();
-                var lengthToCopyInBytes = capacity * MemoryUtilities.SizeOf<T>();
                 var ret                 = new T[capacity];
 
                 fixed (void* handle = ret)
                 {
-                    Unsafe.CopyBlock(handle, _list->ptr, (uint) lengthToCopyInBytes);
+                    MemoryUtilities.MemCpy<T>((IntPtr)_list->ptr, 0, (IntPtr)handle, 0, (uint) capacity);
                 }
 
                 return ret;
@@ -361,10 +360,7 @@ namespace Svelto.ECS.DataStructures
                     throw new Exception("NativeDynamicArray: not expected type used");
 #endif
 
-                var sizeOf = MemoryUtilities.SizeOf<T>();
-                //Unsafe.CopyBlock may not be memory overlapping safe (memcpy vs memmove)
-                Buffer.MemoryCopy(_list->ptr + (index + 1) * sizeOf, _list->ptr + index * sizeOf, _list->count
-                                , (uint) ((Count<T>() - (index + 1)) * sizeOf));
+                MemoryUtilities.MemMove<T>((IntPtr)_list->ptr, index + 1, index, (uint)(Count<T>() - (index + 1)));
                 _list->Pop<T>();
             }
         }

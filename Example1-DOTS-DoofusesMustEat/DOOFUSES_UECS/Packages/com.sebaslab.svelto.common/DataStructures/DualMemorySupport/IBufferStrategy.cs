@@ -1,4 +1,3 @@
-using System;
 using Svelto.Common;
 
 namespace Svelto.DataStructures

@@ -2,7 +2,7 @@
 using Unity.Entities;
 using Unity.Jobs;
 
-namespace Svelto.ECS.Extensions.Unity
+namespace Svelto.ECS.SveltoOnDOTS
 {
     /// <summary>
     ///     HOW DOTS SYSTEMBASE DEPENDENCY SYSTEM WORKS:
@@ -50,9 +50,9 @@ namespace Svelto.ECS.Extensions.Unity
     // Tim Johansson  2 hours ago
     // Yes, you would have to do it every time
 
-    public class SyncSveltoToUECSGroup : UnsortedJobifiedEnginesGroup<SyncSveltoToUECSEngine> {}
+    public class SyncSveltoToDOTSGroup : UnsortedJobifiedEnginesGroup<SyncSveltoToDOTSEngine> {}
 
-    public abstract class SyncSveltoToUECSEngine : SystemBase, IJobifiedEngine
+    public abstract class SyncSveltoToDOTSEngine : SystemBase, IJobifiedEngine
     {
         //The dependency returned is enough for the Svelto Engines running after this to take in consideration
         //the Systembase jobs. The svelto engines do not need to take in consideration the new dependencies created

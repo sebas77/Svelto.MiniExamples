@@ -1,7 +1,7 @@
 using Svelto.Common;
 using Svelto.ECS.EntityComponents;
-using Svelto.ECS.Extensions.Unity;
 using Svelto.ECS.Native;
+using Svelto.ECS.SveltoOnDOTS;
 using Unity.Burst;
 using Unity.Collections.LowLevel.Unsafe;
 using Unity.Entities;
@@ -80,12 +80,12 @@ namespace Svelto.ECS.MiniExamples.Example1C
                     position = new float3(_random.NextFloat(0.0f, 40.0f), 0, _random.NextFloat(0.0f, 40.0f))
                 };
                 //these structs are used for ReactOnAdd callback to create unity Entities later
-                var uecsComponent = new SpawnPointEntityComponent(_entity, positionEntityComponent.position);
+                var dotsComponent = new SpawnPointEntityComponent(_entity, positionEntityComponent.position);
 
                 var init = _factory.BuildEntity((uint) index, _group, _threadIndex);
 //todo this wont work                var init2 = _factory.BuildEntity((uint) index, _group, _threadIndex);
 
-                init.Init(uecsComponent);
+                init.Init(dotsComponent);
                 init.Init(positionEntityComponent);
                 init.Init(new SpeedEntityComponent
                 {

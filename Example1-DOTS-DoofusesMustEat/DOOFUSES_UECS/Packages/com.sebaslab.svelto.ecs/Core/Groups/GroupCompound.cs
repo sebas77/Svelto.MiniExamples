@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Threading;
 using Svelto.DataStructures;
@@ -136,7 +135,7 @@ namespace Svelto.ECS
 #if DEBUG && !PROFILE_SVELTO            
             for (var i = 0; i < _Groups.count; ++i)
                 if (_Groups[i] == group)
-                    throw new Exception("this test must be transformed in unit test");
+                    throw new System.Exception("this test must be transformed in unit test");
 #endif
 
             _Groups.Add(group);
@@ -218,7 +217,7 @@ namespace Svelto.ECS
 #if DEBUG && !PROFILE_SVELTO            
             for (var i = 0; i < _Groups.count; ++i)
                 if (_Groups[i] == group)
-                    throw new Exception("this test must be transformed in unit test");
+                    throw new System.Exception("this test must be transformed in unit test");
 #endif
 
             _Groups.Add(group);
@@ -279,7 +278,7 @@ namespace Svelto.ECS
 #if DEBUG && !PROFILE_SVELTO            
             for (var i = 0; i < _Groups.count; ++i)
                 if (_Groups[i] == group)
-                    throw new Exception("this test must be transformed in unit test");
+                    throw new System.Exception("this test must be transformed in unit test");
 #endif            
 
             _Groups.Add(group);
@@ -342,7 +341,7 @@ namespace Svelto.ECS
 #if DEBUG && !PROFILE_SVELTO            
             for (var i = 0; i < _Groups.count; ++i)
                 if (_Groups[i] == group)
-                    throw new Exception("this test must be transformed in unit test");
+                    throw new System.Exception("this test must be transformed in unit test");
 #endif
 
             _Groups.Add(group);

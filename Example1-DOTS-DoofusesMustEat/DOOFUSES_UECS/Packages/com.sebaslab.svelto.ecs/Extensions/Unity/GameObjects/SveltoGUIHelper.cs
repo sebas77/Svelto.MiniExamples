@@ -65,7 +65,8 @@ namespace Svelto.ECS.Extensions.Unity
         }
 
         public static EntityInitializer Create<T>(EGID ID, Transform contextHolder, IEntityFactory factory, out T holder
-                           , bool searchImplementorsInChildren = false) where T : MonoBehaviour, IEntityDescriptorHolder
+            , bool searchImplementorsInChildren = false, IECSManager manager = null)
+            where T : MonoBehaviour, IEntityDescriptorHolder
         {
             holder = contextHolder.GetComponentInChildren<T>(true);
             if (holder == null)
@@ -77,14 +78,26 @@ namespace Svelto.ECS.Extensions.Unity
                 ? holder.GetComponents<IImplementor>()
                 : holder.GetComponentsInChildren<IImplementor>(true);
 
+            if (manager != null)
+            {
+                foreach (var implementor in implementors)
+                {
+                    if (implementor is IUseResourceManagerImplementor castedImplementor)
+                    {
+                        castedImplementor.resourceManager = manager;                       
+                    }
+                }
+            }
+
             return factory.BuildEntity(ID, holder.GetDescriptor(), implementors);
         }
 
         public static EntityInitializer Create<T>
-            (EGID ID, Transform contextHolder, IEntityFactory factory, bool searchImplementorsInChildren = false)
+            (EGID ID, Transform contextHolder, IEntityFactory factory, bool searchImplementorsInChildren = false
+            , IECSManager manager = null)
             where T : MonoBehaviour, IEntityDescriptorHolder
         {
-            return Create<T>(ID, contextHolder, factory, out _, searchImplementorsInChildren);
+            return Create<T>(ID, contextHolder, factory, out _, searchImplementorsInChildren, manager);
         }
 
         /// <summary>

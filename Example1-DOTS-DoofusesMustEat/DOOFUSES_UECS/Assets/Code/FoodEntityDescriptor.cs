@@ -1,10 +1,10 @@
 using Svelto.ECS.EntityComponents;
-using Svelto.ECS.Extensions.Unity;
+using Svelto.ECS.SveltoOnDOTS;
 
 namespace Svelto.ECS.MiniExamples.Example1C
 {
     public class FoodEntityDescriptor
-        : GenericEntityDescriptor<PositionEntityComponent, SpawnPointEntityComponent, EGIDComponent, UECSEntityComponent>
+        : GenericEntityDescriptor<PositionEntityComponent, SpawnPointEntityComponent, EGIDComponent, DOTSEntityComponent>
     {
     }
 }
