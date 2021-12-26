@@ -1,4 +1,8 @@
-﻿using System;
+﻿#if DEBUG && !PROFILE_SVELTO
+#define PARANOID_CHECK
+#endif
+
+using System;
 using System.Runtime.CompilerServices;
 using Svelto.Common;
 using Svelto.DataStructures;
@@ -39,8 +43,9 @@ namespace Svelto.ECS.Internal
                 implMgd.Add(egidEntityId, entityComponent);
         }
 
-        /// todo: Is this really needed, cannot I just use AddEntitiesFromDictionary? Needs to be checked
-        public void AddEntityToDictionary(EGID fromEntityGid, EGID toEntityID, ITypeSafeDictionary toGroup)
+        //this method doesn't need to update the reference as the reference is of course just set once during
+        //the first add.
+        public void SwapEntityInDictionary(EGID fromEntityGid, EGID toEntityEGID, ITypeSafeDictionary toGroup)
         {
             if (isUnmanaged)
             {
@@ -53,9 +58,13 @@ namespace Svelto.ECS.Internal
                     ref var entity        = ref implUnmgd.GetDirectValueByRef(valueIndex);
 
                     if (_hasEgid)
-                        SetEGIDWithoutBoxing<TValue>.SetIDWithoutBoxing(ref entity, toEntityID);
+                        SetEGIDWithoutBoxing<TValue>.SetIDWithoutBoxing(ref entity, toEntityEGID);
 
-                    toGroupCasted.Add(toEntityID.entityID, entity);
+                    toGroupCasted.Add(toEntityEGID.entityID, entity);
+                    
+#if PARANOID_CHECK
+                    DBC.ECS.Check.Ensure(_hasEgid == false || ((INeedEGID)toGroupCasted[toEntityEGID.entityID]).ID == toEntityEGID, "impossible situation happened during swap");
+#endif                          
                 }
             }
             else
@@ -69,9 +78,12 @@ namespace Svelto.ECS.Internal
                     ref var entity        = ref implMgd.GetDirectValueByRef(valueIndex);
 
                     if (_hasEgid)
-                        SetEGIDWithoutBoxing<TValue>.SetIDWithoutBoxing(ref entity, toEntityID);
-
-                    toGroupCasted.Add(toEntityID.entityID, entity);
+                        SetEGIDWithoutBoxing<TValue>.SetIDWithoutBoxing(ref entity, toEntityEGID);
+                    
+                    toGroupCasted.Add(toEntityEGID.entityID, entity);
+#if PARANOID_CHECK
+                    DBC.ECS.Check.Ensure(_hasEgid == false || ((INeedEGID)toGroupCasted[toEntityEGID.entityID]).ID == toEntityEGID, "impossible situation happened during swap");
+#endif                    
                 }
             }
         }
@@ -94,20 +106,25 @@ namespace Svelto.ECS.Internal
                 foreach (var tuple in typeSafeDictionary)
                     try
                     {
-                        var egid = new EGID(tuple.Key, groupId);
+                        var egid = new EGID(tuple.key, groupId);
                         if (_hasEgid)
-                            SetEGIDWithoutBoxing<TValue>.SetIDWithoutBoxing(ref tuple.Value, egid);
+                            SetEGIDWithoutBoxing<TValue>.SetIDWithoutBoxing(ref tuple.value, egid);
 
+                        //todo: temporary code that will eventually be removed
                         if (_hasReference)
                             SetEGIDWithoutBoxing<TValue>.SetRefWithoutBoxing(
-                                ref tuple.Value, enginesRoot.entityLocator.GetEntityReference(egid));
+                                ref tuple.value, enginesRoot.entityLocator.GetEntityReference(egid));
 
-                        implUnmgd.Add(tuple.Key, tuple.Value);
+                        implUnmgd.Add(tuple.key, tuple.value);
+                        
+#if PARANOID_CHECK
+                        DBC.ECS.Check.Ensure(_hasEgid == false || ((INeedEGID)implUnmgd[egid.entityID]).ID == egid, "impossible situation happened during swap");
+#endif                         
                     }
                     catch (Exception e)
                     {
                         Console.LogException(
-                            e, "trying to add an EntityComponent with the same ID more than once Entity: ".FastConcat(typeof(TValue).ToString()).FastConcat(", group ").FastConcat(groupId.ToName()).FastConcat(", id ").FastConcat(tuple.Key));
+                            e, "trying to add an EntityComponent with the same ID more than once Entity: ".FastConcat(typeof(TValue).ToString()).FastConcat(", group ").FastConcat(groupId.ToName()).FastConcat(", id ").FastConcat(tuple.key));
 
                         throw;
                     }
@@ -119,16 +136,27 @@ namespace Svelto.ECS.Internal
                 foreach (var tuple in typeSafeDictionary)
                     try
                     {
+                        var egid = new EGID(tuple.key, groupId);
+                        
                         if (_hasEgid)
                             SetEGIDWithoutBoxing<TValue>.SetIDWithoutBoxing(
-                                ref tuple.Value, new EGID(tuple.Key, groupId));
+                                ref tuple.value, egid);
 
-                        implMgd.Add(tuple.Key, tuple.Value);
+                        //note: temporary code that will eventually be removed
+                        if (_hasReference)
+                            SetEGIDWithoutBoxing<TValue>.SetRefWithoutBoxing(
+                                ref tuple.value, enginesRoot.entityLocator.GetEntityReference(egid));
+
+                        implMgd.Add(tuple.key, tuple.value);
+                        
+#if PARANOID_CHECK
+                        DBC.ECS.Check.Ensure(_hasEgid == false || ((INeedEGID)implMgd[egid.entityID]).ID == egid, "impossible situation happened during swap");
+#endif                         
                     }
                     catch (Exception e)
                     {
                         Console.LogException(
-                            e, "trying to add an EntityComponent with the same ID more than once Entity: ".FastConcat(typeof(TValue).ToString()).FastConcat(", group ").FastConcat(groupId.ToName()).FastConcat(", id ").FastConcat(tuple.Key));
+                            e, "trying to add an EntityComponent with the same ID more than once Entity: ".FastConcat(typeof(TValue).ToString()).FastConcat(", group ").FastConcat(groupId.ToName()).FastConcat(", id ").FastConcat(tuple.key));
 
                         throw;
                     }
@@ -147,16 +175,16 @@ namespace Svelto.ECS.Internal
                 //this can be optimized, should pass all the entities and not restart the process for each one
                 foreach (var value in implUnmgd)
                     ExecuteEnginesAddOrSwapCallbacksOnSingleEntity(entityComponentEnginesDB
-                                                                 , ref implUnmgd.GetValueByRef(value.Key), fromGroup
-                                                                 , in profiler, new EGID(value.Key, toGroup));
+                                                                 , ref implUnmgd.GetValueByRef(value.key), fromGroup
+                                                                 , in profiler, new EGID(value.key, toGroup));
             }
             else
             {
                 //this can be optimized, should pass all the entities and not restart the process for each one
                 foreach (var value in implMgd)
                     ExecuteEnginesAddOrSwapCallbacksOnSingleEntity(entityComponentEnginesDB
-                                                                 , ref implUnmgd.GetValueByRef(value.Key), fromGroup
-                                                                 , in profiler, new EGID(value.Key, toGroup));
+                                                                 , ref implMgd.GetValueByRef(value.key), fromGroup
+                                                                 , in profiler, new EGID(value.key, toGroup));
             }
         }
 
@@ -177,7 +205,7 @@ namespace Svelto.ECS.Internal
 
                 while (dictionaryKeyEnumerator.MoveNext())
                 {
-                    var key = dictionaryKeyEnumerator.Current.Key;
+                    var key = dictionaryKeyEnumerator.Current.key;
                     ExecuteEnginesAddOrSwapCallbacksOnSingleEntity(entityComponentEnginesDB
                                                                  , ref dictionaryOfComponents[key], null
                                                                  , in profiler, new EGID(key, toGroup));
@@ -192,7 +220,7 @@ namespace Svelto.ECS.Internal
                 //this can be optimized, should pass all the entities and not restart the process for each one
                 while (dictionaryKeyEnumerator.MoveNext())
                 {
-                    var key = dictionaryKeyEnumerator.Current.Key;
+                    var key = dictionaryKeyEnumerator.Current.key;
                     ExecuteEnginesAddOrSwapCallbacksOnSingleEntity(entityComponentEnginesDB
                                                                  , ref typeSafeDictionary[key], null, in profiler
                                                                  , new EGID(key, toGroup));
@@ -209,14 +237,14 @@ namespace Svelto.ECS.Internal
             if (isUnmanaged)
             {
                 foreach (var value in implUnmgd)
-                    ExecuteEnginesRemoveCallbackOnSingleEntity(engines, ref implUnmgd.GetValueByRef(value.Key)
-                                                             , in profiler, new EGID(value.Key, group));
+                    ExecuteEnginesRemoveCallbackOnSingleEntity(engines, ref implUnmgd.GetValueByRef(value.key)
+                                                             , in profiler, new EGID(value.key, group));
             }
             else
             {
                 foreach (var value in implMgd)
-                    ExecuteEnginesRemoveCallbackOnSingleEntity(engines, ref implMgd.GetValueByRef(value.Key)
-                                                             , in profiler, new EGID(value.Key, group));
+                    ExecuteEnginesRemoveCallbackOnSingleEntity(engines, ref implMgd.GetValueByRef(value.key)
+                                                             , in profiler, new EGID(value.key, group));
             }
         }
 
@@ -237,10 +265,6 @@ namespace Svelto.ECS.Internal
                 {
                     var toGroupCasted = toGroup as ITypeSafeDictionary<TValue>;
                     var previousGroup = fromEntityGid.groupID;
-
-                    //todo: why is setting the EGID if this code just execute callbacks?
-                    if (_hasEgid)
-                        SetEGIDWithoutBoxing<TValue>.SetIDWithoutBoxing(ref entity, toEntityID.Value);
 
                     var index = toGroupCasted.GetIndex(toEntityID.Value.entityID);
 
@@ -263,10 +287,6 @@ namespace Svelto.ECS.Internal
                 {
                     var toGroupCasted = toGroup as ITypeSafeDictionary<TValue>;
                     var previousGroup = fromEntityGid.groupID;
-
-                    //todo: why is setting the EGID if this code just execute callbacks?
-                    if (_hasEgid)
-                        SetEGIDWithoutBoxing<TValue>.SetIDWithoutBoxing(ref entity, toEntityID.Value);
 
                     var index = toGroupCasted.GetIndex(toEntityID.Value.entityID);
 

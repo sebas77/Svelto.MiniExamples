@@ -190,7 +190,6 @@ namespace Svelto.ECS
             //entities to be created sequentially (the index cannot be managed externally)
             internal FasterDictionary<ExclusiveGroupStruct, FasterDictionary<RefWrapperType, ITypeSafeDictionary>>
                 currentComponentsToAddPerGroup;
-
             FasterDictionary<ExclusiveGroupStruct, FasterDictionary<RefWrapperType, ITypeSafeDictionary>>
                 otherComponentsToAddPerGroup;
 
@@ -200,7 +199,6 @@ namespace Svelto.ECS
             ///     of entities built is not used
             /// </summary>
             FasterDictionary<ExclusiveGroupStruct, uint> _currentNumberEntitiesCreatedPerGroup;
-
             FasterDictionary<ExclusiveGroupStruct, uint> _otherNumberEntitiesCreatedPerGroup;
 
             uint _totalEntitiesToAdd;
@@ -214,7 +212,7 @@ namespace Svelto.ECS
              otherComponentsToAddPerGroup
        , FasterDictionary<ExclusiveGroupStruct, uint> otherNumberEntitiesCreatedPerGroup)
         {
-            _otherComponentsToAddPerGroup       = otherComponentsToAddPerGroup.GetEnumerator();
+            _otherComponentsToAddPerGroup       = otherComponentsToAddPerGroup;
             _otherNumberEntitiesCreatedPerGroup = otherNumberEntitiesCreatedPerGroup.GetEnumerator();
             Current                             = default;
         }
@@ -224,17 +222,14 @@ namespace Svelto.ECS
             while (_otherNumberEntitiesCreatedPerGroup.MoveNext())
             {
                 var current = _otherNumberEntitiesCreatedPerGroup.Current;
-                var ret     = _otherComponentsToAddPerGroup.MoveNext();
 
-                DBC.ECS.Check.Assert(ret == true);
-
-                if (current.Value > 0)
+                if (current.value > 0) //there are entities in this group
                 {
-                    var keyValuePairFast = _otherComponentsToAddPerGroup.Current;
+                    var value = _otherComponentsToAddPerGroup[current.key];
                     Current = new GroupInfo()
                     {
-                        group      = keyValuePairFast.Key
-                      , components = keyValuePairFast.Value
+                        group      = current.key
+                      , components = value
                     };
 
                     return true;
@@ -247,10 +242,7 @@ namespace Svelto.ECS
         public GroupInfo Current { get; private set; }
 
         //cannot be read only as they will be modified by MoveNext
-        SveltoDictionaryKeyValueEnumerator<ExclusiveGroupStruct, FasterDictionary<RefWrapperType, ITypeSafeDictionary>,
-                ManagedStrategy<SveltoDictionaryNode<ExclusiveGroupStruct>>,
-                ManagedStrategy<FasterDictionary<RefWrapperType, ITypeSafeDictionary>>, ManagedStrategy<int>>
-            _otherComponentsToAddPerGroup;
+        readonly FasterDictionary<ExclusiveGroupStruct, FasterDictionary<RefWrapperType, ITypeSafeDictionary>> _otherComponentsToAddPerGroup;
 
         SveltoDictionaryKeyValueEnumerator<ExclusiveGroupStruct, uint,
                 ManagedStrategy<SveltoDictionaryNode<ExclusiveGroupStruct>>, ManagedStrategy<uint>,

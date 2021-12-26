@@ -2,8 +2,8 @@
   "displayName": "Svelto Common",
   "category": "Svelto",
   "description": "Svelto common utilities and datastructures",
-  "dependencies": {
-    "com.sebaslab.svelto.unsafe": "5.0.0"
+ "dependencies": {
+   "org.nuget.system.runtime.compilerservices.unsafe":"5.0.0"
   },
   "keywords": [
     "svelto"

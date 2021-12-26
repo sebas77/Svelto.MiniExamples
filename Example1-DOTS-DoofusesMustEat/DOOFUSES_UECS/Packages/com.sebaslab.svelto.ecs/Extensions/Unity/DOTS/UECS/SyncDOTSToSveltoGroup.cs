@@ -2,12 +2,12 @@
 using Unity.Entities;
 using Unity.Jobs;
 
-namespace Svelto.ECS.Extensions.Unity
+namespace Svelto.ECS.SveltoOnDOTS
 {
-    public class SyncUECSToSveltoGroup : UnsortedJobifiedEnginesGroup<SyncUECSToSveltoEngine>
+    public class SyncDOTSToSveltoGroup : UnsortedJobifiedEnginesGroup<SyncDOTSToSveltoEngine>
     {}
 
-    public abstract class SyncUECSToSveltoEngine : SystemBase, IJobifiedEngine
+    public abstract class SyncDOTSToSveltoEngine : SystemBase, IJobifiedEngine
     {
         public JobHandle Execute(JobHandle inputDeps)
         {

@@ -5,7 +5,8 @@ namespace Svelto.Utilities
 {
     public class SimpleLogger : ILogger
     {
-        public void Log(string txt, LogType type = LogType.Log, Exception e = null, Dictionary<string, string> data = null)
+        public void Log(string txt, LogType type = LogType.Log, bool showLogStack = true, Exception e = null,
+            Dictionary<string, string> data = null)
         {
             var dataString = string.Empty;
 

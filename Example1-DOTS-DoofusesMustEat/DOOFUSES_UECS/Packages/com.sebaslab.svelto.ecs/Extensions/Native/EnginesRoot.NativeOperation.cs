@@ -58,12 +58,12 @@ namespace Svelto.ECS
                     {
                         var                   componentsIndex       = buffer.Dequeue<uint>();
                         var                   entityEGID            = buffer.Dequeue<EGID>();
-                        NativeOperationRemove nativeRemoveOperation = _nativeRemoveOperations[componentsIndex];
+                        ref NativeOperationRemove nativeRemoveOperation = ref _nativeRemoveOperations[componentsIndex];
                         CheckRemoveEntityID(entityEGID, nativeRemoveOperation.entityDescriptorType
                                           , nativeRemoveOperation.caller);
                         QueueEntitySubmitOperation(new EntitySubmitOperation(
                                                        EntitySubmitOperationType.Remove, entityEGID, entityEGID
-                                                     , nativeRemoveOperation.components));
+                                                     , nativeRemoveOperation.components, nativeRemoveOperation.caller));
                     }
                 }
 
@@ -77,17 +77,16 @@ namespace Svelto.ECS
                         var componentsIndex = buffer.Dequeue<uint>();
                         var entityEGID      = buffer.Dequeue<DoubleEGID>();
 
-                        var componentBuilders = _nativeSwapOperations[componentsIndex].components;
+                        ref var nativeOperation = ref _nativeSwapOperations[componentsIndex];
 
-                        CheckRemoveEntityID(entityEGID.@from
-                                          , _nativeSwapOperations[componentsIndex].entityDescriptorType
-                                          , _nativeSwapOperations[componentsIndex].caller);
-                        CheckAddEntityID(entityEGID.to, _nativeSwapOperations[componentsIndex].entityDescriptorType
-                                       , _nativeSwapOperations[componentsIndex].caller);
+                        CheckRemoveEntityID(entityEGID.@from, nativeOperation.entityDescriptorType
+                                          , nativeOperation.caller);
+                        CheckAddEntityID(entityEGID.to, nativeOperation.entityDescriptorType
+                                       , nativeOperation.caller);
 
                         QueueEntitySubmitOperation(new EntitySubmitOperation(
                                                        EntitySubmitOperationType.Swap, entityEGID.@from, entityEGID.to
-                                                     , componentBuilders));
+                                                     , nativeOperation.components, nativeOperation.caller));
                     }
                 }
             }
@@ -108,14 +107,14 @@ namespace Svelto.ECS
 
                         Check.Assert(egid.groupID.isInvalid == false, "invalid group detected, are you using new ExclusiveGroupStruct() instead of new ExclusiveGroup()?");
 
-                        var componentBuilders    = _nativeAddOperations[componentsIndex].components;
+                        var nativeOperation = _nativeAddOperations[componentsIndex];
 #if DEBUG && !PROFILE_SVELTO
-                        var entityDescriptorType = _nativeAddOperations[componentsIndex].entityDescriptorType;
-                        CheckAddEntityID(egid, entityDescriptorType, _nativeAddOperations[componentsIndex].caller);
+                        var entityDescriptorType = nativeOperation.entityDescriptorType;
+                        CheckAddEntityID(egid, entityDescriptorType, nativeOperation.caller);
 #endif
 
                         _entityLocator.SetReference(reference, egid);
-                        var dic = EntityFactory.BuildGroupedEntities(egid, _groupedEntityToAdd, componentBuilders
+                        var dic = EntityFactory.BuildGroupedEntities(egid, _groupedEntityToAdd, nativeOperation.components
                                                                    , null
 #if DEBUG && !PROFILE_SVELTO
                                                                    , entityDescriptorType

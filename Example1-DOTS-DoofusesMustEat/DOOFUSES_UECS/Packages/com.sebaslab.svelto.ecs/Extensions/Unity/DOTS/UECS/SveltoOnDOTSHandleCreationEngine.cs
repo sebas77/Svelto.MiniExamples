@@ -11,20 +11,32 @@ namespace Svelto.ECS.SveltoOnDOTS
     /// </summary>
     public abstract class SveltoOnDOTSHandleCreationEngine
     {
-        protected          EntityCommandBufferForSvelto ECB           { get; private set; }
-        [Obsolete("<color=orange>Attention: the use of EntityManager directly is deprecated. ECB MUST BE USED INSTEAD</color>")]
-        protected internal EntityManager                entityManager { get; internal set; }
+        protected EntityCommandBufferForSvelto ECB { get; private set; }
+
+        protected internal EntityManager entityManager
+        {
+            [Obsolete(
+                "<color=orange>Attention: the use of EntityManager directly is deprecated. ECB MUST BE USED INSTEAD</color>")]
+            get;
+            internal set;
+        }
 
         internal EntityCommandBuffer entityCommandBuffer
         {
             set => ECB = new EntityCommandBufferForSvelto(value);
         }
-        
-        protected EntityArchetype CreateArchetype(params ComponentType[] types)
-        {
-            return entityManager.CreateArchetype(types);
-        }
 
+        protected SveltoOnDOTSHandleCreationEngine(out EntityArchetype archetype, params ComponentType[] types)
+        {
+#pragma warning disable CS0618
+            archetype = entityManager.CreateArchetype(types);
+#pragma warning restore CS0618
+        }
+        
+        protected SveltoOnDOTSHandleCreationEngine()
+        {
+        }
+        
         protected Entity CreateDOTSEntityOnSvelto(Entity entityComponentPrefabEntity, EGID egid)
         {
             return ECB.CreateDOTSEntityOnSvelto(entityComponentPrefabEntity, egid);

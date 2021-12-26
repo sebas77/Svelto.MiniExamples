@@ -17,6 +17,7 @@ MonoBehaviour:
   m_AdvancedSettingsExpanded: 1
   m_ScopedRegistriesSettingsExpanded: 1
   m_SeeAllPackageVersions: 0
+  m_DismissPreviewPackagesInUse: 0
   oneTimeWarningShown: 1
   m_Registries:
   - m_Id: main
@@ -29,13 +30,6 @@ MonoBehaviour:
     m_Name: OpenUPM
     m_Url: https://package.openupm.com
     m_Scopes:
-    - com.cysharp.unitask
-    - com.needle.editorpatching
-    - com.whinarn.unitymeshsimplifier
-    - com.madsbangh.easybuttons
-    - com.oddworm.heapexplorer
-    - com.unity.editoriterationprofiler
-    - com.example.nuget-consumer
     - org.nuget.system.buffers
     - org.nuget.system.memory
     - org.nuget.system.numerics.vectors
@@ -47,6 +41,6 @@ MonoBehaviour:
   m_RegistryInfoDraft:
     m_Modified: 0
     m_ErrorMessage: 
-    m_UserModificationsInstanceId: -844
-    m_OriginalInstanceId: -846
+    m_UserModificationsInstanceId: -828
+    m_OriginalInstanceId: -832
   m_LoadAssets: 0

@@ -28,8 +28,8 @@ namespace Svelto.Utilities
             Console.SetLogger(new SlowUnityLogger());
         }
 
-        public void Log
-            (string txt, LogType type = LogType.Log, Exception e = null, Dictionary<string, string> data = null)
+        public void Log(string txt, LogType type = LogType.Log, bool showLogStack = true, Exception e = null,
+            Dictionary<string, string> data = null)
         {
             var dataString = string.Empty;
             if (data != null)
@@ -57,7 +57,7 @@ namespace Svelto.Utilities
                 case LogType.Log:
                 {
 #if UNITY_EDITOR
-                    stack = ExtractFormattedStackTrace();
+                    stack = showLogStack ? ExtractFormattedStackTrace() : string.Empty;
 
                     Debug.Log($"{frame} <b><color=teal>".FastConcat(txt, "</color></b> ", Environment.NewLine, stack)
                                                         .FastConcat(Environment.NewLine, dataString));
@@ -69,7 +69,7 @@ namespace Svelto.Utilities
                 case LogType.LogDebug:
                 {
 #if UNITY_EDITOR
-                    stack = ExtractFormattedStackTrace();
+                    stack = showLogStack ? ExtractFormattedStackTrace() : string.Empty;
 
                     if (MAINTHREADID == Environment.CurrentManagedThreadId)
                     {
@@ -81,7 +81,9 @@ namespace Svelto.Utilities
                         Application.SetStackTraceLogType(UnityEngine.LogType.Error, log);
                     }
                     else
-                        Debug.Log(txt);
+                        Debug.Log($"{frame} <b><color=red>"
+                           .FastConcat(txt, "</color></b> ", Environment.NewLine)
+                           .FastConcat(dataString));
 
 #else
                     Debug.Log(txt);
@@ -91,7 +93,7 @@ namespace Svelto.Utilities
                 case LogType.Warning:
                 {
 #if UNITY_EDITOR
-                    stack = ExtractFormattedStackTrace();
+                    stack = showLogStack ? ExtractFormattedStackTrace() : string.Empty;
 
                     if (MAINTHREADID == Environment.CurrentManagedThreadId)
                     {
@@ -103,7 +105,9 @@ namespace Svelto.Utilities
                         Application.SetStackTraceLogType(UnityEngine.LogType.Error, log);
                     }
                     else
-                        Debug.LogWarning(txt);
+                        Debug.LogWarning($"{frame} <b><color=red>"
+                           .FastConcat(txt, "</color></b> ", Environment.NewLine)
+                           .FastConcat(dataString));
 #else
                     Debug.LogWarning(txt);
 #endif
@@ -118,7 +122,7 @@ namespace Svelto.Utilities
                         stack = ExtractFormattedStackTrace(new StackTrace(e, true));
                     }
                     else
-                        stack = ExtractFormattedStackTrace();
+                        stack = showLogStack ? ExtractFormattedStackTrace() : string.Empty;
 
 #if UNITY_EDITOR
                     if (MAINTHREADID == Environment.CurrentManagedThreadId)
@@ -131,7 +135,9 @@ namespace Svelto.Utilities
                         Application.SetStackTraceLogType(UnityEngine.LogType.Error, error);
                     }
                     else
-                        Debug.LogError(txt);
+                        Debug.LogError($"{frame} <b><color=red>"
+                           .FastConcat(txt, "</color></b> ", Environment.NewLine)
+                           .FastConcat(dataString));
 #else
                     if (type == LogType.Error)
                         Debug.LogError(txt);
@@ -161,41 +167,43 @@ namespace Svelto.Utilities
         /// <returns></returns>
         string ExtractFormattedStackTrace(StackTrace stackTrace)
         {
-            _stringBuilder.Length = 0;
-
-            var frame = new StackTrace(4, true);
+            var builder = _stringBuilder;
+            
+            builder.Length = 0;
 
             for (var index1 = 0; index1 < stackTrace.FrameCount; ++index1)
             {
-                FormatStack(stackTrace, index1, _stringBuilder);
+                FormatStack(stackTrace.GetFrame(index1), builder);
             }
+            
+            var currentStack = new StackTrace(4, true);
 
-            for (var index1 = 0; index1 < frame.FrameCount; ++index1)
+            for (var index1 = 0; index1 < currentStack.FrameCount; ++index1)
             {
-                FormatStack(frame, index1, _stringBuilder);
+                FormatStack(currentStack.GetFrame(index1), builder);
             }
 
-            return _stringBuilder.ToString();
+            return builder.ToString();
         }
 
         string ExtractFormattedStackTrace()
         {
-            _stringBuilder.Length = 0;
+            var builder = _stringBuilder;
+            
+            builder.Length = 0;
 
-            var frame = new StackTrace(4, true);
+            var stack = new StackTrace(4, true);
 
-            for (var index1 = 0; index1 < frame.FrameCount; ++index1)
+            for (var index1 = 0; index1 < stack.FrameCount; ++index1)
             {
-                FormatStack(frame, index1, _stringBuilder);
+                FormatStack(stack.GetFrame(index1), builder);
             }
 
-            return _stringBuilder.ToString();
+            return builder.ToString();
         }
 
-        void FormatStack(StackTrace stackTrace, int iIndex, StringBuilder sb)
+        static void FormatStack(StackFrame frame, StringBuilder sb)
         {
-            StackFrame frame = stackTrace.GetFrame(iIndex);
-
             MethodBase mb = frame.GetMethod();
             if (mb == null)
                 return;

@@ -18,7 +18,7 @@ namespace Svelto.ECS
 #if DONT_USE        
         [Conditional("CHECK_ALL")]
 #endif
-        void CheckRemoveEntityID(EGID egid, Type entityDescriptorType, [CallerMemberName] string caller = null)
+        void CheckRemoveEntityID(EGID egid, Type entityDescriptorType, string caller)
         {
             if (_multipleOperationOnSameEGIDChecker.ContainsKey(egid) == true)
                 throw new ECSException(
@@ -46,7 +46,7 @@ namespace Svelto.ECS
 #if DONT_USE
         [Conditional("CHECK_ALL")]
 #endif
-        void CheckAddEntityID(EGID egid, Type entityDescriptorType, [CallerMemberName] string caller = null)
+        void CheckAddEntityID(EGID egid, Type entityDescriptorType, string caller)
         {
             if (_multipleOperationOnSameEGIDChecker.ContainsKey(egid) == true)
                 throw new ECSException(

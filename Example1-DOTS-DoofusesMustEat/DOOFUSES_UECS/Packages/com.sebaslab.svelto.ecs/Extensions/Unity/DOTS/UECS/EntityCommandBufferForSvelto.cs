@@ -1,4 +1,5 @@
 ﻿#if UNITY_ECS
+using System.Runtime.CompilerServices;
 using Unity.Entities;
 
 namespace Svelto.ECS.SveltoOnDOTS
@@ -10,21 +11,25 @@ namespace Svelto.ECS.SveltoOnDOTS
             ECB = value;
         }
         
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Entity CreatePureDOTSEntity(EntityArchetype jointArchetype)
         {
             return ECB.CreateEntity(jointArchetype);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetComponent<T>(Entity e, in T component) where T : struct, IComponentData
         {
             ECB.SetComponent(e, component);
         }
         
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetSharedComponent<T>(Entity e, in T component) where T : struct, ISharedComponentData
         {
             ECB.SetSharedComponent(e, component);
         }
         
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal Entity CreateDOTSEntityOnSvelto(Entity entityComponentPrefabEntity, EGID egid)
         {
             Entity dotsEntity = ECB.Instantiate(entityComponentPrefabEntity);
@@ -44,6 +49,7 @@ namespace Svelto.ECS.SveltoOnDOTS
         /// <param name="archetype"></param>
         /// <param name="egid"></param>
         /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal Entity CreateDOTSEntityOnSvelto(EntityArchetype archetype, EGID egid)
         {
             Entity dotsEntity = ECB.CreateEntity(archetype);
@@ -63,36 +69,43 @@ namespace Svelto.ECS.SveltoOnDOTS
         /// <param name="archetype"></param>
         /// <param name="wireEgid"></param>
         /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal Entity CreateDOTSEntityUnmanaged(EntityArchetype archetype)
         {
             return ECB.CreateEntity(archetype);
         }
         
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DestroyEntity(Entity e)
         {
             ECB.DestroyEntity(e);
         }
         
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void RemoveComponent<T>(Entity dotsEntity)
         {
             ECB.RemoveComponent<T>(dotsEntity);
         }
         
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void AddComponent<T>(Entity dotsEntity) where T : struct, IComponentData
         {
             ECB.AddComponent<T>(dotsEntity);
         }
         
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void AddComponent<T>(Entity dotsEntity, in T component) where T : struct, IComponentData
         {
             ECB.AddComponent(dotsEntity, component);
         }
         
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void AddBuffer<T>(Entity dotsEntity) where T : struct, IBufferElementData
         {
             ECB.AddBuffer<T>(dotsEntity);
         }
         
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public EntityCommandBuffer.ParallelWriter AsParallelWriter()
         {
             return ECB.AsParallelWriter();

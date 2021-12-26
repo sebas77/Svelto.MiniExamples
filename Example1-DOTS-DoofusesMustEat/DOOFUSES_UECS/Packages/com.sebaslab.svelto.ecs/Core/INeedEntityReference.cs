@@ -5,6 +5,7 @@ namespace Svelto.ECS
     /// It currently exist because of the publisher/consumer behavior, but the publisher/consumer must not be
     /// considered an ECS pattern.
     /// Other uses are invalid.
+    /// It will become obsolete over the time
     /// </summary>
     public interface INeedEntityReference
     {

@@ -14,33 +14,33 @@ using Svelto.Common;
             }
 
             public EntityInitializer BuildEntity<T>
-                (uint entityID, ExclusiveBuildGroup groupStructId, IEnumerable<object> implementors = null)
+                (uint entityID, ExclusiveBuildGroup groupStructId, IEnumerable<object> implementors = null, [System.Runtime.CompilerServices.CallerMemberName] string caller = null)
                 where T : IEntityDescriptor, new()
             {
                 return _enginesRoot.Target.BuildEntity(new EGID(entityID, groupStructId)
                                                      , EntityDescriptorTemplate<T>.descriptor.componentsToBuild
-                                                     , TypeCache<T>.type, implementors);
+                                                     , TypeCache<T>.type, implementors, caller);
             }
 
-            public EntityInitializer BuildEntity<T>(EGID egid, IEnumerable<object> implementors = null)
+            public EntityInitializer BuildEntity<T>(EGID egid, IEnumerable<object> implementors = null, [System.Runtime.CompilerServices.CallerMemberName] string caller = null)
                 where T : IEntityDescriptor, new()
             {
                 return _enginesRoot.Target.BuildEntity(
-                    egid, EntityDescriptorTemplate<T>.descriptor.componentsToBuild, TypeCache<T>.type, implementors);
+                    egid, EntityDescriptorTemplate<T>.descriptor.componentsToBuild, TypeCache<T>.type, implementors, caller);
             }
 
             public EntityInitializer BuildEntity<T>
-                (EGID egid, T entityDescriptor, IEnumerable<object> implementors) where T : IEntityDescriptor
+                (EGID egid, T entityDescriptor, IEnumerable<object> implementors,[System.Runtime.CompilerServices.CallerMemberName]  string caller = null) where T : IEntityDescriptor
             {
-                return _enginesRoot.Target.BuildEntity(egid, entityDescriptor.componentsToBuild, TypeCache<T>.type, implementors);
+                return _enginesRoot.Target.BuildEntity(egid, entityDescriptor.componentsToBuild, TypeCache<T>.type, implementors, caller);
             }
 
             public EntityInitializer BuildEntity<T>
-                (uint entityID, ExclusiveBuildGroup groupStructId, T descriptorEntity, IEnumerable<object> implementors)
+                (uint entityID, ExclusiveBuildGroup groupStructId, T descriptorEntity, IEnumerable<object> implementors, [System.Runtime.CompilerServices.CallerMemberName] string caller = null)
                 where T : IEntityDescriptor
             {
                 return _enginesRoot.Target.BuildEntity(new EGID(entityID, groupStructId)
-                                                     , descriptorEntity.componentsToBuild, TypeCache<T>.type, implementors);
+                                                     , descriptorEntity.componentsToBuild, TypeCache<T>.type, implementors, caller);
             }
 
             public void PreallocateEntitySpace<T>(ExclusiveGroupStruct groupStructId, uint numberOfEntities)
@@ -49,9 +49,9 @@ using Svelto.Common;
                 _enginesRoot.Target.Preallocate(groupStructId, numberOfEntities, EntityDescriptorTemplate<T>.descriptor.componentsToBuild);
             }
             
-            public EntityInitializer BuildEntity(EGID egid, IComponentBuilder[] componentsToBuild, Type type, IEnumerable<object> implementors = null)
+            public EntityInitializer BuildEntity(EGID egid, IComponentBuilder[] componentsToBuild, Type type, IEnumerable<object> implementors = null, [System.Runtime.CompilerServices.CallerMemberName] string caller = null)
             {
-                return _enginesRoot.Target.BuildEntity(egid, componentsToBuild, type, implementors);
+                return _enginesRoot.Target.BuildEntity(egid, componentsToBuild, type, implementors, caller);
             }
             
 #if UNITY_NATIVE

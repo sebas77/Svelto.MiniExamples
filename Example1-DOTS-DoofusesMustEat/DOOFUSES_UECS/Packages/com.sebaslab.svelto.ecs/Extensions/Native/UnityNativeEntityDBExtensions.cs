@@ -44,7 +44,7 @@ namespace Svelto.ECS.Native
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static NativeEGIDMultiMapper<T> QueryNativeMappedEntities<T>(this EntitiesDB entitiesDb,
-                                                                    LocalFasterReadOnlyList<ExclusiveGroupStruct> groups, Allocator allocator)
+                    LocalFasterReadOnlyList<ExclusiveGroupStruct> groups, Allocator allocator)
             where T : unmanaged, IEntityComponent
         {
             var dictionary = new SveltoDictionary<ExclusiveGroupStruct, //key 

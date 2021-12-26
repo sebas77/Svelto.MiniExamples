@@ -17,7 +17,7 @@ namespace Svelto.ECS.Serialization
         {
             foreach (IComponentSerializer<T> s in _serializers)
             {
-                serializationData.data.ExpandBy(s.size);
+                serializationData.data.IncrementCountBy(s.size);
                 if (s.SerializeSafe(value, serializationData))
                     return true;
             }

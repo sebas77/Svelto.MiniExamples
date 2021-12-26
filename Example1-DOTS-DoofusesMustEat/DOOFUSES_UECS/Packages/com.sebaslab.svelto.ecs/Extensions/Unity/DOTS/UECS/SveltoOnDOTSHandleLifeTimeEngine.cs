@@ -1,4 +1,5 @@
-﻿using Svelto.ECS.Native;
+﻿#if UNITY_ECS
+using Svelto.ECS.Native;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Jobs;
@@ -80,3 +81,4 @@ namespace Svelto.ECS.SveltoOnDOTS
         }
     }
 }
+#endif

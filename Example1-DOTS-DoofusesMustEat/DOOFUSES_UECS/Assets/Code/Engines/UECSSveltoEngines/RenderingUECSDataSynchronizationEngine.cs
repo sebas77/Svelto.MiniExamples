@@ -29,7 +29,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
                              ref readonly var positionEntityComponent = ref positions[entityInQueryIndex];
 
                              translation.Value = positionEntityComponent.position;
-                         }).WithBurst()
+                         })
                          //In order to fetch the unity entities from the same group of the svelto entities we will set 
                          //the group as a filter
                         .WithSharedComponentFilter(new DOTSSveltoGroupID(@group)).ScheduleParallel();

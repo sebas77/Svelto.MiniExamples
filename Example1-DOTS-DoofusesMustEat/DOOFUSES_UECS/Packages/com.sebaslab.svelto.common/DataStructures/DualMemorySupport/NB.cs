@@ -105,7 +105,8 @@ namespace Svelto.DataStructures
                     if (index >= _capacity)
                         throw new Exception($"NativeBuffer - out of bound access: index {index} - capacity {capacity}");
 #endif
-                    ref var asRef = ref Unsafe.AsRef<T>((void*) (_ptr + (int) (index * MemoryUtilities.SizeOf<T>())));
+                    var size = MemoryUtilities.SizeOf<T>();
+                    ref var asRef = ref Unsafe.AsRef<T>((void*) (_ptr + (int) (index * size)));
                     return ref asRef;
                 }
             }
@@ -122,7 +123,8 @@ namespace Svelto.DataStructures
                     if (index < 0 || index >= _capacity)
                         throw new Exception($"NativeBuffer - out of bound access: index {index} - capacity {capacity}");
 #endif
-                    ref var asRef = ref Unsafe.AsRef<T>((void*) (_ptr + (int) (index * MemoryUtilities.SizeOf<T>())));
+                    var size = MemoryUtilities.SizeOf<T>();
+                    ref var asRef = ref Unsafe.AsRef<T>((void*) (_ptr + (int) (index * size)));
                     return ref asRef;
                 }
             }

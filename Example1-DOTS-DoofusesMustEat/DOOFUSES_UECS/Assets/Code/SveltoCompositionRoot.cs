@@ -1,6 +1,3 @@
-#if PROFILE_SVELTO
-#warning the global define PROFILE_SVELTO must be used only when it's necessary to start a profiling session to reduce the overhead of debugging code. Normally remove this define to get insights when errors happen
-#endif
 #if !UNITY_DISABLE_AUTOMATIC_SYSTEM_BOOTSTRAP
 #error this demo takes completely over the DOTS initialization and ticking. UNITY_DISABLE_AUTOMATIC_SYSTEM_BOOTSTRAP must be enabled
 #endif
@@ -99,7 +96,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
         }
 
         EnginesRoot                          _enginesRoot;
-        readonly FasterList<IJobifiedEngine> _enginesToTick = new();
+        readonly FasterList<IJobifiedEngine> _enginesToTick = new FasterList<IJobifiedEngine>();
         SimpleEntitiesSubmissionScheduler    _simpleSubmitScheduler;
         SveltoOnDOTSEnginesGroup             _sveltoOverDotsEnginesGroupEnginesGroup;
         MainLoop                             _mainLoop;

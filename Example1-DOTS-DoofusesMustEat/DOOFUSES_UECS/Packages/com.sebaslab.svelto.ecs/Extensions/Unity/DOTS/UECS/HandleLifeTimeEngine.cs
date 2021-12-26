@@ -1,4 +1,5 @@
-﻿using Unity.Entities;
+﻿#if UNITY_ECS
+using Unity.Entities;
 using Unity.Jobs;
 
 namespace Svelto.ECS.SveltoOnDOTS
@@ -23,3 +24,4 @@ namespace Svelto.ECS.SveltoOnDOTS
         }
     }
 }
+#endif

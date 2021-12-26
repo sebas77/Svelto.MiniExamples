@@ -8,110 +8,110 @@ public static class FastConcatUtility
 
     public static string FastConcat(this string str1, string value)
     {
-        {
-            _stringBuilder.Clear();
+        var builder = _stringBuilder;
 
-            _stringBuilder.Append(str1).Append(value);
+        builder.Clear();
 
-            return _stringBuilder.ToString();
-        }
+        builder.Append(str1).Append(value);
+
+        return builder.ToString();
     }
     public static string FastConcat(this string str1, int value)
     {
-        {
-            _stringBuilder.Clear();
+        var builder = _stringBuilder;
 
-            _stringBuilder.Append(str1).Append(value);
+        builder.Clear();
 
-            return _stringBuilder.ToString();
-        }
+        builder.Append(str1).Append(value);
+
+        return builder.ToString();
     }
 
     public static string FastConcat(this string str1, uint value)
     {
-        {
-            _stringBuilder.Clear();
+        var builder = _stringBuilder;
 
-            _stringBuilder.Append(str1).Append(value);
+        builder.Clear();
 
-            return _stringBuilder.ToString();
-        }
+        builder.Append(str1).Append(value);
+
+        return builder.ToString();
     }
 
     public static string FastConcat(this string str1, long value)
     {
-        {
-            _stringBuilder.Clear();
+        var builder = _stringBuilder;
 
-            _stringBuilder.Append(str1).Append(value);
+        builder.Clear();
 
-            return _stringBuilder.ToString();
-        }
+        builder.Append(str1).Append(value);
+
+        return builder.ToString();
     }
 
     public static string FastConcat(this string str1, float value)
     {
-        {
-            _stringBuilder.Clear();
+        var builder = _stringBuilder;
 
-            _stringBuilder.Append(str1).Append(value);
+        builder.Clear();
 
-            return _stringBuilder.ToString();
-        }
+        builder.Append(str1).Append(value);
+
+        return builder.ToString();
     }
 
     public static string FastConcat(this string str1, double value)
     {
-        {
-            _stringBuilder.Clear();
+        var builder = _stringBuilder;
 
-            _stringBuilder.Append(str1).Append(value);
+        builder.Clear();
 
-            return _stringBuilder.ToString();
-        }
+        builder.Append(str1).Append(value);
+
+        return builder.ToString();
     }
 
     public static string FastConcat(this string str1, string str2, string str3)
     {
-        {
-            _stringBuilder.Clear();
+        var builder = _stringBuilder;
 
-            _stringBuilder.Append(str1);
-            _stringBuilder.Append(str2);
-            _stringBuilder.Append(str3);
+        builder.Clear();
 
-            return _stringBuilder.ToString();
-        }
+        builder.Append(str1);
+        builder.Append(str2);
+        builder.Append(str3);
+
+        return builder.ToString();
     }
 
     public static string FastConcat(this string str1, string str2, string str3, string str4)
     {
-        {
-            _stringBuilder.Clear();
+        var builder = _stringBuilder;
 
-            _stringBuilder.Append(str1);
-            _stringBuilder.Append(str2);
-            _stringBuilder.Append(str3);
-            _stringBuilder.Append(str4);
+        builder.Clear();
+
+        builder.Append(str1);
+        builder.Append(str2);
+        builder.Append(str3);
+        builder.Append(str4);
 
 
-            return _stringBuilder.ToString();
-        }
+        return builder.ToString();
     }
 
     public static string FastConcat(this string str1, string str2, string str3, string str4, string str5)
     {
-        {
-            _stringBuilder.Clear();
+        var builder = _stringBuilder;
 
-            _stringBuilder.Append(str1);
-            _stringBuilder.Append(str2);
-            _stringBuilder.Append(str3);
-            _stringBuilder.Append(str4);
-            _stringBuilder.Append(str5);
+        builder.Clear();
 
-            return _stringBuilder.ToString();
-        }
+        builder.Append(str1);
+        builder.Append(str2);
+        builder.Append(str3);
+        builder.Append(str4);
+        builder.Append(str5);
+
+        return builder.ToString();
     }
     
     

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Svelto.Utilities
 {
@@ -12,10 +13,8 @@ namespace Svelto.Utilities
     }
     public interface ILogger
     {
-        void Log(string                                                txt,
-                 LogType                                               type  = LogType.Log,
-                 Exception                                             e = null,
-                 System.Collections.Generic.Dictionary<string, string> data  = null);
+        void Log(string txt, LogType type = LogType.Log, bool showLogStack = true, Exception e = null,
+            Dictionary<string, string> data = null);
 
         void OnLoggerAdded();
     }

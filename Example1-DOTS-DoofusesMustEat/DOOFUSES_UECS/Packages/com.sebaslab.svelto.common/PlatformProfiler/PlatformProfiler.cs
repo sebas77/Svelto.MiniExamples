@@ -4,8 +4,8 @@ namespace Svelto.Common
 {
     public interface IPlatformProfiler: IDisposable
     {
-        DisposableSampler Sample(string samplerName, string samplerInfo = null);
-        DisposableSampler Sample<W>(W sampled, string samplerInfo = null);
+        DisposableSampler Sample(string samplerName);
+        DisposableSampler Sample<W>(W sampled);
     }
     
 #if !ENABLE_PLATFORM_PROFILER

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using Svelto.DataStructures;
 using Svelto.ECS.Serialization;
 
@@ -109,7 +110,7 @@ namespace Svelto.ECS
                 return entityComponent;
             }
 
-            public void DeserializeEntityToSwap(EGID localEgid, EGID toEgid)
+            public void DeserializeEntityToSwap(EGID localEgid, EGID toEgid, [CallerMemberName] string caller = null)
             {
                 EntitiesDB entitiesDb = _enginesRoot._entitiesDB;
                 ref var serializableEntityComponent =
@@ -121,15 +122,15 @@ namespace Svelto.ECS
 
                 var entitySubmitOperation =
                     new EntitySubmitOperation(EntitySubmitOperationType.Swap, localEgid, toEgid
-                                            , entityDescriptor.componentsToBuild);
+                                            , entityDescriptor.componentsToBuild, caller);
 
-                _enginesRoot.CheckRemoveEntityID(localEgid, entityDescriptor.realType);
-                _enginesRoot.CheckAddEntityID(toEgid, entityDescriptor.realType);
+                _enginesRoot.CheckRemoveEntityID(localEgid, entityDescriptor.realType,caller);
+                _enginesRoot.CheckAddEntityID(toEgid, entityDescriptor.realType,caller);
 
                 _enginesRoot.QueueEntitySubmitOperation(entitySubmitOperation);
             }
 
-            public void DeserializeEntityToDelete(EGID egid)
+            public void DeserializeEntityToDelete(EGID egid, [CallerMemberName] string caller = null)
             {
                 EntitiesDB entitiesDB                  = _enginesRoot._entitiesDB;
                 ref var    serializableEntityComponent = ref entitiesDB.QueryEntity<SerializableEntityComponent>(egid);
@@ -138,11 +139,11 @@ namespace Svelto.ECS
                 SerializationDescriptorMap serializationDescriptorMap = _enginesRoot._serializationDescriptorMap;
                 var entityDescriptor = serializationDescriptorMap.GetDescriptorFromHash(descriptorHash);
 
-                _enginesRoot.CheckRemoveEntityID(egid, entityDescriptor.realType);
+                _enginesRoot.CheckRemoveEntityID(egid, entityDescriptor.realType,caller);
 
                 var entitySubmitOperation =
                     new EntitySubmitOperation(EntitySubmitOperationType.Remove, egid, egid
-                                            , entityDescriptor.componentsToBuild);
+                                            , entityDescriptor.componentsToBuild, caller);
 
                 _enginesRoot.QueueEntitySubmitOperation(entitySubmitOperation);
             }

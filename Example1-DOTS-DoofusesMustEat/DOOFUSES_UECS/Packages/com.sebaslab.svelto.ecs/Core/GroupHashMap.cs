@@ -20,41 +20,52 @@ namespace Svelto.ECS
                 {
                     var typeOfExclusiveGroup       = typeof(ExclusiveGroup);
                     var typeOfExclusiveGroupStruct = typeof(ExclusiveGroupStruct);
+                    var typeOfExclusiveBuildGroup  = typeof(ExclusiveBuildGroup);
 
                     foreach (Type type in AssemblyUtility.GetTypesSafe(assembly))
                     {
-                        if (type != null && type.IsClass && type.IsSealed
-                         && type.IsAbstract) //this means only static classes
+                        if (type != null && type.IsClass && type.IsSealed &&
+                            type.IsAbstract) //IsClass and IsSealed and IsAbstract means only static classes
                         {
                             var fields = type.GetFields();
 
                             foreach (var field in fields)
                             {
-                                if (field.IsStatic)
+                                if (field.IsStatic 
+                                     && (typeOfExclusiveGroup.IsAssignableFrom(field.FieldType) 
+                                     || typeOfExclusiveGroupStruct.IsAssignableFrom(field.FieldType) 
+                                     || typeOfExclusiveBuildGroup.IsAssignableFrom(field.FieldType)))
                                 {
+                                    uint groupID;
+
                                     if (typeOfExclusiveGroup.IsAssignableFrom(field.FieldType))
                                     {
-                                        var group = (ExclusiveGroup) field.GetValue(null);
-#if DEBUG
-                                        GroupNamesMap.idToName[@group] =
-                                            $"{$"{type.FullName}.{field.Name}"} {group.id})";
+                                        var group = (ExclusiveGroup)field.GetValue(null);
+                                        groupID = ((ExclusiveGroupStruct)@group).id;
+                                    }
+                                    else
+                                    if (typeOfExclusiveGroupStruct.IsAssignableFrom(field.FieldType))
+                                    {
+                                        var group = (ExclusiveGroupStruct)field.GetValue(null);
+                                        groupID = @group.id;
+                                    }
+                                    else
+                                    {
+                                        var group = (ExclusiveBuildGroup)field.GetValue(null);
+                                        groupID = ((ExclusiveGroupStruct)@group).id;
+                                    }
+
+                                    {
+                                        ExclusiveGroupStruct group = new ExclusiveGroupStruct(groupID);
+#if DEBUG && !PROFILE_SVELTO
+                                        if (GroupNamesMap.idToName.ContainsKey(@group) == false)
+                                            GroupNamesMap.idToName[@group] =
+                                                $"{type.FullName}.{field.Name} {@group.id})";
 #endif
                                         //The hashname is independent from the actual group ID. this is fundamental because it is want
                                         //guarantees the hash to be the same across different machines
-                                        RegisterGroup(group, $"{type.FullName}.{field.Name}");
+                                        RegisterGroup(@group, $"{type.FullName}.{field.Name}");
                                     }
-                                    else
-                                        if (typeOfExclusiveGroupStruct.IsAssignableFrom(field.FieldType))
-                                        {
-                                            var group = (ExclusiveGroupStruct) field.GetValue(null);
-#if DEBUG
-                                            GroupNamesMap.idToName[@group] =
-                                                $"{$"{type.FullName}.{field.Name}"} {group.id})";
-#endif
-                                            //The hashname is independent from the actual group ID. this is fundamental because it is want
-                                            //guarantees the hash to be the same across different machines
-                                            RegisterGroup(@group, $"{type.FullName}.{field.Name}");
-                                        }
                                 }
                             }
                         }
@@ -78,7 +89,8 @@ namespace Svelto.ECS
         /// <exception cref="ECSException"></exception>
         public static void RegisterGroup(ExclusiveGroupStruct exclusiveGroupStruct, string name)
         {
-            //Group already registered by another field referencing the same group
+            //Group already registered by another field referencing the same group, can happen because
+            //the group poked is a group compound which static constructor is already been called at this point
             if (_hashByGroups.ContainsKey(exclusiveGroupStruct))
                 return;
 
@@ -95,7 +107,7 @@ namespace Svelto.ECS
 
         public static uint GetHashFromGroup(ExclusiveGroupStruct groupStruct)
         {
-#if DEBUG
+#if DEBUG && !PROFILE_SVELTO
             if (_hashByGroups.ContainsKey(groupStruct) == false)
                 throw new ECSException($"Attempted to get hash from unregistered group {groupStruct}");
 #endif
@@ -105,7 +117,7 @@ namespace Svelto.ECS
 
         public static ExclusiveGroupStruct GetGroupFromHash(uint groupHash)
         {
-#if DEBUG
+#if DEBUG && !PROFILE_SVELTO
             if (_groupsByHash.ContainsKey(groupHash) == false)
                 throw new ECSException($"Attempted to get group from unregistered hash {groupHash}");
 #endif

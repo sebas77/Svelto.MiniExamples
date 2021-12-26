@@ -38,7 +38,7 @@ namespace Svelto.ECS.Internal
         void AddEntitiesFromDictionary
             (ITypeSafeDictionary entitiesToSubmit, ExclusiveGroupStruct groupId, EnginesRoot enginesRoot);
 
-        void AddEntityToDictionary(EGID fromEntityGid, EGID toEntityID, ITypeSafeDictionary toGroup);
+        void SwapEntityInDictionary(EGID fromEntityGid, EGID toEntityEGID, ITypeSafeDictionary toGroup);
         void RemoveEntityFromDictionary(EGID fromEntityGid);
 
         void ResizeTo(uint size);
