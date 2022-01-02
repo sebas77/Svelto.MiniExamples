@@ -2,8 +2,6 @@
 {
     public sealed class SimpleEntitiesSubmissionScheduler : EntitiesSubmissionScheduler
     {
-        public override bool paused    { get; set; }
-
         protected internal override EnginesRoot.EntitiesSubmitter onTick
         {
             set
@@ -18,7 +16,16 @@
 
         public void SubmitEntities()
         {
-            _entitiesSubmitter.Value.SubmitEntities();
+            try
+            {
+                _entitiesSubmitter.Value.SubmitEntities();
+            }
+            catch
+            {
+                paused = true;
+                
+                throw;
+            }
         }
 
         EnginesRoot.EntitiesSubmitter? _entitiesSubmitter;

@@ -31,9 +31,10 @@ namespace Svelto.ECS.MiniExamples.Example1C
 
         IEnumerator CheckClick()
         {
+            _inputDeps = default;
+
             while (true)
             {
-                _inputDeps = default;
                 //note: in a complex project an engine shouldn't ever poll input directly, it should instead poll
                 //entity states
                 if (Input.GetMouseButton(0) || Input.GetMouseButton(1) == true)
@@ -64,50 +65,6 @@ namespace Svelto.ECS.MiniExamples.Example1C
                 }
 
                 yield return null;
-            }
-        }
-
-        [BurstCompile]
-        struct PlaceFood : IJobParallelFor
-        {
-            readonly Vector3                    _position;
-            readonly NativeEntityFactory        _entityFactory;
-            readonly ExclusiveBuildGroup        _exclusiveBuildGroup;
-            readonly Entity                     _prefabID;
-            readonly uint                       _foodPlaced;
-            Random                              _random;
-            [NativeSetThreadIndex] readonly int _threadIndex;
-
-            public PlaceFood
-            (Vector3 position, NativeEntityFactory factory, ExclusiveBuildGroup exclusiveBuildGroup, Entity prefabID
-           , uint foodPlaced) : this()
-            {
-                _position            = position;
-                _entityFactory       = factory;
-                _exclusiveBuildGroup = exclusiveBuildGroup;
-                _prefabID            = prefabID;
-                _foodPlaced          = foodPlaced;
-                _random              = new Random(foodPlaced + 1);
-            }
-
-            public void Execute(int index)
-            {
-                //BuildEntity returns an EntityInitialized that is used to set the default values of the
-                //entity that will be built.
-
-                var randX       = _position.x + _random.NextFloat(-50, 50);
-                var randZ       = _position.z + _random.NextFloat(-50, 50);
-                var newposition = new float3(randX, _position.y, randZ);
-
-                var init = _entityFactory.BuildEntity(new EGID((uint) (_foodPlaced + index), _exclusiveBuildGroup)
-                  , _threadIndex);
-
-                init.Init(new PositionEntityComponent
-                {
-                    position = newposition
-                });
-                //these structs are used for ReactOnAdd callback to create unity Entities later
-                init.Init(new SpawnPointEntityComponent(_prefabID, newposition));
             }
         }
 
@@ -148,5 +105,48 @@ namespace Svelto.ECS.MiniExamples.Example1C
 
         readonly NativeEntityFactory _entityFactory;
         JobHandle                    _inputDeps;
+        
+        [BurstCompile]
+        struct PlaceFood : IJobParallelFor
+        {
+            readonly Vector3                    _position;
+            readonly NativeEntityFactory        _entityFactory;
+            readonly ExclusiveBuildGroup        _exclusiveBuildGroup;
+            readonly Entity                     _prefabID;
+            readonly uint                       _foodPlaced;
+            Random                              _random;
+            [NativeSetThreadIndex] readonly int _threadIndex;
+
+            public PlaceFood
+            (Vector3 position, NativeEntityFactory factory, ExclusiveBuildGroup exclusiveBuildGroup, Entity prefabID
+           , uint foodPlaced) : this()
+            {
+                _position            = position;
+                _entityFactory       = factory;
+                _exclusiveBuildGroup = exclusiveBuildGroup;
+                _prefabID            = prefabID;
+                _foodPlaced          = foodPlaced;
+                _random              = new Random(foodPlaced + 1);
+            }
+
+            public void Execute(int index)
+            {
+                var randX       = _position.x + _random.NextFloat(-50, 50);
+                var randZ       = _position.z + _random.NextFloat(-50, 50);
+                var newposition = new float3(randX, _position.y, randZ);
+
+                //BuildEntity returns an EntityInitialized that is used to set the default values of the
+                //entity that will be built.
+                var init = _entityFactory.BuildEntity(new EGID((uint) (_foodPlaced + index), _exclusiveBuildGroup)
+                                                    , _threadIndex);
+
+                init.Init(new PositionEntityComponent
+                {
+                    position = newposition
+                });
+                //these structs are used for ReactOnAdd callback to create unity Entities later
+                init.Init(new SpawnPointEntityComponent(_prefabID, newposition));
+            }
+        }
     }
 }

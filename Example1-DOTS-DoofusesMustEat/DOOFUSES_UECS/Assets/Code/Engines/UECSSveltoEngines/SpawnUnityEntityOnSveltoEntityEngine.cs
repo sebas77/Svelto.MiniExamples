@@ -11,7 +11,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
     /// Note this can be easily moved to using Entity Command Buffer and I should do it at a given point
     /// </summary>
     public class SpawnUnityEntityOnSveltoEntityEngine : SveltoOnDOTSHandleCreationEngine, IQueryingEntitiesEngine
-                                                      , IReactOnAddAndRemove<SpawnPointEntityComponent>
+                                                      , IReactOnAdd<SpawnPointEntityComponent>
                                                      
     {
         public EntitiesDB entitiesDB { get; set; }
@@ -28,7 +28,5 @@ namespace Svelto.ECS.MiniExamples.Example1C
                                  , entityComponent.spawnPosition.z)
             });
         }
-
-        public void Remove(ref SpawnPointEntityComponent entityComponent, EGID egid) {  }
     }
 }

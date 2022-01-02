@@ -77,7 +77,6 @@
      <Compile Include="Packages\com.sebaslab.svelto.common\Utilities\DebugExtensions.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\WeakReference.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\Utilities\SlowLoggerUnity.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Dictionaries\ISveltoDictionary.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\TypeCache.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\Context\IWaitForFrameworkDestruction.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Dictionaries\ReadonlySveltoDictionaryNative.cs" />

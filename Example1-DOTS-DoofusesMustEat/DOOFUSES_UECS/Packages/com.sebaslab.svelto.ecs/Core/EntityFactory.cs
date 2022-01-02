@@ -42,7 +42,7 @@ namespace Svelto.ECS.Internal
             var numberOfComponents = componentBuilders.Length;
 
 #if DEBUG && !PROFILE_SVELTO
-            HashSet<System.Type> types = new HashSet<System.Type>();
+            var types = new HashSet<System.Type>();
 
             for (var index = 0; index < numberOfComponents; ++index)
             {

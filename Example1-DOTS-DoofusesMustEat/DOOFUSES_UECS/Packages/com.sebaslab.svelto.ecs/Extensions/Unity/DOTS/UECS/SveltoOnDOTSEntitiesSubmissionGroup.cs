@@ -52,7 +52,7 @@ namespace Svelto.ECS.SveltoOnDOTS
         //  We don't recommend mixing the main thread and ParallelWriter commands in a single ECB for this reason.
         public void SubmitEntities(JobHandle jobHandle)
         {
-            if (_submissionScheduler.paused)
+            if (_submissionScheduler.paused == true)
                 return;
 
             using (var profiler = new PlatformProfiler("SveltoDOTSEntitiesSubmissionGroup"))
@@ -63,10 +63,7 @@ namespace Svelto.ECS.SveltoOnDOTS
                 }
 
                 //Submit Svelto Entities, calls Add/Remove/MoveTo that can be used by the IDOTS ECSSubmissionEngines
-                using (profiler.Sample("Submit svelto entities"))
-                {
-                    _submissionScheduler.SubmitEntities();
-                }
+                _submissionScheduler.SubmitEntities();
 
                 using (profiler.Sample("AfterSubmissionPhase"))
                 {
@@ -123,11 +120,9 @@ namespace Svelto.ECS.SveltoOnDOTS
                 jobHandle.Complete();
             }
 
-            var entityCommandBuffer = _ECBSystem.CreateCommandBuffer();
+            foreach (var system in _submissionEngines) system.entityCommandBuffer = _ECBSystem.CreateCommandBuffer();
 
-            foreach (var system in _submissionEngines) system.entityCommandBuffer = entityCommandBuffer;
-
-            foreach (var system in _handleLifeTimeEngines) system.entityCommandBuffer = entityCommandBuffer;
+            foreach (var system in _handleLifeTimeEngines) system.entityCommandBuffer = _ECBSystem.CreateCommandBuffer();
         }
 
         [DisableAutoCreation]

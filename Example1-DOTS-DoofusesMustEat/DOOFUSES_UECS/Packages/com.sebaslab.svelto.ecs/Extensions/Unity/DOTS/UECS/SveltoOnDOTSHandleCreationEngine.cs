@@ -1,5 +1,6 @@
 #if UNITY_ECS
 using System;
+using System.Runtime.CompilerServices;
 using Unity.Entities;
 using Unity.Jobs;
 
@@ -37,11 +38,13 @@ namespace Svelto.ECS.SveltoOnDOTS
         {
         }
         
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         protected Entity CreateDOTSEntityOnSvelto(Entity entityComponentPrefabEntity, EGID egid)
         {
             return ECB.CreateDOTSEntityOnSvelto(entityComponentPrefabEntity, egid);
         }
         
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         protected Entity CreateDOTSEntityOnSvelto(EntityArchetype archetype, EGID egid)
         {
             return ECB.CreateDOTSEntityOnSvelto(archetype, egid);

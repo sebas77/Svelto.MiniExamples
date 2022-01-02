@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.CompilerServices;
 
 namespace Svelto.DataStructures
 {
@@ -7,8 +8,7 @@ namespace Svelto.DataStructures
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
-    public sealed class ThreadSafeDictionary<TKey, TValue> : ISveltoDictionary<TKey, TValue>
-        where TKey : struct, IEquatable<TKey>
+    public sealed class ThreadSafeDictionary<TKey, TValue> where TKey : struct, IEquatable<TKey>
     {
         public ThreadSafeDictionary(int size)
         {
@@ -27,6 +27,7 @@ namespace Svelto.DataStructures
 
         public int count
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 _lockQ.EnterReadLock();
@@ -41,6 +42,7 @@ namespace Svelto.DataStructures
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Add(TKey key, in TValue value)
         {
             _lockQ.EnterWriteLock();
@@ -54,6 +56,7 @@ namespace Svelto.DataStructures
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Set(TKey key, in TValue value)
         {
             _lockQ.EnterWriteLock();
@@ -67,6 +70,7 @@ namespace Svelto.DataStructures
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Clear()
         {
             _lockQ.EnterWriteLock();
@@ -80,6 +84,7 @@ namespace Svelto.DataStructures
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void FastClear()
         {
             _lockQ.EnterWriteLock();
@@ -93,6 +98,7 @@ namespace Svelto.DataStructures
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool ContainsKey(TKey key)
         {
             _lockQ.EnterReadLock();
@@ -106,6 +112,7 @@ namespace Svelto.DataStructures
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool TryGetValue(TKey key, out TValue result)
         {
             _lockQ.EnterReadLock();
@@ -119,6 +126,7 @@ namespace Svelto.DataStructures
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref TValue GetOrCreate(TKey key)
         {
             _lockQ.EnterWriteLock();
@@ -132,6 +140,7 @@ namespace Svelto.DataStructures
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref TValue GetOrCreate(TKey key, Func<TValue> builder)
         {
             _lockQ.EnterWriteLock();
@@ -145,6 +154,7 @@ namespace Svelto.DataStructures
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref TValue GetDirectValueByRef(uint index)
         {
             _lockQ.EnterReadLock();
@@ -158,6 +168,7 @@ namespace Svelto.DataStructures
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref TValue GetValueByRef(TKey key)
         {
             _lockQ.EnterReadLock();
@@ -171,12 +182,13 @@ namespace Svelto.DataStructures
             }
         }
 
-        public void ResizeTo(uint size)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void EnsureCapacity(uint size)
         {
             _lockQ.EnterWriteLock();
             try
             {
-                _dict.ResizeTo(size);
+                _dict.EnsureCapacity(size);
             }
             finally
             {
@@ -184,8 +196,22 @@ namespace Svelto.DataStructures
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void IncreaseCapacityBy(uint size)
+        {
+            _lockQ.EnterWriteLock();
+            try
+            {
+                _dict.IncreaseCapacityBy(size);
+            }
+            finally
+            {
+                _lockQ.EnterWriteLock();
+            }
+        }
         public TValue this[TKey key]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 _lockQ.EnterReadLock();
@@ -198,6 +224,7 @@ namespace Svelto.DataStructures
                     _lockQ.QuittingReadLock();
                 }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 _lockQ.EnterWriteLock();
@@ -211,7 +238,7 @@ namespace Svelto.DataStructures
                 }
             }
         }
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Remove(TKey key)
         {
             _lockQ.EnterWriteLock();
@@ -224,7 +251,7 @@ namespace Svelto.DataStructures
                 _lockQ.QuittingWriteLock();
             }
         }
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Trim()
         {
             _lockQ.EnterWriteLock();
@@ -238,6 +265,7 @@ namespace Svelto.DataStructures
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool TryFindIndex(TKey key, out uint findIndex)
         {
             _lockQ.EnterReadLock();
@@ -251,6 +279,7 @@ namespace Svelto.DataStructures
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public uint GetIndex(TKey key)
         {
             _lockQ.EnterReadLock();

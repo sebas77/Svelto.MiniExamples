@@ -16,7 +16,7 @@ namespace Svelto.ECS
     public partial class EnginesRoot
     {
 #if DONT_USE        
-        [Conditional("CHECK_ALL")]
+        [Conditional("MEANINGLESS")]
 #endif
         void CheckRemoveEntityID(EGID egid, Type entityDescriptorType, string caller)
         {
@@ -31,20 +31,20 @@ namespace Svelto.ECS
 
             if (_idChecker.TryGetValue(egid.groupID, out var hash))
                 if (hash.Contains(egid.entityID) == false)
-                    throw new ECSException("Trying to remove an Entity never submitted in the database "
-                                          .FastConcat(" caller: ", caller, " ").FastConcat(egid.entityID)
+                    throw new ECSException("Trying to remove an Entity not present in the database "
+                                          .FastConcat(" caller: ", caller, " entityID ").FastConcat(egid.entityID)
                                           .FastConcat(" groupid: ").FastConcat(egid.groupID.ToName())
                                           .FastConcat(" type: ")
                                           .FastConcat(entityDescriptorType != null
                                                           ? entityDescriptorType.Name
                                                           : "not available"));
-                else
-                    hash.Remove(egid.entityID);
+                
+            hash.Remove(egid.entityID);
 
             _multipleOperationOnSameEGIDChecker.Add(egid, 0);
         }
 #if DONT_USE
-        [Conditional("CHECK_ALL")]
+        [Conditional("MEANINGLESS")]
 #endif
         void CheckAddEntityID(EGID egid, Type entityDescriptorType, string caller)
         {
@@ -59,8 +59,8 @@ namespace Svelto.ECS
 
             var hash = _idChecker.GetOrCreate(egid.groupID, () => new HashSet<uint>());
             if (hash.Contains(egid.entityID) == true)
-                throw new ECSException("Trying to add an Entity already submitted to the database "
-                                      .FastConcat(" caller: ", caller, " ").FastConcat(egid.entityID)
+                throw new ECSException("Trying to add an Entity already present in the database "
+                                      .FastConcat(" caller: ", caller, " entityID ").FastConcat(egid.entityID)
                                       .FastConcat(" groupid: ").FastConcat(egid.groupID.ToName()).FastConcat(" type: ")
                                       .FastConcat(entityDescriptorType != null
                                                       ? entityDescriptorType.Name
@@ -70,12 +70,12 @@ namespace Svelto.ECS
         }
 
 #if DONT_USE
-        [Conditional("CHECK_ALL")]
+        [Conditional("MEANINGLESS")]
 #endif
         void RemoveGroupID(ExclusiveBuildGroup groupID) { _idChecker.Remove(groupID); }
 
 #if DONT_USE
-        [Conditional("CHECK_ALL")]
+        [Conditional("MEANINGLESS")]
 #endif
         void ClearChecks() { _multipleOperationOnSameEGIDChecker.FastClear(); }
 

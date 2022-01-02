@@ -187,7 +187,7 @@ namespace Svelto.ECS
             {
                 _egidToReferenceMap
                    .GetOrCreate(groupID, () => new SharedSveltoDictionaryNative<uint, EntityReference>(size))
-                   .ResizeTo(size);
+                   .EnsureCapacity(size);
 
                 _entityReferenceMap.Resize(size);
             }

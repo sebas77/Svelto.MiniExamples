@@ -14,7 +14,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
         protected override void OnUpdate()
         {
             foreach (var ((positions, _), group) in entitiesDB.QueryEntities<PositionEntityComponent>(
-                GameGroups.DOOFUSES.Groups))
+                         GameGroups.DOOFUSES.Groups))
             {
                 //there are usually two ways to sync Svelto entities with UECS entities
                 //In some cases, like for the rendering, the 1:1 relationship is not necessary, hence UECS entities
@@ -25,14 +25,14 @@ namespace Svelto.ECS.MiniExamples.Example1C
                 //when it's time to sync, I have two options, iterate the svelto entities first or iterate the
                 //UECS entities first. 
                 Entities.ForEach((int entityInQueryIndex, ref Translation translation) =>
-                         {
-                             ref readonly var positionEntityComponent = ref positions[entityInQueryIndex];
+                 {
+                     ref readonly var positionEntityComponent = ref positions[entityInQueryIndex];
 
-                             translation.Value = positionEntityComponent.position;
-                         })
-                         //In order to fetch the unity entities from the same group of the svelto entities we will set 
-                         //the group as a filter
-                        .WithSharedComponentFilter(new DOTSSveltoGroupID(@group)).ScheduleParallel();
+                     translation.Value = positionEntityComponent.position;
+                 })
+                 //In order to fetch the unity entities from the same group of the svelto entities we will set 
+                 //the group as a filter
+                 .WithSharedComponentFilter(new DOTSSveltoGroupID(@group)).ScheduleParallel();
             }
         }
 

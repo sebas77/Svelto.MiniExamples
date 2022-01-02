@@ -208,6 +208,7 @@
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Streams\Consumer.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\MonoScheduler.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Serialization\EntitiesDB.SerializationDescriptorMap.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\EntitiesOperations.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\EnginesRoot.DoubleBufferedEntitiesToAdd.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\EnginesGroup\UnsortedEnginesGroup.cs" />
      <None Include="Packages\com.sebaslab.svelto.ecs\version.json" />

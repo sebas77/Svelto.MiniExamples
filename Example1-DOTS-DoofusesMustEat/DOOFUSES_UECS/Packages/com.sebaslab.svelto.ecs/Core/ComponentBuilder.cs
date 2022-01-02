@@ -105,7 +105,7 @@ namespace Svelto.ECS
 
         public override int GetHashCode() { return _initializer.GetHashCode(); }
 
-        static void Preallocate(ITypeSafeDictionary dictionary, uint size) { dictionary.ResizeTo(size); }
+        static void Preallocate(ITypeSafeDictionary dictionary, uint size) { dictionary.EnsureCapacity(size); }
 
         readonly T _initializer;
 

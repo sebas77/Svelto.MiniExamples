@@ -196,10 +196,6 @@ namespace Svelto.ECS.DataStructures
                 newCapacity += MemoryUtilities.Pad4(newCapacity);
 
                 byte* newPointer = null;
-#if DEBUG && !PROFILE_SVELTO
-                if (newCapacity >= 1024*1024)
-                    throw new Exception("Excessive growth of the bag");
-#endif
                 newPointer = (byte*) MemoryUtilities.Alloc(newCapacity, allocator);
 
                 //copy wrapped content if there is any

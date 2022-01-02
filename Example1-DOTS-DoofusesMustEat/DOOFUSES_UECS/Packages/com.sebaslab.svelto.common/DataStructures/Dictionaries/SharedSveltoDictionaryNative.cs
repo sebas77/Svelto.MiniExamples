@@ -15,7 +15,7 @@ namespace Svelto.DataStructures.Native
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
-    public struct SharedSveltoDictionaryNative<TKey, TValue>: ISveltoDictionary<TKey, TValue>
+    public struct SharedSveltoDictionaryNative<TKey, TValue>
         where TKey : unmanaged, IEquatable<TKey> where TValue : struct
     {
         public SharedSveltoDictionaryNative(uint size)
@@ -109,9 +109,15 @@ namespace Svelto.DataStructures.Native
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void ResizeTo(uint size)
+        public void EnsureCapacity(uint size)
         {
-            _dictionary.ResizeTo(size);
+            _dictionary.EnsureCapacity(size);
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void IncreaseCapacityBy(uint size)
+        {
+            _dictionary.IncreaseCapacityBy(size);
         }
 
         public TValue this[TKey key]

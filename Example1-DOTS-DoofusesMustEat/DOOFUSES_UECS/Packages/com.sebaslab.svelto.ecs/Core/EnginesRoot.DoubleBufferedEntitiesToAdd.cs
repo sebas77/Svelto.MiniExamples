@@ -63,13 +63,13 @@ namespace Svelto.ECS
                     ITypeSafeDictionary[] componentTypesDictionary = componentDictionariesPerType[i].unsafeValues;
                     for (var j = 0; j < componentTypesCount; ++j)
                         //clear the dictionary of entities created so far (it won't allocate though)
-                        componentTypesDictionary[j].FastClear();
+                        componentTypesDictionary[j].Clear();
 
                     //if we didn't create too many component for this group, I reuse the component arrays
                     if (componentTypesCount <= MAX_NUMBER_OF_TYPES_PER_GROUP_TO_CACHE)
                     {
                         for (var j = 0; j < componentTypesCount; ++j)
-                            componentTypesDictionary[j].FastClear();
+                            componentTypesDictionary[j].Clear();
                     }
                     else
                     {
@@ -190,6 +190,7 @@ namespace Svelto.ECS
             //entities to be created sequentially (the index cannot be managed externally)
             internal FasterDictionary<ExclusiveGroupStruct, FasterDictionary<RefWrapperType, ITypeSafeDictionary>>
                 currentComponentsToAddPerGroup;
+
             FasterDictionary<ExclusiveGroupStruct, FasterDictionary<RefWrapperType, ITypeSafeDictionary>>
                 otherComponentsToAddPerGroup;
 
@@ -242,7 +243,8 @@ namespace Svelto.ECS
         public GroupInfo Current { get; private set; }
 
         //cannot be read only as they will be modified by MoveNext
-        readonly FasterDictionary<ExclusiveGroupStruct, FasterDictionary<RefWrapperType, ITypeSafeDictionary>> _otherComponentsToAddPerGroup;
+        readonly FasterDictionary<ExclusiveGroupStruct, FasterDictionary<RefWrapperType, ITypeSafeDictionary>>
+            _otherComponentsToAddPerGroup;
 
         SveltoDictionaryKeyValueEnumerator<ExclusiveGroupStruct, uint,
                 ManagedStrategy<SveltoDictionaryNode<ExclusiveGroupStruct>>, ManagedStrategy<uint>,

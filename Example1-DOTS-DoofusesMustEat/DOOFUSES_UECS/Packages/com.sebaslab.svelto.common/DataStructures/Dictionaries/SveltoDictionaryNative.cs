@@ -63,7 +63,16 @@ namespace Svelto.DataStructures.Native
         public ref TValue GetValueByRef(TKey key) { return ref _dictionary.GetValueByRef(key); }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void ResizeTo(uint size) { _dictionary.ResizeTo(size); }
+        public void EnsureCapacity(uint size)
+        {
+            _dictionary.EnsureCapacity(size);
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void IncreaseCapacityBy(uint size)
+        {
+            _dictionary.IncreaseCapacityBy(size);
+        }
 
         public TValue this[TKey key]
         {

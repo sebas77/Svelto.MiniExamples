@@ -23,13 +23,17 @@ namespace Svelto.ECS.Schedulers.Unity
             }
         }
 
-        public override bool paused { get; set; }
-
         void SubmitEntities()
         {
-            if (paused == false)
+            try
             {
                 _onTick.SubmitEntities();
+            }
+            catch
+            {
+                paused = true;
+                
+                throw;
             }
         }
 

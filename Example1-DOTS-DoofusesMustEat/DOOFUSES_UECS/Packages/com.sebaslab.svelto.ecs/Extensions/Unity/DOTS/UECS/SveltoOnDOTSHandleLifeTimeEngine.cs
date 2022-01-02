@@ -7,18 +7,16 @@ using Allocator = Svelto.Common.Allocator;
 
 namespace Svelto.ECS.SveltoOnDOTS
 {
-    public class SveltoOnDOTSHandleLifeTimeEngine<EntityComponent> : HandleLifeTimeEngine,
-        IReactOnAddAndRemove<EntityComponent>, IReactOnSwap<EntityComponent> where EntityComponent : unmanaged,
-        IEntityComponentForDOTS
+    public class SveltoOnDOTSHandleLifeTimeEngine<EntityComponent> : HandleLifeTimeEngine
+                                                                   , IReactOnRemove<EntityComponent>
+                                                                   , IReactOnSwap<EntityComponent>
+        where EntityComponent : unmanaged, IEntityComponentForDOTS
     {
         public override void SetupQuery(EntityManager entityManager)
         {
-            query = entityManager.CreateEntityQuery(typeof(DOTSEntityToSetup), typeof(DOTSSveltoEGID), typeof(DOTSSveltoGroupID)); 
+            query = entityManager.CreateEntityQuery(typeof(DOTSEntityToSetup), typeof(DOTSSveltoEGID)
+                                                  , typeof(DOTSSveltoGroupID));
         }
-        //why is add not virtual? Because it's not an HandleLifeTimeEngine responsibility to create entities,
-        //but it only react on remove and moveto
-        public void Add(ref EntityComponent entityComponent, EGID egid)
-        { }
 
         public virtual void MovedTo(ref EntityComponent entityComponent, ExclusiveGroupStruct previousGroup, EGID egid)
         {
@@ -54,9 +52,9 @@ namespace Svelto.ECS.SveltoOnDOTS
 
                 var convertEntitiesJob = new Job()
                 {
-                    entities   = entityArray,
-                    components = componentArray,
-                    mapper     = mapper
+                    entities   = entityArray
+                  , components = componentArray
+                  , mapper     = mapper
                 };
 
                 jobHandle = convertEntitiesJob.ScheduleParallel(entityArray.Length, jobHandle);
@@ -76,7 +74,7 @@ namespace Svelto.ECS.SveltoOnDOTS
 
             public void Execute(int index)
             {
-                   mapper.Entity(components[index].egid.entityID).dotsEntity = entities[index];
+                mapper.Entity(components[index].egid.entityID).dotsEntity = entities[index];
             }
         }
     }

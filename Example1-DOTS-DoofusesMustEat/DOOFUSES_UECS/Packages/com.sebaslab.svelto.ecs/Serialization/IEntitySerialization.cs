@@ -64,10 +64,10 @@ namespace Svelto.ECS.Serialization
         /// <summary>
         /// Special Entity Swap method that works without knowing the EntityDescriptor to swap
         /// </summary>
-        /// <param name="localEgid"></param>
-        /// <param name="toEgid"></param>
+        /// <param name="fromEGID"></param>
+        /// <param name="toEGID"></param>
         /// <param name="caller"></param>
-        void DeserializeEntityToSwap(EGID localEgid, EGID toEgid, string caller);
+        void DeserializeEntityToSwap(EGID fromEGID, EGID toEGID, string caller);
 
         /// <summary>
         /// Special Entity delete method that works without knowing the EntityDescriptor to delete

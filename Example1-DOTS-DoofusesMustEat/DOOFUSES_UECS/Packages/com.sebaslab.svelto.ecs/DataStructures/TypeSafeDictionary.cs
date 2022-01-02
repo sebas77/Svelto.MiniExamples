@@ -1,9 +1,10 @@
 ﻿#if DEBUG && !PROFILE_SVELTO
-#define PARANOID_CHECK
+//#define PARANOID_CHECK
 #endif
 
 using System;
 using System.Runtime.CompilerServices;
+using DBC.ECS;
 using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.DataStructures.Native;
@@ -18,7 +19,7 @@ namespace Svelto.ECS.Internal
         static readonly bool _hasReference = typeof(INeedEntityReference).IsAssignableFrom(_type);
 
         internal static readonly bool isUnmanaged =
-            _type.IsUnmanagedEx() && (typeof(IEntityViewComponent).IsAssignableFrom(_type) == false);
+            _type.IsUnmanagedEx() && typeof(IEntityViewComponent).IsAssignableFrom(_type) == false;
 
         public TypeSafeDictionary(uint size)
         {
@@ -27,316 +28,70 @@ namespace Svelto.ECS.Internal
                     new SveltoDictionary<uint, TValue, NativeStrategy<SveltoDictionaryNode<uint>>,
                         NativeStrategy<TValue>, NativeStrategy<int>>(size, Allocator.Persistent);
             else
-            {
                 implMgd =
                     new SveltoDictionary<uint, TValue, ManagedStrategy<SveltoDictionaryNode<uint>>,
                         ManagedStrategy<TValue>, ManagedStrategy<int>>(size, Allocator.Managed);
-            }
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Add(uint egidEntityId, in TValue entityComponent)
-        {
-            if (isUnmanaged)
-                implUnmgd.Add(egidEntityId, entityComponent);
-            else
-                implMgd.Add(egidEntityId, entityComponent);
-        }
-
-        //this method doesn't need to update the reference as the reference is of course just set once during
-        //the first add.
-        public void SwapEntityInDictionary(EGID fromEntityGid, EGID toEntityEGID, ITypeSafeDictionary toGroup)
-        {
-            if (isUnmanaged)
-            {
-                var valueIndex = implUnmgd.GetIndex(fromEntityGid.entityID);
-
-                DBC.ECS.Check.Require(toGroup != null
-                                    , "Invalid To Group"); //todo check this, if it's right merge GetIndex
-                {
-                    var     toGroupCasted = toGroup as ITypeSafeDictionary<TValue>;
-                    ref var entity        = ref implUnmgd.GetDirectValueByRef(valueIndex);
-
-                    if (_hasEgid)
-                        SetEGIDWithoutBoxing<TValue>.SetIDWithoutBoxing(ref entity, toEntityEGID);
-
-                    toGroupCasted.Add(toEntityEGID.entityID, entity);
-                    
-#if PARANOID_CHECK
-                    DBC.ECS.Check.Ensure(_hasEgid == false || ((INeedEGID)toGroupCasted[toEntityEGID.entityID]).ID == toEntityEGID, "impossible situation happened during swap");
-#endif                          
-                }
-            }
-            else
-            {
-                var valueIndex = implMgd.GetIndex(fromEntityGid.entityID);
-
-                DBC.ECS.Check.Require(toGroup != null
-                                    , "Invalid To Group"); //todo check this, if it's right merge GetIndex
-                {
-                    var     toGroupCasted = toGroup as ITypeSafeDictionary<TValue>;
-                    ref var entity        = ref implMgd.GetDirectValueByRef(valueIndex);
-
-                    if (_hasEgid)
-                        SetEGIDWithoutBoxing<TValue>.SetIDWithoutBoxing(ref entity, toEntityEGID);
-                    
-                    toGroupCasted.Add(toEntityEGID.entityID, entity);
-#if PARANOID_CHECK
-                    DBC.ECS.Check.Ensure(_hasEgid == false || ((INeedEGID)toGroupCasted[toEntityEGID.entityID]).ID == toEntityEGID, "impossible situation happened during swap");
-#endif                    
-                }
-            }
-        }
-
-        /// <summary>
-        ///     Add entities from external typeSafeDictionary (todo: add use case)
-        /// </summary>
-        /// <param name="entitiesToSubmit"></param>
-        /// <param name="groupId"></param>
-        /// <param name="enginesRoot"></param>
-        /// <exception cref="TypeSafeDictionaryException"></exception>
-        public void AddEntitiesFromDictionary
-            (ITypeSafeDictionary entitiesToSubmit, ExclusiveGroupStruct groupId, EnginesRoot enginesRoot)
-        {
-            var safeDictionary = (entitiesToSubmit as TypeSafeDictionary<TValue>);
-            if (isUnmanaged)
-            {
-                var typeSafeDictionary = safeDictionary.implUnmgd;
-
-                foreach (var tuple in typeSafeDictionary)
-                    try
-                    {
-                        var egid = new EGID(tuple.key, groupId);
-                        if (_hasEgid)
-                            SetEGIDWithoutBoxing<TValue>.SetIDWithoutBoxing(ref tuple.value, egid);
-
-                        //todo: temporary code that will eventually be removed
-                        if (_hasReference)
-                            SetEGIDWithoutBoxing<TValue>.SetRefWithoutBoxing(
-                                ref tuple.value, enginesRoot.entityLocator.GetEntityReference(egid));
-
-                        implUnmgd.Add(tuple.key, tuple.value);
-                        
-#if PARANOID_CHECK
-                        DBC.ECS.Check.Ensure(_hasEgid == false || ((INeedEGID)implUnmgd[egid.entityID]).ID == egid, "impossible situation happened during swap");
-#endif                         
-                    }
-                    catch (Exception e)
-                    {
-                        Console.LogException(
-                            e, "trying to add an EntityComponent with the same ID more than once Entity: ".FastConcat(typeof(TValue).ToString()).FastConcat(", group ").FastConcat(groupId.ToName()).FastConcat(", id ").FastConcat(tuple.key));
-
-                        throw;
-                    }
-            }
-            else
-            {
-                var typeSafeDictionary = safeDictionary.implMgd;
-
-                foreach (var tuple in typeSafeDictionary)
-                    try
-                    {
-                        var egid = new EGID(tuple.key, groupId);
-                        
-                        if (_hasEgid)
-                            SetEGIDWithoutBoxing<TValue>.SetIDWithoutBoxing(
-                                ref tuple.value, egid);
-
-                        //note: temporary code that will eventually be removed
-                        if (_hasReference)
-                            SetEGIDWithoutBoxing<TValue>.SetRefWithoutBoxing(
-                                ref tuple.value, enginesRoot.entityLocator.GetEntityReference(egid));
-
-                        implMgd.Add(tuple.key, tuple.value);
-                        
-#if PARANOID_CHECK
-                        DBC.ECS.Check.Ensure(_hasEgid == false || ((INeedEGID)implMgd[egid.entityID]).ID == egid, "impossible situation happened during swap");
-#endif                         
-                    }
-                    catch (Exception e)
-                    {
-                        Console.LogException(
-                            e, "trying to add an EntityComponent with the same ID more than once Entity: ".FastConcat(typeof(TValue).ToString()).FastConcat(", group ").FastConcat(groupId.ToName()).FastConcat(", id ").FastConcat(tuple.key));
-
-                        throw;
-                    }
-            }
-        }
-
-        //Execute Swap callbacks for the subset of entities found in this type safe dictionary
-        //Note: this is at the moment called ONLY to swap all the entities found in a group and not single entities
-        //todo: why is it iterating the dictionary instead to iterate directly the value array?
-        public void ExecuteEnginesSwapCallbacks
-        (FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer>> entityComponentEnginesDB
-       , ExclusiveGroupStruct fromGroup, ExclusiveGroupStruct toGroup, in PlatformProfiler profiler)
-        {
-            if (isUnmanaged)
-            {
-                //this can be optimized, should pass all the entities and not restart the process for each one
-                foreach (var value in implUnmgd)
-                    ExecuteEnginesAddOrSwapCallbacksOnSingleEntity(entityComponentEnginesDB
-                                                                 , ref implUnmgd.GetValueByRef(value.key), fromGroup
-                                                                 , in profiler, new EGID(value.key, toGroup));
-            }
-            else
-            {
-                //this can be optimized, should pass all the entities and not restart the process for each one
-                foreach (var value in implMgd)
-                    ExecuteEnginesAddOrSwapCallbacksOnSingleEntity(entityComponentEnginesDB
-                                                                 , ref implMgd.GetValueByRef(value.key), fromGroup
-                                                                 , in profiler, new EGID(value.key, toGroup));
-            }
-        }
-
-        //Execute Add callbacks for the subset of entities found in this type safe dictionary that were previously
-        //added in destination destinationDatabase 
-        public void ExecuteEnginesAddCallbacks
-        (uint startIndex, uint count
-       , FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer>> entityComponentEnginesDB
-       , ITypeSafeDictionary destinationDatabase, ExclusiveGroupStruct toGroup, in PlatformProfiler profiler)
-        {
-            if (isUnmanaged)
-            {
-                var dictionaryOfComponents = destinationDatabase as ITypeSafeDictionary<TValue>;
-
-                //this can be optimized, should pass all the entities and not restart the process for each one
-                var dictionaryKeyEnumerator = implUnmgd.GetEnumerator();
-                dictionaryKeyEnumerator.SetRange(startIndex, count);
-
-                while (dictionaryKeyEnumerator.MoveNext())
-                {
-                    var key = dictionaryKeyEnumerator.Current.key;
-                    ExecuteEnginesAddOrSwapCallbacksOnSingleEntity(entityComponentEnginesDB
-                                                                 , ref dictionaryOfComponents[key], null
-                                                                 , in profiler, new EGID(key, toGroup));
-                }
-            }
-            else
-            {
-                var typeSafeDictionary = destinationDatabase as ITypeSafeDictionary<TValue>;
-
-                var dictionaryKeyEnumerator = implMgd.GetEnumerator();
-                dictionaryKeyEnumerator.SetRange(startIndex, count);
-                //this can be optimized, should pass all the entities and not restart the process for each one
-                while (dictionaryKeyEnumerator.MoveNext())
-                {
-                    var key = dictionaryKeyEnumerator.Current.key;
-                    ExecuteEnginesAddOrSwapCallbacksOnSingleEntity(entityComponentEnginesDB
-                                                                 , ref typeSafeDictionary[key], null, in profiler
-                                                                 , new EGID(key, toGroup));
-                }
-            }
-        }
-
-        //Execute Remove callbacks for the subset of entities found in this type safe dictionary
-        //todo: why is it iterating the dictionary instead to iterate directly the value array?
-        public void ExecuteEnginesRemoveCallbacks
-        (FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer>> engines, in PlatformProfiler profiler
-       , ExclusiveGroupStruct group)
-        {
-            if (isUnmanaged)
-            {
-                foreach (var value in implUnmgd)
-                    ExecuteEnginesRemoveCallbackOnSingleEntity(engines, ref implUnmgd.GetValueByRef(value.key)
-                                                             , in profiler, new EGID(value.key, group));
-            }
-            else
-            {
-                foreach (var value in implMgd)
-                    ExecuteEnginesRemoveCallbackOnSingleEntity(engines, ref implMgd.GetValueByRef(value.key)
-                                                             , in profiler, new EGID(value.key, group));
-            }
-        }
-
-        //Execute Engines Swap Or Callback for one single entity.
-        //Todo:something wrong with this one, if it's one single entity, it should be taken directly from the toGroup dictionary.
-        public void ExecuteEnginesSwapOrRemoveCallbacks
-        (EGID fromEntityGid, EGID? toEntityID, ITypeSafeDictionary toGroup
-       , FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer>> engines, in PlatformProfiler profiler)
-        {
-            if (isUnmanaged)
-            {
-                var valueIndex = implUnmgd.GetIndex(fromEntityGid.entityID);
-
-                ref var entity = ref implUnmgd.GetDirectValueByRef(valueIndex);
-
-                //move
-                if (toGroup != null)
-                {
-                    var toGroupCasted = toGroup as ITypeSafeDictionary<TValue>;
-                    var previousGroup = fromEntityGid.groupID;
-
-                    var index = toGroupCasted.GetIndex(toEntityID.Value.entityID);
-
-                    ExecuteEnginesAddOrSwapCallbacksOnSingleEntity(engines, ref toGroupCasted.GetDirectValueByRef(index)
-                                                                 , previousGroup, in profiler, toEntityID.Value);
-                }
-                //remove
-                else
-                {
-                    ExecuteEnginesRemoveCallbackOnSingleEntity(engines, ref entity, in profiler, fromEntityGid);
-                }
-            }
-            else
-            {
-                var valueIndex = implMgd.GetIndex(fromEntityGid.entityID);
-
-                ref var entity = ref implMgd.GetDirectValueByRef(valueIndex);
-
-                if (toGroup != null)
-                {
-                    var toGroupCasted = toGroup as ITypeSafeDictionary<TValue>;
-                    var previousGroup = fromEntityGid.groupID;
-
-                    var index = toGroupCasted.GetIndex(toEntityID.Value.entityID);
-
-                    ExecuteEnginesAddOrSwapCallbacksOnSingleEntity(engines, ref toGroupCasted.GetDirectValueByRef(index)
-                                                                 , previousGroup, in profiler, toEntityID.Value);
-                }
-                else
-                {
-                    ExecuteEnginesRemoveCallbackOnSingleEntity(engines, ref entity, in profiler, fromEntityGid);
-                }
-            }
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Clear()
-        {
-            if (isUnmanaged)
-            {
-                implUnmgd.Clear();
-            }
-            else
-            {
-                implMgd.Clear();
-            }
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void FastClear()
-        {
-            if (isUnmanaged)
-            {
-                implUnmgd.FastClear();
-            }
-            else
-            {
-                implMgd.FastClear();
-            }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool ContainsKey(uint egidEntityId)
         {
-            if (isUnmanaged)
-            {
-                return implUnmgd.ContainsKey(egidEntityId);
-            }
-            else
-            {
-                return implMgd.ContainsKey(egidEntityId);
-            }
+            return isUnmanaged ? implUnmgd.ContainsKey(egidEntityId) : implMgd.ContainsKey(egidEntityId);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public uint GetIndex(uint valueEntityId)
+        {
+            return isUnmanaged ? implUnmgd.GetIndex(valueEntityId) : implMgd.GetIndex(valueEntityId);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ref TValue GetOrCreate(uint idEntityId)
+        {
+            return ref isUnmanaged ? ref implUnmgd.GetOrCreate(idEntityId) : ref implMgd.GetOrCreate(idEntityId);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public IBuffer<TValue> GetValues(out uint count)
+        {
+            return isUnmanaged ? implUnmgd.GetValues(out count) : implMgd.GetValues(out count);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ref TValue GetDirectValueByRef(uint key)
+        {
+            return ref isUnmanaged ? ref implUnmgd.GetDirectValueByRef(key) : ref implMgd.GetDirectValueByRef(key);
+        }
+
+        public ref TValue GetValueByRef(uint key)
+        {
+            return ref isUnmanaged ? ref implUnmgd.GetValueByRef(key) : ref implMgd.GetValueByRef(key);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Has(uint key)
+        {
+            return isUnmanaged ? implUnmgd.ContainsKey(key) : implMgd.ContainsKey(key);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool TryFindIndex(uint entityId, out uint index)
+        {
+            return isUnmanaged
+                ? implUnmgd.TryFindIndex(entityId, out index)
+                : implMgd.TryFindIndex(entityId, out index);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool TryGetValue(uint entityId, out TValue item)
+        {
+            return isUnmanaged ? implUnmgd.TryGetValue(entityId, out item) : implMgd.TryGetValue(entityId, out item);
+        }
+
+        public int count
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => isUnmanaged ? implUnmgd.count : implMgd.count;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -346,183 +101,58 @@ namespace Svelto.ECS.Internal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public uint GetIndex(uint valueEntityId)
+        public void Clear()
         {
             if (isUnmanaged)
-            {
-                return implUnmgd.GetIndex(valueEntityId);
-            }
+                implUnmgd.FastClear();
             else
-            {
-                return implMgd.GetIndex(valueEntityId);
-            }
+                implMgd.Clear();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ref TValue GetOrCreate(uint idEntityId)
+        public void EnsureCapacity(uint size)
         {
             if (isUnmanaged)
-            {
-                return ref implUnmgd.GetOrCreate(idEntityId);
-            }
+                implUnmgd.EnsureCapacity(size);
             else
-            {
-                return ref implMgd.GetOrCreate(idEntityId);
-            }
+                implMgd.EnsureCapacity(size);
         }
-
+        
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IBuffer<TValue> GetValues(out uint count)
+        public void IncreaseCapacityBy(uint size)
         {
             if (isUnmanaged)
-            {
-                return implUnmgd.GetValues(out count);
-            }
+                implUnmgd.IncreaseCapacityBy(size);
             else
-            {
-                return implMgd.GetValues(out count);
-            }
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ref TValue GetDirectValueByRef(uint key)
-        {
-            if (isUnmanaged)
-            {
-                return ref implUnmgd.GetDirectValueByRef(key);
-            }
-            else
-            {
-                return ref implMgd.GetDirectValueByRef(key);
-            }
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Has(uint key)
-        {
-            if (isUnmanaged)
-            {
-                return implUnmgd.ContainsKey(key);
-            }
-            else
-            {
-                return implMgd.ContainsKey(key);
-            }
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void RemoveEntityFromDictionary(EGID fromEntityGid)
-        {
-            if (isUnmanaged)
-            {
-                implUnmgd.Remove(fromEntityGid.entityID);
-            }
-            else
-            {
-                implMgd.Remove(fromEntityGid.entityID);
-            }
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void ResizeTo(uint size)
-        {
-            if (isUnmanaged)
-            {
-                implUnmgd.ResizeTo(size);
-            }
-            else
-            {
-                implMgd.ResizeTo(size);
-            }
+                implMgd.IncreaseCapacityBy(size);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Trim()
         {
             if (isUnmanaged)
-            {
                 implUnmgd.Trim();
-            }
             else
-            {
                 implMgd.Trim();
-            }
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool TryFindIndex(uint entityId, out uint index)
-        {
-            if (isUnmanaged)
-            {
-                return implUnmgd.TryFindIndex(entityId, out index);
-            }
-            else
-            {
-                return implMgd.TryFindIndex(entityId, out index);
-            }
         }
 
         public void KeysEvaluator(Action<uint> action)
         {
             if (isUnmanaged)
-            {
                 foreach (var key in implUnmgd.keys)
-                {
                     action(key);
-                }
-            }
             else
-            {
                 foreach (var key in implMgd.keys)
-                {
                     action(key);
-                }
-            }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool TryGetValue(uint entityId, out TValue item)
+        public void Add(uint egidEntityId, in TValue entityComponent)
         {
             if (isUnmanaged)
-            {
-                return implUnmgd.TryGetValue(entityId, out item);
-            }
+                implUnmgd.Add(egidEntityId, entityComponent);
             else
-            {
-                return implMgd.TryGetValue(entityId, out item);
-            }
-        }
-
-        public int count
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
-            {
-                if (isUnmanaged)
-                {
-                    return implUnmgd.count;
-                }
-                else
-                {
-                    return implMgd.count;
-                }
-            }
-        }
-
-        public ref TValue this[uint idEntityId]
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
-            {
-                if (isUnmanaged)
-                {
-                    return ref implUnmgd.GetValueByRef(idEntityId);
-                }
-                else
-                {
-                    return ref implMgd.GetValueByRef(idEntityId);
-                }
-            }
+                implMgd.Add(egidEntityId, entityComponent);
         }
 
         public void Dispose()
@@ -535,55 +165,386 @@ namespace Svelto.ECS.Internal
             GC.SuppressFinalize(this);
         }
 
-        void ExecuteEnginesAddOrSwapCallbacksOnSingleEntity
+        public void AddEntitiesToDictionary
+            (ITypeSafeDictionary toDictionary, ExclusiveGroupStruct groupId, in EnginesRoot.LocatorMap entityLocator)
+        {
+            static void SharedAddEntitiesFromDictionary<Strategy1, Strategy2, Strategy3>
+            ( in SveltoDictionary<uint, TValue, Strategy1, Strategy2, Strategy3> fromDictionary
+            , ITypeSafeDictionary<TValue> toDictionary
+           , in EnginesRoot.LocatorMap entityLocator, ExclusiveGroupStruct toGroupID)
+                where Strategy1 : struct, IBufferStrategy<SveltoDictionaryNode<uint>>
+                where Strategy2 : struct, IBufferStrategy<TValue>
+                where Strategy3 : struct, IBufferStrategy<int>
+            {
+                foreach (var tuple in fromDictionary)
+                    try
+                    {
+                        var egid = new EGID(tuple.key, toGroupID);
+
+                        if (_hasEgid)
+                            SetEGIDWithoutBoxing<TValue>.SetIDWithoutBoxing(ref tuple.value, egid);
+
+                        //todo: temporary code that will eventually be removed
+                        if (_hasReference)
+                            SetEGIDWithoutBoxing<TValue>.SetRefWithoutBoxing(ref tuple.value
+                                                                           , entityLocator.GetEntityReference(egid));
+
+                        toDictionary.Add(tuple.key, tuple.value);
+
+#if PARANOID_CHECK
+                        DBC.ECS.Check.Ensure(_hasEgid == false || ((INeedEGID)implUnmgd[egid.entityID]).ID == egid, "impossible situation happened during swap");
+#endif
+                    }
+                    catch (Exception e)
+                    {
+                        Console.LogException(
+                            e, "trying to add an EntityComponent with the same ID more than once Entity: ".FastConcat(typeof(TValue).ToString()).FastConcat(", group ").FastConcat(toGroupID.ToName()).FastConcat(", id ").FastConcat(tuple.key));
+
+                        throw;
+                    }
+            }
+
+            var destinationDictionary = toDictionary as ITypeSafeDictionary<TValue>;
+
+            if (isUnmanaged)
+                SharedAddEntitiesFromDictionary(implUnmgd, destinationDictionary, entityLocator, groupId);
+            else
+                SharedAddEntitiesFromDictionary(implMgd, destinationDictionary, entityLocator, groupId);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void RemoveEntitiesFromDictionary(FasterList<(uint, string)> infosToProcess)
+        {
+            var iterations = infosToProcess.count;
+
+            if (isUnmanaged)
+            {
+                for (var i = 0; i < iterations; i++)
+                {
+                    var (id, trace) = infosToProcess[i];
+
+                    try
+                    {
+                        implUnmgd.Remove(id);
+                    }
+                    catch
+                    {
+                        var str = "Crash while executing Remove Entity operation on ".FastConcat(TypeCache<TValue>.name)
+                           .FastConcat(" from : ", trace);
+
+                        Console.LogError(str);
+
+                        throw;
+                    }
+                }
+            }
+            else
+            {
+                for (var i = 0; i < iterations; i++)
+                {
+                    var (id, trace) = infosToProcess[i];
+
+                    try
+                    {
+                        implMgd.Remove(id);
+                    }
+                    catch
+                    {
+                        var str = "Crash while executing Remove Entity operation on ".FastConcat(TypeCache<TValue>.name)
+                           .FastConcat(" from : ", trace);
+
+                        Console.LogError(str);
+
+                        throw;
+                    }
+                }
+            }
+        }
+
+        public void SwapEntitiesBetweenDictionaries
+        (FasterList<(uint, string)> infosToProcess, ExclusiveGroupStruct fromGroup, ExclusiveGroupStruct toGroup
+       , ITypeSafeDictionary toComponentsDictionary)
+        {
+            void SharedSwapEntityInDictionary<Strategy1, Strategy2, Strategy3>
+            (ref SveltoDictionary<uint, TValue, Strategy1, Strategy2, Strategy3> fromDictionary
+           , ITypeSafeDictionary<TValue> toDictionary)
+                where Strategy1 : struct, IBufferStrategy<SveltoDictionaryNode<uint>>
+                where Strategy2 : struct, IBufferStrategy<TValue>
+                where Strategy3 : struct, IBufferStrategy<int>
+            {
+                var iterations = infosToProcess.count;
+
+                for (var i = 0; i < iterations; i++)
+                {
+                    var (id, trace) = infosToProcess[i];
+
+                    try
+                    {
+                        var fromEntityGid = new EGID(id, fromGroup);
+                        var toEntityEgid  = new EGID(id, toGroup);
+
+                        Check.Require(toGroup != null
+                                    , "Invalid To Group"); //todo check this, if it's right merge GetIndex
+
+                        fromDictionary.Remove(fromEntityGid.entityID, out var entity);
+
+                        if (_hasEgid)
+                            SetEGIDWithoutBoxing<TValue>.SetIDWithoutBoxing(ref entity, toEntityEgid);
+
+                        toDictionary.Add(toEntityEgid.entityID, entity);
+
+#if PARANOID_CHECK
+                        DBC.ECS.Check.Ensure(_hasEgid == false || ((INeedEGID)toGroupCasted[toEntityEGID.entityID]).ID == toEntityEGID, "impossible situation happened during swap");
+#endif
+                    }
+                    catch
+                    {
+                        var str = "Crash while executing Swap Entity operation on ".FastConcat(TypeCache<TValue>.name)
+                           .FastConcat(" from : ", trace);
+
+                        Console.LogError(str);
+
+                        throw;
+                    }
+                }
+            }
+
+            var toGroupCasted = toComponentsDictionary as ITypeSafeDictionary<TValue>;
+
+            if (isUnmanaged)
+                SharedSwapEntityInDictionary(ref implUnmgd, toGroupCasted);
+            else
+                SharedSwapEntityInDictionary(ref implMgd, toGroupCasted);
+        }
+
+        public void ExecuteEnginesAddCallbacks
+        (FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer>> entityComponentEnginesDB
+       , ITypeSafeDictionary toDic, ExclusiveGroupStruct toGroup, in PlatformProfiler profiler)
+        {
+            ITypeSafeDictionary<TValue> toDictionary = (ITypeSafeDictionary<TValue>)toDic;
+
+            try
+            {
+                if (isUnmanaged)
+                {
+                    var dictionaryKeyEnumerator = implUnmgd.unsafeKeys;
+                    var count                   = implUnmgd.count;
+
+                    for (int i = 0; i < count; ++i)
+                    {
+                        var     key    = dictionaryKeyEnumerator[i].key;
+                        ref var entity = ref toDictionary.GetValueByRef(key);
+                        ExecuteEnginesAddEntityCallbacks(entityComponentEnginesDB, ref entity, new EGID(key, toGroup)
+                                                       , in profiler);
+                    }
+                }
+                else
+                {
+                    var dictionaryKeyEnumerator = implMgd.unsafeKeys;
+                    var count                   = implMgd.count;
+
+                    for (int i = 0; i < count; ++i)
+                    {
+                        var     key    = dictionaryKeyEnumerator[i].key;
+                        ref var entity = ref toDictionary.GetValueByRef(key);
+                        ExecuteEnginesAddEntityCallbacks(entityComponentEnginesDB, ref entity, new EGID(key, toGroup)
+                                                       , in profiler);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.LogException(e, "Code crashed inside Add callback with Type ".FastConcat(TypeCache<TValue>.name));
+
+                throw;
+            }
+        }
+
+        public void ExecuteEnginesSwapCallbacks
+        (FasterList<(uint, string)> infosToProcess
+       , FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer>> reactiveEnginesSwap
+       , ExclusiveGroupStruct fromGroup, ExclusiveGroupStruct toGroup, in PlatformProfiler profiler)
+        {
+            var iterations = infosToProcess.count;
+
+            if (isUnmanaged)
+                for (var i = 0; i < iterations; i++)
+                {
+                    var (id, trace) = infosToProcess[i];
+
+                    try
+                    {
+                        ExecuteEnginesSwapEntityCallbacks(reactiveEnginesSwap, ref implUnmgd.GetValueByRef(id)
+                                                        , fromGroup, new EGID(id, toGroup), in profiler);
+                    }
+                    catch
+                    {
+                        var str = "Crash while executing Swap Entity callback on ".FastConcat(TypeCache<TValue>.name)
+                           .FastConcat(" from : ", trace);
+
+                        Console.LogError(str);
+
+                        throw;
+                    }
+                }
+            else
+                for (var i = 0; i < iterations; i++)
+                {
+                    var (id, trace) = infosToProcess[i];
+
+                    try
+                    {
+                        ExecuteEnginesSwapEntityCallbacks(reactiveEnginesSwap, ref implMgd.GetValueByRef(id), fromGroup
+                                                        , new EGID(id, toGroup), in profiler);
+                    }
+                    catch
+                    {
+                        var str = "Crash while executing Swap Entity callback on ".FastConcat(TypeCache<TValue>.name)
+                           .FastConcat(" from : ", trace);
+
+                        Console.LogError(str);
+
+                        throw;
+                    }
+                }
+        }
+
+        public void ExecuteEnginesSwapGroupCallbacks
+        (FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer>> reactiveEnginesSwap
+       , ITypeSafeDictionary toDictionary, ExclusiveGroupStruct fromGroup, ExclusiveGroupStruct toGroup
+       , in PlatformProfiler profiler)
+        {
+            var toEntitiesDictionary = (ITypeSafeDictionary<TValue>)toDictionary;
+
+            try
+            {
+                if (isUnmanaged)
+                    foreach (KeyValuePairFast<uint, TValue, NativeStrategy<TValue>> value in implUnmgd)
+                    {
+                        ExecuteEnginesSwapEntityCallbacks(reactiveEnginesSwap
+                                                        , ref toEntitiesDictionary.GetValueByRef(value.key), fromGroup
+                                                        , new EGID(value.key, toGroup), in profiler);
+                    }
+                else
+                    foreach (KeyValuePairFast<uint, TValue, ManagedStrategy<TValue>> value in implMgd)
+                    {
+                        ExecuteEnginesSwapEntityCallbacks(reactiveEnginesSwap
+                                                        , ref toEntitiesDictionary.GetValueByRef(value.key), fromGroup
+                                                        , new EGID(value.key, toGroup), in profiler);
+                    }
+            }
+            catch
+            {
+                Console.LogError("Code crashed Swap callback with Type ".FastConcat(TypeCache<TValue>.name));
+
+                throw;
+            }
+        }
+
+        public void ExecuteEnginesRemoveCallbacks
+        (FasterList<(uint, string)> infosToProcess
+       , FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer>> reactiveEnginesSwap
+       , ExclusiveGroupStruct fromGroup, in PlatformProfiler sampler)
+        {
+            var iterations = infosToProcess.count;
+
+            if (isUnmanaged)
+            {
+                for (var i = 0; i < iterations; i++)
+                {
+                    var (id, trace) = infosToProcess[i];
+
+                    try
+                    {
+                        ExecuteEnginesRemoveEntityCallback(reactiveEnginesSwap, ref implUnmgd.GetValueByRef(id)
+                                                         , new EGID(id, fromGroup), sampler);
+                    }
+                    catch
+                    {
+                        var str = "Crash while executing Swap Entity callback on ".FastConcat(TypeCache<TValue>.name)
+                           .FastConcat(" from : ", trace);
+
+                        Console.LogError(str);
+
+                        throw;
+                    }
+                }
+            }
+            else
+            {
+                for (var i = 0; i < iterations; i++)
+                {
+                    var (id, trace) = infosToProcess[i];
+
+                    try
+                    {
+                        ExecuteEnginesRemoveEntityCallback(reactiveEnginesSwap, ref implMgd.GetValueByRef(id)
+                                                         , new EGID(id, fromGroup), sampler);
+                    }
+                    catch
+                    {
+                        var str = "Crash while executing Swap Entity callback on ".FastConcat(TypeCache<TValue>.name)
+                           .FastConcat(" from : ", trace);
+
+                        Console.LogError(str);
+
+                        throw;
+                    }
+                }
+            }
+        }
+
+        public void ExecuteEnginesRemoveGroupCallbacks
+        (FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer>> engines, ExclusiveGroupStruct group
+       , in PlatformProfiler profiler)
+        {
+            try
+            {
+                if (isUnmanaged)
+                    foreach (var value in implUnmgd)
+                        ExecuteEnginesRemoveEntityCallback(engines, ref value.value, new EGID(value.key, group)
+                                                         , in profiler);
+                else
+                    foreach (var value in implMgd)
+                        ExecuteEnginesRemoveEntityCallback(engines, ref value.value, new EGID(value.key, group)
+                                                         , in profiler);
+            }
+            catch
+            {
+                Console.LogError(
+                    "Code crashed inside Swap Group callback with Type ".FastConcat(TypeCache<TValue>.name));
+
+                throw;
+            }
+        }
+
+        static void ExecuteEnginesAddEntityCallbacks
         (FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer>> engines, ref TValue entityComponent
-       , ExclusiveGroupStruct? previousGroup, in PlatformProfiler profiler, EGID egid)
+       , EGID egid, in PlatformProfiler profiler)
         {
             //get all the engines linked to TValue
             if (!engines.TryGetValue(new RefWrapperType(_type), out var entityComponentsEngines))
                 return;
 
-            if (previousGroup == null)
-            {
-                for (var i = 0; i < entityComponentsEngines.count; i++)
-                    try
+            for (var i = 0; i < entityComponentsEngines.count; i++)
+                try
+                {
+                    using (profiler.Sample(entityComponentsEngines[i].name))
                     {
-                        using (profiler.Sample(entityComponentsEngines[i].name))
-                        {
-                            ((IReactOnAddAndRemove<TValue>)entityComponentsEngines[i].engine).Add(
-                                ref entityComponent, egid);
-                        }
+                        ((IReactOnAdd<TValue>)entityComponentsEngines[i].engine).Add(ref entityComponent, egid);
                     }
-                    catch
-                    {
-                        Console.LogError("Code crashed inside Add callback ".FastConcat(typeof(TValue).ToString()));
+                }
+                catch (Exception e)
+                {
+                    Console.LogException(e, "Code crashed inside Add callback ".FastConcat(entityComponentsEngines[i].name));
 
-                        throw;
-                    }
-            }
-            else
-            {
-                for (var i = 0; i < entityComponentsEngines.count; i++)
-                    try
-                    {
-                        using (profiler.Sample(entityComponentsEngines[i].name))
-                        {
-                            ((IReactOnSwap<TValue>)entityComponentsEngines[i].engine).MovedTo(
-                                ref entityComponent, previousGroup.Value, egid);
-                        }
-                    }
-                    catch (Exception)
-                    {
-                        Console.LogError("Code crashed inside MoveTo callback ".FastConcat(typeof(TValue).ToString()));
-
-                        throw;
-                    }
-            }
+                    throw;
+                }
         }
 
-        static void ExecuteEnginesRemoveCallbackOnSingleEntity
-        (FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer>> engines, ref TValue entity
-       , in PlatformProfiler profiler, EGID egid)
+        static void ExecuteEnginesRemoveEntityCallback
+        (FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer>> engines, ref TValue entity, EGID egid
+       , in PlatformProfiler profiler)
         {
             if (!engines.TryGetValue(new RefWrapperType(_type), out var entityComponentsEngines))
                 return;
@@ -593,21 +554,47 @@ namespace Svelto.ECS.Internal
                 {
                     using (profiler.Sample(entityComponentsEngines[i].name))
                     {
-                        (entityComponentsEngines[i].engine as IReactOnAddAndRemove<TValue>).Remove(ref entity, egid);
+                        ((IReactOnRemove<TValue>)entityComponentsEngines[i].engine).Remove(ref entity, egid);
                     }
                 }
                 catch
                 {
-                    Console.LogError("Code crashed inside Remove callback ".FastConcat(typeof(TValue).ToString()));
+                    Console.LogError(
+                        "Code crashed inside Remove callback ".FastConcat(entityComponentsEngines[i].name));
 
                     throw;
                 }
         }
 
-        internal SveltoDictionary<uint, TValue, ManagedStrategy<SveltoDictionaryNode<uint>>, ManagedStrategy<TValue>,
+        static void ExecuteEnginesSwapEntityCallbacks
+        (FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer>> engines, ref TValue entityComponent
+       , ExclusiveGroupStruct previousGroup, EGID newEGID, in PlatformProfiler profiler)
+        {
+            //get all the engines linked to TValue
+            if (!engines.TryGetValue(new RefWrapperType(_type), out var entityComponentsEngines))
+                return;
+
+            for (var i = 0; i < entityComponentsEngines.count; i++)
+                try
+                {
+                    using (profiler.Sample(entityComponentsEngines[i].name))
+                    {
+                        ((IReactOnSwap<TValue>)entityComponentsEngines[i].engine).MovedTo(
+                            ref entityComponent, previousGroup, newEGID);
+                    }
+                }
+                catch (Exception)
+                {
+                    Console.LogError(
+                        "Code crashed inside MoveTo callback ".FastConcat(entityComponentsEngines[i].name));
+
+                    throw;
+                }
+        }
+
+        SveltoDictionary<uint, TValue, ManagedStrategy<SveltoDictionaryNode<uint>>, ManagedStrategy<TValue>,
             ManagedStrategy<int>> implMgd;
 
-        //used directly by native methods
         internal SveltoDictionary<uint, TValue, NativeStrategy<SveltoDictionaryNode<uint>>, NativeStrategy<TValue>,
             NativeStrategy<int>> implUnmgd;
     }

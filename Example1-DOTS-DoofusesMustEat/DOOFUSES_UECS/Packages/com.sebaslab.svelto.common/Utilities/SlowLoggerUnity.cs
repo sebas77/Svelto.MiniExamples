@@ -118,7 +118,7 @@ namespace Svelto.Utilities
                 {
                     if (e != null)
                     {
-                        txt   = txt.FastConcat(e.Message);
+                        txt   = txt.FastConcat(" ", e.Message);
                         stack = ExtractFormattedStackTrace(new StackTrace(e, true));
                     }
                     else

@@ -16,6 +16,7 @@ public static class FastConcatUtility
 
         return builder.ToString();
     }
+    
     public static string FastConcat(this string str1, int value)
     {
         var builder = _stringBuilder;
@@ -42,7 +43,7 @@ public static class FastConcatUtility
     {
         var builder = _stringBuilder;
 
-        builder.Clear();
+        builder.Length = 0;
 
         builder.Append(str1).Append(value);
 
@@ -53,7 +54,7 @@ public static class FastConcatUtility
     {
         var builder = _stringBuilder;
 
-        builder.Clear();
+        builder.Length = 0;
 
         builder.Append(str1).Append(value);
 
@@ -64,7 +65,7 @@ public static class FastConcatUtility
     {
         var builder = _stringBuilder;
 
-        builder.Clear();
+        builder.Length = 0;
 
         builder.Append(str1).Append(value);
 
@@ -75,7 +76,7 @@ public static class FastConcatUtility
     {
         var builder = _stringBuilder;
 
-        builder.Clear();
+        builder.Length = 0;
 
         builder.Append(str1);
         builder.Append(str2);
@@ -88,7 +89,7 @@ public static class FastConcatUtility
     {
         var builder = _stringBuilder;
 
-        builder.Clear();
+        builder.Length = 0;
 
         builder.Append(str1);
         builder.Append(str2);
@@ -103,7 +104,7 @@ public static class FastConcatUtility
     {
         var builder = _stringBuilder;
 
-        builder.Clear();
+        builder.Length = 0;
 
         builder.Append(str1);
         builder.Append(str2);
@@ -127,8 +128,6 @@ public static class FastConcatUtility
             {
                 return new StringBuilder(); //this is just to handle finalizer that could be called after the _threadSafeStrings is finalized. So pretty rare
             }
-
         }
     }
-
 }

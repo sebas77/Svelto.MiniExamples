@@ -7,44 +7,57 @@ namespace Svelto.ECS.Internal
     public interface ITypeSafeDictionary<TValue> : ITypeSafeDictionary where TValue : IEntityComponent
     {
         void Add(uint egidEntityId, in TValue entityComponent);
-        ref TValue this[uint idEntityId] { get; }
+        
         bool       TryGetValue(uint entityId, out TValue item);
         ref TValue GetOrCreate(uint idEntityId);
 
         IBuffer<TValue> GetValues(out uint count);
         ref TValue      GetDirectValueByRef(uint key);
+        ref TValue      GetValueByRef(uint key);
     }
 
     public interface ITypeSafeDictionary : IDisposable
     {
-        int                count { get; }
+        int                 count { get; }
+        
         ITypeSafeDictionary Create();
 
+        void AddEntitiesToDictionary
+        (ITypeSafeDictionary toDictionary, ExclusiveGroupStruct groupId, in EnginesRoot.LocatorMap entityLocator);
+
         void ExecuteEnginesAddCallbacks
-        (uint startIndex, uint count
-       , FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer>> entityComponentEnginesDb
-       , ITypeSafeDictionary destinationDatabase, ExclusiveGroupStruct toGroup, in PlatformProfiler profiler);
-        void ExecuteEnginesSwapCallbacks
         (FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer>> entityComponentEnginesDb
-       , ExclusiveGroupStruct fromGroup, ExclusiveGroupStruct toGroup, in PlatformProfiler profiler);
+       , ITypeSafeDictionary destinationDatabase, ExclusiveGroupStruct toGroup, in PlatformProfiler profiler);
+
+        void SwapEntitiesBetweenDictionaries
+        (FasterList<(uint, string)> infosToProcess, ExclusiveGroupStruct fromGroup, ExclusiveGroupStruct toGroup
+       , ITypeSafeDictionary toComponentsDictionary);
+
+        void ExecuteEnginesSwapCallbacks
+        (FasterList<(uint, string)> infosToProcess
+       , FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer>> reactiveEnginesSwap
+       , ExclusiveGroupStruct fromGroup, ExclusiveGroupStruct toGroup, in PlatformProfiler sampler);
+
+        void ExecuteEnginesSwapGroupCallbacks
+        (FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer>> reactiveEnginesSwap
+       , ITypeSafeDictionary toEntitiesDictionary, ExclusiveGroupStruct fromGroupId, ExclusiveGroupStruct toGroupId
+       , in PlatformProfiler platformProfiler);
+
+        void RemoveEntitiesFromDictionary(FasterList<(uint, string)> infosToProcess);
+
         void ExecuteEnginesRemoveCallbacks
-        (FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer>> entityComponentEnginesDB
-       , in PlatformProfiler profiler, ExclusiveGroupStruct @group);
+        (FasterList<(uint, string)> infosToProcess
+       , FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer>> reactiveEnginesRemove
+       , ExclusiveGroupStruct fromGroup, in PlatformProfiler sampler);
 
-        void ExecuteEnginesSwapOrRemoveCallbacks
-        (EGID fromEntityGid, EGID? toEntityID, ITypeSafeDictionary toGroup
-       , FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer>> engines, in PlatformProfiler profiler);
+        void ExecuteEnginesRemoveGroupCallbacks
+        (FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer>> engines
+       , ExclusiveGroupStruct group, in PlatformProfiler profiler);
 
-        void AddEntitiesFromDictionary
-            (ITypeSafeDictionary entitiesToSubmit, ExclusiveGroupStruct groupId, EnginesRoot enginesRoot);
-
-        void SwapEntityInDictionary(EGID fromEntityGid, EGID toEntityEGID, ITypeSafeDictionary toGroup);
-        void RemoveEntityFromDictionary(EGID fromEntityGid);
-
-        void ResizeTo(uint size);
+        void IncreaseCapacityBy(uint size);
+        void EnsureCapacity(uint size);
         void Trim();
         void Clear();
-        void FastClear();
         bool Has(uint key);
         bool ContainsKey(uint egidEntityId);
         uint GetIndex(uint valueEntityId);

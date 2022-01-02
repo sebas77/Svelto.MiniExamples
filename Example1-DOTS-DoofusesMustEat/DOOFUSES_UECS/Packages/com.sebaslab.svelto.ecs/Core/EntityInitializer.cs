@@ -42,8 +42,7 @@ namespace Svelto.ECS
 
         public ref T Get<T>() where T : struct, IEntityComponent
         {
-            return ref (_group[new RefWrapperType(ComponentBuilder<T>.ENTITY_COMPONENT_TYPE)] as ITypeSafeDictionary<T>)
-                [_ID.entityID];
+            return ref (_group[new RefWrapperType(ComponentBuilder<T>.ENTITY_COMPONENT_TYPE)] as ITypeSafeDictionary<T>).GetValueByRef(_ID.entityID);
         }
 
         public bool Has<T>() where T : struct, IEntityComponent

@@ -94,19 +94,13 @@ namespace Svelto.DataStructures
         public ref T this[uint index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
-            {
-                return ref _realBuffer[index];
-            }
+            get => ref _realBuffer[index];
         }
 
         public ref T this[int index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
-            {
-                return ref _realBuffer[index];
-            }
+            get => ref _realBuffer[index];
         }
 
         public Allocator allocationStrategy => Allocator.Managed;

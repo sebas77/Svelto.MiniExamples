@@ -22,7 +22,7 @@ namespace Svelto.ECS
                 var entityComponentsToSerialise = entityDescriptor.componentsToSerialize;
 
                 var header =
-                    new SerializableEntityHeader(descriptorHash, egid, (byte) entityComponentsToSerialise.Length);
+                    new SerializableEntityHeader(descriptorHash, egid, (byte)entityComponentsToSerialise.Length);
                 header.Copy(serializationData);
 
                 for (int index = 0; index < entityComponentsToSerialise.Length; index++)
@@ -94,6 +94,7 @@ namespace Svelto.ECS
             {
                 var readPos         = serializationData.dataPos;
                 T   entityComponent = default;
+                
                 foreach (var serializableEntityBuilder in entityDescriptor.componentsToSerialize)
                 {
                     if (serializableEntityBuilder is SerializableComponentBuilder<T> entityBuilder)
@@ -110,24 +111,22 @@ namespace Svelto.ECS
                 return entityComponent;
             }
 
-            public void DeserializeEntityToSwap(EGID localEgid, EGID toEgid, [CallerMemberName] string caller = null)
+            public void DeserializeEntityToSwap(EGID fromEGID, EGID toEGID, [CallerMemberName] string caller = null)
             {
                 EntitiesDB entitiesDb = _enginesRoot._entitiesDB;
-                ref var serializableEntityComponent =
-                    ref entitiesDb.QueryEntity<SerializableEntityComponent>(localEgid);
+                ref var serializableEntityComponent = ref entitiesDb.QueryEntity<SerializableEntityComponent>(fromEGID);
 
                 SerializationDescriptorMap serializationDescriptorMap = _enginesRoot._serializationDescriptorMap;
                 uint descriptorHash = serializableEntityComponent.descriptorHash;
                 var entityDescriptor = serializationDescriptorMap.GetDescriptorFromHash(descriptorHash);
 
-                var entitySubmitOperation =
-                    new EntitySubmitOperation(EntitySubmitOperationType.Swap, localEgid, toEgid
-                                            , entityDescriptor.componentsToBuild, caller);
+                _enginesRoot.CheckRemoveEntityID(fromEGID, entityDescriptor.realType, caller);
+                _enginesRoot.CheckAddEntityID(toEGID, entityDescriptor.realType, caller);
 
-                _enginesRoot.CheckRemoveEntityID(localEgid, entityDescriptor.realType,caller);
-                _enginesRoot.CheckAddEntityID(toEgid, entityDescriptor.realType,caller);
-
-                _enginesRoot.QueueEntitySubmitOperation(entitySubmitOperation);
+                //note: double check if there is a real use case of swapping base descriptors, otherwise FindRealComponents is not necessary
+                _enginesRoot.QueueSwapEntityOperation(fromEGID, toEGID
+                                                    , _enginesRoot.FindRealComponents(fromEGID, entityDescriptor.componentsToBuild)
+                                                    , caller);
             }
 
             public void DeserializeEntityToDelete(EGID egid, [CallerMemberName] string caller = null)
@@ -139,18 +138,18 @@ namespace Svelto.ECS
                 SerializationDescriptorMap serializationDescriptorMap = _enginesRoot._serializationDescriptorMap;
                 var entityDescriptor = serializationDescriptorMap.GetDescriptorFromHash(descriptorHash);
 
-                _enginesRoot.CheckRemoveEntityID(egid, entityDescriptor.realType,caller);
+                _enginesRoot.CheckRemoveEntityID(egid, entityDescriptor.realType, caller);
 
-                var entitySubmitOperation =
-                    new EntitySubmitOperation(EntitySubmitOperationType.Remove, egid, egid
-                                            , entityDescriptor.componentsToBuild, caller);
-
-                _enginesRoot.QueueEntitySubmitOperation(entitySubmitOperation);
+                //note: double check if there is a real use case of removing base descriptors, otherwise FindRealComponents is not necessary
+                _enginesRoot.QueueRemoveEntityOperation(
+                    egid, _enginesRoot.FindRealComponents(egid, entityDescriptor.componentsToBuild), caller);
             }
-            public void SkipEntityDeserialization(ISerializationData serializationData, int serializationType, int numberOfEntities)
+
+            public void SkipEntityDeserialization
+                (ISerializationData serializationData, int serializationType, int numberOfEntities)
             {
                 uint dataPositionBeforeHeader = serializationData.dataPos;
-                var serializableEntityHeader = new SerializableEntityHeader(serializationData);
+                var  serializableEntityHeader = new SerializableEntityHeader(serializationData);
 
                 uint headerSize = serializationData.dataPos - dataPositionBeforeHeader;
 
@@ -168,7 +167,8 @@ namespace Svelto.ECS
                 //When constructing an SerializableEntityHeader the data position of the serializationData is incremented by the size of the header.
                 //Since a header is needed to get the entity descriptor, we need to account for one less header than usual, since the data has already
                 //been incremented once.
-                var totalBytesToSkip = (uint)(headerSize * (numberOfEntities - 1)) + (uint)(componentSizeTotal * numberOfEntities);
+                var totalBytesToSkip = (uint)(headerSize * (numberOfEntities - 1))
+                                     + (uint)(componentSizeTotal * numberOfEntities);
 
                 serializationData.dataPos += totalBytesToSkip;
             }
@@ -190,7 +190,10 @@ namespace Svelto.ECS
                 serializationDescriptorMap.RegisterSerializationFactory<T>(deserializationFactory);
             }
 
-            internal EntitySerialization(EnginesRoot enginesRoot) { _enginesRoot = enginesRoot; }
+            internal EntitySerialization(EnginesRoot enginesRoot)
+            {
+                _root = new Svelto.DataStructures.WeakReference<EnginesRoot>(enginesRoot);
+            }
 
             void SerializeEntityComponent
             (EGID entityGID, ISerializableComponentBuilder componentBuilder, ISerializationData serializationData
@@ -228,9 +231,13 @@ namespace Svelto.ECS
                 }
             }
 
-            readonly EnginesRoot _enginesRoot;
+            EnginesRoot                                      _enginesRoot => _root.Target;
+            readonly Svelto.DataStructures.WeakReference<EnginesRoot> _root;
         }
 
-        public IEntitySerialization GenerateEntitySerializer() { return new EntitySerialization(this); }
+        public IEntitySerialization GenerateEntitySerializer()
+        {
+            return new EntitySerialization(this);
+        }
     }
 }

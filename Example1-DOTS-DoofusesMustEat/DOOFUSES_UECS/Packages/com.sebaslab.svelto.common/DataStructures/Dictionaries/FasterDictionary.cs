@@ -45,8 +45,7 @@ namespace Svelto.DataStructures
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
     [DebuggerTypeProxy(typeof(FasterDictionaryDebugProxy<,>))]
-    public sealed class FasterDictionary<TKey, TValue> : ISveltoDictionary<TKey, TValue>
-        where TKey : struct, IEquatable<TKey>
+    public sealed class FasterDictionary<TKey, TValue> where TKey : struct, IEquatable<TKey>
     {
         public FasterDictionary() : this(1) { }
 
@@ -137,7 +136,19 @@ namespace Svelto.DataStructures
         {
             return ref _dictionary.GetOrCreate(key, builder);
         }
-
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ref TValue GetOrCreate<W>(TKey key, FuncRef<W, TValue> builder, ref W parameter)
+        {
+            return ref _dictionary.GetOrCreate(key, builder, ref parameter);
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ref TValue RecycleOrCreate<TValueProxy>(TKey key, Func<TValueProxy> builder, ActionRef<TValueProxy> recycler) where TValueProxy: class, TValue
+        {
+            return ref _dictionary.RecycleOrCreate(key, builder, recycler);
+        }
+        
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref TValue GetDirectValueByRef(uint index)
         {
@@ -151,9 +162,15 @@ namespace Svelto.DataStructures
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void ResizeTo(uint size)
+        public void EnsureCapacity(uint size)
         {
-            _dictionary.ResizeTo(size);
+            _dictionary.EnsureCapacity(size);
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void IncreaseCapacityBy(uint size)
+        {
+            _dictionary.IncreaseCapacityBy(size);
         }
 
         public TValue this[TKey key]
@@ -222,12 +239,6 @@ namespace Svelto.DataStructures
             ManagedStrategy<TValue>, ManagedStrategy<int>> GetEnumerator()
         {
             return _dictionary.GetEnumerator();
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ref TValue GetOrCreate<W>(TKey key, FuncRef<W, TValue> builder, ref W parameter)
-        {
-            return ref _dictionary.GetOrCreate(key, builder, ref parameter);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
