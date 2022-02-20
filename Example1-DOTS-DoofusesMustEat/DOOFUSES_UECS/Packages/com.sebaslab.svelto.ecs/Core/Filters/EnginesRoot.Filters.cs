@@ -7,6 +7,23 @@ namespace Svelto.ECS
 {
     public partial class EnginesRoot
     {
+        Filters GetFilters() => _filters;
+        NativeFilters<T> GetNativeFilters<T>() where T : unmanaged, IEntityComponent
+        {
+            if (_nativeFilters == null)
+                _nativeFilters = new NativeFilters<T>();
+
+            return _nativeFilters;
+        }
+    }
+
+    class Filters
+    {
+        
+    }
+
+    public partial class EnginesRoot
+    {
         internal static long CombineFilterIDs<T>(int filterID) => (long)filterID << 32 | TypeHash<T>.hash;
 
         /// <summary>
@@ -42,40 +59,40 @@ namespace Svelto.ECS
                .Add(_persistentFilters.count - 1);
         }
         
-        // /// <summary>
-        // /// Creates a transient filter. Transient filters are deleted after each submission
-        // /// </summary>
-        // /// <typeparam name="T"></typeparam>
-        // /// <returns></returns>
-        // public void GetOrCreateNativeTransientFilter<T>(int filterID, NativeEGIDMultiMapper<T> mmap)
-        //     where T : unmanaged, IEntityComponent
-        // {
-        //     var typeRef          = TypeRefWrapper<T>.wrapper;
-        //     var filterCollection = new NativeEntityFilterCollection<T>(mmap);
-        //
-        //     _transientEntityFilters.Add(CombineFilterIDs<T>(filterID), filterCollection);
-        //     _transientFilters.Add(filterCollection);
-        // }
-        //
-        // /// <summary>
-        // /// Create a persistent filter. Persistent filters are not deleted after each submission,
-        // /// however they have a maintenance cost that must be taken into account and will affect
-        // /// entities submission performance.
-        // /// </summary>
-        // /// <typeparam name="T"></typeparam>
-        // /// <returns></returns>
-        // public void GetOrCreateNativePersistentFilter<T>(int filterID, NativeEGIDMultiMapper<T> mmap)
-        //     where T : unmanaged, IEntityComponent
-        // {
-        //     var typeRef          = TypeRefWrapper<T>.wrapper;
-        //     var filterCollection = new NativeEntityFilterCollection<T>(mmap);
-        //
-        //     _persistentEntityFilters.Add(CombineFilterIDs<T>(filterID), filterCollection);
-        //     _persistentFilters.Add(filterCollection);
-        //
-        //     _persistentFiltersIndicesPerComponent.GetOrCreate(typeRef, () => new FasterList<int>())
-        //        .Add(_persistentFilters.count - 1);
-        // }
+        /// <summary>
+        /// Creates a transient filter. Transient filters are deleted after each submission
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public void GetOrCreateNativeTransientFilter<T>(int filterID, NativeEGIDMultiMapper<T> mmap)
+            where T : unmanaged, IEntityComponent
+        {
+            var typeRef          = TypeRefWrapper<T>.wrapper;
+            var filterCollection = new NativeEntityFilterCollection<T>(mmap);
+
+            _transientEntityFilters.Add(CombineFilterIDs<T>(filterID), filterCollection);
+            _transientFilters.Add(filterCollection);
+        }
+
+        /// <summary>
+        /// Create a persistent filter. Persistent filters are not deleted after each submission,
+        /// however they have a maintenance cost that must be taken into account and will affect
+        /// entities submission performance.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public void GetOrCreateNativePersistentFilter<T>(int filterID, NativeEGIDMultiMapper<T> mmap)
+            where T : unmanaged, IEntityComponent
+        {
+            var typeRef          = TypeRefWrapper<T>.wrapper;
+            var filterCollection = new NativeEntityFilterCollection<T>(mmap);
+
+            _persistentEntityFilters.Add(CombineFilterIDs<T>(filterID), filterCollection);
+            _persistentFilters.Add(filterCollection);
+
+            _persistentFiltersIndicesPerComponent.GetOrCreate(typeRef, () => new FasterList<int>())
+               .Add(_persistentFilters.count - 1);
+        }
 
         void InitFilters()
         {
@@ -163,8 +180,8 @@ namespace Svelto.ECS
         internal FasterDictionary<long, EntityFilterCollection> _transientEntityFilters;
         internal FasterDictionary<long, EntityFilterCollection> _persistentEntityFilters;
         
-        // internal FasterDictionary<long, NativeEntityFilterCollection> _transientEntityFilters;
-        // internal FasterDictionary<long, NativeEntityFilterCollection> _persistentEntityFilters;
+        internal FasterDictionary<long, NativeEntityFilterCollection> _transientEntityFilters;
+        internal FasterDictionary<long, NativeEntityFilterCollection> _persistentEntityFilters;
 
         FasterList<EntityFilterCollection>                _transientFilters;
         FasterList<EntityFilterCollection>                _persistentFilters;
