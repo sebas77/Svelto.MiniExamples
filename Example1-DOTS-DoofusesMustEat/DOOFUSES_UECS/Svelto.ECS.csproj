@@ -41,7 +41,6 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
-     <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Filters\NativeEntityFilterCollection.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\DataStructures\Unmanaged\UnsafeBlob.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\DataStructures\TypeSafeDictionaryException.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Groups\ExclusiveGroupBitmask.cs" />
@@ -50,7 +49,6 @@
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\EntityFactory.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Groups\ExclusiveBuildGroup.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\DBC.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Filters\EntityFilterIndices.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Svelto\ExclusiveGroupExtensions.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Serialization\SerializationEntityDescriptorTemplate.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\CheckEntityUtilities.cs" />
@@ -101,7 +99,6 @@
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\EntityInitializer.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\DOTS\UECS\ISveltoOnDOTSSubmission.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Native\NativeEntityFactory.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Filters\NativeEntityFilterIterator.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\EnginesRoot.GenericEntityFactory.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\DOTS\UECS\EntityCommandBufferForSvelto.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Native\UnityNativeEntityDBExtensions.cs" />
@@ -116,7 +113,6 @@
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Streams\EntitiesStreams.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Streams\EntitiesDB.Streams.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\EntitySubmissionScheduler.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Filters\LegacyFilterGroup.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\EntitiesDB.FindGroups.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\DOTS\UECS\SveltoOnDOTSHandleCreationEngine.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Svelto\EntityNativeDBExtensions.cs" />
@@ -149,11 +145,9 @@
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Native\NativeEntityInitializer.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Serialization\SerializingEnginesRoot.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Filters\EntitiesDB.GroupFilters.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Filters\EntityFilterIterator.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Svelto\EntityCollectionExtension.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\EntityDescriptor\IDynamicEntityDescriptor.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\EnginesRoot.Submission.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Filters\EntityFilterID.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\EGIDMapper.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Serialization\DoNotSerializeAttribute.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\EntityCollection.cs" />
@@ -186,8 +180,6 @@
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\ProcessorCount.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\DOTS\UECS\SyncSveltoToDOTSGroup.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\EntityDescriptor\ExtendibleEntityDescriptor.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Filters\EntitiesDB.Filters.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Filters\EnginesRoot.Filters.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\DataStructures\Unmanaged\SharedNativeInt.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\GameObjects\Implementors\IUseMultipleResourceManagerImplementor.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\GameObjects\SveltoGUIHelper.cs" />
@@ -196,9 +188,7 @@
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\INeedEntityReference.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\EntityReference\EntitiesDB.References.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\DOTS\Jobs\IJobifiedEngine.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Filters\EntityFilterCollection.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\ECSResources\ECSResources.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Filters\LegacyGroupFilters.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\AllowMultipleAttribute.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\IEntityComponent.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Serialization\DontSerialize.cs" />
@@ -213,10 +203,20 @@
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Streams\Consumer.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\MonoScheduler.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Serialization\EntitiesDB.SerializationDescriptorMap.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Filters\LegacyFilteredIndices.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\EntitiesOperations.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\EnginesRoot.DoubleBufferedEntitiesToAdd.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\EnginesGroup\UnsortedEnginesGroup.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Filters\EntitiesDB.Filters.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Filters\EnginesRoot.Filters.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Filters\NativeEntityFilterIterator.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Filters\EntityFilterIterator.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Filters\EntityFilterID.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Filters\LegacyFilterGroup.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Filters\LegacyGroupFilters.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Filters\NativeEntityFilterCollection.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Filters\EntityFilterCollection.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Filters\EntityFilterIndices.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Filters\LegacyFilteredIndices.cs" />
      <None Include="Packages\com.sebaslab.svelto.ecs\version.json" />
      <None Include="Packages\com.sebaslab.svelto.ecs\Svelto.ECS.asmdef" />
      <None Include="Packages\com.sebaslab.svelto.ecs\package.json" />

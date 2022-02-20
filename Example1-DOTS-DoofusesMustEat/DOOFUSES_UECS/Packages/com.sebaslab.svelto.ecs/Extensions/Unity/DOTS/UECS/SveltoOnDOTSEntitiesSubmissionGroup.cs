@@ -132,7 +132,6 @@ namespace Svelto.ECS.SveltoOnDOTS
         }
 
         //Note: when this is called, the CommandBuffer is flushed so the not temporary DOTS entity ID will be used
-        //this is currently disabled because ECB is allocating tons
         void ConvertPendingEntities()
         {
             EndSimulationEntityCommandBufferSystem _ECBSystem =

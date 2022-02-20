@@ -82,14 +82,6 @@ namespace Svelto.ECS.SveltoOnDOTS
                 _enginesRoot.AddEngine(enginesRootEngine);
         }
         
-        public void AddDOTSHandleLifetimeEngine(ISveltoOnDOTSHandleLifeTimeEngine handleLifeTime)
-        {
-            _sveltoDotsEntitiesSubmissionGroup.Add(handleLifeTime);
-            
-            if (handleLifeTime is IEngine enginesRootEngine)
-                _enginesRoot.AddEngine(enginesRootEngine);
-        }
-
         public void Dispose()
         {
             world.Dispose();
@@ -123,8 +115,8 @@ namespace Svelto.ECS.SveltoOnDOTS
         EnginesRoot _enginesRoot;
 
         SveltoOnDOTSEntitiesSubmissionGroup _sveltoDotsEntitiesSubmissionGroup;
-        SyncSveltoToDOTSGroup               _syncSveltoToDotsGroup;
-        SyncDOTSToSveltoGroup               _syncDotsToSveltoGroup;
+        SyncSveltoToDOTSGroup             _syncSveltoToDotsGroup;
+        SyncDOTSToSveltoGroup             _syncDotsToSveltoGroup;
     }
 }
 #endif

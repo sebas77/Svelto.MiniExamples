@@ -43,7 +43,6 @@
   <ItemGroup>
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Dictionaries\SveltoDictionaryNode.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\Command\ICommand.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\ThreadSafeStack.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\Sequencer\Sequence.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\Utilities\DataToString.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\Command\CommandFactory.cs" />
@@ -54,17 +53,14 @@
      <Compile Include="Packages\com.sebaslab.svelto.common\Command\ICommandFactory.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\HashHelpers.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\Context\ContextNotifier.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Sentinel.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Arrays\FasterReadOnlyList.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\Utilities\FastConcatUtility.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\Utilities\ThreadUtility.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.common\Logger\ILogger.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\Context\IWaitForFrameworkInitialization.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\Utilities\Murmur3.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Dictionaries\ThreadSafeDictionary.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\Utilities\UnmanagedTypeExtensions.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\Utilities\DBC.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.common\Logger\Unity\FastLoggerUnity.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\RingBuffer.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\PlatformProfiler\StandardProfiler.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Arrays\LocalFasterReadOnlyList.cs" />
@@ -79,12 +75,10 @@
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\DualMemorySupport\NativeStrategy.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\Utilities\DebugExtensions.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\WeakReference.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.common\Logger\Unity\SlowLoggerUnity.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\TypeCache.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\Context\IWaitForFrameworkDestruction.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Dictionaries\ReadonlySveltoDictionaryNative.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\Utilities\MemoryUtilities.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\ThreadSafeQueue.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\Command\IInjectableCommand.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\Utilities\ActionRef.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Dictionaries\SharedSveltoDictionaryNative.cs" />
@@ -92,11 +86,9 @@
      <Compile Include="Packages\com.sebaslab.svelto.common\Utilities\FastInvoke.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Dictionaries\SveltoDictionaryNative.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\ObjectPool\IObjectPool.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.common\Logger\SimpleLogger.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\Utilities\TypeToString.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\DualMemorySupport\MB.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\DualMemorySupport\NB.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.common\ObjectPool\ThreadSafeObjectPool.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\PlatformProfiler\Unity\UnityPlatform.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\ObjectPool\Unity\GameObjectPool.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\DualMemorySupport\IBuffer.cs" />
@@ -108,6 +100,14 @@
      <Compile Include="Packages\com.sebaslab.svelto.common\Context\IContextNotifer.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\DualMemorySupport\IBufferStrategy.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Dictionaries\FasterDictionary.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\ThreadSafeStack.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.common\Logger\Unity\FastLoggerUnity.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.common\ObjectPool\ThreadSafeObjectPool.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Sentinel.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.common\Logger\Unity\SlowLoggerUnity.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.common\Logger\SimpleLogger.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\ThreadSafeQueue.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.common\Logger\ILogger.cs" />
      <None Include="Packages\com.sebaslab.svelto.common\Svelto.Common.asmdef" />
      <None Include="Packages\com.sebaslab.svelto.common\version.json" />
      <None Include="Packages\com.sebaslab.svelto.common\package.json" />
