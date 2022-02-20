@@ -56,8 +56,6 @@ namespace Svelto.ECS.MiniExamples.Example1C
             AddSveltoEngineToTick(new VelocityToPositionDoofusesEngine());
 
             _sveltoOverDotsEnginesGroupEnginesGroup.AddDOTSSubmissionEngine(new SpawnUnityEntityOnSveltoEntityEngine());
-            _sveltoOverDotsEnginesGroupEnginesGroup.AddDOTSHandleLifetimeEngine(
-                new HandleSpawnedEntityLifeTimeEngine());
             _sveltoOverDotsEnginesGroupEnginesGroup.AddSveltoToDOTSEngine(new RenderingDOTSDataSynchronizationEngine());
         }
 
@@ -68,22 +66,22 @@ namespace Svelto.ECS.MiniExamples.Example1C
             //I believe the proper way to do this now is to create a subscene, but I am not sure how it would
             //work with prefabs, so I am not testing it (yet)
             redFoodPrefab = GameObjectConversionUtility.ConvertGameObjectHierarchy(
-                Resources.Load("Sphere") as GameObject, new GameObjectConversionSettings
+                UnityEngine.Resources.Load("Sphere") as GameObject, new GameObjectConversionSettings
                 {
                     DestinationWorld = world
                 });
             blueFootPrefab = GameObjectConversionUtility.ConvertGameObjectHierarchy(
-                Resources.Load("Sphereblue") as GameObject, new GameObjectConversionSettings
+                UnityEngine.Resources.Load("Sphereblue") as GameObject, new GameObjectConversionSettings
                 {
                     DestinationWorld = world
                 });
             redDoofusPrefab = GameObjectConversionUtility.ConvertGameObjectHierarchy(
-                Resources.Load("RedCapsule") as GameObject, new GameObjectConversionSettings
+                UnityEngine.Resources.Load("RedCapsule") as GameObject, new GameObjectConversionSettings
                 {
                     DestinationWorld = world
                 });
             blueDoofusPrefab = GameObjectConversionUtility.ConvertGameObjectHierarchy(
-                Resources.Load("BlueCapsule") as GameObject, new GameObjectConversionSettings
+                UnityEngine.Resources.Load("BlueCapsule") as GameObject, new GameObjectConversionSettings
                 {
                     DestinationWorld = world
                 });

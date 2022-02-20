@@ -5,24 +5,24 @@ namespace Svelto.ECS
 {
     public readonly ref struct EntityInitializer
     {
-        public EntityInitializer
-            (EGID id, FasterDictionary<RefWrapperType, ITypeSafeDictionary> group, in EntityReference reference)
+        public EntityInitializer(EGID id, FasterDictionary<RefWrapperType, ITypeSafeDictionary> group,
+            in EntityReference reference)
         {
             _group         = group;
             _ID            = id;
             this.reference = reference;
         }
 
-        public   EGID            EGID => _ID;
+        public          EGID            EGID => _ID;
         public readonly EntityReference reference;
 
         public void Init<T>(T initializer) where T : struct, IEntityComponent
         {
-            if (_group.TryGetValue(new RefWrapperType(ComponentBuilder<T>.ENTITY_COMPONENT_TYPE)
-                                 , out var typeSafeDictionary) == false)
+            if (_group.TryGetValue(new RefWrapperType(ComponentBuilder<T>.ENTITY_COMPONENT_TYPE),
+                    out var typeSafeDictionary) == false)
                 return;
 
-            var dictionary = (ITypeSafeDictionary<T>) typeSafeDictionary;
+            var dictionary = (ITypeSafeDictionary<T>)typeSafeDictionary;
 
             if (ComponentBuilder<T>.HAS_EGID)
                 SetEGIDWithoutBoxing<T>.SetIDWithoutBoxing(ref initializer, _ID);
@@ -35,22 +35,23 @@ namespace Svelto.ECS
         {
             ref var entityDictionary = ref _group.GetOrCreate(
                 new RefWrapperType(ComponentBuilder<T>.ENTITY_COMPONENT_TYPE), TypeSafeDictionaryFactory<T>.Create);
-            var dictionary = (ITypeSafeDictionary<T>) entityDictionary;
+            var dictionary = (ITypeSafeDictionary<T>)entityDictionary;
 
             return ref dictionary.GetOrCreate(_ID.entityID);
         }
 
         public ref T Get<T>() where T : struct, IEntityComponent
         {
-            return ref (_group[new RefWrapperType(ComponentBuilder<T>.ENTITY_COMPONENT_TYPE)] as ITypeSafeDictionary<T>).GetValueByRef(_ID.entityID);
+            return ref (_group[new RefWrapperType(ComponentBuilder<T>.ENTITY_COMPONENT_TYPE)] as ITypeSafeDictionary<T>)
+               .GetValueByRef(_ID.entityID);
         }
 
         public bool Has<T>() where T : struct, IEntityComponent
         {
-            if (_group.TryGetValue(new RefWrapperType(ComponentBuilder<T>.ENTITY_COMPONENT_TYPE)
-                                 , out var typeSafeDictionary))
+            if (_group.TryGetValue(new RefWrapperType(ComponentBuilder<T>.ENTITY_COMPONENT_TYPE),
+                    out var typeSafeDictionary))
             {
-                var dictionary = (ITypeSafeDictionary<T>) typeSafeDictionary;
+                var dictionary = (ITypeSafeDictionary<T>)typeSafeDictionary;
 
                 if (dictionary.ContainsKey(_ID.entityID))
                     return true;

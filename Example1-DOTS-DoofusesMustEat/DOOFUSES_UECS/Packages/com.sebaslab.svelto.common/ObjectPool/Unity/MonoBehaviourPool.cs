@@ -1,9 +1,10 @@
 #if UNITY_5_3_OR_NEWER || UNITY_5
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Svelto.ObjectPool
 {
-    public class MonoBehaviourPool<T> : ObjectPool<T> where T:MonoBehaviour
+    public class MonoBehaviourPool<T> : ThreadSafeObjectPool<T> where T:MonoBehaviour
     {
 #if POOL_DEBUGGER
     public MonoBehaviourPool()
@@ -13,11 +14,21 @@ namespace Svelto.ObjectPool
         poolDebugger.AddComponent<PoolDebugger>().SetPool(this);
     }
 #endif
-        public override void OnDispose()
+        protected override void OnDispose()
         {
-            for (var enumerator = _pools.GetEnumerator(); enumerator.MoveNext();)
-                foreach (var obj in enumerator.Current.value)
-                    GameObject.Destroy(obj);
+            using (var recycledPoolsGetValues = _recycledPools.GetValues)
+            {
+                var values = recycledPoolsGetValues.GetValues(out var count);
+                for (int i = 0; i < count; i++)                     
+                {
+                    using (var stacks = values[i].GetValues)
+                    {
+                        var stackValues = stacks.GetValues();
+                        foreach (var obj in stackValues)
+                            GameObject.Destroy(obj);
+                    }
+                }
+            }
         }
     }
 }

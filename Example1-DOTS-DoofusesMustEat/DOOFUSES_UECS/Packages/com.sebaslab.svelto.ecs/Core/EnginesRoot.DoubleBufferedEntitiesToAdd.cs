@@ -23,17 +23,20 @@ namespace Svelto.ECS
                     new FasterDictionary<ExclusiveGroupStruct, FasterDictionary<RefWrapperType, ITypeSafeDictionary>>();
 
                 _currentNumberEntitiesCreatedPerGroup = entitiesCreatedPerGroupA;
-                _otherNumberEntitiesCreatedPerGroup   = entitiesCreatedPerGroupB;
+                _lastNumberEntitiesCreatedPerGroup   = entitiesCreatedPerGroupB;
 
                 currentComponentsToAddPerGroup = entityComponentsToAddBufferA;
-                otherComponentsToAddPerGroup   = entityComponentsToAddBufferB;
+                lastComponentsToAddPerGroup   = entityComponentsToAddBufferB;
             }
 
-            public void ClearOther()
+            public void ClearLastAddOperations()
             {
-                var numberOfGroupsAddedSoFar     = otherComponentsToAddPerGroup.count;
-                var componentDictionariesPerType = otherComponentsToAddPerGroup.unsafeValues;
-
+                var numberOfGroupsAddedSoFar     = lastComponentsToAddPerGroup.count;
+                var componentDictionariesPerType = lastComponentsToAddPerGroup.unsafeValues;
+                
+                //TODO: rewrite the caching logic with the new RecycleOrCreate dictionary functionality
+                //I still do not want to cache too many groups
+                
                 //If we didn't create too many groups, we keep them alive, so we avoid the cost of creating new dictionaries
                 //during future submissions, otherwise we clean up everything
                 if (numberOfGroupsAddedSoFar > MAX_NUMBER_OF_GROUPS_TO_CACHE)
@@ -49,14 +52,14 @@ namespace Svelto.ECS
                                 componentTypesDictionary[j].Dispose();
                         }
                     }
-
+                
                     //reset the number of entities created so far
-                    _otherNumberEntitiesCreatedPerGroup.FastClear();
-                    otherComponentsToAddPerGroup.FastClear();
-
+                    _lastNumberEntitiesCreatedPerGroup.FastClear();
+                    lastComponentsToAddPerGroup.FastClear();
+                
                     return;
                 }
-
+                
                 for (var i = 0; i < numberOfGroupsAddedSoFar; ++i)
                 {
                     var                   componentTypesCount      = componentDictionariesPerType[i].count;
@@ -64,7 +67,7 @@ namespace Svelto.ECS
                     for (var j = 0; j < componentTypesCount; ++j)
                         //clear the dictionary of entities created so far (it won't allocate though)
                         componentTypesDictionary[j].Clear();
-
+                
                     //if we didn't create too many component for this group, I reuse the component arrays
                     if (componentTypesCount <= MAX_NUMBER_OF_TYPES_PER_GROUP_TO_CACHE)
                     {
@@ -77,22 +80,22 @@ namespace Svelto.ECS
                         //with the next line.
                         for (var j = 0; j < componentTypesCount; ++j)
                             componentTypesDictionary[j].Dispose();
-
+                
                         componentDictionariesPerType[i].FastClear();
                     }
                 }
 
                 //reset the number of entities created so far
-                _otherNumberEntitiesCreatedPerGroup.FastClear();
+                _lastNumberEntitiesCreatedPerGroup.FastClear();
 
-                _totalEntitiesToAdd = 0;
+          //      _totalEntitiesToAdd = 0;
             }
 
             public void Dispose()
             {
                 {
-                    var otherValuesArray = otherComponentsToAddPerGroup.unsafeValues;
-                    for (var i = 0; i < otherComponentsToAddPerGroup.count; ++i)
+                    var otherValuesArray = lastComponentsToAddPerGroup.unsafeValues;
+                    for (var i = 0; i < lastComponentsToAddPerGroup.count; ++i)
                     {
                         int                   safeDictionariesCount = otherValuesArray[i].count;
                         ITypeSafeDictionary[] safeDictionaries      = otherValuesArray[i].unsafeValues;
@@ -116,8 +119,8 @@ namespace Svelto.ECS
                 }
 
                 _currentNumberEntitiesCreatedPerGroup = null;
-                _otherNumberEntitiesCreatedPerGroup   = null;
-                otherComponentsToAddPerGroup          = null;
+                _lastNumberEntitiesCreatedPerGroup   = null;
+                lastComponentsToAddPerGroup          = null;
                 currentComponentsToAddPerGroup        = null;
             }
 
@@ -126,21 +129,21 @@ namespace Svelto.ECS
                 return _currentNumberEntitiesCreatedPerGroup.count > 0;
             }
 
-            internal bool AnyOtherEntityCreated()
+            internal bool AnyPreviousEntityCreated()
             {
-                return _otherNumberEntitiesCreatedPerGroup.count > 0;
+                return _lastNumberEntitiesCreatedPerGroup.count > 0;
             }
 
             internal void IncrementEntityCount(ExclusiveGroupStruct groupID)
             {
                 _currentNumberEntitiesCreatedPerGroup.GetOrCreate(groupID)++;
-                _totalEntitiesToAdd++;
+             //   _totalEntitiesToAdd++;
             }
 
-            public uint NumberOfEntitiesToAdd()
-            {
-                return _totalEntitiesToAdd;
-            }
+            // public uint NumberOfEntitiesToAdd()
+            // {
+            //     return _totalEntitiesToAdd;
+            // }
 
             internal void Preallocate
                 (ExclusiveGroupStruct groupID, uint numberOfEntities, IComponentBuilder[] entityComponentsToBuild)
@@ -162,16 +165,16 @@ namespace Svelto.ECS
                 }
 
                 PreallocateDictionaries(currentComponentsToAddPerGroup);
-                PreallocateDictionaries(otherComponentsToAddPerGroup);
+                PreallocateDictionaries(lastComponentsToAddPerGroup);
 
                 _currentNumberEntitiesCreatedPerGroup.GetOrCreate(groupID);
-                _otherNumberEntitiesCreatedPerGroup.GetOrCreate(groupID);
+                _lastNumberEntitiesCreatedPerGroup.GetOrCreate(groupID);
             }
 
             internal void Swap()
             {
-                Swap(ref currentComponentsToAddPerGroup, ref otherComponentsToAddPerGroup);
-                Swap(ref _currentNumberEntitiesCreatedPerGroup, ref _otherNumberEntitiesCreatedPerGroup);
+                Swap(ref currentComponentsToAddPerGroup, ref lastComponentsToAddPerGroup);
+                Swap(ref _currentNumberEntitiesCreatedPerGroup, ref _lastNumberEntitiesCreatedPerGroup);
             }
 
             static void Swap<T>(ref T item1, ref T item2)
@@ -181,8 +184,8 @@ namespace Svelto.ECS
 
             public OtherComponentsToAddPerGroupEnumerator GetEnumerator()
             {
-                return new OtherComponentsToAddPerGroupEnumerator(otherComponentsToAddPerGroup
-                                                                , _otherNumberEntitiesCreatedPerGroup);
+                return new OtherComponentsToAddPerGroupEnumerator(lastComponentsToAddPerGroup
+                                                                , _lastNumberEntitiesCreatedPerGroup);
             }
 
             //Before I tried for the third time to use a SparseSet instead of FasterDictionary, remember that
@@ -192,7 +195,7 @@ namespace Svelto.ECS
                 currentComponentsToAddPerGroup;
 
             FasterDictionary<ExclusiveGroupStruct, FasterDictionary<RefWrapperType, ITypeSafeDictionary>>
-                otherComponentsToAddPerGroup;
+                lastComponentsToAddPerGroup;
 
             /// <summary>
             ///     To avoid extra allocation, I don't clear the groups, so I need an extra data structure
@@ -200,9 +203,9 @@ namespace Svelto.ECS
             ///     of entities built is not used
             /// </summary>
             FasterDictionary<ExclusiveGroupStruct, uint> _currentNumberEntitiesCreatedPerGroup;
-            FasterDictionary<ExclusiveGroupStruct, uint> _otherNumberEntitiesCreatedPerGroup;
+            FasterDictionary<ExclusiveGroupStruct, uint> _lastNumberEntitiesCreatedPerGroup;
 
-            uint _totalEntitiesToAdd;
+            //uint _totalEntitiesToAdd;
         }
     }
 
@@ -210,23 +213,23 @@ namespace Svelto.ECS
     {
         public OtherComponentsToAddPerGroupEnumerator
         (FasterDictionary<ExclusiveGroupStruct, FasterDictionary<RefWrapperType, ITypeSafeDictionary>>
-             otherComponentsToAddPerGroup
+             lastComponentsToAddPerGroup
        , FasterDictionary<ExclusiveGroupStruct, uint> otherNumberEntitiesCreatedPerGroup)
         {
-            _otherComponentsToAddPerGroup       = otherComponentsToAddPerGroup;
-            _otherNumberEntitiesCreatedPerGroup = otherNumberEntitiesCreatedPerGroup.GetEnumerator();
+            _lastComponentsToAddPerGroup       = lastComponentsToAddPerGroup;
+            _lastNumberEntitiesCreatedPerGroup = otherNumberEntitiesCreatedPerGroup.GetEnumerator();
             Current                             = default;
         }
 
         public bool MoveNext()
         {
-            while (_otherNumberEntitiesCreatedPerGroup.MoveNext())
+            while (_lastNumberEntitiesCreatedPerGroup.MoveNext())
             {
-                var current = _otherNumberEntitiesCreatedPerGroup.Current;
+                var current = _lastNumberEntitiesCreatedPerGroup.Current;
 
                 if (current.value > 0) //there are entities in this group
                 {
-                    var value = _otherComponentsToAddPerGroup[current.key];
+                    var value = _lastComponentsToAddPerGroup[current.key];
                     Current = new GroupInfo()
                     {
                         group      = current.key
@@ -244,12 +247,12 @@ namespace Svelto.ECS
 
         //cannot be read only as they will be modified by MoveNext
         readonly FasterDictionary<ExclusiveGroupStruct, FasterDictionary<RefWrapperType, ITypeSafeDictionary>>
-            _otherComponentsToAddPerGroup;
+            _lastComponentsToAddPerGroup;
 
         SveltoDictionaryKeyValueEnumerator<ExclusiveGroupStruct, uint,
                 ManagedStrategy<SveltoDictionaryNode<ExclusiveGroupStruct>>, ManagedStrategy<uint>,
                 ManagedStrategy<int>>
-            _otherNumberEntitiesCreatedPerGroup;
+            _lastNumberEntitiesCreatedPerGroup;
     }
 
     struct GroupInfo

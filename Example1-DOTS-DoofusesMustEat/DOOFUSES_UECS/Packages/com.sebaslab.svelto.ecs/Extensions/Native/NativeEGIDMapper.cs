@@ -33,9 +33,9 @@ namespace Svelto.ECS.Native
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref T Entity(uint entityID)
         {
-#if DEBUG
+#if DEBUG && !PROFILE_SVELTO
             if (_map.TryFindIndex(entityID, out var findIndex) == false)
-                throw new Exception("Entity not found in this group ".FastConcat(typeof(T).ToString()));
+                throw new Exception($"Entity {entityID} not found in this group {groupID} - {typeof(T).Name}");
 #else
             _map.TryFindIndex(entityID, out var findIndex);
 #endif
@@ -63,7 +63,7 @@ namespace Svelto.ECS.Native
             if (_map.TryFindIndex(entityID, out index))
                 return new NB<T>(_map.GetValues(out var count).ToNativeArray(out _), count);
 
-#if DEBUG
+#if DEBUG && !PROFILE_SVELTO
             throw new ECSException("Entity not found");
 #else
             return default;

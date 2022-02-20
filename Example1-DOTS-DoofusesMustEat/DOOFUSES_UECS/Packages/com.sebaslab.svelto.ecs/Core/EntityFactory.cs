@@ -69,7 +69,7 @@ namespace Svelto.ECS.Internal
        , IComponentBuilder componentBuilder, IEnumerable<object> implementors)
         {
             var entityComponentType = componentBuilder.GetEntityComponentType();
-            var safeDictionary = group.GetOrCreate(new RefWrapperType(entityComponentType)
+            ITypeSafeDictionary safeDictionary = group.GetOrCreate(new RefWrapperType(entityComponentType)
                                                  , (ref IComponentBuilder cb) => cb.CreateDictionary(1)
                                                  , ref componentBuilder);
 

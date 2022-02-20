@@ -220,7 +220,7 @@ namespace Svelto.ECS
                 _egidToReferenceMap;
         }
 
-        internal LocatorMap entityLocator => _entityLocator;
+        LocatorMap entityLocator => _entityLocator;
         
         LocatorMap          _entityLocator;
     }

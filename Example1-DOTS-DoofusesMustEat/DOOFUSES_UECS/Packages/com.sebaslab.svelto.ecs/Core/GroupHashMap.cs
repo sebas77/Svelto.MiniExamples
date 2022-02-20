@@ -6,12 +6,12 @@ using Svelto.ECS.Serialization;
 
 namespace Svelto.ECS
 {
-    static class GroupHashMap
+    public static class GroupHashMap
     {
         /// <summary>
         /// c# Static constructors are guaranteed to be thread safe
         /// </summary>
-        public static void Init()
+        internal static void Init()
         {
             List<Assembly> assemblies = AssemblyUtility.GetCompatibleAssemblies();
             foreach (Assembly assembly in assemblies)
@@ -105,7 +105,7 @@ namespace Svelto.ECS
             _hashByGroups.Add(exclusiveGroupStruct, nameHash);
         }
 
-        public static uint GetHashFromGroup(ExclusiveGroupStruct groupStruct)
+        internal static uint GetHashFromGroup(ExclusiveGroupStruct groupStruct)
         {
 #if DEBUG && !PROFILE_SVELTO
             if (_hashByGroups.ContainsKey(groupStruct) == false)
@@ -115,7 +115,7 @@ namespace Svelto.ECS
             return _hashByGroups[groupStruct];
         }
 
-        public static ExclusiveGroupStruct GetGroupFromHash(uint groupHash)
+        internal static ExclusiveGroupStruct GetGroupFromHash(uint groupHash)
         {
 #if DEBUG && !PROFILE_SVELTO
             if (_groupsByHash.ContainsKey(groupHash) == false)

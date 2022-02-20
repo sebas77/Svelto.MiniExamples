@@ -24,15 +24,17 @@ namespace Svelto.ECS
         {
             uint       count = 0;
             IBuffer<T> buffer;
+            EntityIDs  ids = default;
             if (SafeQueryEntityDictionary<T>(out var typeSafeDictionary, entitiesInGroupPerType) == false)
                 buffer = RetrieveEmptyEntityComponentArray<T>();
             else
             {
-                var safeDictionary = (typeSafeDictionary as ITypeSafeDictionary<T>);
+                ITypeSafeDictionary<T> safeDictionary = (typeSafeDictionary as ITypeSafeDictionary<T>);
                 buffer = safeDictionary.GetValues(out count);
+                ids    = safeDictionary.entityIDs;
             }
 
-            return new EntityCollection<T>(buffer, count);
+            return new EntityCollection<T>(buffer, count, ids);
         }
 
         /// <summary>

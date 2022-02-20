@@ -21,6 +21,8 @@ namespace Svelto
         static readonly ThreadLocal<StringBuilder> _threadSafeStrings;
         static readonly FasterList<ILogger>        _loggers;
 
+        public static bool batchLog = false;
+
         static Console()
         {
             _threadSafeStrings = new ThreadLocal<StringBuilder>(() => new StringBuilder(256));
@@ -39,7 +41,8 @@ namespace Svelto
                 }
                 catch
                 {
-                    return new StringBuilder(); //this is just to handle finalizer that could be called after the _threadSafeStrings is finalized. So pretty rare
+                    return
+                        new StringBuilder(); //this is just to handle finalizer that could be called after the _threadSafeStrings is finalized. So pretty rare
                 }
             }
         }
@@ -84,7 +87,7 @@ namespace Svelto
         public static void LogError(string txt, Dictionary<string, string> extraData = null)
         {
             var builder = _stringBuilder;
-            
+
             builder.Length = 0;
             builder.Append("-!!!!!!-> ").Append(txt);
 
@@ -93,8 +96,8 @@ namespace Svelto
             InternalLog(toPrint, LogType.Error, true, null, extraData);
         }
 
-        public static void LogException
-            (Exception exception, string message = null, Dictionary<string, string> extraData = null)
+        public static void LogException(Exception exception, string message = null,
+            Dictionary<string, string> extraData = null)
         {
             if (extraData == null)
                 extraData = new Dictionary<string, string>();
@@ -113,7 +116,7 @@ namespace Svelto
             {
                 var builder = _stringBuilder;
                 builder.Length = 0;
-                builder.Append(toPrint).Append(message);
+                builder.Append(toPrint).Append(exception.Message).Append(" -- ").Append(message);
 
                 toPrint = builder.ToString();
             }
@@ -132,7 +135,7 @@ namespace Svelto
 
             InternalLog(toPrint, LogType.Warning);
         }
-        
+
         public static void LogStackTrace(string str, StackTrace stack)
         {
             var builder = _stringBuilder;
@@ -146,7 +149,7 @@ namespace Svelto
             }
 
             var toPrint = builder.ToString();
-            
+
             InternalLog(toPrint, LogType.Error, false);
         }
 
@@ -193,9 +196,9 @@ namespace Svelto
 
         public static void SetLogger(ILogger log)
         {
-            _loggers[0] = log;
-
             log.OnLoggerAdded();
+
+            _loggers[0] = log;
         }
 
         /// <summary>

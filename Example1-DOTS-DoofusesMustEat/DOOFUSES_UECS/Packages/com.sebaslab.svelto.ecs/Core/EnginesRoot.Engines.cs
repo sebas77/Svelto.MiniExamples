@@ -4,10 +4,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using DBC.ECS;
 using Svelto.Common;
 using Svelto.DataStructures;
-using Svelto.ECS.DataStructures;
 using Svelto.ECS.Internal;
 using Svelto.ECS.Schedulers;
 
@@ -37,23 +37,35 @@ namespace Svelto.ECS
         {
             _entitiesOperations                 = new EntitiesOperations();
             _idChecker                          = new FasterDictionary<ExclusiveGroupStruct, HashSet<uint>>();
+            _cachedIndicesForFilters            = new FasterDictionary<uint, uint>();
+            _cachedSubmissionIndices            = new FasterList<(uint, uint)>();
             _multipleOperationOnSameEGIDChecker = new FasterDictionary<EGID, uint>();
-#if UNITY_NATIVE //because of the thread count, ATM this is only for unity            
-            _nativeSwapOperationQueue   = new AtomicNativeBags(Allocator.Persistent);
-            _nativeRemoveOperationQueue = new AtomicNativeBags(Allocator.Persistent);
-            _nativeAddOperationQueue    = new AtomicNativeBags(Allocator.Persistent);
+#if UNITY_NATIVE //because of the thread count, ATM this is only for unity
+            _nativeSwapOperationQueue   = new Svelto.ECS.DataStructures.AtomicNativeBags(Allocator.Persistent);
+            _nativeRemoveOperationQueue = new Svelto.ECS.DataStructures.AtomicNativeBags(Allocator.Persistent);
+            _nativeAddOperationQueue    = new Svelto.ECS.DataStructures.AtomicNativeBags(Allocator.Persistent);
 #endif
             _serializationDescriptorMap = new SerializationDescriptorMap();
-            _reactiveEnginesAdd         = new FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer>>();
-            _reactiveEnginesRemove         = new FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer>>();
+            _reactiveEnginesAdd = new FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<IReactOnAdd>>>();
+            _reactiveEnginesAddEx =
+                new FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<IReactOnAddEx>>>();
+            _reactiveEnginesRemove =
+                new FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<IReactOnRemove>>>();
+            _reactiveEnginesRemoveEx =
+                new FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<IReactOnRemoveEx>>>();
+            _reactiveEnginesSwap =
+                new FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<IReactOnSwap>>>();
+            _reactiveEnginesSwapEx =
+                new FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<IReactOnSwapEx>>>();
+
             _reactiveEnginesDispose =
-                new FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer>>();
-            _reactiveEnginesSwap         = new FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer>>();
-            _reactiveEnginesSubmission   = new FasterList<IReactOnSubmission>();
-            _enginesSet                  = new FasterList<IEngine>();
-            _enginesTypeSet              = new HashSet<Type>();
-            _disposableEngines           = new FasterList<IDisposable>();
+                new FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<IReactOnDispose>>>();
             
+            _reactiveEnginesSubmission = new FasterList<IReactOnSubmission>();
+            _enginesSet                = new FasterList<IEngine>();
+            _enginesTypeSet            = new HashSet<Type>();
+            _disposableEngines         = new FasterList<IDisposable>();
+
             _groupEntityComponentsDB =
                 new FasterDictionary<ExclusiveGroupStruct, FasterDictionary<RefWrapperType, ITypeSafeDictionary>>();
             _groupsPerEntity =
@@ -61,9 +73,11 @@ namespace Svelto.ECS
             _groupedEntityToAdd = new DoubleBufferedEntitiesToAdd();
             _entityStreams      = EntitiesStreams.Create();
             _groupFilters =
-                new FasterDictionary<RefWrapperType, FasterDictionary<ExclusiveGroupStruct, GroupFilters>>();
+                new FasterDictionary<RefWrapperType, FasterDictionary<ExclusiveGroupStruct, LegacyGroupFilters>>();
             _entityLocator.InitEntityReferenceMap();
             _entitiesDB = new EntitiesDB(this, _entityLocator);
+
+            InitFilters();
 
             scheduler        = entitiesComponentScheduler;
             scheduler.onTick = new EntitiesSubmitter(this);
@@ -105,15 +119,24 @@ namespace Svelto.ECS
             {
                 if (engine is IReactOnAdd viewEngineAdd)
                     CheckReactEngineComponents(viewEngineAdd, _reactiveEnginesAdd, type.Name);
-                
+
+                if (engine is IReactOnAddEx viewEngineAddEx)
+                    CheckReactEngineComponents(viewEngineAddEx, _reactiveEnginesAddEx, type.Name);
+
                 if (engine is IReactOnRemove viewEngineRemove)
                     CheckReactEngineComponents(viewEngineRemove, _reactiveEnginesRemove, type.Name);
+
+                if (engine is IReactOnRemoveEx viewEngineRemoveEx)
+                    CheckReactEngineComponents(viewEngineRemoveEx, _reactiveEnginesRemoveEx, type.Name);
 
                 if (engine is IReactOnDispose viewEngineDispose)
                     CheckReactEngineComponents(viewEngineDispose, _reactiveEnginesDispose, type.Name);
 
                 if (engine is IReactOnSwap viewEngineSwap)
                     CheckReactEngineComponents(viewEngineSwap, _reactiveEnginesSwap, type.Name);
+
+                if (engine is IReactOnSwapEx viewEngineSwapEx)
+                    CheckReactEngineComponents(viewEngineSwapEx, _reactiveEnginesSwapEx, type.Name);
 
                 if (engine is IReactOnSubmission submissionEngine)
                     _reactiveEnginesSubmission.Add(submissionEngine);
@@ -148,7 +171,7 @@ namespace Svelto.ECS
         }
 
         static void AddEngineToList<T>(T engine, Type[] entityComponentTypes,
-            FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer>> engines, string typeName)
+            FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<T>>> engines, string typeName)
             where T : class, IReactEngine
         {
             for (var i = 0; i < entityComponentTypes.Length; i++)
@@ -157,33 +180,43 @@ namespace Svelto.ECS
 
                 if (engines.TryGetValue(new RefWrapperType(type), out var list) == false)
                 {
-                    list = new FasterList<ReactEngineContainer>();
+                    list = new FasterList<ReactEngineContainer<T>>();
 
                     engines.Add(new RefWrapperType(type), list);
                 }
 
-                list.Add(new ReactEngineContainer(engine, typeName));
+                list.Add(new ReactEngineContainer<T>(engine, typeName));
             }
         }
 
         void CheckReactEngineComponents<T>(T engine,
-            FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer>> engines, string typeName)
+            FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<T>>> engines, string typeName)
             where T : class, IReactEngine
         {
             var interfaces = engine.GetType().GetInterfaces();
 
-            foreach (var interf in interfaces)
-                if (interf.IsGenericTypeEx() && typeof(T).IsAssignableFrom(interf))
+            //copied from: https://stackoverflow.com/a/5318781
+            var minimalInterfaces = interfaces.Except(interfaces.SelectMany(t => t.GetInterfaces()));
+
+            var type = typeof(T);
+
+            foreach (var interf in minimalInterfaces)
+            {
+                if (interf.IsGenericTypeEx() && type.IsAssignableFrom(interf))
                 {
                     var genericArguments = interf.GetGenericArgumentsEx();
 
                     AddEngineToList(engine, genericArguments, engines, typeName);
                 }
+            }
         }
 
         void Dispose(bool disposing)
         {
-            _isDisposing = true;
+            _isDisposing = disposing;
+
+            if (disposing == false)
+                return;
 
             using (var profiler = new PlatformProfiler("Final Dispose"))
             {
@@ -207,7 +240,8 @@ namespace Svelto.ECS
                 foreach (var entityList in groups.value)
                     try
                     {
-                        entityList.value.ExecuteEnginesRemoveGroupCallbacks(_reactiveEnginesDispose, groups.key, profiler);
+                        entityList.value.ExecuteEnginesDisposeCallbacks_Group(_reactiveEnginesDispose, groups.key,
+                            profiler);
                     }
                     catch (Exception e)
                     {
@@ -223,6 +257,8 @@ namespace Svelto.ECS
                     group.value.Dispose();
 
                 _groupFilters.Clear();
+
+                DisposeFilters();
 
 #if UNITY_NATIVE
                 _nativeAddOperationQueue.Dispose();
@@ -281,6 +317,11 @@ namespace Svelto.ECS
                     {
                         var iterations       = 0;
                         var hasEverSubmitted = false;
+
+                        // We need to clear transient filters before processing callbacks since the callbacks may add
+                        // new entities to these filters.
+                        enginesRootTarget.ClearTransientFilters();
+
 #if UNITY_NATIVE
                         enginesRootTarget.FlushNativeOperations(profiler);
 #endif
@@ -325,11 +366,26 @@ namespace Svelto.ECS
         readonly HashSet<Type>           _enginesTypeSet;
         readonly EnginesReadyOption      _enginesWaitForReady;
 
-        readonly FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer>> _reactiveEnginesAdd;
-        readonly FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer>> _reactiveEnginesRemove;
-        readonly FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer>> _reactiveEnginesDispose;
-        readonly FasterList<IReactOnSubmission>                                     _reactiveEnginesSubmission;
-        readonly FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer>> _reactiveEnginesSwap;
+        readonly FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<IReactOnAdd>>> _reactiveEnginesAdd;
+
+        readonly FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<IReactOnAddEx>>>
+            _reactiveEnginesAddEx;
+
+        readonly FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<IReactOnRemove>>>
+            _reactiveEnginesRemove;
+
+        readonly FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<IReactOnRemoveEx>>>
+            _reactiveEnginesRemoveEx;
+
+        readonly FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<IReactOnSwap>>> _reactiveEnginesSwap;
+
+        readonly FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<IReactOnSwapEx>>>
+            _reactiveEnginesSwapEx;
+
+        readonly FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<IReactOnDispose>>>
+            _reactiveEnginesDispose;
+
+        readonly FasterList<IReactOnSubmission> _reactiveEnginesSubmission;
     }
 
     public enum EnginesReadyOption

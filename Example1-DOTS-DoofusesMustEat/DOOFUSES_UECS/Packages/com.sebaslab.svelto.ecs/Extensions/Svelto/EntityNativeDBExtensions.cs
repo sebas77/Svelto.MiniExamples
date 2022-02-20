@@ -50,6 +50,25 @@ namespace Svelto.ECS
 
             return false;
         }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool TryGetEntity<T>(this EntitiesDB entitiesDb, uint entityID, ExclusiveGroupStruct @group, out T value)
+            where T : unmanaged, IEntityComponent
+        {
+            if (TryQueryEntitiesAndIndex<T>(entitiesDb, entityID, group, out var index, out var array))
+            {
+                value = array[index];
+                return true;
+            }
+
+            value = default;
+            return false;
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool TryGetEntity<T>(this EntitiesDB entitiesDb, EGID egid, out T value)
+            where T : unmanaged, IEntityComponent
+        {
+            return TryGetEntity<T>(entitiesDb, egid.entityID, egid.groupID, out value);
+        }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         static bool QueryEntitiesAndIndexInternal<T>

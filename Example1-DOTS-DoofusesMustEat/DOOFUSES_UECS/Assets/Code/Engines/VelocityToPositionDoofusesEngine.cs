@@ -24,9 +24,9 @@ namespace Svelto.ECS.MiniExamples.Example1C
 
             foreach (var (doofuses, _) in doofusesEntityGroups)
             {
-                var buffers = doofuses.ToBuffers();
-                var dep = new ComputePostionFromVelocityJob(buffers, Time.deltaTime).ScheduleParallel(
-                        buffers.count, _jobHandle);
+                var (buffer1, buffer2, buffer3, count) = doofuses;
+                var dep = new ComputePostionFromVelocityJob((buffer1, buffer2, buffer3, count), Time.deltaTime).ScheduleParallel(
+                    count, _jobHandle);
 
                 _jobHandle = JobHandle.CombineDependencies(_jobHandle, dep);
             }

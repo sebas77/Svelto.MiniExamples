@@ -4,7 +4,6 @@ using System.Diagnostics;
 #endif
 using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using Svelto.DataStructures;
 
 namespace Svelto.ECS
@@ -30,15 +29,21 @@ namespace Svelto.ECS
                        .FastConcat(_multipleOperationOnSameEGIDChecker[egid] == 1 ? "add" : "remove"));
 
             if (_idChecker.TryGetValue(egid.groupID, out var hash))
+            {
                 if (hash.Contains(egid.entityID) == false)
                     throw new ECSException("Trying to remove an Entity not present in the database "
-                                          .FastConcat(" caller: ", caller, " entityID ").FastConcat(egid.entityID)
-                                          .FastConcat(" groupid: ").FastConcat(egid.groupID.ToName())
-                                          .FastConcat(" type: ")
-                                          .FastConcat(entityDescriptorType != null
-                                                          ? entityDescriptorType.Name
-                                                          : "not available"));
-                
+                       .FastConcat(" caller: ", caller, " entityID ").FastConcat(egid.entityID).FastConcat(" groupid: ")
+                       .FastConcat(egid.groupID.ToName()).FastConcat(" type: ")
+                       .FastConcat(entityDescriptorType != null ? entityDescriptorType.Name : "not available"));
+            }
+            else
+            {
+                throw new ECSException("Trying to remove an Entity with a group never used so far "
+                   .FastConcat(" caller: ", caller, " entityID ").FastConcat(egid.entityID).FastConcat(" groupid: ")
+                   .FastConcat(egid.groupID.ToName()).FastConcat(" type: ")
+                   .FastConcat(entityDescriptorType != null ? entityDescriptorType.Name : "not available"));
+            }
+
             hash.Remove(egid.entityID);
 
             _multipleOperationOnSameEGIDChecker.Add(egid, 0);
@@ -66,6 +71,7 @@ namespace Svelto.ECS
                                                       ? entityDescriptorType.Name
                                                       : "not available"));
             hash.Add(egid.entityID);
+            
             _multipleOperationOnSameEGIDChecker.Add(egid, 1);
         }
 
@@ -77,7 +83,7 @@ namespace Svelto.ECS
 #if DONT_USE
         [Conditional("MEANINGLESS")]
 #endif
-        void ClearChecks() { _multipleOperationOnSameEGIDChecker.FastClear(); }
+        void ClearDebugChecks() { _multipleOperationOnSameEGIDChecker.FastClear(); }
 
         readonly FasterDictionary<EGID, uint>                          _multipleOperationOnSameEGIDChecker;
         readonly FasterDictionary<ExclusiveGroupStruct, HashSet<uint>> _idChecker;

@@ -31,15 +31,23 @@ namespace Svelto.ECS.SveltoOnDOTS
         }
     }
 
-    struct DOTSEntityToSetup : IComponentData
-    { }
-    
-    public interface IEntityComponentForDOTS: IEntityComponent
+    struct DOTSEntityToSetup : ISharedComponentData
+    {
+        internal readonly ExclusiveGroupStruct group;
+
+        public DOTSEntityToSetup(ExclusiveGroupStruct exclusiveGroup)
+        {
+            @group = exclusiveGroup;
+        }
+    }
+
+  public interface IEntityComponentForDOTS: IEntityComponent
     {
         public Entity dotsEntity { get; set; }
     }
     
-    public struct DOTSEntityComponent: IEntityComponentForDOTS
+    
+    public struct DOTSEntityComponent:IEntityComponentForDOTS
     {
         public Entity dotsEntity { get; set; }
     }

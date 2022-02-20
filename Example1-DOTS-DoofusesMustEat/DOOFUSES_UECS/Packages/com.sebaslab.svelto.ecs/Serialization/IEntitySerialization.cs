@@ -67,7 +67,7 @@ namespace Svelto.ECS.Serialization
         /// <param name="fromEGID"></param>
         /// <param name="toEGID"></param>
         /// <param name="caller"></param>
-        void DeserializeEntityToSwap(EGID fromEGID, EGID toEGID, string caller);
+        void DeserializeEntityToSwap(EGID fromEGID, EGID toEGID,  [CallerMemberName] string caller = null);
 
         /// <summary>
         /// Special Entity delete method that works without knowing the EntityDescriptor to delete

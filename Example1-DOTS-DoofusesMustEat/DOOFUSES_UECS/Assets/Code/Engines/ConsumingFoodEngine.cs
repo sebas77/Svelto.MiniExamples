@@ -40,24 +40,26 @@ namespace Svelto.ECS.MiniExamples.Example1C
 
         public string name => nameof(ConsumingFoodEngine);
 
-        JobHandle CreateJobForDoofusesAndFood(JobHandle inputDeps, in LocalFasterReadOnlyList<ExclusiveGroupStruct> 
-                doofusesEatingGroups, ExclusiveBuildGroup foodEatenGroup, in LocalFasterReadOnlyList<ExclusiveGroupStruct> foodGroup)
+        JobHandle CreateJobForDoofusesAndFood
+        (JobHandle inputDeps, in LocalFasterReadOnlyList<ExclusiveGroupStruct> doofusesEatingGroups
+       , ExclusiveBuildGroup foodEatenGroup, in LocalFasterReadOnlyList<ExclusiveGroupStruct> foodGroup)
         {
-            var foodPositionMapper = entitiesDB.QueryNativeMappedEntities<PositionEntityComponent>(foodGroup, Allocator.TempJob);
-            
+            var foodPositionMapper =
+                entitiesDB.QueryNativeMappedEntities<PositionEntityComponent>(foodGroup, Allocator.TempJob);
+
             //against all the doofuses
             JobHandle deps = inputDeps;
             foreach (var (doofusesBuffer, _) in entitiesDB
-               .QueryEntities<PositionEntityComponent, VelocityEntityComponent, MealInfoComponent, EGIDComponent>(
-                    doofusesEatingGroups))
+                        .QueryEntities<PositionEntityComponent, VelocityEntityComponent, MealInfoComponent,
+                             EGIDComponent>(doofusesEatingGroups))
             {
-                var doofuses      = doofusesBuffer.ToBuffers();
-                var doofusesCount = doofuses.count;
+                var (buffer1, buffer2, buffer3, buffer4, count) = doofusesBuffer;
 
                 //schedule the job
                 deps = JobHandle.CombineDependencies(
-                    deps, new ConsumingFoodJob(doofuses, foodPositionMapper, _nativeSwap, _nativeRemove, foodEatenGroup)
-                       .ScheduleParallel(doofusesCount, inputDeps));
+                    deps
+                  , new ConsumingFoodJob((buffer1, buffer2, buffer3, buffer4, count), foodPositionMapper, _nativeSwap
+                                       , _nativeRemove, foodEatenGroup).ScheduleParallel(count, inputDeps));
             }
 
             foodPositionMapper.ScheduleDispose(deps);
@@ -99,10 +101,10 @@ namespace Svelto.ECS.MiniExamples.Example1C
 
         public void Execute(int index)
         {
-            ref EGID   mealInfoEGID = ref _doofuses.buffer3[index].targetMeal;
-            ref float3 doofusPosition    = ref _doofuses.buffer1[index].position;
-            ref float3 velocity          = ref _doofuses.buffer2[index].velocity;
-            ref float3 foodPosition      = ref _foodPositionMapper.Entity(mealInfoEGID).position;
+            ref EGID   mealInfoEGID   = ref _doofuses.buffer3[index].targetMeal;
+            ref float3 doofusPosition = ref _doofuses.buffer1[index].position;
+            ref float3 velocity       = ref _doofuses.buffer2[index].velocity;
+            ref float3 foodPosition   = ref _foodPositionMapper.Entity(mealInfoEGID).position;
 
             var computeDirection = foodPosition - doofusPosition;
             var sqrModule        = computeDirection.x * computeDirection.x + computeDirection.z * computeDirection.z;

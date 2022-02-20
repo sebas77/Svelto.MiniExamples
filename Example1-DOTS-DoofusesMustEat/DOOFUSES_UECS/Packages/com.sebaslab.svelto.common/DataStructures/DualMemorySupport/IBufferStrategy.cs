@@ -1,3 +1,4 @@
+using System;
 using Svelto.Common;
 
 namespace Svelto.DataStructures
@@ -8,11 +9,13 @@ namespace Svelto.DataStructures
         bool      isValid            { get; }
         Allocator allocationStrategy { get; }
 
-        void Alloc(uint size, Allocator allocator, bool clear = true);
-        void ShiftRight(uint index, uint count);
-        void ShiftLeft(uint index, uint count);
-        void Resize(uint newCapacity, bool copyContent = true);
-        void Clear();
+        void   Alloc(uint size, Allocator allocator, bool clear = true);
+        void   ShiftRight(uint index, uint count);
+        void   ShiftLeft(uint index, uint count);
+        void   Resize(uint newCapacity, bool copyContent = true);
+        IntPtr AsBytesPointer();
+        void SerialiseFrom(IntPtr bytesPointer);
+        void   Clear();
         
         ref T this[uint index] { get ; }
         ref T this[int index] { get ; }

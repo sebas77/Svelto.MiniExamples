@@ -6,8 +6,7 @@ using Svelto.Utilities;
 
 namespace Svelto.DataStructures
 {
-    sealed class FasterDictionaryDebugProxy<TKey, TValue> 
-        where TKey : struct, IEquatable<TKey>
+    sealed class FasterDictionaryDebugProxy<TKey, TValue> where TKey : struct, IEquatable<TKey>
     {
         public FasterDictionaryDebugProxy(FasterDictionary<TKey, TValue> dic)
         {
@@ -15,7 +14,7 @@ namespace Svelto.DataStructures
         }
 
         [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
-        public KeyValuePairFast<TKey,TValue, ManagedStrategy<TValue>>[] keyValues
+        public KeyValuePairFast<TKey, TValue, ManagedStrategy<TValue>>[] keyValues
         {
             get
             {
@@ -30,9 +29,10 @@ namespace Svelto.DataStructures
                 return array;
             }
         }
-        
+
         readonly FasterDictionary<TKey, TValue> _dic;
     }
+
     /// <summary>
     ///     This dictionary has been created for just one reason: I needed a dictionary that would have let me iterate
     ///     over the values as an array, directly, without generating one or using an iterator.
@@ -47,7 +47,9 @@ namespace Svelto.DataStructures
     [DebuggerTypeProxy(typeof(FasterDictionaryDebugProxy<,>))]
     public sealed class FasterDictionary<TKey, TValue> where TKey : struct, IEquatable<TKey>
     {
-        public FasterDictionary() : this(1) { }
+        public FasterDictionary() : this(1)
+        {
+        }
 
         public FasterDictionary(uint size)
         {
@@ -136,19 +138,27 @@ namespace Svelto.DataStructures
         {
             return ref _dictionary.GetOrCreate(key, builder);
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref TValue GetOrCreate<W>(TKey key, FuncRef<W, TValue> builder, ref W parameter)
         {
             return ref _dictionary.GetOrCreate(key, builder, ref parameter);
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ref TValue RecycleOrCreate<TValueProxy>(TKey key, Func<TValueProxy> builder, ActionRef<TValueProxy> recycler) where TValueProxy: class, TValue
+        public ref TValue RecycleOrCreate<TValueProxy>(TKey key, Func<TValueProxy> builder,
+            ActionRef<TValueProxy> recycler) where TValueProxy : class, TValue
         {
             return ref _dictionary.RecycleOrCreate(key, builder, recycler);
         }
         
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ref TValue RecycleOrCreate<TValueProxy, W>(TKey key, FuncRef<W, TValue> builder,
+            ActionRef<TValueProxy, W> recycler, ref W parameter) where TValueProxy : class, TValue
+        {
+            return ref _dictionary.RecycleOrCreate(key, builder, recycler, ref parameter);
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref TValue GetDirectValueByRef(uint index)
         {
@@ -166,7 +176,7 @@ namespace Svelto.DataStructures
         {
             _dictionary.EnsureCapacity(size);
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void IncreaseCapacityBy(uint size)
         {
@@ -186,7 +196,13 @@ namespace Svelto.DataStructures
         {
             return _dictionary.Remove(key);
         }
-
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Remove(TKey key, out TValue o)
+        {
+            return _dictionary.Remove(key, out o);
+        }
+        
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Trim()
         {
@@ -244,7 +260,7 @@ namespace Svelto.DataStructures
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public MB<TValue> GetValues(out uint count)
         {
-            count = (uint) this.count;
+            count = (uint)this.count;
             return _dictionary._values.ToRealBuffer();
         }
 
@@ -272,6 +288,9 @@ namespace Svelto.DataStructures
         SveltoDictionary<TKey, TValue, ManagedStrategy<SveltoDictionaryNode<TKey>>, ManagedStrategy<TValue>,
             ManagedStrategy<int>> _dictionary;
 
-        static readonly string name;
+        public void CopyFrom(FasterDictionary<TKey, TValue> fromComponentsDictionary)
+        {
+            _dictionary.CopyFrom(fromComponentsDictionary._dictionary);
+        }
     }
 }

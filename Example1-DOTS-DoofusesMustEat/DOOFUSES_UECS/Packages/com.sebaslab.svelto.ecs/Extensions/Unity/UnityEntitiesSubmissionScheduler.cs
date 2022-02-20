@@ -1,4 +1,5 @@
 #if UNITY_5 || UNITY_5_3_OR_NEWER
+using System;
 using Object = UnityEngine.Object;
 using UnityEngine;
 
@@ -29,9 +30,11 @@ namespace Svelto.ECS.Schedulers.Unity
             {
                 _onTick.SubmitEntities();
             }
-            catch
+            catch (Exception e)
             {
                 paused = true;
+                
+                Svelto.Console.LogException(e);
                 
                 throw;
             }

@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "com.sebaslab.svelto.ecs": "3.2.5",
+    "com.sebaslab.svelto.ecs": "3.2.6",
     "com.unity.collab-proxy": "1.11.2",
     "com.unity.ext.nunit": "1.0.6",
     "com.unity.ide.rider": "2.0.7",

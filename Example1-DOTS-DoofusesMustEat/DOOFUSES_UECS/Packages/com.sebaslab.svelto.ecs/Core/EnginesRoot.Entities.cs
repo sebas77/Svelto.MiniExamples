@@ -1,7 +1,8 @@
-﻿using System;
+﻿//#define PARANOID_CHECK
+
+using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.ECS.Internal;
 
@@ -28,21 +29,20 @@ namespace Svelto.ECS
 
         ///--------------------------------------------
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        EntityInitializer BuildEntity
-        (EGID entityID, IComponentBuilder[] componentsToBuild, Type descriptorType, IEnumerable<object> implementors
-       , string caller)
+        EntityInitializer BuildEntity(EGID entityID, IComponentBuilder[] componentsToBuild, Type descriptorType,
+            IEnumerable<object> implementors, string caller)
         {
             CheckAddEntityID(entityID, descriptorType, caller);
 
-            DBC.ECS.Check.Require(entityID.groupID.isInvalid == false
-                                , "invalid group detected, are you using new ExclusiveGroupStruct() instead of new ExclusiveGroup()?");
+            DBC.ECS.Check.Require(entityID.groupID.isInvalid == false,
+                "invalid group detected, are you using new ExclusiveGroupStruct() instead of new ExclusiveGroup()?");
 
             var reference = _entityLocator.ClaimReference();
             _entityLocator.SetReference(reference, entityID);
 
             var dic = EntityFactory.BuildGroupedEntities(entityID, _groupedEntityToAdd, componentsToBuild, implementors
 #if DEBUG && !PROFILE_SVELTO
-                                               , descriptorType
+              , descriptorType
 #endif
             );
 
@@ -85,13 +85,12 @@ namespace Svelto.ECS
             PreallocateEntitiesToAdd();
             _entityLocator.PreallocateReferenceMaps(groupID, size);
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         FasterDictionary<RefWrapperType, ITypeSafeDictionary> GetDBGroup(ExclusiveGroupStruct fromIdGroupId)
         {
-            if (_groupEntityComponentsDB.TryGetValue(fromIdGroupId
-                                                   , out FasterDictionary<RefWrapperType, ITypeSafeDictionary>
-                                                         fromGroup) == false)
+            if (_groupEntityComponentsDB.TryGetValue(fromIdGroupId,
+                    out FasterDictionary<RefWrapperType, ITypeSafeDictionary> fromGroup) == false)
                 throw new ECSException("Group doesn't exist: ".FastConcat(fromIdGroupId.ToName()));
 
             return fromGroup;
@@ -100,20 +99,33 @@ namespace Svelto.ECS
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         FasterDictionary<RefWrapperType, ITypeSafeDictionary> GetOrCreateDBGroup(ExclusiveGroupStruct toGroupId)
         {
-            return _groupEntityComponentsDB.GetOrCreate(
-                toGroupId, () => new FasterDictionary<RefWrapperType, ITypeSafeDictionary>());
+            return _groupEntityComponentsDB.GetOrCreate(toGroupId,
+                () => new FasterDictionary<RefWrapperType, ITypeSafeDictionary>());
         }
 
         IComponentBuilder[] FindRealComponents<T>(EGID fromEntityGID) where T : IEntityDescriptor, new()
         {
             var fromGroup = GetDBGroup(fromEntityGID.groupID);
 
-            if (fromGroup.TryGetValue(new RefWrapperType(ComponentBuilderUtilities.ENTITY_INFO_COMPONENT)
-                                    , out var entityInfoDic) //<entity ID, EntityInfoComponent>
-             && ((ITypeSafeDictionary<EntityInfoComponent>)entityInfoDic).TryGetValue(
-                    fromEntityGID.entityID
-                  , out var entityInfo)) //there could be multiple entity descriptors registered in the same group, so it's necessary to check if the entity registered in the group has entityInfoComponent   
+            if (fromGroup.TryGetValue(new RefWrapperType(ComponentBuilderUtilities.ENTITY_INFO_COMPONENT),
+                    out var entityInfoDic) //<entity ID, EntityInfoComponent>
+             && ((ITypeSafeDictionary<EntityInfoComponent>)entityInfoDic).TryGetValue(fromEntityGID.entityID,
+                    out var entityInfo)) //there could be multiple entity descriptors registered in the same group, so it's necessary to check if the entity registered in the group has entityInfoComponent   
             {
+#if PARANOID_CHECK
+                var hash = new HashSet<IComponentBuilder>(entityInfo.componentsToBuild,
+                    default(ComponentBuilderComparer));
+
+                foreach (var component in EntityDescriptorTemplate<T>.descriptor.componentsToBuild)
+                {
+                    if (hash.Contains(component) == false)
+                        throw new Exception(
+                            $"entityInfo.componentsToBuild must contain all the base components {fromEntityGID}," +
+                            $" missing component {component}");
+
+                    hash.Remove(component);
+                }
+#endif
                 return entityInfo.componentsToBuild;
             }
 
@@ -124,12 +136,25 @@ namespace Svelto.ECS
         {
             var fromGroup = GetDBGroup(fromEntityGID.groupID);
 
-            if (fromGroup.TryGetValue(new RefWrapperType(ComponentBuilderUtilities.ENTITY_INFO_COMPONENT)
-                                    , out var entityInfoDic) //<entity ID, EntityInfoComponent>
-             && ((ITypeSafeDictionary<EntityInfoComponent>)entityInfoDic).TryGetValue(
-                    fromEntityGID.entityID
-                  , out var entityInfo)) //there could be multiple entity descriptors registered in the same group, so it's necessary to check if the entity registered in the group has entityInfoComponent   
+            if (fromGroup.TryGetValue(new RefWrapperType(ComponentBuilderUtilities.ENTITY_INFO_COMPONENT),
+                    out var entityInfoDic) //<entity ID, EntityInfoComponent>
+             && ((ITypeSafeDictionary<EntityInfoComponent>)entityInfoDic).TryGetValue(fromEntityGID.entityID,
+                    out var entityInfo)) //there could be multiple entity descriptors registered in the same group, so it's necessary to check if the entity registered in the group has entityInfoComponent   
             {
+#if PARANOID_CHECK
+                var hash = new HashSet<IComponentBuilder>(entityInfo.componentsToBuild,
+                    default(ComponentBuilderComparer));
+
+                foreach (var component in baseComponents)
+                {
+                    if (hash.Contains(component) == false)
+                        throw new Exception(
+                            $"entityInfo.componentsToBuild must contain all the base components {fromEntityGID}," +
+                            $" missing component {component}");
+
+                    hash.Remove(component);
+                }
+#endif
                 return entityInfo.componentsToBuild;
             }
 
@@ -154,7 +179,7 @@ namespace Svelto.ECS
             _groupsPerEntity;
 
         //The filters stored for each component and group
-        internal readonly FasterDictionary<RefWrapperType, FasterDictionary<ExclusiveGroupStruct, GroupFilters>>
+        internal readonly FasterDictionary<RefWrapperType, FasterDictionary<ExclusiveGroupStruct, LegacyGroupFilters>>
             _groupFilters;
 
         readonly EntitiesDB _entitiesDB;

@@ -3,16 +3,11 @@ using System.Runtime.CompilerServices;
 
 namespace Svelto.DataStructures
 {
-    /// <summary>
-    ///     original code: http://devplanet.com/blogs/brianr/archive/2008/09/29/thread-safe-dictionary-update.aspx
-    /// </summary>
-    /// <typeparam name="TKey"></typeparam>
-    /// <typeparam name="TValue"></typeparam>
-    public sealed class ThreadSafeDictionary<TKey, TValue> where TKey : struct, IEquatable<TKey>
+    public sealed class ThreadSafeDictionary<TKey, TValue> : IDisposable where TKey : struct, IEquatable<TKey>
     {
         public ThreadSafeDictionary(int size)
         {
-            _dict = new FasterDictionary<TKey, TValue>((uint) size);
+            _dict = new FasterDictionary<TKey, TValue>((uint)size);
         }
 
         public ThreadSafeDictionary()
@@ -22,7 +17,15 @@ namespace Svelto.DataStructures
 
         public void Dispose()
         {
-            _dict.Dispose();
+            _lockQ.EnterWriteLock();
+            try
+            {
+                _dict.Dispose();
+            }
+            finally
+            {
+                _lockQ.ExitWriteLock();
+            }
         }
 
         public int count
@@ -33,14 +36,37 @@ namespace Svelto.DataStructures
                 _lockQ.EnterReadLock();
                 try
                 {
-                    return _dict.count;                    
+                    return _dict.count;
                 }
                 finally
                 {
-                    _lockQ.QuittingReadLock();
+                    _lockQ.ExitReadLock();
                 }
             }
         }
+
+        public ref struct ThreadSafeValues
+        {
+            ReaderWriterLockSlimEx                  _lockQ;
+            readonly FasterDictionary<TKey, TValue> _dic;
+
+            public ThreadSafeValues(ReaderWriterLockSlimEx lockQ, FasterDictionary<TKey, TValue> dic) : this()
+            {
+                lockQ.EnterReadLock();
+                _lockQ = lockQ;
+                _dic   = dic;
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public MB<TValue> GetValues(out uint count) => _dic.GetValues(out count);
+
+            public void Dispose()
+            {
+                _lockQ.ExitReadLock();
+            }
+        }
+
+        public ThreadSafeValues GetValues => new ThreadSafeValues(_lockQ, this._dict);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Add(TKey key, in TValue value)
@@ -52,7 +78,7 @@ namespace Svelto.DataStructures
             }
             finally
             {
-                _lockQ.QuittingWriteLock();
+                _lockQ.ExitWriteLock();
             }
         }
 
@@ -66,7 +92,7 @@ namespace Svelto.DataStructures
             }
             finally
             {
-                _lockQ.QuittingWriteLock();
+                _lockQ.ExitWriteLock();
             }
         }
 
@@ -80,7 +106,7 @@ namespace Svelto.DataStructures
             }
             finally
             {
-                _lockQ.QuittingWriteLock();
+                _lockQ.ExitWriteLock();
             }
         }
 
@@ -94,7 +120,7 @@ namespace Svelto.DataStructures
             }
             finally
             {
-                _lockQ.QuittingWriteLock();
+                _lockQ.ExitWriteLock();
             }
         }
 
@@ -104,11 +130,11 @@ namespace Svelto.DataStructures
             _lockQ.EnterReadLock();
             try
             {
-                return _dict.ContainsKey(key);                
+                return _dict.ContainsKey(key);
             }
             finally
             {
-                _lockQ.QuittingReadLock();
+                _lockQ.ExitReadLock();
             }
         }
 
@@ -122,64 +148,49 @@ namespace Svelto.DataStructures
             }
             finally
             {
-                _lockQ.QuittingReadLock();
+                _lockQ.ExitReadLock();
             }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ref TValue GetOrCreate(TKey key)
+        public TValue GetOrAdd<W>(TKey key, Func<W> func) where W : class, TValue
         {
-            _lockQ.EnterWriteLock();
+            _lockQ.EnterUpgradableReadLock();
             try
             {
-                return ref _dict.GetOrCreate(key);
-            }
-            finally
-            {
-                _lockQ.QuittingWriteLock();
-            }
-        }
+                if (_dict.TryGetValue(key, out var ret))
+                {
+                    return ret;
+                }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ref TValue GetOrCreate(TKey key, Func<TValue> builder)
-        {
-            _lockQ.EnterWriteLock();
-            try
-            {
-                return ref _dict.GetOrCreate(key, builder);
+                _lockQ.EnterWriteLock();
+                try
+                {
+                    TValue tValue = func();
+                    _dict.Add(key, tValue);
+                    return tValue;
+                }
+                finally
+                {
+                    _lockQ.ExitWriteLock();
+                }
             }
             finally
             {
-                _lockQ.QuittingWriteLock();
+                _lockQ.ExitUpgradableReadLock();
             }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref TValue GetDirectValueByRef(uint index)
         {
-            _lockQ.EnterReadLock();
-            try
-            {
-                return ref _dict.GetDirectValueByRef(index);
-            }
-            finally
-            {
-                _lockQ.QuittingReadLock();
-            }
+            throw new NotSupportedException("this is too unsafe to use in a multithreaded scenario");
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref TValue GetValueByRef(TKey key)
         {
-            _lockQ.EnterReadLock();
-            try
-            {
-                return ref _dict.GetValueByRef(key);
-            }
-            finally
-            {
-                _lockQ.QuittingReadLock();
-            }
+            throw new NotSupportedException("this is too unsafe to use in a multithreaded scenario");
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -209,6 +220,7 @@ namespace Svelto.DataStructures
                 _lockQ.EnterWriteLock();
             }
         }
+
         public TValue this[TKey key]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -221,23 +233,46 @@ namespace Svelto.DataStructures
                 }
                 finally
                 {
-                    _lockQ.QuittingReadLock();
+                    _lockQ.ExitReadLock();
                 }
             }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                _lockQ.EnterWriteLock();
+                _lockQ.EnterUpgradableReadLock();
                 try
                 {
-                    _dict[key] = value;
+                    if (_dict.TryFindIndex(key, out var index))
+                    {
+                        _lockQ.EnterWriteLock();
+                        try
+                        {
+                            _dict.GetDirectValueByRef(index) = value;
+                            return;
+                        }
+                        finally
+                        {
+                            _lockQ.ExitWriteLock();
+                        }
+                    }
+
+                    _lockQ.EnterWriteLock();
+                    try
+                    {
+                        _dict.Add(key, value);
+                    }
+                    finally
+                    {
+                        _lockQ.ExitWriteLock();
+                    }
                 }
                 finally
                 {
-                    _lockQ.QuittingWriteLock();
+                    _lockQ.ExitUpgradableReadLock();
                 }
             }
         }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Remove(TKey key)
         {
@@ -248,9 +283,24 @@ namespace Svelto.DataStructures
             }
             finally
             {
-                _lockQ.QuittingWriteLock();
+                _lockQ.ExitWriteLock();
             }
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool TryRemove(TKey key, out TValue o)
+        {
+            _lockQ.EnterWriteLock();
+            try
+            {
+                return _dict.Remove(key, out o);
+            }
+            finally
+            {
+                _lockQ.ExitWriteLock();
+            }
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Trim()
         {
@@ -261,7 +311,7 @@ namespace Svelto.DataStructures
             }
             finally
             {
-                _lockQ.QuittingWriteLock();
+                _lockQ.ExitWriteLock();
             }
         }
 
@@ -275,7 +325,7 @@ namespace Svelto.DataStructures
             }
             finally
             {
-                _lockQ.QuittingReadLock();
+                _lockQ.ExitReadLock();
             }
         }
 
@@ -289,7 +339,7 @@ namespace Svelto.DataStructures
             }
             finally
             {
-                _lockQ.QuittingReadLock();
+                _lockQ.ExitReadLock();
             }
         }
 

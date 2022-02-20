@@ -52,6 +52,16 @@ namespace Svelto.DataStructures
             }
         }
 
+        public IntPtr AsBytesPointer()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void   SerialiseFrom(IntPtr bytesPointer)
+        {
+            throw new NotImplementedException();
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ShiftLeft(uint index, uint count)
         {

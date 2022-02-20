@@ -60,9 +60,7 @@ namespace Svelto.Common
 
         public DisposableSampler Sample(string samplerName)
         {
-            var name = samplerName;
-
-            return new DisposableSampler(new ProfilerMarker(name));
+            return new DisposableSampler(new ProfilerMarker(samplerName));
         }
 
         public DisposableSampler Sample<T>(T sampled)

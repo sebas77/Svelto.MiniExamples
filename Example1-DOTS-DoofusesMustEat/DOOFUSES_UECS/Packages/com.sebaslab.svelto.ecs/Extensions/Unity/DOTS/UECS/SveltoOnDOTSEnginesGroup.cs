@@ -82,7 +82,7 @@ namespace Svelto.ECS.SveltoOnDOTS
                 _enginesRoot.AddEngine(enginesRootEngine);
         }
         
-        public void AddDOTSHandleLifetimeEngine(HandleLifeTimeEngine handleLifeTime)
+        public void AddDOTSHandleLifetimeEngine(ISveltoOnDOTSHandleLifeTimeEngine handleLifeTime)
         {
             _sveltoDotsEntitiesSubmissionGroup.Add(handleLifeTime);
             
@@ -105,7 +105,7 @@ namespace Svelto.ECS.SveltoOnDOTS
 
             //This is the DOTS ECS group that takes care of all the DOTS ECS systems that creates entities
             //it also submits Svelto entities
-            _sveltoDotsEntitiesSubmissionGroup = new SveltoOnDOTSEntitiesSubmissionGroup(scheduler);
+            _sveltoDotsEntitiesSubmissionGroup = new SveltoOnDOTSEntitiesSubmissionGroup(scheduler, enginesRoot);
             //This is the group that handles the DOTS ECS sync systems that copy the svelto entities values to DOTS ECS entities
             enginesRoot.AddEngine(_sveltoDotsEntitiesSubmissionGroup);
             world.AddSystem(_sveltoDotsEntitiesSubmissionGroup);
@@ -123,8 +123,8 @@ namespace Svelto.ECS.SveltoOnDOTS
         EnginesRoot _enginesRoot;
 
         SveltoOnDOTSEntitiesSubmissionGroup _sveltoDotsEntitiesSubmissionGroup;
-        SyncSveltoToDOTSGroup             _syncSveltoToDotsGroup;
-        SyncDOTSToSveltoGroup             _syncDotsToSveltoGroup;
+        SyncSveltoToDOTSGroup               _syncSveltoToDotsGroup;
+        SyncDOTSToSveltoGroup               _syncDotsToSveltoGroup;
     }
 }
 #endif

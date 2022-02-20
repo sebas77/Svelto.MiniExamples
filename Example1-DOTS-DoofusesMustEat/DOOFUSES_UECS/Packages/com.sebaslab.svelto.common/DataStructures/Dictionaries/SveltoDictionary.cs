@@ -67,6 +67,9 @@ namespace Svelto.DataStructures
             _values.Alloc(size, allocator);
             _buckets = default;
             _buckets.Alloc((uint)HashHelpers.GetPrime((int)size), allocator);
+            
+            if (size > 0)
+                _fastModBucketsMultiplier = HashHelpers.GetFastModMultiplier((uint)size);
         }
 
         public TKeyStrategy unsafeKeys
@@ -74,7 +77,7 @@ namespace Svelto.DataStructures
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => _valuesInfo;
         }
-
+        
         /// <summary>
         /// Note: the NativeStrategy implementations always hold an pre-boxed version of the buffer, so boxing
         /// never happens at run time. Unboxing does happen at runtime, but it's very cheap and never incur in
@@ -82,7 +85,7 @@ namespace Svelto.DataStructures
         /// </summary>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IBuffer<TValue> GetValues(out uint count)
+        public IBuffer<TValue> UnsafeGetValues(out uint count)
         {
             count = _freeValueCellIndex;
 
@@ -90,8 +93,18 @@ namespace Svelto.DataStructures
         }
 
         public int                           count   => (int)_freeValueCellIndex;
-        public SveltoDictionaryKeyEnumerable keys    => new SveltoDictionaryKeyEnumerable(this);
         public bool                          isValid => _buckets.isValid;
+        
+        public SveltoDictionaryKeyEnumerable keys => new SveltoDictionaryKeyEnumerable(this);
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        //note, this returns readonly because the enumerator cannot be, but at the same time, it cannot be modified
+        public SveltoDictionaryKeyValueEnumerator<TKey, TValue, TKeyStrategy, TValueStrategy, TBucketStrategy>
+            GetEnumerator()
+        {
+            return new SveltoDictionaryKeyValueEnumerator<TKey, TValue, TKeyStrategy, TValueStrategy, TBucketStrategy>(
+                this);
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Add(TKey key, in TValue value)
@@ -130,11 +143,21 @@ namespace Svelto.DataStructures
             //Buckets cannot be FastCleared because it's important that the values are reset to 0
             _buckets.Clear();
 
-            if (TypeCache<TValue>.isUnmanaged == false)
+            //todo: replace this, but burst doesn't like any other solution
+            if (IsUnmanaged() == false)
             {
                 _values.Clear();
                 _valuesInfo.Clear();
             }
+        }
+
+        static bool IsUnmanaged()
+        {
+#if UNITY_COLLECTIONS || UNITY_JOBS || UNITY_BURST            
+            return Unity.Collections.LowLevel.Unsafe.UnsafeUtility.IsUnmanaged<TValue>();
+#else
+            return typeof(TValue).IsUnmanagedEx();
+#endif
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -155,15 +178,6 @@ namespace Svelto.DataStructures
         public bool ContainsKey(TKey key)
         {
             return TryFindIndex(key, out _);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        //note, this returns readonly because the enumerator cannot be, but at the same time, it cannot be modified
-        public SveltoDictionaryKeyValueEnumerator<TKey, TValue, TKeyStrategy, TValueStrategy, TBucketStrategy>
-            GetEnumerator()
-        {
-            return new SveltoDictionaryKeyValueEnumerator<TKey, TValue, TKeyStrategy, TValueStrategy, TBucketStrategy>(
-                this);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -244,10 +258,41 @@ namespace Svelto.DataStructures
 
             return ref _values[(int)findIndex];
         }
+        
+        /// <summary>
+        /// RecycledOrCreate makes sense to use on dictionaries that are fast cleared and use objects
+        /// as value. Once the dictionary is fast cleared, it will try to reuse object values that are
+        /// recycled during the fast clearing.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="builder"></param>
+        /// <param name="recycler"></param>
+        /// <param name="parameter"></param>
+        /// <typeparam name="TValueProxy"></typeparam>
+        /// <typeparam name="W"></typeparam>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ref TValue RecycleOrCreate<TValueProxy, W>(TKey key, FuncRef<W, TValue> builder,
+            ActionRef<TValueProxy, W> recycler, ref W parameter) where TValueProxy : class, TValue
+        {
+            if (TryFindIndex(key, out var findIndex) == true)
+            {
+                return ref _values[(int)findIndex];
+            }
+
+            AddValue(key, out findIndex);
+
+            if (_values[(int)findIndex] == null)
+                _values[(int)findIndex] = builder(ref parameter);
+            else
+                recycler(ref Unsafe.As<TValue, TValueProxy>(ref _values[(int)findIndex]), ref parameter);
+
+            return ref _values[(int)findIndex];
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         //WARNING this method must stay stateless (not relying on states that can change, it's ok to read 
-        //constant states) because it will be used in multithreaded parallel code
+        //constant states) because it will be used in multi-threaded parallel code
         public ref TValue GetDirectValueByRef(uint index)
         {
             return ref _values[index];
@@ -303,8 +348,8 @@ namespace Svelto.DataStructures
 
         bool AddValue(TKey key, out uint indexSet)
         {
-            int  hash        = key.GetHashCode();
-            uint bucketIndex = Reduce((uint)hash, (uint)_buckets.capacity);
+            int  hash        = key.GetHashCode(); //IEquatable doesn't enforce the override of GetHashCode
+            uint bucketIndex = Reduce((uint)hash, (uint)_buckets.capacity, _fastModBucketsMultiplier);
 
             //buckets value -1 means it's empty
             var valueIndex = _buckets[bucketIndex] - 1;
@@ -362,6 +407,7 @@ namespace Svelto.DataStructures
                 //we need more space and less collisions
                 _buckets.Resize((uint)HashHelpers.Expand((int)_collisions), false);
                 _collisions = 0;
+                _fastModBucketsMultiplier = HashHelpers.GetFastModMultiplier((uint) _buckets.capacity);
 
                 //we need to get all the hash code of all the values stored so far and spread them over the new bucket
                 //length
@@ -369,7 +415,7 @@ namespace Svelto.DataStructures
                 {
                     //get the original hash code and find the new bucketIndex due to the new length
                     ref var fasterDictionaryNode = ref _valuesInfo[newValueIndex];
-                    bucketIndex = Reduce((uint)fasterDictionaryNode.hashcode, (uint)_buckets.capacity);
+                    bucketIndex = Reduce((uint)fasterDictionaryNode.hashcode, (uint)_buckets.capacity, _fastModBucketsMultiplier);
                     //bucketsIndex can be -1 or a next value. If it's -1 means no collisions. If there is collision,
                     //we create a new node which prev points to the old one. Old one next points to the new one.
                     //the bucket will now points to the new one
@@ -423,7 +469,7 @@ namespace Svelto.DataStructures
         public bool Remove(TKey key, out TValue value)
         {
             int  hash        = key.GetHashCode();
-            uint bucketIndex = Reduce((uint)hash, (uint)_buckets.capacity);
+            uint bucketIndex = Reduce((uint)hash, (uint)_buckets.capacity, _fastModBucketsMultiplier);
 
             //find the bucket
             int indexToValueToRemove = _buckets[bucketIndex] - 1;
@@ -494,7 +540,7 @@ namespace Svelto.DataStructures
                 //first we find the index in the bucket list of the pointer that points to the cell
                 //to move
                 ref var fasterDictionaryNode = ref _valuesInfo[_freeValueCellIndex];
-                var     movingBucketIndex    = Reduce((uint)fasterDictionaryNode.hashcode, (uint)_buckets.capacity);
+                var     movingBucketIndex    = Reduce((uint)fasterDictionaryNode.hashcode, (uint)_buckets.capacity, _fastModBucketsMultiplier);
 
                 //if the key is found and the bucket points directly to the node to remove
                 //it must now point to the cell where it's going to be moved
@@ -538,7 +584,7 @@ namespace Svelto.DataStructures
 
             int hash = key.GetHashCode();
 
-            uint bucketIndex = Reduce((uint)hash, (uint)_buckets.capacity);
+            uint bucketIndex = Reduce((uint)hash, (uint)_buckets.capacity, _fastModBucketsMultiplier);
 
             int valueIndex = _buckets[bucketIndex] - 1;
 
@@ -621,14 +667,28 @@ namespace Svelto.DataStructures
                 this[other.key] = other.value;
             }
         }
+        
+        public void CopyFrom<OTKeyStrategy, OTValueStrategy, OTBucketStrategy>
+            (SveltoDictionary<TKey, TValue, OTKeyStrategy, OTValueStrategy, OTBucketStrategy> otherDicKeys)
+            where OTKeyStrategy : struct, IBufferStrategy<SveltoDictionaryNode<TKey>>
+            where OTValueStrategy : struct, IBufferStrategy<TValue>
+            where OTBucketStrategy : struct, IBufferStrategy<int>
+        {
+            _valuesInfo.SerialiseFrom(otherDicKeys._valuesInfo.AsBytesPointer());
+            _values.SerialiseFrom(otherDicKeys._values.AsBytesPointer());
+            _buckets.SerialiseFrom(otherDicKeys._buckets.AsBytesPointer());
+
+            this._collisions = otherDicKeys._collisions;
+            this._freeValueCellIndex = otherDicKeys._freeValueCellIndex;
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static uint Reduce(uint x, uint N)
+        static uint Reduce(uint hashcode, uint N, ulong fastModBucketsMultiplier)
         {
-            if (x >= N) //is the condition return actually an optimization?
-                return x % N;
+            if (hashcode >= N) //is the condition return actually an optimization?
+                return Environment.Is64BitProcess ? HashHelpers.FastMod((uint)hashcode, N, fastModBucketsMultiplier) : hashcode % N;
 
-            return x;
+            return hashcode;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -700,9 +760,10 @@ namespace Svelto.DataStructures
         internal TKeyStrategy   _valuesInfo;
         internal TValueStrategy _values;
         TBucketStrategy         _buckets;
-
-        uint _freeValueCellIndex;
-        uint _collisions;
+        
+        uint  _freeValueCellIndex;
+        uint  _collisions;
+        ulong _fastModBucketsMultiplier;
     }
 
     public class SveltoDictionaryException : Exception

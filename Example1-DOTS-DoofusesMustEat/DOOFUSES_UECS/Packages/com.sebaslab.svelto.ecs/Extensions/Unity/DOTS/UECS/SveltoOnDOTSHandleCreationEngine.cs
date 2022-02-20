@@ -22,32 +22,27 @@ namespace Svelto.ECS.SveltoOnDOTS
             internal set;
         }
 
-        internal EntityCommandBuffer entityCommandBuffer
+        internal EntityCommandBufferForSvelto entityCommandBuffer
         {
-            set => ECB = new EntityCommandBufferForSvelto(value);
+            set => ECB = value;
         }
 
-        protected SveltoOnDOTSHandleCreationEngine(out EntityArchetype archetype, params ComponentType[] types)
+        protected EntityArchetype CreateArchetype(params ComponentType[] types)
         {
-#pragma warning disable CS0618
-            archetype = entityManager.CreateArchetype(types);
-#pragma warning restore CS0618
-        }
-        
-        protected SveltoOnDOTSHandleCreationEngine()
-        {
+            return entityManager.CreateArchetype(types);
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        protected Entity CreateDOTSEntityOnSvelto(Entity entityComponentPrefabEntity, EGID egid)
+        protected Entity CreateDOTSEntityOnSvelto(Entity entityComponentPrefabEntity, EGID egid,
+            bool mustHandleDOTSComponent)
         {
-            return ECB.CreateDOTSEntityOnSvelto(entityComponentPrefabEntity, egid);
+            return ECB.CreateDOTSEntityOnSvelto(entityComponentPrefabEntity, egid, mustHandleDOTSComponent);
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        protected Entity CreateDOTSEntityOnSvelto(EntityArchetype archetype, EGID egid)
+        protected Entity CreateDOTSEntityOnSvelto(EntityArchetype archetype, EGID egid, bool mustHandleDOTSComponent)
         {
-            return ECB.CreateDOTSEntityOnSvelto(archetype, egid);
+            return ECB.CreateDOTSEntityOnSvelto(archetype, egid, mustHandleDOTSComponent);
         }
         
         protected internal virtual void OnCreate()
@@ -58,6 +53,8 @@ namespace Svelto.ECS.SveltoOnDOTS
         {
             return default;
         }
+
+        public abstract string name { get; }
     }
 }
 #endif

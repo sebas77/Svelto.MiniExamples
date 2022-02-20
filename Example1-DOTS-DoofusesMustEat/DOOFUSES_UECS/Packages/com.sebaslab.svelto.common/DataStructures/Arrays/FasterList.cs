@@ -119,7 +119,7 @@ namespace Svelto.DataStructures
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void AddAt(uint location, in T item)
         {
-            SetCountTo(location + 1);
+            EnsureCountIsAtLeast(location + 1);
 
             _buffer[location] = item;
         }
@@ -226,7 +226,26 @@ namespace Svelto.DataStructures
             if (_count > 0) Array.Copy(_buffer, newList, _count);
             _buffer = newList;
         }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void SetCountTo(uint newCount)
+        {
+            if (_buffer.Length < newCount)
+                AllocateMore(newCount);
 
+            _count = newCount;
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void EnsureCountIsAtLeast(uint newCount)
+        {
+            if (_buffer.Length < newCount)
+                AllocateMore(newCount);
+
+            if (_count < newCount)
+                _count = newCount;
+        }
+        
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void IncrementCountBy(uint increment)
         {
@@ -376,16 +395,6 @@ namespace Svelto.DataStructures
             _count++;
 
             return true;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void SetCountTo(uint newCount)
-        {
-            if (_buffer.Length < newCount)
-                AllocateMore(newCount);
-
-            if (_count < newCount)
-                _count = newCount;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

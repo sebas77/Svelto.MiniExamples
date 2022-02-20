@@ -14,7 +14,7 @@ namespace Svelto.DataStructures.Native
 #if DEBUG && !PROFILE_SVELTO
         static NativeStrategy()
         {
-            if (TypeCache<T>.isUnmanaged == false)
+            if (TypeType.isUnmanaged<T>() == false)
                 throw new DBC.Common.PreconditionException("Only unmanaged data can be stored natively");
         }
 #endif
@@ -52,6 +52,16 @@ namespace Svelto.DataStructures.Native
                 _realBuffer    = b;
                 _invalidHandle = true;
             }
+        }
+
+        public IntPtr AsBytesPointer()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void   SerialiseFrom(IntPtr bytesPointer)
+        {
+            throw new NotImplementedException();
         }
 
         public void ShiftLeft(uint index, uint count)

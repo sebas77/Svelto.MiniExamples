@@ -20,13 +20,15 @@ namespace Svelto.ECS.MiniExamples.Example1C
 
         public void Add(ref SpawnPointEntityComponent entityComponent, EGID egid)
         {
-            Entity dotsEntity = CreateDOTSEntityOnSvelto(entityComponent.prefabEntity, egid);
-
+            Entity dotsEntity = CreateDOTSEntityOnSvelto(entityComponent.prefabEntity, egid, true);
+            
             ECB.SetComponent(dotsEntity, new Translation
             {
                 Value = new float3(entityComponent.spawnPosition.x, entityComponent.spawnPosition.y
                                  , entityComponent.spawnPosition.z)
             });
         }
+
+        public override string name => nameof(SpawnUnityEntityOnSveltoEntityEngine);
     }
 }
