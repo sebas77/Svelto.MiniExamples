@@ -196,7 +196,7 @@ namespace Svelto.DataStructures
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ref TValue GetOrCreate(TKey key)
+        public ref TValue GetOrAdd(TKey key)
         {
             if (TryFindIndex(key, out var findIndex) == true)
             {
@@ -211,7 +211,7 @@ namespace Svelto.DataStructures
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ref TValue GetOrCreate(TKey key, Func<TValue> builder)
+        public ref TValue GetOrAdd(TKey key, Func<TValue> builder)
         {
             if (TryFindIndex(key, out var findIndex) == true)
             {
@@ -226,7 +226,7 @@ namespace Svelto.DataStructures
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ref TValue GetOrCreate<W>(TKey key, FuncRef<W, TValue> builder, ref W parameter)
+        public ref TValue GetOrAdd<W>(TKey key, FuncRef<W, TValue> builder, ref W parameter)
         {
             if (TryFindIndex(key, out var findIndex) == true)
             {

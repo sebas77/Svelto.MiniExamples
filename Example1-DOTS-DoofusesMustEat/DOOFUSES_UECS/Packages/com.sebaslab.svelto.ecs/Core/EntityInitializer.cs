@@ -31,13 +31,13 @@ namespace Svelto.ECS
                 dictionary.GetDirectValueByRef(findElementIndex) = initializer;
         }
 
-        public ref T GetOrCreate<T>() where T : struct, IEntityComponent
+        public ref T GetOrAdd<T>() where T : struct, IEntityComponent
         {
             ref var entityDictionary = ref _group.GetOrAdd(
                 new RefWrapperType(ComponentBuilder<T>.ENTITY_COMPONENT_TYPE), TypeSafeDictionaryFactory<T>.Create);
             var dictionary = (ITypeSafeDictionary<T>)entityDictionary;
 
-            return ref dictionary.GetOrCreate(_ID.entityID);
+            return ref dictionary.GetOrAdd(_ID.entityID);
         }
 
         public ref T Get<T>() where T : struct, IEntityComponent

@@ -62,7 +62,7 @@ namespace Svelto.ECS
             void PreallocateDBGroup()
             {
                 var numberOfEntityComponents = entityComponentsToBuild.Length;
-                FasterDictionary<RefWrapperType, ITypeSafeDictionary> group = GetOrCreateDBGroup(groupID);
+                FasterDictionary<RefWrapperType, ITypeSafeDictionary> group = GetOrAddDBGroup(groupID);
 
                 for (var index = 0; index < numberOfEntityComponents; index++)
                 {
@@ -97,7 +97,7 @@ namespace Svelto.ECS
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        FasterDictionary<RefWrapperType, ITypeSafeDictionary> GetOrCreateDBGroup(ExclusiveGroupStruct toGroupId)
+        FasterDictionary<RefWrapperType, ITypeSafeDictionary> GetOrAddDBGroup(ExclusiveGroupStruct toGroupId)
         {
             return _groupEntityComponentsDB.GetOrAdd(toGroupId,
                 () => new FasterDictionary<RefWrapperType, ITypeSafeDictionary>());

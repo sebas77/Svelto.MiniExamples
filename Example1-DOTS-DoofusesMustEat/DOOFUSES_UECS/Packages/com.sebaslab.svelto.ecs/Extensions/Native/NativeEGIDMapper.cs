@@ -1,4 +1,3 @@
-#if UNITY_NATIVE
 using System;
 using System.Runtime.CompilerServices;
 using Svelto.Common;
@@ -105,4 +104,3 @@ namespace Svelto.ECS.Native
         readonly SveltoDictionaryNative<uint, T> _map;
     }
 }
-#endif

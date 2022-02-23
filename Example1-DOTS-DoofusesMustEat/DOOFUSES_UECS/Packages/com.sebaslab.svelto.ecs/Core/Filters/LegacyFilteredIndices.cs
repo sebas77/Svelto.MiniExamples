@@ -11,8 +11,11 @@ namespace Svelto.ECS
             _count                                    = _denseListOfIndicesToEntityComponentArray.count;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int Count() => _count;
+        public int count
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get { return _count; }
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public uint Get(uint index) => _denseListOfIndicesToEntityComponentArray[index];

@@ -24,6 +24,11 @@ namespace Svelto.ECS
         {
             Add(egid, mmap.GetIndex(egid.entityID));
         }
+        
+        public void Add<T>(EGID egid, NativeEGIDMultiMapper<T> mmap) where T : unmanaged, IEntityComponent
+        {
+            Add(egid, mmap.GetIndex(egid));
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Add(EGID egid, uint toIndex)

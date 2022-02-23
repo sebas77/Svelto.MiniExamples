@@ -90,15 +90,15 @@ namespace Svelto.DataStructures.Native
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ref TValue GetOrCreate(TKey key)
+        public ref TValue GetOrAdd(TKey key)
         {
-            return ref dictionary.GetOrCreate(key);
+            return ref dictionary.GetOrAdd(key);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ref TValue GetOrCreate(TKey key, Func<TValue> builder)
+        public ref TValue GetOrAdd(TKey key, Func<TValue> builder)
         {
-            return ref dictionary.GetOrCreate(key, builder);
+            return ref dictionary.GetOrAdd(key, builder);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

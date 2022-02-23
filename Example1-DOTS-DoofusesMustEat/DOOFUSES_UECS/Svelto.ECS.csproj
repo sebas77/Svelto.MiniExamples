@@ -215,8 +215,6 @@
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\EntitiesOperations.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\EnginesRoot.DoubleBufferedEntitiesToAdd.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\EnginesGroup\UnsortedEnginesGroup.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Filters\NativeEntityFilterIterator.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Filters\NativeEntityFilterCollection.cs" />
      <None Include="Packages\com.sebaslab.svelto.ecs\version.json" />
      <None Include="Packages\com.sebaslab.svelto.ecs\Svelto.ECS.asmdef" />
      <None Include="Packages\com.sebaslab.svelto.ecs\package.json" />

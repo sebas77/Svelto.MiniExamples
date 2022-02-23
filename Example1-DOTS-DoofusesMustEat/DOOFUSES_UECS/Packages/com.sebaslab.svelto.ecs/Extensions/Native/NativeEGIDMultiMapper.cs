@@ -1,4 +1,3 @@
-#if UNITY_NATIVE
 using System;
 using Svelto.DataStructures;
 using Svelto.DataStructures.Native;
@@ -10,6 +9,9 @@ namespace Svelto.ECS.Native
     /// invalid. Unfortunately it can be a ref struct, because Jobs needs to hold if by paramater. So the deal is
     /// that a job can use it as long as nothing else is modifying the entities database and the NativeEGIDMultiMapper
     /// is disposed right after the use.
+    ///
+    ///WARNING: REMEMBER THIS MUST BE DISPOSED OF, AS IT USES NATIVE MEMORY. IT WILL LEAK MEMORY OTHERWISE
+    /// 
     /// </summary>
     public struct NativeEGIDMultiMapper<T> : IDisposable where T : unmanaged, IEntityComponent
     {
@@ -70,4 +72,3 @@ namespace Svelto.ECS.Native
                 NativeStrategy<int>>>, NativeStrategy<int>> _dic;
     }
 }
-#endif

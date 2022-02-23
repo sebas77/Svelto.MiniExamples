@@ -96,7 +96,7 @@ namespace Svelto.ECS
             {
                 //this wil call the static constructor, but only once. Static constructors won't be called
                 //more than once with this
-         //       System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(type.BaseType.TypeHandle);
+                System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(type.BaseType.TypeHandle);
             }
         }
 

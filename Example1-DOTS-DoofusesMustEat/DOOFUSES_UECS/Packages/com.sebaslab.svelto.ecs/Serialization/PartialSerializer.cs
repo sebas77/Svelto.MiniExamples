@@ -38,6 +38,9 @@ namespace Svelto.ECS.Serialization
                 }
             }
 
+            if (myType.IsExplicitLayout == false)
+                throw new ECSException($"PartialSerializer requires explicit layout {myType}");
+
             if (myType.GetProperties().Length > (ComponentBuilder<T>.HAS_EGID ? 1 : 0))
                 throw new ECSException("serializable entity struct must be property less ".FastConcat(myType.FullName));
         }

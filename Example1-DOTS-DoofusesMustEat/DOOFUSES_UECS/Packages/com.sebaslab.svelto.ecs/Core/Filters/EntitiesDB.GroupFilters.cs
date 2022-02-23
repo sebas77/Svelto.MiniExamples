@@ -22,7 +22,7 @@ namespace Svelto.ECS
             return new LegacyFilters(_filters);
         }
 
-        public readonly ref struct LegacyFilters
+        public readonly struct LegacyFilters
         {
             public LegacyFilters(
                 FasterDictionary<RefWrapperType, FasterDictionary<ExclusiveGroupStruct, LegacyGroupFilters>>

@@ -9,7 +9,7 @@ namespace Svelto.ECS.Internal
         void Add(uint egidEntityId, in TValue entityComponent);
         
         bool       TryGetValue(uint entityId, out TValue item);
-        ref TValue GetOrCreate(uint idEntityId);
+        ref TValue GetOrAdd(uint idEntityId);
 
         IBuffer<TValue> GetValues(out uint count);
         ref TValue      GetDirectValueByRef(uint key);

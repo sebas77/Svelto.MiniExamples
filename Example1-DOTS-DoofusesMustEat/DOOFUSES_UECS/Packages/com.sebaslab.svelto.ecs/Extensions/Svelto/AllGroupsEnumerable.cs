@@ -45,10 +45,9 @@ namespace Svelto.ECS
 
                     if (typeSafeDictionary.count == 0)
                         continue;
-
-                    _array.collection = new EntityCollection<T1>(typeSafeDictionary.GetValues(out var count), count);
-                    _array.@group     = group.key;
-
+                    _array.collection = new EntityCollection<T1>(typeSafeDictionary.GetValues(out var count), count,
+                        typeSafeDictionary.entityIDs);
+                    _array.@group = group.key;
                     return true;
                 }
 

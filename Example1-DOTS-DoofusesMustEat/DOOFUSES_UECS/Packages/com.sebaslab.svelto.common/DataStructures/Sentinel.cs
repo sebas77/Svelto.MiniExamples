@@ -322,7 +322,7 @@ namespace Svelto.Common.DataStructures
     //             {
     // #if UNITY_COLLECTIONS || UNITY_JOBS || UNITY_BURST
     //                 SharedStatic<SharedDictionaryStruct> test = Unity.Burst.SharedStatic<SharedDictionaryStruct>
-    //                    .GetOrCreate<SharedDictionaryStruct>();
+    //                    .GetOrAdd<SharedDictionaryStruct>();
     // #else
     //                 var test = default(SharedDictionaryStruct);
     // #endif

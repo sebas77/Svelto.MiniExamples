@@ -76,7 +76,7 @@ namespace Svelto.ECS
 
                 // Update reverse map from egid to locator.
                 var groupMap =
-                    _egidToReferenceMap.GetOrCreate(egid.groupID
+                    _egidToReferenceMap.GetOrAdd(egid.groupID
                                                   , () => new SharedSveltoDictionaryNative<uint, EntityReference>(0));
                 groupMap[egid.entityID] = reference;
             }
@@ -88,7 +88,7 @@ namespace Svelto.ECS
                 _entityReferenceMap[reference.index].egid = to;
 
                 var groupMap =
-                    _egidToReferenceMap.GetOrCreate(
+                    _egidToReferenceMap.GetOrAdd(
                         to.groupID, () => new SharedSveltoDictionaryNative<uint, EntityReference>(0));
                 groupMap[to.entityID] = reference;
             }
@@ -186,7 +186,7 @@ namespace Svelto.ECS
             internal void PreallocateReferenceMaps(ExclusiveGroupStruct groupID, uint size)
             {
                 _egidToReferenceMap
-                   .GetOrCreate(groupID, () => new SharedSveltoDictionaryNative<uint, EntityReference>(size))
+                   .GetOrAdd(groupID, () => new SharedSveltoDictionaryNative<uint, EntityReference>(size))
                    .EnsureCapacity(size);
 
                 _entityReferenceMap.Resize(size);

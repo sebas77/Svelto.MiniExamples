@@ -1,5 +1,4 @@
 ﻿using Svelto.DataStructures;
-using Svelto.ECS.Native;
 
 namespace Svelto.ECS
 {
@@ -15,8 +14,8 @@ namespace Svelto.ECS
         /// </summary>
         public readonly ref struct SveltoFilters
         {
-            readonly EnginesRoot _enginesRoot;
-
+            readonly EnginesRoot          _enginesRoot;
+            
             public SveltoFilters(EnginesRoot enginesRoot)
             {
                 _enginesRoot = enginesRoot;

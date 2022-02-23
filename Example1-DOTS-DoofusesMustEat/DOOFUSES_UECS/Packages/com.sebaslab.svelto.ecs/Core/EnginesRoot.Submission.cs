@@ -137,8 +137,8 @@ namespace Svelto.ECS
                             {
                                 ExclusiveGroupStruct toGroup = entitiesInfoToSwap.key;
                                 ITypeSafeDictionary toComponentsDictionary =
-                                    enginesRoot.GetOrCreateTypeSafeDictionary(toGroup,
-                                        enginesRoot.GetOrCreateDBGroup(toGroup), componentType,
+                                    enginesRoot.GetOrAddTypeSafeDictionary(toGroup,
+                                        enginesRoot.GetOrAddDBGroup(toGroup), componentType,
                                         fromComponentsDictionary);
 
                                 DBC.ECS.Check.Assert(toComponentsDictionary != null,
@@ -268,7 +268,7 @@ namespace Svelto.ECS
                             foreach (var groupToSubmit in _groupedEntityToAdd)
                             {
                                 var groupID = groupToSubmit.@group;
-                                var groupDB = GetOrCreateDBGroup(groupID);
+                                var groupDB = GetOrAddDBGroup(groupID);
 
                                 //add the entityComponents in the group
                                 foreach (var entityComponentsToSubmit in groupToSubmit.components)
@@ -278,7 +278,7 @@ namespace Svelto.ECS
                                     var wrapper        = new RefWrapperType(type);
 
                                     var toDictionary =
-                                        GetOrCreateTypeSafeDictionary(groupID, groupDB, wrapper, fromDictionary);
+                                        GetOrAddTypeSafeDictionary(groupID, groupDB, wrapper, fromDictionary);
 
                                     //all the new entities are added at the end of each dictionary list, so we can
                                     //just iterate the list using the indices ranges added in the _cachedIndices
@@ -385,7 +385,7 @@ namespace Svelto.ECS
             PlatformProfiler platformProfiler)
         {
             FasterDictionary<RefWrapperType, ITypeSafeDictionary> fromGroup = GetDBGroup(fromGroupId);
-            FasterDictionary<RefWrapperType, ITypeSafeDictionary> toGroup   = GetOrCreateDBGroup(toGroupId);
+            FasterDictionary<RefWrapperType, ITypeSafeDictionary> toGroup   = GetOrAddDBGroup(toGroupId);
 
             _entityLocator.UpdateAllGroupReferenceLocators(fromGroupId, toGroupId);
 
@@ -396,7 +396,7 @@ namespace Svelto.ECS
 
                 ITypeSafeDictionary fromDictionary = dictionaryOfEntities.value;
                 ITypeSafeDictionary toDictionary =
-                    GetOrCreateTypeSafeDictionary(toGroupId, toGroup, refWrapperType, fromDictionary);
+                    GetOrAddTypeSafeDictionary(toGroupId, toGroup, refWrapperType, fromDictionary);
 
                 fromDictionary.AddEntitiesToDictionary(toDictionary, toGroupId, this.entityLocator);
             }
@@ -427,7 +427,7 @@ namespace Svelto.ECS
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        ITypeSafeDictionary GetOrCreateTypeSafeDictionary(ExclusiveGroupStruct groupId,
+        ITypeSafeDictionary GetOrAddTypeSafeDictionary(ExclusiveGroupStruct groupId,
             FasterDictionary<RefWrapperType, ITypeSafeDictionary> groupPerComponentType, RefWrapperType type,
             ITypeSafeDictionary fromDictionary)
         {

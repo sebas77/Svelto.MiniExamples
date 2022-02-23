@@ -96,9 +96,9 @@ namespace Svelto.ECS.Internal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ref TValue GetOrCreate(uint idEntityId)
+        public ref TValue GetOrAdd(uint idEntityId)
         {
-            return ref isUnmanaged ? ref implUnmgd.GetOrCreate(idEntityId) : ref implMgd.GetOrCreate(idEntityId);
+            return ref isUnmanaged ? ref implUnmgd.GetOrAdd(idEntityId) : ref implMgd.GetOrAdd(idEntityId);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
