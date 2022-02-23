@@ -35,11 +35,12 @@ namespace Svelto.ECS
         /// </summary>
         public EnginesRoot(EntitiesSubmissionScheduler entitiesComponentScheduler)
         {
-            _entitiesOperations                 = new EntitiesOperations();
-            _idChecker                          = new FasterDictionary<ExclusiveGroupStruct, HashSet<uint>>();
-            _cachedIndicesForFilters            = new FasterDictionary<uint, uint>();
-            _cachedSubmissionIndices            = new FasterList<(uint, uint)>();
-            _multipleOperationOnSameEGIDChecker = new FasterDictionary<EGID, uint>();
+            _entitiesOperations                  = new EntitiesOperations();
+            _idChecker                           = new FasterDictionary<ExclusiveGroupStruct, HashSet<uint>>();
+
+            _cachedRangeOfSubmittedIndices                       = new FasterList<(uint, uint)>();
+            _cachedIndicesToSwapBeforeSubmissionForFilters = new FasterDictionary<uint, uint>();
+            _multipleOperationOnSameEGIDChecker            = new FasterDictionary<EGID, uint>();
 #if UNITY_NATIVE //because of the thread count, ATM this is only for unity
             _nativeSwapOperationQueue   = new Svelto.ECS.DataStructures.AtomicNativeBags(Allocator.Persistent);
             _nativeRemoveOperationQueue = new Svelto.ECS.DataStructures.AtomicNativeBags(Allocator.Persistent);
@@ -60,7 +61,7 @@ namespace Svelto.ECS
 
             _reactiveEnginesDispose =
                 new FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<IReactOnDispose>>>();
-            
+
             _reactiveEnginesSubmission = new FasterList<IReactOnSubmission>();
             _enginesSet                = new FasterList<IEngine>();
             _enginesTypeSet            = new HashSet<Type>();

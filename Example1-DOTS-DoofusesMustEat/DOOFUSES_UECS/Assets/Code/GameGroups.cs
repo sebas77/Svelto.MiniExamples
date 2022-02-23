@@ -39,4 +39,10 @@ namespace Svelto.ECS.MiniExamples.Example1C
 
         public class DOOFUSES_EATING : GroupCompound<DOOFUSES, EATING> { };
     }
+
+    static class GameFilters
+    {
+        public static int SPECIAL_BLUE_DOOFUSES_MESHES = 0;
+        public static int BLUE_DOOFUSES_MESHES = 1;
+    }
 }

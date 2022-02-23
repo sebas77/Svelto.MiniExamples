@@ -18,6 +18,11 @@ namespace Svelto.DataStructures.Native
     public struct SharedSveltoDictionaryNative<TKey, TValue>
         where TKey : unmanaged, IEquatable<TKey> where TValue : struct
     {
+        public static SharedSveltoDictionaryNative<TKey,TValue> Create()
+        {
+            return new SharedSveltoDictionaryNative<TKey, TValue>(0);
+        }
+        
         public SharedSveltoDictionaryNative(uint size)
         {
             var dictionary =

@@ -13,7 +13,7 @@ namespace Svelto.ECS.Internal
 #endif
         )
         {
-            var group = groupEntitiesToAdd.currentComponentsToAddPerGroup.GetOrCreate(
+            var group = groupEntitiesToAdd.currentComponentsToAddPerGroup.GetOrAdd(
                 egid.groupID, () => new FasterDictionary<RefWrapperType, ITypeSafeDictionary>());
 
             //track the number of entities created so far in the group.
@@ -69,7 +69,7 @@ namespace Svelto.ECS.Internal
        , IComponentBuilder componentBuilder, IEnumerable<object> implementors)
         {
             var entityComponentType = componentBuilder.GetEntityComponentType();
-            ITypeSafeDictionary safeDictionary = group.GetOrCreate(new RefWrapperType(entityComponentType)
+            ITypeSafeDictionary safeDictionary = group.GetOrAdd(new RefWrapperType(entityComponentType)
                                                  , (ref IComponentBuilder cb) => cb.CreateDictionary(1)
                                                  , ref componentBuilder);
 

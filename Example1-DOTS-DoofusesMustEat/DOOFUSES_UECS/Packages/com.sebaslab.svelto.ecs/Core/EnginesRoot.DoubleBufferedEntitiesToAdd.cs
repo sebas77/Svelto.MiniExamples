@@ -34,7 +34,7 @@ namespace Svelto.ECS
                 var numberOfGroupsAddedSoFar     = lastComponentsToAddPerGroup.count;
                 var componentDictionariesPerType = lastComponentsToAddPerGroup.unsafeValues;
                 
-                //TODO: rewrite the caching logic with the new RecycleOrCreate dictionary functionality
+                //TODO: rewrite the caching logic with the new RecycleOrAdd dictionary functionality
                 //I still do not want to cache too many groups
                 
                 //If we didn't create too many groups, we keep them alive, so we avoid the cost of creating new dictionaries
@@ -136,7 +136,7 @@ namespace Svelto.ECS
 
             internal void IncrementEntityCount(ExclusiveGroupStruct groupID)
             {
-                _currentNumberEntitiesCreatedPerGroup.GetOrCreate(groupID)++;
+                _currentNumberEntitiesCreatedPerGroup.GetOrAdd(groupID)++;
              //   _totalEntitiesToAdd++;
             }
 
@@ -151,13 +151,13 @@ namespace Svelto.ECS
                 void PreallocateDictionaries
                     (FasterDictionary<ExclusiveGroupStruct, FasterDictionary<RefWrapperType, ITypeSafeDictionary>> dic)
                 {
-                    var group = dic.GetOrCreate(
+                    var group = dic.GetOrAdd(
                         groupID, () => new FasterDictionary<RefWrapperType, ITypeSafeDictionary>());
 
                     foreach (var componentBuilder in entityComponentsToBuild)
                     {
                         var entityComponentType = componentBuilder.GetEntityComponentType();
-                        var safeDictionary = group.GetOrCreate(new RefWrapperType(entityComponentType)
+                        var safeDictionary = group.GetOrAdd(new RefWrapperType(entityComponentType)
                                                              , () => componentBuilder
                                                                   .CreateDictionary(numberOfEntities));
                         componentBuilder.Preallocate(safeDictionary, numberOfEntities);
@@ -167,8 +167,8 @@ namespace Svelto.ECS
                 PreallocateDictionaries(currentComponentsToAddPerGroup);
                 PreallocateDictionaries(lastComponentsToAddPerGroup);
 
-                _currentNumberEntitiesCreatedPerGroup.GetOrCreate(groupID);
-                _lastNumberEntitiesCreatedPerGroup.GetOrCreate(groupID);
+                _currentNumberEntitiesCreatedPerGroup.GetOrAdd(groupID);
+                _lastNumberEntitiesCreatedPerGroup.GetOrAdd(groupID);
             }
 
             internal void Swap()

@@ -1,124 +1,35 @@
 ﻿using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.ECS.Internal;
-using Svelto.ECS.Native;
 
 namespace Svelto.ECS
 {
     public partial class EnginesRoot
     {
-        Filters GetFilters() => _filters;
-        NativeFilters<T> GetNativeFilters<T>() where T : unmanaged, IEntityComponent
-        {
-            if (_nativeFilters == null)
-                _nativeFilters = new NativeFilters<T>();
-
-            return _nativeFilters;
-        }
-    }
-
-    class Filters
-    {
-        
-    }
-
-    public partial class EnginesRoot
-    {
-        internal static long CombineFilterIDs<T>(int filterID) => (long)filterID << 32 | TypeHash<T>.hash;
-
-        /// <summary>
-        /// Creates a transient filter. Transient filters are deleted after each submission
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        public void GetOrCreateTransientFilter<T>(int filterID) where T : IEntityComponent
-        {
-            var typeRef          = TypeRefWrapper<T>.wrapper;
-            var filterCollection = new EntityFilterCollection(typeRef, this);
-
-            _transientEntityFilters.Add(CombineFilterIDs<T>(filterID), filterCollection);
-            _transientFilters.Add(filterCollection);
-        }
-
-        /// <summary>
-        /// Create a persistent filter. Persistent filters are not deleted after each submission,
-        /// however they have a maintenance cost that must be taken into account and will affect
-        /// entities submission performance.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        public void GetOrCreatePersistentFilter<T>(int filterID) where T : IEntityComponent
-        {
-            var typeRef          = TypeRefWrapper<T>.wrapper;
-            var filterCollection = new EntityFilterCollection(typeRef, this);
-
-            _persistentEntityFilters.Add(CombineFilterIDs<T>(filterID), filterCollection);
-            _persistentFilters.Add(filterCollection);
-
-            _persistentFiltersIndicesPerComponent.GetOrCreate(typeRef, () => new FasterList<int>())
-               .Add(_persistentFilters.count - 1);
-        }
-        
-        /// <summary>
-        /// Creates a transient filter. Transient filters are deleted after each submission
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        public void GetOrCreateNativeTransientFilter<T>(int filterID, NativeEGIDMultiMapper<T> mmap)
-            where T : unmanaged, IEntityComponent
-        {
-            var typeRef          = TypeRefWrapper<T>.wrapper;
-            var filterCollection = new NativeEntityFilterCollection<T>(mmap);
-
-            _transientEntityFilters.Add(CombineFilterIDs<T>(filterID), filterCollection);
-            _transientFilters.Add(filterCollection);
-        }
-
-        /// <summary>
-        /// Create a persistent filter. Persistent filters are not deleted after each submission,
-        /// however they have a maintenance cost that must be taken into account and will affect
-        /// entities submission performance.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        public void GetOrCreateNativePersistentFilter<T>(int filterID, NativeEGIDMultiMapper<T> mmap)
-            where T : unmanaged, IEntityComponent
-        {
-            var typeRef          = TypeRefWrapper<T>.wrapper;
-            var filterCollection = new NativeEntityFilterCollection<T>(mmap);
-
-            _persistentEntityFilters.Add(CombineFilterIDs<T>(filterID), filterCollection);
-            _persistentFilters.Add(filterCollection);
-
-            _persistentFiltersIndicesPerComponent.GetOrCreate(typeRef, () => new FasterList<int>())
-               .Add(_persistentFilters.count - 1);
-        }
+        internal static long CombineFilterIDs<T>(int filterID) => (long)filterID << 32 | (uint)TypeHash<T>.hash;
 
         void InitFilters()
         {
-            _transientEntityFilters               = new FasterDictionary<long, EntityFilterCollection>();
-            _persistentEntityFilters              = new FasterDictionary<long, EntityFilterCollection>();
-            _transientFilters                     = new FasterList<EntityFilterCollection>();
-            _persistentFilters                    = new FasterList<EntityFilterCollection>();
-            _persistentFiltersIndicesPerComponent = new FasterDictionary<RefWrapperType, FasterList<int>>();
+            _transientEntityFilters                        = new FasterDictionary<long, EntityFilterCollection>();
+            _persistentEntityFilters                       = new FasterDictionary<long, EntityFilterCollection>();
+            _transientFilters                              = new FasterList<EntityFilterCollection>();
+            _persistentFilters                             = new FasterList<EntityFilterCollection>();
+            _indicesOfPersistentFiltersUsedByThisComponent = new FasterDictionary<RefWrapperType, FasterList<int>>();
         }
 
         void DisposeFilters()
         {
-            foreach (var filter in _transientEntityFilters)
+            foreach (var filter in _transientFilters)
             {
-                filter.value.Dispose();
+                filter.Dispose();
             }
 
-            foreach (var filter in _persistentEntityFilters)
+            foreach (var filter in _persistentFilters)
             {
-                filter.value.Dispose();
+                filter.Dispose();
             }
         }
 
-        /// <summary>
-        ///
-        /// </summary>
         void ClearTransientFilters()
         {
             foreach (var filter in _transientFilters)
@@ -129,15 +40,18 @@ namespace Svelto.ECS
 
         void RemoveEntityFromPersistentFilters(EGID @from, RefWrapperType refWrapperType, ITypeSafeDictionary fromDic)
         {
-            if (_persistentFiltersIndicesPerComponent.TryGetValue(refWrapperType, out var list))
+            //is there any filter used by this component?
+            if (_indicesOfPersistentFiltersUsedByThisComponent.TryGetValue(refWrapperType,
+                    out FasterList<int> filterIndices))
             {
                 var fromIndex = fromDic.GetIndex(from.entityID);
                 var lastIndex = (uint)fromDic.count - 1;
 
-                var listCount = list.count;
+                var listCount = filterIndices.count;
                 for (int i = 0; i < listCount; ++i)
                 {
-                    if (_persistentFilters[i]._filtersPerGroup.TryGetValue(from.groupID, out var groupFilter))
+                    if (_persistentFilters[filterIndices[i]]._filtersPerGroup
+                       .TryGetValue(from.groupID, out var groupFilter))
                     {
                         groupFilter.RemoveWithSwapBack(from.entityID, fromIndex, lastIndex);
                     }
@@ -145,33 +59,74 @@ namespace Svelto.ECS
             }
         }
 
-        void SwapEntityBetweenPersistentFilters(FasterList<(uint, uint, string)> infosToProcess,
-            FasterDictionary<uint, uint> fromIndices, ITypeSafeDictionary toComponentsDictionary,
-            ExclusiveGroupStruct fromGroup, ExclusiveGroupStruct toGroup, uint lastIndex, FasterList<int> listOfFilters)
+        //this method is called by the framework only if listOfFilters.count > 0
+        void SwapEntityBetweenPersistentFilters(FasterList<(uint, uint, string)> fromEntityToEntityIDs,
+            FasterDictionary<uint, uint> beforeSubmissionFromIDs, ITypeSafeDictionary toComponentsDictionary,
+            ExclusiveGroupStruct fromGroup, ExclusiveGroupStruct toGroup, uint fromDictionaryCount,
+            FasterList<int> listOfFilters)
         {
+            DBC.ECS.Check.Require(listOfFilters.count > 0, "why are you calling this with an empty list?");
             var listCount = listOfFilters.count;
-            foreach (var (fromEntityID, toEntityID, _) in infosToProcess)
+
+            ///fromEntityToEntityIDs are the ID of the entities to swap from the from group to the to group.
+            /// for this component type. for each component type, there is only one set of fromEntityToEntityIDs
+            /// per from/to group.
+            /// The complexity of this function is that the ToDictionary is already updated, so the toIndex
+            /// is actually correct and guaranteed to be valid. However the beforeSubmissionFromIDs are the
+            /// indices of the entities in the FromDictionary BEFORE the submission happens, so before the
+            /// entities are actually removed from the dictionary.
+            /// 
+            for (int i = 0; i < listCount; ++i)
             {
-                var fromIndex = fromIndices[fromEntityID];
-                var toIndex   = toComponentsDictionary.GetIndex(toEntityID);
-                var @from     = new EGID(fromEntityID, fromGroup);
-                var to        = new EGID(toEntityID, toGroup);
+                //we are going to remove multiple entities, this means that the dictionary count would decrease 
+                //for each entity remove from each filter
+                //we need to keep a copy to reset to the original count for each filter
+                var currentLastIndex = fromDictionaryCount;
 
-                for (int i = 0; i < listCount; ++i)
+                //if the group has a filter linked:
+                EntityFilterCollection persistentFilter = _persistentFilters[listOfFilters[i]];
+                if (persistentFilter._filtersPerGroup.TryGetValue(fromGroup, out var fromGroupFilter))
                 {
-                    //if the group has a filter linked:
-                    var persistentFilter = _persistentFilters[i];
-                    if (persistentFilter._filtersPerGroup.TryGetValue(@from.groupID, out var groupFilter))
-                    {
-                        if (groupFilter.HasEntity(fromEntityID) == true)
-                        {
-                            persistentFilter.AddEntity(to, toIndex);
-                        }
+                    EntityFilterCollection.GroupFilters groupFilterTo = default;
 
-                        // Removing an entity from the diction`ary may affect the index of the last entity in the
-                        // values dictionary array, so we need to to update the indices of the affected entities.
-                        //must be outside because from may not be present in the filter, but last index is
-                        groupFilter.RemoveWithSwapBack(@from.entityID, fromIndex, lastIndex);
+                    foreach (var (fromEntityID, toEntityID, _) in fromEntityToEntityIDs)
+                    {
+                        //if there is an entity, it must be moved to the to filter
+                        if (fromGroupFilter.Exists(fromEntityID) == true)
+                        {
+                            var toIndex = toComponentsDictionary.GetIndex(toEntityID);
+
+                            if (groupFilterTo.isValid == false)
+                                groupFilterTo = persistentFilter.GetGroupFilter(toGroup);
+
+                            groupFilterTo.Add(toEntityID, toIndex);
+                        }
+                    }
+
+                    foreach (var (fromEntityID, _, _) in fromEntityToEntityIDs)
+                    {
+                        //fromIndex is the same of the index in the filter if the entity is in the filter, but
+                        //we need to update the entity index of the last entity swapped from the dictionary even
+                        //in the case when the fromEntity is not present in the filter.
+
+                        uint fromIndex; //index in the from dictionary
+                        if (fromGroupFilter.Exists(fromEntityID))
+                            fromIndex = fromGroupFilter._entityIDToDenseIndex[fromEntityID];
+                        else
+                            fromIndex = beforeSubmissionFromIDs[fromEntityID];
+
+                       //Removing an entity from the dictionary may affect the index of the last entity in the
+                       // values dictionary array, so we need to to update the indices of the affected entities.
+                       //must be outside because from may not be present in the filter, but last index is
+
+                       //for each entity removed from the from group, I have to update it's index in the
+                       //from filter. An entity removed from the DB is always swapped back, which means
+                       //it's current position is taken by the last entity in the dictionary array.
+
+                       //this means that the index of the last entity will change to the index of the
+                       //replaced entity
+                        
+                       fromGroupFilter.RemoveWithSwapBack(fromEntityID, fromIndex, currentLastIndex--);
                     }
                 }
             }
@@ -179,12 +134,10 @@ namespace Svelto.ECS
 
         internal FasterDictionary<long, EntityFilterCollection> _transientEntityFilters;
         internal FasterDictionary<long, EntityFilterCollection> _persistentEntityFilters;
-        
-        internal FasterDictionary<long, NativeEntityFilterCollection> _transientEntityFilters;
-        internal FasterDictionary<long, NativeEntityFilterCollection> _persistentEntityFilters;
 
-        FasterList<EntityFilterCollection>                _transientFilters;
-        FasterList<EntityFilterCollection>                _persistentFilters;
-        FasterDictionary<RefWrapperType, FasterList<int>> _persistentFiltersIndicesPerComponent;
+        internal FasterList<EntityFilterCollection> _transientFilters;
+        internal FasterList<EntityFilterCollection> _persistentFilters;
+
+        internal FasterDictionary<RefWrapperType, FasterList<int>> _indicesOfPersistentFiltersUsedByThisComponent;
     }
 }

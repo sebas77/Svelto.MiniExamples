@@ -241,7 +241,7 @@ namespace Svelto.DataStructures
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ref TValue RecycleOrCreate<TValueProxy>
+        public ref TValue RecycleOrAdd<TValueProxy>
             (TKey key, Func<TValueProxy> builder, ActionRef<TValueProxy> recycler) where TValueProxy : class, TValue
         {
             if (TryFindIndex(key, out var findIndex) == true)
@@ -272,7 +272,7 @@ namespace Svelto.DataStructures
         /// <typeparam name="W"></typeparam>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ref TValue RecycleOrCreate<TValueProxy, W>(TKey key, FuncRef<W, TValue> builder,
+        public ref TValue RecycleOrAdd<TValueProxy, W>(TKey key, FuncRef<W, TValue> builder,
             ActionRef<TValueProxy, W> recycler, ref W parameter) where TValueProxy : class, TValue
         {
             if (TryFindIndex(key, out var findIndex) == true)

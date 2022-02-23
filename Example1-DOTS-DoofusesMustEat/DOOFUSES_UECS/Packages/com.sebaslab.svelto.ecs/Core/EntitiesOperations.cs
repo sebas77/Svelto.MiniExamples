@@ -17,7 +17,7 @@ namespace Svelto.ECS
 
             //todo: limit the number of dictionaries that can be cached 
             //recycle or create dictionaries of components per group
-            var swappedComponentsPerType = _thisSubmissionInfo._currentSwapEntitiesOperations.RecycleOrCreate(
+            var swappedComponentsPerType = _thisSubmissionInfo._currentSwapEntitiesOperations.RecycleOrAdd(
                 fromID.groupID,
                 () => new FasterDictionary<RefWrapperType,
                     FasterDictionary<ExclusiveGroupStruct, FasterList<(uint, uint, string)>>>(),
@@ -28,12 +28,12 @@ namespace Svelto.ECS
             {
                 swappedComponentsPerType
                     //recycle or create dictionaries per component type
-                   .RecycleOrCreate(new RefWrapperType(operation.GetEntityComponentType()),
+                   .RecycleOrAdd(new RefWrapperType(operation.GetEntityComponentType()),
                         () => new FasterDictionary<ExclusiveGroupStruct, FasterList<(uint, uint, string)>>(),
                         (ref FasterDictionary<ExclusiveGroupStruct, FasterList<(uint, uint, string)>> target) =>
                             target.FastClear())
                     //recycle or create list of entities to swap
-                   .RecycleOrCreate(toID.groupID, () => new FasterList<(uint, uint, string)>(),
+                   .RecycleOrAdd(toID.groupID, () => new FasterList<(uint, uint, string)>(),
                         (ref FasterList<(uint, uint, string)> target) => target.FastClear())
                     //add entity to swap
                    .Add((fromID.entityID, toID.entityID, caller));
@@ -45,7 +45,7 @@ namespace Svelto.ECS
             _thisSubmissionInfo._entitiesRemoved.Add(entityEgid);
             //todo: limit the number of dictionaries that can be cached 
             //recycle or create dictionaries of components per group
-            var removedComponentsPerType = _thisSubmissionInfo._currentRemoveEntitiesOperations.RecycleOrCreate(
+            var removedComponentsPerType = _thisSubmissionInfo._currentRemoveEntitiesOperations.RecycleOrAdd(
                 entityEgid.groupID, () => new FasterDictionary<RefWrapperType, FasterList<(uint, string)>>(),
                 (ref FasterDictionary<RefWrapperType, FasterList<(uint, string)>> recycled) => recycled.FastClear());
 
@@ -53,7 +53,7 @@ namespace Svelto.ECS
             {
                 removedComponentsPerType
                     //recycle or create dictionaries per component type
-                   .RecycleOrCreate(new RefWrapperType(operation.GetEntityComponentType()),
+                   .RecycleOrAdd(new RefWrapperType(operation.GetEntityComponentType()),
                         () => new FasterList<(uint, string)>(),
                         (ref FasterList<(uint, string)> target) => target.FastClear())
                     //add entity to swap

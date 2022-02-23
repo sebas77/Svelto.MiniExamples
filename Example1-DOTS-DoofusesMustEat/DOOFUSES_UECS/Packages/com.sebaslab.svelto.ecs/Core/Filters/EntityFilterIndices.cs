@@ -1,18 +1,23 @@
 ﻿using System.Runtime.CompilerServices;
+using System.Threading;
 using Svelto.DataStructures;
 
 namespace Svelto.ECS
 {
-    public readonly struct EntityFilterIndices
+    public struct EntityFilterIndices
     {
         public EntityFilterIndices(NB<uint> indices, uint count)
         {
             _indices = indices;
             _count   = count;
+            _index   = 0;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public uint Count() => _count;
+        public uint count
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => _count;
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public uint Get(uint index) => _indices[index];
@@ -28,8 +33,15 @@ namespace Svelto.ECS
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => _indices[index];
         }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public uint Next()
+        {
+            return _indices[Interlocked.Increment(ref _index) - 1];
+        }
 
         readonly NB<uint> _indices;
-        readonly uint      _count;
+        readonly uint     _count;
+        int               _index;
     }
 }

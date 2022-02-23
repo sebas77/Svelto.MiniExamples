@@ -128,35 +128,35 @@ namespace Svelto.DataStructures
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ref TValue GetOrCreate(TKey key)
+        public ref TValue GetOrAdd(TKey key)
         {
             return ref _dictionary.GetOrCreate(key);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ref TValue GetOrCreate(TKey key, Func<TValue> builder)
+        public ref TValue GetOrAdd(TKey key, Func<TValue> builder)
         {
             return ref _dictionary.GetOrCreate(key, builder);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ref TValue GetOrCreate<W>(TKey key, FuncRef<W, TValue> builder, ref W parameter)
+        public ref TValue GetOrAdd<W>(TKey key, FuncRef<W, TValue> builder, ref W parameter)
         {
             return ref _dictionary.GetOrCreate(key, builder, ref parameter);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ref TValue RecycleOrCreate<TValueProxy>(TKey key, Func<TValueProxy> builder,
+        public ref TValue RecycleOrAdd<TValueProxy>(TKey key, Func<TValueProxy> builder,
             ActionRef<TValueProxy> recycler) where TValueProxy : class, TValue
         {
-            return ref _dictionary.RecycleOrCreate(key, builder, recycler);
+            return ref _dictionary.RecycleOrAdd(key, builder, recycler);
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ref TValue RecycleOrCreate<TValueProxy, W>(TKey key, FuncRef<W, TValue> builder,
+        public ref TValue RecycleOrAdd<TValueProxy, W>(TKey key, FuncRef<W, TValue> builder,
             ActionRef<TValueProxy, W> recycler, ref W parameter) where TValueProxy : class, TValue
         {
-            return ref _dictionary.RecycleOrCreate(key, builder, recycler, ref parameter);
+            return ref _dictionary.RecycleOrAdd(key, builder, recycler, ref parameter);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

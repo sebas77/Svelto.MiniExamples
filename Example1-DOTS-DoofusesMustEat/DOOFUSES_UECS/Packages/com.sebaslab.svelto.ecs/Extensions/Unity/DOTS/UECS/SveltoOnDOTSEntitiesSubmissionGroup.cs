@@ -120,23 +120,26 @@ namespace Svelto.ECS.SveltoOnDOTS
                 }
                 catch (Exception e)
                 {
-                    Svelto.Console.LogException(e, _submissionEngines[i].name);
+                    Console.LogException(e, _submissionEngines[i].name);
 
                     throw;
                 }
             }
 
-            combinedHandle.Complete();
-
-//            ConvertPendingEntities();
+            using (profiler.Sample("ConvertPendingEntities"))
+                ConvertPendingEntities(combinedHandle);
         }
 
         //Note: when this is called, the CommandBuffer is flushed so the not temporary DOTS entity ID will be used
-        void ConvertPendingEntities()
+        void ConvertPendingEntities(JobHandle combinedHandle)
         {
             EndSimulationEntityCommandBufferSystem _ECBSystem =
                 World.GetExistingSystem<EndSimulationEntityCommandBufferSystem>();
             _cachedList.Clear();
+            
+            Dependency = JobHandle.CombineDependencies(Dependency, combinedHandle);
+            
+            //note with DOTS 0.17 unfortunately this allocates a lot :(
             EntityManager.GetAllUniqueSharedComponentData(_cachedList);
             var entityCommandBuffer = _ECBSystem.CreateCommandBuffer();
             var cmd                 = entityCommandBuffer.AsParallelWriter();

@@ -26,13 +26,13 @@ namespace Svelto.ECS.MiniExamples.Example1C
         public JobHandle Execute(JobHandle _jobHandle)
         {
             //Iterate NOEATING RED doofuses to look for RED food and MOVE them to EATING state if food is found
-            var handle1 = CreateJobForDoofusesAndFood(_jobHandle, GameGroups.RED_FOOD_NOT_EATEN.Groups
+            var handle1 = DoofusesLookingForFoodJob(_jobHandle, GameGroups.RED_FOOD_NOT_EATEN.Groups
                                                     , GameGroups.RED_DOOFUSES_NOT_EATING.Groups
                                                     , GameGroups.RED_DOOFUSES_EATING.BuildGroup
                                                     , GameGroups.RED_FOOD_EATEN.BuildGroup);
 
             //Iterate NOEATING BLUE doofuses to look for BLUE food and MOVE them to EATING state if food is found
-            var handle2 = CreateJobForDoofusesAndFood(_jobHandle, GameGroups.BLUE_FOOD_NOT_EATEN.Groups
+            var handle2 = DoofusesLookingForFoodJob(_jobHandle, GameGroups.BLUE_FOOD_NOT_EATEN.Groups
                                                     , GameGroups.BLUE_DOOFUSES_NOT_EATING.Groups
                                                     , GameGroups.BLUE_DOOFUSES_EATING.BuildGroup
                                                     , GameGroups.BLUE_FOOD_EATEN.BuildGroup);
@@ -44,7 +44,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
         /// <summary>
         /// All the available doofuses will start to hunt for available food
         /// </summary>
-        JobHandle CreateJobForDoofusesAndFood
+        JobHandle DoofusesLookingForFoodJob
         (JobHandle inputDeps, FasterReadOnlyList<ExclusiveGroupStruct> availableFood
        , FasterReadOnlyList<ExclusiveGroupStruct> availableDoofuses, ExclusiveBuildGroup eatingDoofusesGroup
        , ExclusiveBuildGroup eatenFoodGroup)

@@ -17,7 +17,11 @@ namespace Svelto.ECS
         internal static readonly ThreadLocal<bool> skipStaticCompoundConstructorsWith2Tags = new ThreadLocal<bool>();
     }
 
-    public abstract class GroupCompound<G1, G2, G3, G4> where G1 : GroupTag<G1>
+    interface ITouchedByReflection
+    {
+    }
+
+    public abstract class GroupCompound<G1, G2, G3, G4>: ITouchedByReflection where G1 : GroupTag<G1>
                                                         where G2 : GroupTag<G2>
                                                         where G3 : GroupTag<G3>
                                                         where G4 : GroupTag<G4>
@@ -149,7 +153,7 @@ namespace Svelto.ECS
         static int isInitializing;
     }
 
-    public abstract class GroupCompound<G1, G2, G3>
+    public abstract class GroupCompound<G1, G2, G3>: ITouchedByReflection
         where G1 : GroupTag<G1> where G2 : GroupTag<G2> where G3 : GroupTag<G3>
     {
         static GroupCompound()
@@ -231,7 +235,7 @@ namespace Svelto.ECS
         static int isInitializing;
     }
 
-    public abstract class GroupCompound<G1, G2> where G1 : GroupTag<G1> where G2 : GroupTag<G2>
+    public abstract class GroupCompound<G1, G2>: ITouchedByReflection where G1 : GroupTag<G1> where G2 : GroupTag<G2>
     {
         static GroupCompound()
         {
@@ -298,7 +302,7 @@ namespace Svelto.ECS
     ///     groups with the same adjective, a group tag needs to hold all the groups sharing it.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public abstract class GroupTag<T> where T : GroupTag<T>
+    public abstract class GroupTag<T>: ITouchedByReflection where T : GroupTag<T>
     {
         static GroupTag()
         {

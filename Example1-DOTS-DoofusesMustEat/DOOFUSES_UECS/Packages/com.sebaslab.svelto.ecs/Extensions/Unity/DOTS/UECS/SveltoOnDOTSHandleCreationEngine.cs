@@ -16,8 +16,8 @@ namespace Svelto.ECS.SveltoOnDOTS
 
         protected internal EntityManager entityManager
         {
-            [Obsolete(
-                "<color=orange>Attention: the use of EntityManager directly is deprecated. ECB MUST BE USED INSTEAD</color>")]
+            // [Obsolete(
+            //     "<color=orange>Attention: the use of EntityManager directly is deprecated. ECB MUST BE USED INSTEAD</color>")]
             get;
             internal set;
         }

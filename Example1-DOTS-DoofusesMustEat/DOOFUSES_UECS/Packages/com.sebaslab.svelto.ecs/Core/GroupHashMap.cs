@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using Svelto.ECS.Serialization;
 
 namespace Svelto.ECS
@@ -24,9 +25,18 @@ namespace Svelto.ECS
 
                     foreach (Type type in AssemblyUtility.GetTypesSafe(assembly))
                     {
+                        CheckForGroupCompounds(type);
+
                         if (type != null && type.IsClass && type.IsSealed &&
                             type.IsAbstract) //IsClass and IsSealed and IsAbstract means only static classes
                         {
+                            var subClasses = type.GetNestedTypes();
+
+                            foreach (var subclass in subClasses)
+                            {
+                                CheckForGroupCompounds(subclass);
+                            }
+
                             var fields = type.GetFields();
 
                             foreach (var field in fields)
@@ -77,6 +87,16 @@ namespace Svelto.ECS
                         "something went wrong while gathering group names on the assembly: ".FastConcat(
                             assembly.FullName));
                 }
+            }
+        }
+
+        static void CheckForGroupCompounds(Type type)
+        {
+            if (typeof(ITouchedByReflection).IsAssignableFrom(type))
+            {
+                //this wil call the static constructor, but only once. Static constructors won't be called
+                //more than once with this
+         //       System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(type.BaseType.TypeHandle);
             }
         }
 

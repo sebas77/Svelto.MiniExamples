@@ -83,8 +83,8 @@ namespace Svelto.ECS
 
                             FasterList<(uint, string)> infosToProcess = groupedEntitiesToSwap.value;
 
-                            foreach (var info in infosToProcess)
-                                enginesRoot.RemoveEntityFromPersistentFilters(new EGID(info.Item1, fromGroup),
+                            foreach (var (entityID, _) in infosToProcess)
+                                enginesRoot.RemoveEntityFromPersistentFilters(new EGID(entityID, fromGroup),
                                     componentType, fromComponentsDictionary);
 
                             fromComponentsDictionary.RemoveEntitiesFromDictionary(infosToProcess);
@@ -101,7 +101,7 @@ namespace Svelto.ECS
         {
             using (var sampler = new PlatformProfiler("Swap entities between groups"))
             {
-                enginesRoot._cachedSubmissionIndices.FastClear();
+                enginesRoot._cachedRangeOfSubmittedIndices.FastClear();
 
                 using (sampler.Sample("Update Entity References"))
                 {
@@ -116,24 +116,23 @@ namespace Svelto.ECS
 
                 using (sampler.Sample("Swap Entities"))
                 {
-                    //Entities to swap are organised in order to minimise the number of dictionary lookups.
-                    //swapEntitiesOperations iterations happens in the following order:
+                    //Entities to swap are organised in order to minimise the amount of dictionary lookups.
+                    //swapEntitiesOperations iterations happen in the following order:
                     //for each fromGroup, get all the entities to swap for each component type.
                     //then get the list of IDs for each ToGroup.
                     //now swap the set of FromGroup -> ToGroup entities per ID.
-
                     foreach (var entitiesToSwap in swapEntitiesOperations)
                     {
                         ExclusiveGroupStruct fromGroup           = entitiesToSwap.key;
                         var                  fromGroupDictionary = enginesRoot.GetDBGroup(fromGroup);
 
-                        //iterate all the from groups
+                        //iterate all the fromgroups
                         foreach (var groupedEntitiesToSwap in entitiesToSwap.value)
                         {
                             var                 componentType            = groupedEntitiesToSwap.key;
                             ITypeSafeDictionary fromComponentsDictionary = fromGroupDictionary[componentType];
 
-                            //get the subset of to groups that come from from group
+                            //get the subset of togroups that come from from group
                             foreach (var entitiesInfoToSwap in groupedEntitiesToSwap.value)
                             {
                                 ExclusiveGroupStruct toGroup = entitiesInfoToSwap.key;
@@ -145,41 +144,42 @@ namespace Svelto.ECS
                                 DBC.ECS.Check.Assert(toComponentsDictionary != null,
                                     "something went wrong with the creation of dictionaries");
 
-                                //this list represent the set of entities that come from fromGroup and need
+                                //this list represents the set of entities that come from fromGroup and need
                                 //to be swapped to toGroup. Most of the times will be 1 of few units.
-                                var infosToProcess = entitiesInfoToSwap.value;
+                                FasterList<(uint, uint, string)> fromEntityToEntityIDs = entitiesInfoToSwap.value;
 
-                                int lastIndex = -1;
+                                int fromDictionaryCountBeforeSubmission = -1;
 
-                                if (enginesRoot._persistentFiltersIndicesPerComponent.TryGetValue(componentType,
-                                        out FasterList<int> listOfFilters))
+                                if (enginesRoot._indicesOfPersistentFiltersUsedByThisComponent.TryGetValue(
+                                        componentType, out FasterList<int> listOfFilters))
                                 {
-                                    enginesRoot._cachedIndicesForFilters.FastClear();
+                                    enginesRoot._cachedIndicesToSwapBeforeSubmissionForFilters.FastClear();
 
-                                    lastIndex = fromComponentsDictionary.count - 1;
+                                    fromDictionaryCountBeforeSubmission = fromComponentsDictionary.count - 1;
 
-                                    foreach (var (fromEntityID, _, _) in infosToProcess)
-                                        enginesRoot._cachedIndicesForFilters.Add(fromEntityID,
+                                    //add the index of the entities in the component array for each entityID
+                                    //BEFORE the submission, as after that the ID will be different
+                                    foreach (var (fromEntityID, _, _) in fromEntityToEntityIDs)
+                                        enginesRoot._cachedIndicesToSwapBeforeSubmissionForFilters.Add(fromEntityID,
                                             fromComponentsDictionary.GetIndex(fromEntityID));
                                 }
 
                                 //ensure that to dictionary has enough room to store the new entities`
                                 toComponentsDictionary.EnsureCapacity((uint)(toComponentsDictionary.count +
-                                    (uint)infosToProcess.count));
+                                    (uint)fromEntityToEntityIDs.count));
 
                                 //fortunately swap means that entities are added at the end of each destination
                                 //dictionary list, so we can just iterate the list using the indices ranges added in the
                                 //_cachedIndices
-                                enginesRoot._cachedSubmissionIndices.Add(((uint, uint))(toComponentsDictionary.count,
-                                    toComponentsDictionary.count + infosToProcess.count));
+                                enginesRoot._cachedRangeOfSubmittedIndices.Add(((uint, uint))(toComponentsDictionary.count,
+                                    toComponentsDictionary.count + fromEntityToEntityIDs.count));
 
-                                fromComponentsDictionary.SwapEntitiesBetweenDictionaries(infosToProcess, fromGroup,
-                                    toGroup, toComponentsDictionary);
+                                fromComponentsDictionary.SwapEntitiesBetweenDictionaries(fromEntityToEntityIDs,
+                                    fromGroup, toGroup, toComponentsDictionary);
 
-                                if (lastIndex != -1)
-                                    enginesRoot.SwapEntityBetweenPersistentFilters(infosToProcess,
-                                        enginesRoot._cachedIndicesForFilters, toComponentsDictionary,
-                                        fromGroup, toGroup, (uint)lastIndex, listOfFilters);
+                                if (fromDictionaryCountBeforeSubmission != -1)
+                                    enginesRoot.SwapEntityBetweenPersistentFilters(fromEntityToEntityIDs,  enginesRoot._cachedIndicesToSwapBeforeSubmissionForFilters,
+                                        toComponentsDictionary, fromGroup, toGroup, (uint)fromDictionaryCountBeforeSubmission, listOfFilters);
                             }
                         }
                     }
@@ -215,7 +215,7 @@ namespace Svelto.ECS
                     }
                 }
 
-                var rangeEnumerator = enginesRoot._cachedSubmissionIndices.GetEnumerator();
+                var rangeEnumerator = enginesRoot._cachedRangeOfSubmittedIndices.GetEnumerator();
                 using (sampler.Sample("Execute Swap Callbacks Fast"))
                 {
                     foreach (var entitiesToSwap in swapEntitiesOperations)
@@ -256,7 +256,7 @@ namespace Svelto.ECS
             //I need to iterate the previous current, which is now other
             if (_groupedEntityToAdd.AnyPreviousEntityCreated())
             {
-                _cachedSubmissionIndices.FastClear();
+                _cachedRangeOfSubmittedIndices.FastClear();
                 using (sampler.Sample("Add operations"))
                 {
                     try
@@ -282,7 +282,7 @@ namespace Svelto.ECS
 
                                     //all the new entities are added at the end of each dictionary list, so we can
                                     //just iterate the list using the indices ranges added in the _cachedIndices
-                                    _cachedSubmissionIndices.Add(((uint, uint))(toDictionary.count,
+                                    _cachedRangeOfSubmittedIndices.Add(((uint, uint))(toDictionary.count,
                                         toDictionary.count + fromDictionary.count));
                                     //Fill the DB with the entity components generated this frame.
                                     fromDictionary.AddEntitiesToDictionary(toDictionary, groupID, entityLocator);
@@ -292,7 +292,7 @@ namespace Svelto.ECS
 
                         //then submit everything in the engines, so that the DB is up to date with all the entity components
                         //created by the entity built
-                        var enumerator = _cachedSubmissionIndices.GetEnumerator();
+                        var enumerator = _cachedRangeOfSubmittedIndices.GetEnumerator();
                         using (sampler.Sample("Add entities to engines fast"))
                         {
                             foreach (GroupInfo groupToSubmit in _groupedEntityToAdd)
@@ -464,10 +464,14 @@ namespace Svelto.ECS
 
         readonly DoubleBufferedEntitiesToAdd  _groupedEntityToAdd;
         readonly EntitiesOperations           _entitiesOperations;
-        readonly FasterList<(uint, uint)>     _cachedSubmissionIndices;
-        readonly FasterDictionary<uint, uint> _cachedIndicesForFilters;
+        readonly FasterList<(uint, uint)>     _cachedRangeOfSubmittedIndices;
+        readonly FasterDictionary<uint, uint> _cachedIndicesToSwapBeforeSubmissionForFilters;
 
-        static readonly Action<FasterDictionary<ExclusiveGroupStruct, FasterDictionary<RefWrapperType, FasterDictionary<ExclusiveGroupStruct, FasterList<(uint, uint, string)>>>>, FasterList<(EGID, EGID)>, EnginesRoot> _swapEntities;
+        static readonly
+            Action<FasterDictionary<ExclusiveGroupStruct, FasterDictionary<RefWrapperType,
+                    FasterDictionary<ExclusiveGroupStruct, FasterList<(uint, uint, string)>>>>, FasterList<(EGID, EGID)>
+               ,
+                EnginesRoot> _swapEntities;
 
         static readonly Action<
             FasterDictionary<ExclusiveGroupStruct, FasterDictionary<RefWrapperType, FasterList<(uint, string)>>>,

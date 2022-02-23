@@ -5,11 +5,13 @@ namespace Svelto.ECS.MiniExamples.Example1C
 {
     public readonly struct SpawnPointEntityComponent : IEntityComponent
     {
-        public readonly Entity prefabEntity;
-        public readonly float3 spawnPosition;
+        public readonly bool   isSpecial;
+        public readonly  Entity prefabEntity;
+        public readonly  float3 spawnPosition;
         
-        public SpawnPointEntityComponent(Entity prefabEntity, float3 spawnPosition)
+        public SpawnPointEntityComponent(bool isSpecial, Entity prefabEntity, float3 spawnPosition)
         {
+            this.isSpecial   = isSpecial;
             this.prefabEntity  = prefabEntity;
             this.spawnPosition = spawnPosition;
         }

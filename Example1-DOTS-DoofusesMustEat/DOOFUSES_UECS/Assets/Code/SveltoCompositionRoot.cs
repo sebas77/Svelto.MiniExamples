@@ -47,41 +47,46 @@ namespace Svelto.ECS.MiniExamples.Example1C
             _enginesToTick.Add(_sveltoOverDotsEnginesGroupEnginesGroup);
 
             LoadAssetAndCreatePrefabs(_sveltoOverDotsEnginesGroupEnginesGroup.world, out var redFoodPrefab
-              , out var blueFootPrefab, out var redDoofusPrefab, out var blueDoofusPrefab);
+              , out var blueFootPrefab, out var redDoofusPrefab, out var blueDoofusPrefab, out var specialBlueDoofusPrefab);
 
-            AddSveltoEngineToTick(new PlaceFoodOnClickEngine(redFoodPrefab, blueFootPrefab, entityFactory));
-            AddSveltoEngineToTick(new SpawningDoofusEngine(redDoofusPrefab, blueDoofusPrefab, entityFactory));
+            AddSveltoEngineToTick(new SpawnFoodOnClickEngine(redFoodPrefab, blueFootPrefab, entityFactory));
+            AddSveltoEngineToTick(new SpawningDoofusEngine(redDoofusPrefab, blueDoofusPrefab, specialBlueDoofusPrefab, entityFactory));
             AddSveltoEngineToTick(new ConsumingFoodEngine(entityFunctions));
             AddSveltoEngineToTick(new LookingForFoodDoofusesEngine(entityFunctions));
             AddSveltoEngineToTick(new VelocityToPositionDoofusesEngine());
 
             _sveltoOverDotsEnginesGroupEnginesGroup.AddDOTSSubmissionEngine(new SpawnUnityEntityOnSveltoEntityEngine());
+            _sveltoOverDotsEnginesGroupEnginesGroup.AddDOTSSubmissionEngine(new SetFiltersOnBlueDoofusesSpawned());
             _sveltoOverDotsEnginesGroupEnginesGroup.AddSveltoToDOTSEngine(new RenderingDOTSDataSynchronizationEngine());
         }
 
-        static void LoadAssetAndCreatePrefabs
-        (World world, out Entity redFoodPrefab, out Entity blueFootPrefab, out Entity redDoofusPrefab
-          , out Entity blueDoofusPrefab)
+        static void LoadAssetAndCreatePrefabs(World world, out Entity redFoodPrefab, out Entity blueFootPrefab,
+            out Entity redDoofusPrefab, out Entity blueDoofusPrefab, out Entity specialBlueDoofusPrefab)
         {
             //I believe the proper way to do this now is to create a subscene, but I am not sure how it would
             //work with prefabs, so I am not testing it (yet)
             redFoodPrefab = GameObjectConversionUtility.ConvertGameObjectHierarchy(
-                UnityEngine.Resources.Load("Sphere") as GameObject, new GameObjectConversionSettings
+                Resources.Load("Sphere") as GameObject, new GameObjectConversionSettings
                 {
                     DestinationWorld = world
                 });
             blueFootPrefab = GameObjectConversionUtility.ConvertGameObjectHierarchy(
-                UnityEngine.Resources.Load("Sphereblue") as GameObject, new GameObjectConversionSettings
+                Resources.Load("Sphereblue") as GameObject, new GameObjectConversionSettings
                 {
                     DestinationWorld = world
                 });
             redDoofusPrefab = GameObjectConversionUtility.ConvertGameObjectHierarchy(
-                UnityEngine.Resources.Load("RedCapsule") as GameObject, new GameObjectConversionSettings
+                Resources.Load("RedCapsule") as GameObject, new GameObjectConversionSettings
                 {
                     DestinationWorld = world
                 });
             blueDoofusPrefab = GameObjectConversionUtility.ConvertGameObjectHierarchy(
-                UnityEngine.Resources.Load("BlueCapsule") as GameObject, new GameObjectConversionSettings
+                Resources.Load("BlueCapsule") as GameObject, new GameObjectConversionSettings
+                {
+                    DestinationWorld = world
+                });
+            specialBlueDoofusPrefab = GameObjectConversionUtility.ConvertGameObjectHierarchy(
+                Resources.Load("SpecialBlueCapsule") as GameObject, new GameObjectConversionSettings
                 {
                     DestinationWorld = world
                 });

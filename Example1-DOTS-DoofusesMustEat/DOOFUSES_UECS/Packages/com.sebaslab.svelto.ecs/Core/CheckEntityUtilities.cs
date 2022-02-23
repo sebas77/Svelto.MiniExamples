@@ -62,7 +62,7 @@ namespace Svelto.ECS
                        .FastConcat(" previous operation was: ")
                        .FastConcat(_multipleOperationOnSameEGIDChecker[egid] == 1 ? "add" : "remove"));
 
-            var hash = _idChecker.GetOrCreate(egid.groupID, () => new HashSet<uint>());
+            var hash = _idChecker.GetOrAdd(egid.groupID, () => new HashSet<uint>());
             if (hash.Contains(egid.entityID) == true)
                 throw new ECSException("Trying to add an Entity already present in the database "
                                       .FastConcat(" caller: ", caller, " entityID ").FastConcat(egid.entityID)
