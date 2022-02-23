@@ -1,5 +1,7 @@
 ﻿using Svelto.Common;
 using Svelto.DataStructures;
+using Svelto.DataStructures.Native;
+using Svelto.ECS.DataStructures;
 using Svelto.ECS.Internal;
 
 namespace Svelto.ECS
@@ -10,39 +12,42 @@ namespace Svelto.ECS
 
         void InitFilters()
         {
-            _transientEntityFilters                        = new FasterDictionary<long, EntityFilterCollection>();
-            _persistentEntityFilters                       = new FasterDictionary<long, EntityFilterCollection>();
-            _transientFilters                              = new FasterList<EntityFilterCollection>();
-            _persistentFilters                             = new FasterList<EntityFilterCollection>();
-            _indicesOfPersistentFiltersUsedByThisComponent = new FasterDictionary<RefWrapperType, FasterList<int>>();
+            _transientEntityFilters  = new SharedSveltoDictionaryNative<long, EntityFilterCollection>(0);
+            _persistentEntityFilters = new SharedSveltoDictionaryNative<long, EntityFilterCollection>(0);
+            _indicesOfPersistentFiltersUsedByThisComponent =
+                new SharedSveltoDictionaryNative<NativeRefWrapperType, NativeDynamicArrayCast<int>>(0);
         }
 
         void DisposeFilters()
         {
-            foreach (var filter in _transientFilters)
+            foreach (var filter in _transientEntityFilters)
             {
-                filter.Dispose();
+                filter.value.Dispose();
             }
 
-            foreach (var filter in _persistentFilters)
+            foreach (var filter in _persistentEntityFilters)
             {
-                filter.Dispose();
+                filter.value.Dispose();
             }
+
+            _transientEntityFilters.Dispose();
+            _persistentEntityFilters.Dispose();
+            _indicesOfPersistentFiltersUsedByThisComponent.Dispose();
         }
 
         void ClearTransientFilters()
         {
-            foreach (var filter in _transientFilters)
+            foreach (var filter in _transientEntityFilters)
             {
-                filter.Clear();
+                filter.value.Clear();
             }
         }
 
         void RemoveEntityFromPersistentFilters(EGID @from, RefWrapperType refWrapperType, ITypeSafeDictionary fromDic)
         {
             //is there any filter used by this component?
-            if (_indicesOfPersistentFiltersUsedByThisComponent.TryGetValue(refWrapperType,
-                    out FasterList<int> filterIndices))
+            if (_indicesOfPersistentFiltersUsedByThisComponent.TryGetValue(new NativeRefWrapperType(refWrapperType),
+                    out NativeDynamicArrayCast<int> filterIndices))
             {
                 var fromIndex = fromDic.GetIndex(from.entityID);
                 var lastIndex = (uint)fromDic.count - 1;
@@ -50,7 +55,7 @@ namespace Svelto.ECS
                 var listCount = filterIndices.count;
                 for (int i = 0; i < listCount; ++i)
                 {
-                    if (_persistentFilters[filterIndices[i]]._filtersPerGroup
+                    if (_persistentEntityFilters.unsafeValues[filterIndices[i]]._filtersPerGroup
                        .TryGetValue(from.groupID, out var groupFilter))
                     {
                         groupFilter.RemoveWithSwapBack(from.entityID, fromIndex, lastIndex);
@@ -63,19 +68,18 @@ namespace Svelto.ECS
         void SwapEntityBetweenPersistentFilters(FasterList<(uint, uint, string)> fromEntityToEntityIDs,
             FasterDictionary<uint, uint> beforeSubmissionFromIDs, ITypeSafeDictionary toComponentsDictionary,
             ExclusiveGroupStruct fromGroup, ExclusiveGroupStruct toGroup, uint fromDictionaryCount,
-            FasterList<int> listOfFilters)
+            NativeDynamicArrayCast<int> listOfFilters)
         {
             DBC.ECS.Check.Require(listOfFilters.count > 0, "why are you calling this with an empty list?");
             var listCount = listOfFilters.count;
 
-            ///fromEntityToEntityIDs are the ID of the entities to swap from the from group to the to group.
+            /// fromEntityToEntityIDs are the ID of the entities to swap from the from group to the to group.
             /// for this component type. for each component type, there is only one set of fromEntityToEntityIDs
             /// per from/to group.
             /// The complexity of this function is that the ToDictionary is already updated, so the toIndex
             /// is actually correct and guaranteed to be valid. However the beforeSubmissionFromIDs are the
             /// indices of the entities in the FromDictionary BEFORE the submission happens, so before the
             /// entities are actually removed from the dictionary.
-            /// 
             for (int i = 0; i < listCount; ++i)
             {
                 //we are going to remove multiple entities, this means that the dictionary count would decrease 
@@ -84,7 +88,7 @@ namespace Svelto.ECS
                 var currentLastIndex = fromDictionaryCount;
 
                 //if the group has a filter linked:
-                EntityFilterCollection persistentFilter = _persistentFilters[listOfFilters[i]];
+                EntityFilterCollection persistentFilter = _persistentEntityFilters.unsafeValues[listOfFilters[i]];
                 if (persistentFilter._filtersPerGroup.TryGetValue(fromGroup, out var fromGroupFilter))
                 {
                     EntityFilterCollection.GroupFilters groupFilterTo = default;
@@ -115,29 +119,27 @@ namespace Svelto.ECS
                         else
                             fromIndex = beforeSubmissionFromIDs[fromEntityID];
 
-                       //Removing an entity from the dictionary may affect the index of the last entity in the
-                       // values dictionary array, so we need to to update the indices of the affected entities.
-                       //must be outside because from may not be present in the filter, but last index is
+                        //Removing an entity from the dictionary may affect the index of the last entity in the
+                        // values dictionary array, so we need to to update the indices of the affected entities.
+                        //must be outside because from may not be present in the filter, but last index is
 
-                       //for each entity removed from the from group, I have to update it's index in the
-                       //from filter. An entity removed from the DB is always swapped back, which means
-                       //it's current position is taken by the last entity in the dictionary array.
+                        //for each entity removed from the from group, I have to update it's index in the
+                        //from filter. An entity removed from the DB is always swapped back, which means
+                        //it's current position is taken by the last entity in the dictionary array.
 
-                       //this means that the index of the last entity will change to the index of the
-                       //replaced entity
-                        
-                       fromGroupFilter.RemoveWithSwapBack(fromEntityID, fromIndex, currentLastIndex--);
+                        //this means that the index of the last entity will change to the index of the
+                        //replaced entity
+
+                        fromGroupFilter.RemoveWithSwapBack(fromEntityID, fromIndex, currentLastIndex--);
                     }
                 }
             }
         }
 
-        internal FasterDictionary<long, EntityFilterCollection> _transientEntityFilters;
-        internal FasterDictionary<long, EntityFilterCollection> _persistentEntityFilters;
+        internal SharedSveltoDictionaryNative<long, EntityFilterCollection> _transientEntityFilters;
+        internal SharedSveltoDictionaryNative<long, EntityFilterCollection> _persistentEntityFilters;
 
-        internal FasterList<EntityFilterCollection> _transientFilters;
-        internal FasterList<EntityFilterCollection> _persistentFilters;
-
-        internal FasterDictionary<RefWrapperType, FasterList<int>> _indicesOfPersistentFiltersUsedByThisComponent;
+        internal SharedSveltoDictionaryNative<NativeRefWrapperType, NativeDynamicArrayCast<int>>
+            _indicesOfPersistentFiltersUsedByThisComponent;
     }
 }

@@ -7,6 +7,7 @@ using Svelto.ECS.Native;
 using Svelto.ECS.Schedulers;
 using Unity.Entities;
 using Unity.Jobs;
+using Allocator = Unity.Collections.Allocator;
 
 namespace Svelto.ECS.SveltoOnDOTS
 {
@@ -133,16 +134,15 @@ namespace Svelto.ECS.SveltoOnDOTS
         //Note: when this is called, the CommandBuffer is flushed so the not temporary DOTS entity ID will be used
         void ConvertPendingEntities(JobHandle combinedHandle)
         {
-            EndSimulationEntityCommandBufferSystem _ECBSystem =
-                World.GetExistingSystem<EndSimulationEntityCommandBufferSystem>();
+            var entityCommandBuffer = new EntityCommandBuffer((Allocator)Common.Allocator.TempJob);
+            var cmd                 = entityCommandBuffer.AsParallelWriter();
+
             _cachedList.Clear();
-            
-            Dependency = JobHandle.CombineDependencies(Dependency, combinedHandle);
-            
+
             //note with DOTS 0.17 unfortunately this allocates a lot :(
             EntityManager.GetAllUniqueSharedComponentData(_cachedList);
-            var entityCommandBuffer = _ECBSystem.CreateCommandBuffer();
-            var cmd                 = entityCommandBuffer.AsParallelWriter();
+
+            Dependency = JobHandle.CombineDependencies(Dependency, combinedHandle);
 
             for (int i = 0; i < _cachedList.Count; i++)
             {
@@ -163,6 +163,9 @@ namespace Svelto.ECS.SveltoOnDOTS
             }
 
             Dependency.Complete();
+
+            entityCommandBuffer.Playback(EntityManager);
+            entityCommandBuffer.Dispose();
         }
 
         protected override void OnCreate()

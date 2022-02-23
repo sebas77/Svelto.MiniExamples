@@ -1,4 +1,6 @@
-﻿using Svelto.DataStructures;
+﻿using Svelto.Common;
+using Svelto.DataStructures;
+using Svelto.ECS.DataStructures;
 
 namespace Svelto.ECS
 {
@@ -42,16 +44,14 @@ namespace Svelto.ECS
 
                 enginesRootPersistentEntityFilters.Add(combineFilterIDs,
                     filterCollection);
-                _enginesRoot._persistentFilters.Add(filterCollection);
 
                 _enginesRoot._indicesOfPersistentFiltersUsedByThisComponent
-                   .GetOrAdd(typeRef, () => new FasterList<int>())
-                   .Add(_enginesRoot._persistentFilters.count - 1);
+                   .GetOrAdd(new NativeRefWrapperType(typeRef),
+                        () => new NativeDynamicArrayCast<int>(1, Allocator.Persistent))
+                   .Add(enginesRootPersistentEntityFilters.count - 1);
 
-                ref var orCreatePersistentFilter = ref _enginesRoot._persistentFilters[
-                    (uint)(_enginesRoot._persistentFilters.count - 1)];
-                
-                return ref orCreatePersistentFilter;
+                return ref enginesRootPersistentEntityFilters.GetDirectValueByRef(
+                    (uint)(enginesRootPersistentEntityFilters.count - 1));
             }
             
             /// <summary>
@@ -72,7 +72,6 @@ namespace Svelto.ECS
 
                 enginesRootTransientEntityFilters.Add(combineFilterIDs,
                     filterCollection);
-                _enginesRoot._transientFilters.Add(filterCollection);
                 
                 return ref enginesRootTransientEntityFilters.GetDirectValueByRef(
                     (uint)(enginesRootTransientEntityFilters.count - 1));

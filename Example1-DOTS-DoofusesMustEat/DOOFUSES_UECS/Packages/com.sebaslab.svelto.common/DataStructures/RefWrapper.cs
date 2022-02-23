@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
+using Svelto.Common;
+using Svelto.Utilities;
 
 namespace Svelto.DataStructures
 {
@@ -31,6 +34,34 @@ namespace Svelto.DataStructures
         public static implicit operator Type(RefWrapperType t) => t._type;
 
         readonly Type _type;
+        readonly int  _hashCode;
+    }
+    
+    public readonly struct NativeRefWrapperType: IEquatable<NativeRefWrapperType> 
+    {
+        public NativeRefWrapperType(Type type)
+        {
+            _type     = type.GUID;
+            _hashCode = type.GetHashCode();
+        }
+        
+        public NativeRefWrapperType(RefWrapperType type)
+        {
+            _type     = ((Type)type).GUID;
+            _hashCode = type.GetHashCode();
+        }
+
+        public bool Equals(NativeRefWrapperType other)
+        {
+            return _type == other._type;
+        }
+        
+        public override int GetHashCode()
+        {
+            return _hashCode;
+        }
+        
+        readonly Guid _type;
         readonly int  _hashCode;
     }
     

@@ -41,6 +41,12 @@ namespace Svelto.DataStructures.Native
             count = (uint) this.count;
             return dictionary._values.ToRealBuffer();
         }
+        
+        public NB<TValue> unsafeValues
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => dictionary._values.ToRealBuffer();
+        }
 
         public SveltoDictionaryKeyValueEnumerator<TKey, TValue, NativeStrategy<SveltoDictionaryNode<TKey>>,
             NativeStrategy<TValue>, NativeStrategy<int>> GetEnumerator() => dictionary.GetEnumerator();

@@ -2,6 +2,7 @@
 using System.Runtime.CompilerServices;
 using Svelto.Common;
 using Svelto.DataStructures;
+using Svelto.ECS.DataStructures;
 using Svelto.ECS.Internal;
 
 namespace Svelto.ECS
@@ -78,7 +79,7 @@ namespace Svelto.ECS
 
                         foreach (var groupedEntitiesToSwap in entitiesToSwap.value)
                         {
-                            var                 componentType            = groupedEntitiesToSwap.key;
+                            RefWrapperType      componentType            = groupedEntitiesToSwap.key;
                             ITypeSafeDictionary fromComponentsDictionary = fromGroupDictionary[componentType];
 
                             FasterList<(uint, string)> infosToProcess = groupedEntitiesToSwap.value;
@@ -151,7 +152,7 @@ namespace Svelto.ECS
                                 int fromDictionaryCountBeforeSubmission = -1;
 
                                 if (enginesRoot._indicesOfPersistentFiltersUsedByThisComponent.TryGetValue(
-                                        componentType, out FasterList<int> listOfFilters))
+                                        new NativeRefWrapperType(componentType), out NativeDynamicArrayCast<int> listOfFilters))
                                 {
                                     enginesRoot._cachedIndicesToSwapBeforeSubmissionForFilters.FastClear();
 
@@ -171,15 +172,18 @@ namespace Svelto.ECS
                                 //fortunately swap means that entities are added at the end of each destination
                                 //dictionary list, so we can just iterate the list using the indices ranges added in the
                                 //_cachedIndices
-                                enginesRoot._cachedRangeOfSubmittedIndices.Add(((uint, uint))(toComponentsDictionary.count,
+                                enginesRoot._cachedRangeOfSubmittedIndices.Add(((uint, uint))(
+                                    toComponentsDictionary.count,
                                     toComponentsDictionary.count + fromEntityToEntityIDs.count));
 
                                 fromComponentsDictionary.SwapEntitiesBetweenDictionaries(fromEntityToEntityIDs,
                                     fromGroup, toGroup, toComponentsDictionary);
 
                                 if (fromDictionaryCountBeforeSubmission != -1)
-                                    enginesRoot.SwapEntityBetweenPersistentFilters(fromEntityToEntityIDs,  enginesRoot._cachedIndicesToSwapBeforeSubmissionForFilters,
-                                        toComponentsDictionary, fromGroup, toGroup, (uint)fromDictionaryCountBeforeSubmission, listOfFilters);
+                                    enginesRoot.SwapEntityBetweenPersistentFilters(fromEntityToEntityIDs,
+                                        enginesRoot._cachedIndicesToSwapBeforeSubmissionForFilters,
+                                        toComponentsDictionary, fromGroup, toGroup,
+                                        (uint)fromDictionaryCountBeforeSubmission, listOfFilters);
                             }
                         }
                     }
