@@ -41,7 +41,9 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
+     <Compile Include="Packages\com.sebaslab.svelto.common\ObjectPool\ThreadSafeObjectPool.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Dictionaries\SveltoDictionaryNode.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.common\Logger\ILogger.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\Command\ICommand.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\Sequencer\Sequence.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\Utilities\DataToString.cs" />
@@ -52,6 +54,7 @@
      <Compile Include="Packages\com.sebaslab.svelto.common\ObjectPool\IObjectPoolDebug.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\Command\ICommandFactory.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\HashHelpers.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\ThreadSafeStack.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\Context\ContextNotifier.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Arrays\FasterReadOnlyList.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\Utilities\FastConcatUtility.cs" />
@@ -70,10 +73,12 @@
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Dictionaries\LocalSveltoDictionaryNative.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\Context\ICompositionRoot.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Dictionaries\SparseSet.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.common\Logger\Unity\FastLoggerUnity.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Arrays\ThreadSafeFasterList.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\Context\Extensions\Unity\UnityContext.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\DualMemorySupport\NativeStrategy.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\Utilities\DebugExtensions.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.common\Logger\Unity\SlowLoggerUnity.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\WeakReference.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\TypeCache.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\Context\IWaitForFrameworkDestruction.cs" />
@@ -82,11 +87,14 @@
      <Compile Include="Packages\com.sebaslab.svelto.common\Command\IInjectableCommand.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\Utilities\ActionRef.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Dictionaries\SharedSveltoDictionaryNative.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Sentinel.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\Utilities\Console.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\Utilities\FastInvoke.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Dictionaries\SveltoDictionaryNative.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\ObjectPool\IObjectPool.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\ThreadSafeQueue.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\Utilities\TypeToString.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.common\Logger\SimpleLogger.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\DualMemorySupport\MB.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\DualMemorySupport\NB.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\PlatformProfiler\Unity\UnityPlatform.cs" />
@@ -100,14 +108,6 @@
      <Compile Include="Packages\com.sebaslab.svelto.common\Context\IContextNotifer.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\DualMemorySupport\IBufferStrategy.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Dictionaries\FasterDictionary.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\ThreadSafeStack.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.common\Logger\Unity\FastLoggerUnity.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.common\ObjectPool\ThreadSafeObjectPool.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Sentinel.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.common\Logger\Unity\SlowLoggerUnity.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.common\Logger\SimpleLogger.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\ThreadSafeQueue.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.common\Logger\ILogger.cs" />
      <None Include="Packages\com.sebaslab.svelto.common\Svelto.Common.asmdef" />
      <None Include="Packages\com.sebaslab.svelto.common\version.json" />
      <None Include="Packages\com.sebaslab.svelto.common\package.json" />
@@ -361,7 +361,7 @@
      <HintPath>C:\Program Files\Unity\Hub\Editor\2021.2.12f1\Editor\Data\PlaybackEngines\WindowsStandaloneSupport\UnityEditor.WindowsStandalone.Extensions.dll</HintPath>
      </Reference>
      <Reference Include="System.Runtime.CompilerServices.Unsafe">
-     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\PackageCache\org.nuget.system.runtime.compilerservices.unsafe@5.0.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\PackageCache\org.nuget.system.runtime.compilerservices.unsafe@5.0.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
      </Reference>
      <Reference Include="netstandard">
      <HintPath>C:\Program Files\Unity\Hub\Editor\2021.2.12f1\Editor\Data\NetStandard\ref\2.1.0\netstandard.dll</HintPath>
@@ -730,16 +730,16 @@
      <HintPath>C:\Program Files\Unity\Hub\Editor\2021.2.12f1\Editor\Data\NetStandard\compat\2.1.0\shims\netfx\System.Xml.Serialization.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Collections">
-     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Collections.dll</HintPath>
+     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Collections.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Burst">
-     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Burst.dll</HintPath>
+     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Burst.dll</HintPath>
      </Reference>
      <Reference Include="UnityEditor.UI">
-     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\UnityEditor.UI.dll</HintPath>
+     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\UnityEditor.UI.dll</HintPath>
      </Reference>
      <Reference Include="UnityEngine.UI">
-     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\UnityEngine.UI.dll</HintPath>
+     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\UnityEngine.UI.dll</HintPath>
      </Reference>
   </ItemGroup>
   <ItemGroup>

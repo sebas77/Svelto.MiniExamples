@@ -296,34 +296,34 @@
      <HintPath>C:\Program Files\Unity\Hub\Editor\2021.2.12f1\Editor\Data\PlaybackEngines\WindowsStandaloneSupport\UnityEditor.WindowsStandalone.Extensions.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Collections.LowLevel.ILSupport">
-     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\PackageCache\com.unity.collections@0.15.0-preview.21\Unity.Collections.LowLevel.ILSupport\Unity.Collections.LowLevel.ILSupport.dll</HintPath>
+     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\PackageCache\com.unity.collections@0.15.0-preview.21\Unity.Collections.LowLevel.ILSupport\Unity.Collections.LowLevel.ILSupport.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Burst.Unsafe">
-     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\PackageCache\com.unity.burst@1.6.4\Unity.Burst.Unsafe.dll</HintPath>
+     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\PackageCache\com.unity.burst@1.6.4\Unity.Burst.Unsafe.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Burst.Cecil.Mdb">
-     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\PackageCache\com.unity.burst@1.6.4\Unity.Burst.CodeGen\Unity.Burst.Cecil.Mdb.dll</HintPath>
+     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\PackageCache\com.unity.burst@1.6.4\Unity.Burst.CodeGen\Unity.Burst.Cecil.Mdb.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Burst.Cecil.Pdb">
-     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\PackageCache\com.unity.burst@1.6.4\Unity.Burst.CodeGen\Unity.Burst.Cecil.Pdb.dll</HintPath>
+     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\PackageCache\com.unity.burst@1.6.4\Unity.Burst.CodeGen\Unity.Burst.Cecil.Pdb.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Burst.Cecil">
-     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\PackageCache\com.unity.burst@1.6.4\Unity.Burst.CodeGen\Unity.Burst.Cecil.dll</HintPath>
+     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\PackageCache\com.unity.burst@1.6.4\Unity.Burst.CodeGen\Unity.Burst.Cecil.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Burst.Cecil.Rocks">
-     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\PackageCache\com.unity.burst@1.6.4\Unity.Burst.CodeGen\Unity.Burst.Cecil.Rocks.dll</HintPath>
+     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\PackageCache\com.unity.burst@1.6.4\Unity.Burst.CodeGen\Unity.Burst.Cecil.Rocks.dll</HintPath>
      </Reference>
      <Reference Include="Newtonsoft.Json">
-     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\PackageCache\com.unity.nuget.newtonsoft-json@2.0.2\Runtime\Newtonsoft.Json.dll</HintPath>
+     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\PackageCache\com.unity.nuget.newtonsoft-json@2.0.2\Runtime\Newtonsoft.Json.dll</HintPath>
      </Reference>
      <Reference Include="Mono.Cecil">
-     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\PackageCache\com.unity.nuget.mono-cecil@1.10.1\Mono.Cecil.dll</HintPath>
+     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\PackageCache\com.unity.nuget.mono-cecil@1.10.1\Mono.Cecil.dll</HintPath>
      </Reference>
      <Reference Include="System.Runtime.CompilerServices.Unsafe">
-     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\PackageCache\org.nuget.system.runtime.compilerservices.unsafe@5.0.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\PackageCache\org.nuget.system.runtime.compilerservices.unsafe@5.0.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
      </Reference>
      <Reference Include="nunit.framework">
-     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\PackageCache\com.unity.ext.nunit@1.0.6\net35\unity-custom\nunit.framework.dll</HintPath>
+     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\PackageCache\com.unity.ext.nunit@1.0.6\net35\unity-custom\nunit.framework.dll</HintPath>
      </Reference>
      <Reference Include="mscorlib">
      <HintPath>C:\Program Files\Unity\Hub\Editor\2021.2.12f1\Editor\Data\UnityReferenceAssemblies\unity-4.8-api\mscorlib.dll</HintPath>
@@ -926,142 +926,142 @@
      <HintPath>C:\Program Files\Unity\Hub\Editor\2021.2.12f1\Editor\Data\UnityReferenceAssemblies\unity-4.8-api\Facades\netstandard.dll</HintPath>
      </Reference>
      <Reference Include="UnityEditor.TestRunner">
-     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\UnityEditor.TestRunner.dll</HintPath>
+     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\UnityEditor.TestRunner.dll</HintPath>
      </Reference>
      <Reference Include="UnityEngine.TestRunner">
-     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\UnityEngine.TestRunner.dll</HintPath>
+     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\UnityEngine.TestRunner.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Transforms.Hybrid">
-     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Transforms.Hybrid.dll</HintPath>
+     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Transforms.Hybrid.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Properties">
-     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Properties.dll</HintPath>
+     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Properties.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Serialization">
-     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Serialization.dll</HintPath>
+     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Serialization.dll</HintPath>
      </Reference>
      <Reference Include="Unity.RenderPipelines.Universal.Shaders">
-     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.RenderPipelines.Universal.Shaders.dll</HintPath>
+     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.RenderPipelines.Universal.Shaders.dll</HintPath>
      </Reference>
      <Reference Include="UnityEditor.CacheServer">
-     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\UnityEditor.CacheServer.dll</HintPath>
+     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\UnityEditor.CacheServer.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Searcher.Editor">
-     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Searcher.Editor.dll</HintPath>
+     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Searcher.Editor.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Rendering.Hybrid.Editor">
-     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Rendering.Hybrid.Editor.dll</HintPath>
+     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Rendering.Hybrid.Editor.dll</HintPath>
      </Reference>
      <Reference Include="UnityEditor.UI">
-     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\UnityEditor.UI.dll</HintPath>
+     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\UnityEditor.UI.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Rider.Editor">
-     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Rider.Editor.dll</HintPath>
+     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Rider.Editor.dll</HintPath>
      </Reference>
      <Reference Include="Unity.RenderPipelines.Core.ShaderLibrary">
-     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.RenderPipelines.Core.ShaderLibrary.dll</HintPath>
+     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.RenderPipelines.Core.ShaderLibrary.dll</HintPath>
      </Reference>
      <Reference Include="UnityEngine.UI">
-     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\UnityEngine.UI.dll</HintPath>
+     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\UnityEngine.UI.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Entities.Hybrid.EndToEnd.Tests">
-     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Entities.Hybrid.EndToEnd.Tests.dll</HintPath>
+     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Entities.Hybrid.EndToEnd.Tests.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Properties.UI.Editor">
-     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Properties.UI.Editor.dll</HintPath>
+     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Properties.UI.Editor.dll</HintPath>
      </Reference>
      <Reference Include="Unity.ShaderGraph.Editor">
-     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.ShaderGraph.Editor.dll</HintPath>
+     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.ShaderGraph.Editor.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Scenes">
-     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Scenes.dll</HintPath>
+     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Scenes.dll</HintPath>
      </Reference>
      <Reference Include="Unity.RenderPipeline.Universal.ShaderLibrary">
-     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.RenderPipeline.Universal.ShaderLibrary.dll</HintPath>
+     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.RenderPipeline.Universal.ShaderLibrary.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Mathematics.Extensions">
-     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Mathematics.Extensions.dll</HintPath>
+     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Mathematics.Extensions.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Mathematics.Editor">
-     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Mathematics.Editor.dll</HintPath>
+     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Mathematics.Editor.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Transforms">
-     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Transforms.dll</HintPath>
+     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Transforms.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Collections">
-     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Collections.dll</HintPath>
+     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Collections.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Scenes.Editor">
-     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Scenes.Editor.dll</HintPath>
+     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Scenes.Editor.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Mathematics.Extensions.Hybrid">
-     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Mathematics.Extensions.Hybrid.dll</HintPath>
+     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Mathematics.Extensions.Hybrid.dll</HintPath>
      </Reference>
      <Reference Include="Unity.RenderPipelines.Universal.Runtime">
-     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.RenderPipelines.Universal.Runtime.dll</HintPath>
+     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.RenderPipelines.Universal.Runtime.dll</HintPath>
      </Reference>
      <Reference Include="PPv2URPConverters">
-     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\PPv2URPConverters.dll</HintPath>
+     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\PPv2URPConverters.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Entities.Editor">
-     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Entities.Editor.dll</HintPath>
+     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Entities.Editor.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Entities.BuildUtils">
-     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Entities.BuildUtils.dll</HintPath>
+     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Entities.BuildUtils.dll</HintPath>
      </Reference>
      <Reference Include="Unity.VisualStudio.Editor">
-     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.VisualStudio.Editor.dll</HintPath>
+     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.VisualStudio.Editor.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Burst.Editor">
-     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Burst.Editor.dll</HintPath>
+     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Burst.Editor.dll</HintPath>
      </Reference>
      <Reference Include="Unity.RenderPipelines.Core.Runtime">
-     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.RenderPipelines.Core.Runtime.dll</HintPath>
+     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.RenderPipelines.Core.Runtime.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Entities">
-     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Entities.dll</HintPath>
+     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Entities.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Entities.Hybrid">
-     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Entities.Hybrid.dll</HintPath>
+     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Entities.Hybrid.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Jobs.Editor">
-     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Jobs.Editor.dll</HintPath>
+     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Jobs.Editor.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Mathematics">
-     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Mathematics.dll</HintPath>
+     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Mathematics.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Burst">
-     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Burst.dll</HintPath>
+     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Burst.dll</HintPath>
      </Reference>
      <Reference Include="Unity.RenderPipelines.Universal.Editor">
-     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.RenderPipelines.Universal.Editor.dll</HintPath>
+     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.RenderPipelines.Universal.Editor.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Jobs">
-     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Jobs.dll</HintPath>
+     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Jobs.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Deformations">
-     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Deformations.dll</HintPath>
+     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Deformations.dll</HintPath>
      </Reference>
      <Reference Include="Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary">
-     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.dll</HintPath>
+     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Properties.UI">
-     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Properties.UI.dll</HintPath>
+     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Properties.UI.dll</HintPath>
      </Reference>
      <Reference Include="Unity.ScriptableBuildPipeline">
-     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.ScriptableBuildPipeline.dll</HintPath>
+     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.ScriptableBuildPipeline.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Serialization.Editor">
-     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Serialization.Editor.dll</HintPath>
+     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Serialization.Editor.dll</HintPath>
      </Reference>
      <Reference Include="Unity.ScriptableBuildPipeline.Editor">
-     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.ScriptableBuildPipeline.Editor.dll</HintPath>
+     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.ScriptableBuildPipeline.Editor.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Rendering.Hybrid">
-     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Rendering.Hybrid.dll</HintPath>
+     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Rendering.Hybrid.dll</HintPath>
      </Reference>
      <Reference Include="Unity.RenderPipelines.Core.Editor">
-     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.RenderPipelines.Core.Editor.dll</HintPath>
+     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.RenderPipelines.Core.Editor.dll</HintPath>
      </Reference>
   </ItemGroup>
   <ItemGroup>
