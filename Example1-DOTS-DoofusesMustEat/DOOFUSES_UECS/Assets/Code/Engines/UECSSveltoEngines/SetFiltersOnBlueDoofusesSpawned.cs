@@ -67,7 +67,6 @@ namespace Svelto.ECS.MiniExamples.Example1C
             public void Execute(int index)
             {
                 index = (int)(index + start);
-                int countSpecial = 0, count = 0;
 
                 ref var entityComponent = ref collection[index];
 
@@ -76,12 +75,10 @@ namespace Svelto.ECS.MiniExamples.Example1C
                     //This filter already know the group, so it needs only the entityID, plus the position
                     //of the entity in the array.
                     specialBlueFilter.Add(entityIDs[index], (uint)index);
-                    countSpecial++;
                 }
                 else
                 {
                     blueFilter.Add(entityIDs[index], (uint)index);
-                    count++;
                 }
             }
         }
