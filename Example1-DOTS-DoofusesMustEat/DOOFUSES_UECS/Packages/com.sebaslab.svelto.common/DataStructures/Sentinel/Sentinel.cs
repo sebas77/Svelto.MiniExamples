@@ -13,14 +13,14 @@ namespace Svelto.Common.DataStructures
 #if UNITY_COLLECTIONS || UNITY_JOBS || UNITY_BURST
         SharedDictionaryStruct sharedMultithreadTest => SharedDictonary.test.Data;
 #else
-            SharedDictionaryStruct sharedMultithreadTest => SharedDictonary.test;
+        SharedDictionaryStruct sharedMultithreadTest => SharedDictonary.test;
 #endif
-        public static int ReadFlag  = 1;
-        public static int WriteFlag = 2;
+        public static readonly int readFlag  = 1;
+        public static readonly int writeFlag = 2;
 
         internal void Use()
         {
-            if (_flag == WriteFlag)
+            if (_flag == writeFlag)
             {
                 //if the state is found in NOT_USED is fine, all the other cases are not
                 ref var threadSentinel = ref sharedMultithreadTest.GetValueByRef(_ptr)._threadSentinel;
@@ -31,7 +31,7 @@ namespace Svelto.Common.DataStructures
             }
             else
                 //if the state is found in NOT_USED or USED_READ, read is allowed
-            if (_flag == ReadFlag)
+            if (_flag == readFlag)
             {
                 ref var threadSentinel = ref sharedMultithreadTest.GetValueByRef(_ptr)._threadSentinel;
                 if (Interlocked.CompareExchange(ref threadSentinel, USED_READ, NOT_USED) > USED_READ)
@@ -48,7 +48,6 @@ namespace Svelto.Common.DataStructures
         /// <param name="flag"></param>
         public Sentinel(IntPtr ptr, int flag) : this()
         {
-#if ENABLE_THREAD_SAFE_CHECKS
             _ptr  = ptr.ToInt64();
             _flag = flag;
             if (flag != 0)
@@ -56,15 +55,12 @@ namespace Svelto.Common.DataStructures
                 if (sharedMultithreadTest.Exists(ptr) == false)
                     sharedMultithreadTest.Add(_ptr, this);
             }
-#endif
         }
 
         internal void Release()
         {
-#if ENABLE_THREAD_SAFE_CHECKS
             if (_flag >= 1)
                 Volatile.Write(ref sharedMultithreadTest.GetValueByRef(_ptr)._threadSentinel, NOT_USED);
-#endif
         }
 
         /// <summary>
@@ -81,9 +77,15 @@ namespace Svelto.Common.DataStructures
         readonly long _ptr;
         readonly int  _flag;
 
-        const int NOT_USED   = 0;
-        const int USED_READ  = 1;
-        const int USED_WRITE = 2;
+        const  int         NOT_USED   = 0;
+        const  int         USED_READ  = 1;
+        const  int         USED_WRITE = 2;
+
+        //this must return something that decrease the count
+        public Sentinel AsWriter(IntPtr ptr)
+        {
+            return new Sentinel(ptr, writeFlag); //this must count
+        }
     }
 
     public struct TestThreadSafety : IDisposable
@@ -113,8 +115,8 @@ namespace Svelto.Common.DataStructures
             return default;
         }
 
-        public static uint ReadFlag  { get; set; }
-        public static uint WriteFlag { get; set; }
+        public static uint readFlag  { get; set; }
+        public static uint writeFlag { get; set; }
     }
 
     public struct TestThreadSafety : IDisposable

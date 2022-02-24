@@ -162,12 +162,12 @@ namespace Svelto.DataStructures
         //Todo: this logic is not completed yet, WIP
         public NBParallelReader AsReader()
         {
-            return new NBParallelReader(this, new Sentinel(this._ptr, Sentinel.ReadFlag));
+            return new NBParallelReader(this, new Sentinel(this._ptr, Sentinel.readFlag));
         }
 
         public NBParallelWriter AsWriter()
         {
-            return new NBParallelWriter(this, new Sentinel(this._ptr, Sentinel.WriteFlag));
+            return new NBParallelWriter(this, new Sentinel(this._ptr, Sentinel.writeFlag));
         }
 
         public struct NBParallelReader

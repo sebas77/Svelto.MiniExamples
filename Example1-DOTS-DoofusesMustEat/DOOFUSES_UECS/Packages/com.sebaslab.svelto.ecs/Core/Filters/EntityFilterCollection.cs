@@ -1,4 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
+using Svelto.Common.DataStructures;
 using Svelto.DataStructures.Native;
 using Svelto.ECS.Native;
 
@@ -20,6 +21,8 @@ namespace Svelto.ECS
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Add<T>(EGID egid, NativeEGIDMapper<T> mmap) where T : unmanaged, IEntityComponent
         {
+            DBC.ECS.Check.Require(mmap.groupID == egid.groupID, "not compatible NativeEgidMapper used");
+            
             return Add(egid, mmap.GetIndex(egid.entityID));
         }
         
@@ -91,7 +94,7 @@ namespace Svelto.ECS
 
         public struct GroupFilters
         {
-            internal GroupFilters(ExclusiveGroupStruct group)
+            internal GroupFilters(ExclusiveGroupStruct group):this()
             {
                 _entityIDToDenseIndex = new SharedSveltoDictionaryNative<uint, uint>(1);
                 _indexToEntityId      = new SharedSveltoDictionaryNative<uint, uint>(1);
@@ -100,6 +103,7 @@ namespace Svelto.ECS
 
             public bool Add(uint entityId, uint entityIndex)
             {
+                //TODO: when sentinels are finished, we need to add AsWriter here
                 if (_entityIDToDenseIndex.TryAdd(entityId, entityIndex, out _))
                 {
                     _indexToEntityId[entityIndex] = entityId;
@@ -169,6 +173,8 @@ namespace Svelto.ECS
             SharedSveltoDictionaryNative<uint, uint>          _indexToEntityId;
             internal SharedSveltoDictionaryNative<uint, uint> _entityIDToDenseIndex;
             readonly ExclusiveGroupStruct                     _group;
+            
+            readonly Sentinel _threadSentinel;
         }
     }
 }

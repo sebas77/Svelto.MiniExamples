@@ -27,7 +27,9 @@ namespace Svelto.ECS.MiniExamples.Example1C
         public EntitiesDB entitiesDB { get; set; }
         public string     name       => nameof(SpawningDoofusEngine);
 
-        public void Ready() { }
+        public void Ready()
+        {
+        }
 
         /// <summary>
         /// This job will create the Svelto Entities, the DOTS entites are created on reaction inside
@@ -46,7 +48,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
                 _factory = _factory,
                 _entity  = _redCapsule,
                 _random  = new Random(1234567)
-            }.Schedule(MaxNumberOfDoofuses, _jobHandle);
+            }.ScheduleParallel(MaxNumberOfDoofuses, _jobHandle);
 
             //Adding the complexity of the special blue capsule to show how to use filters to handle different
             //entity states in the same group.
@@ -57,13 +59,13 @@ namespace Svelto.ECS.MiniExamples.Example1C
 
             var spawnBlue = new SpawningJob()
             {
-                _group          = exclusiveBuildGroup,
-                _factory        = _factory,
-                _entity         = _blueCapsule,
-                _specialEntity  = _specialBlueCapsule,
-                _random         = new Random(7654321),
-                _useFilters     = true
-            }.Schedule(MaxNumberOfDoofuses, _jobHandle);
+                _group         = exclusiveBuildGroup,
+                _factory       = _factory,
+                _entity        = _blueCapsule,
+                _specialEntity = _specialBlueCapsule,
+                _random        = new Random(7654321),
+                _useFilters    = true
+            }.ScheduleParallel(MaxNumberOfDoofuses, _jobHandle);
 
             //Yeah this shouldn't be solved like this, but I keep it in this way for simplicity sake 
             _done = true;
@@ -79,15 +81,15 @@ namespace Svelto.ECS.MiniExamples.Example1C
         bool _done;
 
         [BurstCompile]
-        struct SpawningJob : IJobFor
+        struct SpawningJob : IJobParallelFor
         {
             internal NativeEntityFactory _factory;
             internal Entity              _entity;
             internal ExclusiveBuildGroup _group;
             internal Random              _random;
 
-            internal Entity                              _specialEntity;
-            internal bool                                _useFilters;
+            internal Entity _specialEntity;
+            internal bool   _useFilters;
 
 #pragma warning disable 649
             //thread index is necessary to build entity in parallel in Svelto ECS

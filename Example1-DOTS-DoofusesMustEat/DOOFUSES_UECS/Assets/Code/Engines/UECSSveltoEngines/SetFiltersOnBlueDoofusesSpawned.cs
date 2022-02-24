@@ -1,6 +1,9 @@
-﻿using System;
+﻿using Svelto.DataStructures;
 using Svelto.ECS.EntityComponents;
+using Svelto.ECS.Internal;
 using Svelto.ECS.SveltoOnDOTS;
+using Unity.Burst;
+using Unity.Jobs;
 
 namespace Svelto.ECS.MiniExamples.Example1C
 {
@@ -16,7 +19,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
         {
             if (groupID == GameGroups.BLUE_DOOFUSES_NOT_EATING.BuildGroup)
             {
-                var sveltoNativeFilters = entitiesDB.GetFilters();
+                EntitiesDB.SveltoFilters sveltoNativeFilters = entitiesDB.GetFilters();
 
                 //We know that if the entity is created in the BLUE_DOOFUSES_NOT_EATING group, 
                 //SpawnPointEntityComponent and PositionEntityComponent elements will be aligned
@@ -31,33 +34,56 @@ namespace Svelto.ECS.MiniExamples.Example1C
                 var specialBlueFilter = specialBlueFilters.GetGroupFilter(groupID);
                 var blueFilter        = blueFilters.GetGroupFilter(groupID);
 
-                var (buffer, entityIDs, _) = collection;
-                
+                var (buffer, entityIDs, count) = collection;
+
+                new SpawningJob()
+                {
+                    blueFilter        = blueFilter,
+                    specialBlueFilter = specialBlueFilter,
+                    entityIDs         = entityIDs,
+                    collection        = buffer,
+                    start             = rangeOfEntities.start
+                }.Run((int)(rangeOfEntities.end - rangeOfEntities.start));
+            }
+        }
+
+        public override string name => nameof(SpawnUnityEntityOnSveltoEntityEngine);
+
+        public void Ready()
+        {
+        }
+
+        public EntitiesDB entitiesDB { get; set; }
+
+        [BurstCompile]
+        struct SpawningJob : IJobFor
+        {
+            public NB<SpawnPointEntityComponent>       collection;
+            public EntityFilterCollection.GroupFilters blueFilter;
+            public EntityFilterCollection.GroupFilters specialBlueFilter;
+            public NativeEntityIDs                     entityIDs;
+            public uint                                start;
+
+            public void Execute(int index)
+            {
+                index = (int)(index + start);
                 int countSpecial = 0, count = 0;
 
-                for (uint i = rangeOfEntities.start; i < rangeOfEntities.end; i++)
-                {
-                    ref var entityComponent = ref buffer[i];
+                ref var entityComponent = ref collection[index];
 
-                    if (entityComponent.isSpecial)
-                    {
-                        //This filter already know the group, so it needs only the entityID, plus the position
-                        //of the entity in the array.
-                        specialBlueFilter.Add(entityIDs[i], i);
-                        countSpecial++;
-                    }
-                    else
-                    {
-                        blueFilter.Add(entityIDs[i], i);
-                        count++;
-                    }
+                if (entityComponent.isSpecial)
+                {
+                    //This filter already know the group, so it needs only the entityID, plus the position
+                    //of the entity in the array.
+                    specialBlueFilter.Add(entityIDs[index], (uint)index);
+                    countSpecial++;
+                }
+                else
+                {
+                    blueFilter.Add(entityIDs[index], (uint)index);
+                    count++;
                 }
             }
         }
-        
-        public override string name => nameof(SpawnUnityEntityOnSveltoEntityEngine);
-        public void Ready() { }
-
-        public EntitiesDB entitiesDB { get; set; }
     }
 }
