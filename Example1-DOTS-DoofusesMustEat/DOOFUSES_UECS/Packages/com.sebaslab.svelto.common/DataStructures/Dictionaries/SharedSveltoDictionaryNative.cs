@@ -64,6 +64,12 @@ namespace Svelto.DataStructures.Native
         {
             dictionary.Add(key, in value);
         }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool TryAdd(TKey key, in TValue value, out uint index)
+        {
+            return dictionary.TryAdd(key, in value, out index);
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Set(TKey key, in TValue value)

@@ -1,4 +1,5 @@
-﻿using Svelto.Common;
+﻿using System.Threading;
+using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.DataStructures.Native;
 using Svelto.ECS.DataStructures;
@@ -8,7 +9,20 @@ namespace Svelto.ECS
 {
     public partial class EnginesRoot
     {
-        internal static long CombineFilterIDs<T>(int filterID) => (long)filterID << 32 | (uint)TypeHash<T>.hash;
+        static class TypeCounter<T>
+        {
+            public static int id;
+
+            static TypeCounter()
+            {
+                Interlocked.Increment(ref id);
+                
+                DBC.ECS.Check.Ensure(id < ushort.MaxValue, "too many types registered, HOW :)");
+            }
+        }
+        
+        internal static long CombineFilterIDs<T>(EntitiesDB.SveltoFilters.CombinedFilterID combinedFilterID) => 
+            (long)combinedFilterID.id  | (uint)TypeCounter<T>.id;
 
         void InitFilters()
         {
@@ -26,6 +40,11 @@ namespace Svelto.ECS
             }
 
             foreach (var filter in _persistentEntityFilters)
+            {
+                filter.value.Dispose();
+            }
+            
+            foreach (var filter in _indicesOfPersistentFiltersUsedByThisComponent)
             {
                 filter.value.Dispose();
             }

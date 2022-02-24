@@ -54,7 +54,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
                 }
             }
         }
-
+        
         public override string name => nameof(SpawnUnityEntityOnSveltoEntityEngine);
         public void Ready() { }
 

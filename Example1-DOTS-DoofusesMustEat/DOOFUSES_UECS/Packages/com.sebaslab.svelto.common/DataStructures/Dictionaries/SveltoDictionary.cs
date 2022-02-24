@@ -118,6 +118,17 @@ namespace Svelto.DataStructures
 
             _values[index] = value;
         }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool TryAdd(TKey key, in TValue value, out uint index)
+        {
+            var ret = AddValue(key, out index);
+
+            if (ret == true)
+                _values[index] = value;
+
+            return ret;
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Set(TKey key, in TValue value)

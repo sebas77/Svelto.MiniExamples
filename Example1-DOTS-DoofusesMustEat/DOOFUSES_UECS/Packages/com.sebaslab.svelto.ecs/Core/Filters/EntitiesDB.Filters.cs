@@ -1,5 +1,6 @@
 ﻿using Svelto.Common;
 using Svelto.DataStructures;
+using Svelto.DataStructures.Native;
 using Svelto.ECS.DataStructures;
 
 namespace Svelto.ECS
@@ -12,15 +13,52 @@ namespace Svelto.ECS
         }
 
         /// <summary>
-        /// I want to write this in such a way it can be passed and used inside a Unity Job
+        /// this whole structure is usable inside DOTS JOBS and BURST
         /// </summary>
-        public readonly ref struct SveltoFilters
+        public readonly struct SveltoFilters
         {
-            readonly EnginesRoot          _enginesRoot;
+            public struct CombinedFilterID
+            {
+                public readonly long id;
+
+                public CombinedFilterID(int filterID, ContextID contextID)
+                {
+                    id = (long)filterID << 32 | (uint)contextID.id << 16;
+                }
+            }
             
+            public struct ContextID
+            {
+                public readonly uint id;
+
+                public ContextID(uint id)
+                {
+                    DBC.ECS.Check.Require(id < ushort.MaxValue, "too many types registered, HOW :)");
+
+                    this.id = id;
+                }
+            }
+
+            public static ContextID GetNewContextID()
+            {
+                return new ContextID(uniqueContextID++);
+            }
+
+            static uint uniqueContextID = 1;
+
+            readonly SharedSveltoDictionaryNative<long, EntityFilterCollection> _persistentEntityFilters;
+
+            readonly SharedSveltoDictionaryNative<NativeRefWrapperType, NativeDynamicArrayCast<int>>
+                _indicesOfPersistentFiltersUsedByThisComponent;
+
+            readonly SharedSveltoDictionaryNative<long, EntityFilterCollection> _transientEntityFilters;
+
             public SveltoFilters(EnginesRoot enginesRoot)
             {
-                _enginesRoot = enginesRoot;
+                _persistentEntityFilters = enginesRoot._persistentEntityFilters;
+                _indicesOfPersistentFiltersUsedByThisComponent =
+                    enginesRoot._indicesOfPersistentFiltersUsedByThisComponent;
+                _transientEntityFilters = enginesRoot._transientEntityFilters;
             }
 
             /// <summary>
@@ -30,49 +68,46 @@ namespace Svelto.ECS
             /// </summary>
             /// <typeparam name="T"></typeparam>
             /// <returns></returns>
-            public ref EntityFilterCollection GetOrCreatePersistentFilter<T>(int filterID) 
+            public ref EntityFilterCollection GetOrCreatePersistentFilter<T>(CombinedFilterID filterID)
                 where T : unmanaged, IEntityComponent
             {
                 long combineFilterIDs                   = EnginesRoot.CombineFilterIDs<T>(filterID);
-                var  enginesRootPersistentEntityFilters = _enginesRoot._persistentEntityFilters;
-                
+                var  enginesRootPersistentEntityFilters = _persistentEntityFilters;
+
                 if (enginesRootPersistentEntityFilters.TryFindIndex(combineFilterIDs, out var index) == true)
                     return ref enginesRootPersistentEntityFilters.GetDirectValueByRef(index);
-                
+
                 var typeRef          = TypeRefWrapper<T>.wrapper;
                 var filterCollection = EntityFilterCollection.Create();
 
-                enginesRootPersistentEntityFilters.Add(combineFilterIDs,
-                    filterCollection);
+                enginesRootPersistentEntityFilters.Add(combineFilterIDs, filterCollection);
 
-                _enginesRoot._indicesOfPersistentFiltersUsedByThisComponent
-                   .GetOrAdd(new NativeRefWrapperType(typeRef),
-                        () => new NativeDynamicArrayCast<int>(1, Allocator.Persistent))
-                   .Add(enginesRootPersistentEntityFilters.count - 1);
+                var lastIndex = enginesRootPersistentEntityFilters.count - 1;
 
-                return ref enginesRootPersistentEntityFilters.GetDirectValueByRef(
-                    (uint)(enginesRootPersistentEntityFilters.count - 1));
+                _indicesOfPersistentFiltersUsedByThisComponent.GetOrAdd(new NativeRefWrapperType(typeRef),
+                    () => new NativeDynamicArrayCast<int>(1, Allocator.Persistent)).Add(lastIndex);
+
+                return ref enginesRootPersistentEntityFilters.GetDirectValueByRef((uint)lastIndex);
             }
-            
+
             /// <summary>
             /// Creates a transient filter. Transient filters are deleted after each submission
             /// </summary>
             /// <typeparam name="T"></typeparam>
             /// <returns></returns>
-            public ref EntityFilterCollection GetOrCreateTransientFilter<T>(int filterID)
+            public ref EntityFilterCollection GetOrCreateTransientFilter<T>(CombinedFilterID filterID)
                 where T : unmanaged, IEntityComponent
             {
                 var combineFilterIDs                  = EnginesRoot.CombineFilterIDs<T>(filterID);
-                var enginesRootTransientEntityFilters = _enginesRoot._transientEntityFilters;
-                
+                var enginesRootTransientEntityFilters = _transientEntityFilters;
+
                 if (enginesRootTransientEntityFilters.TryFindIndex(combineFilterIDs, out var index))
                     return ref enginesRootTransientEntityFilters.GetDirectValueByRef(index);
-                
+
                 var filterCollection = EntityFilterCollection.Create();
 
-                enginesRootTransientEntityFilters.Add(combineFilterIDs,
-                    filterCollection);
-                
+                enginesRootTransientEntityFilters.Add(combineFilterIDs, filterCollection);
+
                 return ref enginesRootTransientEntityFilters.GetDirectValueByRef(
                     (uint)(enginesRootTransientEntityFilters.count - 1));
             }

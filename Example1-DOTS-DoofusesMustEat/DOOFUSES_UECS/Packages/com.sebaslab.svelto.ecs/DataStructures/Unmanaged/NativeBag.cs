@@ -31,14 +31,10 @@ namespace Svelto.ECS.DataStructures
                 {
                     BasicTests();
                     
-#if ENABLE_DEBUG_CHECKS                    
                     using (_threadSentinel.TestThreadSafety())
                     {
-#endif                    
                         return _queue->size;
-#if ENABLE_DEBUG_CHECKS                        
                     }
-#endif                    
                 }
             }
         }
@@ -52,14 +48,10 @@ namespace Svelto.ECS.DataStructures
                 {
                     BasicTests();
                     
-#if ENABLE_DEBUG_CHECKS                    
                     using (_threadSentinel.TestThreadSafety())
                     {
-#endif                    
                         return _queue->capacity;
-#if ENABLE_DEBUG_CHECKS                        
                     }
-#endif                    
                 }
             }
         }
@@ -82,15 +74,11 @@ namespace Svelto.ECS.DataStructures
             {
                 BasicTests();
 
-#if ENABLE_DEBUG_CHECKS                
                 using (_threadSentinel.TestThreadSafety())
                 {
-#endif
                     if (_queue == null || _queue->ptr == null)
                         return true;
-#if ENABLE_DEBUG_CHECKS                    
                 }
-#endif
             }
 
             return count == 0;
@@ -103,17 +91,12 @@ namespace Svelto.ECS.DataStructures
             {
                 BasicTests();
 
-#if ENABLE_DEBUG_CHECKS
                 using (_threadSentinel.TestThreadSafety())
                 {
-#endif
                     _queue->Dispose();
                     MemoryUtilities.Free((IntPtr)_queue, _queue->allocator);
                     _queue = null;
-
-#if ENABLE_DEBUG_CHECKS
                 }
-#endif
             }
         }
 
@@ -128,19 +111,15 @@ namespace Svelto.ECS.DataStructures
 
                 var sizeOf = MemoryUtilities.SizeOf<T>();
                 
-#if ENABLE_DEBUG_CHECKS                
                 using (_threadSentinel.TestThreadSafety())
                 {
-#endif
                     if (_queue->availableSpace - sizeOf < 0)
                     {
                         _queue->Grow<T>();
                     }
 
                     return ref _queue->Reserve<T>(out index);
-#if ENABLE_DEBUG_CHECKS                    
                 }
-#endif
             }
         }
 
@@ -152,10 +131,8 @@ namespace Svelto.ECS.DataStructures
             {
                 BasicTests();
 
-#if ENABLE_DEBUG_CHECKS
                 using (_threadSentinel.TestThreadSafety())
                 {
-#endif
                     var sizeOf = MemoryUtilities.SizeOf<T>();
                     if (_queue->availableSpace - sizeOf < 0)
                     {
@@ -163,9 +140,7 @@ namespace Svelto.ECS.DataStructures
                     }
 
                     _queue->Enqueue(item);
-#if ENABLE_DEBUG_CHECKS                    
                 }
-#endif
             }
         }
 
@@ -176,14 +151,10 @@ namespace Svelto.ECS.DataStructures
             {
                 BasicTests();
 
-#if ENABLE_DEBUG_CHECKS
                 using (_threadSentinel.TestThreadSafety())
                 {
-#endif
                     _queue->Clear();
-#if ENABLE_DEBUG_CHECKS                    
                 }
-#endif
             }
         }
 
@@ -193,14 +164,10 @@ namespace Svelto.ECS.DataStructures
             {
                 BasicTests();
 
-#if ENABLE_DEBUG_CHECKS
                 using (_threadSentinel.TestThreadSafety())
                 {
-#endif
                     return _queue->Dequeue<T>();
-#if ENABLE_DEBUG_CHECKS                    
                 }
-#endif
             }
         }
 
@@ -210,14 +177,10 @@ namespace Svelto.ECS.DataStructures
             {
                 BasicTests();
 
-#if ENABLE_DEBUG_CHECKS
                 using (_threadSentinel.TestThreadSafety())
                 {
-#endif
                     return ref _queue->AccessReserved<T>(reservedIndex);
-#if ENABLE_DEBUG_CHECKS                    
                 }
-#endif
             }
         }
 
