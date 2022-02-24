@@ -6,8 +6,13 @@ using Svelto.Utilities;
 
 namespace Svelto.DataStructures
 {
+    interface IGetHasCodeEquatable<T>: IEquatable<T>
+    {
+        int GetHashCode();
+    }
+    
     sealed class SveltoDictionaryDebugProxy<TKey, TValue, TKeyStrategy, TValueStrategy, TBucketStrategy>
-        where TKey : struct, IEquatable<TKey>
+        where TKey : struct, IGetHasCodeEquatable<TKey>
         where TKeyStrategy : struct, IBufferStrategy<SveltoDictionaryNode<TKey>>
         where TValueStrategy : struct, IBufferStrategy<TValue>
         where TBucketStrategy : struct, IBufferStrategy<int>
