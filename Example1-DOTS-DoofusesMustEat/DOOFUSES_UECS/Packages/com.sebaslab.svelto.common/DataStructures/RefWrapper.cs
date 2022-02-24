@@ -8,7 +8,7 @@ namespace Svelto.DataStructures
     {
         public static RefWrapperType wrapper = new RefWrapperType(typeof(T));        
     }
-
+    
     [DebuggerDisplay("{_type}")]
     public readonly struct RefWrapperType: IEquatable<RefWrapperType> 
     {

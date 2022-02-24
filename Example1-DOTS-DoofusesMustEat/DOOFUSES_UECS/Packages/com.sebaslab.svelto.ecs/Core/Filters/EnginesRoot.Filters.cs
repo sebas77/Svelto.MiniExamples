@@ -8,20 +8,20 @@ namespace Svelto.ECS
 {
     public partial class EnginesRoot
     {
-        static class TypeCounter<T>
+        class TypeCounter<T>
         {
-            public static int id;
+            internal static readonly SharedStatic<int, TypeCounter<T>> id = new SharedStatic<int,  TypeCounter<T>>();
 
             static TypeCounter()
             {
-                Interlocked.Increment(ref id);
+                Interlocked.Increment(ref id.Data);
                 
-                DBC.ECS.Check.Ensure(id < ushort.MaxValue, "too many types registered, HOW :)");
+                DBC.ECS.Check.Ensure(id.Data < ushort.MaxValue, "too many types registered, HOW :)");
             }
         }
         
         internal static long CombineFilterIDs<T>(EntitiesDB.SveltoFilters.CombinedFilterID combinedFilterID) => 
-            (long)combinedFilterID.id  | (uint)TypeCounter<T>.id;
+            (long)combinedFilterID.id  | (uint)TypeCounter<T>.id.Data;
 
         void InitFilters()
         {

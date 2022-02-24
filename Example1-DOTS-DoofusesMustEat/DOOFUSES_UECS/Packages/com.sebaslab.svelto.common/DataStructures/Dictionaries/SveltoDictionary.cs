@@ -1,18 +1,15 @@
 using System;
 using System.Diagnostics;
+using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using Svelto.Common;
 using Svelto.Utilities;
 
 namespace Svelto.DataStructures
 {
-    interface IGetHasCodeEquatable<T>: IEquatable<T>
-    {
-        int GetHashCode();
-    }
-    
     sealed class SveltoDictionaryDebugProxy<TKey, TValue, TKeyStrategy, TValueStrategy, TBucketStrategy>
-        where TKey : struct, IGetHasCodeEquatable<TKey>
+        where TKey : struct, IEquatable<TKey>
         where TKeyStrategy : struct, IBufferStrategy<SveltoDictionaryNode<TKey>>
         where TValueStrategy : struct, IBufferStrategy<TValue>
         where TBucketStrategy : struct, IBufferStrategy<int>
@@ -62,6 +59,18 @@ namespace Svelto.DataStructures
         where TValueStrategy : struct, IBufferStrategy<TValue>
         where TBucketStrategy : struct, IBufferStrategy<int>
     {
+        static SveltoDictionary()
+        {
+            try
+            {
+                if (typeof(TKey).GetMethod("GetHashCode", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly) == null)
+                    Svelto.Console.LogWarning(typeof(TKey).Name + " does not implement GetHashCode -> This will cause unwated allocations (boxing)");
+            }
+            catch(AmbiguousMatchException)
+            {
+            }
+        }
+
         public SveltoDictionary(uint size, Allocator allocator) : this()
         {
             //AllocationStrategy must be passed external for TValue because SveltoDictionary doesn't have struct

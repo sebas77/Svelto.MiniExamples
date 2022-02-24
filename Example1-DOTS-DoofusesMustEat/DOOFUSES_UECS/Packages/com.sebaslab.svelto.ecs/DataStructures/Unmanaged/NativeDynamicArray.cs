@@ -509,7 +509,7 @@ namespace Svelto.ECS.DataStructures
         int _hashType;
 #endif
         
-        unsafe Sentinel _threadSentinel;
+        Sentinel _threadSentinel;
 
         Allocator _allocator;
     }

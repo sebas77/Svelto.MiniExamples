@@ -27,7 +27,7 @@ namespace Svelto.ECS
                     id = (long)filterID << 32 | (uint)contextID.id << 16;
                 }
             }
-            
+
             public struct ContextID
             {
                 public readonly uint id;
@@ -42,10 +42,10 @@ namespace Svelto.ECS
 
             public static ContextID GetNewContextID()
             {
-                return new ContextID((uint)Interlocked.Increment(ref uniqueContextID));
+                return new ContextID((uint)Interlocked.Increment(ref uniqueContextID.Data));
             }
 
-            static int uniqueContextID = 1;
+            static readonly SharedStatic<int, SveltoFilters> uniqueContextID = new SharedStatic<int, SveltoFilters>(1);
 
             readonly SharedSveltoDictionaryNative<long, EntityFilterCollection> _persistentEntityFilters;
 
@@ -61,6 +61,38 @@ namespace Svelto.ECS
                     enginesRoot._indicesOfPersistentFiltersUsedByThisComponent;
                 _transientEntityFilters = enginesRoot._transientEntityFilters;
             }
+
+#if UNITY_BURST            
+            public ref EntityFilterCollection GetOrCreatePersistentFilter<T>(CombinedFilterID filterID,
+                NativeRefWrapperType typeRef) where T : unmanaged, IEntityComponent
+            {
+                long combineFilterIDs                   = EnginesRoot.CombineFilterIDs<T>(filterID);
+                var  enginesRootPersistentEntityFilters = _persistentEntityFilters;
+
+                if (enginesRootPersistentEntityFilters.TryFindIndex(combineFilterIDs, out var index) == true)
+                    return ref enginesRootPersistentEntityFilters.GetDirectValueByRef(index);
+
+                var filterCollection = EntityFilterCollection.Create();
+
+                enginesRootPersistentEntityFilters.Add(combineFilterIDs, filterCollection);
+
+                var lastIndex = enginesRootPersistentEntityFilters.count - 1;
+
+                if (_indicesOfPersistentFiltersUsedByThisComponent.TryFindIndex(typeRef, out var getIndex) == false)
+                {
+                    var newArray = new NativeDynamicArrayCast<int>(1, Allocator.Persistent);
+                    newArray.Add(lastIndex);
+                    _indicesOfPersistentFiltersUsedByThisComponent.Add(typeRef, newArray);
+                }
+                else
+                {
+                    ref var array = ref _indicesOfPersistentFiltersUsedByThisComponent.GetDirectValueByRef(getIndex);
+                    array.Add(lastIndex);
+                }
+
+                return ref enginesRootPersistentEntityFilters.GetDirectValueByRef((uint)lastIndex);
+            }
+#endif            
 
             /// <summary>
             /// Create a persistent filter. Persistent filters are not deleted after each submission,
