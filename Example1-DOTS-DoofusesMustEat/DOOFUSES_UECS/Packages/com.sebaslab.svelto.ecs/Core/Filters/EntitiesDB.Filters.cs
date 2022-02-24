@@ -1,4 +1,5 @@
-﻿using Svelto.Common;
+﻿using System.Threading;
+using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.DataStructures.Native;
 using Svelto.ECS.DataStructures;
@@ -41,10 +42,10 @@ namespace Svelto.ECS
 
             public static ContextID GetNewContextID()
             {
-                return new ContextID(uniqueContextID++);
+                return new ContextID((uint)Interlocked.Increment(ref uniqueContextID));
             }
 
-            static uint uniqueContextID = 1;
+            static int uniqueContextID = 1;
 
             readonly SharedSveltoDictionaryNative<long, EntityFilterCollection> _persistentEntityFilters;
 
