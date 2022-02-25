@@ -168,7 +168,6 @@ namespace Svelto.DataStructures
             //Buckets cannot be FastCleared because it's important that the values are reset to 0
             _buckets.Clear();
 
-            //todo: replace this, but burst doesn't like any other solution
             if (IsUnmanaged() == false)
             {
                 _values.Clear();

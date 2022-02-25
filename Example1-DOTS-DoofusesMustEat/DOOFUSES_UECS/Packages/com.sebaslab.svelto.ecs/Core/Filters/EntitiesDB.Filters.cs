@@ -62,7 +62,6 @@ namespace Svelto.ECS
                 _transientEntityFilters = enginesRoot._transientEntityFilters;
             }
 
-#if UNITY_BURST            
             public ref EntityFilterCollection GetOrCreatePersistentFilter<T>(CombinedFilterID filterID,
                 NativeRefWrapperType typeRef) where T : unmanaged, IEntityComponent
             {
@@ -92,7 +91,6 @@ namespace Svelto.ECS
 
                 return ref enginesRootPersistentEntityFilters.GetDirectValueByRef((uint)lastIndex);
             }
-#endif            
 
             /// <summary>
             /// Create a persistent filter. Persistent filters are not deleted after each submission,

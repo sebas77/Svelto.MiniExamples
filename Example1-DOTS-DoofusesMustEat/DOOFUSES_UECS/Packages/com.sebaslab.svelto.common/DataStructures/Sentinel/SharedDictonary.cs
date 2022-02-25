@@ -1,4 +1,7 @@
-﻿namespace Svelto.Common.DataStructures
+﻿using System.Runtime.CompilerServices;
+using Svelto.DataStructures;
+
+namespace Svelto.Common.DataStructures
 {
     public static class SharedDictonary
     {

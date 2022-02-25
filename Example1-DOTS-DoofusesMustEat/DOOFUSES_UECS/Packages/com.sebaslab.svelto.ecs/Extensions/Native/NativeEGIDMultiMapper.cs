@@ -42,7 +42,7 @@ namespace Svelto.ECS.Native
             return ref sveltoDictionary.GetValueByRef(entity.entityID);
         }
         
-        internal uint GetIndex(EGID entity)
+        public uint GetIndex(EGID entity)
         {
 #if DEBUG && !PROFILE_SVELTO
             if (Exists(entity) == false)
