@@ -3,8 +3,7 @@
 namespace Svelto.ECS.Extensions.Unity
 {
     public interface IUseMultipleResourceManagerImplementor: IImplementor
-
     {
-    public IECSManager[] resourceManager { set; }
+         IECSManager[] resourceManager { set; }
     }
 }

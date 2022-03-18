@@ -16,7 +16,7 @@ namespace Svelto.ECS.Hybrid
     {
         public ValueReference(T obj) { _pointer = GCHandle.Alloc(obj, GCHandleType.Normal); }
 
-        public T ConvertAndDispose<W>(W implementer) where W:notnull, IImplementor 
+        public T ConvertAndDispose<W>(W implementer) where W:IImplementor 
         {
             var pointerTarget = _pointer.Target;
             _pointer.Free();

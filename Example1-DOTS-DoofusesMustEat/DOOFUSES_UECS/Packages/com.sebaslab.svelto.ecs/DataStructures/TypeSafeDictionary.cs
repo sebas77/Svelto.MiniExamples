@@ -26,11 +26,17 @@ namespace Svelto.ECS.Internal
         readonly NB<SveltoDictionaryNode<uint>> _native;
     }
 
-    public struct ManagedEntityIDs
+    public readonly struct ManagedEntityIDs
     {
         public ManagedEntityIDs(MB<SveltoDictionaryNode<uint>> managed)
         {
+            _managed = managed;
         }
+
+        public uint this[uint index] => _managed[index].key;
+        public uint this[int index] => _managed[index].key;
+
+        readonly MB<SveltoDictionaryNode<uint>> _managed;
     }
 
     public readonly struct EntityIDs
@@ -226,17 +232,18 @@ namespace Svelto.ECS.Internal
         public void AddEntitiesToDictionary(ITypeSafeDictionary toDictionary, ExclusiveGroupStruct groupId,
             in EnginesRoot.LocatorMap entityLocator)
         {
-            static void SharedAddEntitiesFromDictionary<Strategy1, Strategy2, Strategy3>(
+            void SharedAddEntitiesFromDictionary<Strategy1, Strategy2, Strategy3>(
                 in SveltoDictionary<uint, TValue, Strategy1, Strategy2, Strategy3> fromDictionary,
-                ITypeSafeDictionary<TValue> toDictionary, in EnginesRoot.LocatorMap entityLocator,
+                ITypeSafeDictionary<TValue> toDic, in EnginesRoot.LocatorMap locator,
                 ExclusiveGroupStruct toGroupID) where Strategy1 : struct, IBufferStrategy<SveltoDictionaryNode<uint>>
                 where Strategy2 : struct, IBufferStrategy<TValue>
                 where Strategy3 : struct, IBufferStrategy<int>
             {
                 foreach (var tuple in fromDictionary)
                 {
-                    var egid = new EGID(tuple.key, toGroupID);
 #if SLOW_SVELTO_SUBMISSION
+                    var egid = new EGID(tuple.key, toGroupID);
+
                     if (_hasEgid)
                         SetEGIDWithoutBoxing<TValue>.SetIDWithoutBoxing(ref tuple.value, egid);
 
@@ -247,7 +254,7 @@ namespace Svelto.ECS.Internal
 #endif
                     try
                     {
-                        toDictionary.Add(tuple.key, tuple.value);
+                        toDic.Add(tuple.key, tuple.value);
                     }
                     catch (Exception e)
                     {
@@ -258,7 +265,7 @@ namespace Svelto.ECS.Internal
 
                         throw;
                     }
-#if PARANOID_CHECK
+#if PARANOID_CHECK && SLOW_SVELTO_SUBMISSION
                         DBC.ECS.Check.Ensure(_hasEgid == false || ((INeedEGID)fromDictionary[egid.entityID]).ID == egid, "impossible situation happened during swap");
 #endif
                 }
@@ -377,7 +384,7 @@ namespace Svelto.ECS.Internal
         {
             void AgnosticMethod<Strategy1, Strategy2, Strategy3>(
                 ref SveltoDictionary<uint, TValue, Strategy1, Strategy2, Strategy3> fromDictionary,
-                ITypeSafeDictionary<TValue> toDictionary, in PlatformProfiler sampler)
+                ITypeSafeDictionary<TValue> todic, in PlatformProfiler sampler)
                 where Strategy1 : struct, IBufferStrategy<SveltoDictionaryNode<uint>>
                 where Strategy2 : struct, IBufferStrategy<TValue>
                 where Strategy3 : struct, IBufferStrategy<int>
@@ -393,7 +400,7 @@ namespace Svelto.ECS.Internal
                         try
                         {
                             var     key    = dictionaryKeyEnumerator[i].key;
-                            ref var entity = ref toDictionary.GetValueByRef(key);
+                            ref var entity = ref todic.GetValueByRef(key);
                             var     egid   = new EGID(key, toGroup);
                             //get all the engines linked to TValue
                             for (var j = 0; j < entityComponentsEngines.count; j++)
@@ -598,7 +605,7 @@ namespace Svelto.ECS.Internal
         {
             void AgnosticMethod<Strategy1, Strategy2, Strategy3>(
                 ref SveltoDictionary<uint, TValue, Strategy1, Strategy2, Strategy3> fromDictionary,
-                ITypeSafeDictionary<TValue> toDictionary, in PlatformProfiler profiler)
+                ITypeSafeDictionary<TValue> toDic, in PlatformProfiler sampler)
                 where Strategy1 : struct, IBufferStrategy<SveltoDictionaryNode<uint>>
                 where Strategy2 : struct, IBufferStrategy<TValue>
                 where Strategy3 : struct, IBufferStrategy<int>
@@ -614,11 +621,11 @@ namespace Svelto.ECS.Internal
                     {
                         foreach (var value in fromDictionary)
                         {
-                            ref var entityComponent = ref toDictionary.GetValueByRef(value.key);
+                            ref var entityComponent = ref toDic.GetValueByRef(value.key);
                             var     newEgid         = new EGID(value.key, toGroup);
 
 
-                            using (profiler.Sample(reactiveEnginesSwapPerType[i].name))
+                            using (sampler.Sample(reactiveEnginesSwapPerType[i].name))
                             {
                                 ((IReactOnSwap<TValue>)reactiveEnginesSwapPerType[i].engine).MovedTo(
                                     ref entityComponent, fromGroup, newEgid);
@@ -641,7 +648,7 @@ namespace Svelto.ECS.Internal
                     for (var i = 0; i < enginesCount; i++)
                         try
                         {
-                            using (profiler.Sample(reactiveEnginesRemoveExPerType[i].name))
+                            using (sampler.Sample(reactiveEnginesRemoveExPerType[i].name))
                             {
                                 ((IReactOnSwapEx<TValue>)reactiveEnginesRemoveExPerType[i].engine).MovedTo(
                                     (0, (uint)count),
@@ -675,7 +682,7 @@ namespace Svelto.ECS.Internal
         {
             void AgnosticMethod<Strategy1, Strategy2, Strategy3>(
                 ref SveltoDictionary<uint, TValue, Strategy1, Strategy2, Strategy3> fromDictionary,
-                in PlatformProfiler profiler) where Strategy1 : struct, IBufferStrategy<SveltoDictionaryNode<uint>>
+                in PlatformProfiler sampler) where Strategy1 : struct, IBufferStrategy<SveltoDictionaryNode<uint>>
                 where Strategy2 : struct, IBufferStrategy<TValue>
                 where Strategy3 : struct, IBufferStrategy<int>
             {
@@ -692,7 +699,7 @@ namespace Svelto.ECS.Internal
                                 var     egid   = new EGID(value.key, group);
 
 
-                                using (profiler.Sample(reactiveEnginesRemovePerType[i].name))
+                                using (sampler.Sample(reactiveEnginesRemovePerType[i].name))
                                 {
                                     ((IReactOnRemove<TValue>)reactiveEnginesRemovePerType[i].engine).Remove(ref entity,
                                         egid);
@@ -717,7 +724,7 @@ namespace Svelto.ECS.Internal
                     for (var i = 0; i < enginesCount; i++)
                         try
                         {
-                            using (profiler.Sample(reactiveEnginesRemoveExPerType[i].name))
+                            using (sampler.Sample(reactiveEnginesRemoveExPerType[i].name))
                             {
                                 ((IReactOnRemoveEx<TValue>)reactiveEnginesRemoveExPerType[i].engine).Remove(
                                     (0, (uint)count),
@@ -745,26 +752,26 @@ namespace Svelto.ECS.Internal
             FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<IReactOnDispose>>> engines,
             ExclusiveGroupStruct group, in PlatformProfiler profiler)
         {
-            static void ExecuteEnginesDisposeEntityCallback<Strategy1, Strategy2, Strategy3>(
+            void ExecuteEnginesDisposeEntityCallback<Strategy1, Strategy2, Strategy3>(
                 ref SveltoDictionary<uint, TValue, Strategy1, Strategy2, Strategy3> fromDictionary,
-                FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<IReactOnDispose>>> engines,
-                in PlatformProfiler profiler, ExclusiveGroupStruct @group)
+                FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<IReactOnDispose>>> allEngines,
+                in PlatformProfiler sampler, ExclusiveGroupStruct inGroup)
                 where Strategy1 : struct, IBufferStrategy<SveltoDictionaryNode<uint>>
                 where Strategy2 : struct, IBufferStrategy<TValue>
                 where Strategy3 : struct, IBufferStrategy<int>
             {
-                if (engines.TryGetValue(new RefWrapperType(_type), out var entityComponentsEngines) == false)
+                if (allEngines.TryGetValue(new RefWrapperType(_type), out var entityComponentsEngines) == false)
                     return;
 
                 for (var i = 0; i < entityComponentsEngines.count; i++)
                     try
                     {
-                        using (profiler.Sample(entityComponentsEngines[i].name))
+                        using (sampler.Sample(entityComponentsEngines[i].name))
                         {
                             foreach (var value in fromDictionary)
                             {
                                 ref var entity        = ref value.value;
-                                var     egid          = new EGID(value.key, @group);
+                                var     egid          = new EGID(value.key, inGroup);
                                 var     reactOnRemove = ((IReactOnDispose<TValue>)entityComponentsEngines[i].engine);
                                 reactOnRemove.Remove(ref entity, egid);
                             }
@@ -784,7 +791,6 @@ namespace Svelto.ECS.Internal
             else
                 ExecuteEnginesDisposeEntityCallback(ref implMgd, engines, in profiler, @group);
         }
-
 
         SveltoDictionary<uint, TValue, ManagedStrategy<SveltoDictionaryNode<uint>>, ManagedStrategy<TValue>,
             ManagedStrategy<int>> implMgd;

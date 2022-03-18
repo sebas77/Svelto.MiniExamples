@@ -1,22 +1,23 @@
 using System;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using Svelto.Common;
 
 namespace Svelto.ECS.DataStructures
 {
-    public struct SharedNative<T> : IDisposable where T : unmanaged, IDisposable
+    public struct SharedNative<T> : IDisposable where T : struct, IDisposable
     {
 #if UNITY_COLLECTIONS || (UNITY_JOBS || UNITY_BURST)
         [global::Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction]
 #endif        
-        unsafe T* ptr;
+        unsafe IntPtr ptr;
 
         public SharedNative(in T value)
         {
             unsafe
             {
-                ptr  = (T*)MemoryUtilities.Alloc<T>(1, Allocator.Persistent);
-                *ptr = value;
+                ptr  = MemoryUtilities.Alloc<T>(1, Allocator.Persistent);
+                Unsafe.Write((void*)ptr, value);
             }
         }
 
@@ -24,10 +25,10 @@ namespace Svelto.ECS.DataStructures
         {
             unsafe
             {
-                ptr->Dispose();
+                Unsafe.AsRef<T>((void*)ptr).Dispose();
                 
                 MemoryUtilities.Free((IntPtr)ptr, Allocator.Persistent);
-                ptr = (T*)IntPtr.Zero;
+                ptr = IntPtr.Zero;
             }
         }
 
@@ -38,8 +39,8 @@ namespace Svelto.ECS.DataStructures
                 unsafe
                 {
                     DBC.ECS.Check.Require(ptr != null, "SharedNative has not been initialized");
-                    
-                    return ref *ptr;
+
+                    return ref Unsafe.AsRef<T>((void*)ptr);
                 }
             }
         }

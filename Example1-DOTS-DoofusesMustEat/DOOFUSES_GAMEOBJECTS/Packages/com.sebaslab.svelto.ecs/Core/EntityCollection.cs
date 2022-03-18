@@ -41,8 +41,8 @@ namespace Svelto.ECS
         internal readonly MB<T> _managedBuffer;
         internal readonly NB<T> _nativedBuffer;
         
-        internal readonly NativeEntityIDs _nativedIndices;
-        readonly          ManagedEntityIDs _managedIndices;
+        internal readonly NativeEntityIDs  _nativedIndices;
+        internal readonly ManagedEntityIDs _managedIndices;
     }
 
     public readonly ref struct EntityCollection<T1, T2> where T1 : struct, IEntityComponent

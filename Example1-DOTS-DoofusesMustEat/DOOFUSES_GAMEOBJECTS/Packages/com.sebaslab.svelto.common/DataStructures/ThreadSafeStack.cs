@@ -77,7 +77,7 @@ namespace Svelto.Common.DataStructures
             _lockQ = ReaderWriterLockSlimEx.Create();
         }
 
-        public ref struct ThreadSafeValues
+        public struct ThreadSafeValues: IDisposable
         {
             ReaderWriterLockSlimEx _lockQ;
             readonly Stack<T>      _stack;

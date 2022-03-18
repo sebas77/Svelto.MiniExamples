@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Numerics;
 using Svelto.Common;
 using Svelto.ECS.EntityComponents;
 using Svelto.ECS.Native;

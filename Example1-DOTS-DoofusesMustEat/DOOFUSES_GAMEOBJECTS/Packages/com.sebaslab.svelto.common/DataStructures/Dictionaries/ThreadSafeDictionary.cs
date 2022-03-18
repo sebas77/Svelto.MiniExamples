@@ -45,7 +45,7 @@ namespace Svelto.DataStructures
             }
         }
 
-        public ref struct ThreadSafeValues
+        public struct ThreadSafeValues: IDisposable
         {
             ReaderWriterLockSlimEx                  _lockQ;
             readonly FasterDictionary<TKey, TValue> _dic;

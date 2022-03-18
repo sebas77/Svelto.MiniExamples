@@ -21,25 +21,27 @@ namespace Svelto.ECS
     {
     }
 
-    public abstract class GroupCompound<G1, G2, G3, G4>: ITouchedByReflection where G1 : GroupTag<G1>
-                                                        where G2 : GroupTag<G2>
-                                                        where G3 : GroupTag<G3>
-                                                        where G4 : GroupTag<G4>
+    public abstract class GroupCompound<G1, G2, G3, G4> : ITouchedByReflection where G1 : GroupTag<G1>
+        where G2 : GroupTag<G2>
+        where G3 : GroupTag<G3>
+        where G4 : GroupTag<G4>
     {
         static GroupCompound()
         {
             //avoid race conditions if compounds are using on multiple thread
-            if (Interlocked.CompareExchange(ref isInitializing, 1, 0) == 0
-             && GroupCompoundInitializer.skipStaticCompoundConstructorsWith4Tags.Value == false)
+            if (Interlocked.CompareExchange(ref isInitializing, 1, 0) == 0 &&
+                GroupCompoundInitializer.skipStaticCompoundConstructorsWith4Tags.Value == false)
             {
-                var group = new ExclusiveGroup(); //todo: it's a bit of a waste to create a class here even if this is a static constructor
+                var
+                    group =
+                        new ExclusiveGroup(); //todo: it's a bit of a waste to create a class here even if this is a static constructor
 
                 _Groups = new FasterList<ExclusiveGroupStruct>(1);
                 _Groups.Add(group);
-                
+
 #if DEBUG && !PROFILE_SVELTO
                 var name =
-                    $"Compound: {typeof(G1).Name}-{typeof(G2).Name}-{typeof(G3).Name}-{typeof(G4).Name} ID {(uint) group.id}";
+                    $"Compound: {typeof(G1).Name}-{typeof(G2).Name}-{typeof(G3).Name}-{typeof(G4).Name} ID {(uint)group.id}";
                 GroupNamesMap.idToName[group] = name;
 #endif
                 //The hashname is independent from the actual group ID. this is fundamental because it is want
@@ -136,7 +138,7 @@ namespace Svelto.ECS
 
         internal static void Add(ExclusiveGroupStruct group)
         {
-#if DEBUG && !PROFILE_SVELTO            
+#if DEBUG && !PROFILE_SVELTO
             for (var i = 0; i < _Groups.count; ++i)
                 if (_Groups[i] == group)
                     throw new System.Exception("this test must be transformed in unit test");
@@ -145,7 +147,7 @@ namespace Svelto.ECS
             _Groups.Add(group);
             _GroupsHashSet.Add(group);
         }
-        
+
         static readonly FasterList<ExclusiveGroupStruct> _Groups;
         static readonly HashSet<ExclusiveGroupStruct>    _GroupsHashSet;
 
@@ -153,21 +155,24 @@ namespace Svelto.ECS
         static int isInitializing;
     }
 
-    public abstract class GroupCompound<G1, G2, G3>: ITouchedByReflection
-        where G1 : GroupTag<G1> where G2 : GroupTag<G2> where G3 : GroupTag<G3>
+    public abstract class GroupCompound<G1, G2, G3> : ITouchedByReflection where G1 : GroupTag<G1>
+        where G2 : GroupTag<G2>
+        where G3 : GroupTag<G3>
     {
         static GroupCompound()
         {
-            if (Interlocked.CompareExchange(ref isInitializing, 1, 0) == 0
-             && GroupCompoundInitializer.skipStaticCompoundConstructorsWith3Tags.Value == false)
+            if (Interlocked.CompareExchange(ref isInitializing, 1, 0) == 0 &&
+                GroupCompoundInitializer.skipStaticCompoundConstructorsWith3Tags.Value == false)
             {
-                var group = new ExclusiveGroup(); //todo: it's a bit of a waste to create a class here even if this is a static constructor
+                var
+                    group =
+                        new ExclusiveGroup(); //todo: it's a bit of a waste to create a class here even if this is a static constructor
 
                 _Groups = new FasterList<ExclusiveGroupStruct>(1);
                 _Groups.Add(group);
 
 #if DEBUG && !PROFILE_SVELTO
-                var name = $"Compound: {typeof(G1).Name}-{typeof(G2).Name}-{typeof(G3).Name} ID {(uint) group.id}";
+                var name = $"Compound: {typeof(G1).Name}-{typeof(G2).Name}-{typeof(G3).Name} ID {(uint)group.id}";
                 GroupNamesMap.idToName[group] = name;
 #endif
                 //The hashname is independent from the actual group ID. this is fundamental because it is want
@@ -218,7 +223,7 @@ namespace Svelto.ECS
 
         internal static void Add(ExclusiveGroupStruct group)
         {
-#if DEBUG && !PROFILE_SVELTO            
+#if DEBUG && !PROFILE_SVELTO
             for (var i = 0; i < _Groups.count; ++i)
                 if (_Groups[i] == group)
                     throw new System.Exception("this test must be transformed in unit test");
@@ -227,7 +232,7 @@ namespace Svelto.ECS
             _Groups.Add(group);
             _GroupsHashSet.Add(group);
         }
-        
+
         static readonly FasterList<ExclusiveGroupStruct> _Groups;
         static readonly HashSet<ExclusiveGroupStruct>    _GroupsHashSet;
 
@@ -235,14 +240,16 @@ namespace Svelto.ECS
         static int isInitializing;
     }
 
-    public abstract class GroupCompound<G1, G2>: ITouchedByReflection where G1 : GroupTag<G1> where G2 : GroupTag<G2>
+    public abstract class GroupCompound<G1, G2> : ITouchedByReflection where G1 : GroupTag<G1> where G2 : GroupTag<G2>
     {
         static GroupCompound()
         {
-            if (Interlocked.CompareExchange(ref isInitializing, 1, 0) == 0
-             && GroupCompoundInitializer.skipStaticCompoundConstructorsWith2Tags.Value == false)
+            if (Interlocked.CompareExchange(ref isInitializing, 1, 0) == 0 &&
+                GroupCompoundInitializer.skipStaticCompoundConstructorsWith2Tags.Value == false)
             {
-                var group = new ExclusiveGroup(); //todo: it's a bit of a waste to create a class here even if this is a static constructor
+                var
+                    group =
+                        new ExclusiveGroup(); //todo: it's a bit of a waste to create a class here even if this is a static constructor
 
                 _Groups = new FasterList<ExclusiveGroupStruct>(1);
                 _Groups.Add(group);
@@ -279,16 +286,16 @@ namespace Svelto.ECS
 
         internal static void Add(ExclusiveGroupStruct group)
         {
-#if DEBUG && !PROFILE_SVELTO            
+#if DEBUG && !PROFILE_SVELTO
             for (var i = 0; i < _Groups.count; ++i)
                 if (_Groups[i] == group)
                     throw new System.Exception("this test must be transformed in unit test");
-#endif            
+#endif
 
             _Groups.Add(group);
             _GroupsHashSet.Add(group);
         }
-        
+
         static readonly FasterList<ExclusiveGroupStruct> _Groups;
         static readonly HashSet<ExclusiveGroupStruct>    _GroupsHashSet;
 
@@ -302,7 +309,7 @@ namespace Svelto.ECS
     ///     groups with the same adjective, a group tag needs to hold all the groups sharing it.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public abstract class GroupTag<T>: ITouchedByReflection where T : GroupTag<T>
+    public abstract class GroupTag<T> : ITouchedByReflection where T : GroupTag<T>
     {
         static GroupTag()
         {
@@ -312,11 +319,12 @@ namespace Svelto.ECS
                 _Groups.Add(group);
 
 #if DEBUG && !PROFILE_SVELTO
-                var typeInfo         = typeof(T);
-                var name             = $"Compound: {typeInfo.Name} ID {(uint) group.id}";
-                
+                var typeInfo = typeof(T);
+                var name     = $"Compound: {typeInfo.Name} ID {(uint)group.id}";
+
                 var typeInfoBaseType = typeInfo.BaseType;
-                if (typeInfoBaseType.GenericTypeArguments[0] != typeInfo) //todo: this should shield from using a pattern different than public class GROUP_NAME : GroupTag<GROUP_NAME> {} however I am not sure it's working
+                if (typeInfoBaseType.GenericTypeArguments[0] !=
+                    typeInfo) //todo: this should shield from using a pattern different than public class GROUP_NAME : GroupTag<GROUP_NAME> {} however I am not sure it's working
                     throw new ECSException("Invalid Group Tag declared");
 
                 GroupNamesMap.idToName[group] = name;
@@ -342,7 +350,7 @@ namespace Svelto.ECS
         //Each time a new combination of group tags is found a new group is added.
         internal static void Add(ExclusiveGroupStruct group)
         {
-#if DEBUG && !PROFILE_SVELTO            
+#if DEBUG && !PROFILE_SVELTO
             for (var i = 0; i < _Groups.count; ++i)
                 if (_Groups[i] == group)
                     throw new System.Exception("this test must be transformed in unit test");
@@ -351,7 +359,7 @@ namespace Svelto.ECS
             _Groups.Add(group);
             _GroupsHashSet.Add(group);
         }
-        
+
         static readonly FasterList<ExclusiveGroupStruct> _Groups = new FasterList<ExclusiveGroupStruct>(1);
         static readonly HashSet<ExclusiveGroupStruct>    _GroupsHashSet;
 
