@@ -6,6 +6,7 @@ using Svelto.DataStructures;
 using Svelto.ECS.Extensions.Unity;
 using Svelto.ECS.MiniExamples.GameObjectsLayer;
 using Svelto.ECS.Schedulers;
+using Svelto.ECS.SveltoOnDOTS;
 using UnityEngine;
 
 #if !PROFILE_SVELTO
@@ -23,13 +24,13 @@ namespace Svelto.ECS.MiniExamples.Example1C
 
             _simpleSubmitScheduler = new SimpleEntitiesSubmissionScheduler();
             _enginesRoot           = new EnginesRoot(_simpleSubmitScheduler);
-
-            _mainLoop = new MainLoop(_enginesToTick, _simpleSubmitScheduler);
         }
 
         public void OnContextInitialized<T>(T contextHolder)
         {
              ComposeEnginesRoot();
+             
+             _mainLoop = new MainLoop(_enginesToTick, _simpleSubmitScheduler);
 
             _mainLoop.Run();
         }

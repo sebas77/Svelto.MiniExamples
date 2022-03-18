@@ -12,25 +12,18 @@ namespace Svelto.ECS.Hybrid
     /// https://www.sebaslab.com/oop-abstraction-layer-in-a-ecs-centric-application/ 
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public struct ValueReference<T> : IDisposable where T:class, IImplementor
+    public struct ValueReference<T> where T:class
     {
-        static ValueReference()
-        {
-            DBC.ECS.Check.Require(typeof(T).IsInterface == true, "ValueReference type can be only pure interface implementing IImplementor");
-        }
-
         public ValueReference(T obj) { _pointer = GCHandle.Alloc(obj, GCHandleType.Normal); }
 
-        public W Convert<W>(W implementer) where W:T
+        public T ConvertAndDispose<W>(W implementer) where W:notnull, IImplementor 
         {
             var pointerTarget = _pointer.Target;
-            return (W)pointerTarget;
+            _pointer.Free();
+            return (T)pointerTarget;
         }
 
-        public void Dispose()
-        {
-            _pointer.Free();
-        }
+        public bool isDefault => _pointer.IsAllocated == false;
         
         GCHandle    _pointer;
     }

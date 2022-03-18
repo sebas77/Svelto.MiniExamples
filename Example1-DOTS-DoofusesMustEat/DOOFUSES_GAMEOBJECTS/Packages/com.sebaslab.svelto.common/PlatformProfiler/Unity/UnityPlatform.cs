@@ -15,9 +15,6 @@ namespace Svelto.Common
             _marker.Begin();
         }
 
-#if DISABLE_CHECKS
-		[Conditional("__NEVER_DEFINED__")]
-#endif
         public void Dispose()
         {
             _marker.End();
@@ -38,14 +35,14 @@ namespace Svelto.Common
             _platformProfilerImplementation.Dispose();
         }
 
-        public DisposableSampler Sample(string samplerName, string samplerInfo = null)
+        public DisposableSampler Sample(string samplerName)
         {
-            return _platformProfilerImplementation.Sample(samplerName, samplerInfo);
+            return _platformProfilerImplementation.Sample(samplerName);
         }
 
-        public DisposableSampler Sample<W>(W sampled, string samplerInfo = null)
+        public DisposableSampler Sample<W>(W sampled)
         {
-            return _platformProfilerImplementation.Sample(sampled, samplerInfo);
+            return _platformProfilerImplementation.Sample(sampled);
         }
 
         PlatformProfiler _platformProfilerImplementation;
@@ -61,19 +58,14 @@ namespace Svelto.Common
             _marker.Value.Begin();
         }
 
-        public DisposableSampler Sample(string samplerName, string samplerInfo = null)
+        public DisposableSampler Sample(string samplerName)
         {
-#if !PROFILE_SVELTO
-            var name = samplerInfo != null ? samplerName.FastConcat("-", samplerInfo) : samplerName;
-#else
-            var name = samplerName;
-#endif
-            return new DisposableSampler(new ProfilerMarker(name));
+            return new DisposableSampler(new ProfilerMarker(samplerName));
         }
 
-        public DisposableSampler Sample<T>(T sampled, string samplerInfo = null)
+        public DisposableSampler Sample<T>(T sampled)
         {
-            return Sample(sampled.TypeName(), samplerInfo);
+            return Sample(sampled.TypeName());
         }
 
         public void Dispose()

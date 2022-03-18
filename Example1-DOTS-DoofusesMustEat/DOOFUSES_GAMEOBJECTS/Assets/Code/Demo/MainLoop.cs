@@ -1,59 +1,57 @@
-using System.Collections;
-using Svelto.DataStructures;
-using Svelto.ECS.Extensions.Unity;
-using Svelto.ECS.Schedulers;
-using Svelto.Tasks;
-using Svelto.Tasks.ExtraLean;
-using Svelto.Tasks.ExtraLean.Unity;
+#if !PROFILE_SVELTO
+#warning for maximum performance, please define PROFILE_SVELTO
+#endif
 
+using System;
+using Svelto.DataStructures;
+using Svelto.ECS.Schedulers;
+using Svelto.ECS.SveltoOnDOTS;
 using Unity.Jobs;
+using UnityEngine;
 
 namespace Svelto.ECS.MiniExamples.Example1C
 {
-    /// <summary>
-    /// As usual we create our own loop. These demo loops are simple but show the foundation how what it can be done
-    /// Loop usually tick engines and submit entities.
-    /// </summary>
     class MainLoop
     {
-        public MainLoop(FasterList<IJobifiedEngine> enginesToTick, SimpleEntitiesSubmissionScheduler scheduler)
+        public MainLoop(FasterList<IJobifiedEngine> enginesToTick,
+            SimpleEntitiesSubmissionScheduler simpleEntitiesSubmissionScheduler)
         {
-            _enginesToTick  = enginesToTick;
-            _scheduler = scheduler;
+            _enginesToTick                     = enginesToTick;
+            _simpleEntitiesSubmissionScheduler = simpleEntitiesSubmissionScheduler;
+            _sveltoEngines                     = new SortedDoofusesEnginesExecutionGroup(_enginesToTick);
+            _job                               = default;
         }
         
-        IEnumerator Loop()
+        void Loop()
         {
-            var sveltoEngines = new SortedDoofusesEnginesExecutionGroup(_enginesToTick);
-
-            JobHandle jobs = default;
-
-            while (true)
-            {
-                //Engines are executed in ordered fashion exploiting the Svelto ISequenceOrder pattern
-                jobs = sveltoEngines.Execute(jobs);
-                
-                jobs.Complete(); //Job Sync Point
-                
-                _scheduler.SubmitEntities();
-
-                yield return Yield.It;
-            }
+            //pure DOTS, no need to complete any job, just be sure that the previous lot is an input dependency                
+            _job = _sveltoEngines.Execute(_job);
+            
+            _simpleEntitiesSubmissionScheduler.SubmitEntities();
         }
 
         public void Dispose() 
-        {
-            _mainThreadScheduler.Dispose();
-        }
+        { }
 
         public void Run()
         {
-            Loop().RunOn(_mainThreadScheduler);
+            GameObject ticker = new GameObject("Ticker");
+            ticker.AddComponent<TickerComponent>().callBack = Loop;
         }
 
-        readonly EarlyUpdateMonoRunner _mainThreadScheduler = new EarlyUpdateMonoRunner("MainThreadScheduler");
-        
-        readonly FasterList<IJobifiedEngine>       _enginesToTick;
-        readonly SimpleEntitiesSubmissionScheduler _scheduler;
+        readonly FasterList<IJobifiedEngine>         _enginesToTick;
+        readonly SimpleEntitiesSubmissionScheduler   _simpleEntitiesSubmissionScheduler;
+        readonly SortedDoofusesEnginesExecutionGroup _sveltoEngines;
+        JobHandle                                    _job;
+    }
+
+    internal class TickerComponent:MonoBehaviour
+    {
+        public Action callBack;
+
+        void Update()
+        {
+            callBack();
+        }
     }
 }

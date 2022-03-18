@@ -46,8 +46,8 @@ namespace Svelto.ECS.MiniExamples.GameObjectsLayer
             var go = _pool.Use(poolID, OnFirstUse);
             go.SetActive(true);
 
-            _instancesMap.GetOrCreate(poolID, () => new FasterDictionary<int, int>()).Add(_lastIndex, _lastIndex);
-            _transformAccessArray.GetOrCreate(poolID, () => new TransformAccessArray(1)).Add(go.transform);
+            _instancesMap.GetOrAdd(poolID, () => new FasterDictionary<int, int>()).Add(_lastIndex, _lastIndex);
+            _transformAccessArray.GetOrAdd(poolID, () => new TransformAccessArray(1)).Add(go.transform);
 
             return _lastIndex++;
         }

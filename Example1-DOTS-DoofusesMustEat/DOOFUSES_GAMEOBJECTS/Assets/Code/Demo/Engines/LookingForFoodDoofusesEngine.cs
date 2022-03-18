@@ -1,7 +1,10 @@
 using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.ECS.Extensions.Unity;
+using Svelto.ECS.Internal;
+using Svelto.ECS.MiniExamples.GameObjectsLayer;
 using Svelto.ECS.Native;
+using Svelto.ECS.SveltoOnDOTS;
 using Unity.Burst;
 using Unity.Collections.LowLevel.Unsafe;
 using Unity.Jobs;
@@ -50,11 +53,11 @@ namespace Svelto.ECS.MiniExamples.Example1C
         {
             JobHandle combinedDeps = default;
 
-            foreach (var ((foodEntities, availableFoodCount), _) in entitiesDB.QueryEntities<EGIDComponent>(
+            foreach (var ((_, foodEntities, availableFoodCount), fromGroup) in entitiesDB.QueryEntities<PositionEntityComponent>(
                 availableFood))
             {
-                foreach (var ((doofuses, egids, doofusesCount), _) in entitiesDB
-                   .QueryEntities<MealInfoComponent, EGIDComponent>(availableDoofuses))
+                foreach (var ((doofuses, egids, doofusesCount), fromDoofusesGroup) in entitiesDB
+                   .QueryEntities<MealInfoComponent>(availableDoofuses))
                 {
                     var willEatDoofuses = math.min(availableFoodCount, doofusesCount);
 
@@ -68,6 +71,8 @@ namespace Svelto.ECS.MiniExamples.Example1C
                       , _nativeFoodSwap         = _nativeFoodSwap
                       , _doofuseMealLockedGroup = eatingDoofusesGroup
                       , _lockedFood             = eatenFoodGroup
+                        , _fromFoodGroup        = fromGroup
+                          , _fromDoofusesGroup  = fromDoofusesGroup
                     }.ScheduleParallel(willEatDoofuses, inputDeps));
                 }
             }
@@ -84,12 +89,14 @@ namespace Svelto.ECS.MiniExamples.Example1C
         struct LookingForFoodDoofusesJob : IJobParallelFor
         {
             public NB<MealInfoComponent> _doofuses;
-            public NB<EGIDComponent>     _food;
+            public NativeEntityIDs       _food;
             public NativeEntitySwap      _nativeDoofusesSwap;
             public NativeEntitySwap      _nativeFoodSwap;
             public ExclusiveBuildGroup   _doofuseMealLockedGroup;
             public ExclusiveBuildGroup   _lockedFood;
-            public NB<EGIDComponent>     _doofusesegids;
+            public NativeEntityIDs       _doofusesegids;
+            public ExclusiveGroupStruct  _fromFoodGroup;
+            public ExclusiveGroupStruct  _fromDoofusesGroup;
 
 #pragma warning disable 649
             /// <summary>
@@ -101,12 +108,12 @@ namespace Svelto.ECS.MiniExamples.Example1C
             public void Execute(int index)
             {
                 //pickup the meal for this doofus
-                var targetMeal = _food[(uint) index].ID;
+                var targetMeal = new EGID(_food[(uint) index], _fromFoodGroup);
                 //Set the target meal for this doofus
                 _doofuses[index].targetMeal = new EGID(targetMeal.entityID, _lockedFood);
 
                 //swap this doofus to the eating group so it won't be picked up again
-                _nativeDoofusesSwap.SwapEntity(@_doofusesegids[index].ID, _doofuseMealLockedGroup, _threadIndex);
+                _nativeDoofusesSwap.SwapEntity(new EGID(@_doofusesegids[index], _fromDoofusesGroup), _doofuseMealLockedGroup, _threadIndex);
                 //swap the meal to the being eating group, so it won't be picked up again
                 _nativeFoodSwap.SwapEntity(targetMeal, _lockedFood, _threadIndex);
             }

@@ -2,8 +2,10 @@ using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.ECS.EntityComponents;
 using Svelto.ECS.Extensions.Unity;
+using Svelto.ECS.Internal;
 using Svelto.ECS.MiniExamples.GameObjectsLayer;
 using Svelto.ECS.Native;
+using Svelto.ECS.SveltoOnDOTS;
 using Unity.Burst;
 using Unity.Collections.LowLevel.Unsafe;
 using Unity.Jobs;
@@ -50,17 +52,17 @@ namespace Svelto.ECS.MiniExamples.Example1C
 
             //against all the doofuses
             JobHandle deps = default;
-            foreach (var (doofusesBuffer, _) in entitiesDB
-               .QueryEntities<PositionEntityComponent, VelocityEntityComponent, MealInfoComponent, EGIDComponent>(
+            foreach (var (doofusesBuffer, fromGroup) in entitiesDB
+               .QueryEntities<PositionEntityComponent, VelocityEntityComponent, MealInfoComponent>(
                     doofusesEatingGroups))
             {
-                var doofuses      = doofusesBuffer.ToBuffers();
-                var doofusesCount = doofuses.count;
+                var (buffer1, buffer2, buffer3, entityIDs, count) = doofusesBuffer;
+                var doofusesCount = count;
 
                 //schedule the job
                 deps = JobHandle.CombineDependencies(inputDeps, new ConsumingFoodJob(
-                                                         doofuses, foodPositionMapper, _nativeSwap, _nativeRemove
-                                                       , foodEatenGroup).ScheduleParallel(doofusesCount, inputDeps));
+                    (buffer1, buffer2, buffer3, count), entityIDs, foodPositionMapper, _nativeSwap, _nativeRemove
+                                                       , foodEatenGroup, fromGroup).ScheduleParallel(doofusesCount, inputDeps));
             }
 
             foodPositionMapper.ScheduleDispose(deps);
@@ -77,8 +79,10 @@ namespace Svelto.ECS.MiniExamples.Example1C
     [BurstCompile]
     public readonly struct ConsumingFoodJob : IJobParallelFor
     {
-        readonly BT<NB<PositionEntityComponent>, NB<VelocityEntityComponent>, NB<MealInfoComponent>, NB<EGIDComponent>>
+        readonly BT<NB<PositionEntityComponent>, NB<VelocityEntityComponent>, NB<MealInfoComponent>>
             _doofuses;
+
+        readonly NativeEntityIDs _nativeEntityIDs;
 
         readonly NativeEGIDMultiMapper<PositionEntityComponent> _foodPositionMapper;
         readonly NativeEntitySwap                               _nativeSwap;
@@ -86,18 +90,21 @@ namespace Svelto.ECS.MiniExamples.Example1C
 
         [NativeSetThreadIndex] readonly int                 _threadIndex;
         readonly                        ExclusiveBuildGroup _doofuseMealLockedGroup;
+        readonly                        ExclusiveGroupStruct _doofuseFromGroup;
 
-        public ConsumingFoodJob
-        (in BT<NB<PositionEntityComponent>, NB<VelocityEntityComponent>, NB<MealInfoComponent>, NB<EGIDComponent>>
-             doofuses, NativeEGIDMultiMapper<PositionEntityComponent> foodPositionMapper, NativeEntitySwap swap
-       , NativeEntityRemove nativeRemove, ExclusiveBuildGroup doofuseMealLockedGroup) : this()
+        public ConsumingFoodJob(
+            in BT<NB<PositionEntityComponent>, NB<VelocityEntityComponent>, NB<MealInfoComponent>> doofuses,
+            NativeEntityIDs nativeEntityIDs, NativeEGIDMultiMapper<PositionEntityComponent> foodPositionMapper,
+            NativeEntitySwap swap, NativeEntityRemove nativeRemove, ExclusiveBuildGroup doofuseMealLockedGroup, ExclusiveGroupStruct doofuseFromGroup) : this()
         {
             _doofuses               = doofuses;
+            _nativeEntityIDs        = nativeEntityIDs;
             _foodPositionMapper     = foodPositionMapper;
             _nativeSwap             = swap;
             _nativeRemove           = nativeRemove;
             _doofuseMealLockedGroup = doofuseMealLockedGroup;
             _threadIndex            = 0;
+            _doofuseFromGroup       = doofuseFromGroup;
         }
 
         public void Execute(int index)
@@ -118,7 +125,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
 
                 //food found
                 //Change Doofuses State
-                _nativeSwap.SwapEntity(_doofuses.buffer4[index].ID, _doofuseMealLockedGroup, _threadIndex);
+                _nativeSwap.SwapEntity(new EGID(_nativeEntityIDs[index], _doofuseFromGroup), _doofuseMealLockedGroup, _threadIndex);
                 //Remove Eaten Food
                 _nativeRemove.RemoveEntity(mealInfoEGID, _threadIndex);
 

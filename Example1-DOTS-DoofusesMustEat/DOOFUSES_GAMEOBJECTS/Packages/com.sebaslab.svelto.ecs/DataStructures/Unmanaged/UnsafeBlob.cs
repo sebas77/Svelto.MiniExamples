@@ -12,9 +12,8 @@ namespace Svelto.ECS.DataStructures
 
     /// <summary>
     ///     Note: this must work inside burst, so it must follow burst restrictions
-    ///     Note: All the svelto native structures
     ///     It's a typeless native queue based on a ring-buffer model. This means that the writing head and the
-    ///     reading head always advance independently. IF there is enough space left by dequeued elements,
+    ///     reading head always advance independently. If there is enough space left by dequeued elements,
     ///     the writing head will wrap around. The writing head cannot ever surpass the reading head.
     ///  
     /// </summary>
@@ -48,14 +47,13 @@ namespace Svelto.ECS.DataStructures
         internal Allocator allocator;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal void Enqueue<T>(in T item) where T : struct
+        internal void Enqueue<T>(in T item) where T : struct //should be unmanaged, but it's not due to Svelto.ECS constraints.
         {
             unsafe
             {
                 var structSize = (uint) MemoryUtilities.SizeOf<T>();
                 var writeHead  = _writeIndex % capacity;
 
-                //the idea is, considering the wrap, a read pointer must always be behind a writer pointer
 #if DEBUG && !PROFILE_SVELTO
                 var size  = _writeIndex - _readIndex;
                 var spaceAvailable = capacity - size;
@@ -69,7 +67,7 @@ namespace Svelto.ECS.DataStructures
                 {
                     Unsafe.Write(ptr + writeHead, item);
                 }
-                else //copy with wrap, will start to copy and wrap for the reminder
+                else //copy with wrap, will start to copy and wrap for the remainder
                 {
                     var byteCountToEnd = capacity - writeHead;
 
@@ -95,7 +93,7 @@ namespace Svelto.ECS.DataStructures
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         //The index returned is the index of the unwrapped ring. It must be wrapped again before to be used
-        internal ref T Reserve<T>(out UnsafeArrayIndex index) where T : struct
+        internal ref T Reserve<T>(out UnsafeArrayIndex index) where T : struct //should be unmanaged, but it's not due to Svelto.ECS constraints.
         {
             unsafe
             {
@@ -121,7 +119,7 @@ namespace Svelto.ECS.DataStructures
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal ref T AccessReserved<T>(UnsafeArrayIndex index) where T : struct
+        internal ref T AccessReserved<T>(UnsafeArrayIndex index) where T : struct //should be unmanaged, but it's not due to Svelto.ECS constraints.
         {
             unsafe
             {
@@ -135,7 +133,7 @@ namespace Svelto.ECS.DataStructures
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal T Dequeue<T>() where T : struct
+        internal T Dequeue<T>()  where T : struct //should be unmanaged, but it's not due to Svelto.ECS constraints.
         {
             unsafe
             {
@@ -178,95 +176,39 @@ namespace Svelto.ECS.DataStructures
                 return item;
             }
         }
-
-//         /// <summary>
-//         /// Note when a realloc happens it doesn't just unwrap the data, but also reset the readIndex to 0 so
-//         /// if readIndex is greater than 0 the index of elements of an unwrapped queue will be shifted back  
-//         /// </summary>
-//         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-//         internal void ReallocOld(uint newCapacity)
-//         {
-//             unsafe
-//             {
-//                 //be sure it's multiple of 4. Assuming that what we write is aligned to 4, then we will always have aligned wrapped heads
-//                 //the reading and writing head always increment in multiple of 4
-//                 newCapacity += MemoryUtilities.Pad4(newCapacity);
-//
-//                 byte* newPointer = null;
-// #if DEBUG && !PROFILE_SVELTO
-//                 if (newCapacity <= capacity)
-//                     throw new Exception("new capacity must be bigger than current");
-// #endif
-//                 newPointer = (byte*) MemoryUtilities.Alloc(newCapacity, allocator);
-//
-//                 //copy wrapped content if there is any
-//                 var currentSize = _writeIndex - _readIndex;
-//                 if (currentSize > 0)
-//                 {
-//                     var readerHead = _readIndex % capacity;
-//                     var writerHead = _writeIndex % capacity;
-//
-//                     //there was no wrapping
-//                     if (readerHead < writerHead)
-//                     {
-//                         //copy to the new pointer, starting from the first byte still to be read, so that readIndex
-//                         //position can be reset
-//                         Unsafe.CopyBlock(newPointer, ptr + readerHead, (uint) currentSize);
-//                     }
-//                     //the goal of the following code is to unwrap the queue into a linear array.
-//                     //the assumption is that if the wrapped writeHead is smaller than the wrapped readHead
-//                     //the writerHead wrapped and restart from the being of the array.
-//                     //so I have to copy the data from readerHead to the end of the array and then
-//                     //from the start of the array to writerHead (which is the same position of readerHead)
-//                     else
-//                     {
-//                         var byteCountToEnd = capacity - readerHead;
-//
-//                         Unsafe.CopyBlock(newPointer, ptr + readerHead, byteCountToEnd);
-//                         Unsafe.CopyBlock(newPointer + byteCountToEnd, ptr, (uint) writerHead);
-//                     }
-//                 }
-//
-//                 if (ptr != null)
-//                     MemoryUtilities.Free((IntPtr) ptr, allocator);
-//
-//                 ptr      = newPointer;
-//                 capacity = newCapacity;
-//
-//                 _readIndex  = 0;
-//                 _writeIndex = currentSize;
-//             }
-//         }
         
         /// <summary>
-        /// This version of Realloc unwrap a queue, but doesn't change the unwrapped index of existing elements.
-        /// In this way the previously index will remain valid
+        /// This code unwraps the queue and resizes the array, but doesn't change the unwrapped index of existing elements.
+        /// In this way the previously reserved indices will remain valid
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal void Realloc(uint newCapacity)
+        internal void Grow<T>() where T : struct //should be unmanaged, but it's not due to Svelto.ECS constraints.
         {
             unsafe
             {
+                var sizeOf      = MemoryUtilities.SizeOf<T>();
+
+                var oldCapacity = capacity;
+                
+                uint newCapacity = (uint) ((oldCapacity + sizeOf) << 1);
                 //be sure it's multiple of 4. Assuming that what we write is aligned to 4, then we will always have aligned wrapped heads
                 //the reading and writing head always increment in multiple of 4
                 newCapacity += MemoryUtilities.Pad4(newCapacity);
 
                 byte* newPointer = null;
-#if DEBUG && !PROFILE_SVELTO
-                if (newCapacity <= capacity)
-                    throw new Exception("new capacity must be bigger than current");
-#endif
                 newPointer = (byte*) MemoryUtilities.Alloc(newCapacity, allocator);
 
                 //copy wrapped content if there is any
                 var currentSize = _writeIndex - _readIndex;
                 if (currentSize > 0)
                 {
-                    var oldReaderHead = _readIndex % capacity;
-                    var writerHead = _writeIndex % capacity;
+                    var oldReaderHead = _readIndex % oldCapacity;
+                    var oldWriterHead    = _writeIndex % oldCapacity;
 
-                    //there was no wrapping
-                    if (oldReaderHead < writerHead)
+                    //Remembering that the unwrapped reader cannot ever surpass the unwrapped writer, if the reader is behind the writer
+                    //it means that the writer didn't wrap. It's the natural position so the data can be copied with
+                    //a single memcpy
+                    if (oldReaderHead < oldWriterHead)
                     {
                         var newReaderHead = _readIndex % newCapacity;
                         
@@ -274,15 +216,21 @@ namespace Svelto.ECS.DataStructures
                     }
                     else
                     {
-                        var byteCountToEnd = capacity - oldReaderHead;
-                        var newReaderHead = _readIndex % newCapacity;
+                        //if the wrapped writer is behind the wrapped reader, it means the writer wrapped. Therefore
+                        //I need to copy the data from the current wrapped reader to the end and then from the 
+                        //begin of the array to the current wrapped writer.
+                        
+                        var byteCountToEnd = oldCapacity - oldReaderHead; //bytes to copy from the reader to the end
+                        var newReaderHead  = _readIndex % newCapacity;
                         
 #if DEBUG && !PROFILE_SVELTO
-                        if (newReaderHead + byteCountToEnd + writerHead > newCapacity)
+                        if (newReaderHead + byteCountToEnd + oldWriterHead > newCapacity) //basically the test is the old size must be less than the new capacity. 
                             throw new Exception("something is wrong with my previous assumptions");
 #endif                  
+                        //I am leaving on purpose gap at the begin of the new array if there is any, it will be 
+                        //anyway used once it's time to wrap. 
                         Unsafe.CopyBlock(newPointer + newReaderHead, ptr + oldReaderHead, byteCountToEnd); //from the old reader head to the end of the old array
-                        Unsafe.CopyBlock(newPointer + newReaderHead + byteCountToEnd, ptr + 0, (uint) writerHead); //from the begin of the old array to the old writer head (rember the writerHead wrapped)
+                        Unsafe.CopyBlock(newPointer + newReaderHead + byteCountToEnd, ptr + 0, (uint) oldWriterHead); //from the begin of the old array to the old writer head (rember the writerHead wrapped)
                     }
                 }
 
@@ -292,7 +240,7 @@ namespace Svelto.ECS.DataStructures
                 ptr      = newPointer;
                 capacity = newCapacity;
 
-                //_readIndex  = 0;
+                //_readIndex  = 0; the idea is that the old readIndex should remain unchanged. Remember this is the unwrapped index.
                 _writeIndex = _readIndex + currentSize;
             }
         }

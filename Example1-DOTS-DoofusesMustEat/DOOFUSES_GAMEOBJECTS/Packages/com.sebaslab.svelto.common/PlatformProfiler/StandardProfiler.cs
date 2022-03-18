@@ -22,12 +22,12 @@ namespace Svelto.Common
             _info = info;
         }
 
-        public StandardDisposableSampler Sample(string samplerName, string samplerInfo = null)
+        public StandardDisposableSampler Sample(string samplerName)
         {
             return new StandardDisposableSampler(samplerName.FastConcat("-",_info), _stopwatch.Value);
         }
 
-        public StandardDisposableSampler Sample<T>(T samplerName, string samplerInfo = null)
+        public StandardDisposableSampler Sample<T>(T samplerName)
         {
             return new StandardDisposableSampler(samplerName.ToString().FastConcat("-",_info), _stopwatch.Value);
         }

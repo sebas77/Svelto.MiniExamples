@@ -4,9 +4,50 @@ using Svelto.Common;
 
 namespace Svelto.ECS.DataStructures
 {
+    public struct SharedNative<T> : IDisposable where T : unmanaged, IDisposable
+    {
+#if UNITY_COLLECTIONS || (UNITY_JOBS || UNITY_BURST)
+        [global::Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction]
+#endif        
+        unsafe T* ptr;
+
+        public SharedNative(in T value)
+        {
+            unsafe
+            {
+                ptr  = (T*)MemoryUtilities.Alloc<T>(1, Allocator.Persistent);
+                *ptr = value;
+            }
+        }
+
+        public void Dispose()
+        {
+            unsafe
+            {
+                ptr->Dispose();
+                
+                MemoryUtilities.Free((IntPtr)ptr, Allocator.Persistent);
+                ptr = (T*)IntPtr.Zero;
+            }
+        }
+
+        public ref T value
+        {
+            get
+            {
+                unsafe
+                {
+                    DBC.ECS.Check.Require(ptr != null, "SharedNative has not been initialized");
+                    
+                    return ref *ptr;
+                }
+            }
+        }
+    }
+
     public struct SharedNativeInt: IDisposable
     {
-#if UNITY_COLLECTIONS || UNITY_JOBS || UNITY_BURST
+#if UNITY_COLLECTIONS || (UNITY_JOBS || UNITY_BURST)
         [global::Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction]
 #endif
         unsafe int* data;

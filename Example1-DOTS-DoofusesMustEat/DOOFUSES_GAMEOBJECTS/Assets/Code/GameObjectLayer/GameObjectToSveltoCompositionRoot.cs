@@ -1,5 +1,5 @@
 using Svelto.DataStructures;
-using Svelto.ECS.Extensions.Unity;
+using Svelto.ECS.SveltoOnDOTS;
 
 namespace Svelto.ECS.MiniExamples.GameObjectsLayer
 {

@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Numerics;
 using Svelto.Common;
 using Svelto.ECS.EntityComponents;
 using Svelto.ECS.Native;
@@ -72,7 +73,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
 
         public void Ready()
         {
-            UIInteractionRunner = CheckClick();
+            _taskRunner = CheckClick();
         }
 
         /// <summary>
@@ -92,12 +93,12 @@ namespace Svelto.ECS.MiniExamples.Example1C
         {
             _inputDeps = inputDeps;
 
-            UIInteractionRunner.MoveNext();
+            _taskRunner.MoveNext();
 
             return _inputDeps;
         }
 
-        static IEnumerator UIInteractionRunner;
+        static IEnumerator _taskRunner;
 
         readonly Entity _redfood;
         readonly Entity _bluefood;

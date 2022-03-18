@@ -3,6 +3,7 @@ using Svelto.DataStructures;
 using Svelto.ECS.EntityComponents;
 using Svelto.ECS.Extensions.Unity;
 using Svelto.ECS.MiniExamples.GameObjectsLayer;
+using Svelto.ECS.SveltoOnDOTS;
 using Unity.Jobs;
 using UnityEngine;
 
@@ -25,9 +26,9 @@ namespace Svelto.ECS.MiniExamples.Example1C
 
             foreach (var (doofuses, _) in doofusesEntityGroups)
             {
-                var buffers = doofuses.ToBuffers();
-                var dep = new ComputePostionFromVelocityJob(buffers, Time.deltaTime).ScheduleParallel(
-                        buffers.count, inputDeps);
+                var (buffer1, buffer2, buffer3, count) = doofuses;
+                var dep = new ComputePostionFromVelocityJob((buffer1, buffer2, buffer3, count), Time.deltaTime).ScheduleParallel(
+                        count, inputDeps);
 
                 inputDeps = JobHandle.CombineDependencies(inputDeps, dep);
             }

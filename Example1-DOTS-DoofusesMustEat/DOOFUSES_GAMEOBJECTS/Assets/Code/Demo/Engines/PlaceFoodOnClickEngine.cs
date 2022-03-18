@@ -1,11 +1,9 @@
+using System;
 using System.Collections;
 using Svelto.Common;
-using Svelto.ECS.Extensions.Unity;
 using Svelto.ECS.MiniExamples.GameObjectsLayer;
 using Svelto.ECS.Native;
-using Svelto.Tasks;
-using Svelto.Tasks.Enumerators;
-using Svelto.Tasks.ExtraLean;
+using Svelto.ECS.SveltoOnDOTS;
 using Unity.Burst;
 using Unity.Collections.LowLevel.Unsafe;
 using Unity.Jobs;
@@ -32,11 +30,10 @@ namespace Svelto.ECS.MiniExamples.Example1C
 
         IEnumerator CheckClick()
         {
-            var timer = new ReusableWaitForSecondsEnumerator(0.01f);
+            _inputDeps = default;
 
             while (true)
             {
-                _inputDeps = default;
                 //note: in a complex project an engine shouldn't ever poll input directly, it should instead poll
                 //entity states
                 if (Input.GetMouseButton(0) || Input.GetMouseButton(1) == true)
@@ -49,23 +46,24 @@ namespace Svelto.ECS.MiniExamples.Example1C
                         {
                             _inputDeps =
                                 new PlaceFood(position, _entityFactory, GameGroups.RED_FOOD_NOT_EATEN.BuildGroup
-                                            , _redfood, _foodPlaced).ScheduleParallel(MaxMeals, _inputDeps);
+                                  , _redfood, _foodPlaced).ScheduleParallel(MaxMeals, _inputDeps);
                         }
                         else
                         {
                             _inputDeps =
                                 new PlaceFood(position, _entityFactory, GameGroups.BLUE_FOOD_NOT_EATEN.BuildGroup
-                                            , _bluefood, _foodPlaced).ScheduleParallel(MaxMeals, _inputDeps);
+                                  , _bluefood, _foodPlaced).ScheduleParallel(MaxMeals, _inputDeps);
                         }
 
                         _foodPlaced += MaxMeals;
 
-                        while (timer.IsDone() == false)
-                            yield return Yield.It;
+                        var now = DateTime.Now;
+                        while ((DateTime.Now - now).TotalMilliseconds < 100)
+                            yield return null;
                     }
                 }
 
-                yield return Yield.It;
+                yield return null;
             }
         }
 
@@ -123,7 +121,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
 
         public void Ready()
         {
-            CheckClick().RunOn(UIInteractionRunner);
+            _taskRunner = CheckClick();
         }
 
         /// <summary>
@@ -143,12 +141,10 @@ namespace Svelto.ECS.MiniExamples.Example1C
         {
             _inputDeps = inputDeps;
 
-            UIInteractionRunner.Step();
+            _taskRunner.MoveNext();
 
             return _inputDeps;
         }
-
-        static readonly SteppableRunner UIInteractionRunner = new SteppableRunner("UIInteraction");
 
         readonly int _redfood;
         readonly int _bluefood;
@@ -156,5 +152,6 @@ namespace Svelto.ECS.MiniExamples.Example1C
 
         readonly NativeEntityFactory _entityFactory;
         JobHandle                    _inputDeps;
+        static IEnumerator           _taskRunner;
     }
 }

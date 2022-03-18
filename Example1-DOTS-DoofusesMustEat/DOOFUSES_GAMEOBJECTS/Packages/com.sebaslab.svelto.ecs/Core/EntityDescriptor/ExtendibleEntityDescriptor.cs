@@ -25,9 +25,11 @@ namespace Svelto.ECS
     {
         static ExtendibleEntityDescriptor()
         {
-            if (typeof(ISerializableEntityDescriptor).IsAssignableFrom(typeof(TType)))
-                throw new Exception(
-                    $"SerializableEntityDescriptors cannot be used as base entity descriptor: {typeof(TType)}");
+            //I am removing this check because in reality there is not a strong reason to forbid it and
+            //furthermore it's already possible to extend a SerializableEntityDescriptor through DynamicEntityDescriptor
+            // if (typeof(ISerializableEntityDescriptor).IsAssignableFrom(typeof(TType)))
+            //     throw new Exception(
+            //         $"SerializableEntityDescriptors cannot be used as base entity descriptor: {typeof(TType)}");
         }
 
         protected ExtendibleEntityDescriptor(IComponentBuilder[] extraEntities)
@@ -53,7 +55,6 @@ namespace Svelto.ECS
 
             return this;
         }
-
 
         protected void Add<T>() where T : struct, IEntityComponent
         {
