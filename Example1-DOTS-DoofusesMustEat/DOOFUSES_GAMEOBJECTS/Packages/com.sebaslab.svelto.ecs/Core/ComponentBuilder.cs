@@ -8,7 +8,6 @@ using Svelto.DataStructures;
 using Svelto.ECS.Hybrid;
 using Svelto.ECS.Internal;
 using Svelto.Utilities;
-using Unity.Burst;
 
 namespace Svelto.ECS
 {
@@ -43,7 +42,6 @@ namespace Svelto.ECS
             DBC.ECS.Check.Ensure(id.Data < ushort.MaxValue, "too many types registered, HOW :)");
         }
          
-        [BurstDiscard]
         public static void Init()
         { }
     }

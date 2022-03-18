@@ -14,7 +14,7 @@ namespace Svelto.DataStructures.Native
 #if DEBUG && !PROFILE_SVELTO
         static NativeStrategy()
         {
-            if (TypeCache<T>.isUnmanaged == false)
+            if (TypeType.isUnmanaged<T>() == false)
                 throw new DBC.Common.PreconditionException("Only unmanaged data can be stored natively");
         }
 #endif
@@ -54,6 +54,16 @@ namespace Svelto.DataStructures.Native
             }
         }
 
+        public IntPtr AsBytesPointer()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void   SerialiseFrom(IntPtr bytesPointer)
+        {
+            throw new NotImplementedException();
+        }
+
         public void ShiftLeft(uint index, uint count)
         {
             DBC.Common.Check.Require(index < capacity, "out of bounds index");
@@ -66,7 +76,7 @@ namespace Svelto.DataStructures.Native
 
             var array = _realBuffer.ToNativeArray(out _);
 
-            MemoryUtilities.Memmove<T>(array, index + 1, index, count - index);
+            MemoryUtilities.MemMove<T>(array, index + 1, index, count - index);
         }
 
         public void ShiftRight(uint index, uint count)
@@ -81,7 +91,7 @@ namespace Svelto.DataStructures.Native
 
             var array = _realBuffer.ToNativeArray(out _);
 
-            MemoryUtilities.Memmove<T>(array, index, index + 1, count - index);
+            MemoryUtilities.MemMove<T>(array, index, index + 1, count - index);
         }
 
         public bool isValid => _realBuffer.isValid;
@@ -107,6 +117,9 @@ namespace Svelto.DataStructures.Native
         /// valid
         /// </summary>
         /// <returns></returns>
+#if UNITY_BURST 
+        [Unity.Burst.BurstDiscard]
+#endif        
         IBuffer<T> IBufferStrategy<T>.ToBuffer()
         {
             //handle has been invalidated, dispose of the hold GCHandle (if exists)
@@ -132,16 +145,24 @@ namespace Svelto.DataStructures.Native
 
         public void Dispose()
         {
-            if ((IntPtr) _cachedReference != IntPtr.Zero)
-                _cachedReference.Free();
+            ReleaseCachedReference();
 
             if (_realBuffer.ToNativeArray(out _) != IntPtr.Zero)
-                MemoryUtilities.Free(_realBuffer.ToNativeArray(out _), Allocator.Persistent);
+                MemoryUtilities.Free(_realBuffer.ToNativeArray(out _), _nativeAllocator);
             else
                 throw new Exception("trying to dispose disposed buffer");
 
             _cachedReference = default;
             _realBuffer      = default;
+        }
+
+#if UNITY_BURST 
+        [Unity.Burst.BurstDiscard]
+#endif        
+        void ReleaseCachedReference()
+        {
+            if ((IntPtr)_cachedReference != IntPtr.Zero)
+                _cachedReference.Free();
         }
 
         Allocator _nativeAllocator;

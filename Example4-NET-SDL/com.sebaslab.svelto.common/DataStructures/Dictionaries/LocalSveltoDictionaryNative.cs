@@ -57,12 +57,12 @@ namespace Svelto.DataStructures.Native
         public bool TryGetValue(TKey key, out TValue result) { return _dictionary.TryGetValue(key, out result); }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ref TValue GetOrCreate(TKey key) { return ref _dictionary.GetOrCreate(key); }
+        public ref TValue GetOrAdd(TKey key) { return ref _dictionary.GetOrAdd(key); }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ref TValue GetOrCreate(TKey key, Func<TValue> builder)
+        public ref TValue GetOrAdd(TKey key, Func<TValue> builder)
         {
-            return ref _dictionary.GetOrCreate(key, builder);
+            return ref _dictionary.GetOrAdd(key, builder);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -72,7 +72,16 @@ namespace Svelto.DataStructures.Native
         public ref TValue GetValueByRef(TKey key) { return ref _dictionary.GetValueByRef(key); }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void ResizeTo(uint size) { _dictionary.ResizeTo(size); }
+        public void EnsureCapacity(uint size)
+        {
+            _dictionary.EnsureCapacity(size);
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void IncreaseCapacityBy(uint size)
+        {
+            _dictionary.IncreaseCapacityBy(size);
+        }
 
         public TValue this[TKey key]
         {

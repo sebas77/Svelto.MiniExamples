@@ -4,8 +4,8 @@ namespace Svelto.Common
 {
     public interface IPlatformProfiler: IDisposable
     {
-        DisposableSampler Sample(string samplerName, string samplerInfo = null);
-        DisposableSampler Sample<W>(W sampled, string samplerInfo = null);
+        DisposableSampler Sample(string samplerName);
+        DisposableSampler Sample<W>(W sampled);
     }
     
 #if !ENABLE_PLATFORM_PROFILER
@@ -22,12 +22,12 @@ namespace Svelto.Common
         public PlatformProfilerMT(string info)
         {}
         
-        public DisposableSampler Sample(string samplerName, string samplerInfo = null)
+        public DisposableSampler Sample(string samplerName)
         {
             return default;
         }
 
-        public DisposableSampler Sample<T>(T sampled, string samplerInfo = null)
+        public DisposableSampler Sample<T>(T sampled)
         {
             return default;
         }
@@ -41,12 +41,12 @@ namespace Svelto.Common
         public PlatformProfiler(string info)
         {}
 
-        public DisposableSampler Sample(string samplerName, string samplerInfo = null)
+        public DisposableSampler Sample(string samplerName)
         {
             return default;
         }
         
-        public DisposableSampler Sample<T>(T samplerName, string samplerInfo = null)
+        public DisposableSampler Sample<T>(T samplerName)
         {
             return default;
         }

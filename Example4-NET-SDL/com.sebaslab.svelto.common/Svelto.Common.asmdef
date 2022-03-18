@@ -2,7 +2,6 @@
     "name": "Svelto.Common",
     "rootNamespace": "",
     "references": [
-        "com.sebaslab.svelto.unsafe",
         "Unity.Collections",
         "Unity.Burst"
     ],
