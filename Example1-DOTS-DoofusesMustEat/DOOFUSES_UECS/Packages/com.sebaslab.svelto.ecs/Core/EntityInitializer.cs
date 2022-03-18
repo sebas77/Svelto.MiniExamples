@@ -23,9 +23,10 @@ namespace Svelto.ECS
                 return;
 
             var dictionary = (ITypeSafeDictionary<T>)typeSafeDictionary;
-
+#if SLOW_SVELTO_SUBMISSION
             if (ComponentBuilder<T>.HAS_EGID)
                 SetEGIDWithoutBoxing<T>.SetIDWithoutBoxing(ref initializer, _ID);
+#endif
 
             if (dictionary.TryFindIndex(_ID.entityID, out var findElementIndex))
                 dictionary.GetDirectValueByRef(findElementIndex) = initializer;

@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using DBC.ECS;
 using Svelto.Common;
 using Svelto.Common.DataStructures;
@@ -21,6 +20,8 @@ namespace Svelto.ECS
             GroupHashMap.Init();
             SharedDictonary.Init();
             SerializationDescriptorMap.Init();
+
+
             _swapEntities   = SwapEntities;
             _removeEntities = RemoveEntities;
             _removeGroup    = RemoveGroup;
@@ -40,8 +41,9 @@ namespace Svelto.ECS
             _entitiesOperations                  = new EntitiesOperations();
             _idChecker                           = new FasterDictionary<ExclusiveGroupStruct, HashSet<uint>>();
 
-            _cachedRangeOfSubmittedIndices                       = new FasterList<(uint, uint)>();
+            _cachedRangeOfSubmittedIndices                 = new FasterList<(uint, uint)>();
             _cachedIndicesToSwapBeforeSubmissionForFilters = new FasterDictionary<uint, uint>();
+            
             _multipleOperationOnSameEGIDChecker            = new FasterDictionary<EGID, uint>();
 #if UNITY_NATIVE //because of the thread count, ATM this is only for unity
             _nativeSwapOperationQueue   = new Svelto.ECS.DataStructures.AtomicNativeBags(Allocator.Persistent);
@@ -121,25 +123,25 @@ namespace Svelto.ECS
             try
             {
                 if (engine is IReactOnAdd viewEngineAdd)
-                    CheckReactEngineComponents(viewEngineAdd, _reactiveEnginesAdd, type.Name);
+                    CheckReactEngineComponents(typeof(IReactOnAdd<>), viewEngineAdd, _reactiveEnginesAdd, type.Name);
 
                 if (engine is IReactOnAddEx viewEngineAddEx)
-                    CheckReactEngineComponents(viewEngineAddEx, _reactiveEnginesAddEx, type.Name);
+                    CheckReactEngineComponents(typeof(IReactOnAddEx<>), viewEngineAddEx, _reactiveEnginesAddEx, type.Name);
 
                 if (engine is IReactOnRemove viewEngineRemove)
-                    CheckReactEngineComponents(viewEngineRemove, _reactiveEnginesRemove, type.Name);
+                    CheckReactEngineComponents(typeof(IReactOnRemove<>), viewEngineRemove, _reactiveEnginesRemove, type.Name);
 
                 if (engine is IReactOnRemoveEx viewEngineRemoveEx)
-                    CheckReactEngineComponents(viewEngineRemoveEx, _reactiveEnginesRemoveEx, type.Name);
+                    CheckReactEngineComponents(typeof(IReactOnRemoveEx<>), viewEngineRemoveEx, _reactiveEnginesRemoveEx, type.Name);
 
                 if (engine is IReactOnDispose viewEngineDispose)
-                    CheckReactEngineComponents(viewEngineDispose, _reactiveEnginesDispose, type.Name);
+                    CheckReactEngineComponents(typeof(IReactOnDispose<>), viewEngineDispose, _reactiveEnginesDispose, type.Name);
 
                 if (engine is IReactOnSwap viewEngineSwap)
-                    CheckReactEngineComponents(viewEngineSwap, _reactiveEnginesSwap, type.Name);
+                    CheckReactEngineComponents(typeof(IReactOnSwap<>), viewEngineSwap, _reactiveEnginesSwap, type.Name);
 
                 if (engine is IReactOnSwapEx viewEngineSwapEx)
-                    CheckReactEngineComponents(viewEngineSwapEx, _reactiveEnginesSwapEx, type.Name);
+                    CheckReactEngineComponents(typeof(IReactOnSwapEx<>), viewEngineSwapEx, _reactiveEnginesSwapEx, type.Name);
 
                 if (engine is IReactOnSubmission submissionEngine)
                     _reactiveEnginesSubmission.Add(submissionEngine);
@@ -192,20 +194,15 @@ namespace Svelto.ECS
             }
         }
 
-        void CheckReactEngineComponents<T>(T engine,
+        void CheckReactEngineComponents<T>(Type genericDefinition, T engine,
             FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<T>>> engines, string typeName)
             where T : class, IReactEngine
         {
             var interfaces = engine.GetType().GetInterfaces();
 
-            //copied from: https://stackoverflow.com/a/5318781
-            var minimalInterfaces = interfaces.Except(interfaces.SelectMany(t => t.GetInterfaces()));
-
-            var type = typeof(T);
-
-            foreach (var interf in minimalInterfaces)
+            foreach (var interf in interfaces)
             {
-                if (interf.IsGenericTypeEx() && type.IsAssignableFrom(interf))
+                if (interf.IsGenericTypeEx() && interf.GetGenericTypeDefinition() == genericDefinition)
                 {
                     var genericArguments = interf.GetGenericArgumentsEx();
 
@@ -243,7 +240,9 @@ namespace Svelto.ECS
                 foreach (var entityList in groups.value)
                     try
                     {
-                        entityList.value.ExecuteEnginesDisposeCallbacks_Group(_reactiveEnginesDispose, groups.key,
+                        ITypeSafeDictionary typeSafeDictionary = entityList.value;
+                        
+                        typeSafeDictionary.ExecuteEnginesDisposeCallbacks_Group(_reactiveEnginesDispose, groups.key,
                             profiler);
                     }
                     catch (Exception e)
@@ -329,7 +328,8 @@ namespace Svelto.ECS
                         enginesRootTarget.FlushNativeOperations(profiler);
 #endif
                         //todo: proper unit test structural changes made as result of add/remove callbacks
-                        while (enginesRootTarget.HasMadeNewStructuralChangesInThisIteration() && iterations++ < 5)
+                        while (enginesRootTarget.HasMadeNewStructuralChangesInThisIteration() 
+                               && iterations++ < MAX_SUBMISSION_ITERATIONS)
                         {
                             hasEverSubmitted = true;
 
@@ -341,7 +341,7 @@ namespace Svelto.ECS
                         }
 
 #if DEBUG && !PROFILE_SVELTO
-                        if (iterations == 5)
+                        if (iterations == MAX_SUBMISSION_ITERATIONS)
                             throw new ECSException("possible circular submission detected");
 #endif
                         if (hasEverSubmitted)
@@ -362,6 +362,8 @@ namespace Svelto.ECS
 
             Dispose(false);
         }
+
+        const int MAX_SUBMISSION_ITERATIONS = 10;
 
         internal bool                    _isDisposing;
         readonly FasterList<IDisposable> _disposableEngines;

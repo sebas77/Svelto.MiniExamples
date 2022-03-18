@@ -117,6 +117,9 @@ namespace Svelto.DataStructures.Native
         /// valid
         /// </summary>
         /// <returns></returns>
+#if UNITY_BURST 
+        [Unity.Burst.BurstDiscard]
+#endif        
         IBuffer<T> IBufferStrategy<T>.ToBuffer()
         {
             //handle has been invalidated, dispose of the hold GCHandle (if exists)
@@ -142,8 +145,7 @@ namespace Svelto.DataStructures.Native
 
         public void Dispose()
         {
-            if ((IntPtr) _cachedReference != IntPtr.Zero)
-                _cachedReference.Free();
+            ReleaseCachedReference();
 
             if (_realBuffer.ToNativeArray(out _) != IntPtr.Zero)
                 MemoryUtilities.Free(_realBuffer.ToNativeArray(out _), Allocator.Persistent);
@@ -152,6 +154,15 @@ namespace Svelto.DataStructures.Native
 
             _cachedReference = default;
             _realBuffer      = default;
+        }
+
+#if UNITY_BURST 
+        [Unity.Burst.BurstDiscard]
+#endif        
+        void ReleaseCachedReference()
+        {
+            if ((IntPtr)_cachedReference != IntPtr.Zero)
+                _cachedReference.Free();
         }
 
         Allocator _nativeAllocator;

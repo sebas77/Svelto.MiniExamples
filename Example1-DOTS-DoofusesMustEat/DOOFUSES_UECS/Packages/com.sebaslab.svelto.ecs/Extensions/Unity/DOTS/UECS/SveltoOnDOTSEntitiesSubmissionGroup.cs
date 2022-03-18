@@ -30,7 +30,7 @@ namespace Svelto.ECS.SveltoOnDOTS
     ///     all the DOTS ECS entities created that need Svelto information will be processed
     /// </summary>
     [DisableAutoCreation]
-    public sealed class SveltoOnDOTSEntitiesSubmissionGroup : SystemBase, IQueryingEntitiesEngine,
+    public sealed partial class SveltoOnDOTSEntitiesSubmissionGroup : SystemBase, IQueryingEntitiesEngine,
         ISveltoOnDOTSSubmission
     {
         public SveltoOnDOTSEntitiesSubmissionGroup(SimpleEntitiesSubmissionScheduler submissionScheduler,
@@ -101,13 +101,15 @@ namespace Svelto.ECS.SveltoOnDOTS
         {
             using (profiler.Sample("Complete All Pending Jobs")) jobHandle.Complete();
             
+            _entityCommandBuffer = new EntityCommandBuffer((Allocator)Common.Allocator.TempJob);
+            
             foreach (var system in _submissionEngines)
                 system.entityCommandBuffer =
-                    new EntityCommandBufferForSvelto(default, World.EntityManager);
+                    new EntityCommandBufferForSvelto(_entityCommandBuffer, World.EntityManager);
 
             foreach (var system in _sveltoOnDotsHandleLifeTimeEngines)
                 system.entityCommandBuffer =
-                    new EntityCommandBufferForSvelto(default, World.EntityManager);
+                    new EntityCommandBufferForSvelto(_entityCommandBuffer, World.EntityManager);
         }
 
         void AfterSubmissionPhase(PlatformProfiler profiler)
@@ -125,6 +127,13 @@ namespace Svelto.ECS.SveltoOnDOTS
 
                     throw;
                 }
+            }
+
+            using (profiler.Sample("Playback Command Buffer"))
+            {
+                if (_entityCommandBuffer.IsEmpty == false)
+                    _entityCommandBuffer.Playback(EntityManager);
+                _entityCommandBuffer.Dispose();
             }
 
             using (profiler.Sample("ConvertPendingEntities"))
@@ -182,6 +191,7 @@ namespace Svelto.ECS.SveltoOnDOTS
 
         readonly SimpleEntitiesSubmissionScheduler _submissionScheduler;
         readonly List<DOTSEntityToSetup>           _cachedList;
+        EntityCommandBuffer                        _entityCommandBuffer;
     }
 }
 #endif

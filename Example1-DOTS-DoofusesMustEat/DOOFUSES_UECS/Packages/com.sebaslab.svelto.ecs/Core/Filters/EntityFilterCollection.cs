@@ -1,5 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
-using Svelto.Common.DataStructures;
+using Svelto.Common;
 using Svelto.DataStructures.Native;
 using Svelto.ECS.Native;
 
@@ -7,17 +7,17 @@ namespace Svelto.ECS
 {
     public struct EntityFilterCollection
     {
-        internal static EntityFilterCollection Create()
+        public static EntityFilterCollection Create(Allocator allocatorStrategy = Allocator.Persistent)
         {
             var collection = new EntityFilterCollection
             {
-                _filtersPerGroup = SharedSveltoDictionaryNative<ExclusiveGroupStruct, GroupFilters>.Create()
+                _filtersPerGroup = SharedSveltoDictionaryNative<ExclusiveGroupStruct, GroupFilters>.Create(allocatorStrategy)
             };
             return collection;
         }
 
         public EntityFilterIterator GetEnumerator() => new EntityFilterIterator(this);
-
+        
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Add<T>(EGID egid, NativeEGIDMapper<T> mmap) where T : unmanaged, IEntityComponent
         {
@@ -80,7 +80,7 @@ namespace Svelto.ECS
             return _filtersPerGroup.GetValues(out _)[indexGroup];
         }
 
-        internal void Dispose()
+        public void Dispose()
         {
             var filterSets = _filtersPerGroup.GetValues(out var count);
             for (var i = 0; i < count; i++)
@@ -173,8 +173,6 @@ namespace Svelto.ECS
             SharedSveltoDictionaryNative<uint, uint>          _indexToEntityId;
             internal SharedSveltoDictionaryNative<uint, uint> _entityIDToDenseIndex;
             readonly ExclusiveGroupStruct                     _group;
-            
-            readonly Sentinel _threadSentinel;
         }
     }
 }

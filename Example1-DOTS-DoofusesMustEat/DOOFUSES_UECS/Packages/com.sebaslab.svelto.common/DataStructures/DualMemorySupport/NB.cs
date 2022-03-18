@@ -118,8 +118,7 @@ namespace Svelto.DataStructures
 #endif
                     using (_threadSentinel.TestThreadSafety())
                     {
-                        var     size  = MemoryUtilities.SizeOf<T>();
-                        ref var asRef = ref Unsafe.AsRef<T>((void*)(_ptr + (int)(index * size)));
+                        ref var asRef = ref Unsafe.AsRef<T>((void*)(_ptr + (int)index * SIZE));
                         return ref asRef;
                     }
                 }
@@ -139,8 +138,7 @@ namespace Svelto.DataStructures
 #endif
                     using (_threadSentinel.TestThreadSafety())
                     {
-                        var     size  = MemoryUtilities.SizeOf<T>();
-                        ref var asRef = ref Unsafe.AsRef<T>((void*)(_ptr + (int)(index * size)));
+                        ref var asRef = ref Unsafe.AsRef<T>((void*)(_ptr + (int)(index * SIZE)));
                         return ref asRef;
                     }
                 }
@@ -148,6 +146,7 @@ namespace Svelto.DataStructures
         }
         
         readonly uint _capacity;
+        static readonly int SIZE = MemoryUtilities.SizeOf<T>();
 
 #if UNITY_COLLECTIONS || UNITY_JOBS || UNITY_BURST    
 #if UNITY_BURST

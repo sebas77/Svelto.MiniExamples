@@ -6,7 +6,7 @@ namespace Svelto.Common.DataStructures
 {
     public struct SharedDictionaryStruct
     {
-        internal IntPtr test;
+        public IntPtr test;
 
         SveltoDictionary<long, Sentinel, SentinelNativeStrategy<SveltoDictionaryNode<long>>,
             SentinelNativeStrategy<Sentinel>, SentinelNativeStrategy<int>> cast

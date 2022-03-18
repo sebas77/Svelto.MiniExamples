@@ -15,7 +15,6 @@ namespace Svelto.DataStructures
         public RefWrapperType(Type type)
         {
             _type     = type;
-            _hashCode = type.GetHashCode();
         }
 
         public bool Equals(RefWrapperType other)
@@ -25,29 +24,28 @@ namespace Svelto.DataStructures
         
         public override int GetHashCode()
         {
-            return _hashCode;
+            return _type.GetHashCode();
         }
         
         public static implicit operator Type(RefWrapperType t) => t._type;
 
         readonly          Type _type;
-        internal readonly int  _hashCode;
     }
     
     public readonly struct NativeRefWrapperType: IEquatable<NativeRefWrapperType>
     {
-        internal static FasterDictionary<RefWrapperType, System.Guid> GUIDCache =
-            new FasterDictionary<RefWrapperType, Guid>();
+        static readonly FasterDictionary<RefWrapperType, System.Guid> GUIDCache =
+            new FasterDictionary<RefWrapperType, System.Guid>();
         
         public NativeRefWrapperType(RefWrapperType type)
         {
-            _type     = GUIDCache.GetOrAdd(type, (ref RefWrapperType type) => ((Type)type).GUID, ref type);
-            _hashCode = type._hashCode;
+            _typeGUID = GUIDCache.GetOrAdd(type, NewGuid);
+            _hashCode = type.GetHashCode();
         }
 
         public bool Equals(NativeRefWrapperType other)
         {
-            return _type == other._type;
+            return _typeGUID == other._typeGUID;
         }
         
         public override int GetHashCode()
@@ -55,8 +53,14 @@ namespace Svelto.DataStructures
             return _hashCode;
         }
         
-        readonly Guid _type;
-        readonly int  _hashCode;
+        readonly        Guid       _typeGUID;
+        readonly        int        _hashCode;
+        static readonly Func<Guid> NewGuid;
+
+        static NativeRefWrapperType()
+        {
+            NewGuid = System.Guid.NewGuid;
+        }
     }
     
     public readonly struct RefWrapper<T>: IEquatable<RefWrapper<T>>, IEquatable<T> where T:class

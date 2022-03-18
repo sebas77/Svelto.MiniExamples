@@ -12,7 +12,6 @@ namespace Svelto.ECS.MiniExamples.Example1C
           , new ComponentBuilder<SpawnPointEntityComponent>()
           , new ComponentBuilder<VelocityEntityComponent>()
           , new ComponentBuilder<SpeedEntityComponent>()
-          , new ComponentBuilder<EGIDComponent>()
           , new ComponentBuilder<MealInfoComponent>()
         };
     }

@@ -52,7 +52,7 @@ namespace Svelto.ECS.SveltoOnDOTS
 
     public class SyncSveltoToDOTSGroup : UnsortedJobifiedEnginesGroup<SyncSveltoToDOTSEngine> {}
 
-    public abstract class SyncSveltoToDOTSEngine : SystemBase, IJobifiedEngine
+    public abstract partial class SyncSveltoToDOTSEngine : SystemBase, IJobifiedEngine
     {
         //The dependency returned is enough for the Svelto Engines running after this to take in consideration
         //the Systembase jobs. The svelto engines do not need to take in consideration the new dependencies created

@@ -1,3 +1,4 @@
+#if SLOW_SVELTO_SUBMISSION
 namespace Svelto.ECS
 {
     /// <summary>
@@ -12,3 +13,4 @@ namespace Svelto.ECS
         EntityReference selfReference { get; set; }
     }
 }
+#endif

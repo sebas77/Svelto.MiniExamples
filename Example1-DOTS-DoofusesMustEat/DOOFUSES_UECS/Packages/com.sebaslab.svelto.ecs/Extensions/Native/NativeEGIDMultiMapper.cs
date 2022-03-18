@@ -1,6 +1,7 @@
 using System;
 using Svelto.DataStructures;
 using Svelto.DataStructures.Native;
+using Svelto.ECS.DataStructures;
 
 namespace Svelto.ECS.Native
 {
@@ -15,17 +16,20 @@ namespace Svelto.ECS.Native
     /// </summary>
     public struct NativeEGIDMultiMapper<T> : IDisposable where T : unmanaged, IEntityComponent
     {
-        public NativeEGIDMultiMapper
-        (SveltoDictionary<ExclusiveGroupStruct,
-             SveltoDictionary<uint, T, NativeStrategy<SveltoDictionaryNode<uint>>, NativeStrategy<T>,
-                 NativeStrategy<int>>, NativeStrategy<SveltoDictionaryNode<ExclusiveGroupStruct>>,
-             NativeStrategy<SveltoDictionary<uint, T, NativeStrategy<SveltoDictionaryNode<uint>>, NativeStrategy<T>,
-                 NativeStrategy<int>>>, NativeStrategy<int>> dictionary)
+        public NativeEGIDMultiMapper(in SveltoDictionary<
+            /*key  */ExclusiveGroupStruct,
+            /*value*/
+            SharedNative<SveltoDictionary<uint, T, NativeStrategy<SveltoDictionaryNode<uint>>, NativeStrategy<T>,
+                NativeStrategy<int>>>,
+            /*strategy to store the key*/ NativeStrategy<SveltoDictionaryNode<ExclusiveGroupStruct>>,
+            /*strategy to store the value*/
+            NativeStrategy<SharedNative<SveltoDictionary<uint, T, NativeStrategy<SveltoDictionaryNode<uint>>,
+                NativeStrategy<T>, NativeStrategy<int>>>>, NativeStrategy<int>> dictionary)
         {
             _dic = dictionary;
         }
 
-        public int count => (int) _dic.count;
+        public int count => (int)_dic.count;
 
         public void Dispose()
         {
@@ -39,9 +43,9 @@ namespace Svelto.ECS.Native
                 throw new Exception($"NativeEGIDMultiMapper: Entity not found {entity}");
 #endif
             ref var sveltoDictionary = ref _dic.GetValueByRef(entity.groupID);
-            return ref sveltoDictionary.GetValueByRef(entity.entityID);
+            return ref sveltoDictionary.value.GetValueByRef(entity.entityID);
         }
-        
+
         public uint GetIndex(EGID entity)
         {
 #if DEBUG && !PROFILE_SVELTO
@@ -49,26 +53,26 @@ namespace Svelto.ECS.Native
                 throw new Exception($"NativeEGIDMultiMapper: Entity not found {entity}");
 #endif
             ref var sveltoDictionary = ref _dic.GetValueByRef(entity.groupID);
-            return sveltoDictionary.GetIndex(entity.entityID);
+            return sveltoDictionary.value.GetIndex(entity.entityID);
         }
 
         public bool Exists(EGID entity)
         {
-            return _dic.TryFindIndex(entity.groupID, out var index)
-                && _dic.GetDirectValueByRef(index).ContainsKey(entity.entityID);
+            return _dic.TryFindIndex(entity.groupID, out var index) &&
+                _dic.GetDirectValueByRef(index).value.ContainsKey(entity.entityID);
         }
 
         public bool TryGetEntity(EGID entity, out T component)
         {
             component = default;
-            return _dic.TryFindIndex(entity.groupID, out var index)
-                && _dic.GetDirectValueByRef(index).TryGetValue(entity.entityID, out component);
+            return _dic.TryFindIndex(entity.groupID, out var index) &&
+                _dic.GetDirectValueByRef(index).value.TryGetValue(entity.entityID, out component);
         }
-        
+
         SveltoDictionary<ExclusiveGroupStruct,
-            SveltoDictionary<uint, T, NativeStrategy<SveltoDictionaryNode<uint>>, NativeStrategy<T>,
-                NativeStrategy<int>>, NativeStrategy<SveltoDictionaryNode<ExclusiveGroupStruct>>,
-            NativeStrategy<SveltoDictionary<uint, T, NativeStrategy<SveltoDictionaryNode<uint>>, NativeStrategy<T>,
-                NativeStrategy<int>>>, NativeStrategy<int>> _dic;
+            SharedNative<SveltoDictionary<uint, T, NativeStrategy<SveltoDictionaryNode<uint>>, NativeStrategy<T>,
+                NativeStrategy<int>>>, NativeStrategy<SveltoDictionaryNode<ExclusiveGroupStruct>>, NativeStrategy<
+                SharedNative<SveltoDictionary<uint, T, NativeStrategy<SveltoDictionaryNode<uint>>, NativeStrategy<T>,
+                    NativeStrategy<int>>>>, NativeStrategy<int>> _dic;
     }
 }

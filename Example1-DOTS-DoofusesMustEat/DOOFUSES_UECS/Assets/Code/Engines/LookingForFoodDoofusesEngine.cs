@@ -1,5 +1,7 @@
 using Svelto.Common;
 using Svelto.DataStructures;
+using Svelto.ECS.EntityComponents;
+using Svelto.ECS.Internal;
 using Svelto.ECS.Native;
 using Svelto.ECS.SveltoOnDOTS;
 using Unity.Burst;
@@ -51,24 +53,26 @@ namespace Svelto.ECS.MiniExamples.Example1C
         {
             JobHandle deps = inputDeps;
 
-            foreach (var ((foodEntities, availableFoodCount), _) in entitiesDB.QueryEntities<EGIDComponent>(
+            foreach (var ((_, foodIDs, availableFoodCount), fromGoodGroup) in entitiesDB.QueryEntities<PositionEntityComponent>(
                 availableFood))
             {
-                foreach (var ((doofuses, egids, doofusesCount), _) in entitiesDB
-                   .QueryEntities<MealInfoComponent, EGIDComponent>(availableDoofuses))
+                foreach (var ((doofuses, doofusesIDs, doofusesCount), fromDoofusesGroup) in entitiesDB
+                   .QueryEntities<MealInfoComponent>(availableDoofuses))
                 {
                     var eatingDoofusesCount = math.min(availableFoodCount, doofusesCount);
 
                     //schedule the job
                     deps = JobHandle.CombineDependencies(deps, new LookingForFoodDoofusesJob()
                     {
-                        _doofusesTargetMeals = doofuses
-                      , _doofuses            = egids
-                      , _food                = foodEntities
-                      , _nativeDoofusesSwap  = _nativeDoofusesSwap
-                      , _nativeFoodSwap      = _nativeFoodSwap
-                      , _doofuseEatingGroup  = eatingDoofusesGroup
-                      , _eatenFoodGroup      = eatenFoodGroup
+                        _doofusesTargetMeals  = doofuses
+                      , _doofuses             = doofusesIDs
+                      , _food                 = foodIDs
+                      , _nativeDoofusesSwap   = _nativeDoofusesSwap
+                      , _nativeFoodSwap       = _nativeFoodSwap
+                      , _doofuseEatingGroup   = eatingDoofusesGroup
+                      , _eatenFoodGroup       = eatenFoodGroup
+                        , _fromFoodGroup      =fromGoodGroup
+                         , _fromDoofusesGroup =fromDoofusesGroup
                     }.ScheduleParallel(eatingDoofusesCount, inputDeps));
                 }
             }
@@ -84,8 +88,8 @@ namespace Svelto.ECS.MiniExamples.Example1C
         [BurstCompile]
         struct LookingForFoodDoofusesJob : IJobParallelFor
         {
-            [ReadOnly] public NB<EGIDComponent> _food;
-            [ReadOnly] public NB<EGIDComponent> _doofuses;
+            [ReadOnly] public NativeEntityIDs _food;
+            [ReadOnly] public NativeEntityIDs _doofuses;
             
             [WriteOnly] public NB<MealInfoComponent> _doofusesTargetMeals;
             
@@ -94,6 +98,9 @@ namespace Svelto.ECS.MiniExamples.Example1C
             
             public ExclusiveBuildGroup   _doofuseEatingGroup;
             public ExclusiveBuildGroup   _eatenFoodGroup;
+            
+            public ExclusiveGroupStruct _fromFoodGroup;
+            public ExclusiveGroupStruct _fromDoofusesGroup;
 
 #pragma warning disable 649
             /// <summary>
@@ -105,12 +112,12 @@ namespace Svelto.ECS.MiniExamples.Example1C
             public void Execute(int index)
             {
                 //pickup the meal for this doofus
-                var mealID = _food[(uint) index].ID;
+                var mealID = new EGID(_food[(uint) index], _fromFoodGroup);
                 //Set the target meal for this doofus
                 _doofusesTargetMeals[index].targetMeal = new EGID(mealID.entityID, _eatenFoodGroup);
 
                 //swap this doofus to the eating group so it won't be picked up again
-               _nativeDoofusesSwap.SwapEntity(_doofuses[index].ID, _doofuseEatingGroup, _threadIndex);
+               _nativeDoofusesSwap.SwapEntity(new EGID(_doofuses[index], _fromDoofusesGroup), _doofuseEatingGroup, _threadIndex);
                 //swap the meal to the being eating group, so it won't be picked up again
                 _nativeFoodSwap.SwapEntity(mealID, _eatenFoodGroup, _threadIndex);
             }

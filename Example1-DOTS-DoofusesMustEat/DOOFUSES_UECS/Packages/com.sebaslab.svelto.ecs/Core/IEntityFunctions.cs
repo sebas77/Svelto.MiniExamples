@@ -11,7 +11,7 @@ namespace Svelto.ECS
         void RemoveEntity<T>(EGID entityegid , [CallerMemberName] string caller = null) where T : IEntityDescriptor, new();
         
         void RemoveEntitiesFromGroup(ExclusiveBuildGroup groupID , [CallerMemberName] string caller = null);
-        void SwapEntitiesInGroup<T>(ExclusiveBuildGroup fromGroupID, ExclusiveBuildGroup toGroupID, [CallerMemberName] string caller = null)where T : IEntityDescriptor, new();
+        void SwapEntitiesInGroup(ExclusiveBuildGroup fromGroupID, ExclusiveBuildGroup toGroupID, [CallerMemberName] string caller = null);
 
         void SwapEntityGroup<T>(uint entityID, ExclusiveBuildGroup fromGroupID, ExclusiveBuildGroup toGroupID, [CallerMemberName] string caller = null) where T : IEntityDescriptor, new();
         void SwapEntityGroup<T>(EGID fromEGID, ExclusiveBuildGroup toGroupID, [CallerMemberName] string caller = null) where T : IEntityDescriptor, new();

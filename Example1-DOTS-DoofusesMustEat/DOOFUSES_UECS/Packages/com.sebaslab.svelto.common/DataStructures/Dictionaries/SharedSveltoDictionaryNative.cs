@@ -18,19 +18,21 @@ namespace Svelto.DataStructures.Native
     public struct SharedSveltoDictionaryNative<TKey, TValue>
         where TKey : unmanaged, IEquatable<TKey> where TValue : struct
     {
-        public static SharedSveltoDictionaryNative<TKey,TValue> Create()
+        public static SharedSveltoDictionaryNative<TKey,TValue> Create(Allocator allocatorStrategy = Allocator.Persistent)
         {
-            return new SharedSveltoDictionaryNative<TKey, TValue>(0);
+            return new SharedSveltoDictionaryNative<TKey, TValue>(0, allocatorStrategy);
         }
         
-        public SharedSveltoDictionaryNative(uint size)
+        public SharedSveltoDictionaryNative(uint size, Allocator allocatorStrategy = Allocator.Persistent)
         {
             var dictionary =
                 new SveltoDictionary<TKey, TValue, NativeStrategy<SveltoDictionaryNode<TKey>>, NativeStrategy<TValue>,
-                NativeStrategy<int>>(size, Allocator.Persistent);
+                NativeStrategy<int>>(size, allocatorStrategy);
             
             _sharedDictionary = MemoryUtilities.Alloc<SveltoDictionary<TKey, TValue, NativeStrategy<SveltoDictionaryNode<TKey>>, NativeStrategy<TValue>,
-                NativeStrategy<int>>>(1, Allocator.Persistent);
+                NativeStrategy<int>>>(1, allocatorStrategy);
+
+            _allocatorStrategy = allocatorStrategy;
 
             this.dictionary = dictionary;
         }
@@ -176,10 +178,9 @@ namespace Svelto.DataStructures.Native
             if (_sharedDictionary == null)
                 throw new Exception("SharedSveltoDictionary: try to dispose an already disposed array");
 #endif                
-            
             dictionary.Dispose();
             
-            MemoryUtilities.Free(_sharedDictionary, Allocator.Persistent);
+            MemoryUtilities.Free(_sharedDictionary, _allocatorStrategy);
             _sharedDictionary = IntPtr.Zero;
         }
 
@@ -201,5 +202,7 @@ namespace Svelto.DataStructures.Native
         [Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction]
 #endif
         IntPtr _sharedDictionary;
+
+        readonly Allocator _allocatorStrategy;
     }
 }

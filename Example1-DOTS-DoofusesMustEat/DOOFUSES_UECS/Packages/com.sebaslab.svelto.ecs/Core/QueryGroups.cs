@@ -189,6 +189,13 @@ namespace Svelto.ECS.Experimental
 
             return new QueryResult(groupsValue.Evaluate());
         }
+        
+        public void Evaluate(FasterList<ExclusiveGroupStruct> group)
+        {
+            var groupsValue = groups.Value;
+
+            groupsValue.Evaluate().CopyTo(group.ToArrayFast(out var count), count);
+        }
     }
 
     public readonly ref struct QueryResult

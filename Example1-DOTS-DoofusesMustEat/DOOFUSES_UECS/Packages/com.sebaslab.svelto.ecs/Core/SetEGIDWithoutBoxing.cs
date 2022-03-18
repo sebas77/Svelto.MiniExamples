@@ -1,3 +1,4 @@
+#if SLOW_SVELTO_SUBMISSION
 namespace Svelto.ECS.Internal
 {
     delegate void SetEGIDWithoutBoxingActionCast<T>(ref T target, EGID egid) where T : struct, IEntityComponent;
@@ -66,3 +67,4 @@ namespace Svelto.ECS.Internal
         }
     }
 }
+#endif

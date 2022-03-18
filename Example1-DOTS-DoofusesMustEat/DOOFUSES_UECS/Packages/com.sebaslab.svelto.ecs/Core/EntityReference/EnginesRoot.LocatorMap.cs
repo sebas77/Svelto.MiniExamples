@@ -1,4 +1,6 @@
-﻿using Svelto.Common;
+﻿using System.Runtime.CompilerServices;
+using Svelto.Common;
+using Svelto.DataStructures;
 using Svelto.DataStructures.Native;
 using Svelto.ECS.DataStructures;
 using Svelto.ECS.Reference;
@@ -81,6 +83,7 @@ namespace Svelto.ECS
                 groupMap[egid.entityID] = reference;
             }
 
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             internal void UpdateEntityReference(EGID from, EGID to)
             {
                 var reference = FetchAndRemoveReference(@from);
@@ -93,6 +96,7 @@ namespace Svelto.ECS
                 groupMap[to.entityID] = reference;
             }
 
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             internal void RemoveEntityReference(EGID egid)
             {
                 var reference = FetchAndRemoveReference(@egid);
@@ -106,6 +110,7 @@ namespace Svelto.ECS
                 _nextFreeIndex.Set((int)reference.index);
             }
 
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             EntityReference FetchAndRemoveReference(EGID @from)
             {
                 var egidToReference = _egidToReferenceMap[@from.groupID];
@@ -115,6 +120,7 @@ namespace Svelto.ECS
                 return reference;
             }
 
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             internal void RemoveAllGroupReferenceLocators(ExclusiveGroupStruct groupId)
             {
                 if (_egidToReferenceMap.TryGetValue(groupId, out var groupMap) == false)
@@ -128,6 +134,7 @@ namespace Svelto.ECS
                 _egidToReferenceMap.Remove(groupId);
             }
 
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             internal void UpdateAllGroupReferenceLocators(ExclusiveGroupStruct fromGroupId, ExclusiveGroupStruct toGroupId)
             {
                 if (_egidToReferenceMap.TryGetValue(fromGroupId, out var groupMap) == false)

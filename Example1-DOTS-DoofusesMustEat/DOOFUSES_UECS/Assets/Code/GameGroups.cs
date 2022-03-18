@@ -42,9 +42,9 @@ namespace Svelto.ECS.MiniExamples.Example1C
 
     static class GameFilters
     {
-        readonly static EntitiesDB.SveltoFilters.ContextID ContextID = EntitiesDB.SveltoFilters.GetNewContextID();
+        static readonly FilterContextID ContextID = EntitiesDB.SveltoFilters.GetNewContextID();
         
-        public static readonly EntitiesDB.SveltoFilters.CombinedFilterID SPECIAL_BLUE_DOOFUSES_MESHES = new(0, ContextID);
-        public static readonly EntitiesDB.SveltoFilters.CombinedFilterID BLUE_DOOFUSES_MESHES         = new(1, ContextID);
+        public static readonly CombinedFilterID SPECIAL_BLUE_DOOFUSES_MESHES = new(0, ContextID);
+        public static readonly CombinedFilterID BLUE_DOOFUSES_MESHES         = new(1, ContextID);
     }
 }

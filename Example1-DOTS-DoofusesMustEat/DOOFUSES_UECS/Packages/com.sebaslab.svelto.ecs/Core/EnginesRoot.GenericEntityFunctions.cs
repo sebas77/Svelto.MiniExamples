@@ -43,23 +43,20 @@ namespace Svelto.ECS
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public void SwapEntitiesInGroup<T>
+            public void SwapEntitiesInGroup
             (ExclusiveBuildGroup fromGroupID, ExclusiveBuildGroup toGroupID, [CallerMemberName] string caller = null) 
-                where T : IEntityDescriptor, new()
             {
                 if (_enginesRoot.Target._groupEntityComponentsDB.TryGetValue(
                         fromGroupID.group
                       , out FasterDictionary<RefWrapperType, ITypeSafeDictionary> entitiesInGroupPerType) == true)
                 {
 #if DEBUG && !PROFILE_SVELTO
-                    IComponentBuilder[] components = EntityDescriptorTemplate<T>.descriptor.componentsToBuild;
-                    ITypeSafeDictionary dictionary =
-                        entitiesInGroupPerType[new RefWrapperType(components[0].GetEntityComponentType())];
+                    ITypeSafeDictionary dictionary = entitiesInGroupPerType.unsafeValues[0];
 
                     dictionary.KeysEvaluator((key) =>
                     {
-                        _enginesRoot.Target.CheckRemoveEntityID(new EGID(key, fromGroupID), TypeCache<T>.type, caller);
-                        _enginesRoot.Target.CheckAddEntityID(new EGID(key, toGroupID), TypeCache<T>.type, caller);
+                        _enginesRoot.Target.CheckRemoveEntityID(new EGID(key, fromGroupID), null, caller);
+                        _enginesRoot.Target.CheckAddEntityID(new EGID(key, toGroupID), null, caller);
                     });
 #endif
                     _enginesRoot.Target.QueueSwapGroupOperation(fromGroupID, toGroupID, caller);

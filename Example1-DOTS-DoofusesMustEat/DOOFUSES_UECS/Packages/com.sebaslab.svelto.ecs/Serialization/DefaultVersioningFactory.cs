@@ -4,7 +4,7 @@ namespace Svelto.ECS.Serialization
 {
     //TODO: Unit test. Delete this comment once Unit test is written
 #if ENABLE_IL2CPP
-    [Preserve]
+    [UnityEngine.Scripting.Preserve]
 #endif    
     public class DefaultVersioningFactory<T> : IDeserializationFactory where T : IEntityDescriptor, new()
     {

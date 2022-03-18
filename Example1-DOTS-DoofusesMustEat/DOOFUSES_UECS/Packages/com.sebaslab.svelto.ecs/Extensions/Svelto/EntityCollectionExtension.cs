@@ -84,6 +84,22 @@ namespace Svelto.ECS
             buffer3 = ec.buffer3._nativedBuffer;
             buffer4 = ec.buffer4._nativedBuffer;
             count   = (int)ec.count;
+        } 
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Deconstruct<T1, T2, T3, T4>(in this EntityCollection<T1, T2, T3, T4> ec, out NB<T1> buffer1,
+            out NB<T2> buffer2, out NB<T3> buffer3, out NB<T4> buffer4, out NativeEntityIDs entityIDs, out int count)
+            where T1 : unmanaged, IEntityComponent
+            where T2 : unmanaged, IEntityComponent
+            where T3 : unmanaged, IEntityComponent
+            where T4 : unmanaged, IEntityComponent
+        {
+            buffer1 = ec.buffer1._nativedBuffer;
+            buffer2 = ec.buffer2._nativedBuffer;
+            buffer3 = ec.buffer3._nativedBuffer;
+            buffer4 = ec.buffer4._nativedBuffer;
+            entityIDs = ec.buffer1._nativedIndices;
+            count   = (int)ec.count;
         }
     }
 

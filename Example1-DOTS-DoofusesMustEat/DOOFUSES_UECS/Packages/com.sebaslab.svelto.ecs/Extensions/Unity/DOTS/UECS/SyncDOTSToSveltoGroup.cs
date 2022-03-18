@@ -18,7 +18,7 @@ namespace Svelto.ECS.SveltoOnDOTS
 
     public interface ISyncDOTSToSveltoEngine : IJobifiedEngine { }
 
-    public abstract class SyncDOTSToSveltoEngine : SystemBase, ISyncDOTSToSveltoEngine
+    public abstract partial class SyncDOTSToSveltoEngine : SystemBase, ISyncDOTSToSveltoEngine
     {
         public JobHandle Execute(JobHandle inputDeps)
         {
@@ -32,7 +32,7 @@ namespace Svelto.ECS.SveltoOnDOTS
         public abstract string name { get; }
     }
     
-    public abstract class SortedSyncDOTSToSveltoEngine : SystemBase, ISyncDOTSToSveltoEngine
+    public abstract partial class SortedSyncDOTSToSveltoEngine : SystemBase, ISyncDOTSToSveltoEngine
     {
         public JobHandle Execute(JobHandle inputDeps)
         {

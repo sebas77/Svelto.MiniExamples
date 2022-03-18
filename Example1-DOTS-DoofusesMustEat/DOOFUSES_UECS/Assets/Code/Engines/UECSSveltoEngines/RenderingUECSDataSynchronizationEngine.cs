@@ -7,7 +7,7 @@ using Unity.Transforms;
 namespace Svelto.ECS.MiniExamples.Example1C
 {
     [DisableAutoCreation]
-    public class RenderingDOTSDataSynchronizationEngine : SyncSveltoToDOTSEngine, IQueryingEntitiesEngine
+    public partial class RenderingDOTSDataSynchronizationEngine : SyncSveltoToDOTSEngine, IQueryingEntitiesEngine
     {
         public EntitiesDB entitiesDB { get; set; }
 

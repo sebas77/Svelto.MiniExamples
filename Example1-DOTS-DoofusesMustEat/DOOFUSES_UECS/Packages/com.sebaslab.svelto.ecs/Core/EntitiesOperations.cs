@@ -72,23 +72,26 @@ namespace Svelto.ECS
         }
 
         public void ExecuteRemoveAndSwappingOperations(
-            Action<FasterDictionary<ExclusiveGroupStruct, FasterDictionary<RefWrapperType, FasterDictionary<ExclusiveGroupStruct, FasterList<(uint, uint, string)>>>>, FasterList<(EGID, EGID)>, EnginesRoot> swapEntities,
-            Action<
-                FasterDictionary<ExclusiveGroupStruct, FasterDictionary<RefWrapperType, FasterList<(uint, string)>>>,
-                FasterList<EGID>, EnginesRoot> removeEntities,
-            Action<ExclusiveGroupStruct, EnginesRoot> removeGroup,
+            Action<FasterDictionary<ExclusiveGroupStruct, FasterDictionary<RefWrapperType,
+                    FasterDictionary<ExclusiveGroupStruct, FasterList<(uint, uint, string)>>>>, FasterList<(EGID, EGID)>
+               ,
+                EnginesRoot> swapEntities,
+            Action<FasterDictionary<ExclusiveGroupStruct, FasterDictionary<RefWrapperType, FasterList<(uint, string)>>>,
+                FasterList<EGID>, EnginesRoot> removeEntities, Action<ExclusiveGroupStruct, EnginesRoot> removeGroup,
             Action<ExclusiveGroupStruct, ExclusiveGroupStruct, EnginesRoot> swapGroup, EnginesRoot enginesRoot)
         {
             (_thisSubmissionInfo, _lastSubmittedInfo) = (_lastSubmittedInfo, _thisSubmissionInfo);
 
-            if (_lastSubmittedInfo._entitiesSwapped.count > 0)
-                swapEntities(_lastSubmittedInfo._currentSwapEntitiesOperations, _lastSubmittedInfo._entitiesSwapped,
-                    enginesRoot);
-
-            if (_lastSubmittedInfo._entitiesRemoved.count > 0)
-                removeEntities(_lastSubmittedInfo._currentRemoveEntitiesOperations, _lastSubmittedInfo._entitiesRemoved,
-                    enginesRoot);
-
+            ///todo: we found a case where entities with reference to other entities were removed
+            /// in the same frame where the referenced entities are remove too.
+            /// the callback of the referencing entities were assuming that the reference at that point
+            /// would be invalid. However since the callbacks were called before the groups are removed
+            /// the reference were still valid, which was not expected.
+            /// If the referenced entities were removed one by one instead that with the group, by chance
+            /// it instead worked because the entities were removed before the callbacks were called.
+            /// this is why RemoveGroup is happeing before RemoveEntities, however the real fix
+            /// should be to update all the references before removing the entities from the dictionaries
+            /// and call the callbacks
             foreach (var (group, caller) in _lastSubmittedInfo._groupsToRemove)
             {
                 try
@@ -123,6 +126,14 @@ namespace Svelto.ECS
                 }
             }
 
+            if (_lastSubmittedInfo._entitiesSwapped.count > 0)
+                swapEntities(_lastSubmittedInfo._currentSwapEntitiesOperations, _lastSubmittedInfo._entitiesSwapped,
+                    enginesRoot);
+
+            if (_lastSubmittedInfo._entitiesRemoved.count > 0)
+                removeEntities(_lastSubmittedInfo._currentRemoveEntitiesOperations, _lastSubmittedInfo._entitiesRemoved,
+                    enginesRoot);
+
             _lastSubmittedInfo.Clear();
         }
 
@@ -132,8 +143,9 @@ namespace Svelto.ECS
         {
             //from group                          //actual component type      
             internal FasterDictionary<ExclusiveGroupStruct, FasterDictionary<RefWrapperType,
-                // to group ID        //entityIDs , debugInfo
-                FasterDictionary<ExclusiveGroupStruct, FasterList<(uint, uint, string)>>>> _currentSwapEntitiesOperations;
+                    // to group ID        //entityIDs , debugInfo
+                    FasterDictionary<ExclusiveGroupStruct, FasterList<(uint, uint, string)>>>>
+                _currentSwapEntitiesOperations;
 
             internal FasterDictionary<ExclusiveGroupStruct,
                 FasterDictionary<RefWrapperType, FasterList<(uint, string)>>> _currentRemoveEntitiesOperations;

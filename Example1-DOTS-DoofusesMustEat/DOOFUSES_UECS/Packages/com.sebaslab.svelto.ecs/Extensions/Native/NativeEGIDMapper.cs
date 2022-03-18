@@ -3,6 +3,7 @@ using System.Runtime.CompilerServices;
 using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.DataStructures.Native;
+using Svelto.ECS.DataStructures;
 
 namespace Svelto.ECS.Native
 {
@@ -14,43 +15,48 @@ namespace Svelto.ECS.Native
     /// </summary>
     public readonly struct NativeEGIDMapper<T> : IEGIDMapper where T : unmanaged, IEntityComponent
     {
-        public NativeEGIDMapper
-        (ExclusiveGroupStruct groupStructId
-       , SveltoDictionary<uint, T, NativeStrategy<SveltoDictionaryNode<uint>>, NativeStrategy<T>, NativeStrategy<int>>
-             toNative) : this()
+        public static readonly NativeEGIDMapper<T> empty = new NativeEGIDMapper<T>
+            (default, new SharedNative<SveltoDictionary<uint, T, NativeStrategy<SveltoDictionaryNode<uint>>,
+                NativeStrategy<T>, NativeStrategy<int>>>(
+                new SveltoDictionary<uint, T, NativeStrategy<SveltoDictionaryNode<uint>>,
+                    NativeStrategy<T>, NativeStrategy<int>>(0, Allocator.Persistent)));
+        
+        public NativeEGIDMapper(ExclusiveGroupStruct groupStructId,
+            in SharedNative<SveltoDictionary<uint, T, NativeStrategy<SveltoDictionaryNode<uint>>, NativeStrategy<T>,
+                NativeStrategy<int>>> toNative) : this()
         {
             groupID = groupStructId;
-            _map    = new SveltoDictionaryNative<uint, T>();
-            
-            _map.UnsafeCast(toNative);
+            _map    = toNative;
         }
 
-        public int                  count      => _map.count;
+        public int                  count      => _map.value.count;
         public Type                 entityType => TypeCache<T>.type;
         public ExclusiveGroupStruct groupID    { get; }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref T Entity(uint entityID)
         {
+            var sveltoDictionary = _map.value;
+                    
 #if DEBUG && !PROFILE_SVELTO
-            if (_map.TryFindIndex(entityID, out var findIndex) == false)
+            if (sveltoDictionary.TryFindIndex(entityID, out var findIndex) == false)
                 throw new Exception($"Entity {entityID} not found in this group {groupID} - {typeof(T).Name}");
 #else
-            _map.TryFindIndex(entityID, out var findIndex);
+            sveltoDictionary.TryFindIndex(entityID, out var findIndex);
 #endif
-            return ref _map.GetDirectValueByRef(findIndex);
+            return ref sveltoDictionary.GetDirectValueByRef(findIndex);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool TryGetEntity(uint entityID, out T value)
         {
-            if (_map.count > 0 && _map.TryFindIndex(entityID, out var index))
-                unsafe
-                {
-                    value = Unsafe.AsRef<T>(Unsafe.Add<T>((void*) _map.GetValues(out _).ToNativeArray(out _)
-                                                        , (int) index));
-                    return true;
-                }
+            var sveltoDictionary = _map.value;
+            if (sveltoDictionary.count > 0 && sveltoDictionary.TryFindIndex(entityID, out var index))
+            {
+                var values = sveltoDictionary.unsafeValues.ToRealBuffer();
+                value = values[index];
+                return true;
+            }
 
             value = default;
             return false;
@@ -59,8 +65,9 @@ namespace Svelto.ECS.Native
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public NB<T> GetArrayAndEntityIndex(uint entityID, out uint index)
         {
-            if (_map.TryFindIndex(entityID, out index))
-                return new NB<T>(_map.GetValues(out var count).ToNativeArray(out _), count);
+            var sveltoDictionary = _map.value;
+            if (sveltoDictionary.TryFindIndex(entityID, out index))
+                return sveltoDictionary.unsafeValues.ToRealBuffer();
 
 #if DEBUG && !PROFILE_SVELTO
             throw new ECSException("Entity not found");
@@ -73,9 +80,11 @@ namespace Svelto.ECS.Native
         public bool TryGetArrayAndEntityIndex(uint entityID, out uint index, out NB<T> array)
         {
             index = 0;
-            if (_map.count > 0 && _map.TryFindIndex(entityID, out index))
+            var sveltoDictionary = _map.value;
+            
+            if (sveltoDictionary.count > 0 && sveltoDictionary.TryFindIndex(entityID, out index))
             {
-                array = new NB<T>(_map.GetValues(out var count).ToNativeArray(out _), count);
+                array = sveltoDictionary.unsafeValues.ToRealBuffer();
                 return true;
             }
 
@@ -86,21 +95,23 @@ namespace Svelto.ECS.Native
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Exists(uint idEntityId)
         {
-            return _map.count > 0 && _map.TryFindIndex(idEntityId, out _);
+            var sveltoDictionary = _map.value;
+            return sveltoDictionary.count > 0 && sveltoDictionary.TryFindIndex(idEntityId, out _);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public uint GetIndex(uint entityID)
         {
-            return _map.GetIndex(entityID);
+            return _map.value.GetIndex(entityID);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool FindIndex(uint valueKey, out uint index)
         {
-            return _map.TryFindIndex(valueKey, out index);
+            return _map.value.TryFindIndex(valueKey, out index);
         }
 
-        readonly SveltoDictionaryNative<uint, T> _map;
+        readonly SharedNative<SveltoDictionary<uint, T, NativeStrategy<SveltoDictionaryNode<uint>>, NativeStrategy<T>,
+            NativeStrategy<int>>> _map;
     }
 }

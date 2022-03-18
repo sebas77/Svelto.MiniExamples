@@ -42,20 +42,20 @@ Most of the source code has been rewritten to work with Svelto.ECS framework. Th
 * Note: This demo shows just one way to abstract OOP code, it is not _THE WAY_. Other strategies are in fact listed in the Example 6. 
 * Note: The purposes of this demo is NOT to show how to write fast code. In fact most of the solutions you will find in this demo are not optimal at all. Svelto ECS is used only to wrap high level code as all the low level functionalities are executed through standard gameobjects.
 
-## Example 3: GUI and Service Layer (Hybrid ECS for GUI)
+## ~~Example 3: GUI and Service Layer (Hybrid ECS for GUI)~~
 
-![Image](https://i2.wp.com/www.sebaslab.com/wp-content/uploads/2019/07/image-2.png?w=701)
+~~Integration with Unity UI and Svelto entities 3.0~~
 
-Integration with Unity UI and Svelto entities 3.0
+~~Goal of this example~~
 
-Goal of this example
+* ~~Show how EntityStreams work to publish data changes.~~ 
+* ~~Show how to enable databinding with ExclusiveGroups.~~ 
+* ~~Show how to setup a data oriented GUI with nested prefabs.~~ 
+* ~~Show a basic usage of the Svelto.Services (https://github.com/sebas77/Svelto.Services)~~
 
-* Show how EntityStreams work to publish data changes. 
-* Show how to enable databinding with ExclusiveGroups. 
-* Show how to setup a data oriented GUI with nested prefabs. 
-* Show a basic usage of the Svelto.Services (https://github.com/sebas77/Svelto.Services)
+~~Main article: http://www.sebaslab.com/svelto-miniexamples-gui-and-services-layer/~~
 
-Main article: http://www.sebaslab.com/svelto-miniexamples-gui-and-services-layer/
+this example has been removed has using ECS for GUI is totally discouraged and alternative patterns will be presented in my articles in due time.
 
 ## Example 4: Pure .net + SDL example
 

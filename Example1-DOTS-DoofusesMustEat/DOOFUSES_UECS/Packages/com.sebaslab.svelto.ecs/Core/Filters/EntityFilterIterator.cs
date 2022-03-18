@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-
-namespace Svelto.ECS
+﻿namespace Svelto.ECS
 {
     public ref struct EntityFilterIterator
     {

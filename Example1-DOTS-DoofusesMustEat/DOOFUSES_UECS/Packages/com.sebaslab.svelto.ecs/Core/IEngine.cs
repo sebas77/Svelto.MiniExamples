@@ -1,3 +1,5 @@
+using Svelto.DataStructures;
+using Svelto.ECS.DataStructures;
 using Svelto.ECS.Internal;
 
 namespace Svelto.ECS.Internal
@@ -13,11 +15,11 @@ namespace Svelto.ECS.Internal
     public interface IReactOnAddEx : IReactEngine
     {
     }
-    
+
     public interface IReactOnRemoveEx : IReactEngine
     {
     }
-    
+
     public interface IReactOnSwapEx : IReactEngine
     {
     }
@@ -62,7 +64,8 @@ namespace Svelto.ECS
 
     public interface IReactOnAddEx<T> : IReactOnAddEx where T : struct, IEntityComponent
     {
-        void Add((uint start, uint end) rangeOfEntities, in EntityCollection<T> collection, ExclusiveGroupStruct groupID);
+        void Add((uint start, uint end) rangeOfEntities, in EntityCollection<T> collection,
+            ExclusiveGroupStruct groupID);
     }
 
     /// <summary>
@@ -73,10 +76,11 @@ namespace Svelto.ECS
     {
         void Remove(ref T entityComponent, EGID egid);
     }
-    
+
     public interface IReactOnRemoveEx<T> : IReactOnRemoveEx where T : struct, IEntityComponent
     {
-        void Remove((uint start, uint end) rangeOfEntities, in EntityCollection<T> collection, ExclusiveGroupStruct groupID);
+        void Remove((uint start, uint end) rangeOfEntities, in EntityCollection<T> collection,
+            ExclusiveGroupStruct groupID);
     }
 
     public interface IReactOnAddAndRemove<T> : IReactOnAdd<T>, IReactOnRemove<T> where T : IEntityComponent
@@ -101,7 +105,7 @@ namespace Svelto.ECS
     {
         void MovedTo(ref T entityComponent, ExclusiveGroupStruct previousGroup, EGID egid);
     }
-    
+
     public interface IReactOnSwapEx<T> : IReactOnSwapEx where T : struct, IEntityComponent
     {
         void MovedTo((uint start, uint end) rangeOfEntities, in EntityCollection<T> collection,

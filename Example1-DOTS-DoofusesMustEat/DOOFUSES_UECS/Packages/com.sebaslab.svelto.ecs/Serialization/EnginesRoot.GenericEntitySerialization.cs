@@ -18,8 +18,8 @@ namespace Svelto.ECS
                 uint    descriptorHash              = serializableEntityComponent.descriptorHash;
 
                 SerializationDescriptorMap serializationDescriptorMap = _enginesRoot._serializationDescriptorMap;
-                var entityDescriptor = serializationDescriptorMap.GetDescriptorFromHash(descriptorHash);
-                var entityComponentsToSerialise = entityDescriptor.componentsToSerialize;
+                ISerializableEntityDescriptor entityDescriptor = serializationDescriptorMap.GetDescriptorFromHash(descriptorHash);
+                ISerializableComponentBuilder[] entityComponentsToSerialise = entityDescriptor.componentsToSerialize;
 
                 var header =
                     new SerializableEntityHeader(descriptorHash, egid, (byte)entityComponentsToSerialise.Length);
@@ -123,8 +123,8 @@ namespace Svelto.ECS
                 _enginesRoot.CheckAddEntityID(toEGID, entityDescriptor.realType, caller);
 
                 /// Serializable Entity Descriptors can be extended so we need to use FindRealComponents
-                _enginesRoot.QueueSwapEntityOperation(fromEGID, toEGID
-                    , _enginesRoot.FindRealComponents(fromEGID, entityDescriptor.componentsToBuild), caller);
+                _enginesRoot.QueueSwapEntityOperation(fromEGID, toEGID,
+                    _enginesRoot.FindRealComponents(fromEGID, entityDescriptor.componentsToBuild), caller);
             }
 
             public void DeserializeEntityToDelete(EGID egid, [CallerMemberName] string caller = null)
@@ -141,8 +141,8 @@ namespace Svelto.ECS
                 try
                 {
                     /// Serializable Entity Descriptors can be extended so we need to use FindRealComponents
-                    _enginesRoot.QueueRemoveEntityOperation(egid
-                        , _enginesRoot.FindRealComponents(egid, entityDescriptor.componentsToBuild), caller);
+                    _enginesRoot.QueueRemoveEntityOperation(egid,
+                        _enginesRoot.FindRealComponents(egid, entityDescriptor.componentsToBuild), caller);
                 }
                 catch
                 {

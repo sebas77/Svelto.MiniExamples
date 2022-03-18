@@ -1,6 +1,5 @@
 using System;
 using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using Svelto.Common;
@@ -19,6 +18,8 @@ namespace Svelto.DataStructures
         {
             _dic = dic;
         }
+        
+        public uint count => (uint)_dic.count;
 
         [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
         public KeyValuePairFast<TKey, TValue, TValueStrategy>[] keyValues
@@ -53,7 +54,7 @@ namespace Svelto.DataStructures
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
     [DebuggerTypeProxy(typeof(SveltoDictionaryDebugProxy<,,,,>))]
-    public struct SveltoDictionary<TKey, TValue, TKeyStrategy, TValueStrategy, TBucketStrategy>
+    public struct SveltoDictionary<TKey, TValue, TKeyStrategy, TValueStrategy, TBucketStrategy>: IDisposable
         where TKey : struct, IEquatable<TKey>
         where TKeyStrategy : struct, IBufferStrategy<SveltoDictionaryNode<TKey>>
         where TValueStrategy : struct, IBufferStrategy<TValue>
@@ -90,6 +91,12 @@ namespace Svelto.DataStructures
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => _valuesInfo;
+        }
+        
+        public TValueStrategy unsafeValues
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => _values;
         }
         
         /// <summary>
@@ -785,9 +792,9 @@ namespace Svelto.DataStructures
         internal TValueStrategy _values;
         TBucketStrategy         _buckets;
         
-        uint  _freeValueCellIndex;
-        uint  _collisions;
-        ulong _fastModBucketsMultiplier;
+        uint        _freeValueCellIndex;
+        uint        _collisions;
+        ulong       _fastModBucketsMultiplier;
     }
 
     public class SveltoDictionaryException : Exception
