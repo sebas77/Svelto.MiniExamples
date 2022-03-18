@@ -21,8 +21,8 @@ namespace Svelto.ECS.Example.OOPAbstraction.WithOOPLayer
                 int                      cubeIndex   = 0, cubeCount = 0;
 
                 //as long as there are valid groups SpherePrimitive 
-                foreach (var ((bufferSphere, egids, sphereCount), _) in entitiesDB
-                   .QueryEntities<ObjectParentComponent, EGIDComponent>(ExampleGroups.SpherePrimitive.Groups))
+                foreach (var ((bufferSphere, egids, sphereCount), fromGroup) in entitiesDB
+                   .QueryEntities<ObjectParentComponent>(ExampleGroups.SpherePrimitive.Groups))
                 {
                     //as long as in the current group there are still spheres to iterate
                     while (sphereIndex < sphereCount)
@@ -42,7 +42,7 @@ namespace Svelto.ECS.Example.OOPAbstraction.WithOOPLayer
                         bufferSphere[sphereIndex].parentIndex = bufferCube[(uint) ((_index + cubeIndex) % cubeCount)].index;
 
                         //publish the change
-                        entitiesDB.PublishEntityChange<ObjectParentComponent>(egids[sphereIndex].ID);
+                        entitiesDB.PublishEntityChange<ObjectParentComponent>(new EGID(egids[sphereIndex], fromGroup));
 
                         //move to the next sphere and next cube
                         sphereIndex++;

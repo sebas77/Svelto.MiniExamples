@@ -5,5 +5,5 @@ namespace Svelto.ECS.Example.OOPAbstraction.OOPLayer
     /// going to work without troubles. This descriptor list the components needed to link an entity to an object
     /// </summary>
     public class
-        PrimitiveEntityDescriptor : GenericEntityDescriptor<TransformComponent, ObjectIndexComponent, EGIDComponent> { }
+        PrimitiveEntityDescriptor : GenericEntityDescriptor<TransformComponent, ObjectIndexComponent> { }
 }

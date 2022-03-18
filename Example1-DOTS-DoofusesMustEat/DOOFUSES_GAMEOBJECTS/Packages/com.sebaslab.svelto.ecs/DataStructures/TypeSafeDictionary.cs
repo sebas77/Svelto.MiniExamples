@@ -250,7 +250,7 @@ namespace Svelto.ECS.Internal
                     //todo: temporary code that will eventually be removed 
                     if (_hasReference)
                         SetEGIDWithoutBoxing<TValue>.SetRefWithoutBoxing(ref tuple.value,
-                            entityLocator.GetEntityReference(egid));
+                            locator.GetEntityReference(egid));
 #endif
                     try
                     {

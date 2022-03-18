@@ -7,6 +7,7 @@ namespace Svelto.ECS.Example.OOPAbstraction.EntityViewComponents
     interface ITransformImplementor : IImplementor
     {
         Vector3                               position { get; set; }
+        //ValueReference is the only way to store a reference inside an Implementor
         ValueReference<ITransformImplementor> parent   { set; }
     }
 
@@ -16,7 +17,8 @@ namespace Svelto.ECS.Example.OOPAbstraction.EntityViewComponents
 
         public ValueReference<ITransformImplementor> parent
         {
-            set => transform.SetParent(value.Convert(this).transform, false);
+            //convert back the ValueReference to the real implementor
+            set => transform.SetParent((value.ConvertAndDispose(this) as TransformImplementor).transform, false);
         }
     }
 }

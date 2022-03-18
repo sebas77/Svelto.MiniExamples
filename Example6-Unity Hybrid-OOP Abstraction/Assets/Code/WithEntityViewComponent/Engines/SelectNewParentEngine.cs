@@ -17,10 +17,8 @@ namespace Svelto.ECS.Example.OOPAbstraction.EntityViewComponents
                 if (_index == count)
                     _index = 0;
 
-                using (var value = new ValueReference<ITransformImplementor>(bufferCube[_index].transform))
-                {
-                    bufferSphere[0].transform.parent = value;
-                }
+                bufferSphere[0].transform.parent =
+                    new ValueReference<ITransformImplementor>(bufferCube[_index].transform);
 
                 ++_index;
             }
