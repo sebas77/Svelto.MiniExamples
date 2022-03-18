@@ -8,6 +8,8 @@
         <AssemblyVersion></AssemblyVersion>
         <Company>Svelto</Company>
         <IsPackable>false</IsPackable>
+        <Configurations>Debug;Release;SlowSubmissionRelease;SlowSubmissionDebug</Configurations>
+        <Platforms>AnyCPU</Platforms>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -32,6 +34,14 @@
         <PlatformTarget>AnyCPU</PlatformTarget>
         <UseSharedCompilation>false</UseSharedCompilation>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)' == 'SlowSubmissionRelease' ">
+      <DefineConstants>TRACE;SLOW_SVELTO_SUBMISSION;RELEASE</DefineConstants>
+      <Optimize>true</Optimize>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)' == 'SlowSubmissionDebug' ">
+      <DefineConstants>TRACE;SLOW_SVELTO_SUBMISSION;DEBUG</DefineConstants>
+      <DebugSymbols>true</DebugSymbols>
     </PropertyGroup>
 
     <ItemGroup>

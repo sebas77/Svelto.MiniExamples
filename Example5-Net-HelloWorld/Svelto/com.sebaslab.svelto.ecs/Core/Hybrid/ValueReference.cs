@@ -8,7 +8,7 @@ namespace Svelto.ECS.Hybrid
     /// The OOP abstraction layer that knows about the implementor than can cast it to the real type
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public struct ValueReference<T> where T:class, IImplementor
+    public struct ValueReference<T> where T:class
     {
         public ValueReference(T obj) { _pointer = GCHandle.Alloc(obj, GCHandleType.Normal); }
 
