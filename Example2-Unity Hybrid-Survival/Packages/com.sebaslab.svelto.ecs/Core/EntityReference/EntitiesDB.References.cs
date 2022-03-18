@@ -1,5 +1,4 @@
 using System.Runtime.CompilerServices;
-using Svelto.ECS.Reference;
 
 namespace Svelto.ECS
 {

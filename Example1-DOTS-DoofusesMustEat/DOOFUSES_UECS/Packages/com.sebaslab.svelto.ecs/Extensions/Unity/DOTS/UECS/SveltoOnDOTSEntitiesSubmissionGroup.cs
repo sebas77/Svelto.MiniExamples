@@ -131,8 +131,7 @@ namespace Svelto.ECS.SveltoOnDOTS
 
             using (profiler.Sample("Playback Command Buffer"))
             {
-                if (_entityCommandBuffer.IsEmpty == false)
-                    _entityCommandBuffer.Playback(EntityManager);
+                _entityCommandBuffer.Playback(EntityManager);
                 _entityCommandBuffer.Dispose();
             }
 

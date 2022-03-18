@@ -125,8 +125,11 @@ namespace Svelto.ECS.Example.Survive.Enemies
         {
             Svelto.Console.LogDebug("reuse enemy " + spawnData.enemySpawnData.enemyPrefab);
 
-            var (healths, enemyViews, count) =
-                entitiesDB.QueryEntities<HealthComponent, EnemyEntityViewComponent>(fromGroupId);
+            var (healths, _, _) =
+                entitiesDB.QueryEntities<HealthComponent>(fromGroupId);
+            
+            var (enemyViews, egids, count) =
+                entitiesDB.QueryEntities<EnemyEntityViewComponent>(fromGroupId);
 
             if (count > 0)
             {
@@ -140,7 +143,7 @@ namespace Svelto.ECS.Example.Survive.Enemies
                 enemyViews[0].layerComponent.layer                  = GAME_LAYERS.ENEMY_LAYER;
                 enemyViews[0].animationComponent.reset              = true;
 
-                _entityFunctions.SwapEntityGroup<EnemyEntityDescriptor>(enemyViews[0].ID, AliveEnemies.BuildGroup);
+                _entityFunctions.SwapEntityGroup<EnemyEntityDescriptor>(new EGID(egids[0], fromGroupId), AliveEnemies.BuildGroup);
             }
         }
 

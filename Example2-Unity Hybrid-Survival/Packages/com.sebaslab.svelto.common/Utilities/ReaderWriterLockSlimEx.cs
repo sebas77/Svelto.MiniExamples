@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using System.Threading;
 
 namespace Svelto.DataStructures
@@ -5,12 +6,18 @@ namespace Svelto.DataStructures
 #if !UNITY_WEBGL    
     public struct ReaderWriterLockSlimEx
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void EnterReadLock()           { _slimLock.EnterReadLock(); }
-        public void QuittingReadLock()            { _slimLock.ExitReadLock(); }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void ExitReadLock()            { _slimLock.ExitReadLock(); }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void EnterUpgradableReadLock() { _slimLock.EnterUpgradeableReadLock(); }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ExitUpgradableReadLock()  { _slimLock.ExitUpgradeableReadLock(); }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void EnterWriteLock()          { _slimLock.EnterWriteLock(); }
-        public void QuittingWriteLock()           { _slimLock.ExitWriteLock(); }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void ExitWriteLock()           { _slimLock.ExitWriteLock(); }
 
         ReaderWriterLockSlim _slimLock;
 
@@ -20,15 +27,16 @@ namespace Svelto.DataStructures
         }
     }
 #else
+//ATTENTION THIS IS NOT A REAL IMPLEMENTATION, WEBGL DOES NOT SUPPORT MULTITHREADING
     public struct ReaderWriterLockSlimEx
     {
-        public void EnterReadLock()    { ThrowOnMoreThanOne(ref _readLock); }
-        public void QuittingReadLock() { ReleaseLock(ref _readLock); }
+        public void EnterReadLock() { ThrowOnMoreThanOne(ref _readLock); }
+        public void ExitReadLock()  { ReleaseLock(ref _readLock); }
         
         public void EnterUpgradableReadLock() { ThrowOnMoreThanOne(ref _upgradableReadLock); }
         public void ExitUpgradableReadLock()  { ReleaseLock(ref _upgradableReadLock); }
         public void EnterWriteLock()          { ThrowOnMoreThanOne(ref _writeLock); }
-        public void QuittingWriteLock()       { ReleaseLock(ref _writeLock); }
+        public void ExitWriteLock()           { ReleaseLock(ref _writeLock); }
         
         void ThrowOnMoreThanOne(ref int readLock)
         {

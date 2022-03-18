@@ -221,6 +221,9 @@ namespace Svelto.ECS.Example.Survive
         /// for a complex GUI.
         /// Note that creating an entity to manage a complex gui like this, is OK only for such a simple scenario
         /// otherwise a widget-like design should be adopted.
+        ///
+        /// UPDATE: NOTE -> SveltoGUIHelper is now deprecated. You shouldn't attempt to handle GUIs with Entities
+        /// 
         /// </summary>
         /// <param name="contextHolder"></param>
         void BuildGUIEntitiesFromScene(UnityContext contextHolder, IEntityFactory entityFactory)

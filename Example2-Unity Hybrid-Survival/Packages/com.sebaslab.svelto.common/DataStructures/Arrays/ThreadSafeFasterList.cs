@@ -30,7 +30,7 @@ namespace Svelto.DataStructures
                 }
                 finally
                 {
-                    _lockQ.QuittingReadLock();
+                    _lockQ.ExitReadLock();
                 }
             }
         }
@@ -47,7 +47,7 @@ namespace Svelto.DataStructures
                 }
                 finally
                 {
-                    _lockQ.QuittingWriteLock();
+                    _lockQ.ExitWriteLock();
                 }
             }
         }
@@ -68,7 +68,7 @@ namespace Svelto.DataStructures
             }
             finally
             {
-                _lockQ.QuittingWriteLock();
+                _lockQ.ExitWriteLock();
             }
         }
 
@@ -82,7 +82,7 @@ namespace Svelto.DataStructures
             }
             finally
             {
-                _lockQ.QuittingWriteLock();
+                _lockQ.ExitWriteLock();
             }
         }
 
@@ -96,7 +96,7 @@ namespace Svelto.DataStructures
             }
             finally
             {
-                _lockQ.QuittingWriteLock();
+                _lockQ.ExitWriteLock();
             }
         }
 
@@ -110,7 +110,7 @@ namespace Svelto.DataStructures
             }
             finally
             {
-                _lockQ.QuittingWriteLock();
+                _lockQ.ExitWriteLock();
             }
         }
 
@@ -124,7 +124,7 @@ namespace Svelto.DataStructures
             }
             finally
             {
-                _lockQ.QuittingWriteLock();
+                _lockQ.ExitWriteLock();
             }
         }
 
@@ -138,7 +138,7 @@ namespace Svelto.DataStructures
             }
             finally
             {
-                _lockQ.QuittingWriteLock();
+                _lockQ.ExitWriteLock();
             }
         }
 
@@ -152,7 +152,7 @@ namespace Svelto.DataStructures
             }
             finally
             {
-                _lockQ.QuittingWriteLock();
+                _lockQ.ExitWriteLock();
             }
         }
 
@@ -166,7 +166,7 @@ namespace Svelto.DataStructures
             }
             finally
             {
-                _lockQ.QuittingReadLock();
+                _lockQ.ExitReadLock();
             }
         }
 

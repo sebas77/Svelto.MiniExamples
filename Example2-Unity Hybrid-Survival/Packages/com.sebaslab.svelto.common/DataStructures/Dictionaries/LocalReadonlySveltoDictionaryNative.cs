@@ -45,18 +45,6 @@ namespace Svelto.DataStructures.Native
             return _dictionary.TryGetValue(key, out result);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ref TValue GetDirectValueByRef(uint index)
-        {
-            return ref _dictionary.GetDirectValueByRef(index);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ref TValue GetValueByRef(TKey key)
-        {
-            return ref _dictionary.GetValueByRef(key);
-        }
-
         public TValue this[TKey key]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]

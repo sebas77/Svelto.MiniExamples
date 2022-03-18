@@ -148,7 +148,7 @@ namespace Svelto.DataStructures.Native
             ReleaseCachedReference();
 
             if (_realBuffer.ToNativeArray(out _) != IntPtr.Zero)
-                MemoryUtilities.Free(_realBuffer.ToNativeArray(out _), Allocator.Persistent);
+                MemoryUtilities.Free(_realBuffer.ToNativeArray(out _), _nativeAllocator);
             else
                 throw new Exception("trying to dispose disposed buffer");
 

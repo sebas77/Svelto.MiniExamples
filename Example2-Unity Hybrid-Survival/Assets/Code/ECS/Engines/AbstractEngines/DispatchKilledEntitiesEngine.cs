@@ -14,15 +14,13 @@
 
         public void Step()
         {
-            foreach (var ((healths, egids, count), _) in entitiesDB.QueryEntities<HealthComponent, EGIDComponent>(
+            foreach (var ((healths, egids, count), fromGroup) in entitiesDB.QueryEntities<HealthComponent>(
                 Damageable.Groups))
             {
                 for (int i = 0; i < count; ++i)
                     if (healths[i].currentHealth <= 0)
                     {
-                        entitiesDB.PublishEntityChange<DeathComponent>(egids[i].ID);
-                        
-                        Svelto.Console.LogDebug(("death " + egids[i].ID));
+                        entitiesDB.PublishEntityChange<DeathComponent>(new EGID(egids[i], fromGroup));
                     }
             }
         }

@@ -24,7 +24,7 @@ namespace Svelto.ECS.Example.Survive.Player.Gun
             void Shoot()
             {
                 //probable design issue: player and gun is too coupled
-                foreach (var ((playersInputs, weapons, count), _) in entitiesDB
+                foreach (var ((playersInputs, weapons, eids, count), fromGroup) in entitiesDB
                    .QueryEntities<PlayerInputDataComponent, PlayerWeaponComponent>(Player.Groups))
                 {
                     for (var i = 0; i < count; i++)
@@ -39,7 +39,7 @@ namespace Svelto.ECS.Example.Survive.Player.Gun
                             playerGunComponent.timer += _time.deltaTime;
 
                             if (playerGunComponent.timer >= playerGunComponent.timeBetweenBullets)
-                                this.Shoot(ref playerGunComponent, playerGunViewComponent);
+                                this.Shoot(ref playerGunComponent, playerGunViewComponent, gunEGID);
                         }
                     }
                 }
@@ -60,7 +60,10 @@ namespace Svelto.ECS.Example.Survive.Player.Gun
         ///     Svelto and ECS help immensely to abstract only when it's actually needed
         /// </summary>
         /// <param name="playerGunEntityView"></param>
-        void Shoot(ref GunAttributesComponent playerGunEntityView, in GunEntityViewComponent gunFxComponent)
+        /// <param name="gunFxComponent"></param>
+        /// <param name="gunFxComponentID"></param>
+        void Shoot(ref GunAttributesComponent playerGunEntityView, in GunEntityViewComponent gunFxComponent,
+            EGID gunFxComponentID)
         {
             playerGunEntityView.timer = 0;
 
@@ -89,7 +92,7 @@ namespace Svelto.ECS.Example.Survive.Player.Gun
                 playerGunEntityView.lastTargetPosition =
                     shootRay.origin + shootRay.direction * playerGunEntityView.range;
 
-            entitiesDB.PublishEntityChange<GunAttributesComponent>(gunFxComponent.ID);
+            entitiesDB.PublishEntityChange<GunAttributesComponent>(gunFxComponentID);
         }
 
         /// <summary>
