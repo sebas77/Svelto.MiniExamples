@@ -2,9 +2,9 @@ namespace Svelto.Common.Internal
 {
     public static class DebugExtensions
     {
-        public static string TypeName<T>(this T any)
+        public static string TypeName<T>(this T _)
         {
-            return TypeCache<T>.type.Name;
+            return TypeCache<T>.name;
         }
     }
 }

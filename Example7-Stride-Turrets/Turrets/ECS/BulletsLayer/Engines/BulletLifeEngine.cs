@@ -15,11 +15,11 @@ namespace Svelto.ECS.MiniExamples.Turrets
 
         public void Step(in float deltaTime)
         {
-            foreach (var ((position, egids, count), _) in entitiesDB.QueryEntities<PositionComponent, EGIDComponent>(
+            foreach (var ((position, egids, count), fromGroup) in entitiesDB.QueryEntities<PositionComponent>(
                 BulletTag.Groups))
                 for (var i = 0; i < count; i++)
                     if (position[i].position.Y < -0.01f)
-                        _entityFunctions.RemoveEntity<BulletEntityDescriptor>(egids[i].ID);
+                        _entityFunctions.RemoveEntity<BulletEntityDescriptor>(new EGID(egids[i], fromGroup));
         }
 
         readonly IEntityFunctions _entityFunctions;

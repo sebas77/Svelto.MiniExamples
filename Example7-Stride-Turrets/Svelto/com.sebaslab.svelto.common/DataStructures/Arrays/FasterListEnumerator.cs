@@ -2,8 +2,14 @@ namespace Svelto.DataStructures
 {
     public ref struct FasterListEnumerator<T>
     {
-        public T Current =>
-            _buffer[(uint) _counter - 1];
+        public T Current
+        {
+            get
+            {
+                DBC.Common.Check.Require(_counter <= _size);
+                return _buffer[(uint)_counter - 1];
+            }
+        }
 
         public FasterListEnumerator(in T[] buffer, uint size)
         {
@@ -14,12 +20,8 @@ namespace Svelto.DataStructures
 
         public bool MoveNext()
         {
-            if (_counter < _size)
-            {
-                _counter++;
-
+            if (_counter++ < _size)
                 return true;
-            }
 
             return false;
         }

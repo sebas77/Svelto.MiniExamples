@@ -9,7 +9,7 @@ namespace Svelto.ECS
         { }
 
         public SerializingEnginesRoot
-            (EntitiesSubmissionScheduler entitiesComponentScheduler, bool enginesWaitForReady) : base(
+            (EntitiesSubmissionScheduler entitiesComponentScheduler, EnginesReadyOption enginesWaitForReady) : base(
             entitiesComponentScheduler, enginesWaitForReady)
         {}
     }

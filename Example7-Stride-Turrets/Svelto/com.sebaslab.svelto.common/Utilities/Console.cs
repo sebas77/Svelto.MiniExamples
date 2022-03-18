@@ -3,6 +3,7 @@
 #endif
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 #if NETFX_CORE
 using Windows.System.Diagnostics;
 #else
@@ -17,24 +18,33 @@ namespace Svelto
 {
     public static class Console
     {
-        static readonly ThreadLocal<StringBuilder> _stringBuilder;
+        static readonly ThreadLocal<StringBuilder> _threadSafeStrings;
+        static readonly FasterList<ILogger>        _loggers;
 
-        static readonly FasterList<ILogger> _loggers;
+        public static bool batchLog = false;
 
         static Console()
         {
-            _stringBuilder = new ThreadLocal<StringBuilder>
-                (() => new StringBuilder(256));
-            _loggers        = new FasterList<ILogger>();
+            _threadSafeStrings = new ThreadLocal<StringBuilder>(() => new StringBuilder(256));
+            _loggers           = new FasterList<ILogger>();
 
             AddLogger(new SimpleLogger());
         }
 
-        public static void SetLogger(ILogger log)
+        static StringBuilder _stringBuilder
         {
-            _loggers[0] = log;
-
-            log.OnLoggerAdded();
+            get
+            {
+                try
+                {
+                    return _threadSafeStrings.Value;
+                }
+                catch
+                {
+                    return
+                        new StringBuilder(); //this is just to handle finalizer that could be called after the _threadSafeStrings is finalized. So pretty rare
+                }
+            }
         }
 
         public static void AddLogger(ILogger log)
@@ -44,25 +54,50 @@ namespace Svelto
             log.OnLoggerAdded();
         }
 
-        public static void Log(string txt) { InternalLog(txt, LogType.Log); }
+        public static void Log(string txt)
+        {
+            InternalLog(txt, LogType.Log);
+        }
+
+        [Conditional("DEBUG")]
+        public static void LogDebug(string txt)
+        {
+            InternalLog(txt, LogType.LogDebug);
+        }
+
+        [Conditional("DEBUG")]
+        public static void LogDebug<T>(string txt, T extradebug)
+        {
+            InternalLog(txt.FastConcat(extradebug.ToString()), LogType.LogDebug);
+        }
+
+        [Conditional("DEBUG")]
+        public static void LogDebugWarning(string txt)
+        {
+            InternalLog(txt, LogType.Warning);
+        }
+
+        [Conditional("DEBUG")]
+        public static void LogDebugWarning(bool assertion, string txt)
+        {
+            if (assertion == false)
+                InternalLog(txt, LogType.Warning);
+        }
 
         public static void LogError(string txt, Dictionary<string, string> extraData = null)
         {
-            string toPrint;
+            var builder = _stringBuilder;
 
-            lock (_stringBuilder)
-            {
-                _stringBuilder.Value.Length = 0;
-                _stringBuilder.Value.Append("-!!!!!!-> ").Append(txt);
+            builder.Length = 0;
+            builder.Append("-!!!!!!-> ").Append(txt);
 
-                toPrint = _stringBuilder.ToString();
-            }
+            var toPrint = builder.ToString();
 
-            InternalLog(toPrint, LogType.Error, null, extraData);
+            InternalLog(toPrint, LogType.Error, true, null, extraData);
         }
 
-        public static void LogException(Exception exception, string message = null
-                                      , Dictionary<string, string> extraData = null)
+        public static void LogException(Exception exception, string message = null,
+            Dictionary<string, string> extraData = null)
         {
             if (extraData == null)
                 extraData = new Dictionary<string, string>();
@@ -74,57 +109,96 @@ namespace Svelto
             {
                 tracingE = tracingE.InnerException;
 
-                InternalLog("-!!!!!!-> ", LogType.Error, tracingE);
+                InternalLog("-!!!!!!-> ", LogType.Error, true, tracingE);
             }
 
             if (message != null)
             {
-                lock (_stringBuilder)
-                {
-                    _stringBuilder.Value.Length = 0;
-                    _stringBuilder.Value.Append(toPrint).Append(message);
+                var builder = _stringBuilder;
+                builder.Length = 0;
+                builder.Append(toPrint).Append(exception.Message).Append(" -- ").Append(message);
 
-                    toPrint = _stringBuilder.ToString();
-                }
+                toPrint = builder.ToString();
             }
 
             //the goal of this is to show the stack from the real error
-            InternalLog(toPrint, LogType.Exception, exception, extraData);
+            InternalLog(toPrint, LogType.Exception, true, exception, extraData);
         }
 
         public static void LogWarning(string txt)
         {
-            string toPrint;
+            var builder = _stringBuilder;
+            builder.Length = 0;
+            builder.Append("------> ").Append(txt);
 
-            lock (_stringBuilder)
-            {
-                _stringBuilder.Value.Length = 0;
-                _stringBuilder.Value.Append("------> ").Append(txt);
-
-                toPrint = _stringBuilder.ToString();
-            }
+            var toPrint = builder.ToString();
 
             InternalLog(toPrint, LogType.Warning);
         }
 
-        [Conditional("DEBUG")]
-        public static void LogDebug(string txt) { InternalLog(txt, LogType.LogDebug); }
+        public static void LogStackTrace(string str, StackTrace stack)
+        {
+            var builder = _stringBuilder;
+            builder.Length = 0;
 
-        [Conditional("DEBUG")]
-        public static void LogDebug<T>(string txt, T extradebug)
-        {
-            InternalLog(txt.FastConcat(extradebug.ToString()), LogType.LogDebug);
+            _stringBuilder.Append(str).Append("\n");
+
+            for (var index1 = 0; index1 < stack.FrameCount; ++index1)
+            {
+                FormatStack(stack.GetFrame(index1), builder);
+            }
+
+            var toPrint = builder.ToString();
+
+            InternalLog(toPrint, LogType.Error, false);
         }
-        [Conditional("DEBUG")]
-        public static void LogDebugWarning(string txt)
+
+        static void FormatStack(StackFrame frame, StringBuilder sb)
         {
-            InternalLog(txt, LogType.Warning); 
+            MethodBase mb = frame.GetMethod();
+            if (mb == null)
+                return;
+
+            Type classType = mb.DeclaringType;
+            if (classType == null)
+                return;
+
+            // Add namespace.classname:MethodName
+            String ns = classType.Namespace;
+            if (!string.IsNullOrEmpty(ns))
+            {
+                sb.Append(ns);
+                sb.Append(".");
+            }
+
+            sb.Append(classType.Name);
+            sb.Append(":");
+            sb.Append(mb.Name);
+            sb.Append("(");
+
+            // Add parameters
+            int             j           = 0;
+            ParameterInfo[] pi          = mb.GetParameters();
+            bool            fFirstParam = true;
+            while (j < pi.Length)
+            {
+                if (fFirstParam == false)
+                    sb.Append(", ");
+                else
+                    fFirstParam = false;
+
+                sb.Append(pi[j].ParameterType.Name);
+                j++;
+            }
+
+            sb.AppendLine(")");
         }
-        [Conditional("DEBUG")]
-        public static void LogDebugWarning(bool assertion, string txt)
+
+        public static void SetLogger(ILogger log)
         {
-            if (assertion == false)
-                InternalLog(txt, LogType.Warning); 
+            log.OnLoggerAdded();
+
+            _loggers[0] = log;
         }
 
         /// <summary>
@@ -133,14 +207,15 @@ namespace Svelto
         /// </summary>
         /// <param name="txt"></param>
         /// <param name="type"></param>
+        /// <param name="b"></param>
         /// <param name="e"></param>
         /// <param name="extraData"></param>
-        static void InternalLog(string txt, LogType type, Exception e = null
-                              , Dictionary<string, string> extraData = null)
+        static void InternalLog(string txt, LogType type, bool showLogStack = true, Exception e = null,
+            Dictionary<string, string> extraData = null)
         {
             for (int i = 0; i < _loggers.count; i++)
             {
-                _loggers[i].Log(txt, type, e, extraData);
+                _loggers[i].Log(txt, type, showLogStack, e, extraData);
             }
         }
     }

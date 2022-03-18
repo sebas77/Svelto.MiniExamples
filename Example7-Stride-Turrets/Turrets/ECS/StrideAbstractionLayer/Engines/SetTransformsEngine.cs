@@ -21,13 +21,13 @@ namespace Svelto.ECS.MiniExamples.Turrets
 
         public void Step(in float deltaTime)
         {
-            var groups = entitiesDB.FindGroups<EGIDComponent, MatrixComponent>();
-            foreach (var ((egids, transforms, count), _) in
-                entitiesDB.QueryEntities<EGIDComponent, MatrixComponent>(groups))
+            var groups = entitiesDB.FindGroups<MatrixComponent>();
+            foreach (var ((transforms, egids, count), _) in
+                entitiesDB.QueryEntities<MatrixComponent>(groups))
             {
                 for (int i = 0; i < count; i++)
                 {
-                    var transformComponent = _ECSStrideEntityManager.GetStrideEntity(egids[i].ID.entityID).Transform;
+                    var transformComponent = _ECSStrideEntityManager.GetStrideEntity(egids[i]).Transform;
                     transformComponent.WorldMatrix = transforms[i].matrix;
                     transformComponent.UpdateLocalFromWorld();
                 }
