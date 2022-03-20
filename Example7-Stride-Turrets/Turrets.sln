@@ -25,8 +25,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SveltoLayer", "SveltoLayer"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StrideLayer", "StrideLayer\StrideLayer.csproj", "{7D06EC28-09B9-4E5A-A822-92B3EA7F5DFE}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PlayerProjects", "PlayerProjects", "{EEEDA4E0-77A6-4598-B3BF-8DDD3F995B51}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -77,6 +75,5 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{D7A956C5-5023-4CB7-ADD0-7E3BD1ADC594} = {CB9770D0-79EB-4D26-B334-D1CAF44414B5}
 		{C7A58C65-7D4C-4513-A089-44B3B14DFDCB} = {CB9770D0-79EB-4D26-B334-D1CAF44414B5}
-		{A4E64107-A548-4BEC-8825-38A22B62EE1D} = {EEEDA4E0-77A6-4598-B3BF-8DDD3F995B51}
 	EndGlobalSection
 EndGlobal

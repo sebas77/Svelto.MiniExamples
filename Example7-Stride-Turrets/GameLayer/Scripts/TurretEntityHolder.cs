@@ -1,4 +1,5 @@
 using Stride.Engine;
+using Svelto.ECS.MiniExamples.Turrets.EnemyLayer;
 using Svelto.ECS.MiniExamples.Turrets.StrideLayer;
 
 namespace Svelto.ECS.MiniExamples.Turrets

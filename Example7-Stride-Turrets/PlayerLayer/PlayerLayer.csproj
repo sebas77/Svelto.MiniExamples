@@ -7,8 +7,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\EnemiesLayer\EnemiesLayer.csproj" />
       <ProjectReference Include="..\PhysicLayer\PhysicLayer.csproj" />
+      <ProjectReference Include="..\StrideLayer\StrideLayer.csproj" />
       <ProjectReference Include="..\Svelto\com.sebaslab.svelto.ecs\Svelto.ECS.csproj" />
     </ItemGroup>
 

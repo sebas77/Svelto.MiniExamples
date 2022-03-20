@@ -1,4 +1,4 @@
-namespace Svelto.ECS.MiniExamples.Turrets
+namespace Svelto.ECS.MiniExamples.Turrets.EnemyLayer
 {
     public struct ShootingComponent : IEntityComponent
     {

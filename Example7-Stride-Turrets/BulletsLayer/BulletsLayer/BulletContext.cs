@@ -6,9 +6,11 @@ namespace Svelto.ECS.MiniExamples.Turrets.BulletLayer
 {
     public  static class BulletContext
     {
-        public static void Compose(Action<IEngine> AddEngine, ECSStrideEntityManager ecsStrideEntityManager, EnginesRoot enginesRoot, SceneSystem sceneSystem)
+        public static void Compose
+        (Action<IEngine> AddEngine, ECSStrideEntityManager ecsStrideEntityManager, EnginesRoot enginesRoot
+       , SceneSystem sceneSystem, out BulletFactory bulletFactory)
         {
-            var bulletFactory = new BulletFactory(ecsStrideEntityManager, enginesRoot.GenerateEntityFactory());
+            bulletFactory = new BulletFactory(ecsStrideEntityManager, enginesRoot.GenerateEntityFactory());
             bulletFactory.LoadBullet();
             
             AddEngine(new BulletSpawningEngine(ecsStrideEntityManager, sceneSystem));

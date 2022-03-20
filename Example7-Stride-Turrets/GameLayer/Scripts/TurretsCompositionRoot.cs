@@ -1,4 +1,5 @@
 using System;
+using Stride.Core.Mathematics;
 using Stride.Engine;
 using Stride.Games;
 using Svelto.ECS.MiniExamples.Turrets.BulletLayer;
@@ -52,12 +53,24 @@ namespace Svelto.ECS.MiniExamples.Turrets
 
         protected override void BeginRun()
         {
+            GameCompositionRoot();
+            CreatePlayerEntity();
+        }
+
+        void GameCompositionRoot()
+        {
             TransformableContext.Compose(AddEngine);
             SimplePhysicContext.Compose(AddEngine);
             StrideAbstractionContext.Compose(AddEngine, _ecsStrideEntityManager);
-            PlayerContext.Compose(AddEngine, this.Input, _ecsStrideEntityManager, _enginesRoot, SceneSystem);
-            BulletContext.Compose(AddEngine, _ecsStrideEntityManager, _enginesRoot, SceneSystem);
-            EnemyContext.Compose(AddEngine, _ecsStrideEntityManager, _enginesRoot);
+            PlayerContext.Compose(AddEngine, this.Input);
+            BulletContext.Compose(AddEngine, _ecsStrideEntityManager, _enginesRoot, SceneSystem, out BulletFactory bulletFactory);
+            EnemyContext.Compose(AddEngine, bulletFactory);
+        }
+
+        //This coudl have been a PlayerLayer factory, probably a better solution
+        void CreatePlayerEntity()
+        {
+            PlayerFactory.CreatePlayerEntity<GamePlayerBotEntityDescriptor>(_ecsStrideEntityManager, SceneSystem, _enginesRoot.GenerateEntityFactory());
         }
 
         protected override void Update(GameTime gameTime)

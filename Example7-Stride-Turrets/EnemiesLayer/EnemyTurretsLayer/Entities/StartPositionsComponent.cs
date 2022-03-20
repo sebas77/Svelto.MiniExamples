@@ -1,6 +1,6 @@
 using Vector3 = Stride.Core.Mathematics.Vector3;
 
-namespace Svelto.ECS.MiniExamples.Turrets
+namespace Svelto.ECS.MiniExamples.Turrets.EnemyLayer
 {
     public readonly struct StartPositionsComponent : IEntityComponent
     {
@@ -10,9 +10,5 @@ namespace Svelto.ECS.MiniExamples.Turrets
         }
 
         public readonly Vector3 startPosition;
-    }
-    
-    public readonly struct TurretTargetComponent : IEntityComponent
-    {
     }
 }
