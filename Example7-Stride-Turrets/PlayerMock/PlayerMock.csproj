@@ -4,7 +4,6 @@
         <TargetFramework>net5.0-windows</TargetFramework>
         <RuntimeIdentifier>win-x64</RuntimeIdentifier>
         <ApplicationIcon>Resources\Icon.ico</ApplicationIcon>
-        <OutputType>WinExe</OutputType>
         <RootNamespace>Svelto.ECS.MiniExamples.Turrets</RootNamespace>
 
         <OutputPath>..\Bin\Windows\$(Configuration)\</OutputPath>
@@ -16,6 +15,10 @@
 
     <ItemGroup>
         <ProjectReference Include="..\GameLayer\GameLayer.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_DeploymentManifestIconFile Remove="Resources\Icon.ico" />
     </ItemGroup>
 
 </Project>

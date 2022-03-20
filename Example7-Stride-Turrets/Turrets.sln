@@ -5,11 +5,27 @@ VisualStudioVersion = 16.0.0.0
 MinimumVisualStudioVersion = 16.0.0.0
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Turrets.Windows", "Turrets.Windows\Turrets.Windows.csproj", "{E8894DF7-328C-4DE7-8649-0097E40CE720}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Turrets", "Turrets\Turrets.csproj", "{24974F56-1980-4E8A-9D52-37CF51B2ED21}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameLayer", "GameLayer\GameLayer.csproj", "{24974F56-1980-4E8A-9D52-37CF51B2ED21}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.Common", "Svelto\com.sebaslab.svelto.common\Svelto.Common.csproj", "{D7A956C5-5023-4CB7-ADD0-7E3BD1ADC594}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.ECS", "Svelto\com.sebaslab.svelto.ecs\Svelto.ECS.csproj", "{C7A58C65-7D4C-4513-A089-44B3B14DFDCB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BulletsLayer", "BulletsLayer\BulletsLayer.csproj", "{4CEBAAC4-3849-429E-8BD0-3DCD2F98EEA3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EnemiesLayer", "EnemiesLayer\EnemiesLayer.csproj", "{70D72066-8A39-4337-AE66-D49B7B9D0DA7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TransformationLayer", "TransformationLayer\TransformationLayer.csproj", "{B3016263-01A1-409D-B809-65E255728AB0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlayerLayer", "PlayerLayer\PlayerLayer.csproj", "{A4E64107-A548-4BEC-8825-38A22B62EE1D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhysicLayer", "PhysicLayer\PhysicLayer.csproj", "{C69F087C-4CC0-479E-8EAC-404898C37E2B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SveltoLayer", "SveltoLayer", "{CB9770D0-79EB-4D26-B334-D1CAF44414B5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StrideLayer", "StrideLayer\StrideLayer.csproj", "{7D06EC28-09B9-4E5A-A822-92B3EA7F5DFE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PlayerProjects", "PlayerProjects", "{EEEDA4E0-77A6-4598-B3BF-8DDD3F995B51}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,5 +49,34 @@ Global
 		{C7A58C65-7D4C-4513-A089-44B3B14DFDCB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C7A58C65-7D4C-4513-A089-44B3B14DFDCB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C7A58C65-7D4C-4513-A089-44B3B14DFDCB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4CEBAAC4-3849-429E-8BD0-3DCD2F98EEA3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4CEBAAC4-3849-429E-8BD0-3DCD2F98EEA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4CEBAAC4-3849-429E-8BD0-3DCD2F98EEA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4CEBAAC4-3849-429E-8BD0-3DCD2F98EEA3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{70D72066-8A39-4337-AE66-D49B7B9D0DA7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70D72066-8A39-4337-AE66-D49B7B9D0DA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70D72066-8A39-4337-AE66-D49B7B9D0DA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70D72066-8A39-4337-AE66-D49B7B9D0DA7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B3016263-01A1-409D-B809-65E255728AB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B3016263-01A1-409D-B809-65E255728AB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B3016263-01A1-409D-B809-65E255728AB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B3016263-01A1-409D-B809-65E255728AB0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A4E64107-A548-4BEC-8825-38A22B62EE1D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A4E64107-A548-4BEC-8825-38A22B62EE1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A4E64107-A548-4BEC-8825-38A22B62EE1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A4E64107-A548-4BEC-8825-38A22B62EE1D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C69F087C-4CC0-479E-8EAC-404898C37E2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C69F087C-4CC0-479E-8EAC-404898C37E2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C69F087C-4CC0-479E-8EAC-404898C37E2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C69F087C-4CC0-479E-8EAC-404898C37E2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D06EC28-09B9-4E5A-A822-92B3EA7F5DFE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D06EC28-09B9-4E5A-A822-92B3EA7F5DFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D06EC28-09B9-4E5A-A822-92B3EA7F5DFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D06EC28-09B9-4E5A-A822-92B3EA7F5DFE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D7A956C5-5023-4CB7-ADD0-7E3BD1ADC594} = {CB9770D0-79EB-4D26-B334-D1CAF44414B5}
+		{C7A58C65-7D4C-4513-A089-44B3B14DFDCB} = {CB9770D0-79EB-4D26-B334-D1CAF44414B5}
+		{A4E64107-A548-4BEC-8825-38A22B62EE1D} = {EEEDA4E0-77A6-4598-B3BF-8DDD3F995B51}
 	EndGlobalSection
 EndGlobal

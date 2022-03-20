@@ -1,0 +1,24 @@
+!PrefabAsset
+Id: 931aeeeb-ba92-4873-9638-fa7489610d46
+SerializedVersion: {Stride: 3.1.0.1}
+Tags: []
+Hierarchy:
+    RootParts:
+        - ref!! d08f49b4-f3ab-4375-b885-bf7909719740
+    Parts:
+        -   Entity:
+                Id: d08f49b4-f3ab-4375-b885-bf7909719740
+                Name: HoverBot
+                Components:
+                    20de6036a029ecfd36e99b0264012454: !TransformComponent
+                        Id: 07a7551e-1cef-4cef-a708-ef5dd1810b67
+                        Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.3, Y: 0.3, Z: 0.3}
+                        Children: {}
+                    0803b7224f1861b1ffc0b90d456d65a2: !ModelComponent
+                        Id: 64d3da5a-c3c0-4c72-9bec-bbe7f93804bd
+                        Model: af984a43-a49a-4032-870a-76d1b4b5dd6a:Models/HoverBot
+                        Materials:
+                            1a5934cdfbb199c74720492c7df51eec~0: e4a8b81d-08ea-4561-92cc-ef5a7fef6a7d:Materials/DullSilver
+                            1506de2c8072d614106bb64070f00cf6~1: da4b3946-dffd-4b68-ba84-2a5583e32d84:Materials/iron_paint_blend/iron_paint

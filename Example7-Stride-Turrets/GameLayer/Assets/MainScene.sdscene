@@ -1,0 +1,766 @@
+!SceneAsset
+Id: fb9be7f8-0ea5-4f22-bfa5-92067cfafdf1
+SerializedVersion: {Stride: 3.1.0.1}
+Tags: []
+ChildrenIds: []
+Offset: {X: 0.0, Y: 0.0, Z: 0.0}
+Hierarchy:
+    RootParts:
+        - ref!! bf01326b-049b-44a3-9cda-6c0be92a4fd8
+        - ref!! 06162ed7-6d0b-4dd2-8126-9e6b9f57effd
+        - ref!! 7b6946e8-3f68-4c87-8552-bf6816a9bae7
+        - ref!! 18f0dff9-e7b5-4251-abe5-494f1d9c8cc3
+        - ref!! 20e92c40-5519-40f1-8457-2ae88bde4e92
+        - ref!! 681643aa-f1c1-4733-b742-51c2732702be
+        - ref!! ca24c0e5-e371-4ebb-8ed3-a601541ba376
+        - ref!! 9181fb02-01d0-4d82-b791-4b588d48c17d
+        - ref!! ea278ded-af14-401b-b327-444965774e45
+        - ref!! 835b57db-2715-4d62-988a-01136b88f04c
+        - ref!! 14c1b77e-2aac-477f-aade-d31bff39a528
+        - ref!! b8749190-423e-426a-b59f-df76d0478bf9
+        - ref!! 56b46810-65fa-4e44-82d9-81a2768eb1d0
+        - ref!! 6153d215-5b2c-4aed-b258-796dc245e355
+        - ref!! 2eb8bafc-5b54-4776-a861-52a802358024
+        - ref!! b351462b-0e6e-4654-b03c-da808d339855
+    Parts:
+        -   Entity:
+                Id: 06162ed7-6d0b-4dd2-8126-9e6b9f57effd
+                Name: Directional light
+                Components:
+                    a4d5a3dbb7bc70a198cbcda777eba5eb: !TransformComponent
+                        Id: bdb19335-4b5b-4902-8393-55c39943017c
+                        Position: {X: 0.0, Y: 2.0, Z: 0.0}
+                        Rotation: {X: 1.131334E-08, Y: -0.9659258, Z: -0.25881904, W: -4.222196E-08}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    812744e7123e201d2a186a9de6bd9b8b: !LightComponent
+                        Id: 73c5a069-365b-4a4d-8caa-e11638b8c395
+                        Type: !LightDirectional
+                            Color: !ColorRgbProvider
+                                Value: {R: 1.0, G: 1.0, B: 1.0}
+                            Shadow:
+                                Enabled: true
+                                Filter: !LightShadowMapFilterTypePcf
+                                    FilterSize: Filter5x5
+                                Size: Large
+                                DepthRange: {}
+                                PartitionMode: !LightDirectionalShadowMap.PartitionLogarithmic {}
+                                ComputeTransmittance: false
+                                BiasParameters: {}
+                        Intensity: 20.0
+        -   Entity:
+                Id: 09c18e29-15c7-40fe-9b41-4d7e91bfd13f
+                Name: Turret
+                Components:
+                    2938129f231d15ebcf3b5e5d55c31a27: !TransformComponent
+                        Id: a88875a1-b1ba-4ab4-825a-47f43e0dc6c1
+                        Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.3, Y: 0.3, Z: 0.3}
+                        Children: {}
+                    0117aa4625c5ad7e5d4d2d0392285eee: !ModelComponent
+                        Id: 3ad6cc45-75b7-4a04-8a8b-d69b7d6970f3
+                        Model: 443617fc-4f28-4add-a981-699a423b8986:Models/Turret
+                        Materials:
+                            2ad7c1c89d42ca0e76baa778c1607275~0: 2a1e2c7f-caad-45d4-b5c7-49377408d361:Materials/iron/iron
+                    20efc148076a0e2a5d0e97d0bc97a8a7: !Svelto.ECS.MiniExamples.Turrets.TurretEntityHolder,GameLayer
+                        Id: dc0f83ad-f5e6-452c-a9af-cfe0c770e9ba
+                        child: ref!! d814370a-499c-4ac9-867a-765ae6d68840
+            Base:
+                BasePartAsset: 83020843-3487-4627-9313-da5ce4430747:StandsPrefabs/Turret
+                BasePartId: c3ef870e-80de-46dd-bbd0-ff55624d8883
+                InstanceId: 2808ce89-e3b8-440a-a59e-216a1dfd60e8
+        -   Entity:
+                Id: 14c1b77e-2aac-477f-aade-d31bff39a528
+                Name: Turret
+                Components:
+                    637113811f111e324d2720641b025877: !TransformComponent
+                        Id: 1e30b25e-560f-47aa-8d9d-ae9245582d8a
+                        Position: {X: -3.0032914, Y: 0.06327921, Z: -3.17492}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children:
+                            542d588d07d29f4defe08b23ada44910: ref!! d7c6002f-76ed-4f38-a6b4-f817485975e7
+                            c6f3d1ceb702880cf245626e61f7f9e7: ref!! 3648ed00-d6fa-4f02-be3b-d537bf27882f
+        -   Entity:
+                Id: 18f0dff9-e7b5-4251-abe5-494f1d9c8cc3
+                Name: Ground
+                Components:
+                    abfab7aad26502e006e72989b7ae5966: !TransformComponent
+                        Id: 26344c59-f2f7-4041-8423-264bff3fa8db
+                        Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    d4a808a6f89fa730385410bf95201c82: !ModelComponent
+                        Id: acc7a175-1dae-4c8e-bfa6-56c0e1a8ad72
+                        Model: da6cf50a-61a9-422c-867f-5cbd72ffe541:Ground
+                        Materials: {}
+        -   Folder: null
+            Entity:
+                Id: 1de11735-5e8c-4d73-a99f-5beb6308ea7c
+                Name: Turret
+                Components:
+                    2938129f231d15ebcf3b5e5d55c31a27: !TransformComponent
+                        Id: dd9b018a-a62a-4a0c-be41-6fb79be62422
+                        Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.3, Y: 0.3, Z: 0.3}
+                        Children: {}
+                    0117aa4625c5ad7e5d4d2d0392285eee: !ModelComponent
+                        Id: 470be7ea-d339-4472-bc5d-49f5d0f538b4
+                        Model: 443617fc-4f28-4add-a981-699a423b8986:Models/Turret
+                        Materials:
+                            2ad7c1c89d42ca0e76baa778c1607275~0: 2a1e2c7f-caad-45d4-b5c7-49377408d361:Materials/iron/iron
+                    20efc148076a0e2a5d0e97d0bc97a8a7: !Svelto.ECS.MiniExamples.Turrets.TurretEntityHolder,GameLayer
+                        Id: 3aae0fda-6286-47c3-b7ba-ab570fe1619e
+                        child: ref!! 6190ba54-cb89-417c-bd72-b9894afebb47
+            Base:
+                BasePartAsset: 83020843-3487-4627-9313-da5ce4430747:StandsPrefabs/Turret
+                BasePartId: c3ef870e-80de-46dd-bbd0-ff55624d8883
+                InstanceId: 275086db-aaa9-4369-bc1a-09af6fe9f472
+        -   Entity:
+                Id: 20e92c40-5519-40f1-8457-2ae88bde4e92
+                Name: Turret
+                Components:
+                    637113811f111e324d2720641b025877: !TransformComponent
+                        Id: 07fdb77a-4520-493e-b7fb-22b3b4522175
+                        Position: {X: -0.80033207, Y: 0.06327921, Z: -2.586357}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children:
+                            542d588d07d29f4defe08b23ada44910: ref!! a88875a1-b1ba-4ab4-825a-47f43e0dc6c1
+                            c6f3d1ceb702880cf245626e61f7f9e7: ref!! b82d8462-b2dd-4db6-b34f-b1387706d034
+        -   Folder: null
+            Entity:
+                Id: 2aad4c4c-9189-449b-b092-9864053bc3c8
+                Name: Turret
+                Components:
+                    2938129f231d15ebcf3b5e5d55c31a27: !TransformComponent
+                        Id: 727cd5e0-1f95-4fb7-a79c-135e3ab999b0
+                        Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.3, Y: 0.3, Z: 0.3}
+                        Children: {}
+                    0117aa4625c5ad7e5d4d2d0392285eee: !ModelComponent
+                        Id: 33a4a61c-e676-440f-a0d8-46abd3723ae9
+                        Model: 443617fc-4f28-4add-a981-699a423b8986:Models/Turret
+                        Materials:
+                            2ad7c1c89d42ca0e76baa778c1607275~0: 2a1e2c7f-caad-45d4-b5c7-49377408d361:Materials/iron/iron
+                    20efc148076a0e2a5d0e97d0bc97a8a7: !Svelto.ECS.MiniExamples.Turrets.TurretEntityHolder,GameLayer
+                        Id: 7aef73db-9741-432e-af55-b84806c7d34a
+                        child: ref!! f90a5680-af5c-4714-81e6-4b869357828b
+            Base:
+                BasePartAsset: 83020843-3487-4627-9313-da5ce4430747:StandsPrefabs/Turret
+                BasePartId: c3ef870e-80de-46dd-bbd0-ff55624d8883
+                InstanceId: 8f91c384-b0ea-4fb1-b6b0-9644338feb00
+        -   Folder: null
+            Entity:
+                Id: 2c3aa91c-dda7-4691-a734-c71276b8940e
+                Name: HoverBot
+                Components:
+                    7a1b1722719e08dd4c7b6516fa815497: !TransformComponent
+                        Id: 40663124-cf6b-4c1e-98cd-dd36fc747f7e
+                        Position: {X: 0.0, Y: 0.17568517, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.3, Y: 0.3, Z: 0.3}
+                        Children: {}
+                    d9800bd95769fb6e542e92086d7874a2: !ModelComponent
+                        Id: 1a329926-bee8-48c7-b3ca-e5b8cfe7b730
+                        Model: af984a43-a49a-4032-870a-76d1b4b5dd6a:Models/HoverBot
+                        Materials:
+                            5a61eff8af1efb9baf415f8022819a01~0: dec3b8ea-9598-48f1-88b8-ea09ed8d4a61:Materials/Blade
+                            789ede4e670933d6dbf9f6f9fb76e6bd~1: 2d580307-8a98-4dca-9b03-cc22f0b66ea8:Materials/Gold
+            Base:
+                BasePartAsset: 83020843-3487-4627-9313-da5ce4430747:StandsPrefabs/Turret
+                BasePartId: a3cbb945-6526-41f8-b285-19b0aeb4f411
+                InstanceId: d00dd1bd-74eb-44b2-988f-9a07a14ba54c
+        -   Entity:
+                Id: 2eb8bafc-5b54-4776-a861-52a802358024
+                Name: Turret
+                Components:
+                    637113811f111e324d2720641b025877: !TransformComponent
+                        Id: 9bdaccdd-e917-45a3-aa63-72b675f82541
+                        Position: {X: -3.769518, Y: 0.06327921, Z: 0.18319583}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children:
+                            542d588d07d29f4defe08b23ada44910: ref!! 727cd5e0-1f95-4fb7-a79c-135e3ab999b0
+                            c6f3d1ceb702880cf245626e61f7f9e7: ref!! ff0f89d5-bcdd-4398-a22e-c0b83990fe4a
+        -   Folder: null
+            Entity:
+                Id: 3fc4464a-3506-4c7e-abab-c47c2351602d
+                Name: Turret
+                Components:
+                    2938129f231d15ebcf3b5e5d55c31a27: !TransformComponent
+                        Id: b84de64f-d476-47f9-9a71-9b78760179fd
+                        Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.3, Y: 0.3, Z: 0.3}
+                        Children: {}
+                    0117aa4625c5ad7e5d4d2d0392285eee: !ModelComponent
+                        Id: f8c02fcf-2ad0-4967-b155-0bcd1e69b3ab
+                        Model: 443617fc-4f28-4add-a981-699a423b8986:Models/Turret
+                        Materials:
+                            2ad7c1c89d42ca0e76baa778c1607275~0: 2a1e2c7f-caad-45d4-b5c7-49377408d361:Materials/iron/iron
+                    20efc148076a0e2a5d0e97d0bc97a8a7: !Svelto.ECS.MiniExamples.Turrets.TurretEntityHolder,GameLayer
+                        Id: 8606da9c-92b6-4595-8252-f5345c441bd2
+                        child: ref!! f6234052-7511-4023-a581-9f0a2103cb8b
+            Base:
+                BasePartAsset: 83020843-3487-4627-9313-da5ce4430747:StandsPrefabs/Turret
+                BasePartId: c3ef870e-80de-46dd-bbd0-ff55624d8883
+                InstanceId: e9237a3b-c497-43c4-b2fe-f37de51c02e9
+        -   Folder: null
+            Entity:
+                Id: 42bb818f-f31b-42ea-9a5d-f2c81c7a61d5
+                Name: HoverBot
+                Components:
+                    7a1b1722719e08dd4c7b6516fa815497: !TransformComponent
+                        Id: 3648ed00-d6fa-4f02-be3b-d537bf27882f
+                        Position: {X: 0.0, Y: 0.17568517, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.3, Y: 0.3, Z: 0.3}
+                        Children: {}
+                    d9800bd95769fb6e542e92086d7874a2: !ModelComponent
+                        Id: 8af5983f-41a1-4ae5-8ae1-e1ae9cb613eb
+                        Model: af984a43-a49a-4032-870a-76d1b4b5dd6a:Models/HoverBot
+                        Materials:
+                            5a61eff8af1efb9baf415f8022819a01~0: dec3b8ea-9598-48f1-88b8-ea09ed8d4a61:Materials/Blade
+                            789ede4e670933d6dbf9f6f9fb76e6bd~1: 2d580307-8a98-4dca-9b03-cc22f0b66ea8:Materials/Gold
+            Base:
+                BasePartAsset: 83020843-3487-4627-9313-da5ce4430747:StandsPrefabs/Turret
+                BasePartId: a3cbb945-6526-41f8-b285-19b0aeb4f411
+                InstanceId: 69d9d777-8ac0-46b3-98da-7918eaf210e4
+        -   Folder: null
+            Entity:
+                Id: 542e4c31-6622-4b4b-9e94-6bdce345c4d6
+                Name: Turret
+                Components:
+                    2938129f231d15ebcf3b5e5d55c31a27: !TransformComponent
+                        Id: 605802c6-ede6-44c8-85aa-1b13b52cff5a
+                        Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.3, Y: 0.3, Z: 0.3}
+                        Children: {}
+                    0117aa4625c5ad7e5d4d2d0392285eee: !ModelComponent
+                        Id: 0cdcde96-ba89-4b61-a5d3-3aab1dfd93ed
+                        Model: 443617fc-4f28-4add-a981-699a423b8986:Models/Turret
+                        Materials:
+                            2ad7c1c89d42ca0e76baa778c1607275~0: 2a1e2c7f-caad-45d4-b5c7-49377408d361:Materials/iron/iron
+                    20efc148076a0e2a5d0e97d0bc97a8a7: !Svelto.ECS.MiniExamples.Turrets.TurretEntityHolder,GameLayer
+                        Id: 99bdad66-cfa9-4c3c-a448-bfaa160e840b
+                        child: ref!! bf7b6e7a-ae16-47b3-9dca-69ae85eb15d5
+            Base:
+                BasePartAsset: 83020843-3487-4627-9313-da5ce4430747:StandsPrefabs/Turret
+                BasePartId: c3ef870e-80de-46dd-bbd0-ff55624d8883
+                InstanceId: 698d4359-7e1f-49c3-bbc9-90b6a2906dde
+        -   Entity:
+                Id: 56b46810-65fa-4e44-82d9-81a2768eb1d0
+                Name: Turret
+                Components:
+                    637113811f111e324d2720641b025877: !TransformComponent
+                        Id: 6c52927a-1b70-46f2-88c5-29cd4174791e
+                        Position: {X: -2.4445105, Y: 0.06327921, Z: 4.129282}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children:
+                            542d588d07d29f4defe08b23ada44910: ref!! 94dc696a-b74c-4b74-843c-b7e0019009c3
+                            c6f3d1ceb702880cf245626e61f7f9e7: ref!! 40663124-cf6b-4c1e-98cd-dd36fc747f7e
+        -   Entity:
+                Id: 6153d215-5b2c-4aed-b258-796dc245e355
+                Name: Turret
+                Components:
+                    637113811f111e324d2720641b025877: !TransformComponent
+                        Id: 3d12594a-9562-40fc-a1a4-727873fdada8
+                        Position: {X: -0.80033207, Y: 0.06327921, Z: 2.7968087}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children:
+                            542d588d07d29f4defe08b23ada44910: ref!! df3a6f5a-024d-4d91-940d-4b847821fff3
+                            c6f3d1ceb702880cf245626e61f7f9e7: ref!! 17a50520-3326-42b8-ab88-5f4cbebfd8a0
+        -   Folder: null
+            Entity:
+                Id: 6190ba54-cb89-417c-bd72-b9894afebb47
+                Name: HoverBot
+                Components:
+                    7a1b1722719e08dd4c7b6516fa815497: !TransformComponent
+                        Id: b1352d60-353b-4f11-bb0b-90ee8b3ca93c
+                        Position: {X: 0.0, Y: 0.17568517, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.3, Y: 0.3, Z: 0.3}
+                        Children: {}
+                    d9800bd95769fb6e542e92086d7874a2: !ModelComponent
+                        Id: d88a04f8-3b0d-4c76-bd59-b668842f9d36
+                        Model: af984a43-a49a-4032-870a-76d1b4b5dd6a:Models/HoverBot
+                        Materials:
+                            5a61eff8af1efb9baf415f8022819a01~0: dec3b8ea-9598-48f1-88b8-ea09ed8d4a61:Materials/Blade
+                            789ede4e670933d6dbf9f6f9fb76e6bd~1: 2d580307-8a98-4dca-9b03-cc22f0b66ea8:Materials/Gold
+            Base:
+                BasePartAsset: 83020843-3487-4627-9313-da5ce4430747:StandsPrefabs/Turret
+                BasePartId: a3cbb945-6526-41f8-b285-19b0aeb4f411
+                InstanceId: 275086db-aaa9-4369-bc1a-09af6fe9f472
+        -   Entity:
+                Id: 681643aa-f1c1-4733-b742-51c2732702be
+                Name: Turret
+                Components:
+                    637113811f111e324d2720641b025877: !TransformComponent
+                        Id: fcc5e08b-b51e-4c11-9988-e1edec72f510
+                        Position: {X: 3.178109, Y: 0.06327921, Z: 2.7968087}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children:
+                            542d588d07d29f4defe08b23ada44910: ref!! b84de64f-d476-47f9-9a71-9b78760179fd
+                            c6f3d1ceb702880cf245626e61f7f9e7: ref!! 3cc8ee9d-b512-47b8-a9fe-dc0f074c382b
+        -   Folder: null
+            Entity:
+                Id: 702a134c-1832-47cc-9166-6783fba96328
+                Name: Turret
+                Components:
+                    2938129f231d15ebcf3b5e5d55c31a27: !TransformComponent
+                        Id: df3a6f5a-024d-4d91-940d-4b847821fff3
+                        Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.3, Y: 0.3, Z: 0.3}
+                        Children: {}
+                    0117aa4625c5ad7e5d4d2d0392285eee: !ModelComponent
+                        Id: cf29c99f-cb95-4fd1-a776-a12f0e54f6d7
+                        Model: 443617fc-4f28-4add-a981-699a423b8986:Models/Turret
+                        Materials:
+                            2ad7c1c89d42ca0e76baa778c1607275~0: 2a1e2c7f-caad-45d4-b5c7-49377408d361:Materials/iron/iron
+                    20efc148076a0e2a5d0e97d0bc97a8a7: !Svelto.ECS.MiniExamples.Turrets.TurretEntityHolder,GameLayer
+                        Id: 7a3f8930-eea5-4439-b525-09c3cd5fb1e5
+                        child: ref!! a4421240-95d7-4a0f-8392-e05446705b19
+            Base:
+                BasePartAsset: 83020843-3487-4627-9313-da5ce4430747:StandsPrefabs/Turret
+                BasePartId: c3ef870e-80de-46dd-bbd0-ff55624d8883
+                InstanceId: 3791ff2e-4a62-4557-a82a-9b569264384d
+        -   Entity:
+                Id: 7b6946e8-3f68-4c87-8552-bf6816a9bae7
+                Name: Skybox
+                Components:
+                    f909174ac7cbc2a1affcdf7ffc26cb69: !TransformComponent
+                        Id: f3253e00-6b08-4ee6-ab1b-153ddc190b09
+                        Position: {X: 0.0, Y: 2.0, Z: -2.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    7d6911386412d71af755bbf7985eb517: !BackgroundComponent
+                        Id: 7c5f66f8-457a-4aac-b873-b1ed3c65d2a9
+                        Texture: 497a810a-9ad0-4643-a36d-1be4541bc3d5:Skybox texture
+                    ecc863330a5e0df18ea91ae7cc9367a2: !LightComponent
+                        Id: 5cb2bd10-39b1-45bd-b203-d7285d6562b1
+                        Type: !LightSkybox
+                            Skybox: 04ab2c39-f645-498f-952a-601e429c5cda:Skybox
+        -   Entity:
+                Id: 835b57db-2715-4d62-988a-01136b88f04c
+                Name: Turret
+                Components:
+                    637113811f111e324d2720641b025877: !TransformComponent
+                        Id: e8adea68-8fc8-40df-a30a-6ba940b0f1d1
+                        Position: {X: 3.71069, Y: 0.06327921, Z: -1.6518283}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children:
+                            542d588d07d29f4defe08b23ada44910: ref!! 1661e196-4c5d-4478-a14c-2d03a05f0663
+                            c6f3d1ceb702880cf245626e61f7f9e7: ref!! 69d4f2d0-097f-4dac-a159-16e65bdd3980
+        -   Folder: null
+            Entity:
+                Id: 9173b0e1-af4d-4a5a-a068-fb1282763f70
+                Name: Turret
+                Components:
+                    2938129f231d15ebcf3b5e5d55c31a27: !TransformComponent
+                        Id: 515547ec-b3d1-4460-bdde-5cec0e40da2b
+                        Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.3, Y: 0.3, Z: 0.3}
+                        Children: {}
+                    0117aa4625c5ad7e5d4d2d0392285eee: !ModelComponent
+                        Id: 7f4df6d9-7ad7-456d-8eb0-bdcfed9cdc66
+                        Model: 443617fc-4f28-4add-a981-699a423b8986:Models/Turret
+                        Materials:
+                            2ad7c1c89d42ca0e76baa778c1607275~0: 2a1e2c7f-caad-45d4-b5c7-49377408d361:Materials/iron/iron
+                    20efc148076a0e2a5d0e97d0bc97a8a7: !Svelto.ECS.MiniExamples.Turrets.TurretEntityHolder,GameLayer
+                        Id: 2dd2213a-b4f8-4e6c-8f9b-2961e1b4e765
+                        child: ref!! a49b7123-f7eb-44f4-9104-df9d42e9f5d6
+            Base:
+                BasePartAsset: 83020843-3487-4627-9313-da5ce4430747:StandsPrefabs/Turret
+                BasePartId: c3ef870e-80de-46dd-bbd0-ff55624d8883
+                InstanceId: f5695853-1776-43ae-b357-54a4f17efeae
+        -   Entity:
+                Id: 9181fb02-01d0-4d82-b791-4b588d48c17d
+                Name: Turret
+                Components:
+                    637113811f111e324d2720641b025877: !TransformComponent
+                        Id: b7e0fce7-d96e-46a7-a1b1-d7a6964df448
+                        Position: {X: 1.4769306, Y: 0.06327921, Z: 2.7968087}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children:
+                            542d588d07d29f4defe08b23ada44910: ref!! 515547ec-b3d1-4460-bdde-5cec0e40da2b
+                            c6f3d1ceb702880cf245626e61f7f9e7: ref!! 7c203a7b-6f67-4148-becd-e5e2399d383a
+        -   Folder: null
+            Entity:
+                Id: 94c7dc63-be8f-4f81-9e00-f657fda72739
+                Name: Turret
+                Components:
+                    2938129f231d15ebcf3b5e5d55c31a27: !TransformComponent
+                        Id: 94dc696a-b74c-4b74-843c-b7e0019009c3
+                        Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.3, Y: 0.3, Z: 0.3}
+                        Children: {}
+                    0117aa4625c5ad7e5d4d2d0392285eee: !ModelComponent
+                        Id: 53174c28-74bd-41e9-8244-e00c4f461ecb
+                        Model: 443617fc-4f28-4add-a981-699a423b8986:Models/Turret
+                        Materials:
+                            2ad7c1c89d42ca0e76baa778c1607275~0: 2a1e2c7f-caad-45d4-b5c7-49377408d361:Materials/iron/iron
+                    20efc148076a0e2a5d0e97d0bc97a8a7: !Svelto.ECS.MiniExamples.Turrets.TurretEntityHolder,GameLayer
+                        Id: 9b6ae790-b58c-442e-9485-d4579b79371f
+                        child: ref!! 2c3aa91c-dda7-4691-a734-c71276b8940e
+            Base:
+                BasePartAsset: 83020843-3487-4627-9313-da5ce4430747:StandsPrefabs/Turret
+                BasePartId: c3ef870e-80de-46dd-bbd0-ff55624d8883
+                InstanceId: d00dd1bd-74eb-44b2-988f-9a07a14ba54c
+        -   Folder: null
+            Entity:
+                Id: 94ec5579-f640-465c-b21a-0d7e648ece4d
+                Name: Turret
+                Components:
+                    2938129f231d15ebcf3b5e5d55c31a27: !TransformComponent
+                        Id: 1661e196-4c5d-4478-a14c-2d03a05f0663
+                        Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.3, Y: 0.3, Z: 0.3}
+                        Children: {}
+                    0117aa4625c5ad7e5d4d2d0392285eee: !ModelComponent
+                        Id: 77cd5cbe-2b71-4825-9977-17769f8c9b55
+                        Model: 443617fc-4f28-4add-a981-699a423b8986:Models/Turret
+                        Materials:
+                            2ad7c1c89d42ca0e76baa778c1607275~0: 2a1e2c7f-caad-45d4-b5c7-49377408d361:Materials/iron/iron
+                    20efc148076a0e2a5d0e97d0bc97a8a7: !Svelto.ECS.MiniExamples.Turrets.TurretEntityHolder,GameLayer
+                        Id: b4f2dab1-1532-478e-b6f3-137504f314b8
+                        child: ref!! c9b5a649-736b-493f-ab65-4d56d6343e39
+            Base:
+                BasePartAsset: 83020843-3487-4627-9313-da5ce4430747:StandsPrefabs/Turret
+                BasePartId: c3ef870e-80de-46dd-bbd0-ff55624d8883
+                InstanceId: 887e13fb-88e1-441d-81dc-2c3177a9ff3a
+        -   Folder: null
+            Entity:
+                Id: a4421240-95d7-4a0f-8392-e05446705b19
+                Name: HoverBot
+                Components:
+                    7a1b1722719e08dd4c7b6516fa815497: !TransformComponent
+                        Id: 17a50520-3326-42b8-ab88-5f4cbebfd8a0
+                        Position: {X: 0.0, Y: 0.17568517, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.3, Y: 0.3, Z: 0.3}
+                        Children: {}
+                    d9800bd95769fb6e542e92086d7874a2: !ModelComponent
+                        Id: 1b04bd80-e1a4-4458-81af-748455670d9a
+                        Model: af984a43-a49a-4032-870a-76d1b4b5dd6a:Models/HoverBot
+                        Materials:
+                            5a61eff8af1efb9baf415f8022819a01~0: dec3b8ea-9598-48f1-88b8-ea09ed8d4a61:Materials/Blade
+                            789ede4e670933d6dbf9f6f9fb76e6bd~1: 2d580307-8a98-4dca-9b03-cc22f0b66ea8:Materials/Gold
+            Base:
+                BasePartAsset: 83020843-3487-4627-9313-da5ce4430747:StandsPrefabs/Turret
+                BasePartId: a3cbb945-6526-41f8-b285-19b0aeb4f411
+                InstanceId: 3791ff2e-4a62-4557-a82a-9b569264384d
+        -   Folder: null
+            Entity:
+                Id: a49b7123-f7eb-44f4-9104-df9d42e9f5d6
+                Name: HoverBot
+                Components:
+                    7a1b1722719e08dd4c7b6516fa815497: !TransformComponent
+                        Id: 7c203a7b-6f67-4148-becd-e5e2399d383a
+                        Position: {X: 0.0, Y: 0.17568517, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.3, Y: 0.3, Z: 0.3}
+                        Children: {}
+                    d9800bd95769fb6e542e92086d7874a2: !ModelComponent
+                        Id: c96de05f-eb87-4d3e-b3cb-03592cf81f56
+                        Model: af984a43-a49a-4032-870a-76d1b4b5dd6a:Models/HoverBot
+                        Materials:
+                            5a61eff8af1efb9baf415f8022819a01~0: dec3b8ea-9598-48f1-88b8-ea09ed8d4a61:Materials/Blade
+                            789ede4e670933d6dbf9f6f9fb76e6bd~1: 2d580307-8a98-4dca-9b03-cc22f0b66ea8:Materials/Gold
+            Base:
+                BasePartAsset: 83020843-3487-4627-9313-da5ce4430747:StandsPrefabs/Turret
+                BasePartId: a3cbb945-6526-41f8-b285-19b0aeb4f411
+                InstanceId: f5695853-1776-43ae-b357-54a4f17efeae
+        -   Entity:
+                Id: b351462b-0e6e-4654-b03c-da808d339855
+                Name: Turret
+                Components:
+                    637113811f111e324d2720641b025877: !TransformComponent
+                        Id: ac5abd07-bb79-43c2-8d33-1ad557f0ca58
+                        Position: {X: 3.875722, Y: 0.06327921, Z: 1.4359071}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children:
+                            542d588d07d29f4defe08b23ada44910: ref!! bbdac0fa-680f-4414-92cf-c1b109af542d
+                            c6f3d1ceb702880cf245626e61f7f9e7: ref!! 03862a1f-c6b5-4eb3-8a56-515ebcc978af
+        -   Entity:
+                Id: b8749190-423e-426a-b59f-df76d0478bf9
+                Name: Turret
+                Components:
+                    637113811f111e324d2720641b025877: !TransformComponent
+                        Id: ccbf0bfa-d489-4d52-91d0-435e6f8c2477
+                        Position: {X: 2.4024005, Y: 0.06327921, Z: -0.44220328}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children:
+                            542d588d07d29f4defe08b23ada44910: ref!! dd9b018a-a62a-4a0c-be41-6fb79be62422
+                            c6f3d1ceb702880cf245626e61f7f9e7: ref!! b1352d60-353b-4f11-bb0b-90ee8b3ca93c
+        -   Entity:
+                Id: bf01326b-049b-44a3-9cda-6c0be92a4fd8
+                Name: Camera
+                Components:
+                    ed1becb5f857aa26fbd9f4110b59d8b4: !TransformComponent
+                        Id: fb3138ff-78d6-44ea-aba3-e582483a0e20
+                        Position: {X: 7.223806, Y: 3.1614418, Z: -6.3535905}
+                        Rotation: {X: -0.09044295, Y: 0.88084, Z: 0.18946171, W: 0.42431727}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    e5fbc5afd6f4b52e9dc3a968326861c1: !CameraComponent
+                        Id: ee68de09-2e2a-42f1-ba19-f79bec95f667
+                        Name: null
+                        Projection: Perspective
+                        Slot: 59c5c554-07b8-45ed-b2be-342f83e8fb70
+        -   Folder: null
+            Entity:
+                Id: bf330c47-3adf-4b55-a85e-22b51a8fc2ec
+                Name: HoverBot
+                Components:
+                    7a1b1722719e08dd4c7b6516fa815497: !TransformComponent
+                        Id: 0e8b0cd1-cd52-4e06-b222-e7735b330890
+                        Position: {X: 0.0, Y: 0.17568517, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.3, Y: 0.3, Z: 0.3}
+                        Children: {}
+                    d9800bd95769fb6e542e92086d7874a2: !ModelComponent
+                        Id: 8f2da21a-fb88-4fca-98e8-8525f4e554b4
+                        Model: af984a43-a49a-4032-870a-76d1b4b5dd6a:Models/HoverBot
+                        Materials:
+                            5a61eff8af1efb9baf415f8022819a01~0: dec3b8ea-9598-48f1-88b8-ea09ed8d4a61:Materials/Blade
+                            789ede4e670933d6dbf9f6f9fb76e6bd~1: 2d580307-8a98-4dca-9b03-cc22f0b66ea8:Materials/Gold
+            Base:
+                BasePartAsset: 83020843-3487-4627-9313-da5ce4430747:StandsPrefabs/Turret
+                BasePartId: a3cbb945-6526-41f8-b285-19b0aeb4f411
+                InstanceId: d77e9ed0-0c3d-40c1-834a-898df71190c9
+        -   Folder: null
+            Entity:
+                Id: bf7b6e7a-ae16-47b3-9dca-69ae85eb15d5
+                Name: HoverBot
+                Components:
+                    7a1b1722719e08dd4c7b6516fa815497: !TransformComponent
+                        Id: c4ea40f5-061c-472e-babe-346dad73cb02
+                        Position: {X: 0.0, Y: 0.17568517, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.3, Y: 0.3, Z: 0.3}
+                        Children: {}
+                    d9800bd95769fb6e542e92086d7874a2: !ModelComponent
+                        Id: 893094c4-9426-4e1f-acd2-21537dce62e0
+                        Model: af984a43-a49a-4032-870a-76d1b4b5dd6a:Models/HoverBot
+                        Materials:
+                            5a61eff8af1efb9baf415f8022819a01~0: dec3b8ea-9598-48f1-88b8-ea09ed8d4a61:Materials/Blade
+                            789ede4e670933d6dbf9f6f9fb76e6bd~1: 2d580307-8a98-4dca-9b03-cc22f0b66ea8:Materials/Gold
+            Base:
+                BasePartAsset: 83020843-3487-4627-9313-da5ce4430747:StandsPrefabs/Turret
+                BasePartId: a3cbb945-6526-41f8-b285-19b0aeb4f411
+                InstanceId: 698d4359-7e1f-49c3-bbc9-90b6a2906dde
+        -   Folder: null
+            Entity:
+                Id: c9b5a649-736b-493f-ab65-4d56d6343e39
+                Name: HoverBot
+                Components:
+                    7a1b1722719e08dd4c7b6516fa815497: !TransformComponent
+                        Id: 69d4f2d0-097f-4dac-a159-16e65bdd3980
+                        Position: {X: 0.0, Y: 0.17568517, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.3, Y: 0.3, Z: 0.3}
+                        Children: {}
+                    d9800bd95769fb6e542e92086d7874a2: !ModelComponent
+                        Id: fefdeadb-135c-4568-9ce9-2991be0a291e
+                        Model: af984a43-a49a-4032-870a-76d1b4b5dd6a:Models/HoverBot
+                        Materials:
+                            5a61eff8af1efb9baf415f8022819a01~0: dec3b8ea-9598-48f1-88b8-ea09ed8d4a61:Materials/Blade
+                            789ede4e670933d6dbf9f6f9fb76e6bd~1: 2d580307-8a98-4dca-9b03-cc22f0b66ea8:Materials/Gold
+            Base:
+                BasePartAsset: 83020843-3487-4627-9313-da5ce4430747:StandsPrefabs/Turret
+                BasePartId: a3cbb945-6526-41f8-b285-19b0aeb4f411
+                InstanceId: 887e13fb-88e1-441d-81dc-2c3177a9ff3a
+        -   Entity:
+                Id: ca24c0e5-e371-4ebb-8ed3-a601541ba376
+                Name: Turret
+                Components:
+                    637113811f111e324d2720641b025877: !TransformComponent
+                        Id: 79fc368b-dae4-4502-8279-57cc0a29b443
+                        Position: {X: -0.80033207, Y: 0.06327921, Z: 0.42866945}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children:
+                            542d588d07d29f4defe08b23ada44910: ref!! 67d6c79e-e247-4524-bb70-72b1fae3195e
+                            c6f3d1ceb702880cf245626e61f7f9e7: ref!! 0e8b0cd1-cd52-4e06-b222-e7735b330890
+        -   Entity:
+                Id: d814370a-499c-4ac9-867a-765ae6d68840
+                Name: HoverBot
+                Components:
+                    7a1b1722719e08dd4c7b6516fa815497: !TransformComponent
+                        Id: b82d8462-b2dd-4db6-b34f-b1387706d034
+                        Position: {X: 0.0, Y: 0.17568517, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.3, Y: 0.3, Z: 0.3}
+                        Children: {}
+                    d9800bd95769fb6e542e92086d7874a2: !ModelComponent
+                        Id: 866cdfda-f8f6-4aee-ba25-16751d54b8ea
+                        Model: af984a43-a49a-4032-870a-76d1b4b5dd6a:Models/HoverBot
+                        Materials:
+                            5a61eff8af1efb9baf415f8022819a01~0: dec3b8ea-9598-48f1-88b8-ea09ed8d4a61:Materials/Blade
+                            789ede4e670933d6dbf9f6f9fb76e6bd~1: 2d580307-8a98-4dca-9b03-cc22f0b66ea8:Materials/Gold
+            Base:
+                BasePartAsset: 83020843-3487-4627-9313-da5ce4430747:StandsPrefabs/Turret
+                BasePartId: a3cbb945-6526-41f8-b285-19b0aeb4f411
+                InstanceId: 2808ce89-e3b8-440a-a59e-216a1dfd60e8
+        -   Folder: null
+            Entity:
+                Id: e045da91-01a3-4d04-b715-2e0699c7f35a
+                Name: Turret
+                Components:
+                    2938129f231d15ebcf3b5e5d55c31a27: !TransformComponent
+                        Id: 67d6c79e-e247-4524-bb70-72b1fae3195e
+                        Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.3, Y: 0.3, Z: 0.3}
+                        Children: {}
+                    0117aa4625c5ad7e5d4d2d0392285eee: !ModelComponent
+                        Id: daee2ca0-aa5c-46b1-b827-27dc95e6f1bb
+                        Model: 443617fc-4f28-4add-a981-699a423b8986:Models/Turret
+                        Materials:
+                            2ad7c1c89d42ca0e76baa778c1607275~0: 2a1e2c7f-caad-45d4-b5c7-49377408d361:Materials/iron/iron
+                    20efc148076a0e2a5d0e97d0bc97a8a7: !Svelto.ECS.MiniExamples.Turrets.TurretEntityHolder,GameLayer
+                        Id: e038dd50-6bb7-4dc0-a260-b90c61067aee
+                        child: ref!! bf330c47-3adf-4b55-a85e-22b51a8fc2ec
+            Base:
+                BasePartAsset: 83020843-3487-4627-9313-da5ce4430747:StandsPrefabs/Turret
+                BasePartId: c3ef870e-80de-46dd-bbd0-ff55624d8883
+                InstanceId: d77e9ed0-0c3d-40c1-834a-898df71190c9
+        -   Folder: null
+            Entity:
+                Id: e7a64d00-ff33-4ea9-bf6c-e531c6c4aff2
+                Name: Turret
+                Components:
+                    2938129f231d15ebcf3b5e5d55c31a27: !TransformComponent
+                        Id: d7c6002f-76ed-4f38-a6b4-f817485975e7
+                        Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.3, Y: 0.3, Z: 0.3}
+                        Children: {}
+                    0117aa4625c5ad7e5d4d2d0392285eee: !ModelComponent
+                        Id: 66bb9439-d59e-46aa-838e-9b48168d30a6
+                        Model: 443617fc-4f28-4add-a981-699a423b8986:Models/Turret
+                        Materials:
+                            2ad7c1c89d42ca0e76baa778c1607275~0: 2a1e2c7f-caad-45d4-b5c7-49377408d361:Materials/iron/iron
+                    20efc148076a0e2a5d0e97d0bc97a8a7: !Svelto.ECS.MiniExamples.Turrets.TurretEntityHolder,GameLayer
+                        Id: e9604e15-7c0a-4eb0-aeab-809e0c0c1346
+                        child: ref!! 42bb818f-f31b-42ea-9a5d-f2c81c7a61d5
+            Base:
+                BasePartAsset: 83020843-3487-4627-9313-da5ce4430747:StandsPrefabs/Turret
+                BasePartId: c3ef870e-80de-46dd-bbd0-ff55624d8883
+                InstanceId: 69d9d777-8ac0-46b3-98da-7918eaf210e4
+        -   Entity:
+                Id: ea278ded-af14-401b-b327-444965774e45
+                Name: Turret
+                Components:
+                    637113811f111e324d2720641b025877: !TransformComponent
+                        Id: d16606e2-d3f9-452f-96b5-bda05069eb6f
+                        Position: {X: -3.686409, Y: 0.06327921, Z: 2.7968087}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children:
+                            542d588d07d29f4defe08b23ada44910: ref!! 605802c6-ede6-44c8-85aa-1b13b52cff5a
+                            c6f3d1ceb702880cf245626e61f7f9e7: ref!! c4ea40f5-061c-472e-babe-346dad73cb02
+        -   Folder: null
+            Entity:
+                Id: ed529882-e483-4820-9253-54081ca60541
+                Name: Turret
+                Components:
+                    2938129f231d15ebcf3b5e5d55c31a27: !TransformComponent
+                        Id: bbdac0fa-680f-4414-92cf-c1b109af542d
+                        Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.3, Y: 0.3, Z: 0.3}
+                        Children: {}
+                    0117aa4625c5ad7e5d4d2d0392285eee: !ModelComponent
+                        Id: e1340d7b-0fed-4f1f-ba3a-7900a11bc932
+                        Model: 443617fc-4f28-4add-a981-699a423b8986:Models/Turret
+                        Materials:
+                            2ad7c1c89d42ca0e76baa778c1607275~0: 2a1e2c7f-caad-45d4-b5c7-49377408d361:Materials/iron/iron
+                    20efc148076a0e2a5d0e97d0bc97a8a7: !Svelto.ECS.MiniExamples.Turrets.TurretEntityHolder,GameLayer
+                        Id: 3b8d64ab-e6c5-47b1-96a4-8c591d1684d5
+                        child: ref!! f2152b00-e25f-4181-b996-6410ff7c260d
+            Base:
+                BasePartAsset: 83020843-3487-4627-9313-da5ce4430747:StandsPrefabs/Turret
+                BasePartId: c3ef870e-80de-46dd-bbd0-ff55624d8883
+                InstanceId: a9e21c5d-7d43-4800-bffe-cf4f6cc27f0e
+        -   Folder: null
+            Entity:
+                Id: f2152b00-e25f-4181-b996-6410ff7c260d
+                Name: HoverBot
+                Components:
+                    7a1b1722719e08dd4c7b6516fa815497: !TransformComponent
+                        Id: 03862a1f-c6b5-4eb3-8a56-515ebcc978af
+                        Position: {X: 0.0, Y: 0.17568517, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.3, Y: 0.3, Z: 0.3}
+                        Children: {}
+                    d9800bd95769fb6e542e92086d7874a2: !ModelComponent
+                        Id: f479dd76-25ec-472e-8d6b-3fbac941b478
+                        Model: af984a43-a49a-4032-870a-76d1b4b5dd6a:Models/HoverBot
+                        Materials:
+                            5a61eff8af1efb9baf415f8022819a01~0: dec3b8ea-9598-48f1-88b8-ea09ed8d4a61:Materials/Blade
+                            789ede4e670933d6dbf9f6f9fb76e6bd~1: 2d580307-8a98-4dca-9b03-cc22f0b66ea8:Materials/Gold
+            Base:
+                BasePartAsset: 83020843-3487-4627-9313-da5ce4430747:StandsPrefabs/Turret
+                BasePartId: a3cbb945-6526-41f8-b285-19b0aeb4f411
+                InstanceId: a9e21c5d-7d43-4800-bffe-cf4f6cc27f0e
+        -   Folder: null
+            Entity:
+                Id: f6234052-7511-4023-a581-9f0a2103cb8b
+                Name: HoverBot
+                Components:
+                    7a1b1722719e08dd4c7b6516fa815497: !TransformComponent
+                        Id: 3cc8ee9d-b512-47b8-a9fe-dc0f074c382b
+                        Position: {X: 0.0, Y: 0.17568517, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.3, Y: 0.3, Z: 0.3}
+                        Children: {}
+                    d9800bd95769fb6e542e92086d7874a2: !ModelComponent
+                        Id: fbe7b87e-d91f-4362-91f7-f3d7a1615798
+                        Model: af984a43-a49a-4032-870a-76d1b4b5dd6a:Models/HoverBot
+                        Materials:
+                            5a61eff8af1efb9baf415f8022819a01~0: dec3b8ea-9598-48f1-88b8-ea09ed8d4a61:Materials/Blade
+                            789ede4e670933d6dbf9f6f9fb76e6bd~1: 2d580307-8a98-4dca-9b03-cc22f0b66ea8:Materials/Gold
+            Base:
+                BasePartAsset: 83020843-3487-4627-9313-da5ce4430747:StandsPrefabs/Turret
+                BasePartId: a3cbb945-6526-41f8-b285-19b0aeb4f411
+                InstanceId: e9237a3b-c497-43c4-b2fe-f37de51c02e9
+        -   Folder: null
+            Entity:
+                Id: f90a5680-af5c-4714-81e6-4b869357828b
+                Name: HoverBot
+                Components:
+                    7a1b1722719e08dd4c7b6516fa815497: !TransformComponent
+                        Id: ff0f89d5-bcdd-4398-a22e-c0b83990fe4a
+                        Position: {X: 0.0, Y: 0.17568517, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.3, Y: 0.3, Z: 0.3}
+                        Children: {}
+                    d9800bd95769fb6e542e92086d7874a2: !ModelComponent
+                        Id: 44fa6053-8007-44f2-9160-b1cb78bd04f6
+                        Model: af984a43-a49a-4032-870a-76d1b4b5dd6a:Models/HoverBot
+                        Materials:
+                            5a61eff8af1efb9baf415f8022819a01~0: dec3b8ea-9598-48f1-88b8-ea09ed8d4a61:Materials/Blade
+                            789ede4e670933d6dbf9f6f9fb76e6bd~1: 2d580307-8a98-4dca-9b03-cc22f0b66ea8:Materials/Gold
+            Base:
+                BasePartAsset: 83020843-3487-4627-9313-da5ce4430747:StandsPrefabs/Turret
+                BasePartId: a3cbb945-6526-41f8-b285-19b0aeb4f411
+                InstanceId: 8f91c384-b0ea-4fb1-b6b0-9644338feb00

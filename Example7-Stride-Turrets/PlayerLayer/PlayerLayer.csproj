@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+        <Nullable>disable</Nullable>
+        <LangVersion>9</LangVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\EnemiesLayer\EnemiesLayer.csproj" />
+      <ProjectReference Include="..\PhysicLayer\PhysicLayer.csproj" />
+      <ProjectReference Include="..\Svelto\com.sebaslab.svelto.ecs\Svelto.ECS.csproj" />
+    </ItemGroup>
+
+</Project>
