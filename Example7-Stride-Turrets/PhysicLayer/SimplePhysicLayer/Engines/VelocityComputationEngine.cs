@@ -21,7 +21,5 @@ namespace Svelto.ECS.MiniExamples.Turrets.PhysicLayer
 
         public EntitiesDB entitiesDB            { get; set; }
         public void       Ready()               { }
-
-        
     }
 }

@@ -30,7 +30,7 @@ namespace Svelto.ECS.MiniExamples.Turrets.EnemyLayer
                         var vector = targetPosition[j].position - matrix[i].matrix.TranslationVector;
                         vector.Normalize();
                         
-                        //make each turret aim at a different target in a round robin fashion
+                        //make each turret aims at a different target in a round robin fashion
                         //in this demo there is just one target so they will all point to the same one
                         //I really didn't test other scenario so who knows if this works
                         directionComponent[i].vector = vector;
