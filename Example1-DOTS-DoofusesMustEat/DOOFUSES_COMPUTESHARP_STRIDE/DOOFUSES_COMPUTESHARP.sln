@@ -1,0 +1,61 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 16
+VisualStudioVersion = 16.0.0.0
+MinimumVisualStudioVersion = 16.0.0.0
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyGame.Windows", "MyGame.Windows\MyGame.Windows.csproj", "{BC162FFC-18F9-429A-8410-591E7CCAEAB3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyGame", "MyGame\MyGame.csproj", "{20D090D4-4063-43AE-B933-0399814DC3CE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.ECS.ComputeSharp", "Svelto\com.sebaslab.svelto.ecs.computesharp\Svelto.ECS.ComputeSharp.csproj", "{E5B108C3-393F-4FC5-A131-33EBDF1697E1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.Common", "Svelto\com.sebaslab.svelto.common\Svelto.Common.csproj", "{6CDDEF38-2EBF-4D1D-976F-367C6D72B85A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.ECS", "Svelto\com.sebaslab.svelto.ecs\Svelto.ECS.csproj", "{9DE46D66-610A-40D3-A18E-4F28C01D8A96}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StrideLayer", "StrideLayer\StrideLayer.csproj", "{2B5C2184-E9DE-4150-A3DC-F5188F5065D2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TransformationLayer", "TransformationLayer\TransformationLayer.csproj", "{C0E58FFF-DB15-4117-9FD9-ED13BE8B2336}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameLayer", "GameLayer\GameLayer.csproj", "{ED135F74-44A2-4742-8C0E-8A22054B004F}"
+EndProject
+Global
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BC162FFC-18F9-429A-8410-591E7CCAEAB3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC162FFC-18F9-429A-8410-591E7CCAEAB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC162FFC-18F9-429A-8410-591E7CCAEAB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC162FFC-18F9-429A-8410-591E7CCAEAB3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{20D090D4-4063-43AE-B933-0399814DC3CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{20D090D4-4063-43AE-B933-0399814DC3CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{20D090D4-4063-43AE-B933-0399814DC3CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{20D090D4-4063-43AE-B933-0399814DC3CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E5B108C3-393F-4FC5-A131-33EBDF1697E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E5B108C3-393F-4FC5-A131-33EBDF1697E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E5B108C3-393F-4FC5-A131-33EBDF1697E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E5B108C3-393F-4FC5-A131-33EBDF1697E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6CDDEF38-2EBF-4D1D-976F-367C6D72B85A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6CDDEF38-2EBF-4D1D-976F-367C6D72B85A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6CDDEF38-2EBF-4D1D-976F-367C6D72B85A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6CDDEF38-2EBF-4D1D-976F-367C6D72B85A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9DE46D66-610A-40D3-A18E-4F28C01D8A96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9DE46D66-610A-40D3-A18E-4F28C01D8A96}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9DE46D66-610A-40D3-A18E-4F28C01D8A96}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9DE46D66-610A-40D3-A18E-4F28C01D8A96}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B5C2184-E9DE-4150-A3DC-F5188F5065D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B5C2184-E9DE-4150-A3DC-F5188F5065D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B5C2184-E9DE-4150-A3DC-F5188F5065D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B5C2184-E9DE-4150-A3DC-F5188F5065D2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0E58FFF-DB15-4117-9FD9-ED13BE8B2336}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0E58FFF-DB15-4117-9FD9-ED13BE8B2336}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0E58FFF-DB15-4117-9FD9-ED13BE8B2336}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0E58FFF-DB15-4117-9FD9-ED13BE8B2336}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED135F74-44A2-4742-8C0E-8A22054B004F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED135F74-44A2-4742-8C0E-8A22054B004F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED135F74-44A2-4742-8C0E-8A22054B004F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED135F74-44A2-4742-8C0E-8A22054B004F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+EndGlobal

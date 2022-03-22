@@ -1,0 +1,211 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Threading;
+using DBC.ECS;
+using Svelto.Common;
+using Svelto.DataStructures;
+using Svelto.ECS.Hybrid;
+using Svelto.ECS.Internal;
+using Svelto.Utilities;
+
+namespace Svelto.ECS
+{
+    struct ComponentBuilderComparer : IEqualityComparer<IComponentBuilder>
+    {
+        public bool Equals(IComponentBuilder x, IComponentBuilder y)
+        {
+            return x.GetEntityComponentType() == y.GetEntityComponentType();
+        }
+
+        public int GetHashCode(IComponentBuilder obj)
+        {
+            return obj.GetEntityComponentType().GetHashCode();
+        }
+    }
+
+    public static class BurstCompatibleCounter
+    {
+        public static int counter;        
+    }
+    
+    public class ComponentID<T> where T : struct, IEntityComponent
+    {
+        public static readonly SharedStaticWrapper<int, ComponentID<T>> id;
+
+#if UNITY_BURST 
+        [Unity.Burst.BurstDiscard] 
+        //SharedStatic values must be initialized from not burstified code
+#endif
+        public static void Init()
+        {
+            id.Data = Interlocked.Increment(ref BurstCompatibleCounter.counter);
+
+            DBC.ECS.Check.Ensure(id.Data < ushort.MaxValue, "too many types registered, HOW :)");
+        }
+    }
+
+    public class ComponentBuilder<T> : IComponentBuilder where T : struct, IEntityComponent
+    {
+        internal static readonly Type ENTITY_COMPONENT_TYPE;
+        internal static readonly bool IS_ENTITY_VIEW_COMPONENT;
+
+        static readonly T      DEFAULT_IT;
+        static readonly string ENTITY_COMPONENT_NAME;
+        static readonly bool   IS_UNMANAGED;
+#if SLOW_SVELTO_SUBMISSION            
+        public static readonly bool HAS_EGID;
+        public static readonly bool HAS_REFERENCE;
+#endif
+
+        static ComponentBuilder()
+        {
+            ENTITY_COMPONENT_TYPE = typeof(T);
+            DEFAULT_IT = default;
+            IS_ENTITY_VIEW_COMPONENT = typeof(IEntityViewComponent).IsAssignableFrom(ENTITY_COMPONENT_TYPE);
+#if SLOW_SVELTO_SUBMISSION            
+            HAS_EGID = typeof(INeedEGID).IsAssignableFrom(ENTITY_COMPONENT_TYPE);
+            HAS_REFERENCE = typeof(INeedEntityReference).IsAssignableFrom(ENTITY_COMPONENT_TYPE);
+            
+            SetEGIDWithoutBoxing<T>.Warmup();
+#endif
+            ComponentID<T>.Init();
+            ENTITY_COMPONENT_NAME = ENTITY_COMPONENT_TYPE.ToString();
+            IS_UNMANAGED = TypeType.isUnmanaged<T>(); //attention this is important as it serves as warm up for Type<T>
+#if UNITY_NATIVE
+            if (IS_UNMANAGED)
+                EntityComponentIDMap.Register<T>(new Filler<T>());
+#endif
+
+            ComponentBuilderUtilities.CheckFields(ENTITY_COMPONENT_TYPE, IS_ENTITY_VIEW_COMPONENT);
+
+            if (IS_ENTITY_VIEW_COMPONENT)
+            {
+                EntityViewComponentCache.InitCache();
+            }
+            else
+            {
+                if (ENTITY_COMPONENT_TYPE != ComponentBuilderUtilities.ENTITY_INFO_COMPONENT &&
+                    ENTITY_COMPONENT_TYPE.IsUnmanagedEx() == false)
+                    throw new Exception(
+                        $"Entity Component check failed, unexpected struct type (must be unmanaged) {ENTITY_COMPONENT_TYPE}");
+            }
+        }
+
+        public ComponentBuilder()
+        {
+            _initializer = DEFAULT_IT;
+        }
+
+        public ComponentBuilder(in T initializer) : this()
+        {
+            _initializer = initializer;
+        }
+
+        public bool isUnmanaged => IS_UNMANAGED;
+
+        public void BuildEntityAndAddToList(ITypeSafeDictionary dictionary, EGID egid, IEnumerable<object> implementors)
+        {
+            var castedDic = dictionary as ITypeSafeDictionary<T>;
+
+            if (IS_ENTITY_VIEW_COMPONENT)
+            {
+                T entityComponent = default;
+                
+                Check.Require(castedDic.ContainsKey(egid.entityID) == false,
+                    $"building an entity with already used entity id! id: '{(ulong)egid}', {ENTITY_COMPONENT_NAME}");
+
+                this.SetEntityViewComponentImplementors(ref entityComponent, EntityViewComponentCache.cachedFields,
+                    implementors, EntityViewComponentCache.implementorsByType, EntityViewComponentCache.cachedTypes);
+
+                castedDic.Add(egid.entityID, entityComponent);
+            }
+            else
+            {
+                Check.Require(!castedDic.ContainsKey(egid.entityID),
+                    $"building an entity with already used entity id! id: '{egid.entityID}'");
+
+                castedDic.Add(egid.entityID, _initializer);
+            }
+        }
+
+        void IComponentBuilder.Preallocate(ITypeSafeDictionary dictionary, uint size)
+        {
+            Preallocate(dictionary, size);
+        }
+
+        public ITypeSafeDictionary CreateDictionary(uint size)
+        {
+            return TypeSafeDictionaryFactory<T>.Create(size);
+        }
+
+        public Type GetEntityComponentType()
+        {
+            return ENTITY_COMPONENT_TYPE;
+        }
+
+        public override int GetHashCode()
+        {
+            return _initializer.GetHashCode();
+        }
+
+        static void Preallocate(ITypeSafeDictionary dictionary, uint size)
+        {
+            dictionary.EnsureCapacity(size);
+        }
+
+        readonly T _initializer;
+
+        /// <summary>
+        ///     Note: this static class will hold forever the references of the entities implementors. These references
+        ///     are not even cleared when the engines root is destroyed, as they are static references.
+        ///     It must be seen as an application-wide cache system. Honestly, I am not sure if this may cause leaking
+        ///     issues in some kind of applications. To remember.
+        /// </summary>
+        static class EntityViewComponentCache
+        {
+            internal static readonly FasterList<KeyValuePair<Type, FastInvokeActionCast<T>>> cachedFields;
+            internal static readonly Dictionary<Type, Type[]>                                cachedTypes;
+#if DEBUG && !PROFILE_SVELTO
+            internal static readonly Dictionary<Type, ECSTuple<object, int>> implementorsByType;
+#else
+            internal static readonly Dictionary<Type, object> implementorsByType;
+#endif
+            static EntityViewComponentCache()
+            {
+                cachedFields = new FasterList<KeyValuePair<Type, FastInvokeActionCast<T>>>();
+
+                var type   = typeof(T);
+                var fields = type.GetFields(BindingFlags.Public | BindingFlags.Instance);
+
+                for (var i = fields.Length - 1; i >= 0; --i)
+                {
+                    var field = fields[i];
+                    if (field.FieldType.IsInterface == true)
+                    {
+                        var setter = FastInvoke<T>.MakeSetter(field);
+
+                        //for each interface, cache the setter for this type 
+                        cachedFields.Add(new KeyValuePair<Type, FastInvokeActionCast<T>>(field.FieldType, setter));
+                    }
+                }
+#if DEBUG && !PROFILE_SVELTO
+                if (fields.Length == 0)
+                    Console.LogWarning($"No fields found in component {type}. Are you declaring only properties?");
+#endif
+
+                cachedTypes = new Dictionary<Type, Type[]>();
+
+#if DEBUG && !PROFILE_SVELTO
+                implementorsByType = new Dictionary<Type, ECSTuple<object, int>>();
+#else
+                implementorsByType = new Dictionary<Type, object>();
+#endif
+            }
+
+            internal static void InitCache()
+            {
+            }
+        }
+    }
+}

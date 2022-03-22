@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <ApplicationIcon>Resources\Icon.ico</ApplicationIcon>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>MyGame</RootNamespace>
+
+    <OutputPath>..\Bin\Windows\$(Configuration)\</OutputPath>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+
+    <!-- Force msbuild to check to rebuild this assembly instead of letting VS IDE guess -->
+    <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GameLayer\GameLayer.csproj" />
+    <ProjectReference Include="..\MyGame\MyGame.csproj" />
+  </ItemGroup>
+
+</Project>
