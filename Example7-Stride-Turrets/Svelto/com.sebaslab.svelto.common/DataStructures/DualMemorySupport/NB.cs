@@ -146,7 +146,6 @@ namespace Svelto.DataStructures
         }
         
         readonly uint _capacity;
-        static readonly int SIZE = MemoryUtilities.SizeOf<T>();
 
 #if UNITY_COLLECTIONS || UNITY_JOBS || UNITY_BURST    
 #if UNITY_BURST
@@ -184,5 +183,7 @@ namespace Svelto.DataStructures
                 throw new NotImplementedException();
             }
         }
+        
+        static readonly int SIZE = MemoryUtilities.SizeOf<T>();
     }
 }

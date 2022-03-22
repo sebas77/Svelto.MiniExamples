@@ -24,20 +24,16 @@ namespace Svelto.ECS
         }
     }
     
-    public class TypeCounterData
-    {
-        public static readonly SharedStaticWrapper<int, TypeCounterData>
-            idCounter = new SharedStaticWrapper<int, TypeCounterData>(0);
-    }
-    
     public class ComponentID<T> where T : struct, IEntityComponent
     {
+        static int counter;
+        
         public static readonly SharedStaticWrapper<int, ComponentID<T>>
             id = new SharedStaticWrapper<int, ComponentID<T>>(0);
 
         static ComponentID()
         {
-            id.Data = Interlocked.Increment(ref TypeCounterData.idCounter.Data);
+            id.Data = Interlocked.Increment(ref counter);
 
             DBC.ECS.Check.Ensure(id.Data < ushort.MaxValue, "too many types registered, HOW :)");
         }
@@ -73,9 +69,10 @@ namespace Svelto.ECS
             ComponentID<T>.Init();
             ENTITY_COMPONENT_NAME = ENTITY_COMPONENT_TYPE.ToString();
             IS_UNMANAGED = TypeType.isUnmanaged<T>(); //attention this is important as it serves as warm up for Type<T>
-
+#if UNITY_NATIVE
             if (IS_UNMANAGED)
                 EntityComponentIDMap.Register<T>(new Filler<T>());
+#endif
 
             ComponentBuilderUtilities.CheckFields(ENTITY_COMPONENT_TYPE, IS_ENTITY_VIEW_COMPONENT);
 
@@ -108,10 +105,10 @@ namespace Svelto.ECS
         {
             var castedDic = dictionary as ITypeSafeDictionary<T>;
 
-            T entityComponent = default;
-
             if (IS_ENTITY_VIEW_COMPONENT)
             {
+                T entityComponent = default;
+                
                 Check.Require(castedDic.ContainsKey(egid.entityID) == false,
                     $"building an entity with already used entity id! id: '{(ulong)egid}', {ENTITY_COMPONENT_NAME}");
 

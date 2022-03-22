@@ -25,8 +25,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SveltoLayer", "SveltoLayer"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StrideLayer", "StrideLayer\StrideLayer.csproj", "{7D06EC28-09B9-4E5A-A822-92B3EA7F5DFE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.ECS.ComputeSharp", "Svelto\Svelto.ECS.ComputeSharp\Svelto.ECS.ComputeSharp.csproj", "{BCE5CB13-7372-4FBD-B3C6-B61B44DD2560}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -73,14 +71,9 @@ Global
 		{7D06EC28-09B9-4E5A-A822-92B3EA7F5DFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7D06EC28-09B9-4E5A-A822-92B3EA7F5DFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7D06EC28-09B9-4E5A-A822-92B3EA7F5DFE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BCE5CB13-7372-4FBD-B3C6-B61B44DD2560}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BCE5CB13-7372-4FBD-B3C6-B61B44DD2560}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BCE5CB13-7372-4FBD-B3C6-B61B44DD2560}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BCE5CB13-7372-4FBD-B3C6-B61B44DD2560}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{D7A956C5-5023-4CB7-ADD0-7E3BD1ADC594} = {CB9770D0-79EB-4D26-B334-D1CAF44414B5}
 		{C7A58C65-7D4C-4513-A089-44B3B14DFDCB} = {CB9770D0-79EB-4D26-B334-D1CAF44414B5}
-		{BCE5CB13-7372-4FBD-B3C6-B61B44DD2560} = {CB9770D0-79EB-4D26-B334-D1CAF44414B5}
 	EndGlobalSection
 EndGlobal

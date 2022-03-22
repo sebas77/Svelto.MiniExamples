@@ -7,7 +7,7 @@ using System.Reflection;
 
 namespace Svelto.ECS
 {
-    static class ComponentBuilderUtilities
+    public static class ComponentBuilderUtilities
     {
         const string MSG = "Entity Components and Entity View Components fields cannot hold managed fields outside the Svelto rules.";
 

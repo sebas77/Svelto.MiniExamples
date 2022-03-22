@@ -342,8 +342,7 @@ namespace Svelto.ECS.Internal
                         var fromEntityGid = new EGID(fromID, fromGroup);
                         var toEntityEgid  = new EGID(toID, toGroup);
 
-                        Check.Require(toGroup != null,
-                            "Invalid To Group"); //todo check this, if it's right merge GetIndex
+                        Check.Require(toGroup.isInvalid == false, "Invalid To Group");
 
                         var isFound = fromDictionary.Remove(fromEntityGid.entityID, out var entity);
                         Check.Assert(isFound, "Swapping an entity that doesn't exist");
