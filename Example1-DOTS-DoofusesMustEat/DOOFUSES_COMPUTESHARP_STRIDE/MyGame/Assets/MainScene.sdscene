@@ -10,22 +10,7 @@ Hierarchy:
         - ref!! a847d974-ecf6-491e-a59f-db3749992c5c
         - ref!! bff1fded-2db6-481e-810f-03a72bbd0679
         - ref!! 2df4e56a-2a49-4a57-82ba-97d8a5b421bd
-        - ref!! 25464f8f-5454-4270-9257-017641c0ea11
     Parts:
-        -   Entity:
-                Id: 25464f8f-5454-4270-9257-017641c0ea11
-                Name: Capsule_2
-                Components:
-                    d4e920bf45d7ed1e1cbdf83848a8f134: !TransformComponent
-                        Id: 5dc1fb6a-61e7-4768-9bdb-191c90d7cf9f
-                        Position: {X: 0.32315254, Y: -0.04054258, Z: 0.48963737}
-                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
-                        Children: {}
-                    454c395defe6c0ca205224daec3c6b3e: !ModelComponent
-                        Id: a01cc561-c466-4600-994a-819231bf5f3f
-                        Model: d044ce55-3c20-4729-b454-3dc90ed21d80:Capsule_2
-                        Materials: {}
         -   Entity:
                 Id: 2df4e56a-2a49-4a57-82ba-97d8a5b421bd
                 Name: Ground

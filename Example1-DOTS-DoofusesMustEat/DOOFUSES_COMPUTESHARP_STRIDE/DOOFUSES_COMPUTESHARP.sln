@@ -17,8 +17,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StrideLayer", "StrideLayer\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TransformationLayer", "TransformationLayer\TransformationLayer.csproj", "{C0E58FFF-DB15-4117-9FD9-ED13BE8B2336}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameLayer", "GameLayer\GameLayer.csproj", "{ED135F74-44A2-4742-8C0E-8A22054B004F}"
-EndProject
 Global
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{BC162FFC-18F9-429A-8410-591E7CCAEAB3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -49,10 +47,6 @@ Global
 		{C0E58FFF-DB15-4117-9FD9-ED13BE8B2336}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C0E58FFF-DB15-4117-9FD9-ED13BE8B2336}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C0E58FFF-DB15-4117-9FD9-ED13BE8B2336}.Release|Any CPU.Build.0 = Release|Any CPU
-		{ED135F74-44A2-4742-8C0E-8A22054B004F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{ED135F74-44A2-4742-8C0E-8A22054B004F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{ED135F74-44A2-4742-8C0E-8A22054B004F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{ED135F74-44A2-4742-8C0E-8A22054B004F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
