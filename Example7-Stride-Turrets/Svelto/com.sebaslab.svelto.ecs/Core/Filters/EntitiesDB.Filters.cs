@@ -40,7 +40,7 @@ namespace Svelto.ECS
         //since the user can choose their own filterID, in order to avoid collisions between
         //filters of the same type, the FilterContext is provided. The type is identified through
         //TypeCounter
-        public static long CombineFilterIDs<T>(CombinedFilterID combinedFilterID) where T: struct, IEntityComponent
+        public static long CombineFilterIDs<T>(CombinedFilterID combinedFilterID) where T : struct, IEntityComponent
         {
             var id = (uint)ComponentID<T>.id.Data;
 
@@ -137,7 +137,7 @@ namespace Svelto.ECS
                 where T : unmanaged, IEntityComponent
             {
                 long combineFilterIDs = FilterHelper.CombineFilterIDs<T>(filterID);
-                
+
                 if (_persistentEntityFilters.TryFindIndex(combineFilterIDs, out var index) == true)
                     return ref _persistentEntityFilters.GetDirectValueByRef(index);
 
@@ -164,17 +164,18 @@ namespace Svelto.ECS
                 where T : unmanaged, IEntityComponent
             {
                 long combineFilterIDs = FilterHelper.CombineFilterIDs<T>(filterID);
-                
+
                 if (_persistentEntityFilters.TryFindIndex(combineFilterIDs, out var index) == true)
                     return ref _persistentEntityFilters.GetDirectValueByRef(index);
 
                 throw new Exception("filter not found");
             }
-            
-            public bool TryGetPersistentFilter<T>(CombinedFilterID combinedFilterID, out EntityFilterCollection entityCollection) where T : struct, IEntityComponent
+
+            public bool TryGetPersistentFilter<T>(CombinedFilterID combinedFilterID,
+                out EntityFilterCollection entityCollection) where T : struct, IEntityComponent
             {
                 long combineFilterIDs = FilterHelper.CombineFilterIDs<T>(combinedFilterID);
-                
+
                 if (_persistentEntityFilters.TryFindIndex(combineFilterIDs, out var index) == true)
                 {
                     entityCollection = _persistentEntityFilters.GetDirectValueByRef(index);

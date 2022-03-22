@@ -661,7 +661,7 @@ namespace Svelto.DataStructures
             where OTValueStrategy : struct, IBufferStrategy<OTValue>
             where OTBucketStrategy : struct, IBufferStrategy<int>
         {
-            for (int i = 0; i < count; i++)
+            for (int i = count - 1; i >= 0; i--)
             {
                 var tKey = unsafeKeys[i].key;
                 if (otherDicKeys.ContainsKey(tKey) == false)
@@ -677,7 +677,7 @@ namespace Svelto.DataStructures
             where OTValueStrategy : struct, IBufferStrategy<OTValue>
             where OTBucketStrategy : struct, IBufferStrategy<int>
         {
-            for (int i = 0; i < count; i++)
+            for (int i = count - 1; i >= 0; i--)
             {
                 var tKey = unsafeKeys[i].key;
                 if (otherDicKeys.ContainsKey(tKey) == true)
