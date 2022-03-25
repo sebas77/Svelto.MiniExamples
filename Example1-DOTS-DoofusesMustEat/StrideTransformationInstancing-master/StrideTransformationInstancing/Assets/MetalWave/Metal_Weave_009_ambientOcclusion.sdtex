@@ -1,0 +1,7 @@
+!Texture
+Id: ec635acd-f2b1-4317-b586-49f4855478f3
+SerializedVersion: {Stride: 2.0.0.0}
+Tags: []
+Source: !file ../../Resources/Metal_Weave_009_SD/Metal_Weave_009_ambientOcclusion.jpg
+IsCompressed: false
+Type: !GrayscaleTextureType {}

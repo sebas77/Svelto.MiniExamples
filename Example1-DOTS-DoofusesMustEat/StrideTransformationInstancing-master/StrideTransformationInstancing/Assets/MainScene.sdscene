@@ -1,0 +1,418 @@
+!SceneAsset
+Id: 4797941d-dae6-4d33-940f-6e865fef4cda
+SerializedVersion: {Stride: 3.1.0.1}
+Tags: []
+ChildrenIds: []
+Offset: {X: 0.0, Y: 0.0, Z: 0.0}
+Hierarchy:
+    RootParts:
+        - ref!! 1bcc0994-a32d-4e4b-bc26-3128fb414dfd
+        - ref!! 2cd3dd9e-0e39-44f0-ac5c-01853096b151
+        - ref!! 99908a2c-8bef-49a4-a7a3-73bd2e463f37
+        - ref!! 2117f4ac-e328-4c46-bee2-9a65506526c1
+        - ref!! c24582ee-733f-42c1-afb2-c75a08c3b1e2
+        - ref!! b68ccead-66f1-4b13-86f4-fb97ee735f80
+        - ref!! f68516a8-8c0c-485c-9f0a-778a511f6626
+        - ref!! 0c06cb5e-073e-4a97-9af5-dee1f0e4b54a
+        - ref!! 6b41d94e-dffc-45e2-b6da-f6a6e31ce474
+        - ref!! c0440939-f12a-408e-a300-0e2f163b640f
+        - ref!! dd4fbb89-c330-4adc-a54b-3575fb516092
+        - ref!! 40790dbf-3da9-4848-82b8-bdd22e81b30c
+        - ref!! a284bcf6-b5a8-44d0-969e-f718dfada554
+        - ref!! 32221e89-d548-487c-b7c5-080d50551e38
+        - ref!! 5730f047-74fe-43bd-beae-2944af9618e3
+        - ref!! ba0bacf3-e2af-4655-a659-0046c92e0d36
+    Parts:
+        -   Folder: Sphere Instances
+            Entity:
+                Id: 0c06cb5e-073e-4a97-9af5-dee1f0e4b54a
+                Name: Sphere Instance 02
+                Components:
+                    81215229fdf37ab6946eab50082bd97b: !TransformComponent
+                        Id: 0d15c020-a371-4300-8cec-893768175679
+                        Position: {X: 1.56708288, Y: 2.03442669, Z: -1.37170434}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    d104fa3d3f0769f8bb9ccb32ab8ae4a4: !InstanceComponent
+                        Id: b32b79a0-9670-4a12-9d1d-499c43027faa
+                        Master: ref!! 4a89a7e3-5f56-4108-8ded-131298b2c279
+                    4d277b225f7050ab374ef4f850e3379a: !RigidbodyComponent
+                        Id: b8c7f429-90be-43e4-b0a6-c1f2e44775ab
+                        CanSleep: false
+                        Restitution: 0.8
+                        Friction: 0.5
+                        RollingFriction: 0.1
+                        CcdMotionThreshold: 0.0
+                        CcdSweptSphereRadius: 0.0
+                        IsTrigger: false
+                        IsKinematic: false
+                        Mass: 1.0
+                        LinearDamping: 0.0
+                        AngularDamping: 0.0
+                        OverrideGravity: false
+                        Gravity: {X: 0.0, Y: 0.0, Z: 0.0}
+                        NodeName: null
+                        ColliderShapes:
+                            6ef0b6fc27f6283008cd42f18db31ad0: !SphereColliderShapeDesc
+                                Is2D: false
+                                LocalOffset: {X: 0.0, Y: 0.0, Z: 0.0}
+        -   Entity:
+                Id: 1bcc0994-a32d-4e4b-bc26-3128fb414dfd
+                Name: Sphere Single
+                Components:
+                    ea7dca85061394540e4a73a71d6f3b13: !TransformComponent
+                        Id: ac0c0b7e-4d6a-49f7-925f-084b54eb55f0
+                        Position: {X: 0.0, Y: 0.5, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    55858f7443890ed89a54e64e0e4afbdc: !ModelComponent
+                        Id: f5bc9675-e3b5-474b-bba4-5a2e269b968d
+                        Model: 01069813-14ed-4449-86a4-1dab5e6a9d9a:Sphere
+                        Materials: {}
+        -   Entity:
+                Id: 2117f4ac-e328-4c46-bee2-9a65506526c1
+                Name: Sphere Entity Transform
+                Components:
+                    ea7dca85061394540e4a73a71d6f3b13: !TransformComponent
+                        Id: 0823ed6a-9aba-4810-88a7-732b49b29fb8
+                        Position: {X: -0.7491749, Y: 0.9350827, Z: -3.71879148}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.5, Y: 0.5, Z: 0.5}
+                        Children:
+                            673fcb096536acc18cc972fd4d302761: ref!! 3df5860d-1283-44e9-8e61-30c0b2d45b05
+                    55858f7443890ed89a54e64e0e4afbdc: !ModelComponent
+                        Id: 49e5d37f-dbcb-4840-ac82-5aa46645c757
+                        Model: 01069813-14ed-4449-86a4-1dab5e6a9d9a:Sphere
+                        Materials:
+                            8f67401846e0322d002a1f7ef819090c~0: 75e2b50e-2138-48ff-a2f1-19911dc4f64f:AstroBoy/glass
+                    62d8200bf2e54684503f81df73f52e1e: !InstancingComponent
+                        Id: 4a89a7e3-5f56-4108-8ded-131298b2c279
+                        Type: !InstancingEntityTransform {}
+        -   Entity:
+                Id: 2cd3dd9e-0e39-44f0-ac5c-01853096b151
+                Name: Sphere User Array
+                Components:
+                    ea7dca85061394540e4a73a71d6f3b13: !TransformComponent
+                        Id: 1a989c71-71ab-4a92-b15c-8c8641567ee4
+                        Position: {X: 2.0, Y: 0.5, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    55858f7443890ed89a54e64e0e4afbdc: !ModelComponent
+                        Id: 8eaa6979-cea6-4f83-beb4-74a861117683
+                        Model: 01069813-14ed-4449-86a4-1dab5e6a9d9a:Sphere
+                        Materials: {}
+                    50ebe5067db1116264f511ca50a6b20d: !StrideTransformationInstancing.InstanceUpdaterUserArray,StrideTransformationInstancing
+                        Id: f1562e61-a430-4280-bffe-b07957ba5faf
+        -   Folder: Scene Setup
+            Entity:
+                Id: 32221e89-d548-487c-b7c5-080d50551e38
+                Name: Directional light
+                Components:
+                    acb102a8cce92be923753efaa6ccb10e: !TransformComponent
+                        Id: 7a8eabf1-c5f9-465e-bc5b-dba49f0eb8d2
+                        Position: {X: 0.0, Y: 2.0, Z: 0.0}
+                        Rotation: {X: 1.131334E-08, Y: -0.9659258, Z: -0.258819044, W: -4.222196E-08}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    7613e7bdc864c2279033972a81e69e99: !LightComponent
+                        Id: a8d327d8-1301-4730-ade9-e4ab3722b597
+                        Type: !LightDirectional
+                            Color: !ColorRgbProvider
+                                Value: {R: 1.0, G: 1.0, B: 1.0}
+                            Shadow:
+                                Enabled: true
+                                Filter: !LightShadowMapFilterTypePcf
+                                    FilterSize: Filter5x5
+                                Size: Large
+                                DepthRange: {}
+                                PartitionMode: !LightDirectionalShadowMap.PartitionLogarithmic {}
+                                ComputeTransmittance: false
+                                BiasParameters: {}
+                        Intensity: 20.0
+        -   Folder: Astro Instances
+            Entity:
+                Id: 40790dbf-3da9-4848-82b8-bdd22e81b30c
+                Name: Astro Instance 03
+                Components:
+                    66fa607f7cb579c13aa28d2d26b4f7d2: !TransformComponent
+                        Id: bf40a36d-9979-4834-9230-41cf60952e83
+                        Position: {X: -1.22645462, Y: 0.005822748, Z: -0.032589525}
+                        Rotation: {X: 0.0, Y: 1.0, Z: 0.0, W: -4.371139E-08}
+                        Scale: {X: 5.0, Y: 5.0, Z: 5.0}
+                        Children: {}
+                    37ebd948177158d333cc9705d744a8d5: !InstanceComponent
+                        Id: 9d72d6da-923c-42e4-bf35-8976b2d31387
+                        Master: ref!! 09b50993-b89e-4d3c-8736-8288c29d3f2e
+        -   Folder: Scene Setup
+            Entity:
+                Id: 5730f047-74fe-43bd-beae-2944af9618e3
+                Name: Skybox
+                Components:
+                    bb920e03d91da237cb80c1778b176bac: !TransformComponent
+                        Id: 1176486f-3837-426a-b9ec-736bc740c73c
+                        Position: {X: 0.0, Y: 2.0, Z: -2.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    2f618c237361f1468df58765d51a11b7: !BackgroundComponent
+                        Id: d268605b-cfd5-4344-b79d-755d36247403
+                        Texture: dab9d02d-70eb-4db0-b131-cd5415d88982:Skybox texture
+                    742c037acca529d1d9f54cc4cb1d7f29: !LightComponent
+                        Id: 167eee4e-4a31-4bbb-99d8-cfe6eba9d1cc
+                        Type: !LightSkybox
+                            Skybox: 3fd0b66d-9fbf-480a-9872-9775159d85f9:Skybox
+        -   Folder: Sphere Instances
+            Entity:
+                Id: 6b41d94e-dffc-45e2-b6da-f6a6e31ce474
+                Name: Sphere Instance 03
+                Components:
+                    81215229fdf37ab6946eab50082bd97b: !TransformComponent
+                        Id: 20a32ce5-e369-4ab7-8b77-74e1497a111d
+                        Position: {X: 0.0624220073, Y: 3.086192, Z: -1.37170434}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    d104fa3d3f0769f8bb9ccb32ab8ae4a4: !InstanceComponent
+                        Id: 63f27874-105b-408e-a175-757d430dcbd8
+                        Master: ref!! 4a89a7e3-5f56-4108-8ded-131298b2c279
+                    4d277b225f7050ab374ef4f850e3379a: !RigidbodyComponent
+                        Id: 3524e017-9615-4ddf-b3b7-f985b0858635
+                        CanSleep: false
+                        Restitution: 0.8
+                        Friction: 0.5
+                        RollingFriction: 0.1
+                        CcdMotionThreshold: 0.0
+                        CcdSweptSphereRadius: 0.0
+                        IsTrigger: false
+                        IsKinematic: false
+                        Mass: 1.0
+                        LinearDamping: 0.0
+                        AngularDamping: 0.0
+                        OverrideGravity: false
+                        Gravity: {X: 0.0, Y: 0.0, Z: 0.0}
+                        NodeName: null
+                        ColliderShapes:
+                            6ef0b6fc27f6283008cd42f18db31ad0: !SphereColliderShapeDesc
+                                Is2D: false
+                                LocalOffset: {X: 0.0, Y: 0.0, Z: 0.0}
+        -   Folder: null
+            Entity:
+                Id: 99908a2c-8bef-49a4-a7a3-73bd2e463f37
+                Name: Sphere User Buffer
+                Components:
+                    ea7dca85061394540e4a73a71d6f3b13: !TransformComponent
+                        Id: 5a659c0d-6fba-49dd-a364-afa4902589b1
+                        Position: {X: -2.0, Y: 0.5, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    55858f7443890ed89a54e64e0e4afbdc: !ModelComponent
+                        Id: 19bde9d8-472e-4189-9ea6-560f4ada99fe
+                        Model: 01069813-14ed-4449-86a4-1dab5e6a9d9a:Sphere
+                        Materials: {}
+                    e7815b5555bacf8e909805a0128bdd76: !StrideTransformationInstancing.InstanceUpdaterUserBuffer,StrideTransformationInstancing
+                        Id: 2740d551-a007-4c5b-a6e6-2b8ce8a8986b
+        -   Folder: Scene Setup
+            Entity:
+                Id: a284bcf6-b5a8-44d0-969e-f718dfada554
+                Name: Camera
+                Components:
+                    298f3f735b344daec4f1af1428352931: !TransformComponent
+                        Id: 32f3e6e5-0998-44df-83d3-52dc01a2e315
+                        Position: {X: 0.0, Y: 0.794930041, Z: -6.955255}
+                        Rotation: {X: 0.0, Y: 1.0, Z: 0.0, W: -4.371139E-08}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    6d6684f59bef77bf889db2ab8d1aa8ed: !CameraComponent
+                        Id: 129b67f2-3c7a-4c97-807a-3a410e8b9e4e
+                        Name: null
+                        Projection: Perspective
+                        Slot: 647bb386-daf0-4882-a03b-bf83c1be6cc2
+                    8f4b8861816cb811841a04b9aff767a9: !StrideTransformationInstancing.BasicCameraController,StrideTransformationInstancing
+                        Id: 1c60d2da-17ed-45f3-9b3d-e011c9254376
+                        Gamepad: false
+                        KeyboardMovementSpeed: {X: 5.0, Y: 5.0, Z: 5.0}
+                        TouchMovementSpeed: {X: 0.7, Y: 0.7, Z: 0.3}
+                        SpeedFactor: 5.0
+                        KeyboardRotationSpeed: {X: 3.0, Y: 3.0}
+                        MouseRotationSpeed: {X: 1.0, Y: 1.0}
+                        TouchRotationSpeed: {X: 1.0, Y: 0.7}
+                    de14cdb67f7a1cb2d441b958b16465d1: !StrideTransformationInstancing.GameProfiler,StrideTransformationInstancing
+                        Id: b49f0403-3ad8-4f5c-883d-8d2f1540e340
+                        Enabled: true
+                        TextColor: {R: 144, G: 238, B: 144, A: 255}
+                        RefreshTime: 500.0
+                        SortingMode: ByTime
+                        FilteringMode: Fps
+                        ResultPage: 1
+        -   Entity:
+                Id: b4ef8fd1-f8b1-44a9-9439-3cf03abe6ee1
+                Name: Sphere Child
+                Components:
+                    81215229fdf37ab6946eab50082bd97b: !TransformComponent
+                        Id: 3df5860d-1283-44e9-8e61-30c0b2d45b05
+                        Position: {X: 8.080913, Y: 2.921141, Z: -4.88785744}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    c7a1e232b19d61c2eb2c1aae4b2d5af4: !InstanceComponent
+                        Id: 12605363-9fac-45e1-978e-93e095c5ca78
+                        Master: null
+        -   Folder: null
+            Entity:
+                Id: b68ccead-66f1-4b13-86f4-fb97ee735f80
+                Name: Astro Entity Transform
+                Components:
+                    fa2b457ee134effa789bd61243c0f071: !TransformComponent
+                        Id: 6bf6f93b-c717-412a-bfa2-6aa11e313db2
+                        Position: {X: 0.531176865, Y: 0.490726143, Z: -1.896521}
+                        Rotation: {X: 0.0, Y: 0.97266227, Z: 0.0, W: 0.232224211}
+                        Scale: {X: 5.0, Y: 5.0, Z: 5.0}
+                        Children:
+                            9e2f699ce7413da7dd2bc0eec9b765a5: ref!! b96104dd-f5ee-4eaa-989b-97e1bd8adb3d
+                    e02c65e6a65cbed279b560210b316d9a: !ModelComponent
+                        Id: ef12cc0e-c7f5-463f-bf7d-cba3f3a4796d
+                        Model: 9996851b-6d40-4c90-a8b7-44cd5cc4e660:AstroBoy/astroBoy_walk
+                        Materials:
+                            9a3bf7a0d79f861d739c54998a7a3610~1: 75e2b50e-2138-48ff-a2f1-19911dc4f64f:AstroBoy/glass
+                            83a75bc9f202bb461f248134a5c9381b~2: 10512dae-0fc4-4048-9b21-65e0054df1eb:AstroBoy/matte black
+                    8ffb515231d9b4c59353fbee9ccd2cac: !StrideTransformationInstancing.AstroBoyAnimation,StrideTransformationInstancing
+                        Id: 1b141d7e-1fb6-4883-a70f-13b17d9d1db6
+                        Animations:
+                            68a1f518fc9d1874ee087ac6b236bfd4:
+                                Clip: 445dacc0-4380-4ff2-b70f-43a9bd48e46a:AstroBoy/astroBoy_walk_2
+                                BlendOperation: LinearBlend
+                                StartTime: 0.0
+                    baea96c80394dec0f5d0e4f4dd0de700: !InstancingComponent
+                        Id: 09b50993-b89e-4d3c-8736-8288c29d3f2e
+                        Type: !InstancingEntityTransform {}
+        -   Folder: Scene Setup
+            Entity:
+                Id: ba0bacf3-e2af-4655-a659-0046c92e0d36
+                Name: Ground
+                Components:
+                    7a248f04030b171f9e97238d4ee61e75: !TransformComponent
+                        Id: 6d148c3d-1840-41b7-a41c-b9b11351b29f
+                        Position: {X: -0.5615162, Y: 0.0, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    602e7a3f92299828f86aaf641f11abdd: !ModelComponent
+                        Id: 35496fc8-2f34-48ef-a042-1d217e024325
+                        Model: 7798fd92-c2a1-465e-ab68-476dad533c5a:Ground
+                        Materials: {}
+                    853c97dad18d9705aec98e29ce033311: !StaticColliderComponent
+                        Id: 11a51edf-a06d-4fbe-a045-16885d956cc0
+                        CanSleep: false
+                        Restitution: 0.8
+                        Friction: 0.5
+                        RollingFriction: 0.1
+                        CcdMotionThreshold: 0.0
+                        CcdSweptSphereRadius: 0.0
+                        IsTrigger: false
+                        AlwaysUpdateNaviMeshCache: false
+                        ColliderShapes:
+                            84e48d78249443c1e1e4ffdf106d7ced: !StaticPlaneColliderShapeDesc
+                                Normal: {X: 0.0, Y: 1.0, Z: 0.0}
+                                Offset: 0.0
+        -   Folder: Astro Instances
+            Entity:
+                Id: c0440939-f12a-408e-a300-0e2f163b640f
+                Name: Astro Instance 01
+                Components:
+                    66fa607f7cb579c13aa28d2d26b4f7d2: !TransformComponent
+                        Id: c936ef3f-a874-42ca-bf31-a37256712770
+                        Position: {X: -0.84905237, Y: 0.371239722, Z: -3.09607458}
+                        Rotation: {X: 0.0, Y: 1.0, Z: 0.0, W: -4.371139E-08}
+                        Scale: {X: 5.0, Y: 5.0, Z: 5.0}
+                        Children: {}
+                    37ebd948177158d333cc9705d744a8d5: !InstanceComponent
+                        Id: 71cf1e8d-12df-4da3-bb2a-3a10f3b0e5e0
+                        Master: ref!! 09b50993-b89e-4d3c-8736-8288c29d3f2e
+        -   Entity:
+                Id: c24582ee-733f-42c1-afb2-c75a08c3b1e2
+                Name: Astro User Array
+                Components:
+                    fa2b457ee134effa789bd61243c0f071: !TransformComponent
+                        Id: 89e3dbcf-c5aa-4c28-8f47-67e1a3b3951b
+                        Position: {X: -3.20074821, Y: 0.0, Z: -1.9316802}
+                        Rotation: {X: 0.0, Y: 0.9973192, Z: 0.0, W: -0.0731736049}
+                        Scale: {X: 5.0, Y: 5.0, Z: 5.0}
+                        Children: {}
+                    e02c65e6a65cbed279b560210b316d9a: !ModelComponent
+                        Id: 9893860d-3c96-4e8d-b6f5-24f0991628e0
+                        Model: 9996851b-6d40-4c90-a8b7-44cd5cc4e660:AstroBoy/astroBoy_walk
+                        Materials:
+                            92dd224c488b9ba9f3843a0f5c9985a1~1: 75e2b50e-2138-48ff-a2f1-19911dc4f64f:AstroBoy/glass
+                            b4fc1b7904a5a2838275c9552d8a0dde~2: 7073ab46-d1af-474e-b8a7-383f137c974a:MetalWave/Material
+                    8ffb515231d9b4c59353fbee9ccd2cac: !StrideTransformationInstancing.AstroBoyAnimation,StrideTransformationInstancing
+                        Id: 84385287-7541-403b-9cc4-b01bceb8ca49
+                        Animations:
+                            68a1f518fc9d1874ee087ac6b236bfd4:
+                                Clip: 445dacc0-4380-4ff2-b70f-43a9bd48e46a:AstroBoy/astroBoy_walk_2
+                                BlendOperation: LinearBlend
+                                StartTime: 0.0
+        -   Folder: Astro Instances
+            Entity:
+                Id: dd4fbb89-c330-4adc-a54b-3575fb516092
+                Name: Astro Instance 02
+                Components:
+                    66fa607f7cb579c13aa28d2d26b4f7d2: !TransformComponent
+                        Id: 619f43c9-106f-43f0-9626-17bff9d6f01c
+                        Position: {X: 2.35756683, Y: 0.196232438, Z: -2.18121672}
+                        Rotation: {X: 0.0, Y: 1.0, Z: 0.0, W: -4.371139E-08}
+                        Scale: {X: 5.0, Y: 5.0, Z: 5.0}
+                        Children: {}
+                    37ebd948177158d333cc9705d744a8d5: !InstanceComponent
+                        Id: 1132eb24-71da-449d-85ab-1a9bc142577f
+                        Master: ref!! 09b50993-b89e-4d3c-8736-8288c29d3f2e
+        -   Entity:
+                Id: e4a78667-e601-43d1-84f6-159677888bd7
+                Name: Astro Child
+                Components:
+                    df037836c8132037c822f3d7493c78d8: !TransformComponent
+                        Id: b96104dd-f5ee-4eaa-989b-97e1bd8adb3d
+                        Position: {X: 0.5567806, Y: 0.0, Z: 0.187873438}
+                        Rotation: {X: 0.0, Y: 0.344349682, Z: 0.0, W: 0.938841462}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    a309cefef92336d72b2b8657ed01589e: !InstanceComponent
+                        Id: 96e06712-50e5-47ac-b022-532a35867315
+                        Master: null
+        -   Folder: Sphere Instances
+            Entity:
+                Id: f68516a8-8c0c-485c-9f0a-778a511f6626
+                Name: Sphere Instance 01
+                Components:
+                    81215229fdf37ab6946eab50082bd97b: !TransformComponent
+                        Id: 8ba39500-e878-4f85-a120-4d2f4b3e6aa8
+                        Position: {X: 0.770895362, Y: 2.15224123, Z: -1.37170434}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    d104fa3d3f0769f8bb9ccb32ab8ae4a4: !InstanceComponent
+                        Id: 8a6ebdb8-3311-41a7-b9a7-1bab45759a43
+                        Master: ref!! 4a89a7e3-5f56-4108-8ded-131298b2c279
+                    4d277b225f7050ab374ef4f850e3379a: !RigidbodyComponent
+                        Id: 5ddd78cb-17c0-48d8-9af1-c7be73149eb5
+                        CanSleep: false
+                        Restitution: 0.8
+                        Friction: 0.5
+                        RollingFriction: 0.1
+                        CcdMotionThreshold: 0.0
+                        CcdSweptSphereRadius: 0.0
+                        IsTrigger: false
+                        IsKinematic: false
+                        Mass: 1.0
+                        LinearDamping: 0.0
+                        AngularDamping: 0.0
+                        OverrideGravity: false
+                        Gravity: {X: 0.0, Y: 0.0, Z: 0.0}
+                        NodeName: null
+                        ColliderShapes:
+                            6ef0b6fc27f6283008cd42f18db31ad0: !SphereColliderShapeDesc
+                                Is2D: false
+                                LocalOffset: {X: 0.0, Y: 0.0, Z: 0.0}

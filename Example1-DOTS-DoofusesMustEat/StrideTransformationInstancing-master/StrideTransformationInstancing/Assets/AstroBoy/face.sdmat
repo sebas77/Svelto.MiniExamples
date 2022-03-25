@@ -1,0 +1,40 @@
+!MaterialAsset
+Id: 467fdf4b-7937-4296-b2a2-5b0c084a0a42
+SerializedVersion: {Stride: 2.0.0.0}
+Tags: []
+Attributes:
+    Diffuse: !MaterialDiffuseMapFeature
+        DiffuseMap: !ComputeBinaryColor
+            Operator: Color
+            LeftChild: !ComputeColor
+                Value: {R: 0.20625, G: 0.167578116, B: 0.167578116, A: 1.0}
+            RightChild: !ComputeTextureColor
+                Texture: 6eee8360-2ee4-4bce-92e3-596b159f400d:AstroBoy/boy_10
+                FallbackValue:
+                    Value: {R: 1.0, G: 1.0, B: 1.0, A: 1.0}
+                Scale: {X: 1.0, Y: 1.0}
+                Offset: {X: 0.0, Y: 0.0}
+                Swizzle: null
+    DiffuseModel: !MaterialDiffuseLambertModelFeature {}
+    Specular: !MaterialSpecularMapFeature
+        SpecularMap: !ComputeColor
+            Value: {R: 0.306, G: 0.203184, B: 0.234183, A: 1.0}
+        Intensity: !ComputeFloat
+            Value: 1.0
+    SpecularModel: !MaterialSpecularMicrofacetModelFeature
+        Fresnel: !MaterialSpecularMicrofacetFresnelSchlick {}
+        Visibility: !MaterialSpecularMicrofacetVisibilityImplicit {}
+        NormalDistribution: !MaterialSpecularMicrofacetNormalDistributionBlinnPhong {}
+        Environment: !MaterialSpecularMicrofacetEnvironmentGGXLUT {}
+    SubsurfaceScattering: !MaterialSubsurfaceScatteringFeature
+        Enabled: false
+        Translucency: 0.83
+        TranslucencyMap: !ComputeFloat
+            Value: 3.0
+        ProfileFunction: !MaterialSubsurfaceScatteringScatteringProfileSkin {}
+        KernelFunction: !MaterialSubsurfaceScatteringScatteringKernelSkin
+            Falloff: {R: 1.0, G: 0.37, B: 0.3}
+            Strength: {R: 0.48, G: 0.41, B: 0.28}
+    Overrides:
+        UVScale: {X: 1.0, Y: 1.0}
+Layers: {}

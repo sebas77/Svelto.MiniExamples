@@ -31,7 +31,7 @@ namespace Svelto.ECS.MiniExamples.Turrets.BulletLayer
 
             return init;
         }
-
+        
         readonly ECSStrideEntityManager _ecsStrideEntityManager;
         readonly IEntityFactory         _factory;
         Vector3                         _bulletScaling;

@@ -1,0 +1,43 @@
+!SceneAsset
+Id: d105be37-8cc6-4851-8aea-32b76adf881e
+SerializedVersion: {Stride: 3.1.0.1}
+Tags: []
+ChildrenIds: []
+Offset: {X: 0.0, Y: 0.0, Z: 0.0}
+Hierarchy:
+    RootParts:
+        - ref!! a52c8bca-ba61-4824-8ede-9b9738f64cad
+    Parts:
+        -   Folder: null
+            Entity:
+                Id: 604f3880-2ac4-4282-8b15-7bc4e655a1a1
+                Name: Sphere Instance 03
+                Components:
+                    81215229fdf37ab6946eab50082bd97b: !TransformComponent
+                        Id: 6734078f-e328-4879-b7b8-9ed10d84be15
+                        Position: {X: 4.368431, Y: 1.09170628, Z: 7.63841724}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    c7a1e232b19d61c2eb2c1aae4b2d5af4: !InstanceComponent
+                        Id: fc6b7753-667c-4ed1-a3ce-daab40c0c56e
+                        Master: ref!! 948e6508-b605-4cef-8b5d-429c20166468
+        -   Entity:
+                Id: a52c8bca-ba61-4824-8ede-9b9738f64cad
+                Name: Sphere Entity Transform
+                Components:
+                    ea7dca85061394540e4a73a71d6f3b13: !TransformComponent
+                        Id: 0e1fbf6c-668f-4f4c-9998-2978c3fe5e79
+                        Position: {X: -0.9314739, Y: 0.205670238, Z: -2.38987255}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.5, Y: 0.5, Z: 0.5}
+                        Children:
+                            778301422bdff433b97243391a99ff9e: ref!! 6734078f-e328-4879-b7b8-9ed10d84be15
+                    55858f7443890ed89a54e64e0e4afbdc: !ModelComponent
+                        Id: dd121569-c699-42d2-823d-53ce85c436fe
+                        Model: 01069813-14ed-4449-86a4-1dab5e6a9d9a:Sphere
+                        Materials:
+                            8f67401846e0322d002a1f7ef819090c~0: 75e2b50e-2138-48ff-a2f1-19911dc4f64f:AstroBoy/glass
+                    1029c6997ce4bb89bf8a10e347fd216f: !InstancingComponent
+                        Id: 948e6508-b605-4cef-8b5d-429c20166468
+                        Type: !InstancingEntityTransform {}

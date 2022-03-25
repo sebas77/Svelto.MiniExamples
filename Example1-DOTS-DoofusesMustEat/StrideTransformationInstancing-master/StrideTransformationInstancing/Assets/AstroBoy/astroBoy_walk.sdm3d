@@ -1,0 +1,27 @@
+!Model
+Id: 9996851b-6d40-4c90-a8b7-44cd5cc4e660
+SerializedVersion: {Stride: 2.0.0.0}
+Tags: []
+Source: !file ../../Resources/astroBoy_walk.dae
+Skeleton: de36f38d-1cfb-4335-8bbf-0ec7b49a225d:AstroBoy/astroBoy_walk Skeleton
+PivotPosition: {X: 0.0, Y: 0.0, Z: 0.0}
+Materials:
+    91b8eddc5e7daf6f9c3d396deafa8345:
+        Name: face
+        MaterialInstance:
+            Material: 467fdf4b-7937-4296-b2a2-5b0c084a0a42:AstroBoy/face
+    6a8a76d667d32f8f09f3874383358ec3:
+        Name: glass
+        MaterialInstance:
+            Material: null
+    1ff1eb6c2fc0b2933d0698c7a0aaf142:
+        Name: matte
+        MaterialInstance:
+            Material: e5c4ee2a-74a6-4a46-929c-54bba09368f1:AstroBoy/matte
+    cab82f78852e1d582512f3a4b422a4a2:
+        Name: shiny
+        MaterialInstance:
+            Material: 724577e7-dd4a-4e88-a7ce-72dbabb60173:AstroBoy/shiny
+Modifiers: {}
+~SourceHashes:
+    9f88541085873728fdb2c424099083f4~../../Resources/astroBoy_walk.dae: 890e31893089c3c307cbf7983792f3c5

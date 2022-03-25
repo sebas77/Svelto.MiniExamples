@@ -1,0 +1,7 @@
+!Texture
+Id: 6e3ad048-0686-4202-9394-d015f32ab708
+SerializedVersion: {Stride: 2.0.0.0}
+Tags: []
+Source: !file ../../Resources/Metal_Weave_009_SD/Metal_Weave_009_opacity.jpg
+IsCompressed: false
+Type: !GrayscaleTextureType {}

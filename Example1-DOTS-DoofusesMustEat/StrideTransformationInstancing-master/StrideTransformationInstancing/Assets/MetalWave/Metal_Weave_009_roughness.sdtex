@@ -1,0 +1,7 @@
+!Texture
+Id: 96aea443-857b-4431-8b04-fd91b98438f7
+SerializedVersion: {Stride: 2.0.0.0}
+Tags: []
+Source: !file ../../Resources/Metal_Weave_009_SD/Metal_Weave_009_roughness.jpg
+IsCompressed: false
+Type: !GrayscaleTextureType {}
