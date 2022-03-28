@@ -28,5 +28,5 @@ PlatformFilters:
     - ^Mali\-4
     - ^Mali\-T6
     - ^Mali\-T7
-SplashScreenTexture: d26edb11-10bd-403c-b3c2-9c7fcccf25e5:StrideDefaultSplashScreen
+SplashScreenTexture: null
 SplashScreenColor: {R: 0, G: 0, B: 0, A: 255}

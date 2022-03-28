@@ -7,20 +7,33 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp.StrideLayer
 {
     public class ECSStrideEntityManager
     {
-        public ECSStrideEntityManager(IContentManager contentManager)
+        public ECSStrideEntityManager(IContentManager contentManager, SceneSystem sceneSystem)
         {
             _contentManager = contentManager;
+            _sceneSystem    = sceneSystem;
         }
 
         //Instantiate and register a new entity from a previously registered prefab
         public uint InstantiateEntity(uint prefabID, bool useTRS)
         {
-            var entity = new Entity();
-            entity.GetOrCreate<InstanceComponent>().Master =
-                _prefabEntities[prefabID].Entities[0].Get<InstancingComponent>();
+            var entity = _prefabEntities[prefabID].Instantiate()[0];
+            _entities.Add(entity);
             entity.Transform.UseTRS = useTRS;
+            _sceneSystem.SceneInstance.RootScene.Entities.Add(entity);
+            return _entityCount++;
+        }
+        
+        public uint InstantiateInstancingEntity(uint prefabID)
+        {
+            var entity              = _prefabEntities[prefabID].Instantiate()[0];
+            // var instancingUserArray = new InstancingUserArray();
+            // instancingUserArray.ModelTransformUsage     = ModelTransformUsage.PostMultiply;
+            // entity.Get<InstancingComponent>().Type = instancingUserArray;
+            entity.Transform.UseTRS                     = false;
+            _sceneSystem.SceneInstance.RootScene.Entities.Add(entity);
             
             _entities.Add(entity);
+            
             return _entityCount++;
         }
 
@@ -28,6 +41,12 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp.StrideLayer
         public Entity GetStrideEntity(uint entityID)
         {
             return _entities[entityID];
+        }
+        
+        //convert a svelto compatible ID to an Entity
+        public void SetInstancingTransformations(uint entityID, Matrix[] matrices)
+        {
+            (_entities[entityID].Get<InstancingComponent>().Type as InstancingUserArray).UpdateWorldMatrices(matrices);
         }
 
         //load a prefab resource and register it as a prefab. Of course this method is very naive and can be made
@@ -49,5 +68,6 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp.StrideLayer
         readonly FasterList<Entity> _entities       = new();
         readonly FasterList<Prefab> _prefabEntities = new();
         readonly IContentManager    _contentManager;
+        readonly SceneSystem        _sceneSystem;
     }
 }

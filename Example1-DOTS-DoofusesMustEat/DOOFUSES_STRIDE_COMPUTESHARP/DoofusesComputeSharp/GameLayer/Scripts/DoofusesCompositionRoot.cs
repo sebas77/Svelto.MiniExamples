@@ -23,7 +23,7 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
             //create the Manager that interfaces Stride Objects with Svelto Entities. All the non ECS dependencies
             //like the manager, must be created by the main composition root and injected in the parent composition
             //roots if required.
-            _ecsStrideEntityManager = new ECSStrideEntityManager(Content);
+            _ecsStrideEntityManager = new ECSStrideEntityManager(Content, SceneSystem);
             
             _unsortedGroups = new FasterList<IUpdateEngine>();
 
@@ -36,7 +36,7 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
             //engines roots per Game need to be used, a different approach may be necessary. 
             Services.AddService(entityFactory);
             Services.AddService(_ecsStrideEntityManager);
-
+            
             GameStarted -= CreateCompositionRoot;
         }
 
@@ -49,6 +49,10 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
 
         protected override void BeginRun()
         {
+            WindowMinimumUpdateRate.MinimumElapsedTime = new TimeSpan(0);
+            
+            GraphicsDevice.Presenter.PresentInterval = Stride.Graphics.PresentInterval.Immediate;
+            
             LoadAssetAndCreatePrefabs(_ecsStrideEntityManager, out var blueDoofusPrefab);
 
             GameCompositionRoot(blueDoofusPrefab);
@@ -60,12 +64,11 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
             //Compose the game level engines
             //            AddEngine(new PlaceFoodOnClickEngine(redFoodPrefab, blueFootPrefab, entityFactory));
             AddEngine(new SpawningDoofusEngine(blueDoofusPrefab, blueDoofusPrefab, entityFactory,
-                _ecsStrideEntityManager, SceneSystem));
+                _ecsStrideEntityManager));
             //          AddEngine(new ConsumingFoodEngine(entityFunctions));
             //        AddEngine(new LookingForFoodDoofusesEngine(entityFunctions));
             //      AddEngine(new VelocityToPositionDoofusesEngine());
 
-            TransformableContext.Compose(AddEngine);
             StrideAbstractionContext.Compose(AddEngine, _ecsStrideEntityManager);
 
             _mainEngineGroup = new SortedDoofusesEnginesExecutionGroup(_unsortedGroups);

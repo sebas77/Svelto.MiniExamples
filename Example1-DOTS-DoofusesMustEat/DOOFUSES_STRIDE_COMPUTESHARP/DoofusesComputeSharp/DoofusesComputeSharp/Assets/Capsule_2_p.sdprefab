@@ -23,4 +23,5 @@ Hierarchy:
                             0cbcfb662125d96435eb236fb22620a4~0: d8a1507d-b181-4ad1-84ba-eced3e38d023:ClearCoatBlue
                     0890e5639c3bf12dd58acbc5a9f90df1: !InstancingComponent
                         Id: 293eb34b-e3fe-42ed-916f-d81b8307effb
-                        Type: !InstancingEntityTransform {}
+                        Type: !InstancingUserArray
+                            ModelTransformUsage: Ignore

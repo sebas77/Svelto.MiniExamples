@@ -1,4 +1,5 @@
 using Svelto.ECS.EntityComponents;
+using Svelto.ECS.MiniExamples.Doofuses.ComputeSharp.StrideLayer;
 
 namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
 {
@@ -7,6 +8,7 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
         public DoofusEntityDescriptor()
         {
             Add<VelocityEntityComponent, SpeedEntityComponent, MealInfoComponent>();
+            Add<StrideComponent>();
         }
     }
 }
