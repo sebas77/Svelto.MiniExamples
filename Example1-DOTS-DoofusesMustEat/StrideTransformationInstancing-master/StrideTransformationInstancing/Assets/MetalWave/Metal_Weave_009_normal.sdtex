@@ -1,8 +1,0 @@
-!Texture
-Id: 4efae44e-852a-418a-91b1-e2ee1bf6c34f
-SerializedVersion: {Stride: 2.0.0.0}
-Tags: []
-Source: !file ../../Resources/Metal_Weave_009_SD/Metal_Weave_009_normal.jpg
-IsCompressed: false
-Type: !NormalMapTextureType
-    InvertY: false

@@ -1,7 +1,0 @@
-!Texture
-Id: d71ecce2-2e61-412c-9054-de456bdc5864
-SerializedVersion: {Stride: 2.0.0.0}
-Tags: []
-Source: !file ../../Resources/Metal_Weave_009_SD/Metal_Weave_009_height.png
-IsCompressed: false
-Type: !GrayscaleTextureType {}

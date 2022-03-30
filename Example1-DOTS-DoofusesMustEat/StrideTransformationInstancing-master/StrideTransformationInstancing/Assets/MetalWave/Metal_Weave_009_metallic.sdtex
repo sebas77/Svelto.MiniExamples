@@ -1,7 +1,0 @@
-!Texture
-Id: 3db1369f-6fce-49f3-bd8e-270bcd3ce883
-SerializedVersion: {Stride: 2.0.0.0}
-Tags: []
-Source: !file ../../Resources/Metal_Weave_009_SD/Metal_Weave_009_metallic.jpg
-IsCompressed: false
-Type: !GrayscaleTextureType {}

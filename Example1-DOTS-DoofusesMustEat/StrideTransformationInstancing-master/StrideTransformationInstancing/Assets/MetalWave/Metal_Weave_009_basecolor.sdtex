@@ -1,8 +1,0 @@
-!Texture
-Id: 9f610489-e47d-42b6-82fa-611bea7b034c
-SerializedVersion: {Stride: 2.0.0.0}
-Tags: []
-Source: !file ../../Resources/Metal_Weave_009_SD/Metal_Weave_009_basecolor.jpg
-IsCompressed: false
-Type: !ColorTextureType
-    ColorKeyColor: {R: 255, G: 0, B: 255, A: 255}
