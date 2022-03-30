@@ -6,13 +6,13 @@ using Svelto.Common.Internal;
 using Svelto.DataStructures;
 using Svelto.ECS.Experimental;
 
-namespace  Svelto.ECS.MiniExamples.Doofuses.ComputeSharp.StrideLayer
+namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp.StrideLayer
 {
     public enum StrideLayerEngineNames
     {
         SetTransformsEngine
     }
-    
+
     /// <summary>
     /// Iterate all the entities that have matrices and, assuming they are stride objects, set the matrices to the
     /// matrix to the Stride Entity
@@ -32,10 +32,12 @@ namespace  Svelto.ECS.MiniExamples.Doofuses.ComputeSharp.StrideLayer
         }
 
         public string name => this.TypeName();
-        
+
         public void EntitiesSubmitted()
         {
-            var count = new QueryGroups(entitiesDB.FindGroups<MatrixComponent>()).Evaluate().Count<MatrixComponent>(entitiesDB);
+            var count = new QueryGroups(entitiesDB.FindGroups<MatrixComponent>()).Evaluate()
+               .Count<MatrixComponent>(entitiesDB);
+            
             if (_matrices == null || _matrices.Length != count)
             {
                 _matrices = new Matrix[count];
@@ -44,21 +46,21 @@ namespace  Svelto.ECS.MiniExamples.Doofuses.ComputeSharp.StrideLayer
 
         public void Step(in float deltaTime)
         {
-            var groups = entitiesDB.FindGroups<MatrixComponent>();
-            
-            foreach (var ((transforms, strideComponents, count), _) in
-                entitiesDB.QueryEntities<MatrixComponent, StrideComponent>(groups))
+            var groups = entitiesDB.FindGroups<MatrixComponent, StrideComponent>();
+
+            foreach (var ((transforms, strideComponents, count), _) in entitiesDB
+                        .QueryEntities<MatrixComponent, StrideComponent>(groups))
             {
-                if (count == 0) return;
                 unsafe
                 {
                     NB<MatrixComponent> nativeMatrices = transforms;
                     fixed (Matrix* matrices = _matrices)
                     {
                         var nativeArray = (void*)nativeMatrices.ToNativeArray(out var _);
-                        var size           = (uint)((uint)count * sizeof(Matrix));
+                        var size        = (uint)((uint)count * sizeof(Matrix));
                         Unsafe.CopyBlock(matrices, nativeArray, size);
                     }
+
                     _ECSStrideEntityManager.SetInstancingTransformations(strideComponents[0].entity, _matrices);
                 }
             }

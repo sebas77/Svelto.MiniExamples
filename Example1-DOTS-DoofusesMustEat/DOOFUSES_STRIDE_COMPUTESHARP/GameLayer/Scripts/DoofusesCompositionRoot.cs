@@ -53,17 +53,17 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
             
             GraphicsDevice.Presenter.PresentInterval = Stride.Graphics.PresentInterval.Immediate;
             
-            LoadAssetAndCreatePrefabs(_ecsStrideEntityManager, out var blueDoofusPrefab);
+            LoadAssetAndCreatePrefabs(_ecsStrideEntityManager, out var blueDoofusPrefab, out var redDoofusPrefab);
 
-            GameCompositionRoot(blueDoofusPrefab);
+            GameCompositionRoot(blueDoofusPrefab, redDoofusPrefab);
         }
 
-        void GameCompositionRoot(uint blueDoofusPrefab)
+        void GameCompositionRoot(uint blueDoofusPrefab, uint redDoofusPrefab)
         {
             var entityFactory = _enginesRoot.GenerateEntityFactory();
             //Compose the game level engines
             //            AddEngine(new PlaceFoodOnClickEngine(redFoodPrefab, blueFootPrefab, entityFactory));
-            AddEngine(new SpawningDoofusEngine(blueDoofusPrefab, blueDoofusPrefab, entityFactory,
+            AddEngine(new SpawningDoofusEngine(blueDoofusPrefab, redDoofusPrefab, entityFactory,
                 _ecsStrideEntityManager));
             //          AddEngine(new ConsumingFoodEngine(entityFunctions));
             //        AddEngine(new LookingForFoodDoofusesEngine(entityFunctions));
@@ -77,14 +77,13 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
         void LoadAssetAndCreatePrefabs(ECSStrideEntityManager gom
             //        out int redFoodPrefab, 
             //          out int blueFootPrefab, 
-            //            out int redDoofusPrefab
-          , out uint blueDoofusPrefab)
+          , out uint blueDoofusPrefab, out uint redDoofusPrefab)
         {
             //Register the loaded prefabs in the GameObject layer. The returning id is the ECS id to the prefab
             //            redFoodPrefab    = Content.Load<Entity>("entity1");
             //            blueFootPrefab   = Content.Load<Entity>("entity1");
-            //redDoofusPrefab  = Content.Load<Entity>("entity1");
             blueDoofusPrefab = gom.LoadAndRegisterPrefab("Capsule_2_p", out _);
+            redDoofusPrefab  = gom.LoadAndRegisterPrefab("Capsule_2_p_red", out _);
         }
 
         protected override void Update(GameTime gameTime)

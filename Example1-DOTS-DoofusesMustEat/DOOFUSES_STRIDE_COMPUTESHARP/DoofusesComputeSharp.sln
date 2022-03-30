@@ -17,6 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Svelto.ECS", "Svelto\com.se
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TransformationLayer", "TransformationLayer\TransformationLayer.csproj", "{222C5920-B249-4C29-8921-7A347208C619}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Svelto", "Svelto", "{A1E08AD1-E4AB-40E6-AF13-E93FAA66EDE3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,5 +89,9 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B9873C0D-B69B-4C8B-B070-1960010A5C29}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{5A18F06A-1060-4A00-BAA9-C6A4AFDAD089} = {A1E08AD1-E4AB-40E6-AF13-E93FAA66EDE3}
+		{ACCDE329-5184-4B19-83CA-805BB0BA9543} = {A1E08AD1-E4AB-40E6-AF13-E93FAA66EDE3}
 	EndGlobalSection
 EndGlobal

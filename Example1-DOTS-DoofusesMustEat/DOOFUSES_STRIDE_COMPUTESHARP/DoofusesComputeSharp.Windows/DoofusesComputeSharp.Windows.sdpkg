@@ -15,4 +15,5 @@ ExplicitFolders: []
 Bundles: []
 TemplateFolders: []
 RootAssets:
+    - 8da52161-09bd-4d80-8103-cca0850fb6e3:Capsule_2_p_red
     - d52d9aa2-61a6-47b8-97eb-b412704e220e:Capsule_2_p

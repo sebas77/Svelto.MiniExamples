@@ -13,22 +13,9 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp.StrideLayer
             _sceneSystem    = sceneSystem;
         }
 
-        //Instantiate and register a new entity from a previously registered prefab
-        public uint InstantiateEntity(uint prefabID, bool useTRS)
-        {
-            var entity = _prefabEntities[prefabID].Instantiate()[0];
-            _entities.Add(entity);
-            entity.Transform.UseTRS = useTRS;
-            _sceneSystem.SceneInstance.RootScene.Entities.Add(entity);
-            return _entityCount++;
-        }
-        
         public uint InstantiateInstancingEntity(uint prefabID)
         {
             var entity              = _prefabEntities[prefabID].Instantiate()[0];
-            // var instancingUserArray = new InstancingUserArray();
-            // instancingUserArray.ModelTransformUsage     = ModelTransformUsage.PostMultiply;
-            // entity.Get<InstancingComponent>().Type = instancingUserArray;
             entity.Transform.UseTRS                     = false;
             _sceneSystem.SceneInstance.RootScene.Entities.Add(entity);
             
@@ -37,13 +24,6 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp.StrideLayer
             return _entityCount++;
         }
 
-        //convert a svelto compatible ID to an Entity
-        public Entity GetStrideEntity(uint entityID)
-        {
-            return _entities[entityID];
-        }
-        
-        //convert a svelto compatible ID to an Entity
         public void SetInstancingTransformations(uint entityID, Matrix[] matrices)
         {
             (_entities[entityID].Get<InstancingComponent>().Type as InstancingUserArray).UpdateWorldMatrices(matrices);

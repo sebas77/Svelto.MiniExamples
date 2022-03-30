@@ -8,7 +8,7 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
     [Sequenced(nameof(DoofusesEngineNames.SpawningDoofusEngine))]
     public class SpawningDoofusEngine : IQueryingEntitiesEngine, IUpdateEngine
     {
-        public SpawningDoofusEngine(uint redCapsule, uint blueCapsule, IEntityFactory factory,
+        public SpawningDoofusEngine(uint blueCapsule, uint redCapsule, IEntityFactory factory,
             ECSStrideEntityManager manager)
         {
             _redCapsule       = redCapsule;
@@ -23,21 +23,21 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
             if (_done == true)
                 return;
             
-            uint entity = _manager.InstantiateInstancingEntity(_blueCapsule);
-
-            // new SpawningJob()
-            // {
-            //     _group   = GameGroups.RED_DOOFUSES_NOT_EATING.BuildGroup
-            //   , _factory = _factory
-            //   , _entity  = _redCapsule
-            //   , _random  = new Random(1234567)
-            // }.Execute(MaxNumberOfDoofuses);
+            uint blueEntityPrefab = _manager.InstantiateInstancingEntity(_blueCapsule);
+            uint redEntityPrefab = _manager.InstantiateInstancingEntity(_redCapsule);
 
             new SpawningJob()
             {
-                _group   = GameGroups.BLUE_DOOFUSES_NOT_EATING.BuildGroup
-              , _factory = _factory, _random  = new Random(7654321)
-                , _entity = entity
+                _group   = GameGroups.RED_DOOFUSES_NOT_EATING.BuildGroup
+              , _factory = _factory, _random = new Random(Environment.TickCount)
+              , _entity  = redEntityPrefab
+            }.Execute();
+
+            new SpawningJob()
+            {
+                _group    = GameGroups.BLUE_DOOFUSES_NOT_EATING.BuildGroup
+              , _factory  = _factory, _random = new Random(Environment.TickCount)
+                , _entity = blueEntityPrefab
             }.Execute();
 
             //Yeah this shouldn't be solved like this, but I keep it in this way for simplicity sake 
@@ -72,7 +72,7 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
 
                     init.Init(new PositionComponent()
                     {
-                        position = new Vector3(_random.Next(0, 40), 0, _random.Next(0, 40))
+                        position = new Vector3((float)(_random.NextDouble() * 40.0f), 0, (float)(_random.NextDouble() * 40.0f))
                     });
                     init.Init(new RotationComponent(Quaternion.Identity));
                     init.Init(new ScalingComponent(new Vector3(1.0f, 1.0f, 1.0f)));
