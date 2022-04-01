@@ -147,7 +147,7 @@ namespace Svelto.ECS
                     return ref _persistentEntityFilters.GetDirectValueByRef(index);
 
                 var typeRef          = TypeRefWrapper<T>.wrapper;
-                var filterCollection = EntityFilterCollection.Create();
+                var filterCollection = EntityFilterCollection.Create(filterID);
 
                 _persistentEntityFilters.Add(combineFilterIDs, filterCollection);
 

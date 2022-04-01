@@ -62,7 +62,8 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
 
         void GameCompositionRoot(uint blueFoodPrefab, uint redFoodPrefab, uint blueDoofusPrefab, uint redDoofusPrefab)
         {
-            var entityFactory = _enginesRoot.GenerateEntityFactory();
+            var entityFactory   = _enginesRoot.GenerateEntityFactory();
+            var entityFunctions = _enginesRoot.GenerateEntityFunctions();
             //Compose the game level engines
 
             AddEngine(new PlaceFoodOnClickEngine(redFoodPrefab, blueFoodPrefab, entityFactory, this.Input,
@@ -70,8 +71,8 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
             AddEngine(new SpawningDoofusEngine(redDoofusPrefab, blueDoofusPrefab,
                 entityFactory, _ecsStrideEntityManager));
             //          AddEngine(new ConsumingFoodEngine(entityFunctions));
-            //        AddEngine(new LookingForFoodDoofusesEngine(entityFunctions));
-            //      AddEngine(new VelocityToPositionDoofusesEngine());
+                    AddEngine(new LookingForFoodDoofusesEngine(entityFunctions));
+                  AddEngine(new VelocityToPositionDoofusesEngine());
 
             StrideAbstractionContext.Compose(AddEngine, _ecsStrideEntityManager);
 

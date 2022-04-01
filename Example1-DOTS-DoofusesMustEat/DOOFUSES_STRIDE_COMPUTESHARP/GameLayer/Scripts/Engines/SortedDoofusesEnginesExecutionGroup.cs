@@ -23,9 +23,9 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
         {
             nameof(DoofusesEngineNames.SpawningDoofusEngine)
             , nameof(DoofusesEngineNames.PlaceFoodOnClickEngine)
-            // , nameof(DoofusesEngineNames.LookingForFoodDoofusesEngine)
+             , nameof(DoofusesEngineNames.LookingForFoodDoofusesEngine)
             // , nameof(DoofusesEngineNames.ConsumingFoodEngine)
-            // , nameof(DoofusesEngineNames.VelocityToPositionDoofusesEngine)
+             , nameof(DoofusesEngineNames.VelocityToPositionDoofusesEngine)
            , nameof(TransformableLayerEngineNames.ComputeTransformsEngine)
            , nameof(StrideLayer.StrideLayerEngineNames.SetTransformsEngine)
         };

@@ -23,10 +23,16 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp.StrideLayer
 
             return _entityCount++;
         }
+        
+        public Matrix[] GetInstancingTransformations(uint entityID)
+        {
+            return (_entities[entityID].Get<InstancingComponent>().Type as InstancingUserArray).WorldMatrices;
+        }
 
         public void SetInstancingTransformations(uint entityID, Matrix[] matrices, int actualCount)
         {
-            (_entities[entityID].Get<InstancingComponent>().Type as InstancingUserArray).UpdateWorldMatrices(matrices, actualCount);
+            (_entities[entityID].Get<InstancingComponent>().Type as InstancingUserArray).UpdateWorldMatrices(matrices,
+                actualCount);
         }
 
         //load a prefab resource and register it as a prefab. Of course this method is very naive and can be made
