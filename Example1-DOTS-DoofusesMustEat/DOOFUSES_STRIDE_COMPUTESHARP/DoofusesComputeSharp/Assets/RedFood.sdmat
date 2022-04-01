@@ -1,14 +1,18 @@
 !MaterialAsset
-Id: c4a3e9b2-13b7-4be2-9e45-8f10469f45ba
+Id: aacd607f-d6d2-4123-8d8d-571430bd6a84
 SerializedVersion: {Stride: 2.0.0.0}
 Tags: []
 Attributes:
     MicroSurface: !MaterialGlossinessMapFeature
         GlossinessMap: !ComputeFloat
-            Value: 0.65
+            Value: 0.6
     Diffuse: !MaterialDiffuseMapFeature
-        DiffuseMap: !ComputeColor
-            Value: {R: 0.54901963, G: 0.54901963, B: 0.54901963, A: 1.0}
+        DiffuseMap: !ComputeTextureColor
+            FallbackValue:
+                Value: {R: 1.0, G: 0.8856508, B: 0.6091625, A: 1.0}
+            Scale: {X: 1.0, Y: 1.0}
+            Offset: {X: 0.0, Y: 0.0}
+            Swizzle: null
     DiffuseModel: !MaterialDiffuseLambertModelFeature {}
     Specular: !MaterialMetalnessMapFeature
         MetalnessMap: !ComputeFloat

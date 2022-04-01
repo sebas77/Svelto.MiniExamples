@@ -1,7 +1,7 @@
-namespace  Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
+namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
 {
-    public class TransformableEntityDescriptor: GenericEntityDescriptor<MatrixComponent, PositionComponent, ScalingComponent, RotationComponent>
+    public class TransformableEntityDescriptor : GenericEntityDescriptor<MatrixComponent, PositionComponent,
+        ScalingComponent, RotationComponent>
     {
-    
     }
 }

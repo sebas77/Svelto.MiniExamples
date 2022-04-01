@@ -1,27 +1,27 @@
 !PrefabAsset
-Id: 8da52161-09bd-4d80-8103-cca0850fb6e3
+Id: 9b81bee7-d6ff-416c-827a-2821444bdcf3
 SerializedVersion: {Stride: 3.1.0.1}
 Tags: []
 Hierarchy:
     RootParts:
-        - ref!! af0d7eae-c210-4c86-9727-799c2b6bedac
+        - ref!! aef9e991-1688-4105-be74-869169fbe401
     Parts:
         -   Entity:
-                Id: af0d7eae-c210-4c86-9727-799c2b6bedac
-                Name: Capsule_2
+                Id: aef9e991-1688-4105-be74-869169fbe401
+                Name: Capsule_2_red
                 Components:
-                    6d01a686f27e3137fb79afa8a559b15a: !TransformComponent
-                        Id: 09cf6ec8-e01b-4356-ae0b-98d066136cc6
-                        Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                    4457f5226fc7c2d9ba0cb835c5e22b5d: !TransformComponent
+                        Id: 801c8a7b-98a0-4e13-bf05-64a6085dee85
+                        Position: {X: 1.86309, Y: 0.0, Z: 0.41808343}
                         Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
                         Scale: {X: 1.0, Y: 1.0, Z: 1.0}
                         Children: {}
-                    2087ce0978410e60b629446977977d06: !ModelComponent
-                        Id: 3df1e688-f8e3-472c-b5d5-7c1f6a6aebd9
+                    6f18946c79029805e84c4cbfcb4cdf63: !ModelComponent
+                        Id: 72319261-42a7-47ce-88e9-dbeb5f0f9f30
                         Model: d044ce55-3c20-4729-b454-3dc90ed21d80:Capsule_2
                         Materials:
-                            0cbcfb662125d96435eb236fb22620a4~0: f5adb904-49c9-4eb7-8957-5940ab8c1f3e:ClearCoatRed
-                    0890e5639c3bf12dd58acbc5a9f90df1: !InstancingComponent
-                        Id: 9810c8c1-a713-4dff-8b30-6b3a06a65aa7
+                            a944822a19c2b2e0a3baba339d132e60~0: f5adb904-49c9-4eb7-8957-5940ab8c1f3e:ClearCoatRed
+                    a116a71de0555e50f68d0b75874d4b95: !InstancingComponent
+                        Id: 265fd28a-659a-46f5-8d5b-2eb829837c08
                         Type: !InstancingUserArray
-                            ModelTransformUsage: Ignore
+                            ModelTransformUsage: PreMultiply

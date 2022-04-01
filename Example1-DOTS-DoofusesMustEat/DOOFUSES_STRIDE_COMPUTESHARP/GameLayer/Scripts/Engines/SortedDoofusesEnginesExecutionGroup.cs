@@ -22,7 +22,7 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
         public string[] enginesOrder => new[]
         {
             nameof(DoofusesEngineNames.SpawningDoofusEngine)
-            // , nameof(DoofusesEngineNames.PlaceFoodOnClickEngine)
+            , nameof(DoofusesEngineNames.PlaceFoodOnClickEngine)
             // , nameof(DoofusesEngineNames.LookingForFoodDoofusesEngine)
             // , nameof(DoofusesEngineNames.ConsumingFoodEngine)
             // , nameof(DoofusesEngineNames.VelocityToPositionDoofusesEngine)

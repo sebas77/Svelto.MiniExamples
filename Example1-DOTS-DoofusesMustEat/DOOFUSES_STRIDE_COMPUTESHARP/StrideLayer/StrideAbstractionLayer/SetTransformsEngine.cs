@@ -35,12 +35,21 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp.StrideLayer
 
         public void EntitiesSubmitted()
         {
-            var count = new QueryGroups(entitiesDB.FindGroups<MatrixComponent>()).Evaluate()
-               .Count<MatrixComponent>(entitiesDB);
-            
-            if (_matrices == null || _matrices.Length != count)
+            var localFasterReadOnlyList = entitiesDB.FindGroups<MatrixComponent>();
+
+            if (_matrices == null || _matrices.Length != localFasterReadOnlyList.count)
             {
-                _matrices = new Matrix[count];
+                _matrices = new Matrix[localFasterReadOnlyList.count][];
+            }
+
+            for (int i = 0; i < localFasterReadOnlyList.count; i++)
+            {
+                var count = entitiesDB.Count<MatrixComponent>(localFasterReadOnlyList[i]);
+
+                if (_matrices[i] == null || _matrices[i].Length < count)
+                {
+                    _matrices[i] = new Matrix[count];
+                }
             }
         }
 
@@ -48,25 +57,30 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp.StrideLayer
         {
             var groups = entitiesDB.FindGroups<MatrixComponent, StrideComponent>();
 
-            foreach (var ((transforms, strideComponents, count), _) in entitiesDB
+            int matrixIndex = 0;
+
+            foreach (var ((transforms, strideComponents, count), currentGroup) in entitiesDB
                         .QueryEntities<MatrixComponent, StrideComponent>(groups))
             {
                 unsafe
                 {
                     NB<MatrixComponent> nativeMatrices = transforms;
-                    fixed (Matrix* matrices = _matrices)
+                    fixed (Matrix* matrices = _matrices[matrixIndex])
                     {
                         var nativeArray = (void*)nativeMatrices.ToNativeArray(out var _);
                         var size        = (uint)((uint)count * sizeof(Matrix));
                         Unsafe.CopyBlock(matrices, nativeArray, size);
                     }
 
-                    _ECSStrideEntityManager.SetInstancingTransformations(strideComponents[0].entity, _matrices);
+                    _ECSStrideEntityManager.SetInstancingTransformations(strideComponents[0].entity,
+                        _matrices[matrixIndex], count);
+
+                    matrixIndex++;
                 }
             }
         }
 
         readonly ECSStrideEntityManager _ECSStrideEntityManager;
-        Matrix[]                        _matrices;
+        Matrix[][]                      _matrices;
     }
 }

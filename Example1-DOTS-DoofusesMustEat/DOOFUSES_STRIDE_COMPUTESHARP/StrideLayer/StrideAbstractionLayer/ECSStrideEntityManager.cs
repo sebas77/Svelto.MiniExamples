@@ -15,27 +15,26 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp.StrideLayer
 
         public uint InstantiateInstancingEntity(uint prefabID)
         {
-            var entity              = _prefabEntities[prefabID].Instantiate()[0];
-            entity.Transform.UseTRS                     = false;
+            var entity = _prefabEntities[prefabID].Instantiate()[0];
+            entity.Transform.UseTRS = false;
             _sceneSystem.SceneInstance.RootScene.Entities.Add(entity);
-            
+
             _entities.Add(entity);
-            
+
             return _entityCount++;
         }
 
-        public void SetInstancingTransformations(uint entityID, Matrix[] matrices)
+        public void SetInstancingTransformations(uint entityID, Matrix[] matrices, int actualCount)
         {
-            (_entities[entityID].Get<InstancingComponent>().Type as InstancingUserArray).UpdateWorldMatrices(matrices);
+            (_entities[entityID].Get<InstancingComponent>().Type as InstancingUserArray).UpdateWorldMatrices(matrices, actualCount);
         }
 
         //load a prefab resource and register it as a prefab. Of course this method is very naive and can be made
         //async and suitable to load several prefabs at once.
-        public uint LoadAndRegisterPrefab(string prefabName, out Matrix prefabTransform)
+        public uint LoadAndRegisterPrefab(string prefabName)
         {
             var prefab = _contentManager.Load<Prefab>(prefabName);
             _prefabEntities.Add(prefab);
-            prefabTransform = prefab.Entities[0].Transform.LocalMatrix;
             return _prefabsCount++;
         }
 

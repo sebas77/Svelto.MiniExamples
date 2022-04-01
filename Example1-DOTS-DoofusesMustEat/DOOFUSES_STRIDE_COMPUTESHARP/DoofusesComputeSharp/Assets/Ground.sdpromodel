@@ -11,3 +11,4 @@ Type: !PlaneProceduralModel
     NumberOfTextureCoordinates: 10
     MaterialInstance:
         Material: ca0d0629-9f18-44ff-a40f-303834203d61:Ground Material
+        IsShadowCaster: false

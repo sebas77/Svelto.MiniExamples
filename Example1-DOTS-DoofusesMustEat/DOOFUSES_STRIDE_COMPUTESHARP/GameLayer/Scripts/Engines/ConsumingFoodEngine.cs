@@ -24,7 +24,7 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
         {
             CreateJobForDoofusesAndFood(GameGroups.RED_DOOFUSES_EATING.Groups,
                 GameGroups.RED_DOOFUSES_NOT_EATING.BuildGroup);
-            
+
             CreateJobForDoofusesAndFood(GameGroups.BLUE_DOOFUSES_EATING.Groups,
                 GameGroups.BLUE_DOOFUSES_NOT_EATING.BuildGroup);
         }
@@ -41,8 +41,8 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
             {
                 var (buffer1, buffer2, buffer3, entityIDs, count) = doofusesBuffer;
 
-                new ConsumingFoodJob((buffer1, buffer2, buffer3, count), entityIDs, _nativeFunctions, entitiesDB, foodEatenGroup,
-                    fromGroup).Execute();
+                new ConsumingFoodJob((buffer1, buffer2, buffer3, count), entityIDs, _nativeFunctions, entitiesDB,
+                    foodEatenGroup, fromGroup).Execute();
             }
         }
 
@@ -68,7 +68,7 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
             _doofuses               = doofuses;
             _nativeEntityIDs        = nativeEntityIDs;
             _entityFunctions        = entityFunctions;
-            _entitiesDb        = entitiesDb;
+            _entitiesDb             = entitiesDb;
             _doofuseMealLockedGroup = doofuseMealLockedGroup;
             _doofuseFromGroup       = doofuseFromGroup;
         }
@@ -93,8 +93,8 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
 
                     //food found
                     //Change Doofuses State
-                    _entityFunctions.SwapEntityGroup<DoofusEntityDescriptor>(new EGID(_nativeEntityIDs[index], _doofuseFromGroup),
-                        _doofuseMealLockedGroup);
+                    _entityFunctions.SwapEntityGroup<DoofusEntityDescriptor>(
+                        new EGID(_nativeEntityIDs[index], _doofuseFromGroup), _doofuseMealLockedGroup);
                     //Remove Eaten Food
                     _entityFunctions.RemoveEntity<FoodEntityDescriptor>(mealInfoEGID);
                 }

@@ -5,19 +5,22 @@ Tags: []
 Attributes:
     Diffuse: !MaterialDiffuseMapFeature
         DiffuseMap: !ComputeColor
-            Value: {R: 0.0, G: 0.0, B: 0.0, A: 1.0}
+            Value: {R: 0.0, G: 0.13750005, B: 1.0, A: 1.0}
     DiffuseModel: !MaterialDiffuseLambertModelFeature {}
     Specular: !MaterialMetalnessMapFeature
         MetalnessMap: !ComputeFloat
-            Value: 0.0
-    SpecularModel: !MaterialSpecularMicrofacetModelFeature
+            Value: 0.157
+    SpecularModel: !MaterialSpecularThinGlassModelFeature
+        Enabled: false
+        RefractiveIndex: 1.52
         Fresnel: !MaterialSpecularMicrofacetFresnelSchlick {}
         Visibility: !MaterialSpecularMicrofacetVisibilitySmithSchlickGGX {}
         NormalDistribution: !MaterialSpecularMicrofacetNormalDistributionGGX {}
-        Environment: !MaterialSpecularMicrofacetEnvironmentGGXLUT {}
+        Environment: !MaterialSpecularMicrofacetEnvironmentThinGlass {}
     Overrides:
         UVScale: {X: 1.0, Y: 1.0}
     ClearCoat: !MaterialClearCoatFeature
+        Enabled: false
         LODDistance: !ComputeFloat
             Value: 1.0
         BasePaintDiffuseMap: !ComputeColor
@@ -56,6 +59,7 @@ Attributes:
             Offset: {X: 0.0, Y: 0.0}
             UseRandomTextureCoordinates: true
             Swizzle: null
+        MetalFlakeslIsXYNormal: true
         ClearCoatGlossinessMap: !ComputeFloat
             Value: 1.0
         ClearCoatMetalnessMap: !ComputeFloat
@@ -67,4 +71,5 @@ Attributes:
             Scale: {X: 8.0, Y: 8.0}
             Offset: {X: 0.0, Y: 0.0}
             Swizzle: null
+        OrangePeelIsXYNormal: true
 Layers: {}

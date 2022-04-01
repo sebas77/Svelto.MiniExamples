@@ -35,7 +35,7 @@ namespace Svelto.DataStructures
         // Returns size of hashtable to grow to.
         public static int Expand(int oldSize)
         {
-            if (oldSize <= primes[primes.Length - 1])
+            if (oldSize < primes[primes.Length - 1])
             {
                 var primesLength = primes.Length;
                 for (int i = 0; i < primesLength; i++)
@@ -47,7 +47,7 @@ namespace Svelto.DataStructures
             }
             else
             {
-                if (oldSize <= primesHigh[primesHigh.Length - 1])
+                if (oldSize < primesHigh[primesHigh.Length - 1])
                 {
                     var primesLength = primesHigh.Length;
                     for (int i = 0; i < primesLength; i++)

@@ -17,14 +17,31 @@ Hierarchy:
                 Components:
                     cbacdd0575ce44af8bc2093b227a2887: !TransformComponent
                         Id: c4de4ba8-49fa-4d2c-8d45-f375e447c9d9
-                        Position: {X: 0.0, Y: -0.62742233, Z: 0.0}
+                        Position: {X: 0.0, Y: -0.627, Z: 0.0}
                         Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                        Scale: {X: 100.0, Y: 100.0, Z: 100.0}
+                        Scale: {X: 100.0, Y: 1.0, Z: 100.0}
                         Children: {}
                     ac73be6d892a987113f82a2cc859d81b: !ModelComponent
                         Id: 0fcdac84-25cb-4559-ac7b-f0a121e48f39
                         Model: 446c17e2-6c8f-433a-86e7-381ecd66e6d7:Ground
                         Materials: {}
+                    c76db8bf0f3655c11f575fc600f08bcf: !StaticColliderComponent
+                        Id: 12eba232-78ff-4aa9-9caa-0eb7be261544
+                        CollisionGroup: StaticFilter
+                        CanSleep: false
+                        Restitution: 0.0
+                        Friction: 0.5
+                        RollingFriction: 0.0
+                        CcdMotionThreshold: 0.0
+                        CcdSweptSphereRadius: 0.0
+                        IsTrigger: false
+                        AlwaysUpdateNaviMeshCache: false
+                        ColliderShapes:
+                            c37794dddd738b25bc29765ab8d0f3ac: !BoxColliderShapeDesc
+                                Is2D: false
+                                Size: {X: 10.0, Y: 1.0, Z: 10.0}
+                                LocalOffset: {X: 0.0, Y: 0.0, Z: 0.0}
+                                LocalRotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
         -   Entity:
                 Id: a847d974-ecf6-491e-a59f-db3749992c5c
                 Name: Directional light
@@ -42,9 +59,9 @@ Hierarchy:
                                 Value: {R: 1.0, G: 1.0, B: 1.0}
                             Shadow:
                                 Enabled: true
-                                Filter: !LightShadowMapFilterTypePcf
-                                    FilterSize: Filter5x5
+                                Filter: !LightShadowMapFilterTypePcf {}
                                 Size: Large
+                                CascadeCount: TwoCascades
                                 DepthRange:
                                     IsAutomatic: false
                                 PartitionMode: !LightDirectionalShadowMap.PartitionLogarithmic {}

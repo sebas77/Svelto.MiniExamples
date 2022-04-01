@@ -8,13 +8,13 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
     [Sequenced(nameof(DoofusesEngineNames.SpawningDoofusEngine))]
     public class SpawningDoofusEngine : IQueryingEntitiesEngine, IUpdateEngine
     {
-        public SpawningDoofusEngine(uint blueCapsule, uint redCapsule, IEntityFactory factory,
+        public SpawningDoofusEngine(uint redCapsule, uint blueCapsule, IEntityFactory factory,
             ECSStrideEntityManager manager)
         {
-            _redCapsule       = redCapsule;
-            _blueCapsule      = blueCapsule;
             _factory          = factory;
-            _manager          = manager;
+            
+            _blueCapsule = manager.InstantiateInstancingEntity(blueCapsule);
+            _redCapsule  = manager.InstantiateInstancingEntity(redCapsule);
         }
 
         public EntitiesDB entitiesDB { get; set; }
@@ -23,33 +23,29 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
             if (_done == true)
                 return;
             
-            uint blueEntityPrefab = _manager.InstantiateInstancingEntity(_blueCapsule);
-            uint redEntityPrefab = _manager.InstantiateInstancingEntity(_redCapsule);
-
             new SpawningJob()
             {
                 _group   = GameGroups.RED_DOOFUSES_NOT_EATING.BuildGroup
-              , _factory = _factory, _random = new Random(Environment.TickCount)
-              , _entity  = redEntityPrefab
+              , _factory = _factory, _random = new Random(123456)
+              , _entity  = _redCapsule
             }.Execute();
 
             new SpawningJob()
             {
                 _group    = GameGroups.BLUE_DOOFUSES_NOT_EATING.BuildGroup
-              , _factory  = _factory, _random = new Random(Environment.TickCount)
-                , _entity = blueEntityPrefab
+              , _factory  = _factory, _random = new Random(987654321)
+              , _entity = _blueCapsule
             }.Execute();
 
             //Yeah this shouldn't be solved like this, but I keep it in this way for simplicity sake 
             _done = true;    
         }
 
-        public string     name => nameof(SpawningDoofusEngine);
+        public string name => nameof(SpawningDoofusEngine);
 
         public void Ready() { }
 
         readonly IEntityFactory         _factory;
-        readonly ECSStrideEntityManager _manager;
         readonly uint                   _redCapsule;
         readonly uint                   _blueCapsule;
 
@@ -62,7 +58,7 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
             internal IEntityFactory      _factory;
             internal ExclusiveBuildGroup _group;
             internal Random              _random;
-            public   uint                _entity;
+            internal uint                _entity;
 
             public void Execute()
             {
@@ -72,7 +68,8 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
 
                     init.Init(new PositionComponent()
                     {
-                        position = new Vector3((float)(_random.NextDouble() * 40.0f), 0, (float)(_random.NextDouble() * 40.0f))
+                        position = new Vector3((float)(_random.NextDouble() * 40.0f), 0, 
+                            (float)(_random.NextDouble() * 40.0f))
                     });
                     init.Init(new RotationComponent(Quaternion.Identity));
                     init.Init(new ScalingComponent(new Vector3(1.0f, 1.0f, 1.0f)));

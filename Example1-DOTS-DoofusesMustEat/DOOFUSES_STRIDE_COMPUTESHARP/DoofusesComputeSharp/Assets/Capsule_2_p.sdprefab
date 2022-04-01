@@ -24,4 +24,4 @@ Hierarchy:
                     0890e5639c3bf12dd58acbc5a9f90df1: !InstancingComponent
                         Id: 293eb34b-e3fe-42ed-916f-d81b8307effb
                         Type: !InstancingUserArray
-                            ModelTransformUsage: Ignore
+                            ModelTransformUsage: PreMultiply
