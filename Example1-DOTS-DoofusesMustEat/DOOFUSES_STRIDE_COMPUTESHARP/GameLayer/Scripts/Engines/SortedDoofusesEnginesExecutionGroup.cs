@@ -21,13 +21,11 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
     {
         public string[] enginesOrder => new[]
         {
-            nameof(DoofusesEngineNames.SpawningDoofusEngine)
-            , nameof(DoofusesEngineNames.PlaceFoodOnClickEngine)
-             , nameof(DoofusesEngineNames.LookingForFoodDoofusesEngine)
-            // , nameof(DoofusesEngineNames.ConsumingFoodEngine)
-             , nameof(DoofusesEngineNames.VelocityToPositionDoofusesEngine)
-           , nameof(TransformableLayerEngineNames.ComputeTransformsEngine)
-           , nameof(StrideLayer.StrideLayerEngineNames.SetTransformsEngine)
+            nameof(DoofusesEngineNames.SpawningDoofusEngine), nameof(DoofusesEngineNames.PlaceFoodOnClickEngine),
+            nameof(DoofusesEngineNames.LookingForFoodDoofusesEngine), nameof(DoofusesEngineNames.ConsumingFoodEngine),
+            nameof(DoofusesEngineNames.VelocityToPositionDoofusesEngine),
+            nameof(TransformableLayerEngineNames.ComputeTransformsEngine),
+            nameof(StrideLayer.StrideLayerEngineNames.SetTransformsEngine)
         };
     }
 

@@ -75,7 +75,7 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
                     init.Init(new ScalingComponent(new Vector3(1.0f, 1.0f, 1.0f)));
                     init.Init(new SpeedEntityComponent
                     {
-                        speed = (float)(_random.NextDouble() + 0.1f)
+                        speed = 0.001f
                     });
                     init.Init(new StrideComponent()
                     {

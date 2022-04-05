@@ -86,7 +86,7 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
                 var sqrModule = computeDirection.X * computeDirection.X + computeDirection.Z * computeDirection.Z;
 
                 //close enough to the food
-                if (sqrModule < 2)
+                if (sqrModule < 0.2f)
                 {
                     velocity.X = 0;
                     velocity.Z = 0;

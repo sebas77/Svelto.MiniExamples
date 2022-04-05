@@ -54,8 +54,8 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
 
             GraphicsDevice.Presenter.PresentInterval = Stride.Graphics.PresentInterval.Immediate;
 
-            LoadAssetAndCreatePrefabs(_ecsStrideEntityManager, out var blueFoodPrefab, out var redFootPrefab
-              , out var blueDoofusPrefab, out var redDoofusPrefab);
+            LoadAssetAndCreatePrefabs(_ecsStrideEntityManager, out var blueFoodPrefab, out var redFootPrefab,
+                out var blueDoofusPrefab, out var redDoofusPrefab);
 
             GameCompositionRoot(blueFoodPrefab, redFootPrefab, blueDoofusPrefab, redDoofusPrefab);
         }
@@ -66,13 +66,13 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
             var entityFunctions = _enginesRoot.GenerateEntityFunctions();
             //Compose the game level engines
 
-            AddEngine(new PlaceFoodOnClickEngine(redFoodPrefab, blueFoodPrefab, entityFactory, this.Input,
-                SceneSystem, _ecsStrideEntityManager));
-            AddEngine(new SpawningDoofusEngine(redDoofusPrefab, blueDoofusPrefab,
-                entityFactory, _ecsStrideEntityManager));
-            //          AddEngine(new ConsumingFoodEngine(entityFunctions));
-                    AddEngine(new LookingForFoodDoofusesEngine(entityFunctions));
-                  AddEngine(new VelocityToPositionDoofusesEngine());
+            AddEngine(new PlaceFoodOnClickEngine(redFoodPrefab, blueFoodPrefab, entityFactory, this.Input, SceneSystem,
+                _ecsStrideEntityManager));
+            AddEngine(new SpawningDoofusEngine(redDoofusPrefab, blueDoofusPrefab, entityFactory,
+                _ecsStrideEntityManager));
+            AddEngine(new ConsumingFoodEngine(entityFunctions));
+            AddEngine(new LookingForFoodDoofusesEngine(entityFunctions));
+            AddEngine(new VelocityToPositionDoofusesEngine());
 
             StrideAbstractionContext.Compose(AddEngine, _ecsStrideEntityManager);
 
@@ -82,9 +82,9 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
         void LoadAssetAndCreatePrefabs(ECSStrideEntityManager gom, out uint blueFoodPrefab, out uint redFoodPrefab,
             out uint blueDoofusPrefab, out uint redDoofusPrefab)
         {
-            redFoodPrefab    = gom.LoadAndRegisterPrefab("RedFoodP");
-            blueFoodPrefab   = gom.LoadAndRegisterPrefab("BlueFoodP");
-            
+            redFoodPrefab  = gom.LoadAndRegisterPrefab("RedFoodP");
+            blueFoodPrefab = gom.LoadAndRegisterPrefab("BlueFoodP");
+
             redDoofusPrefab  = gom.LoadAndRegisterPrefab("Capsule_2_p_red");
             blueDoofusPrefab = gom.LoadAndRegisterPrefab("Capsule_2_p");
         }
