@@ -1,32 +1,16 @@
 using System;
-using System.Runtime.CompilerServices;
-using Stride.Core.Mathematics;
 using Svelto.Common;
 using Svelto.Common.Internal;
 using Svelto.DataStructures;
-using Svelto.ECS.Experimental;
 
 namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp.StrideLayer
 {
-    public enum StrideLayerEngineNames
-    {
-        SetTransformsEngine
-    }
-    
-    class StrideEntityDescriptor: ExtendibleEntityDescriptor<TransformableEntityDescriptor>
-    {
-        public StrideEntityDescriptor()
-        {
-            Add<StrideComponent>();
-        }
-    }
-
     /// <summary>
-    /// Iterate all the entities that have matrices and, assuming they are stride objects, set the matrices to the
-    /// matrix to the Stride Entity
+    ///     Iterate all the entities that have matrices and, assuming they are stride objects, set the matrices to the
+    ///     matrix to the Stride Entity
     /// </summary>
     [Sequenced(nameof(StrideLayerEngineNames.SetTransformsEngine))]
-    class SetTransformsEngine : IQueryingEntitiesEngine, IUpdateEngine, IReactOnSubmission
+    class SetTransformsEngine : IQueryingEntitiesEngine, IUpdateEngine
     {
         public SetTransformsEngine(ECSStrideEntityManager ecsStrideEntityManager)
         {
@@ -41,88 +25,53 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp.StrideLayer
 
         public string name => this.TypeName();
 
-        public void EntitiesSubmitted()
-        {
-            var localFasterReadOnlyList = entitiesDB.FindGroups<MatrixComponent>();
-
-            uint max = 0;
-            
-            for (int i = 0; i < localFasterReadOnlyList.count; i++)
-            {
-                if (localFasterReadOnlyList[i].id > max)
-                    max = localFasterReadOnlyList[i].id;
-            }
-            
-            max++;
-
-            if (_matrices == null || _matrices.Length != max)
-            {
-                _matrices = new Matrix[max][];
-            }
-
-            for (int i = 0; i < localFasterReadOnlyList.count; i++)
-            {
-                ExclusiveGroupStruct localFasterReadOnly = localFasterReadOnlyList[i];
-                var count               = entitiesDB.Count<MatrixComponent>(localFasterReadOnly);
-
-                if (_matrices[localFasterReadOnly.id] == null || _matrices[localFasterReadOnly.id].Length < count)
-                {
-                    _matrices[localFasterReadOnly.id] = new Matrix[count];
-                }
-            }
-        }
-
         public void Step(in float deltaTime)
         {
-            var filters = entitiesDB.GetFilters().GetPersistentFilters<StrideComponent>();
+            if (entitiesDB.GetFilters()
+                   .TryGetPersistentFilters<
+                        StrideComponent>(StrideFilterContext.StrideInstanceContext, out var filters) == false)
+                return;
 
-            foreach (EntityFilterCollection filtersPerGroup in filters)
+            //iterate all the filters linked to the context StrideInstanceContext
+            foreach (ref var filtersPerGroup in filters)
             {
-                var matrices =
-                    _ECSStrideEntityManager.GetInstancingTransformations((uint)filtersPerGroup.combinedFilterID.id);
+                var useFilterIDAsEntityID = (uint)filtersPerGroup.combinedFilterID.filterID;
 
-                if (matrices.Length < filtersPerGroup.count)
-                {
-                    Array.Resize(ref matrices, filtersPerGroup.count);
-                }
+                //the id of the filter is the id of the instancing entity.
+                var matrices = _ECSStrideEntityManager.GetInstancingTransformations(useFilterIDAsEntityID);
+
+                //each batch of instances needs to have its own array of matrices
+                //in order to allocate less often, we allocate more than needed
+                filtersPerGroup.ComputeFinalCount(out var entitiesCount);
                 
-                foreach (EntityFilterIterator.RefCurrent filterForGroup in filtersPerGroup)
+                if (matrices.Length < entitiesCount)
+                    Array.Resize(ref matrices, HashHelpers.Expand(entitiesCount));
+                
+                //each filter can spread over multiple groups, so we iterate the filters per group
+                int matrixIndex = 0;
+                foreach (var filterForGroup in filtersPerGroup)
                 {
                     var (indices, currentGroup) = filterForGroup;
 
                     var indicesCount = indices.count;
-                    
-                    for (int i = 0; i < indicesCount; ++i)
-                    {
-                        
-                    }
-                    
-                    _ECSStrideEntityManager.SetInstancingTransformations(strideComponents[0].entity,
-                        _matrices[currentGroup.id], count);
-                }
-            }
-            
-            var groups = entitiesDB.FindGroups<MatrixComponent, StrideComponent>();
-            
-            foreach (var ((transforms, strideComponents, count), currentGroup) in entitiesDB
-                        .QueryEntities<MatrixComponent, StrideComponent>(groups))
-            {
-                unsafe
-                {
-                    NB<MatrixComponent> nativeMatrices = transforms;
-                    fixed (Matrix* matrices = _matrices[currentGroup.id])
-                    {
-                        var nativeArray = (void*)nativeMatrices.ToNativeArray(out var _);
-                        var size        = (uint)((uint)count * sizeof(Matrix));
-                        Unsafe.CopyBlock(matrices, nativeArray, size);
-                    }
 
-                   
+                    //we get the matrices of this group
+                    var (matrixComponents, _, _) =
+                        entitiesDB.QueryEntities<MatrixComponent, StrideComponent>(currentGroup);
+
+                    //and we copy the values to the matrices array using the filters.
+                    for (var i = 0; i < indicesCount; ++i)
+                    {
+                        matrices[matrixIndex++] = matrixComponents[indices[i]].matrix;
+                    }
                 }
+                
+                //finally we set the array of matrices in Stride. remember the filter id was the entityID
+                _ECSStrideEntityManager.SetInstancingTransformations(useFilterIDAsEntityID,
+                    matrices, entitiesCount);
             }
         }
 
         readonly ECSStrideEntityManager _ECSStrideEntityManager;
-        Matrix[][]                      _matrices;
     }
 }

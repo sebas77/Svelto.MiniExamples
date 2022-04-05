@@ -5,22 +5,18 @@ using Svelto.ECS.Native;
 
 namespace Svelto.ECS
 {
-    public struct EntityFilterCollection
+    public readonly struct EntityFilterCollection
     {
-        internal static EntityFilterCollection Create(CombinedFilterID combinedFilterId,
+        internal EntityFilterCollection(CombinedFilterID combinedFilterId,
             Allocator allocatorStrategy = Allocator.Persistent)
         {
-            var collection = new EntityFilterCollection
-            {
-                _filtersPerGroup =
-                    SharedSveltoDictionaryNative<ExclusiveGroupStruct, GroupFilters>.Create(allocatorStrategy),
-                combinedFilterID = combinedFilterId
-            };
-            return collection;
+            _filtersPerGroup =
+                SharedSveltoDictionaryNative<ExclusiveGroupStruct, GroupFilters>.Create(allocatorStrategy);
+
+            combinedFilterID = combinedFilterId;
         }
 
-        public CombinedFilterID     combinedFilterID { get; private set;  }
-        public int                  count            { get; private set;  }
+        public CombinedFilterID combinedFilterID { get; }
         
         public EntityFilterIterator GetEnumerator()  => new EntityFilterIterator(this);
 
@@ -40,16 +36,18 @@ namespace Svelto.ECS
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Add(EGID egid, uint toIndex)
         {
-            count++;
-            
             return GetGroupFilter(egid.groupID).Add(egid.entityID, toIndex);
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Add(uint entityID, ExclusiveGroupStruct groupId, uint index)
+        {
+            Add(new EGID(entityID, groupId), index);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Remove(EGID egid)
         {
-            count--;
-            
             _filtersPerGroup[egid.groupID].Remove(egid.entityID);
         }
 
@@ -82,6 +80,16 @@ namespace Svelto.ECS
         }
 
         internal int groupCount => _filtersPerGroup.count;
+        
+        public void ComputeFinalCount(out int count)
+        {
+            count = 0;
+            
+            for (int i = 0; i < _filtersPerGroup.count; i++)
+            {
+                count += (int)GetGroup(i).count;
+            }
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal GroupFilters GetGroup(int indexGroup)
@@ -101,7 +109,7 @@ namespace Svelto.ECS
             _filtersPerGroup.Dispose();
         }
 
-        internal SharedSveltoDictionaryNative<ExclusiveGroupStruct, GroupFilters> _filtersPerGroup;
+        internal readonly SharedSveltoDictionaryNative<ExclusiveGroupStruct, GroupFilters> _filtersPerGroup;
 
         public struct GroupFilters
         {
@@ -141,7 +149,7 @@ namespace Svelto.ECS
                 }
             }
 
-            public uint count   => (uint)_entityIDToDenseIndex.count;
+            public int count   => _entityIDToDenseIndex.count;
             public bool isValid => _entityIDToDenseIndex.isValid;
 
             internal void RemoveWithSwapBack(uint entityId, uint entityIndex, uint lastIndex)

@@ -4,10 +4,10 @@ namespace Svelto.DataStructures
 {
     public static class HashHelpers
     {
-        public static ulong GetFastModMultiplier(uint divisor) => ulong.MaxValue / (ulong) divisor + 1UL;
+        public static ulong GetFastModMultiplier(uint divisor) => ulong.MaxValue / divisor + 1UL;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static uint FastMod(uint value, uint divisor, ulong multiplier) => (uint) (((multiplier * (ulong) value >> 32) + 1UL) * (ulong) divisor >> 32);
+        public static uint FastMod(uint value, uint divisor, ulong multiplier) => (uint) (((multiplier * value >> 32) + 1UL) * divisor >> 32);
         
         //why prime numbers: https://stackoverflow.com/questions/4638520/why-net-dictionaries-resize-to-prime-numbers
         static readonly int[] primes = {

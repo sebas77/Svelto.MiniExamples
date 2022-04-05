@@ -138,7 +138,7 @@ namespace Svelto.DataStructures
 #endif
                     using (_threadSentinel.TestThreadSafety())
                     {
-                        ref var asRef = ref Unsafe.AsRef<T>((void*)(_ptr + (int)(index * SIZE)));
+                        ref var asRef = ref Unsafe.AsRef<T>((void*)(_ptr + index * SIZE));
                         return ref asRef;
                     }
                 }

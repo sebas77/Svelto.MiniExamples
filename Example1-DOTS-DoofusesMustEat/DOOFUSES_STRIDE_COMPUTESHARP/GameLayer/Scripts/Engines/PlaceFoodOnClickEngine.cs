@@ -117,7 +117,7 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
                     //these structs are used for ReactOnAdd callback to create unity Entities later
                     init.Init(new StrideComponent()
                     {
-                        entity = _prefabID, 
+                        instancingEntity = _prefabID, 
                     });
                 }
             }

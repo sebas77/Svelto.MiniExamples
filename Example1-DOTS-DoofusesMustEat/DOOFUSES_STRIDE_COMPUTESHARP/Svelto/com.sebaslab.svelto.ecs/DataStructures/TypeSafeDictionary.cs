@@ -562,7 +562,7 @@ namespace Svelto.ECS.Internal
                             rangeOfSubmittedEntitiesIndicies,
                             new EntityCollection<TValue>(GetValues(out var count), count, entityIDs), fromGroup,
                             toGroup);
-                    }
+                    }   
                 }
                 catch (Exception e)
                 {

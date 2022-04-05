@@ -9,6 +9,7 @@ namespace  Svelto.ECS.MiniExamples.Doofuses.ComputeSharp.StrideLayer
             TransformableContext.Compose(AddEngine);
             
             AddEngine(new SetTransformsEngine(ecsStrideEntityManager));
+            AddEngine(new AddStrideEntityToFiltersEngine());
         }
     }
 }
