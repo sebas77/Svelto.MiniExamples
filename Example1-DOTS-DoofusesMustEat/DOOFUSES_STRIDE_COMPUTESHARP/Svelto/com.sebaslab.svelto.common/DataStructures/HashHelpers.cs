@@ -4,10 +4,10 @@ namespace Svelto.DataStructures
 {
     public static class HashHelpers
     {
-        public static ulong GetFastModMultiplier(uint divisor) => ulong.MaxValue / divisor + 1UL;
+        public static ulong GetFastModMultiplier(uint divisor) => ulong.MaxValue / (ulong) divisor + 1UL;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static uint FastMod(uint value, uint divisor, ulong multiplier) => (uint) (((multiplier * value >> 32) + 1UL) * divisor >> 32);
+        public static uint FastMod(uint value, uint divisor, ulong multiplier) => (uint) (((multiplier * (ulong) value >> 32) + 1UL) * (ulong) divisor >> 32);
         
         //why prime numbers: https://stackoverflow.com/questions/4638520/why-net-dictionaries-resize-to-prime-numbers
         static readonly int[] primes = {
@@ -35,7 +35,7 @@ namespace Svelto.DataStructures
         // Returns size of hashtable to grow to.
         public static int Expand(int oldSize)
         {
-            if (oldSize < primes[primes.Length - 1])
+            if (oldSize < primes[primes.Length - 1]) //pay attention this is < and NOT <=
             {
                 var primesLength = primes.Length;
                 for (int i = 0; i < primesLength; i++)
@@ -47,7 +47,7 @@ namespace Svelto.DataStructures
             }
             else
             {
-                if (oldSize < primesHigh[primesHigh.Length - 1])
+                if (oldSize < primesHigh[primesHigh.Length - 1]) //pay attention this is < and NOT <=
                 {
                     var primesLength = primesHigh.Length;
                     for (int i = 0; i < primesLength; i++)

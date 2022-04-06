@@ -42,9 +42,9 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
             {
                 for (int index = 0; index < _doofuses.count; index++)
                 {
-                    ref var ecsVector3 = ref _doofuses.buffer2[index].velocity;
+                    ref var velocity = ref _doofuses.buffer2[index].velocity;
 
-                    var deltaPos = (ecsVector3 * (_deltaTime * _doofuses.buffer3[index].speed));
+                    var deltaPos = (velocity * (_deltaTime * _doofuses.buffer3[index].speed));
                     
                     _doofuses.buffer1[index].position += deltaPos;
                 }

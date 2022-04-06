@@ -103,7 +103,7 @@ namespace Svelto.ECS
                 if (_persistentEntityFilters.TryFindIndex(combineFilterIDs, out var index) == true)
                     return ref _persistentEntityFilters.GetDirectValueByRef(index);
 
-                _persistentEntityFilters.Add(combineFilterIDs, EntityFilterCollection.Create());
+                _persistentEntityFilters.Add(combineFilterIDs, new EntityFilterCollection(filterID));
 
                 var lastIndex = _persistentEntityFilters.count - 1;
 
