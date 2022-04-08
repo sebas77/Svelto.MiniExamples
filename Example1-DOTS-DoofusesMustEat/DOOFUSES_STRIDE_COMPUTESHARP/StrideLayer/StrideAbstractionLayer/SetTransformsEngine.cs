@@ -48,7 +48,8 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp.StrideLayer
                     Array.Resize(ref matrices, HashHelpers.Expand(entitiesCount));
                 
                 //each filter can spread over multiple groups, so we iterate the filters per group
-                int matrixIndex = 0;
+                int matrixIndex       = 0;
+                uint testEntitiesCount = 0;
                 foreach (var (indices, currentGroup) in filter)
                 {
                     var indicesCount = indices.count;
@@ -62,7 +63,12 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp.StrideLayer
                     {
                         matrices[matrixIndex++] = matrixComponents[indices[i]].matrix;
                     }
+
+                    testEntitiesCount += indicesCount;
                 }
+
+                if (testEntitiesCount != entitiesCount)
+                    throw new Exception("what");
                 
                 //finally we set the array of matrices in Stride. remember the filter id was the entityID
                 _ECSStrideEntityManager.SetInstancingTransformations(useFilterIDAsEntityID,

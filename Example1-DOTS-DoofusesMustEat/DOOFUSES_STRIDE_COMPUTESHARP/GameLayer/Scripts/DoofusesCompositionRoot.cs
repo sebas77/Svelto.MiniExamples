@@ -1,7 +1,6 @@
 using System;
 using Stride.Engine;
 using Stride.Games;
-using Stride.Input;
 using Svelto.DataStructures;
 using Svelto.ECS.MiniExamples.Doofuses.ComputeSharp.StrideLayer;
 using Svelto.ECS.Schedulers;
@@ -50,7 +49,7 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
 
         protected override void BeginRun()
         {
-            WindowMinimumUpdateRate.MinimumElapsedTime = new TimeSpan(0);
+            WindowMinimumUpdateRate.MinimumElapsedTime = new TimeSpan(160000);
 
             GraphicsDevice.Presenter.PresentInterval = Stride.Graphics.PresentInterval.Immediate;
 

@@ -152,6 +152,7 @@ namespace Svelto.ECS
             public int count   => _entityIDToDenseIndex.count;
             public bool isValid => _entityIDToDenseIndex.isValid;
 
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             internal void RemoveWithSwapBack(uint entityId, uint entityIndex, uint lastIndex)
             {
                 // Check if the last index is part of the filter as an entity, in that case

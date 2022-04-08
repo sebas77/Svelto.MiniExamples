@@ -1,3 +1,4 @@
+using System;
 using Stride.Core.Mathematics;
 using Svelto.Common;
 using Svelto.DataStructures;
@@ -11,7 +12,8 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
     {
         readonly IEntityFunctions _nativeFunctions;
 
-        public void Ready() { }
+        public void Ready()
+        { }
 
         public ConsumingFoodEngine(IEntityFunctions nativeFunctions)
         {
@@ -20,25 +22,25 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
 
         public void Step(in float _param)
         {
-            CreateJobForDoofusesAndFood(GameGroups.RED_DOOFUSES_EATING.Groups
-                                      , GameGroups.RED_DOOFUSES_NOT_EATING.BuildGroup);
+            CreateJobForDoofusesAndFood(GameGroups.RED_DOOFUSES_EATING.Groups,
+                GameGroups.RED_DOOFUSES_NOT_EATING.BuildGroup);
 
-            CreateJobForDoofusesAndFood(GameGroups.BLUE_DOOFUSES_EATING.Groups
-                                      , GameGroups.BLUE_DOOFUSES_NOT_EATING.BuildGroup);
+            CreateJobForDoofusesAndFood(GameGroups.BLUE_DOOFUSES_EATING.Groups,
+                GameGroups.BLUE_DOOFUSES_NOT_EATING.BuildGroup);
         }
 
         public string name => nameof(ConsumingFoodEngine);
 
-        void CreateJobForDoofusesAndFood
-            (in LocalFasterReadOnlyList<ExclusiveGroupStruct> doofusesEatingGroups, ExclusiveBuildGroup foodEatenGroup)
+        void CreateJobForDoofusesAndFood(in LocalFasterReadOnlyList<ExclusiveGroupStruct> doofusesEatingGroups,
+            ExclusiveBuildGroup foodEatenGroup)
         {
             //against all the doofuses
             foreach (var ((buffer1, buffer2, buffer3, entityIDs, count), fromGroup) in entitiesDB
                         .QueryEntities<PositionComponent, VelocityEntityComponent, MealInfoComponent>(
                              doofusesEatingGroups))
             {
-                new ConsumingFoodJob((buffer1, buffer2, buffer3, count), entityIDs, _nativeFunctions, entitiesDB
-                                   , foodEatenGroup, fromGroup).Execute();
+                new ConsumingFoodJob((buffer1, buffer2, buffer3, count), entityIDs, _nativeFunctions, entitiesDB,
+                    foodEatenGroup, fromGroup).Execute();
             }
         }
 
@@ -56,10 +58,10 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
         readonly ExclusiveGroupStruct _doofusesLookingForFoodGroup;
         readonly ExclusiveGroupStruct _doofusesEatingGroup;
 
-        public ConsumingFoodJob
-        (in BT<NB<PositionComponent>, NB<VelocityEntityComponent>, NB<MealInfoComponent>> doofuses
-       , NativeEntityIDs nativeEntityIDs, IEntityFunctions entityFunctions, EntitiesDB entitiesDb
-       , ExclusiveBuildGroup doofusesLookingForFoodGroup, ExclusiveGroupStruct doofusesEatingGroup) : this()
+        public ConsumingFoodJob(
+            in BT<NB<PositionComponent>, NB<VelocityEntityComponent>, NB<MealInfoComponent>> doofuses,
+            NativeEntityIDs nativeEntityIDs, IEntityFunctions entityFunctions, EntitiesDB entitiesDb,
+            ExclusiveBuildGroup doofusesLookingForFoodGroup, ExclusiveGroupStruct doofusesEatingGroup) : this()
         {
             _doofuses                    = doofuses;
             _nativeEntityIDs             = nativeEntityIDs;
@@ -82,7 +84,7 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
                 var sqrModule = computeDirection.X * computeDirection.X + computeDirection.Z * computeDirection.Z;
 
                 //when it's close enough to the food, it's like the doofus ate it
-                if (sqrModule < 0.00002f)
+                if (sqrModule < 0.002f)
                 {
                     velocity.X = 0;
                     velocity.Z = 0;

@@ -44,7 +44,7 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
                 {
                     ref var velocity = ref _doofuses.buffer2[index].velocity;
 
-                    var deltaPos = (velocity * (_deltaTime * _doofuses.buffer3[index].speed));
+                    var deltaPos = velocity * (_deltaTime * _doofuses.buffer3[index].speed);
                     
                     _doofuses.buffer1[index].position += deltaPos;
                 }

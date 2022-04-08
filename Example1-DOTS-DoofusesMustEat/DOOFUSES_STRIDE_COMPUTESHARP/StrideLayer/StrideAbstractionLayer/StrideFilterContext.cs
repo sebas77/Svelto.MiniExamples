@@ -2,6 +2,6 @@
 {
     public static class StrideFilterContext
     {
-        public static Svelto.ECS.FilterContextID StrideInstanceContext;
+        internal static FilterContextID StrideInstanceContext;
     }
 }
