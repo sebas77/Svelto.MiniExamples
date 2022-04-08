@@ -179,7 +179,8 @@ namespace Svelto.ECS
                 throw new Exception("filter not found");
             }
             
-            public bool TryGetPersistentFilter<T>(CombinedFilterID combinedFilterID, out EntityFilterCollection entityCollection) where T : struct, IEntityComponent
+            public bool TryGetPersistentFilter<T>(CombinedFilterID combinedFilterID, out EntityFilterCollection entityCollection) 
+                where T : unmanaged, IEntityComponent
             {
                 long combineFilterIDs = Internal_FilterHelper.CombineFilterIDs<T>(combinedFilterID);
                 
@@ -320,6 +321,21 @@ namespace Svelto.ECS
                 _transientEntityFilters.Add(combineFilterIDs, filterCollection);
 
                 return ref _transientEntityFilters.GetDirectValueByRef((uint)(_transientEntityFilters.count - 1));
+            }
+
+            public bool TryGetTransientFilter<T>(CombinedFilterID filterID, out EntityFilterCollection entityCollection)
+                where T : unmanaged, IEntityComponent
+            {
+                var combineFilterIDs = Internal_FilterHelper.CombineFilterIDs<T>(filterID);
+
+                if (_transientEntityFilters.TryFindIndex(combineFilterIDs, out var index))
+                {
+                    entityCollection = _transientEntityFilters.GetDirectValueByRef(index);
+                    return true;
+                }
+
+                entityCollection = default;
+                return false;
             }
 
             readonly SharedSveltoDictionaryNative<long, EntityFilterCollection> _persistentEntityFilters;
