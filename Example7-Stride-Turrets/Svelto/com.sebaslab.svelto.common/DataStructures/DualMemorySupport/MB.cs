@@ -42,7 +42,7 @@ namespace Svelto.DataStructures
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Clear()
         {
-            Array.Clear(_buffer, (int) 0, (int) _buffer.Length);
+            Array.Clear(_buffer, 0, _buffer.Length);
         }
         
         public void FastClear() { }

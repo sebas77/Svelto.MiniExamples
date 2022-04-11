@@ -1,7 +1,6 @@
 using System;
 using Svelto.Common;
 using Svelto.DataStructures;
-using Svelto.ECS.DataStructures;
 
 namespace Svelto.ECS.Internal
 {
@@ -25,7 +24,7 @@ namespace Svelto.ECS.Internal
         ITypeSafeDictionary Create();
 
         void AddEntitiesToDictionary
-        (ITypeSafeDictionary toDictionary, ExclusiveGroupStruct groupId, in EnginesRoot.LocatorMap entityLocator);
+        (ITypeSafeDictionary toDictionary, ExclusiveGroupStruct groupId, in EnginesRoot.EntityReferenceMap entityLocator);
         void RemoveEntitiesFromDictionary(FasterList<(uint, string)> infosToProcess);
         void SwapEntitiesBetweenDictionaries(FasterList<(uint, uint, string)> infosToProcess,
          ExclusiveGroupStruct fromGroup, ExclusiveGroupStruct toGroup, ITypeSafeDictionary toComponentsDictionary);

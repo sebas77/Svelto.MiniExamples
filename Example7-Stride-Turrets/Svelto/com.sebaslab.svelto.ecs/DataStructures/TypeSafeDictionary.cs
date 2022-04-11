@@ -230,11 +230,11 @@ namespace Svelto.ECS.Internal
         }
 
         public void AddEntitiesToDictionary(ITypeSafeDictionary toDictionary, ExclusiveGroupStruct groupId,
-            in EnginesRoot.LocatorMap entityLocator)
+            in EnginesRoot.EntityReferenceMap entityLocator)
         {
             void SharedAddEntitiesFromDictionary<Strategy1, Strategy2, Strategy3>(
                 in SveltoDictionary<uint, TValue, Strategy1, Strategy2, Strategy3> fromDictionary,
-                ITypeSafeDictionary<TValue> toDic, in EnginesRoot.LocatorMap locator,
+                ITypeSafeDictionary<TValue> toDic, in EnginesRoot.EntityReferenceMap locator,
                 ExclusiveGroupStruct toGroupID) where Strategy1 : struct, IBufferStrategy<SveltoDictionaryNode<uint>>
                 where Strategy2 : struct, IBufferStrategy<TValue>
                 where Strategy3 : struct, IBufferStrategy<int>
@@ -562,7 +562,7 @@ namespace Svelto.ECS.Internal
                             rangeOfSubmittedEntitiesIndicies,
                             new EntityCollection<TValue>(GetValues(out var count), count, entityIDs), fromGroup,
                             toGroup);
-                    }
+                    }   
                 }
                 catch (Exception e)
                 {

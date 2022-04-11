@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/NoArtistAvailable/elzach-leveleditor.git"
+    "url": "https://github.com/sebas77/Svelto.ECS.git"
   },
   "dependencies": {
     "com.sebaslab.svelto.common": "3.3.0"

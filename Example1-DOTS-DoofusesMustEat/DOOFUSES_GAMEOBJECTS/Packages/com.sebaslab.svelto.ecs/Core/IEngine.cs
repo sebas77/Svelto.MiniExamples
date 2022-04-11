@@ -1,5 +1,3 @@
-using Svelto.DataStructures;
-using Svelto.ECS.DataStructures;
 using Svelto.ECS.Internal;
 
 namespace Svelto.ECS.Internal
@@ -7,10 +5,28 @@ namespace Svelto.ECS.Internal
     public interface IReactEngine : IEngine
     {
     }
-
+#region legacy interfaces
+    /// <summary>
+    /// This is now considered legacy and it will be deprecated in future
+    /// </summary>
     public interface IReactOnAdd : IReactEngine
     {
     }
+    
+    /// <summary>
+    /// This is now considered legacy and it will be deprecated in future
+    /// </summary>
+    public interface IReactOnRemove : IReactEngine
+    {
+    }
+    
+    /// <summary>
+    /// This is now considered legacy and it will be deprecated in future
+    /// </summary>
+    public interface IReactOnSwap : IReactEngine
+    {
+    }
+#endregion    
 
     public interface IReactOnAddEx : IReactEngine
     {
@@ -24,15 +40,7 @@ namespace Svelto.ECS.Internal
     {
     }
 
-    public interface IReactOnRemove : IReactEngine
-    {
-    }
-
     public interface IReactOnDispose : IReactEngine
-    {
-    }
-
-    public interface IReactOnSwap : IReactEngine
     {
     }
 }

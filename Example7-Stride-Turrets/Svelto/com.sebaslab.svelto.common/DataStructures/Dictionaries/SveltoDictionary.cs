@@ -51,8 +51,6 @@ namespace Svelto.DataStructures
     /// note: SveltoDictionary is not thread safe. A thread safe version should take care of possible setting of
     /// value with shared hash hence bucket list index.
     /// </summary>
-    /// <typeparam name="TKey"></typeparam>
-    /// <typeparam name="TValue"></typeparam>
     [DebuggerTypeProxy(typeof(SveltoDictionaryDebugProxy<,,,,>))]
     public struct SveltoDictionary<TKey, TValue, TKeyStrategy, TValueStrategy, TBucketStrategy>: IDisposable
         where TKey : struct, IEquatable<TKey>
@@ -65,7 +63,7 @@ namespace Svelto.DataStructures
             try
             {
                 if (typeof(TKey).GetMethod("GetHashCode", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly) == null)
-                    Svelto.Console.LogWarning(typeof(TKey).Name + " does not implement GetHashCode -> This will cause unwated allocations (boxing)");
+                    Svelto.Console.LogWarning(typeof(TKey).Name + " does not implement GetHashCode -> This will cause unwanted allocations (boxing)");
             }
             catch(AmbiguousMatchException)
             {
@@ -84,7 +82,7 @@ namespace Svelto.DataStructures
             _buckets.Alloc((uint)HashHelpers.GetPrime((int)size), allocator);
             
             if (size > 0)
-                _fastModBucketsMultiplier = HashHelpers.GetFastModMultiplier((uint)size);
+                _fastModBucketsMultiplier = HashHelpers.GetFastModMultiplier(size);
         }
 
         public TKeyStrategy unsafeKeys
@@ -576,7 +574,7 @@ namespace Svelto.DataStructures
                 //if the key is found and the bucket points directly to the node to remove
                 //it must now point to the cell where it's going to be moved
                 if (_buckets[movingBucketIndex] - 1 == _freeValueCellIndex)
-                    _buckets[movingBucketIndex] = (int)(indexToValueToRemove + 1);
+                    _buckets[movingBucketIndex] = indexToValueToRemove + 1;
 
                 //otherwise it means that there was more than one key with the same hash (collision), so 
                 //we need to update the linked list and its pointers
@@ -585,9 +583,9 @@ namespace Svelto.DataStructures
 
                 //they now point to the cell where the last value is moved into
                 if (next != -1)
-                    _valuesInfo[next].previous = (int)indexToValueToRemove;
+                    _valuesInfo[next].previous = indexToValueToRemove;
                 if (previous != -1)
-                    _valuesInfo[previous].next = (int)indexToValueToRemove;
+                    _valuesInfo[previous].next = indexToValueToRemove;
 
                 //finally, actually move the values
                 _valuesInfo[indexToValueToRemove] = fasterDictionaryNode;
@@ -717,7 +715,7 @@ namespace Svelto.DataStructures
         static uint Reduce(uint hashcode, uint N, ulong fastModBucketsMultiplier)
         {
             if (hashcode >= N) //is the condition return actually an optimization?
-                return Environment.Is64BitProcess ? HashHelpers.FastMod((uint)hashcode, N, fastModBucketsMultiplier) : hashcode % N;
+                return Environment.Is64BitProcess ? HashHelpers.FastMod(hashcode, N, fastModBucketsMultiplier) : hashcode % N;
 
             return hashcode;
         }
@@ -813,7 +811,7 @@ namespace Svelto.DataStructures
         {
             _dic   = dic;
             _index = -1;
-            _count = (int)dic.count;
+            _count = dic.count;
 #if DEBUG && !PROFILE_SVELTO
             _startCount = dic.count;
 #endif

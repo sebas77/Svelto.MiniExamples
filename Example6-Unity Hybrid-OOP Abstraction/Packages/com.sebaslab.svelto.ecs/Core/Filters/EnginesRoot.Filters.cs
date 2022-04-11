@@ -45,22 +45,34 @@ namespace Svelto.ECS
             }
         }
 
-        void RemoveEntityFromPersistentFilters(EGID @from, RefWrapperType refWrapperType, ITypeSafeDictionary fromDic)
+        void RemoveEntityFromPersistentFilters(FasterList<(uint, string)> entityIDs, ExclusiveGroupStruct fromGroup,
+            RefWrapperType refWrapperType, ITypeSafeDictionary fromDic)
         {
             //is there any filter used by this component?
             if (_indicesOfPersistentFiltersUsedByThisComponent.TryGetValue(new NativeRefWrapperType(refWrapperType),
-                    out NativeDynamicArrayCast<int> filterIndices))
+                    out NativeDynamicArrayCast<int> listOfFilters))
             {
-                var fromIndex = fromDic.GetIndex(from.entityID);
-                var lastIndex = (uint)fromDic.count - 1;
-
-                var listCount = filterIndices.count;
-                for (int i = 0; i < listCount; ++i)
+                var numberOfFilters = listOfFilters.count;
+                for (int filterIndex = 0; filterIndex < numberOfFilters; ++filterIndex)
                 {
-                    if (_persistentEntityFilters.unsafeValues[filterIndices[i]]._filtersPerGroup
-                       .TryGetValue(from.groupID, out var groupFilter))
+                    //we are going to remove multiple entities, this means that the dictionary count would decrease 
+                    //for each entity removed from each filter
+                    //we need to keep a copy to reset to the original count for each filter
+                    var currentLastIndex = (uint)fromDic.count - 1;
+                    var filters          = _persistentEntityFilters.unsafeValues;
+                    var persistentFilter = filters[listOfFilters[filterIndex]]._filtersPerGroup;
+                    
+                    if (persistentFilter.TryGetValue(fromGroup, out var groupFilter))
                     {
-                        groupFilter.RemoveWithSwapBack(from.entityID, fromIndex, lastIndex);
+                        var entitiesCount = entityIDs.count;
+                        
+                        for (int entityIndex = 0; entityIndex < entitiesCount; ++entityIndex)
+                        {
+                            uint fromentityID = entityIDs[entityIndex].Item1;
+                            var  fromIndex    = fromDic.GetIndex(fromentityID);
+
+                            groupFilter.RemoveWithSwapBack(fromentityID, fromIndex, currentLastIndex--);
+                        }
                     }
                 }
             }
@@ -73,7 +85,7 @@ namespace Svelto.ECS
             NativeDynamicArrayCast<int> listOfFilters)
         {
             DBC.ECS.Check.Require(listOfFilters.count > 0, "why are you calling this with an empty list?");
-            var listCount = listOfFilters.count;
+            var numberOfFilters = listOfFilters.count;
 
             /// fromEntityToEntityIDs are the ID of the entities to swap from the from group to the to group.
             /// for this component type. for each component type, there is only one set of fromEntityToEntityIDs
@@ -82,15 +94,16 @@ namespace Svelto.ECS
             /// is actually correct and guaranteed to be valid. However the beforeSubmissionFromIDs are the
             /// indices of the entities in the FromDictionary BEFORE the submission happens, so before the
             /// entities are actually removed from the dictionary.
-            for (int i = 0; i < listCount; ++i)
+            for (int filterIndex = 0; filterIndex < numberOfFilters; ++filterIndex)
             {
                 //we are going to remove multiple entities, this means that the dictionary count would decrease 
-                //for each entity remove from each filter
+                //for each entity removed from each filter
                 //we need to keep a copy to reset to the original count for each filter
                 var currentLastIndex = fromDictionaryCount;
 
                 //if the group has a filter linked:
-                EntityFilterCollection persistentFilter = _persistentEntityFilters.unsafeValues[listOfFilters[i]];
+                EntityFilterCollection persistentFilter =
+                    _persistentEntityFilters.unsafeValues[listOfFilters[filterIndex]];
                 if (persistentFilter._filtersPerGroup.TryGetValue(fromGroup, out var fromGroupFilter))
                 {
                     EntityFilterCollection.GroupFilters groupFilterTo = default;
@@ -122,7 +135,7 @@ namespace Svelto.ECS
                             fromIndex = beforeSubmissionFromIDs[fromEntityID];
 
                         //Removing an entity from the dictionary may affect the index of the last entity in the
-                        // values dictionary array, so we need to to update the indices of the affected entities.
+                        //values dictionary array, so we need to to update the indices of the affected entities.
                         //must be outside because from may not be present in the filter, but last index is
 
                         //for each entity removed from the from group, I have to update it's index in the

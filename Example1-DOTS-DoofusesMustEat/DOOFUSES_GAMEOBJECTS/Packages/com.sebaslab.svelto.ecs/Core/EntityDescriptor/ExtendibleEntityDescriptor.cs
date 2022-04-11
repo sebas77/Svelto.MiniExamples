@@ -1,6 +1,3 @@
-using System;
-using Svelto.ECS.Serialization;
-
 namespace Svelto.ECS
 {
     /// <summary>

@@ -24,7 +24,6 @@ namespace Svelto.DataStructures.Native
         }
 
         public int       capacity           => _realBuffer.capacity;
-        public Allocator allocationStrategy => _nativeAllocator;
 
         public void Alloc(uint newCapacity, Allocator allocator, bool clear)
         {
@@ -46,7 +45,7 @@ namespace Svelto.DataStructures.Native
             {
                 IntPtr pointer = _realBuffer.ToNativeArray(out _);
                 pointer = MemoryUtilities.Realloc<T>(pointer, newSize, _nativeAllocator
-                                                   , (uint) newSize > capacity ? (uint) capacity : newSize
+                                                   , newSize > capacity ? (uint) capacity : newSize
                                                    , copyContent);
                 NB<T> b = new NB<T>(pointer, newSize);
                 _realBuffer    = b;

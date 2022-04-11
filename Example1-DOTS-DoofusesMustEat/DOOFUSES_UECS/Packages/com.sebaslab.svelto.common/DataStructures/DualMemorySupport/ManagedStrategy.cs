@@ -113,8 +113,6 @@ namespace Svelto.DataStructures
             get => ref _realBuffer[index];
         }
 
-        public Allocator allocationStrategy => Allocator.Managed;
-
         public MB<T> ToRealBuffer() { return _realBuffer; }
         
         IBuffer<T> IBufferStrategy<T>.ToBuffer()

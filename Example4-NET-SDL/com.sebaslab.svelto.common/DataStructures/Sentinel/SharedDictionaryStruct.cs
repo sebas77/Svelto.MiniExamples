@@ -45,7 +45,7 @@ namespace Svelto.Common.DataStructures
                 //allocate the pointer to the dictionary
                 IntPtr dic =  MemoryUtilities
                    .Alloc<SveltoDictionary<long, Sentinel, SentinelNativeStrategy<SveltoDictionaryNode<long>>,
-                        SentinelNativeStrategy<Sentinel>, SentinelNativeStrategy<int>>>((uint)1, Allocator.Persistent);
+                        SentinelNativeStrategy<Sentinel>, SentinelNativeStrategy<int>>>(1, Allocator.Persistent);
             
                 //allocate the dictionary itself
                 Unsafe.AsRef<SveltoDictionary<long, Sentinel, SentinelNativeStrategy<SveltoDictionaryNode<long>>,

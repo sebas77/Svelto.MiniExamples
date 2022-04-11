@@ -5,7 +5,7 @@ namespace Svelto.ECS.Native
 {
     public readonly struct NativeEntityFactory
     {
-        internal NativeEntityFactory(AtomicNativeBags addOperationQueue, int index, EnginesRoot.LocatorMap entityLocator)
+        internal NativeEntityFactory(AtomicNativeBags addOperationQueue, int index, EnginesRoot.EntityReferenceMap entityLocator)
         {
             _index             = index;
             _addOperationQueue = addOperationQueue;
@@ -35,7 +35,7 @@ namespace Svelto.ECS.Native
             return BuildEntity(egid.entityID, egid.groupID, threadIndex);
         }
 
-        readonly EnginesRoot.LocatorMap  _entityLocator;
+        readonly EnginesRoot.EntityReferenceMap  _entityLocator;
         readonly AtomicNativeBags        _addOperationQueue;
         readonly int                     _index;
     }

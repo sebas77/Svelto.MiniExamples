@@ -59,15 +59,27 @@ namespace Svelto.ECS.SveltoOnDOTS
         //by the World.Update because those are independent and are needed only by the next World.Update() jobs
         public JobHandle Execute(JobHandle inputDeps)
         {
-            //SysteBase jobs that will use this Dependency will wait for inputDeps to be completed before to execute
-            Dependency = JobHandle.CombineDependencies(Dependency, inputDeps);
+            _inputDeps = inputDeps;
 
-            Update();
+            Update(); //this complete the previous frame jobs so dependency cannot be modified atr this point
 
             return Dependency;
         }
 
+        //TODO if this is correct must change SyncDOTSToSveltoGroup too
+        protected sealed override void OnUpdate()
+        {
+            //SysteBase jobs that will use this Dependency will wait for inputDeps to be completed before to execute
+            Dependency = JobHandle.CombineDependencies(Dependency, _inputDeps);
+            
+            OnSveltoUpdate();
+        }
+
+        protected abstract void OnSveltoUpdate();
+
         public abstract string name { get; }
+        
+        JobHandle _inputDeps;
     }
 }
 #endif

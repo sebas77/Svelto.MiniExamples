@@ -1,3 +1,4 @@
+#if UNITY_NATIVE //at the moment I am still considering NativeOperations useful only for Unity
 using Svelto.ECS.DataStructures;
 
 namespace Svelto.ECS.Native
@@ -30,3 +31,4 @@ namespace Svelto.ECS.Native
         public EntityReference reference => _reference;
     }
 }
+#endif

@@ -6,7 +6,7 @@ namespace Svelto.DataStructures
     {
         public static FasterReadOnlyList<T> DefaultEmptyList = new FasterReadOnlyList<T>(new FasterList<T>(0));
 
-        public int  count    => (int) _list.count;
+        public int  count    => _list.count;
         
         public FasterReadOnlyList(FasterList<T> list)
         {

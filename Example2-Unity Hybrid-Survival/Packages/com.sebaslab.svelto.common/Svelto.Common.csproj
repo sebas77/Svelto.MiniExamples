@@ -4,10 +4,10 @@
         <LangVersion>8</LangVersion>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <TargetFramework>netstandard2.0</TargetFramework>
-        <PackageVersion>3.2.0</PackageVersion>
-        <AssemblyVersion></AssemblyVersion>
+        <PackageVersion>3.3.0</PackageVersion>
+        <AssemblyVersion>3.3.0</AssemblyVersion>
         <Company>Svelto</Company>
-        <IsPackable>false</IsPackable>
+        <IsPackable>true</IsPackable>
         <Configurations>Debug;Release;SlowSubmissionRelease;SlowSubmissionDebug</Configurations>
         <Platforms>AnyCPU</Platforms>
     </PropertyGroup>
@@ -47,5 +47,6 @@
     <ItemGroup>
         <PackageReference Include="System.Memory" Version="4.5.4" />
         <None Remove="**\*.meta" />
+        <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
     </ItemGroup>
 </Project>

@@ -219,5 +219,19 @@ namespace Svelto.ECS.Experimental
 
             return count;
         }
+
+        public int Max<T>(EntitiesDB entitiesDB) where T : struct, IEntityComponent
+        {
+            var max = 0;
+
+            var groupsCount                           = result.count;
+            for (var i = 0; i < groupsCount; ++i)
+            {
+                var count = entitiesDB.Count<T>(result[i]);
+                if (count > max) max = count;
+            }
+
+            return max;
+        }
     }
 }

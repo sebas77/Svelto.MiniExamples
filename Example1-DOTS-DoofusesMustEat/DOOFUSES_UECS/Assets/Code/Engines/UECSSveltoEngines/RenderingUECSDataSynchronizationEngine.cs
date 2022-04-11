@@ -15,7 +15,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
         {
         }
 
-        protected override void OnUpdate()
+        protected override void OnSveltoUpdate()
         {
             EntityFilterCollection blueFilters = entitiesDB.GetFilters()
                .GetOrCreatePersistentFilter<PositionEntityComponent>(GameFilters.BLUE_DOOFUSES_MESHES);

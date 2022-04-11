@@ -23,27 +23,26 @@ namespace Svelto.ECS
             return obj.GetEntityComponentType().GetHashCode();
         }
     }
-    
-    public class TypeCounterData
+
+    public static class BurstCompatibleCounter
     {
-        public static readonly SharedStaticWrapper<int, TypeCounterData>
-            idCounter = new SharedStaticWrapper<int, TypeCounterData>(0);
+        public static int counter;        
     }
     
     public class ComponentID<T> where T : struct, IEntityComponent
     {
-        public static readonly SharedStaticWrapper<int, ComponentID<T>>
-            id = new SharedStaticWrapper<int, ComponentID<T>>(0);
+        public static readonly SharedStaticWrapper<int, ComponentID<T>> id;
 
-        static ComponentID()
+#if UNITY_BURST 
+        [Unity.Burst.BurstDiscard] 
+        //SharedStatic values must be initialized from not burstified code
+#endif
+        public static void Init()
         {
-            id.Data = Interlocked.Increment(ref TypeCounterData.idCounter.Data);
+            id.Data = Interlocked.Increment(ref BurstCompatibleCounter.counter);
 
             DBC.ECS.Check.Ensure(id.Data < ushort.MaxValue, "too many types registered, HOW :)");
         }
-         
-        public static void Init()
-        { }
     }
 
     public class ComponentBuilder<T> : IComponentBuilder where T : struct, IEntityComponent
@@ -73,9 +72,10 @@ namespace Svelto.ECS
             ComponentID<T>.Init();
             ENTITY_COMPONENT_NAME = ENTITY_COMPONENT_TYPE.ToString();
             IS_UNMANAGED = TypeType.isUnmanaged<T>(); //attention this is important as it serves as warm up for Type<T>
-
+#if UNITY_NATIVE
             if (IS_UNMANAGED)
                 EntityComponentIDMap.Register<T>(new Filler<T>());
+#endif
 
             ComponentBuilderUtilities.CheckFields(ENTITY_COMPONENT_TYPE, IS_ENTITY_VIEW_COMPONENT);
 
@@ -108,10 +108,10 @@ namespace Svelto.ECS
         {
             var castedDic = dictionary as ITypeSafeDictionary<T>;
 
-            T entityComponent = default;
-
             if (IS_ENTITY_VIEW_COMPONENT)
             {
+                T entityComponent = default;
+                
                 Check.Require(castedDic.ContainsKey(egid.entityID) == false,
                     $"building an entity with already used entity id! id: '{(ulong)egid}', {ENTITY_COMPONENT_NAME}");
 

@@ -5,27 +5,29 @@ using Svelto.ECS.Native;
 
 namespace Svelto.ECS
 {
-    public struct EntityFilterCollection
+    public readonly struct EntityFilterCollection
     {
-        public static EntityFilterCollection Create(Allocator allocatorStrategy = Allocator.Persistent)
+        internal EntityFilterCollection(CombinedFilterID combinedFilterId,
+            Allocator allocatorStrategy = Allocator.Persistent)
         {
-            var collection = new EntityFilterCollection
-            {
-                _filtersPerGroup = SharedSveltoDictionaryNative<ExclusiveGroupStruct, GroupFilters>.Create(allocatorStrategy)
-            };
-            return collection;
+            _filtersPerGroup =
+                SharedSveltoDictionaryNative<ExclusiveGroupStruct, GroupFilters>.Create(allocatorStrategy);
+
+            combinedFilterID = combinedFilterId;
         }
 
-        public EntityFilterIterator GetEnumerator() => new EntityFilterIterator(this);
+        public CombinedFilterID combinedFilterID { get; }
         
+        public EntityFilterIterator GetEnumerator()  => new EntityFilterIterator(this);
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Add<T>(EGID egid, NativeEGIDMapper<T> mmap) where T : unmanaged, IEntityComponent
         {
             DBC.ECS.Check.Require(mmap.groupID == egid.groupID, "not compatible NativeEgidMapper used");
-            
+
             return Add(egid, mmap.GetIndex(egid.entityID));
         }
-        
+
         public bool Add<T>(EGID egid, NativeEGIDMultiMapper<T> mmap) where T : unmanaged, IEntityComponent
         {
             return Add(egid, mmap.GetIndex(egid));
@@ -36,17 +38,11 @@ namespace Svelto.ECS
         {
             return GetGroupFilter(egid.groupID).Add(egid.entityID, toIndex);
         }
-
+        
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public GroupFilters GetGroupFilter(ExclusiveGroupStruct group)
+        public void Add(uint entityID, ExclusiveGroupStruct groupId, uint index)
         {
-            if (_filtersPerGroup.TryGetValue(group, out var groupFilter) == false)
-            {
-                groupFilter = new GroupFilters(group);
-                _filtersPerGroup.Add(group, groupFilter);
-            }
-
-            return groupFilter;
+            Add(new EGID(entityID, groupId), index);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -60,6 +56,18 @@ namespace Svelto.ECS
         {
             return GetGroupFilter(egid.groupID).Exists(egid.entityID);
         }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public GroupFilters GetGroupFilter(ExclusiveGroupStruct group)
+        {
+            if (_filtersPerGroup.TryGetValue(group, out var groupFilter) == false)
+            {
+                groupFilter = new GroupFilters(group);
+                _filtersPerGroup.Add(group, groupFilter);
+            }
+
+            return groupFilter;
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Clear()
@@ -72,6 +80,16 @@ namespace Svelto.ECS
         }
 
         internal int groupCount => _filtersPerGroup.count;
+        
+        public void ComputeFinalCount(out int count)
+        {
+            count = 0;
+            
+            for (int i = 0; i < _filtersPerGroup.count; i++)
+            {
+                count += (int)GetGroup(i).count;
+            }
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal GroupFilters GetGroup(int indexGroup)
@@ -87,14 +105,15 @@ namespace Svelto.ECS
             {
                 filterSets[i].Dispose();
             }
+
             _filtersPerGroup.Dispose();
         }
 
-        internal SharedSveltoDictionaryNative<ExclusiveGroupStruct, GroupFilters> _filtersPerGroup;
+        internal readonly SharedSveltoDictionaryNative<ExclusiveGroupStruct, GroupFilters> _filtersPerGroup;
 
         public struct GroupFilters
         {
-            internal GroupFilters(ExclusiveGroupStruct group):this()
+            internal GroupFilters(ExclusiveGroupStruct group) : this()
             {
                 _entityIDToDenseIndex = new SharedSveltoDictionaryNative<uint, uint>(1);
                 _indexToEntityId      = new SharedSveltoDictionaryNative<uint, uint>(1);
@@ -112,7 +131,7 @@ namespace Svelto.ECS
 
                 return false;
             }
-            
+
             public bool Exists(uint entityId) => _entityIDToDenseIndex.ContainsKey(entityId);
 
             public void Remove(uint entityId)
@@ -120,7 +139,7 @@ namespace Svelto.ECS
                 _indexToEntityId.Remove(_entityIDToDenseIndex[entityId]);
                 _entityIDToDenseIndex.Remove(entityId);
             }
-            
+
             public EntityFilterIndices indices
             {
                 get
@@ -130,9 +149,10 @@ namespace Svelto.ECS
                 }
             }
 
-            public uint count => (uint)_entityIDToDenseIndex.count;
+            public int count   => _entityIDToDenseIndex.count;
             public bool isValid => _entityIDToDenseIndex.isValid;
 
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             internal void RemoveWithSwapBack(uint entityId, uint entityIndex, uint lastIndex)
             {
                 // Check if the last index is part of the filter as an entity, in that case
@@ -167,7 +187,7 @@ namespace Svelto.ECS
                 _entityIDToDenseIndex.Dispose();
                 _indexToEntityId.Dispose();
             }
-            
+
             internal ExclusiveGroupStruct group => _group;
 
             SharedSveltoDictionaryNative<uint, uint>          _indexToEntityId;

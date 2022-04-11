@@ -23,23 +23,26 @@ namespace Svelto.ECS
             return obj.GetEntityComponentType().GetHashCode();
         }
     }
+
+    public static class BurstCompatibleCounter
+    {
+        public static int counter;        
+    }
     
     public class ComponentID<T> where T : struct, IEntityComponent
     {
-        static int counter;
-        
-        public static readonly SharedStaticWrapper<int, ComponentID<T>>
-            id = new SharedStaticWrapper<int, ComponentID<T>>(0);
+        public static readonly SharedStaticWrapper<int, ComponentID<T>> id;
 
-        static ComponentID()
+#if UNITY_BURST 
+        [Unity.Burst.BurstDiscard] 
+        //SharedStatic values must be initialized from not burstified code
+#endif
+        public static void Init()
         {
-            id.Data = Interlocked.Increment(ref counter);
+            id.Data = Interlocked.Increment(ref BurstCompatibleCounter.counter);
 
             DBC.ECS.Check.Ensure(id.Data < ushort.MaxValue, "too many types registered, HOW :)");
         }
-         
-        public static void Init()
-        { }
     }
 
     public class ComponentBuilder<T> : IComponentBuilder where T : struct, IEntityComponent

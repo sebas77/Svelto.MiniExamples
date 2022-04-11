@@ -2,8 +2,6 @@
 //#define ENABLE_THREAD_SAFE_CHECKS
 #endif
 using System;
-using System.Threading;
-using Volatile = System.Threading.Volatile;
 
 namespace Svelto.Common.DataStructures
 {

@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.ECS", "Svelto.ECS.csproj", "{eecb381d-d537-8d9b-253a-f1a108e3b14d}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.Common", "Svelto.Common.csproj", "{0c7f8a75-109c-9962-5f1c-6194f043216a}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.ECS", "Svelto.ECS.csproj", "{eecb381d-d537-8d9b-253a-f1a108e3b14d}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OOPLayerPackage", "OOPLayerPackage.csproj", "{03d58cc9-de2c-a6be-8082-9fee783f1c4e}"
 EndProject
@@ -20,10 +20,10 @@ Global
 		Debug|Any CPU = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{eecb381d-d537-8d9b-253a-f1a108e3b14d}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{eecb381d-d537-8d9b-253a-f1a108e3b14d}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0c7f8a75-109c-9962-5f1c-6194f043216a}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0c7f8a75-109c-9962-5f1c-6194f043216a}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{eecb381d-d537-8d9b-253a-f1a108e3b14d}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{eecb381d-d537-8d9b-253a-f1a108e3b14d}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{03d58cc9-de2c-a6be-8082-9fee783f1c4e}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{03d58cc9-de2c-a6be-8082-9fee783f1c4e}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{511bb390-f53b-fb33-de33-6e6a0383b051}.Debug|Any CPU.ActiveCfg = Debug|Any CPU

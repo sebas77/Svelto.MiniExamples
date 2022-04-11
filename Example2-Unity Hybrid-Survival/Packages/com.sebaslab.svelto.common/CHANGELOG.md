@@ -1,6 +1,24 @@
 # Changelog
 All notable changes to this project will be documented in this file. Changes are listed in random order of importance.
 
+## [3.3.0] - 04-2022
+
+Note: this is quite a big release, so I'm not going to list every single change.
+
+* improved HashHelper algorithm
+* added Burst compatible NativeRefWrapperType
+* added utility functions to know if a type is unmanaged
+* FasterList: removed the confusing ExpandTo, the new methods are now called: SetCountTo and EnsureCountIsAtLeast
+* Fixed FasterListEnumerator bug
+* Made FasterDictionary easier to debug
+* FasterDictionary: Renamed GetOrCreate to GetOrAdd to use similar names to the ConcurrentDictionary methods
+* FasterDictionary: Added RecycleOrAdd methods
+* FasterDictionary: deleted the confusing ResizeTo method the new methods are now: EnsureCapacity and IncreaseCapacityBy
+* Made SveltoDictionary easier to debug
+* SveltoDictionary: Similar changes to FasterDictionary
+* SveltoDictionary: slightly improve performance
+* Tons of other optimizations and bug fixes~~~~
+
 ## [3.2.0]
 
 * ICompositionRoot OnContextDestroyed now receive a flag to know if the OnContextInitialized ever had the chance to be called

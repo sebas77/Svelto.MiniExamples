@@ -85,18 +85,17 @@ namespace Svelto.ECS
                             RefWrapperType      componentType            = groupedEntitiesToRemove.key;
                             ITypeSafeDictionary fromComponentsDictionary = fromGroupDictionary[componentType];
 
-                            FasterList<(uint, string)> infosToProcess = groupedEntitiesToRemove.value;
+                            FasterList<(uint, string)> entityIDsToRemove = groupedEntitiesToRemove.value;
 
-                            foreach (var (entityID, _) in infosToProcess)
-                                enginesRoot.RemoveEntityFromPersistentFilters(new EGID(entityID, fromGroup),
+                            enginesRoot.RemoveEntityFromPersistentFilters(entityIDsToRemove, fromGroup,
                                     componentType, fromComponentsDictionary);
                             
-                            fromComponentsDictionary.RemoveEntitiesFromDictionary(infosToProcess);
+                            fromComponentsDictionary.RemoveEntitiesFromDictionary(entityIDsToRemove);
                             
                             //store new count after the entities are removed, plus the number of entities removed
                             enginesRoot._cachedRangeOfSubmittedIndices.Add(((uint, uint))(
                                 fromComponentsDictionary.count,
-                                fromComponentsDictionary.count + infosToProcess.count));
+                                fromComponentsDictionary.count + entityIDsToRemove.count));
                         }
                     }
                 }
@@ -212,7 +211,7 @@ namespace Svelto.ECS
                                 fromComponentsDictionary.SwapEntitiesBetweenDictionaries(fromEntityToEntityIDs,
                                     fromGroup, toGroup, toComponentsDictionary);
 
-                                if (fromDictionaryCountBeforeSubmission != -1)
+                                if (fromDictionaryCountBeforeSubmission != -1) //this if skips the swap if there are no filters linked to the component
                                     enginesRoot.SwapEntityBetweenPersistentFilters(fromEntityToEntityIDs,
                                         enginesRoot._cachedIndicesToSwapBeforeSubmissionForFilters,
                                         toComponentsDictionary, fromGroup, toGroup,

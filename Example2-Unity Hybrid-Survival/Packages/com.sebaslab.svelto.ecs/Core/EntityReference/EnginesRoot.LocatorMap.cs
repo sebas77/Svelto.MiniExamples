@@ -1,6 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
 using Svelto.Common;
-using Svelto.DataStructures;
 using Svelto.DataStructures.Native;
 using Svelto.ECS.DataStructures;
 using Svelto.ECS.Reference;
@@ -12,7 +11,7 @@ namespace Svelto.ECS
     // find the last known EGID from last entity submission.
     public partial class EnginesRoot
     {
-        public struct LocatorMap
+        public struct EntityReferenceMap
         {
             internal EntityReference ClaimReference()
             {
@@ -227,8 +226,8 @@ namespace Svelto.ECS
                 _egidToReferenceMap;
         }
 
-        LocatorMap entityLocator => _entityLocator;
+        EntityReferenceMap entityLocator => _entityLocator;
         
-        LocatorMap          _entityLocator;
+        EntityReferenceMap          _entityLocator;
     }
 }

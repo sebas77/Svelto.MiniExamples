@@ -2,10 +2,24 @@ using System;
 using Svelto.DataStructures;
 using Svelto.ECS.SveltoOnDOTS;
 using Unity.Jobs;
+using UnityEditor;
 using UnityEngine;
 
 namespace Svelto.ECS.MiniExamples.Example1C
 {
+#if UNITY_EDITOR
+    class MyCustomBuildProcessor : UnityEditor.Build.IPreprocessBuildWithReport
+    {
+        public int callbackOrder { get { return 0; } }
+        public void OnPreprocessBuild(UnityEditor.Build.Reporting.BuildReport report)
+        {
+            EditorUserBuildSettings.explicitNullChecks         = false;
+            EditorUserBuildSettings.explicitArrayBoundsChecks  = false;
+            EditorUserBuildSettings.explicitDivideByZeroChecks = false;
+        }
+    }
+#endif    
+    
     class MainLoop
     {
         public MainLoop(FasterList<IJobifiedEngine> enginesToTick)

@@ -46,7 +46,7 @@ namespace Svelto.Common.DataStructures
             {
                 IntPtr pointer = _realBuffer.ToNativeArray(out _);
                 pointer = MemoryUtilities.Realloc<T>(pointer, newSize, _nativeAllocator,
-                    (uint)newSize > capacity ? (uint)capacity : newSize, copyContent);
+                    newSize > capacity ? (uint)capacity : newSize, copyContent);
                 SentinelNB<T> b = new SentinelNB<T>(pointer, newSize);
                 _realBuffer    = b;
                 _invalidHandle = true;

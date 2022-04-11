@@ -12,10 +12,5 @@
         
         public ref T Data => ref uniqueContextID;
 #endif
-
-        public SharedStaticWrapper(T i)
-        {
-            Data = i;
-        }
     }
 }

@@ -49,6 +49,8 @@ namespace Svelto.ECS.Serialization
             if (myType.GetProperties().Length > (ComponentBuilder<T>.HAS_EGID ? 1 : 0))
                 throw new ECSException("serializable entity struct must be property less ".FastConcat(myType.FullName));
 #endif                
+            if (totalSize == 0)
+                throw new ECSException($"{typeof(T).Name} is being serialized with {nameof(PartialSerializer<T>)} but has size 0!");
         }
 
         public bool Serialize(in T value, ISerializationData serializationData) 

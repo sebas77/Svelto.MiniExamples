@@ -18,6 +18,15 @@ namespace Svelto.Common
             return Unity.Collections.LowLevel.Unsafe.UnsafeUtility.IsUnmanaged<T>();
 #endif
         }
+        
+        public static bool isUnmanaged<T>(this T obj)
+        {
+#if !UNITY_BURST
+            return TypeCache<T>.type.IsUnmanagedEx();
+#else
+            return Unity.Collections.LowLevel.Unsafe.UnsafeUtility.IsUnmanaged<T>();
+#endif
+        }
     }
 
     public static class TypeHash<T>
