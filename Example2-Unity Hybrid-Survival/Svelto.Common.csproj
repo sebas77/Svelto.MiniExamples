@@ -306,7 +306,7 @@
      <HintPath>C:\Program Files\Unity\Hub\Editor\2019.4.37f1\Editor\Data\PlaybackEngines\WebGLSupport\UnityEditor.WebGL.Extensions.dll</HintPath>
      </Reference>
      <Reference Include="System.Runtime.CompilerServices.Unsafe">
-     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example2-Unity Hybrid-Survival\Library\PackageCache\org.nuget.system.runtime.compilerservices.unsafe@5.0.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example2-Unity Hybrid-Survival\Library\PackageCache\org.nuget.system.runtime.compilerservices.unsafe@5.0.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
      </Reference>
      <Reference Include="netstandard">
      <HintPath>C:\Program Files\Unity\Hub\Editor\2019.4.37f1\Editor\Data\NetStandard\ref\2.0.0\netstandard.dll</HintPath>
@@ -654,10 +654,10 @@
      <HintPath>C:\Program Files\Unity\Hub\Editor\2019.4.37f1\Editor\Data\NetStandard\compat\2.0.0\shims\netfx\System.Xml.Serialization.dll</HintPath>
      </Reference>
      <Reference Include="UnityEditor.UI">
-     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example2-Unity Hybrid-Survival\Library\ScriptAssemblies\UnityEditor.UI.dll</HintPath>
+     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example2-Unity Hybrid-Survival\Library\ScriptAssemblies\UnityEditor.UI.dll</HintPath>
      </Reference>
      <Reference Include="UnityEngine.UI">
-     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example2-Unity Hybrid-Survival\Library\ScriptAssemblies\UnityEngine.UI.dll</HintPath>
+     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example2-Unity Hybrid-Survival\Library\ScriptAssemblies\UnityEngine.UI.dll</HintPath>
      </Reference>
   </ItemGroup>
   <ItemGroup>

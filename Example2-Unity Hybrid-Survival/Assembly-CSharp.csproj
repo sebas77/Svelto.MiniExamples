@@ -129,14 +129,11 @@
      <Compile Include="Assets\Code\Others\PlayerTargetType.cs" />
      <Compile Include="Assets\Code\Others\RayCaster.cs" />
      <Compile Include="Assets\Code\Others\WaitForSecondsEnumerator.cs" />
-     <None Include="Assets\StreamingAssets\aa\settings.json" />
      <None Include="Assets\Fonts\LuckiestGuy\LICENSE.txt" />
-     <None Include="Assets\StreamingAssets\aa\catalog.json" />
      <None Include="Assets\Shaders\Rim Lit Bumped Specular.shader" />
      <None Include="Assets\Json\EnemySpawningData.json" />
      <None Include="Assets\Json\prefabs.json" />
      <None Include="Assets\Json\EnemyAttackData.json" />
-     <None Include="Assets\StreamingAssets\aa\AddressablesLink\link.xml" />
      <Reference Include="UnityEngine">
      <HintPath>C:\Program Files\Unity\Hub\Editor\2019.4.37f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
      </Reference>
@@ -315,10 +312,10 @@
      <HintPath>C:\Program Files\Unity\Hub\Editor\2019.4.37f1\Editor\Data\Managed\UnityEditor.dll</HintPath>
      </Reference>
      <Reference Include="Newtonsoft.Json">
-     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example2-Unity Hybrid-Survival\Library\PackageCache\com.unity.nuget.newtonsoft-json@2.0.0\Runtime\Newtonsoft.Json.dll</HintPath>
+     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example2-Unity Hybrid-Survival\Library\PackageCache\com.unity.nuget.newtonsoft-json@2.0.0\Runtime\Newtonsoft.Json.dll</HintPath>
      </Reference>
      <Reference Include="System.Runtime.CompilerServices.Unsafe">
-     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example2-Unity Hybrid-Survival\Library\PackageCache\org.nuget.system.runtime.compilerservices.unsafe@5.0.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example2-Unity Hybrid-Survival\Library\PackageCache\org.nuget.system.runtime.compilerservices.unsafe@5.0.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
      </Reference>
      <Reference Include="netstandard">
      <HintPath>C:\Program Files\Unity\Hub\Editor\2019.4.37f1\Editor\Data\NetStandard\ref\2.0.0\netstandard.dll</HintPath>
@@ -666,49 +663,49 @@
      <HintPath>C:\Program Files\Unity\Hub\Editor\2019.4.37f1\Editor\Data\NetStandard\compat\2.0.0\shims\netfx\System.Xml.Serialization.dll</HintPath>
      </Reference>
      <Reference Include="UnityEditor.CacheServer">
-     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example2-Unity Hybrid-Survival\Library\ScriptAssemblies\UnityEditor.CacheServer.dll</HintPath>
+     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example2-Unity Hybrid-Survival\Library\ScriptAssemblies\UnityEditor.CacheServer.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Toolchain.Win-x86_64-Linux-x86_64">
-     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example2-Unity Hybrid-Survival\Library\ScriptAssemblies\Unity.Toolchain.Win-x86_64-Linux-x86_64.dll</HintPath>
+     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example2-Unity Hybrid-Survival\Library\ScriptAssemblies\Unity.Toolchain.Win-x86_64-Linux-x86_64.dll</HintPath>
      </Reference>
      <Reference Include="Unity.ScriptableBuildPipeline.Editor">
-     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example2-Unity Hybrid-Survival\Library\ScriptAssemblies\Unity.ScriptableBuildPipeline.Editor.dll</HintPath>
+     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example2-Unity Hybrid-Survival\Library\ScriptAssemblies\Unity.ScriptableBuildPipeline.Editor.dll</HintPath>
      </Reference>
      <Reference Include="Unity.ResourceManager">
-     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example2-Unity Hybrid-Survival\Library\ScriptAssemblies\Unity.ResourceManager.dll</HintPath>
+     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example2-Unity Hybrid-Survival\Library\ScriptAssemblies\Unity.ResourceManager.dll</HintPath>
      </Reference>
      <Reference Include="UnityEngine.UI">
-     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example2-Unity Hybrid-Survival\Library\ScriptAssemblies\UnityEngine.UI.dll</HintPath>
+     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example2-Unity Hybrid-Survival\Library\ScriptAssemblies\UnityEngine.UI.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Addressables.Editor">
-     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example2-Unity Hybrid-Survival\Library\ScriptAssemblies\Unity.Addressables.Editor.dll</HintPath>
+     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example2-Unity Hybrid-Survival\Library\ScriptAssemblies\Unity.Addressables.Editor.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Rider.Editor">
-     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example2-Unity Hybrid-Survival\Library\ScriptAssemblies\Unity.Rider.Editor.dll</HintPath>
+     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example2-Unity Hybrid-Survival\Library\ScriptAssemblies\Unity.Rider.Editor.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Mathematics">
-     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example2-Unity Hybrid-Survival\Library\ScriptAssemblies\Unity.Mathematics.dll</HintPath>
+     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example2-Unity Hybrid-Survival\Library\ScriptAssemblies\Unity.Mathematics.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Sysroot.Linux_x86_64">
-     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example2-Unity Hybrid-Survival\Library\ScriptAssemblies\Unity.Sysroot.Linux_x86_64.dll</HintPath>
+     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example2-Unity Hybrid-Survival\Library\ScriptAssemblies\Unity.Sysroot.Linux_x86_64.dll</HintPath>
      </Reference>
      <Reference Include="Unity.VisualStudio.Editor">
-     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example2-Unity Hybrid-Survival\Library\ScriptAssemblies\Unity.VisualStudio.Editor.dll</HintPath>
+     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example2-Unity Hybrid-Survival\Library\ScriptAssemblies\Unity.VisualStudio.Editor.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Addressables">
-     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example2-Unity Hybrid-Survival\Library\ScriptAssemblies\Unity.Addressables.dll</HintPath>
+     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example2-Unity Hybrid-Survival\Library\ScriptAssemblies\Unity.Addressables.dll</HintPath>
      </Reference>
      <Reference Include="Unity.ScriptableBuildPipeline">
-     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example2-Unity Hybrid-Survival\Library\ScriptAssemblies\Unity.ScriptableBuildPipeline.dll</HintPath>
+     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example2-Unity Hybrid-Survival\Library\ScriptAssemblies\Unity.ScriptableBuildPipeline.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Mathematics.Editor">
-     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example2-Unity Hybrid-Survival\Library\ScriptAssemblies\Unity.Mathematics.Editor.dll</HintPath>
+     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example2-Unity Hybrid-Survival\Library\ScriptAssemblies\Unity.Mathematics.Editor.dll</HintPath>
      </Reference>
      <Reference Include="Unity.SysrootPackage.Editor">
-     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example2-Unity Hybrid-Survival\Library\ScriptAssemblies\Unity.SysrootPackage.Editor.dll</HintPath>
+     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example2-Unity Hybrid-Survival\Library\ScriptAssemblies\Unity.SysrootPackage.Editor.dll</HintPath>
      </Reference>
      <Reference Include="UnityEditor.UI">
-     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example2-Unity Hybrid-Survival\Library\ScriptAssemblies\UnityEditor.UI.dll</HintPath>
+     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example2-Unity Hybrid-Survival\Library\ScriptAssemblies\UnityEditor.UI.dll</HintPath>
      </Reference>
   </ItemGroup>
   <ItemGroup>
