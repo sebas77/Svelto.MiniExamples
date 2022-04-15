@@ -49,7 +49,7 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
         readonly uint                   _redCapsule;
         readonly uint                   _blueCapsule;
 
-        const int MaxNumberOfDoofuses = 10000;
+        const int MaxNumberOfDoofuses = 5000;
 
         bool _done;
 

@@ -1,6 +1,11 @@
 using System;
+using Stride.Core.Mathematics;
 using Stride.Engine;
+using Stride.Extensions;
 using Stride.Games;
+using Stride.Graphics;
+using Stride.Graphics.GeometricPrimitives;
+using Stride.Rendering;
 using Svelto.DataStructures;
 using Svelto.ECS.MiniExamples.Doofuses.ComputeSharp.StrideLayer;
 using Svelto.ECS.Schedulers;
@@ -49,12 +54,10 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
 
         protected override void BeginRun()
         {
-            WindowMinimumUpdateRate.MinimumElapsedTime = new TimeSpan(160000);
+            WindowMinimumUpdateRate.MinimumElapsedTime = new TimeSpan(5000);
 
-            GraphicsDevice.Presenter.PresentInterval = Stride.Graphics.PresentInterval.Immediate;
-
-            LoadAssetAndCreatePrefabs(_ecsStrideEntityManager, out var blueFoodPrefab, out var redFootPrefab,
-                out var blueDoofusPrefab, out var redDoofusPrefab);
+            LoadAssetAndCreatePrefabs(_ecsStrideEntityManager, out var blueFoodPrefab, out var redFootPrefab
+                                    , out var blueDoofusPrefab, out var redDoofusPrefab);
 
             GameCompositionRoot(blueFoodPrefab, redFootPrefab, blueDoofusPrefab, redDoofusPrefab);
         }
@@ -65,10 +68,10 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
             var entityFunctions = _enginesRoot.GenerateEntityFunctions();
             //Compose the game level engines
 
-            AddEngine(new PlaceFoodOnClickEngine(redFoodPrefab, blueFoodPrefab, entityFactory, this.Input, SceneSystem,
-                _ecsStrideEntityManager));
-            AddEngine(new SpawningDoofusEngine(redDoofusPrefab, blueDoofusPrefab, entityFactory,
-                _ecsStrideEntityManager));
+            AddEngine(new PlaceFoodOnClickEngine(redFoodPrefab, blueFoodPrefab, entityFactory, this.Input, SceneSystem
+                                               , _ecsStrideEntityManager));
+            AddEngine(new SpawningDoofusEngine(redDoofusPrefab, blueDoofusPrefab, entityFactory
+                                             , _ecsStrideEntityManager));
             AddEngine(new ConsumingFoodEngine(entityFunctions));
             AddEngine(new LookingForFoodDoofusesEngine(entityFunctions));
             AddEngine(new VelocityToPositionDoofusesEngine());
@@ -78,14 +81,35 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
             _mainEngineGroup = new SortedDoofusesEnginesExecutionGroup(_unsortedGroups);
         }
 
-        void LoadAssetAndCreatePrefabs(ECSStrideEntityManager gom, out uint blueFoodPrefab, out uint redFoodPrefab,
-            out uint blueDoofusPrefab, out uint redDoofusPrefab)
+        void LoadAssetAndCreatePrefabs
+        (ECSStrideEntityManager gom, out uint blueFoodPrefab, out uint redFoodPrefab, out uint blueDoofusPrefab
+       , out uint redDoofusPrefab)
         {
-            redFoodPrefab  = gom.LoadAndRegisterPrefab("RedFoodP");
-            blueFoodPrefab = gom.LoadAndRegisterPrefab("BlueFoodP");
+            redFoodPrefab  = gom.LoadAndRegisterPrefab("RedFoodP", out _);
+            blueFoodPrefab = gom.LoadAndRegisterPrefab("BlueFoodP", out _);
 
-            redDoofusPrefab  = gom.LoadAndRegisterPrefab("Capsule_2_p_red");
-            blueDoofusPrefab = gom.LoadAndRegisterPrefab("Capsule_2_p");
+            redDoofusPrefab  = gom.LoadAndRegisterPrefab("Capsule_2_p_red", out var redPrefab);
+            blueDoofusPrefab = gom.LoadAndRegisterPrefab("Capsule_2_p", out var bluePrefab);
+
+            var sphere = GeometricPrimitive.Sphere.New(0.2f);
+
+            for (int index = 0; index < sphere.Vertices.Length; ++index)
+            {
+                sphere.Vertices[index].Position += new Vector3(0, 0.288f, 0.209f);
+            }
+            
+            var eyePrimitive = new GeometricPrimitive(GraphicsDevice, sphere).ToMeshDraw();
+            var eyeMesh  = new Mesh { Draw = eyePrimitive };
+            var material = Content.Load<Material>("Eye");
+
+            eyeMesh.MaterialIndex = 1;
+
+            var model = redPrefab.Entities[0].Get<ModelComponent>().Model;
+            model.Add(eyeMesh);
+            model.Add(material);
+            var model1 = bluePrefab.Entities[0].Get<ModelComponent>().Model;
+            model1.Add(eyeMesh);
+            model1.Add(material);
         }
 
         protected override void Update(GameTime gameTime)

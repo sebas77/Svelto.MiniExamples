@@ -3,36 +3,41 @@
     class AddStrideEntityToFiltersEngine : IReactOnAddEx<StrideComponent>, IQueryingEntitiesEngine
     {
         public void Add((uint start, uint end) rangeOfEntities, in EntityCollection<StrideComponent> collection,
-            ExclusiveGroupStruct groupID)
+                        ExclusiveGroupStruct groupID)
         {
             var (buffer, entityIDs, _) = collection;
-
+ 
+            //Fetch the new Svelto.ECS filters
             var sveltoFilters = entitiesDB.GetFilters();
-
-            int     _lastEntity              = -1;
-            ref var orCreatePersistentFilter = ref _default;
-
+ 
+            int     lastEntity   = -1;
+            ref var cachedFilter = ref _default;
+ 
+            //for each entity added in this submission phase
             for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
             {
+                //get the Stride entityID that will be instanced multipled times
                 var entity = (int)buffer[index].instancingEntity;
-
-                if (_lastEntity != entity)
+                
+                //if it doesn't match last one used, let's fetch the filter that is linked to this ID
+                if (lastEntity != entity)
                 {
-                    orCreatePersistentFilter = ref sveltoFilters.GetOrCreatePersistentFilter<StrideComponent>(entity,
+                    //I use the stride entityID as filter ID
+                    cachedFilter = ref sveltoFilters.GetOrCreatePersistentFilter<StrideComponent>(entity,
                         StrideFilterContext.StrideInstanceContext);
-                    _lastEntity = entity;
+                    
+                    lastEntity = entity;
                 }
-
-                orCreatePersistentFilter.Add(entityIDs[index], groupID, index);
+ 
+                //add the current entity instance to the filter linked to the prefab entity that will be instanced
+                cachedFilter.Add(entityIDs[index], groupID, index);
             }
         }
-
-        public void Ready()
-        {
-        }
-
+ 
+        public void Ready() { }
+ 
         public EntitiesDB entitiesDB { get; set; }
-
+ 
         EntityFilterCollection _default;
     }
 }

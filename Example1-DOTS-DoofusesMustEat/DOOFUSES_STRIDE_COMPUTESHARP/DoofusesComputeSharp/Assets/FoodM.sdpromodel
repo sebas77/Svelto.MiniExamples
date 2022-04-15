@@ -3,9 +3,10 @@ Id: cfdc1c19-d6dd-4b64-87e4-f40c1c4d583d
 SerializedVersion: {Stride: 2.0.0.0}
 Tags: []
 Type: !SphereProceduralModel
-    Scale: {X: 0.4, Y: 0.4, Z: 0.4}
+    Radius: 0.2
+    Scale: {X: 1.0, Y: 1.0, Z: 1.0}
     UvScale: {X: 1.0, Y: 1.0}
-    LocalOffset: {X: 0.0, Y: -1.1, Z: 0.0}
+    LocalOffset: {X: 0.0, Y: 0.0, Z: 0.0}
     NumberOfTextureCoordinates: 10
     MaterialInstance:
         Material: null

@@ -5,7 +5,22 @@ Tags: []
 Hierarchy:
     RootParts:
         - ref!! cd0f9469-0367-44c6-a30c-2e5ae3aa58ab
+        - ref!! a74a0dc4-1a11-4ffe-a341-8a0e308a84aa
     Parts:
+        -   Entity:
+                Id: a74a0dc4-1a11-4ffe-a341-8a0e308a84aa
+                Name: FoodM
+                Components:
+                    6a63bfebf961002b9e0cd45b30df7e34: !TransformComponent
+                        Id: 8ae401c8-0111-44f4-b952-6af279a81fd2
+                        Position: {X: 0.0, Y: 0.28823227, Z: 0.20948288}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    18d2fb1cf82c9542a36511ecca03a6b3: !ModelComponent
+                        Id: ebb509c4-527e-41ae-9328-4e26f8ecc6f8
+                        Model: cfdc1c19-d6dd-4b64-87e4-f40c1c4d583d:FoodM
+                        Materials: {}
         -   Entity:
                 Id: cd0f9469-0367-44c6-a30c-2e5ae3aa58ab
                 Name: Capsule_2

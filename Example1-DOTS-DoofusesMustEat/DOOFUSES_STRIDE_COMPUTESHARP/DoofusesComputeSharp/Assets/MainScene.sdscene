@@ -7,7 +7,6 @@ Offset: {X: 0.0, Y: 0.0, Z: 0.0}
 Hierarchy:
     RootParts:
         - ref!! ef275c25-6d72-45d6-9af2-59222c2323a6
-        - ref!! a847d974-ecf6-491e-a59f-db3749992c5c
         - ref!! bff1fded-2db6-481e-810f-03a72bbd0679
         - ref!! 2df4e56a-2a49-4a57-82ba-97d8a5b421bd
     Parts:
@@ -42,32 +41,6 @@ Hierarchy:
                                 Size: {X: 10.0, Y: 1.0, Z: 10.0}
                                 LocalOffset: {X: 0.0, Y: 0.0, Z: 0.0}
                                 LocalRotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-        -   Entity:
-                Id: a847d974-ecf6-491e-a59f-db3749992c5c
-                Name: Directional light
-                Components:
-                    842166b6b4de71b5b6fc83080b9be1be: !TransformComponent
-                        Id: afee389e-357d-4989-b527-4689eb7019d9
-                        Position: {X: 0.0, Y: 1.9043645, Z: -5.3013706}
-                        Rotation: {X: 1.131334E-08, Y: -0.9659258, Z: -0.25881904, W: -4.222196E-08}
-                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
-                        Children: {}
-                    3ac595922b9cf81651c86b9b17168b8d: !LightComponent
-                        Id: a94f6885-424b-494b-b27d-09f0e2666ec2
-                        Type: !LightDirectional
-                            Color: !ColorRgbProvider
-                                Value: {R: 1.0, G: 1.0, B: 1.0}
-                            Shadow:
-                                Enabled: true
-                                Filter: !LightShadowMapFilterTypePcf {}
-                                Size: Large
-                                CascadeCount: TwoCascades
-                                DepthRange:
-                                    IsAutomatic: false
-                                PartitionMode: !LightDirectionalShadowMap.PartitionLogarithmic {}
-                                ComputeTransmittance: false
-                                BiasParameters: {}
-                        Intensity: 20.0
         -   Entity:
                 Id: bff1fded-2db6-481e-810f-03a72bbd0679
                 Name: Skybox

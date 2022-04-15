@@ -15,6 +15,7 @@ ExplicitFolders: []
 Bundles: []
 TemplateFolders: []
 RootAssets:
+    - 0fd211cf-184d-4456-ab04-0f28c5a73e63:Eye
     - 67f6f036-7a03-471e-8ea5-c48e76c39e0c:RedFoodP
     - 83c0631c-d1d7-444f-a666-623a669f92ea:BlueFoodP
     - 9b81bee7-d6ff-416c-827a-2821444bdcf3:Capsule_2_p_red

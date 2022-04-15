@@ -8,6 +8,7 @@ Attributes:
             Value: {R: 0.0, G: 0.13750005, B: 1.0, A: 1.0}
     DiffuseModel: !MaterialDiffuseLambertModelFeature {}
     Specular: !MaterialMetalnessMapFeature
+        Enabled: false
         MetalnessMap: !ComputeFloat
             Value: 0.157
     SpecularModel: !MaterialSpecularThinGlassModelFeature
@@ -72,4 +73,12 @@ Attributes:
             Offset: {X: 0.0, Y: 0.0}
             Swizzle: null
         OrangePeelIsXYNormal: true
-Layers: {}
+Layers:
+    b32b7f5f584da65ec7f234430e5759ae:
+        BlendMap: !ComputeTextureScalar
+            FallbackValue:
+                Value: 1.0
+            Scale: {X: 1.0, Y: 1.0}
+            Offset: {X: 0.0, Y: 0.0}
+        Overrides:
+            UVScale: {X: 1.0, Y: 1.0}

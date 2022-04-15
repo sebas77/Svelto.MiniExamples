@@ -11,17 +11,19 @@ using Svelto.ECS.MiniExamples.Doofuses.ComputeSharp.StrideLayer;
 namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
 {
     [Sequenced(nameof(DoofusesEngineNames.PlaceFoodOnClickEngine))]
-    public class PlaceFoodOnClickEngine : IQueryingEntitiesEngine, IUpdateEngine
+    public class PlaceFoodOnClickEngine : IQueryingEntitiesEngine, IUpdateEngine, IReactOnRemoveEx<MealInfoComponent>
     {
-        const int MaxMeals = 500;
+        const int MaxMeals         = 250;
+        const int MaxMealsOnScreen = 10000;
 
-        public PlaceFoodOnClickEngine(uint redfood, uint bluefood, IEntityFactory entityFactory, InputManager input,
-            SceneSystem sceneSystem, ECSStrideEntityManager manager)
+        public PlaceFoodOnClickEngine
+        (uint redfood, uint bluefood, IEntityFactory entityFactory, InputManager input, SceneSystem sceneSystem
+       , ECSStrideEntityManager manager)
         {
             //read why I am using a Native Factory here in the Execute method
             _entityFactory = entityFactory;
             _input         = input;
-            
+
             _redfood  = manager.InstantiateInstancingEntity(redfood);
             _bluefood = manager.InstantiateInstancingEntity(bluefood);
 
@@ -37,6 +39,13 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
             _taskRunner.MoveNext();
         }
 
+        public void Remove
+        ((uint start, uint end) rangeOfEntities, in EntityCollection<MealInfoComponent> collection
+       , ExclusiveGroupStruct groupID)
+        {
+            _foodCounter -= (int)(rangeOfEntities.end - rangeOfEntities.start);
+        }
+
         public string name => nameof(PlaceFoodOnClickEngine);
 
         IEnumerator CheckClick()
@@ -46,26 +55,27 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
                 bool isLeft;
                 //note: in a complex project an engine shouldn't ever poll input directly, it should instead poll
                 //entity states
-                if ((isLeft = _input.IsMouseButtonDown(MouseButton.Left)) ||
-                    _input.IsMouseButtonDown(MouseButton.Middle) == true)
+                if (((isLeft = _input.IsMouseButtonDown(MouseButton.Left))
+                  || _input.IsMouseButtonDown(MouseButton.Middle) == true) && _foodCounter + MaxMeals < MaxMealsOnScreen)
                 {
                     //I am cheating a bit with the MouseToPosition function, but for the purposes of this demo
                     //creating a Camera Entity was an overkill
-                    if (MouseUtilityClass.ScreenPositionToWorldPositionRaycast(_input.MousePosition, _camera,
-                            _simulation, out HitResult result))
+                    if (MouseUtilityClass.ScreenPositionToWorldPositionRaycast(
+                            _input.MousePosition, _camera, _simulation, out HitResult result))
                     {
                         if (isLeft)
                         {
-                            new PlaceFood(result.Point, _entityFactory, GameGroups.RED_FOOD_NOT_EATEN.BuildGroup,
-                                _redfood, _foodPlaced, new Random(Environment.TickCount)).Execute();
+                            new PlaceFood(result.Point, _entityFactory, GameGroups.RED_FOOD_NOT_EATEN.BuildGroup
+                                        , _redfood, _foodPlaced, new Random(Environment.TickCount)).Execute();
                         }
                         else
                         {
-                            new PlaceFood(result.Point, _entityFactory, GameGroups.BLUE_FOOD_NOT_EATEN.BuildGroup,
-                                _bluefood, _foodPlaced, new Random(DateTime.Now.Millisecond)).Execute();
+                            new PlaceFood(result.Point, _entityFactory, GameGroups.BLUE_FOOD_NOT_EATEN.BuildGroup
+                                        , _bluefood, _foodPlaced, new Random(DateTime.Now.Millisecond)).Execute();
                         }
 
-                        _foodPlaced += MaxMeals;
+                        _foodPlaced  += MaxMeals;
+                        _foodCounter += MaxMeals;
 
                         var now = DateTime.Now;
                         while ((DateTime.Now - now).TotalMilliseconds < 100)
@@ -86,8 +96,9 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
             readonly uint                _foodPlaced;
             readonly Random              _random;
 
-            public PlaceFood(Vector3 position, IEntityFactory factory, ExclusiveBuildGroup exclusiveBuildGroup,
-                uint prefabID, uint foodPlaced, Random random) : this()
+            public PlaceFood
+            (Vector3 position, IEntityFactory factory, ExclusiveBuildGroup exclusiveBuildGroup, uint prefabID
+           , uint foodPlaced, Random random) : this()
             {
                 _position            = position;
                 _entityFactory       = factory;
@@ -105,8 +116,8 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
                     float randZ       = (float)(_position.Z + ((_random.NextDouble() * 30.0f) - 15.0f));
                     var   newposition = new Vector3(randX, _position.Y, randZ);
 
-                    var init = _entityFactory.BuildEntity<FoodEntityDescriptor>(new EGID((uint)(_foodPlaced + index),
-                        _exclusiveBuildGroup));
+                    var init = _entityFactory.BuildEntity<FoodEntityDescriptor>(
+                        new EGID((uint)(_foodPlaced + index), _exclusiveBuildGroup));
 
                     init.Init(new PositionComponent()
                     {
@@ -117,7 +128,8 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
                     //these structs are used for ReactOnAdd callback to create unity Entities later
                     init.Init(new StrideComponent()
                     {
-                        instancingEntity = _prefabID, 
+                        instancingEntity = _prefabID
+                       ,
                     });
                 }
             }
@@ -133,6 +145,7 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
         readonly uint _redfood;
         readonly uint _bluefood;
         uint          _foodPlaced;
+        int          _foodCounter;
 
         readonly IEntityFactory  _entityFactory;
         static   IEnumerator     _taskRunner;

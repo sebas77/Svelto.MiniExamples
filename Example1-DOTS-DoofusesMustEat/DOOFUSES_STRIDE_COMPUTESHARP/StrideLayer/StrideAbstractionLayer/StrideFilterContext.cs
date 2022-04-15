@@ -2,6 +2,6 @@
 {
     public static class StrideFilterContext
     {
-        internal static FilterContextID StrideInstanceContext;
+        internal static FilterContextID StrideInstanceContext = FilterContextID.GetNewContextID();
     }
 }

@@ -1,6 +1,7 @@
 using Stride.Core.Mathematics;
 using Stride.Core.Serialization.Contents;
 using Stride.Engine;
+using Stride.Rendering;
 using Svelto.DataStructures;
 
 namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp.StrideLayer
@@ -37,9 +38,9 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp.StrideLayer
 
         //load a prefab resource and register it as a prefab. Of course this method is very naive and can be made
         //async and suitable to load several prefabs at once.
-        public uint LoadAndRegisterPrefab(string prefabName)
+        public uint LoadAndRegisterPrefab(string prefabName, out Prefab prefab)
         {
-            var prefab = _contentManager.Load<Prefab>(prefabName);
+            prefab = _contentManager.Load<Prefab>(prefabName);
             _prefabEntities.Add(prefab);
             return _prefabsCount++;
         }

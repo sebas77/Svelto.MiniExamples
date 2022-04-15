@@ -18,6 +18,11 @@ namespace Svelto.ECS
 
             this.id = id;
         }
+
+        public static FilterContextID GetNewContextID()
+        {
+            return EntitiesDB.SveltoFilters.GetNewContextID();
+        }
     }
 
     public readonly struct CombinedFilterID
