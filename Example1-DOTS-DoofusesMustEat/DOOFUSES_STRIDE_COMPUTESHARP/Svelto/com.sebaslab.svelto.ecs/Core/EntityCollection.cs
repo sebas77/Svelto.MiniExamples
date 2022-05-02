@@ -6,43 +6,27 @@ namespace Svelto.ECS
 {
     public readonly ref struct EntityCollection<T> where T : struct, IEntityComponent
     {
-        static readonly bool IsUnmanaged = TypeSafeDictionary<T>.isUnmanaged;
-
-        public EntityCollection(IBuffer<T> buffer, uint count, EntityIDs entityIDs) : this()
+        public EntityCollection(IBuffer<T> buffer, uint count, IEntityIDs entityIDs) : this()
         {
             DBC.ECS.Check.Require(count == 0 || buffer.isValid, "Buffer is found in impossible state");
-            if (IsUnmanaged)
-            {
-                _nativedBuffer  = (NB<T>)buffer;
-                _nativedIndices = entityIDs.nativeIDs;
-            }
-            else
-            {
-                _managedBuffer  = (MB<T>)buffer;
-                _managedIndices = entityIDs.managedIDs;
-            }
 
-            this.count          = count;
+            _buffer    = buffer;
+            _entityIDs = entityIDs;
+            this.count = count;
         }
         
         public EntityCollection(IBuffer<T> buffer, uint count) : this()
         {
             DBC.ECS.Check.Require(count == 0 || buffer.isValid, "Buffer is found in impossible state");
-            if (IsUnmanaged)
-                _nativedBuffer = (NB<T>)buffer;
-            else
-                _managedBuffer = (MB<T>)buffer;
-
+            
+            _buffer = buffer;
             this.count = count;
         }
 
         public uint count { get; }
 
-        internal readonly MB<T> _managedBuffer;
-        internal readonly NB<T> _nativedBuffer;
-        
-        internal readonly NativeEntityIDs  _nativedIndices;
-        internal readonly ManagedEntityIDs _managedIndices;
+        public readonly IBufferBase _buffer;
+        public readonly IEntityIDs  _entityIDs;
     }
 
     public readonly ref struct EntityCollection<T1, T2> where T1 : struct, IEntityComponent
@@ -56,13 +40,13 @@ namespace Svelto.ECS
 
         public int count => (int)buffer1.count;
 
-        internal EntityCollection<T2> buffer2
+        public EntityCollection<T2> buffer2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get;
         }
 
-        internal EntityCollection<T1> buffer1
+        public EntityCollection<T1> buffer1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get;
@@ -81,25 +65,25 @@ namespace Svelto.ECS
             buffer3 = array3;
         }
 
-        internal EntityCollection<T1> buffer1
+        public EntityCollection<T1> buffer1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get;
         }
 
-        internal EntityCollection<T2> buffer2
+        public EntityCollection<T2> buffer2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get;
         }
 
-        internal EntityCollection<T3> buffer3
+        public EntityCollection<T3> buffer3
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get;
         }
 
-        internal int count => (int)buffer1.count;
+        public int count => (int)buffer1.count;
     }
 
     public readonly ref struct EntityCollection<T1, T2, T3, T4> where T1 : struct, IEntityComponent
@@ -116,31 +100,31 @@ namespace Svelto.ECS
             buffer4 = array4;
         }
 
-        internal EntityCollection<T1> buffer1
+        public EntityCollection<T1> buffer1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get;
         }
 
-        internal EntityCollection<T2> buffer2
+        public EntityCollection<T2> buffer2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get;
         }
 
-        internal EntityCollection<T3> buffer3
+        public EntityCollection<T3> buffer3
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get;
         }
 
-        internal EntityCollection<T4> buffer4
+        public EntityCollection<T4> buffer4
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get;
         }
 
-        internal int count => (int)buffer1.count;
+        public int count => (int)buffer1.count;
     }
 
     public readonly struct BT<BufferT1, BufferT2, BufferT3, BufferT4>

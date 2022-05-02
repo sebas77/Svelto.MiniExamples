@@ -22,6 +22,7 @@
     <ItemGroup>
         <ProjectReference Include="..\StrideLayer\StrideLayer.csproj" />
         <ProjectReference Include="..\Svelto\com.sebaslab.svelto.common\Svelto.Common.csproj" />
+        <ProjectReference Include="..\Svelto\com.sebaslab.svelto.ecs.computesharp\Svelto.ECS.ComputeSharp.csproj" />
         <ProjectReference Include="..\Svelto\com.sebaslab.svelto.ecs\Svelto.ECS.csproj" />
     </ItemGroup>
 </Project>

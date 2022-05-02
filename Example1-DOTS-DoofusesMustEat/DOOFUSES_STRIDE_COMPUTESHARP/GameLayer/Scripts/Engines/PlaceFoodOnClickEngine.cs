@@ -153,4 +153,10 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
         readonly Simulation      _simulation;
         readonly CameraComponent _camera;
     }
+
+    public static class Filters
+    {
+        public static readonly int             Meals         = 0;
+        public static readonly FilterContextID MealContextID = EntitiesDB.SveltoFilters.GetNewContextID();
+    }
 }

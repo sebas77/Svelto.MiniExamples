@@ -24,7 +24,7 @@ namespace Svelto.ECS
         {
             uint       count = 0;
             IBuffer<T> buffer;
-            EntityIDs  ids = default;
+            IEntityIDs  ids = default;
             if (SafeQueryEntityDictionary<T>(out var typeSafeDictionary, entitiesInGroupPerType) == false)
                 buffer = RetrieveEmptyEntityComponentArray<T>();
             else

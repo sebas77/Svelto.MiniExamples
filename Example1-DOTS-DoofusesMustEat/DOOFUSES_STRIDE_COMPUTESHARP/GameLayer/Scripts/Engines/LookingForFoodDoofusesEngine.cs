@@ -40,6 +40,10 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
        , FasterReadOnlyList<ExclusiveGroupStruct> availableDoofuses, ExclusiveBuildGroup eatingDoofusesGroup
        , ExclusiveBuildGroup eatenFoodGroup)
         {
+            var filters = entitiesDB.GetFilters()
+                                    .GetOrCreatePersistentFilter<MealInfoComponent>(
+                                         Filters.Meals, Filters.MealContextID);
+            
             foreach (var ((_, foodEntities, availableFoodCount), fromGroup) in entitiesDB
                         .QueryEntities<PositionComponent>(availableFood))
             {
@@ -60,6 +64,7 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
                       , _fromFoodGroup               = fromGroup
                       , _doofusesLookingForFoodGroup = fromDoofusesGroup
                       , _count                       = willEatDoofusesCount
+                        , _filters = filters
                     }.Execute();
                 }
             }
@@ -71,15 +76,16 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
 
         struct LookingForFoodDoofusesJob
         {
-            public NB<MealInfoComponent> _doofuses;
-            public NativeEntityIDs       _food;
-            public ExclusiveBuildGroup   _doofusesEatingGroup;
-            public ExclusiveBuildGroup   _lockedFood;
-            public NativeEntityIDs       _doofusesegids;
-            public ExclusiveGroupStruct  _fromFoodGroup;
-            public ExclusiveGroupStruct  _doofusesLookingForFoodGroup;
-            public IEntityFunctions      _functions;
-            public int                   _count;
+            public NB<MealInfoComponent>  _doofuses;
+            public NativeEntityIDs        _food;
+            public ExclusiveBuildGroup    _doofusesEatingGroup;
+            public ExclusiveBuildGroup    _lockedFood;
+            public NativeEntityIDs        _doofusesegids;
+            public ExclusiveGroupStruct   _fromFoodGroup;
+            public ExclusiveGroupStruct   _doofusesLookingForFoodGroup;
+            public IEntityFunctions       _functions;
+            public int                    _count;
+            public EntityFilterCollection _filters;
 
             public void Execute()
             {

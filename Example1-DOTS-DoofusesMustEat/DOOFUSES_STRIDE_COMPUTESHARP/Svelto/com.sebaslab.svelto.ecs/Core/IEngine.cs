@@ -84,6 +84,10 @@ namespace Svelto.ECS
     {
         void Remove(ref T entityComponent, EGID egid);
     }
+    
+    public interface IReactOnAddAndRemoveEx<T> : IReactOnAddEx<T>, IReactOnRemoveEx<T> where T : struct, IEntityComponent 
+    {
+    }
 
     public interface IReactOnRemoveEx<T> : IReactOnRemoveEx where T : struct, IEntityComponent
     {

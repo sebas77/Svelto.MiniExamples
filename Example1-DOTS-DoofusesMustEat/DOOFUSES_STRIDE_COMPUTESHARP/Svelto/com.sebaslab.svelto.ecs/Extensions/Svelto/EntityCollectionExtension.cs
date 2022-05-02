@@ -11,7 +11,7 @@ namespace Svelto.ECS
         public static void Deconstruct<T1>(in this EntityCollection<T1> ec, out NB<T1> buffer, out int count)
             where T1 : unmanaged, IEntityComponent
         {
-            buffer = ec._nativedBuffer;
+            buffer = (NB<T1>)ec._buffer;
             count  = (int)ec.count;
         }
 
@@ -19,9 +19,9 @@ namespace Svelto.ECS
         public static void Deconstruct<T1>(in this EntityCollection<T1> ec, out NB<T1> buffer,
             out NativeEntityIDs entityIDs, out int count) where T1 : unmanaged, IEntityComponent
         {
-            buffer    = ec._nativedBuffer;
+            buffer    = (NB<T1>)ec._buffer;
             count     = (int)ec.count;
-            entityIDs = ec._nativedIndices;
+            entityIDs = (NativeEntityIDs)ec._entityIDs;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -29,10 +29,10 @@ namespace Svelto.ECS
             out NB<T2> buffer2, out NativeEntityIDs entityIDs, out int count) where T1 : unmanaged, IEntityComponent
             where T2 : unmanaged, IEntityComponent
         {
-            buffer1   = ec.buffer1._nativedBuffer;
-            buffer2   = ec.buffer2._nativedBuffer;
+            buffer1   = (NB<T1>)ec.buffer1._buffer;
+            buffer2   = (NB<T2>)ec.buffer2._buffer;
             count     = ec.count;
-            entityIDs = ec.buffer1._nativedIndices;
+            entityIDs = (NativeEntityIDs)ec.buffer1._entityIDs;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -40,8 +40,8 @@ namespace Svelto.ECS
             out NB<T2> buffer2, out int count) where T1 : unmanaged, IEntityComponent
             where T2 : unmanaged, IEntityComponent
         {
-            buffer1 = ec.buffer1._nativedBuffer;
-            buffer2 = ec.buffer2._nativedBuffer;
+            buffer1 = (NB<T1>)ec.buffer1._buffer;
+            buffer2 = (NB<T2>)ec.buffer2._buffer;
             count   = (int)ec.count;
         }
 
@@ -51,9 +51,9 @@ namespace Svelto.ECS
             where T2 : unmanaged, IEntityComponent
             where T3 : unmanaged, IEntityComponent
         {
-            buffer1 = ec.buffer1._nativedBuffer;
-            buffer2 = ec.buffer2._nativedBuffer;
-            buffer3 = ec.buffer3._nativedBuffer;
+            buffer1 = (NB<T1>)ec.buffer1._buffer;
+            buffer2 = (NB<T2>)ec.buffer2._buffer;
+            buffer3 = (NB<T3>)ec.buffer3._buffer;
             count   = (int)ec.count;
         }
 
@@ -64,11 +64,11 @@ namespace Svelto.ECS
             where T2 : unmanaged, IEntityComponent
             where T3 : unmanaged, IEntityComponent
         {
-            buffer1   = ec.buffer1._nativedBuffer;
-            buffer2   = ec.buffer2._nativedBuffer;
-            buffer3   = ec.buffer3._nativedBuffer;
+            buffer1   = (NB<T1>)ec.buffer1._buffer;
+            buffer2   = (NB<T2>)ec.buffer2._buffer;
+            buffer3   = (NB<T3>)ec.buffer3._buffer;
             count     = (int)ec.count;
-            entityIDs = ec.buffer1._nativedIndices;
+            entityIDs = (NativeEntityIDs)ec.buffer1._entityIDs;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -79,10 +79,10 @@ namespace Svelto.ECS
             where T3 : unmanaged, IEntityComponent
             where T4 : unmanaged, IEntityComponent
         {
-            buffer1 = ec.buffer1._nativedBuffer;
-            buffer2 = ec.buffer2._nativedBuffer;
-            buffer3 = ec.buffer3._nativedBuffer;
-            buffer4 = ec.buffer4._nativedBuffer;
+            buffer1 = (NB<T1>)ec.buffer1._buffer;
+            buffer2 = (NB<T2>)ec.buffer2._buffer;
+            buffer3 = (NB<T3>)ec.buffer3._buffer;
+            buffer4 = (NB<T4>)ec.buffer4._buffer;
             count   = (int)ec.count;
         }
 
@@ -94,11 +94,11 @@ namespace Svelto.ECS
             where T3 : unmanaged, IEntityComponent
             where T4 : unmanaged, IEntityComponent
         {
-            buffer1   = ec.buffer1._nativedBuffer;
-            buffer2   = ec.buffer2._nativedBuffer;
-            buffer3   = ec.buffer3._nativedBuffer;
-            buffer4   = ec.buffer4._nativedBuffer;
-            entityIDs = ec.buffer1._nativedIndices;
+            buffer1   = (NB<T1>)ec.buffer1._buffer;
+            buffer2   = (NB<T2>)ec.buffer2._buffer;
+            buffer3   = (NB<T3>)ec.buffer3._buffer;
+            buffer4   = (NB<T4>)ec.buffer4._buffer;
+            entityIDs = (NativeEntityIDs)ec.buffer1._entityIDs;
             count     = (int)ec.count;
         }
     }
@@ -109,7 +109,7 @@ namespace Svelto.ECS
         public static void Deconstruct<T1>(in this EntityCollection<T1> ec, out MB<T1> buffer, out int count)
             where T1 : struct, IEntityViewComponent
         {
-            buffer = ec._managedBuffer;
+            buffer = (MB<T1>)ec._buffer;
             count  = (int)ec.count;
         }
 
@@ -117,9 +117,9 @@ namespace Svelto.ECS
         public static void Deconstruct<T1>(in this EntityCollection<T1> ec, out MB<T1> buffer,
             out ManagedEntityIDs entityIDs, out int count) where T1 : struct, IEntityViewComponent
         {
-            buffer    = ec._managedBuffer;
+            buffer    = (MB<T1>)ec._buffer;
             count     = (int)ec.count;
-            entityIDs = ec._managedIndices;
+            entityIDs = (ManagedEntityIDs)ec._entityIDs;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -127,8 +127,8 @@ namespace Svelto.ECS
             out MB<T2> buffer2, out int count) where T1 : struct, IEntityViewComponent
             where T2 : struct, IEntityViewComponent
         {
-            buffer1 = ec.buffer1._managedBuffer;
-            buffer2 = ec.buffer2._managedBuffer;
+            buffer1 = (MB<T1>)ec.buffer1._buffer;
+            buffer2 = (MB<T2>)ec.buffer2._buffer;
             count   = (int)ec.count;
         }
 
@@ -137,10 +137,10 @@ namespace Svelto.ECS
             out MB<T2> buffer2, out ManagedEntityIDs entityIDs, out int count) where T1 : struct, IEntityViewComponent
             where T2 : struct, IEntityViewComponent
         {
-            buffer1   = ec.buffer1._managedBuffer;
-            buffer2   = ec.buffer2._managedBuffer;
+            buffer1   = (MB<T1>)ec.buffer1._buffer;
+            buffer2   = (MB<T2>)ec.buffer2._buffer;
             count     = (int)ec.count;
-            entityIDs = ec.buffer1._managedIndices;
+            entityIDs = (ManagedEntityIDs)ec.buffer1._entityIDs;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -149,9 +149,9 @@ namespace Svelto.ECS
             where T2 : struct, IEntityViewComponent
             where T3 : struct, IEntityViewComponent
         {
-            buffer1 = ec.buffer1._managedBuffer;
-            buffer2 = ec.buffer2._managedBuffer;
-            buffer3 = ec.buffer3._managedBuffer;
+            buffer1 = (MB<T1>)ec.buffer1._buffer;
+            buffer2 = (MB<T2>)ec.buffer2._buffer;
+            buffer3 = (MB<T3>)ec.buffer3._buffer;
             count   = (int)ec.count;
         }
 
@@ -162,11 +162,11 @@ namespace Svelto.ECS
             where T2 : struct, IEntityViewComponent
             where T3 : struct, IEntityViewComponent
         {
-            buffer1   = ec.buffer1._managedBuffer;
-            buffer2   = ec.buffer2._managedBuffer;
-            buffer3   = ec.buffer3._managedBuffer;
+            buffer1   = (MB<T1>)ec.buffer1._buffer;
+            buffer2   = (MB<T2>)ec.buffer2._buffer;
+            buffer3   = (MB<T3>)ec.buffer3._buffer;
             count     = (int)ec.count;
-            entityIDs = ec.buffer1._managedIndices;
+            entityIDs = (ManagedEntityIDs)ec.buffer1._entityIDs;
         }
     }
 
@@ -177,8 +177,8 @@ namespace Svelto.ECS
             out MB<T2> buffer2, out int count) where T1 : unmanaged, IEntityComponent
             where T2 : struct, IEntityViewComponent
         {
-            buffer1 = ec.buffer1._nativedBuffer;
-            buffer2 = ec.buffer2._managedBuffer;
+            buffer1 = (NB<T1>)ec.buffer1._buffer;
+            buffer2 = (MB<T2>)ec.buffer2._buffer;
             count   = (int)ec.count;
         }
 
@@ -188,9 +188,9 @@ namespace Svelto.ECS
             where T2 : struct, IEntityViewComponent
             where T3 : struct, IEntityViewComponent
         {
-            buffer1 = ec.buffer1._nativedBuffer;
-            buffer2 = ec.buffer2._managedBuffer;
-            buffer3 = ec.buffer3._managedBuffer;
+            buffer1 = (NB<T1>)ec.buffer1._buffer;
+            buffer2 = (MB<T2>)ec.buffer2._buffer;
+            buffer3 = (MB<T3>)ec.buffer3._buffer;
             count   = (int)ec.count;
         }
 
@@ -202,10 +202,10 @@ namespace Svelto.ECS
             where T3 : unmanaged, IEntityComponent
             where T4 : struct, IEntityViewComponent
         {
-            buffer1 = ec.buffer1._nativedBuffer;
-            buffer2 = ec.buffer2._nativedBuffer;
-            buffer3 = ec.buffer3._nativedBuffer;
-            buffer4 = ec.buffer4._managedBuffer;
+            buffer1 = (NB<T1>)ec.buffer1._buffer;
+            buffer2 = (NB<T2>)ec.buffer2._buffer;
+            buffer3 = (NB<T3>)ec.buffer3._buffer;
+            buffer4 = (MB<T4>)ec.buffer4._buffer;
             count   = (int)ec.count;
         }
     }
@@ -218,9 +218,9 @@ namespace Svelto.ECS
             where T2 : unmanaged, IEntityComponent
             where T3 : struct, IEntityViewComponent
         {
-            buffer1 = ec.buffer1._nativedBuffer;
-            buffer2 = ec.buffer2._nativedBuffer;
-            buffer3 = ec.buffer3._managedBuffer;
+            buffer1 = (NB<T1>)ec.buffer1._buffer;
+            buffer2 = (NB<T2>)ec.buffer2._buffer;
+            buffer3 = (MB<T3>)ec.buffer3._buffer;
             count   = (int)ec.count;
         }
 
@@ -232,10 +232,10 @@ namespace Svelto.ECS
             where T3 : struct, IEntityViewComponent
             where T4 : struct, IEntityViewComponent
         {
-            buffer1 = ec.buffer1._nativedBuffer;
-            buffer2 = ec.buffer2._nativedBuffer;
-            buffer3 = ec.buffer3._managedBuffer;
-            buffer4 = ec.buffer4._managedBuffer;
+            buffer1 = (NB<T1>)ec.buffer1._buffer;
+            buffer2 = (NB<T2>)ec.buffer2._buffer;
+            buffer3 = (MB<T3>)ec.buffer3._buffer;
+            buffer4 = (MB<T4>)ec.buffer4._buffer;
             count   = (int)ec.count;
         }
     }

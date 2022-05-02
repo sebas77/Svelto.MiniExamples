@@ -50,6 +50,12 @@ namespace Svelto.ECS
         {
             _filtersPerGroup[egid.groupID].Remove(egid.entityID);
         }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Remove(uint entityID, ExclusiveGroupStruct groupID)
+        {
+            _filtersPerGroup[groupID].Remove(entityID);
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Exists(EGID egid)
@@ -155,7 +161,7 @@ namespace Svelto.ECS
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             internal void RemoveWithSwapBack(uint entityId, uint entityIndex, uint lastIndex)
             {
-                // Check if the last index is part of the filter as an entity, in that case
+                //Check if the last index is part of the filter as an entity, in that case
                 //we need to update the filter
                 if (entityIndex != lastIndex && _indexToEntityId.TryGetValue(lastIndex, out var lastEntityID))
                 {

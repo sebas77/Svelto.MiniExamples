@@ -12,6 +12,9 @@ namespace Svelto.ECS.Internal
     {
         static readonly Type _type = typeof(TValue);
 
+        [ThreadStatic]
+        static readonly IEntityIDs cachedEntityID = new NativeEntityIDs();
+
         ComputeSharpTypeSafeDictionary(uint size)
         {
             computeBufferDictionary =
@@ -19,7 +22,17 @@ namespace Svelto.ECS.Internal
                     ComputeSharpStrategy<TValue>, NativeStrategy<int>>(size, Allocator.Managed);
         }
 
-        public EntityIDs entityIDs => new EntityIDs(computeBufferDictionary.unsafeKeys);
+        public IEntityIDs entityIDs
+        {
+            get
+            {
+                ref var unboxed = ref Unsafe.Unbox<NativeEntityIDs>(cachedEntityID);
+
+                unboxed.Update(computeBufferDictionary.unsafeKeys.ToRealBuffer());
+                
+                return cachedEntityID;
+            }
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool ContainsKey(uint egidEntityId)
@@ -129,12 +142,12 @@ namespace Svelto.ECS.Internal
             GC.SuppressFinalize(this);
         }
 
-        public void AddEntitiesToDictionary(ITypeSafeDictionary toDictionary, ExclusiveGroupStruct groupId,
-            in EnginesRoot.LocatorMap entityLocator)
+        public void AddEntitiesToDictionary
+            (ITypeSafeDictionary toDictionary, ExclusiveGroupStruct groupId, in EnginesRoot.EntityReferenceMap entityLocator)
         {
             void SharedAddEntitiesFromDictionary<Strategy1, Strategy2, Strategy3>(
                 in SveltoDictionary<uint, TValue, Strategy1, Strategy2, Strategy3> fromDictionary,
-                ITypeSafeDictionary<TValue> toDic, in EnginesRoot.LocatorMap locator, ExclusiveGroupStruct toGroupID)
+                ITypeSafeDictionary<TValue> toDic, in EnginesRoot.EntityReferenceMap locator, ExclusiveGroupStruct toGroupID)
                 where Strategy1 : struct, IBufferStrategy<SveltoDictionaryNode<uint>>
                 where Strategy2 : struct, IBufferStrategy<TValue>
                 where Strategy3 : struct, IBufferStrategy<int>

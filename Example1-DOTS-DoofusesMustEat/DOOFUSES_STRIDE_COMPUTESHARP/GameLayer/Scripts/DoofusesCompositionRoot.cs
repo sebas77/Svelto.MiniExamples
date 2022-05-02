@@ -75,6 +75,7 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
             AddEngine(new ConsumingFoodEngine(entityFunctions));
             AddEngine(new LookingForFoodDoofusesEngine(entityFunctions));
             AddEngine(new VelocityToPositionDoofusesEngine());
+//            AddEngine(new AddFoodToFilters());
 
             StrideAbstractionContext.Compose(AddEngine, _ecsStrideEntityManager);
 

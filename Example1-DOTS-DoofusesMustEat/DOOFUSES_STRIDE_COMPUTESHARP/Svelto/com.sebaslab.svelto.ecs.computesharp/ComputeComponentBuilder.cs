@@ -6,7 +6,7 @@ using Svelto.ECS.Internal;
 
 namespace Svelto.ECS.ComputeSharp
 {
-    public class ComputeComponentbuilder<T> : IComponentBuilder where T : unmanaged, IEntityComponent
+    public class ComputeComponentBuilder<T> : IComponentBuilder where T : unmanaged, IEntityComponent
     {
         static readonly Type ENTITY_COMPONENT_TYPE;
 
@@ -14,7 +14,7 @@ namespace Svelto.ECS.ComputeSharp
         static readonly string ENTITY_COMPONENT_NAME;
         static readonly bool   IS_UNMANAGED;
 
-        static ComputeComponentbuilder()
+        static ComputeComponentBuilder()
         {
             ENTITY_COMPONENT_TYPE = typeof(T);
             DEFAULT_IT = default;
@@ -26,12 +26,12 @@ namespace Svelto.ECS.ComputeSharp
             ComponentBuilderUtilities.CheckFields(ENTITY_COMPONENT_TYPE, false);
         }
 
-        public ComputeComponentbuilder()
+        public ComputeComponentBuilder()
         {
             _initializer = DEFAULT_IT;
         }
 
-        public ComputeComponentbuilder(in T initializer) : this()
+        public ComputeComponentBuilder(in T initializer) : this()
         {
             _initializer = initializer;
         }

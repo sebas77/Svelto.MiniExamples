@@ -5,7 +5,6 @@ using Svelto.DataStructures;
 using Svelto.DataStructures.Native;
 using Svelto.ECS.DataStructures;
 
-
 namespace Svelto.ECS
 {
     public struct FilterContextID

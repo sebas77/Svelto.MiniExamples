@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\com.sebaslab.svelto.ecs\Svelto.ECS.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="ComputeSharp" Version="2.0.0-alpha.19" />
+    </ItemGroup>
+
+</Project>

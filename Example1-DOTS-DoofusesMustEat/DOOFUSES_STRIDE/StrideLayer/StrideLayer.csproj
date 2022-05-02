@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+        <Nullable>disable</Nullable>
+        <LangVersion>9</LangVersion>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Stride.Engine" Version="4.1.0.1459-beta" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Svelto\com.sebaslab.svelto.common\Svelto.Common.csproj" />
+      <ProjectReference Include="..\Svelto\com.sebaslab.svelto.ecs\Svelto.ECS.csproj" />
+      <ProjectReference Include="..\TransformationLayer\TransformationLayer.csproj" />
+    </ItemGroup>
+
+</Project>

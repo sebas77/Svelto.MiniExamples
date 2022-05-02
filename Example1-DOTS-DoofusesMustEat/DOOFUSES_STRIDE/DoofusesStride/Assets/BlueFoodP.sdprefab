@@ -1,0 +1,27 @@
+!PrefabAsset
+Id: 83c0631c-d1d7-444f-a666-623a669f92ea
+SerializedVersion: {Stride: 3.1.0.1}
+Tags: []
+Hierarchy:
+    RootParts:
+        - ref!! 6c2f42e1-23ea-4623-9c83-03efe2a65c8f
+    Parts:
+        -   Entity:
+                Id: 6c2f42e1-23ea-4623-9c83-03efe2a65c8f
+                Name: BlueFoodM
+                Components:
+                    4c062dbaec2cd23bf940d78afa95fb40: !TransformComponent
+                        Id: d877087b-fb28-4f82-9f01-bebb223940a6
+                        Position: {X: 65.336464, Y: 0.0, Z: 65.366936}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    2c6c66b51fe934f91f84d7f70649242b: !ModelComponent
+                        Id: d329f177-99d5-45d7-8670-fe0417606a6b
+                        Model: cfdc1c19-d6dd-4b64-87e4-f40c1c4d583d:FoodM
+                        Materials:
+                            8ef68b3c0d685165b945be6204c82288~0: bc5035d0-b5e5-407e-a052-c75f8ccff2e3:BlueFood
+                    185e44f528b4788f12e43400ae241bff: !InstancingComponent
+                        Id: b583c214-eaec-472a-a9bd-f6de1d7a04e5
+                        Type: !InstancingUserArray
+                            ModelTransformUsage: PreMultiply

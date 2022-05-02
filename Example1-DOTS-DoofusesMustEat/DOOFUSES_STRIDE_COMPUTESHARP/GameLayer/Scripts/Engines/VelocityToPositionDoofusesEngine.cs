@@ -1,6 +1,7 @@
 using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.ECS.EntityComponents;
+using Svelto.ECS.Internal;
 
 namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
 {
@@ -17,7 +18,7 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
 
         public void Step(in float deltaTime)
         {
-            var doofusesEntityGroups =
+            GroupsEnumerable<PositionComponent, VelocityEntityComponent, SpeedEntityComponent> doofusesEntityGroups =
                 entitiesDB.QueryEntities<PositionComponent, VelocityEntityComponent, SpeedEntityComponent>(
                     GameGroups.DOOFUSES_EATING.Groups);
 
@@ -31,7 +32,7 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
         readonly struct ComputePostionFromVelocityJob
         {
             public ComputePostionFromVelocityJob(
-                BT<NB<PositionComponent>, NB<VelocityEntityComponent>, NB<SpeedEntityComponent>> doofuses,
+                BT<ComputeSharpBuffer<PositionComponent>, ComputeSharpBuffer<VelocityEntityComponent>, ComputeSharpBuffer<SpeedEntityComponent>> doofuses,
                 float deltaTime)
             {
                 _doofuses  = doofuses;
@@ -51,7 +52,7 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
             }
 
             readonly float                                                                            _deltaTime;
-            readonly BT<NB<PositionComponent>, NB<VelocityEntityComponent>, NB<SpeedEntityComponent>> _doofuses;
+            readonly BT<ComputeSharpBuffer<PositionComponent>, ComputeSharpBuffer<VelocityEntityComponent>, ComputeSharpBuffer<SpeedEntityComponent>> _doofuses;
         }
     }
 }
