@@ -8,9 +8,7 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
     [Sequenced(nameof(DoofusesEngineNames.VelocityToPositionDoofusesEngine))]
     public class VelocityToPositionDoofusesEngine : IQueryingEntitiesEngine, IUpdateEngine
     {
-        public void Ready()
-        {
-        }
+        public void Ready() { }
 
         public EntitiesDB entitiesDB { get; set; }
 
@@ -18,22 +16,22 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
 
         public void Step(in float deltaTime)
         {
-            GroupsEnumerable<PositionComponent, VelocityEntityComponent, SpeedEntityComponent> doofusesEntityGroups =
-                entitiesDB.QueryEntities<PositionComponent, VelocityEntityComponent, SpeedEntityComponent>(
+            GroupsEnumerable<VelocityEntityComponent, SpeedEntityComponent> doofusesEntityGroups =
+                entitiesDB.QueryEntities<VelocityEntityComponent, SpeedEntityComponent>(
                     GameGroups.DOOFUSES_EATING.Groups);
 
-            foreach (var (doofuses, _) in doofusesEntityGroups)
+            foreach (var (doofuses, group) in doofusesEntityGroups)
             {
-                var (buffer1, buffer2, buffer3, count) = doofuses;
-                new ComputePostionFromVelocityJob((buffer1, buffer2, buffer3, count), deltaTime).Execute();
+                var (positions, _)              = entitiesDB.QueryEntities<PositionComponent>(group);
+                var (velocities, speeds, count) = doofuses;
+                new ComputePostionFromVelocityJob((positions, velocities, speeds, count), deltaTime).Execute();
             }
         }
 
         readonly struct ComputePostionFromVelocityJob
         {
-            public ComputePostionFromVelocityJob(
-                BT<ComputeSharpBuffer<PositionComponent>, ComputeSharpBuffer<VelocityEntityComponent>, ComputeSharpBuffer<SpeedEntityComponent>> doofuses,
-                float deltaTime)
+            public ComputePostionFromVelocityJob
+            ((NB<PositionComponent> positions, NB<VelocityEntityComponent> velocities, NB<SpeedEntityComponent> speeds, int count) doofuses, float deltaTime)
             {
                 _doofuses  = doofuses;
                 _deltaTime = deltaTime;
@@ -43,16 +41,17 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
             {
                 for (int index = 0; index < _doofuses.count; index++)
                 {
-                    ref var velocity = ref _doofuses.buffer2[index].velocity;
+                    ref var velocity = ref _doofuses.velocities[index].velocity;
 
-                    var deltaPos = velocity * (_deltaTime * _doofuses.buffer3[index].speed);
-                    
-                    _doofuses.buffer1[index].position += deltaPos;
+                    var deltaPos = velocity * (_deltaTime * _doofuses.speeds[index].speed);
+
+                    _doofuses.positions[index].position += deltaPos;
                 }
             }
 
-            readonly float                                                                            _deltaTime;
-            readonly BT<ComputeSharpBuffer<PositionComponent>, ComputeSharpBuffer<VelocityEntityComponent>, ComputeSharpBuffer<SpeedEntityComponent>> _doofuses;
+            readonly float _deltaTime;
+
+            readonly (NB<PositionComponent> positions, NB<VelocityEntityComponent> velocities, NB<SpeedEntityComponent> speeds, int count) _doofuses;
         }
     }
 }

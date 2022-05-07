@@ -29,7 +29,7 @@ namespace Svelto.ECS
         public static int counter;        
     }
     
-    public class ComponentID<T> where T : struct, IEntityComponent
+    public class ComponentID<T> where T : struct, IBaseEntityComponent
     {
         public static readonly SharedStaticWrapper<int, ComponentID<T>> id;
 
@@ -45,7 +45,7 @@ namespace Svelto.ECS
         }
     }
 
-    public class ComponentBuilder<T> : IComponentBuilder where T : struct, IEntityComponent
+    public class ComponentBuilder<T> : IComponentBuilder where T : struct, IBaseEntityComponent
     {
         internal static readonly Type ENTITY_COMPONENT_TYPE;
         internal static readonly bool IS_ENTITY_VIEW_COMPONENT;

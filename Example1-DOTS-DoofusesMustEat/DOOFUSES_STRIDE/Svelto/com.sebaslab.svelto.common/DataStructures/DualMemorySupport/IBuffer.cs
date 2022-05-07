@@ -2,11 +2,11 @@ using System;
 
 namespace Svelto.DataStructures
 {
-    public interface IBufferBase<T>
+    public interface IBufferBase
     {
     }
 
-    public interface IBuffer<T>:IBufferBase<T>
+    public interface IBuffer<T>:IBufferBase
     {
         void CopyTo(uint sourceStartIndex, T[] destination, uint destinationStartIndex, uint count);
         void Clear();

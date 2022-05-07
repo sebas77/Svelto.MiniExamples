@@ -13,22 +13,34 @@ using Svelto.ECS.Hybrid;
 
 namespace Svelto.ECS.Internal
 {
-    public readonly struct NativeEntityIDs
+    public interface IEntityIDs { }
+    
+    public struct NativeEntityIDs: IEntityIDs
     {
         public NativeEntityIDs(NB<SveltoDictionaryNode<uint>> native)
         {
             _native = native;
         }
+        
+        public void Update(in NB<SveltoDictionaryNode<uint>> unsafeKeys)
+        {
+            _native = unsafeKeys;
+        }
 
         public uint this[uint index] => _native[index].key;
         public uint this[int index] => _native[index].key;
 
-        readonly NB<SveltoDictionaryNode<uint>> _native;
+        NB<SveltoDictionaryNode<uint>> _native;
     }
 
-    public readonly struct ManagedEntityIDs
+    public struct ManagedEntityIDs: IEntityIDs
     {
         public ManagedEntityIDs(MB<SveltoDictionaryNode<uint>> managed)
+        {
+            _managed = managed;
+        }
+        
+        public void Update(MB<SveltoDictionaryNode<uint>> managed)
         {
             _managed = managed;
         }
@@ -36,35 +48,21 @@ namespace Svelto.ECS.Internal
         public uint this[uint index] => _managed[index].key;
         public uint this[int index] => _managed[index].key;
 
-        readonly MB<SveltoDictionaryNode<uint>> _managed;
+        MB<SveltoDictionaryNode<uint>> _managed;
     }
 
-    public readonly struct EntityIDs
-    {
-        readonly NB<SveltoDictionaryNode<uint>> _native;
-        readonly MB<SveltoDictionaryNode<uint>> _managed;
-
-        public EntityIDs(NativeStrategy<SveltoDictionaryNode<uint>> unmanagedKeys) : this()
-        {
-            _native = unmanagedKeys.ToRealBuffer();
-        }
-
-        public EntityIDs(ManagedStrategy<SveltoDictionaryNode<uint>> managedKeys) : this()
-        {
-            _managed = managedKeys.ToRealBuffer();
-        }
-
-        public NativeEntityIDs  nativeIDs  => new NativeEntityIDs(_native);
-        public ManagedEntityIDs managedIDs => new ManagedEntityIDs(_managed);
-    }
-
-    public sealed class TypeSafeDictionary<TValue> : ITypeSafeDictionary<TValue> where TValue : struct, IEntityComponent
+    public sealed class TypeSafeDictionary<TValue> : ITypeSafeDictionary<TValue> where TValue : struct, IBaseEntityComponent
     {
         static readonly Type _type = typeof(TValue);
 #if SLOW_SVELTO_SUBMISSION
         static readonly bool _hasEgid      = typeof(INeedEGID).IsAssignableFrom(_type);
         static readonly bool _hasReference = typeof(INeedEntityReference).IsAssignableFrom(_type);
 #endif
+        [ThreadStatic]
+        static readonly IEntityIDs cachedEntityIDN = new NativeEntityIDs();
+        [ThreadStatic]
+        static readonly IEntityIDs cachedEntityIDM = new ManagedEntityIDs();
+        
         internal static readonly bool isUnmanaged =
             _type.IsUnmanagedEx() && typeof(IEntityViewComponent).IsAssignableFrom(_type) == false;
 
@@ -82,14 +80,26 @@ namespace Svelto.ECS.Internal
                         ManagedStrategy<TValue>, ManagedStrategy<int>>(size, Allocator.Managed);
         }
 
-        public EntityIDs entityIDs
+        public IEntityIDs entityIDs
         {
             get
             {
                 if (isUnmanaged)
-                    return new EntityIDs(implUnmgd.value.unsafeKeys);
+                {
+                    ref var unboxed = ref Unsafe.Unbox<NativeEntityIDs>(cachedEntityIDN);
 
-                return new EntityIDs(implMgd.unsafeKeys);
+                    unboxed.Update(implUnmgd.value.unsafeKeys.ToRealBuffer());
+                    
+                    return cachedEntityIDN;
+                }
+                else
+                {
+                    ref var unboxed = ref Unsafe.Unbox<ManagedEntityIDs>(cachedEntityIDM);
+
+                    unboxed.Update(implMgd.unsafeKeys.ToRealBuffer());
+                    
+                    return cachedEntityIDM;
+                }
             }
         }
 

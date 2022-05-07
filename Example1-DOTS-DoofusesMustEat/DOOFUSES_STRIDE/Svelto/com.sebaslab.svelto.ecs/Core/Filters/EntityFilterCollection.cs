@@ -21,14 +21,14 @@ namespace Svelto.ECS
         public EntityFilterIterator GetEnumerator()  => new EntityFilterIterator(this);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Add<T>(EGID egid, NativeEGIDMapper<T> mmap) where T : unmanaged, IEntityComponent
+        public bool Add<T>(EGID egid, NativeEGIDMapper<T> mmap) where T : unmanaged, IBaseEntityComponent
         {
             DBC.ECS.Check.Require(mmap.groupID == egid.groupID, "not compatible NativeEgidMapper used");
 
             return Add(egid, mmap.GetIndex(egid.entityID));
         }
 
-        public bool Add<T>(EGID egid, NativeEGIDMultiMapper<T> mmap) where T : unmanaged, IEntityComponent
+        public bool Add<T>(EGID egid, NativeEGIDMultiMapper<T> mmap) where T : unmanaged, IBaseEntityComponent
         {
             return Add(egid, mmap.GetIndex(egid));
         }
@@ -49,6 +49,12 @@ namespace Svelto.ECS
         public void Remove(EGID egid)
         {
             _filtersPerGroup[egid.groupID].Remove(egid.entityID);
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Remove(uint entityID, ExclusiveGroupStruct groupID)
+        {
+            _filtersPerGroup[groupID].Remove(entityID);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -155,7 +161,7 @@ namespace Svelto.ECS
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             internal void RemoveWithSwapBack(uint entityId, uint entityIndex, uint lastIndex)
             {
-                // Check if the last index is part of the filter as an entity, in that case
+                //Check if the last index is part of the filter as an entity, in that case
                 //we need to update the filter
                 if (entityIndex != lastIndex && _indexToEntityId.TryGetValue(lastIndex, out var lastEntityID))
                 {

@@ -1,6 +1,8 @@
 namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
 {
-    struct SpeedEntityComponent : IEntityComponent
+    struct SpeedEntityComponent : 
+        //IEntityComputeSharpComponent
+    IEntityComponent
     {
         public float speed;
     }

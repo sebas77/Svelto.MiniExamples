@@ -75,6 +75,8 @@ namespace Svelto.ECS
 
                 using (sampler.Sample("Remove Entities"))
                 {
+                    enginesRoot._cachedRangeOfSubmittedIndices.FastClear();
+
                     foreach (var entitiesToRemove in removeOperations)
                     {
                         ExclusiveGroupStruct fromGroup           = entitiesToRemove.key;
@@ -313,15 +315,23 @@ namespace Svelto.ECS
                                     var fromDictionary = entityComponentsToSubmit.value;
                                     var wrapper        = new RefWrapperType(type);
 
-                                    var toDictionary =
+                                    ITypeSafeDictionary toDictionary =
                                         GetOrAddTypeSafeDictionary(groupID, groupDB, wrapper, fromDictionary);
+
+                                    //toDictionary.CheckOut();
 
                                     //all the new entities are added at the end of each dictionary list, so we can
                                     //just iterate the list using the indices ranges added in the _cachedIndices
                                     _cachedRangeOfSubmittedIndices.Add(((uint, uint))(toDictionary.count,
                                         toDictionary.count + fromDictionary.count));
                                     //Fill the DB with the entity components generated this frame.
-                                    fromDictionary.AddEntitiesToDictionary(toDictionary, groupID, entityLocator);
+                                    fromDictionary.AddEntitiesToDictionary(toDictionary, groupID
+#if SLOW_SVELTO_SUBMISSION                                                                                               
+                                                                         , entityLocator
+#endif                                                                           
+                                                                           );
+                                    
+                                    //toDictionary.Commit();
                                 }
                             }
                         }
@@ -433,7 +443,11 @@ namespace Svelto.ECS
                 ITypeSafeDictionary toDictionary =
                     GetOrAddTypeSafeDictionary(toGroupId, toGroup, refWrapperType, fromDictionary);
 
-                fromDictionary.AddEntitiesToDictionary(toDictionary, toGroupId, this.entityLocator);
+                fromDictionary.AddEntitiesToDictionary(toDictionary, toGroupId
+#if SLOW_SVELTO_SUBMISSION                                                                           
+                                                     , this.entityLocator
+#endif                                                       
+                                                       );
             }
 
             //Call all the callbacks
@@ -502,8 +516,7 @@ namespace Svelto.ECS
         static readonly
             Action<FasterDictionary<ExclusiveGroupStruct, FasterDictionary<RefWrapperType,
                     FasterDictionary<ExclusiveGroupStruct, FasterList<(uint, uint, string)>>>>, FasterList<(EGID, EGID)>
-               ,
-                EnginesRoot> _swapEntities;
+               , EnginesRoot> _swapEntities;
 
         static readonly Action<
             FasterDictionary<ExclusiveGroupStruct, FasterDictionary<RefWrapperType, FasterList<(uint, string)>>>,

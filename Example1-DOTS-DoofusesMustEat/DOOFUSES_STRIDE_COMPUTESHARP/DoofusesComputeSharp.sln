@@ -19,7 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TransformationLayer", "Tran
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Svelto", "Svelto", "{A1E08AD1-E4AB-40E6-AF13-E93FAA66EDE3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.ECS.ComputeSharp", "Svelto\com.sebaslab.svelto.ecs.computesharp\Svelto.ECS.ComputeSharp.csproj", "{A778C4AC-EC07-4EF4-A1CB-906DDD6D121C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.ECS.ComputeSharp", "Svelto\com.sebaslab.svelto.ecs.computesharp\Svelto.ECS.ComputeSharp.csproj", "{D97ED2F5-7714-4974-AB0B-3CA7361FE182}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -85,14 +85,14 @@ Global
 		{222C5920-B249-4C29-8921-7A347208C619}.SlowSubmissionDebug|Any CPU.Build.0 = Debug|Any CPU
 		{222C5920-B249-4C29-8921-7A347208C619}.SlowSubmissionRelease|Any CPU.ActiveCfg = Release|Any CPU
 		{222C5920-B249-4C29-8921-7A347208C619}.SlowSubmissionRelease|Any CPU.Build.0 = Release|Any CPU
-		{A778C4AC-EC07-4EF4-A1CB-906DDD6D121C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A778C4AC-EC07-4EF4-A1CB-906DDD6D121C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A778C4AC-EC07-4EF4-A1CB-906DDD6D121C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A778C4AC-EC07-4EF4-A1CB-906DDD6D121C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A778C4AC-EC07-4EF4-A1CB-906DDD6D121C}.SlowSubmissionDebug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A778C4AC-EC07-4EF4-A1CB-906DDD6D121C}.SlowSubmissionDebug|Any CPU.Build.0 = Debug|Any CPU
-		{A778C4AC-EC07-4EF4-A1CB-906DDD6D121C}.SlowSubmissionRelease|Any CPU.ActiveCfg = Debug|Any CPU
-		{A778C4AC-EC07-4EF4-A1CB-906DDD6D121C}.SlowSubmissionRelease|Any CPU.Build.0 = Debug|Any CPU
+		{D97ED2F5-7714-4974-AB0B-3CA7361FE182}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D97ED2F5-7714-4974-AB0B-3CA7361FE182}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D97ED2F5-7714-4974-AB0B-3CA7361FE182}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D97ED2F5-7714-4974-AB0B-3CA7361FE182}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D97ED2F5-7714-4974-AB0B-3CA7361FE182}.SlowSubmissionDebug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D97ED2F5-7714-4974-AB0B-3CA7361FE182}.SlowSubmissionDebug|Any CPU.Build.0 = Debug|Any CPU
+		{D97ED2F5-7714-4974-AB0B-3CA7361FE182}.SlowSubmissionRelease|Any CPU.ActiveCfg = Debug|Any CPU
+		{D97ED2F5-7714-4974-AB0B-3CA7361FE182}.SlowSubmissionRelease|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -103,6 +103,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{5A18F06A-1060-4A00-BAA9-C6A4AFDAD089} = {A1E08AD1-E4AB-40E6-AF13-E93FAA66EDE3}
 		{ACCDE329-5184-4B19-83CA-805BB0BA9543} = {A1E08AD1-E4AB-40E6-AF13-E93FAA66EDE3}
-		{A778C4AC-EC07-4EF4-A1CB-906DDD6D121C} = {A1E08AD1-E4AB-40E6-AF13-E93FAA66EDE3}
+		{D97ED2F5-7714-4974-AB0B-3CA7361FE182} = {A1E08AD1-E4AB-40E6-AF13-E93FAA66EDE3}
 	EndGlobalSection
 EndGlobal

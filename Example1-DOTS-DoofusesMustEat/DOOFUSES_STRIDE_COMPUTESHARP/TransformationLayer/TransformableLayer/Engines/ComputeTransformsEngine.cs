@@ -26,9 +26,11 @@ namespace  Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
             var groups =
                 entitiesDB.FindGroups<PositionComponent, ScalingComponent, RotationComponent, MatrixComponent>();
 
-            foreach (var ((position, scaling, rotation, transforms, count), _) in entitiesDB
-               .QueryEntities<PositionComponent, ScalingComponent, RotationComponent, MatrixComponent>(groups))
+            foreach (var ((position, scaling, rotation, count), group) in entitiesDB
+               .QueryEntities<PositionComponent, ScalingComponent, RotationComponent>(groups))
             {
+                var (transforms, _) = entitiesDB.QueryEntities<MatrixComponent>(group);
+                
                 for (int i = 0; i < count; i++)
                 {
                     Matrix.Transformation(ref scaling[i].scaling, ref rotation[i].rotation, ref position[i].position

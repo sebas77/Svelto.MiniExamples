@@ -5,7 +5,6 @@ using Svelto.DataStructures;
 using Svelto.DataStructures.Native;
 using Svelto.ECS.DataStructures;
 
-
 namespace Svelto.ECS
 {
     public struct FilterContextID
@@ -49,7 +48,7 @@ namespace Svelto.ECS
         //since the user can choose their own filterID, in order to avoid collisions between
         //filters of the same type, the FilterContext is provided. The type is identified through
         //TypeCounter
-        public static long CombineFilterIDs<T>(CombinedFilterID combinedFilterID) where T: struct, IEntityComponent
+        public static long CombineFilterIDs<T>(CombinedFilterID combinedFilterID) where T: struct, IBaseEntityComponent
         {
             var id = (uint)ComponentID<T>.id.Data;
 
@@ -139,7 +138,7 @@ namespace Svelto.ECS
             [Unity.Collections.NotBurstCompatible]
 #endif
             public ref EntityFilterCollection GetOrCreatePersistentFilter<T>(int filterID, FilterContextID filterContextId)
-                where T : unmanaged, IEntityComponent
+                where T : unmanaged, IBaseEntityComponent
             {
                 return ref GetOrCreatePersistentFilter<T>(new CombinedFilterID(filterID, filterContextId));
             }
@@ -147,7 +146,7 @@ namespace Svelto.ECS
             [Unity.Collections.NotBurstCompatible]
 #endif
             public ref EntityFilterCollection GetOrCreatePersistentFilter<T>(CombinedFilterID filterID)
-                where T : unmanaged, IEntityComponent
+                where T : unmanaged, IBaseEntityComponent
             {
                 long combineFilterIDs = Internal_FilterHelper.CombineFilterIDs<T>(filterID);
                 
@@ -168,13 +167,13 @@ namespace Svelto.ECS
             }
 
             public ref EntityFilterCollection GetPersistentFilter<T>(int filterID, FilterContextID filterContextId)
-                where T : unmanaged, IEntityComponent
+                where T : unmanaged, IBaseEntityComponent
             {
                 return ref GetPersistentFilter<T>(new CombinedFilterID(filterID, filterContextId));
             }
 
             public ref EntityFilterCollection GetPersistentFilter<T>(CombinedFilterID filterID)
-                where T : unmanaged, IEntityComponent
+                where T : unmanaged, IBaseEntityComponent
             {
                 long combineFilterIDs = Internal_FilterHelper.CombineFilterIDs<T>(filterID);
                 
@@ -185,7 +184,7 @@ namespace Svelto.ECS
             }
             
             public bool TryGetPersistentFilter<T>(CombinedFilterID combinedFilterID, out EntityFilterCollection entityCollection) 
-                where T : unmanaged, IEntityComponent
+                where T : unmanaged, IBaseEntityComponent
             {
                 long combineFilterIDs = Internal_FilterHelper.CombineFilterIDs<T>(combinedFilterID);
                 
@@ -199,7 +198,7 @@ namespace Svelto.ECS
                 return false;
             }
 
-            public EntityFilterCollectionsEnumerator GetPersistentFilters<T>() where T : unmanaged, IEntityComponent
+            public EntityFilterCollectionsEnumerator GetPersistentFilters<T>() where T : unmanaged, IBaseEntityComponent
             {
                 if (_indicesOfPersistentFiltersUsedByThisComponent.TryFindIndex(
                         new NativeRefWrapperType(new RefWrapperType(typeof(T))), out var index) == true)
@@ -314,7 +313,7 @@ namespace Svelto.ECS
             /// <typeparam name="T"></typeparam>
             /// <returns></returns>
             public ref EntityFilterCollection GetOrCreateTransientFilter<T>(CombinedFilterID filterID)
-                where T : unmanaged, IEntityComponent
+                where T : unmanaged, IBaseEntityComponent
             {
                 var combineFilterIDs = Internal_FilterHelper.CombineFilterIDs<T>(filterID);
 
@@ -329,7 +328,7 @@ namespace Svelto.ECS
             }
 
             public bool TryGetTransientFilter<T>(CombinedFilterID filterID, out EntityFilterCollection entityCollection)
-                where T : unmanaged, IEntityComponent
+                where T : unmanaged, IBaseEntityComponent
             {
                 var combineFilterIDs = Internal_FilterHelper.CombineFilterIDs<T>(filterID);
 

@@ -14,7 +14,7 @@ namespace Svelto.ECS.Native
     ///WARNING: REMEMBER THIS MUST BE DISPOSED OF, AS IT USES NATIVE MEMORY. IT WILL LEAK MEMORY OTHERWISE
     /// 
     /// </summary>
-    public struct NativeEGIDMultiMapper<T> : IDisposable where T : unmanaged, IEntityComponent
+    public struct NativeEGIDMultiMapper<T> : IDisposable where T : unmanaged, IBaseEntityComponent
     {
         public NativeEGIDMultiMapper(in SveltoDictionary<
             /*key  */ExclusiveGroupStruct,

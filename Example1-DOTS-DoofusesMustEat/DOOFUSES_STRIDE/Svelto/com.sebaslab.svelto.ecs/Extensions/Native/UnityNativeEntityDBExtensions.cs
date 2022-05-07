@@ -10,7 +10,7 @@ namespace Svelto.ECS.Native
     public static class UnityNativeEntityDBExtensions
     {
         static NativeEGIDMapper<T> ToNativeEGIDMapper<T>(this TypeSafeDictionary<T> dic,
-            ExclusiveGroupStruct groupStructId) where T : unmanaged, IEntityComponent
+            ExclusiveGroupStruct groupStructId) where T : unmanaged, IBaseEntityComponent
         {
             var mapper = new NativeEGIDMapper<T>(groupStructId, dic.implUnmgd);
 
@@ -19,7 +19,7 @@ namespace Svelto.ECS.Native
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static NativeEGIDMapper<T>  QueryNativeMappedEntities<T>(this EntitiesDB entitiesDb, ExclusiveGroupStruct groupStructId)
-            where T : unmanaged, IEntityComponent
+            where T : unmanaged, IBaseEntityComponent
         {
             if (entitiesDb.SafeQueryEntityDictionary<T>(groupStructId, out var typeSafeDictionary) == false)
                 throw new EntityGroupNotFoundException(typeof(T), groupStructId.ToName());
@@ -30,7 +30,7 @@ namespace Svelto.ECS.Native
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryQueryNativeMappedEntities<T>(this EntitiesDB entitiesDb, ExclusiveGroupStruct groupStructId,
                                                            out NativeEGIDMapper<T> mapper)
-            where T : unmanaged, IEntityComponent
+            where T : unmanaged, IBaseEntityComponent
         {
             mapper = NativeEGIDMapper<T>.empty;
             if (entitiesDb.SafeQueryEntityDictionary<T>(groupStructId, out var typeSafeDictionary) == false ||
@@ -47,7 +47,7 @@ namespace Svelto.ECS.Native
         /// and reuse it
         public static NativeEGIDMultiMapper<T> QueryNativeMappedEntities<T>(this EntitiesDB entitiesDb,
                     LocalFasterReadOnlyList<ExclusiveGroupStruct> groups, Allocator allocator)
-            where T : unmanaged, IEntityComponent
+            where T : unmanaged, IBaseEntityComponent
         {
             var dictionary = new SveltoDictionary<
                     /*key  */ExclusiveGroupStruct,  

@@ -15,16 +15,17 @@ namespace Svelto.ECS.Internal
     {
         public ComputeSharpStrategy(uint size, bool clear) : this()
         {
-            Alloc(size, clear);
+            Alloc(size, Allocator.None, clear);
         }
 
         public bool isValid => _buffer != null;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        void Alloc(uint size, bool clear)
+        public void Alloc(uint size, Allocator allocator, bool clear = true)
         {
             var realBuffer = new ComputeSharpBuffer<T>(size, clear);
-            _buffer = _realBuffer;
+            _realBuffer = realBuffer;
+            _buffer     = _realBuffer;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -32,15 +33,11 @@ namespace Svelto.ECS.Internal
         {
             if (newSize != capacity)
             {
-              //  var realBuffer = new ComputeSharpBuffer<T>(newSize);
-                // if (copyContent == true)
-                //     Array.Resize(ref realBuffer, (int)newSize);
-                // else
-                //     realBuffer = new T[newSize];
-
-                var b = default(ComputeSharpBuffer<T>);
-                //b.Set(realBuffer);
-                _realBuffer = b;
+                var realBuffer = new ComputeSharpBuffer<T>(newSize, true);
+                if (copyContent == true)
+                     _realBuffer.CopyTo(ref realBuffer);
+                
+                _realBuffer = realBuffer;
                 _buffer     = _realBuffer;
             }
         }
@@ -58,36 +55,13 @@ namespace Svelto.ECS.Internal
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ShiftLeft(uint index, uint count)
         {
-            Check.Require(index < capacity, "out of bounds index");
-            Check.Require(count < capacity, "out of bounds count");
-
-            if (count == index) return;
-
-            Check.Require(count > index, "wrong parameters used");
-
-            var managedArray = _realBuffer.ToManagedArray();
-
-            Array.Copy(managedArray, index + 1, managedArray, index, count - index);
-        }
-
-        public void Alloc(uint size, Allocator allocator, bool clear = true)
-        {
             throw new NotImplementedException();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ShiftRight(uint index, uint count)
         {
-            Check.Require(index < capacity, "out of bounds index");
-            Check.Require(count < capacity, "out of bounds count");
-
-            if (count == index) return;
-
-            Check.Require(count > index, "wrong parameters used");
-
-            var managedArray = _realBuffer.ToManagedArray();
-
-            Array.Copy(managedArray, index, managedArray, index + 1, count - index);
+            throw new NotImplementedException();
         }
 
         public int capacity
@@ -114,8 +88,6 @@ namespace Svelto.ECS.Internal
             get => ref _realBuffer[index];
         }
 
-        public Allocator allocationStrategy => Allocator.Managed;
-
         public ComputeSharpBuffer<T> ToRealBuffer()
         {
             return _realBuffer;
@@ -130,6 +102,7 @@ namespace Svelto.ECS.Internal
 
         public void Dispose()
         {
+            _realBuffer.Dispose();
         }
 
         IBuffer<T>            _buffer;

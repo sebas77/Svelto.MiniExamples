@@ -52,8 +52,8 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp.StrideLayer
                         var indicesCount = indices.count;
      
                         //we get the matrices of this group
-                        var (matrixComponents, _, _) =
-                            entitiesDB.QueryEntities<MatrixComponent, StrideComponent>(currentGroup);
+                        var (matrixComponents, _) =
+                            entitiesDB.QueryEntities<MatrixComponent>(currentGroup);
      
                         //and we copy the values to the matrices array using the filters.
                         for (var i = 0; i < indicesCount; ++i)

@@ -4,7 +4,7 @@ using Svelto.DataStructures;
 
 namespace Svelto.ECS.Internal
 {
-    public interface ITypeSafeDictionary<TValue> : ITypeSafeDictionary where TValue : IEntityComponent
+    public interface ITypeSafeDictionary<TValue> : ITypeSafeDictionary where TValue : IBaseEntityComponent
     {
         void Add(uint egidEntityId, in TValue entityComponent);
         
@@ -24,7 +24,11 @@ namespace Svelto.ECS.Internal
         ITypeSafeDictionary Create();
 
         void AddEntitiesToDictionary
-        (ITypeSafeDictionary toDictionary, ExclusiveGroupStruct groupId, in EnginesRoot.EntityReferenceMap entityLocator);
+        (ITypeSafeDictionary toDictionary, ExclusiveGroupStruct groupId
+#if SLOW_SVELTO_SUBMISSION                             
+       , in EnginesRoot.EntityReferenceMap entityLocator
+#endif         
+         );
         void RemoveEntitiesFromDictionary(FasterList<(uint, string)> infosToProcess);
         void SwapEntitiesBetweenDictionaries(FasterList<(uint, uint, string)> infosToProcess,
          ExclusiveGroupStruct fromGroup, ExclusiveGroupStruct toGroup, ITypeSafeDictionary toComponentsDictionary);
@@ -87,5 +91,7 @@ namespace Svelto.ECS.Internal
         bool TryFindIndex(uint entityGidEntityId, out uint index);
 
         void KeysEvaluator(System.Action<uint> action);
+        // void Commit();
+        // void CheckOut();
     }
 }

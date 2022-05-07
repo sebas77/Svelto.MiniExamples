@@ -6,13 +6,12 @@ using Svelto.ECS.Internal;
 
 namespace Svelto.ECS.ComputeSharp
 {
-    public class ComputeComponentBuilder<T> : IComponentBuilder where T : unmanaged, IEntityComponent
+    public class ComputeComponentBuilder<T> : IComponentBuilder where T : unmanaged, IEntityComputeSharpComponent
     {
         static readonly Type ENTITY_COMPONENT_TYPE;
 
-        static readonly T      DEFAULT_IT;
-        static readonly string ENTITY_COMPONENT_NAME;
-        static readonly bool   IS_UNMANAGED;
+        static readonly T    DEFAULT_IT;
+        static readonly bool IS_UNMANAGED;
 
         static ComputeComponentBuilder()
         {
@@ -20,7 +19,7 @@ namespace Svelto.ECS.ComputeSharp
             DEFAULT_IT = default;
 
             ComponentID<T>.Init();
-            ENTITY_COMPONENT_NAME = ENTITY_COMPONENT_TYPE.ToString();
+            ENTITY_COMPONENT_TYPE.ToString();
             IS_UNMANAGED = TypeType.isUnmanaged<T>(); //attention this is important as it serves as warm up for Type<T>
 
             ComponentBuilderUtilities.CheckFields(ENTITY_COMPONENT_TYPE, false);

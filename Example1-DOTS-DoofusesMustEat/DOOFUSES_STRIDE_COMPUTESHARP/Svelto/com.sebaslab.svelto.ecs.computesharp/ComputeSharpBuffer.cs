@@ -29,14 +29,30 @@ namespace Svelto.ECS.Internal
         public int  capacity { get; }
         public bool isValid  { get; }
 
-        readonly ReadWriteBuffer<T> _buffer;
+        public void Dispose()
+        {
+            _buffer.Dispose();
+        }
 
         public ComputeSharpBuffer(uint newSize, bool clear) : this()
         {
-            _buffer = GraphicsDevice.Default.AllocateReadWriteBuffer<T>((int)newSize,
-                clear ? AllocationMode.Clear : AllocationMode.Default);
+            _buffer = GraphicsDevice.Default.AllocateReadBackBuffer<T>((int)newSize
+                                                                   , clear
+                                                                         ? AllocationMode.Clear
+                                                                         : AllocationMode.Default);
+        }
+        
+        public void CopyTo(ref ComputeSharpBuffer<T> destination)
+        {
+            Span<T> bufferSpan = destination._buffer.Span;
+            
+            _buffer.Span.CopyTo(bufferSpan);
         }
 
-        public ref T this[int index] => ref _buffer[index];
+        public ref T this[int index] => ref _buffer.Span[index];
+        public ref T this[uint index] => ref this[(int)index];
+
+        readonly ReadBackBuffer<T>  _buffer;
+        readonly ReadWriteBuffer<T> _gpuBuffer;
     }
 }

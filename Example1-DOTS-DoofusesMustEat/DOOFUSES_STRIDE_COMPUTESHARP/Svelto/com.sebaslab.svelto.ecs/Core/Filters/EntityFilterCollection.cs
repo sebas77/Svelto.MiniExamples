@@ -21,14 +21,14 @@ namespace Svelto.ECS
         public EntityFilterIterator GetEnumerator()  => new EntityFilterIterator(this);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Add<T>(EGID egid, NativeEGIDMapper<T> mmap) where T : unmanaged, IEntityComponent
+        public bool Add<T>(EGID egid, NativeEGIDMapper<T> mmap) where T : unmanaged, IBaseEntityComponent
         {
             DBC.ECS.Check.Require(mmap.groupID == egid.groupID, "not compatible NativeEgidMapper used");
 
             return Add(egid, mmap.GetIndex(egid.entityID));
         }
 
-        public bool Add<T>(EGID egid, NativeEGIDMultiMapper<T> mmap) where T : unmanaged, IEntityComponent
+        public bool Add<T>(EGID egid, NativeEGIDMultiMapper<T> mmap) where T : unmanaged, IBaseEntityComponent
         {
             return Add(egid, mmap.GetIndex(egid));
         }

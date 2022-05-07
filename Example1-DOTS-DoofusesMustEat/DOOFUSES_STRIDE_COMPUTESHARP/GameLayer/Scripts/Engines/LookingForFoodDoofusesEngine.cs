@@ -40,9 +40,9 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
        , FasterReadOnlyList<ExclusiveGroupStruct> availableDoofuses, ExclusiveBuildGroup eatingDoofusesGroup
        , ExclusiveBuildGroup eatenFoodGroup)
         {
-            var filters = entitiesDB.GetFilters()
-                                    .GetOrCreatePersistentFilter<MealInfoComponent>(
-                                         Filters.Meals, Filters.MealContextID);
+            // var filters = entitiesDB.GetFilters()
+            //                         .GetOrCreatePersistentFilter<MealInfoComponent>(
+            //                              Filters.Meals, Filters.MealContextID);
             
             foreach (var ((_, foodEntities, availableFoodCount), fromGroup) in entitiesDB
                         .QueryEntities<PositionComponent>(availableFood))
@@ -64,7 +64,7 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
                       , _fromFoodGroup               = fromGroup
                       , _doofusesLookingForFoodGroup = fromDoofusesGroup
                       , _count                       = willEatDoofusesCount
-                        , _filters = filters
+                //        , _filters = filters
                     }.Execute();
                 }
             }
@@ -85,7 +85,7 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
             public ExclusiveGroupStruct   _doofusesLookingForFoodGroup;
             public IEntityFunctions       _functions;
             public int                    _count;
-            public EntityFilterCollection _filters;
+            //public EntityFilterCollection _filters;
 
             public void Execute()
             {

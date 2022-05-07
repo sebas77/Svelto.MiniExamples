@@ -9,7 +9,7 @@ namespace Svelto.ECS
     /// that can be burstifiable
     /// </summary>
     /// <typeparam name="T1"></typeparam>
-    public readonly struct AllGroupsEnumerable<T1> where T1 : struct, IEntityComponent
+    public readonly struct AllGroupsEnumerable<T1> where T1 : struct, IBaseEntityComponent
     {
         public ref struct GroupCollection
         {
