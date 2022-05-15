@@ -6,6 +6,9 @@
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
       <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+      <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    </PropertyGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\com.sebaslab.svelto.ecs\Svelto.ECS.csproj" />

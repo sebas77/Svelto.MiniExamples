@@ -9,7 +9,7 @@ Recordings/
 Example2-Survival/webgl/
 Example2-Survival/Build/
 Example2-Survival/Packages/packages-lock.json
-Example1-DOTS-DoofusesMustEat/Iteration3-Jobs/IL2CPP/
+Example1-DoofusesMustEat/Iteration3-Jobs/IL2CPP/
 Example2-Unity Hybrid-Survival/Build/
 Example4-NET-SDL/SDL/bin/
 Example4-NET-SDL/FixedMath/bin/
@@ -22,20 +22,20 @@ Example7-Stride-Turrets/**/*.meta
 Example2-Unity Hybrid-Survival/Logs/
 Example6-Unity Hybrid-OOP Abstraction/UserSettings/
 Example6-Unity Hybrid-OOP Abstraction/Logs/
-Example1-DOTS-DoofusesMustEat/DOOFUSES_UECS/IL2CPP/
-Example1-DOTS-DoofusesMustEat/DOOFUSES_GAMEOBJECTS/UserSettings/
-Example1-DOTS-DoofusesMustEat/DOOFUSES_GAMEOBJECTS/Logs/
-Example1-DOTS-DoofusesMustEat/DOOFUSES_UECS/UserSettings/
-Example1-DOTS-DoofusesMustEat/DOOFUSES_UECS/Logs/
+Example1-DoofusesMustEat/DOOFUSES_UECS/IL2CPP/
+Example1-DoofusesMustEat/DOOFUSES_GAMEOBJECTS/UserSettings/
+Example1-DoofusesMustEat/DOOFUSES_GAMEOBJECTS/Logs/
+Example1-DoofusesMustEat/DOOFUSES_UECS/UserSettings/
+Example1-DoofusesMustEat/DOOFUSES_UECS/Logs/
 Example5-Net-Vanilla/Svelto.ECS.Example/bin/
 Example4-NET-SDL/com.sebaslab.svelto.ecs/bin/
-Example1-DOTS-DoofusesMustEat/DOOFUSES_UECS/Mono/
+Example1-DoofusesMustEat/DOOFUSES_UECS/Mono/
 packages-lock.json
-Example1-DOTS-DoofusesMustEat/DOOFUSES_UECS/WEBGL/
-Example1-DOTS-DoofusesMustEat/DOOFUSES_GAMEOBJECTS/IL2CPP/
+Example1-DoofusesMustEat/DOOFUSES_UECS/WEBGL/
+Example1-DoofusesMustEat/DOOFUSES_GAMEOBJECTS/IL2CPP/
 Example2-Unity Hybrid-Survival/IL2CPP/
-Example1-DOTS-DoofusesMustEat/DOOFUSES_GAMEOBJECTS/IL2CPPProject/
+Example1-DoofusesMustEat/DOOFUSES_GAMEOBJECTS/IL2CPPProject/
 Example2-Unity Hybrid-Survival/WEBGL/
-Example1-DOTS-DoofusesMustEat/DOOFUSES_UECS/Build/
-Example1-DOTS-DoofusesMustEat/DOOFUSES_GAMEOBJECTS/Build/
+Example1-DoofusesMustEat/DOOFUSES_UECS/Build/
+Example1-DoofusesMustEat/DOOFUSES_GAMEOBJECTS/Build/
 Example5-Net-HelloWorld/Svelto.ECS.Example/bin/

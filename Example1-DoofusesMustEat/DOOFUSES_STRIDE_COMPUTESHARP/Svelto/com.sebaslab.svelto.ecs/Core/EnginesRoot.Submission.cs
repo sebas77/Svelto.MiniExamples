@@ -321,7 +321,11 @@ namespace Svelto.ECS
                                     _cachedRangeOfSubmittedIndices.Add(
                                         ((uint, uint))(toDictionary.count, toDictionary.count + fromDictionary.count));
                                     //Fill the DB with the entity components generated this frame.
-                                    fromDictionary.AddEntitiesToDictionary(toDictionary, groupID, entityLocator);
+                                    fromDictionary.AddEntitiesToDictionary(toDictionary, groupID
+#if SLOW_SVELTO_SUBMISSION                                                                             
+                                                                         , entityLocator
+#endif                                                                           
+                                                                           );
                                 }
                             }
                         }
@@ -433,7 +437,11 @@ namespace Svelto.ECS
                 ITypeSafeDictionary toDictionary =
                     GetOrAddTypeSafeDictionary(toGroupId, toGroup, refWrapperType, fromDictionary);
 
-                fromDictionary.AddEntitiesToDictionary(toDictionary, toGroupId, this.entityLocator);
+                fromDictionary.AddEntitiesToDictionary(toDictionary, toGroupId
+#if SLOW_SVELTO_SUBMISSION  
+                                                     , this.entityLocator
+#endif                                                       
+                                                       );
             }
 
             //Call all the callbacks

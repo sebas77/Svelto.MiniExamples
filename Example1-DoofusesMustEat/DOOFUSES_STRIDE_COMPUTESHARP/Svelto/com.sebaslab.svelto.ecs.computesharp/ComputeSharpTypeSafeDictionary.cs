@@ -26,8 +26,8 @@ namespace Svelto.ECS.Internal
         ComputeSharpTypeSafeDictionary(uint size)
         {
             computeBufferDictionary =
-                new SveltoDictionary<uint, TValue, NativeStrategy<SveltoDictionaryNode<uint>>, ComputeSharpStrategy<TValue>,
-                    NativeStrategy<int>>(size, Allocator.Persistent);
+                new SveltoDictionary<uint, TValue, NativeStrategy<SveltoDictionaryNode<uint>>,
+                    ComputeSharpStrategy<TValue>, NativeStrategy<int>>(size, Allocator.Persistent);
         }
 
         public IEntityIDs entityIDs
@@ -107,7 +107,7 @@ namespace Svelto.ECS.Internal
         {
             return new ComputeSharpTypeSafeDictionary<TValue>(1);
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ITypeSafeDictionary Create(uint size)
         {
@@ -163,7 +163,7 @@ namespace Svelto.ECS.Internal
         public void AddEntitiesToDictionary
         (ITypeSafeDictionary toDictionary, ExclusiveGroupStruct groupId
 #if SLOW_SVELTO_SUBMISSION
-                       , in EnginesRoot.EntityReferenceMap entityLocator
+                   , in EnginesRoot.EntityReferenceMap entityLocator
 #endif
         )
 
@@ -177,19 +177,22 @@ namespace Svelto.ECS.Internal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void RemoveEntitiesFromDictionary(FasterList<(uint, string)> infosToProcess)
+        public void RemoveEntitiesFromDictionary
+            (FasterList<(uint, string)> infosToProcess, FasterList<uint> entityIDsAffectedByRemoval)
         {
-            TypeSafeDictionaryMethods.RemoveEntitiesFromDictionary(infosToProcess, ref computeBufferDictionary);
+            TypeSafeDictionaryMethods.RemoveEntitiesFromDictionary(infosToProcess, ref computeBufferDictionary
+                                                                 , entityIDsAffectedByRemoval);
         }
 
         public void SwapEntitiesBetweenDictionaries
         (FasterList<(uint, uint, string)> infosToProcess, ExclusiveGroupStruct fromGroup
-       , ExclusiveGroupStruct toGroup, ITypeSafeDictionary toComponentsDictionary)
+       , ExclusiveGroupStruct toGroup, ITypeSafeDictionary toComponentsDictionary
+       , FasterList<uint> entityIDsAffectedByRemoval)
         {
             TypeSafeDictionaryMethods.SwapEntitiesBetweenDictionaries(infosToProcess, ref computeBufferDictionary
                                                                     , toComponentsDictionary as
                                                                           ITypeSafeDictionary<TValue>, fromGroup
-                                                                    , toGroup);
+                                                                    , toGroup, entityIDsAffectedByRemoval);
         }
 
         /// <summary>
@@ -199,8 +202,9 @@ namespace Svelto.ECS.Internal
         (FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<IReactOnAdd>>> entityComponentEnginesDB
        , ITypeSafeDictionary toDic, ExclusiveGroupStruct toGroup, in PlatformProfiler profiler)
         {
-            TypeSafeDictionaryMethods.ExecuteEnginesAddCallbacks(ref computeBufferDictionary, (ITypeSafeDictionary<TValue>)toDic
-                                                               , toGroup, entityComponentEnginesDB, in profiler);
+            TypeSafeDictionaryMethods.ExecuteEnginesAddCallbacks(ref computeBufferDictionary
+                                                               , (ITypeSafeDictionary<TValue>)toDic, toGroup
+                                                               , entityComponentEnginesDB, in profiler);
         }
 
         /// <summary>
