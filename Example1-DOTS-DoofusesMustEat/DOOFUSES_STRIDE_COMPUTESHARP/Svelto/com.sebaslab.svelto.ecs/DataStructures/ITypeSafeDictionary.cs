@@ -14,7 +14,7 @@ namespace Svelto.ECS.Internal
         IBuffer<TValue> GetValues(out uint count);
         ref TValue      GetDirectValueByRef(uint key);
         ref TValue      GetValueByRef(uint key);
-        IEntityIDs       entityIDs { get; }
+        IEntityIDs      entityIDs { get; }
     }
 
     public interface ITypeSafeDictionary : IDisposable
@@ -29,9 +29,11 @@ namespace Svelto.ECS.Internal
        , in EnginesRoot.EntityReferenceMap entityLocator
 #endif         
          );
-        void RemoveEntitiesFromDictionary(FasterList<(uint, string)> infosToProcess);
-        void SwapEntitiesBetweenDictionaries(FasterList<(uint, uint, string)> infosToProcess,
-         ExclusiveGroupStruct fromGroup, ExclusiveGroupStruct toGroup, ITypeSafeDictionary toComponentsDictionary);
+        void RemoveEntitiesFromDictionary
+         (FasterList<(uint, string)> infosToProcess, FasterList<uint> entityIDsAffectedByRemoval);
+        void SwapEntitiesBetweenDictionaries
+        (FasterList<(uint, uint, string)> infosToProcess, ExclusiveGroupStruct fromGroup, ExclusiveGroupStruct toGroup
+       , ITypeSafeDictionary toComponentsDictionary, FasterList<uint> entityIDsAffectedByRemoval);
         
         //------------
 
@@ -91,7 +93,5 @@ namespace Svelto.ECS.Internal
         bool TryFindIndex(uint entityGidEntityId, out uint index);
 
         void KeysEvaluator(System.Action<uint> action);
-        // void Commit();
-        // void CheckOut();
     }
 }

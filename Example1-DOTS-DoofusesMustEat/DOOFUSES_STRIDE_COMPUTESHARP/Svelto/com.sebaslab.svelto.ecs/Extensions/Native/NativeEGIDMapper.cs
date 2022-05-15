@@ -16,17 +16,17 @@ namespace Svelto.ECS.Native
     public readonly struct NativeEGIDMapper<T> : IEGIDMapper where T : unmanaged, IBaseEntityComponent
     {
         public static readonly NativeEGIDMapper<T> empty = new NativeEGIDMapper<T>
-            (default, new SharedNative<SveltoDictionary<uint, T, NativeStrategy<SveltoDictionaryNode<uint>>,
+            (default, new SharedDisposableNative<SveltoDictionary<uint, T, NativeStrategy<SveltoDictionaryNode<uint>>,
                 NativeStrategy<T>, NativeStrategy<int>>>(
                 new SveltoDictionary<uint, T, NativeStrategy<SveltoDictionaryNode<uint>>,
                     NativeStrategy<T>, NativeStrategy<int>>(0, Allocator.Persistent)));
         
         public NativeEGIDMapper(ExclusiveGroupStruct groupStructId,
-            in SharedNative<SveltoDictionary<uint, T, NativeStrategy<SveltoDictionaryNode<uint>>, NativeStrategy<T>,
-                NativeStrategy<int>>> toNative) : this()
+            in SharedDisposableNative<SveltoDictionary<uint, T, NativeStrategy<SveltoDictionaryNode<uint>>, NativeStrategy<T>,
+                NativeStrategy<int>>> toDisposableNative) : this()
         {
             groupID = groupStructId;
-            _map    = toNative;
+            _map    = toDisposableNative;
         }
 
         public int                  count      => _map.value.count;
@@ -111,7 +111,7 @@ namespace Svelto.ECS.Native
             return _map.value.TryFindIndex(valueKey, out index);
         }
 
-        readonly SharedNative<SveltoDictionary<uint, T, NativeStrategy<SveltoDictionaryNode<uint>>, NativeStrategy<T>,
+        readonly SharedDisposableNative<SveltoDictionary<uint, T, NativeStrategy<SveltoDictionaryNode<uint>>, NativeStrategy<T>,
             NativeStrategy<int>>> _map;
     }
 }

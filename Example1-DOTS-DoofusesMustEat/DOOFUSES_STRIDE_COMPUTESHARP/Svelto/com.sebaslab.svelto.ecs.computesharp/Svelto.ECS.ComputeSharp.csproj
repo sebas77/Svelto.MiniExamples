@@ -3,6 +3,9 @@
         <TargetFramework>net6.0</TargetFramework>
         <LangVersion>10</LangVersion>
     </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+      <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    </PropertyGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\com.sebaslab.svelto.ecs\Svelto.ECS.csproj" />

@@ -9,7 +9,11 @@ namespace Svelto.ECS.Internal
     {
         public static void AddEntitiesToDictionary<Strategy1, Strategy2, Strategy3, TValue>
         (in SveltoDictionary<uint, TValue, Strategy1, Strategy2, Strategy3> fromDictionary
-       , ITypeSafeDictionary<TValue> toDic, ExclusiveGroupStruct toGroupID)
+       , ITypeSafeDictionary<TValue> toDic
+#if SLOW_SVELTO_SUBMISSION
+       , in EnginesRoot.EntityReferenceMap entityLocator
+#endif         
+       , ExclusiveGroupStruct toGroupID)
             where Strategy1 : struct, IBufferStrategy<SveltoDictionaryNode<uint>>
             where Strategy2 : struct, IBufferStrategy<TValue>
             where Strategy3 : struct, IBufferStrategy<int>
@@ -20,12 +24,12 @@ namespace Svelto.ECS.Internal
 #if SLOW_SVELTO_SUBMISSION
                     var egid = new EGID(tuple.key, toGroupID);
 
-                    if (_hasEgid)
+                    if (SlowSubmissionInfo<TValue>.hasEgid)
                         SetEGIDWithoutBoxing<TValue>.SetIDWithoutBoxing(ref tuple.value, egid);
 
-                    if (_hasReference)
+                    if (SlowSubmissionInfo<TValue>.hasReference)
                         SetEGIDWithoutBoxing<TValue>.SetRefWithoutBoxing(ref tuple.value,
-                            locator.GetEntityReference(egid));
+                                                                         entityLocator.GetEntityReference(egid));
 #endif
                 try
                 {
@@ -44,90 +48,6 @@ namespace Svelto.ECS.Internal
             }
         }
 
-        public static void RemoveEntitiesFromDictionary<Strategy1, Strategy2, Strategy3, TValue>
-        (FasterList<(uint, string)> infostoprocess
-       , ref SveltoDictionary<uint, TValue, Strategy1, Strategy2, Strategy3> fromDictionary)
-            where Strategy1 : struct, IBufferStrategy<SveltoDictionaryNode<uint>>
-            where Strategy2 : struct, IBufferStrategy<TValue>
-            where Strategy3 : struct, IBufferStrategy<int>
-            where TValue : struct, IBaseEntityComponent
-        {
-            var iterations = infostoprocess.count;
-
-            for (var i = 0; i < iterations; i++)
-            {
-                var (id, trace) = infostoprocess[i];
-
-                try
-                {
-                    if (fromDictionary.Remove(id, out var value))
-                        //Note I am doing this to be able to use a range of values even with the 
-                        //remove Ex callbacks. Basically I am copying back the deleted value
-                        //at the end of the array, so I can use as range 
-                        //count, count + number of deleted entities
-                        fromDictionary.GetDirectValueByRef((uint)fromDictionary.count) = value;
-                }
-                catch
-                {
-                    var str = FastConcatUtility
-                             .FastConcat((string)"Crash while executing Remove Entity operation on "
-                                       , (string)TypeCache<TValue>.name).FastConcat(" from : ", trace);
-
-                    Console.LogError(str);
-
-                    throw;
-                }
-            }
-        }
-
-        public static void SwapEntitiesBetweenDictionaries<Strategy1, Strategy2, Strategy3, TValue>
-        (FasterList<(uint, uint, string)> infostoprocess
-       , ref SveltoDictionary<uint, TValue, Strategy1, Strategy2, Strategy3> fromDictionary
-       , ITypeSafeDictionary<TValue> toDictionary, ExclusiveGroupStruct fromgroup, ExclusiveGroupStruct togroup)
-            where Strategy1 : struct, IBufferStrategy<SveltoDictionaryNode<uint>>
-            where Strategy2 : struct, IBufferStrategy<TValue>
-            where Strategy3 : struct, IBufferStrategy<int>
-            where TValue : struct, IBaseEntityComponent
-        {
-            var iterations = infostoprocess.count;
-
-            for (var i = 0; i < iterations; i++)
-            {
-                var (fromID, toID, trace) = infostoprocess[i];
-
-                try
-                {
-                    var fromEntityGid = new EGID(fromID, fromgroup);
-                    var toEntityEgid  = new EGID(toID, togroup);
-
-                    Check.Require(togroup.isInvalid == false, "Invalid To Group");
-
-                    var isFound = fromDictionary.Remove(fromEntityGid.entityID, out var entity);
-                    Check.Assert(isFound, "Swapping an entity that doesn't exist");
-#if SLOW_SVELTO_SUBMISSION
-                        if (_hasEgid)
-                            SetEGIDWithoutBoxing<TValue>.SetIDWithoutBoxing(ref entity, toEntityEgid);
-#endif
-
-                    toDictionary.Add(toEntityEgid.entityID, entity);
-
-#if PARANOID_CHECK
-                        DBC.ECS.Check.Ensure(_hasEgid == false || ((INeedEGID)toGroupCasted[toEntityEGID.entityID]).ID == toEntityEGID, "impossible situation happened during swap");
-#endif
-                }
-                catch
-                {
-                    var str = FastConcatUtility
-                             .FastConcat((string)"Crash while executing Swap Entity operation on "
-                                       , (string)TypeCache<TValue>.name).FastConcat(" from : ", trace);
-
-                    Console.LogError(str);
-
-                    throw;
-                }
-            }
-        }
-
         public static void ExecuteEnginesAddCallbacks<Strategy1, Strategy2, Strategy3, TValue>
         (ref SveltoDictionary<uint, TValue, Strategy1, Strategy2, Strategy3> fromDictionary
        , ITypeSafeDictionary<TValue> todic, ExclusiveGroupStruct togroup
@@ -137,7 +57,7 @@ namespace Svelto.ECS.Internal
                                       where Strategy3 : struct, IBufferStrategy<int>
                                       where TValue : struct, IBaseEntityComponent
         {
-            if (entitycomponentenginesdb.TryGetValue(new RefWrapperType(UnmanagedTypeSafeDictionary<TValue>._type)
+            if (entitycomponentenginesdb.TryGetValue(new RefWrapperType(TypeCache<TValue>.type)
                                                    , out var entityComponentsEngines))
             {
                 if (entityComponentsEngines.count == 0)
@@ -163,6 +83,153 @@ namespace Svelto.ECS.Internal
                     {
                         Console.LogException(
                             e, "Code crashed inside Add callback with Type ".FastConcat(TypeCache<TValue>.name));
+
+                        throw;
+                    }
+            }
+        }
+
+        public static void ExecuteEnginesDisposeCallbacks_Group<Strategy1, Strategy2, Strategy3, TValue>
+        (ref SveltoDictionary<uint, TValue, Strategy1, Strategy2, Strategy3> fromDictionary
+       , FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<IReactOnDispose>>> allEngines
+       , ExclusiveGroupStruct inGroup, in PlatformProfiler sampler)
+            where Strategy1 : struct, IBufferStrategy<SveltoDictionaryNode<uint>>
+            where Strategy2 : struct, IBufferStrategy<TValue>
+            where Strategy3 : struct, IBufferStrategy<int>
+            where TValue : struct, IBaseEntityComponent
+        {
+            if (allEngines.TryGetValue(new RefWrapperType(TypeCache<TValue>.type)
+                                     , out var entityComponentsEngines) == false)
+                return;
+
+            for (var i = 0; i < entityComponentsEngines.count; i++)
+                try
+                {
+                    using (sampler.Sample(entityComponentsEngines[i].name))
+                    {
+                        foreach (var value in fromDictionary)
+                        {
+                            ref var entity        = ref value.value;
+                            var     egid          = new EGID(value.key, inGroup);
+                            var     reactOnRemove = (IReactOnDispose<TValue>)entityComponentsEngines[i].engine;
+                            reactOnRemove.Remove(ref entity, egid);
+                        }
+                    }
+                }
+                catch
+                {
+                    Console.LogError(
+                        "Code crashed inside Remove callback ".FastConcat(entityComponentsEngines[i].name));
+
+                    throw;
+                }
+        }
+
+        public static void ExecuteEnginesRemoveCallbacks<Strategy1, Strategy2, Strategy3, TValue>
+        (FasterList<(uint, string)> infostoprocess
+       , ref SveltoDictionary<uint, TValue, Strategy1, Strategy2, Strategy3> fromDictionary
+       , FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<IReactOnRemove>>> reactiveenginesremove
+       , ExclusiveGroupStruct fromgroup, in PlatformProfiler profiler)
+            where Strategy1 : struct, IBufferStrategy<SveltoDictionaryNode<uint>>
+            where Strategy2 : struct, IBufferStrategy<TValue>
+            where Strategy3 : struct, IBufferStrategy<int>
+            where TValue : struct, IBaseEntityComponent
+        {
+            if (reactiveenginesremove.TryGetValue(new RefWrapperType(TypeCache<TValue>.type)
+                                                , out var entityComponentsEngines))
+            {
+                if (entityComponentsEngines.count == 0)
+                    return;
+
+                var iterations = infostoprocess.count;
+
+                for (var i = 0; i < iterations; i++)
+                {
+                    var (entityID, trace) = infostoprocess[i];
+                    try
+                    {
+                        ref var entity = ref fromDictionary.GetValueByRef(entityID);
+                        var     egid   = new EGID(entityID, fromgroup);
+
+                        for (var j = 0; j < entityComponentsEngines.count; j++)
+                            using (profiler.Sample(entityComponentsEngines[j].name))
+                            {
+                                ((IReactOnRemove<TValue>)entityComponentsEngines[j].engine).Remove(ref entity, egid);
+                            }
+                    }
+                    catch
+                    {
+                        var str = "Crash while executing Remove Entity callback on ".FastConcat(TypeCache<TValue>.name)
+                           .FastConcat(" from : ", trace);
+
+                        Console.LogError(str);
+
+                        throw;
+                    }
+                }
+            }
+        }
+
+        public static void ExecuteEnginesRemoveCallbacks_Group<Strategy1, Strategy2, Strategy3, TValue>
+        (ref SveltoDictionary<uint, TValue, Strategy1, Strategy2, Strategy3> fromDictionary
+       , ITypeSafeDictionary<TValue> typeSafeDictionary
+       , FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<IReactOnRemove>>> reactiveenginesremove
+       , FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<IReactOnRemoveEx>>> reactiveenginesremoveex
+       , int count, IEntityIDs entityids, ExclusiveGroupStruct group, in PlatformProfiler sampler)
+            where Strategy1 : struct, IBufferStrategy<SveltoDictionaryNode<uint>>
+            where Strategy2 : struct, IBufferStrategy<TValue>
+            where Strategy3 : struct, IBufferStrategy<int>
+            where TValue : struct, IBaseEntityComponent
+        {
+            if (reactiveenginesremove.TryGetValue(new RefWrapperType(TypeCache<TValue>.type)
+                                                , out var reactiveEnginesRemovePerType))
+            {
+                var enginesCount = reactiveEnginesRemovePerType.count;
+
+                for (var i = 0; i < enginesCount; i++)
+                    try
+                    {
+                        foreach (var value in fromDictionary)
+                        {
+                            ref var entity = ref value.value;
+                            var     egid   = new EGID(value.key, group);
+
+                            using (sampler.Sample(reactiveEnginesRemovePerType[i].name))
+                            {
+                                ((IReactOnRemove<TValue>)reactiveEnginesRemovePerType[i].engine).Remove(
+                                    ref entity, egid);
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        Console.LogError(
+                            "Code crashed inside Remove callback ".FastConcat(reactiveEnginesRemovePerType[i].name));
+
+                        throw;
+                    }
+            }
+
+            if (reactiveenginesremoveex.TryGetValue(new RefWrapperType(TypeCache<TValue>.type)
+                                                  , out var reactiveEnginesRemoveExPerType))
+            {
+                var enginesCount = reactiveEnginesRemoveExPerType.count;
+
+                for (var i = 0; i < enginesCount; i++)
+                    try
+                    {
+                        using (sampler.Sample(reactiveEnginesRemoveExPerType[i].name))
+                        {
+                            ((IReactOnRemoveEx<TValue>)reactiveEnginesRemoveExPerType[i].engine).Remove(
+                                (0, (uint)count)
+                              , new EntityCollection<TValue>(typeSafeDictionary.GetValues(out _), (uint)count
+                                                           , entityids), group);
+                        }
+                    }
+                    catch
+                    {
+                        Console.LogError(
+                            "Code crashed inside Remove callback ".FastConcat(reactiveEnginesRemoveExPerType[i].name));
 
                         throw;
                     }
@@ -211,51 +278,6 @@ namespace Svelto.ECS.Internal
             }
         }
 
-        public static void ExecuteEnginesRemoveCallbacks<Strategy1, Strategy2, Strategy3, TValue>
-        (FasterList<(uint, string)> infostoprocess
-       , ref SveltoDictionary<uint, TValue, Strategy1, Strategy2, Strategy3> fromDictionary
-       , FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<IReactOnRemove>>> reactiveenginesremove
-       , ExclusiveGroupStruct fromgroup, in PlatformProfiler profiler)
-            where Strategy1 : struct, IBufferStrategy<SveltoDictionaryNode<uint>>
-            where Strategy2 : struct, IBufferStrategy<TValue>
-            where Strategy3 : struct, IBufferStrategy<int>
-            where TValue : struct, IBaseEntityComponent
-        {
-            if (reactiveenginesremove.TryGetValue(new RefWrapperType(UnmanagedTypeSafeDictionary<TValue>._type)
-                                                , out var entityComponentsEngines))
-            {
-                if (entityComponentsEngines.count == 0)
-                    return;
-
-                var iterations = infostoprocess.count;
-
-                for (var i = 0; i < iterations; i++)
-                {
-                    var (entityID, trace) = infostoprocess[i];
-                    try
-                    {
-                        ref var entity = ref fromDictionary.GetValueByRef(entityID);
-                        var     egid   = new EGID(entityID, fromgroup);
-
-                        for (var j = 0; j < entityComponentsEngines.count; j++)
-                            using (profiler.Sample(entityComponentsEngines[j].name))
-                            {
-                                ((IReactOnRemove<TValue>)entityComponentsEngines[j].engine).Remove(ref entity, egid);
-                            }
-                    }
-                    catch
-                    {
-                        var str = "Crash while executing Remove Entity callback on ".FastConcat(TypeCache<TValue>.name)
-                           .FastConcat(" from : ", trace);
-
-                        Console.LogError(str);
-
-                        throw;
-                    }
-                }
-            }
-        }
-
         public static void ExecuteEnginesSwapCallbacks_Group<Strategy1, Strategy2, Strategy3, TValue>
         (ref SveltoDictionary<uint, TValue, Strategy1, Strategy2, Strategy3> fromDictionary
        , ITypeSafeDictionary<TValue> toDic, ExclusiveGroupStruct togroup, ExclusiveGroupStruct fromgroup
@@ -269,7 +291,7 @@ namespace Svelto.ECS.Internal
             where TValue : struct, IBaseEntityComponent
         {
             //get all the engines linked to TValue
-            if (!reactiveenginesswap.TryGetValue(new RefWrapperType(UnmanagedTypeSafeDictionary<TValue>._type)
+            if (!reactiveenginesswap.TryGetValue(new RefWrapperType(TypeCache<TValue>.type)
                                                , out var reactiveEnginesSwapPerType))
                 return;
 
@@ -298,7 +320,7 @@ namespace Svelto.ECS.Internal
                     throw;
                 }
 
-            if (reactiveenginesswapex.TryGetValue(new RefWrapperType(UnmanagedTypeSafeDictionary<TValue>._type)
+            if (reactiveenginesswapex.TryGetValue(new RefWrapperType(TypeCache<TValue>.type)
                                                 , out var reactiveEnginesRemoveExPerType))
             {
                 var enginesCount = reactiveEnginesRemoveExPerType.count;
@@ -324,103 +346,175 @@ namespace Svelto.ECS.Internal
             }
         }
 
-        public static void ExecuteEnginesRemoveCallbacks_Group<Strategy1, Strategy2, Strategy3, TValue>
-        (ref SveltoDictionary<uint, TValue, Strategy1, Strategy2, Strategy3> fromDictionary
-       , ITypeSafeDictionary<TValue> typeSafeDictionary
-       , FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<IReactOnRemove>>> reactiveenginesremove
-       , FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<IReactOnRemoveEx>>> reactiveenginesremoveex
-       , int count, IEntityIDs entityids, ExclusiveGroupStruct group, in PlatformProfiler sampler)
+        public static void RemoveEntitiesFromDictionary<Strategy1, Strategy2, Strategy3, TValue>
+        (FasterList<(uint, string)> infostoprocess
+       , ref SveltoDictionary<uint, TValue, Strategy1, Strategy2, Strategy3> fromDictionary
+       , FasterList<uint> entityIDsAffectedByRemoval
+        )
             where Strategy1 : struct, IBufferStrategy<SveltoDictionaryNode<uint>>
             where Strategy2 : struct, IBufferStrategy<TValue>
             where Strategy3 : struct, IBufferStrategy<int>
             where TValue : struct, IBaseEntityComponent
         {
-            if (reactiveenginesremove.TryGetValue(new RefWrapperType(UnmanagedTypeSafeDictionary<TValue>._type)
-                                                , out var reactiveEnginesRemovePerType))
+            var iterations = infostoprocess.count;
+
+            for (var i = 0; i < iterations; i++)
             {
-                var enginesCount = reactiveEnginesRemovePerType.count;
+                var (id, trace) = infostoprocess[i];
 
-                for (var i = 0; i < enginesCount; i++)
-                    try
+                try
+                {
+                    var lastIndex = fromDictionary.count - 1;
+                    if (fromDictionary.Remove(id, out var value))
                     {
-                        foreach (var value in fromDictionary)
-                        {
-                            ref var entity = ref value.value;
-                            var     egid   = new EGID(value.key, group);
-
-                            using (sampler.Sample(reactiveEnginesRemovePerType[i].name))
-                            {
-                                ((IReactOnRemove<TValue>)reactiveEnginesRemovePerType[i].engine).Remove(
-                                    ref entity, egid);
-                            }
-                        }
+                        //Note I am doing this to be able to use a range of values even with the 
+                        //remove Ex callbacks. Basically I am copying back the deleted value
+                        //at the end of the array, so I can use as range 
+                        //count, count + number of deleted entities
+                        fromDictionary.GetDirectValueByRef((uint)fromDictionary.count) = value;
+                        entityIDsAffectedByRemoval.Add(fromDictionary.unsafeKeys[lastIndex].key);
                     }
-                    catch
-                    {
-                        Console.LogError(
-                            "Code crashed inside Remove callback ".FastConcat(reactiveEnginesRemovePerType[i].name));
+                }
+                catch
+                {
+                    var str = "Crash while executing Remove Entity operation on ".FastConcat(TypeCache<TValue>.name)
+                       .FastConcat(" from : ", trace);
 
-                        throw;
-                    }
-            }
+                    Console.LogError(str);
 
-            if (reactiveenginesremoveex.TryGetValue(new RefWrapperType(UnmanagedTypeSafeDictionary<TValue>._type)
-                                                  , out var reactiveEnginesRemoveExPerType))
-            {
-                var enginesCount = reactiveEnginesRemoveExPerType.count;
-
-                for (var i = 0; i < enginesCount; i++)
-                    try
-                    {
-                        using (sampler.Sample(reactiveEnginesRemoveExPerType[i].name))
-                        {
-                            ((IReactOnRemoveEx<TValue>)reactiveEnginesRemoveExPerType[i].engine).Remove(
-                                (0, (uint)count)
-                              , new EntityCollection<TValue>(typeSafeDictionary.GetValues(out _), (uint)count
-                                                           , entityids), group);
-                        }
-                    }
-                    catch
-                    {
-                        Console.LogError(
-                            "Code crashed inside Remove callback ".FastConcat(reactiveEnginesRemoveExPerType[i].name));
-
-                        throw;
-                    }
+                    throw;
+                }
             }
         }
 
-        public static void ExecuteEnginesDisposeCallbacks_Group<Strategy1, Strategy2, Strategy3, TValue>
-        (ref SveltoDictionary<uint, TValue, Strategy1, Strategy2, Strategy3> fromDictionary
-       , FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<IReactOnDispose>>> allEngines
-       , ExclusiveGroupStruct inGroup, in PlatformProfiler sampler)
+        public static void SwapEntitiesBetweenDictionaries<Strategy1, Strategy2, Strategy3, TValue>
+        (FasterList<(uint, uint, string)> infostoprocess
+       , ref SveltoDictionary<uint, TValue, Strategy1, Strategy2, Strategy3> fromDictionary
+       , ITypeSafeDictionary<TValue> toDictionary, ExclusiveGroupStruct fromgroup, ExclusiveGroupStruct togroup
+       , FasterList<uint> entityIDsAffectedByRemoval)
             where Strategy1 : struct, IBufferStrategy<SveltoDictionaryNode<uint>>
             where Strategy2 : struct, IBufferStrategy<TValue>
             where Strategy3 : struct, IBufferStrategy<int>
             where TValue : struct, IBaseEntityComponent
         {
-            if (allEngines.TryGetValue(new RefWrapperType(UnmanagedTypeSafeDictionary<TValue>._type)
-                                     , out var entityComponentsEngines) == false)
+            var iterations = infostoprocess.count;
+
+            for (var i = 0; i < iterations; i++)
+            {
+                var (fromID, toID, trace) = infostoprocess[i];
+
+                try
+                {
+                    var fromEntityGid = new EGID(fromID, fromgroup);
+                    var toEntityEgid  = new EGID(toID, togroup);
+
+                    Check.Require(togroup.isInvalid == false, "Invalid To Group");
+
+                    var lastIndex = fromDictionary.count - 1;
+                    if (fromDictionary.Remove(fromEntityGid.entityID, out var entity))
+                        entityIDsAffectedByRemoval.Add(fromDictionary.unsafeKeys[lastIndex].key);
+                    else
+                        Check.Assert(false, "Swapping an entity that doesn't exist");
+#if SLOW_SVELTO_SUBMISSION
+                        if (SlowSubmissionInfo<TValue>.hasEgid)
+                            SetEGIDWithoutBoxing<TValue>.SetIDWithoutBoxing(ref entity, toEntityEgid);
+#endif
+
+                    toDictionary.Add(toEntityEgid.entityID, entity);
+
+#if PARANOID_CHECK
+                        DBC.ECS.Check.Ensure(_hasEgid == false || ((INeedEGID)toGroupCasted[toEntityEGID.entityID]).ID == toEntityEGID, "impossible situation happened during swap");
+#endif
+                }
+                catch
+                {
+                    var str = "Crash while executing Swap Entity operation on ".FastConcat(TypeCache<TValue>.name)
+                       .FastConcat(" from : ", trace);
+
+                    Console.LogError(str);
+
+                    throw;
+                }
+            }
+        }
+
+        public static void ExecuteEnginesAddEntityCallbacksFast<TValue>
+        (FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<IReactOnAddEx>>> fasterDictionary
+       , ExclusiveGroupStruct groupId, (uint, uint) valueTuple, IEntityIDs entityids
+       , ITypeSafeDictionary<TValue> typeSafeDictionary, PlatformProfiler profiler) where TValue : struct, IBaseEntityComponent
+        {
+            //get all the engines linked to TValue
+            if (!fasterDictionary.TryGetValue(new RefWrapperType(TypeCache<TValue>.type)
+                                            , out var entityComponentsEngines))
                 return;
 
             for (var i = 0; i < entityComponentsEngines.count; i++)
                 try
                 {
-                    using (sampler.Sample(entityComponentsEngines[i].name))
+                    using (profiler.Sample(entityComponentsEngines[i].name))
                     {
-                        foreach (var value in fromDictionary)
-                        {
-                            ref var entity        = ref value.value;
-                            var     egid          = new EGID(value.key, inGroup);
-                            var     reactOnRemove = (IReactOnDispose<TValue>)entityComponentsEngines[i].engine;
-                            reactOnRemove.Remove(ref entity, egid);
-                        }
+                        ((IReactOnAddEx<TValue>)entityComponentsEngines[i].engine).Add(
+                            valueTuple
+                          , new EntityCollection<TValue>(typeSafeDictionary.GetValues(out var count), count
+                                                       , entityids), groupId);
                     }
                 }
-                catch
+                catch (Exception e)
                 {
-                    Console.LogError(
-                        "Code crashed inside Remove callback ".FastConcat(entityComponentsEngines[i].name));
+                    Console.LogException(
+                        e, "Code crashed inside Add callback ".FastConcat(entityComponentsEngines[i].name));
+
+                    throw;
+                }
+        }
+
+        public static void ExecuteEnginesSwapCallbacksFast<TValue>
+        (FasterList<ReactEngineContainer<IReactOnSwapEx>> fasterList, ExclusiveGroupStruct fromGroup
+       , ExclusiveGroupStruct toGroup, IEntityIDs entityids
+       , ITypeSafeDictionary<TValue> typeSafeDictionary, (uint, uint) rangeofsubmittedentitiesindicies
+       , PlatformProfiler sampler)
+            where TValue : struct, IBaseEntityComponent
+        {
+            for (var i = 0; i < fasterList.count; i++)
+                try
+                {
+                    using (sampler.Sample(fasterList[i].name))
+                    {
+                        ((IReactOnSwapEx<TValue>)fasterList[i].engine).MovedTo(rangeofsubmittedentitiesindicies
+                                                                             , new EntityCollection<TValue>(
+                                                                                   typeSafeDictionary
+                                                                                      .GetValues(out var count), count
+                                                                                 , entityids), fromGroup
+                                                                             , toGroup);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.LogException(e, "Code crashed inside Add callback ".FastConcat(fasterList[i].name));
+
+                    throw;
+                }
+        }
+
+        public static void ExecuteEnginesRemoveCallbacksFast<TValue>
+        (FasterList<ReactEngineContainer<IReactOnRemoveEx>> fasterList, ExclusiveGroupStruct exclusiveGroupStruct
+       , (uint, uint) valueTuple, IEntityIDs entityids, ITypeSafeDictionary<TValue> typeSafeDictionary
+       , PlatformProfiler sampler) where TValue : struct, IBaseEntityComponent
+        {
+            for (var i = 0; i < fasterList.count; i++)
+                try
+                {
+                    using (sampler.Sample(fasterList[i].name))
+                    {
+                        ((IReactOnRemoveEx<TValue>)fasterList[i].engine).Remove(
+                            valueTuple
+                          , new EntityCollection<TValue>(typeSafeDictionary.GetValues(out var count), count
+                                                       , entityids), exclusiveGroupStruct);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.LogException(e, "Code crashed inside Add callback ".FastConcat(fasterList[i].name));
 
                     throw;
                 }

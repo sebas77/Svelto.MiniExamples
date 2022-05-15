@@ -10,7 +10,7 @@ namespace Svelto.ECS.Native
     public static class UnityNativeEntityDBExtensions
     {
         static NativeEGIDMapper<T> ToNativeEGIDMapper<T>(this UnmanagedTypeSafeDictionary<T> dic,
-            ExclusiveGroupStruct groupStructId) where T : unmanaged, IBaseEntityComponent
+            ExclusiveGroupStruct groupStructId) where T : unmanaged, IEntityComponent
         {
             var mapper = new NativeEGIDMapper<T>(groupStructId, dic.implUnmgd);
 
@@ -19,7 +19,7 @@ namespace Svelto.ECS.Native
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static NativeEGIDMapper<T>  QueryNativeMappedEntities<T>(this EntitiesDB entitiesDb, ExclusiveGroupStruct groupStructId)
-            where T : unmanaged, IBaseEntityComponent
+            where T : unmanaged, IEntityComponent
         {
             if (entitiesDb.SafeQueryEntityDictionary<T>(groupStructId, out var typeSafeDictionary) == false)
                 throw new EntityGroupNotFoundException(typeof(T), groupStructId.ToName());
@@ -30,7 +30,7 @@ namespace Svelto.ECS.Native
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryQueryNativeMappedEntities<T>(this EntitiesDB entitiesDb, ExclusiveGroupStruct groupStructId,
                                                            out NativeEGIDMapper<T> mapper)
-            where T : unmanaged, IBaseEntityComponent
+            where T : unmanaged, IEntityComponent
         {
             mapper = NativeEGIDMapper<T>.empty;
             if (entitiesDb.SafeQueryEntityDictionary<T>(groupStructId, out var typeSafeDictionary) == false ||
@@ -53,10 +53,10 @@ namespace Svelto.ECS.Native
         {
             var dictionary = new SveltoDictionary<
                     /*key  */ExclusiveGroupStruct,  
-                    /*value*/SharedNative<SveltoDictionary<uint, T, NativeStrategy<SveltoDictionaryNode<uint>>, NativeStrategy<T>, NativeStrategy<int>>>, 
+                    /*value*/SharedDisposableNative<SveltoDictionary<uint, T, NativeStrategy<SveltoDictionaryNode<uint>>, NativeStrategy<T>, NativeStrategy<int>>>, 
                     /*strategy to store the key*/  NativeStrategy<SveltoDictionaryNode<ExclusiveGroupStruct>>, 
                     /*strategy to store the value*/NativeStrategy<
-                             SharedNative<SveltoDictionary<uint, T, NativeStrategy<SveltoDictionaryNode<uint>>, NativeStrategy<T>, NativeStrategy<int>>>>
+                             SharedDisposableNative<SveltoDictionary<uint, T, NativeStrategy<SveltoDictionaryNode<uint>>, NativeStrategy<T>, NativeStrategy<int>>>>
                   , NativeStrategy<int>>  
                     ((uint) groups.count, allocator);
         

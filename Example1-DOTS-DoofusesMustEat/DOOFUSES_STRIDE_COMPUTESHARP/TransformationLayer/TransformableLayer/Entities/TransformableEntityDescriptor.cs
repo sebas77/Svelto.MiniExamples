@@ -17,12 +17,12 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
             //check 
             _components = new IComponentBuilder[]
             {
-                //new ComputeComponentBuilder<MatrixComponent>()
+                new ComputeComponentBuilder<MatrixComponent>()
 //              , new ComputeComponentBuilder<PositionComponent>()
 //              , new ComputeComponentBuilder<ScalingComponent>()
 //              , new ComputeComponentBuilder<RotationComponent>()
                 
-                 new ComponentBuilder<MatrixComponent>()
+                // new ComponentBuilder<MatrixComponent>()
                , new ComponentBuilder<PositionComponent>()
                , new ComponentBuilder<ScalingComponent>()
                , new ComponentBuilder<RotationComponent>()
