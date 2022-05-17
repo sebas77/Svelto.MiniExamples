@@ -10,7 +10,7 @@ Warning: these examples may use using unofficial versions of Svelto that you won
 
 ## Example 1: Doofuses Must Eat (Pure ECS)
 
-![Image](https://github.com/sebas77/Svelto.MiniExamples/blob/master/Example1-DOTS-DoofusesMustEat/2020-12-22%2016-05-22.gif)
+![Image](https://github.com/sebas77/Svelto.MiniExamples/blob/master/Example1-DoofusesMustEat/2020-12-22%2016-05-22.gif)
 
 Object-less pure ECS example that shows the basics of Svelto.ECS and Svelto.Tasks.
 
