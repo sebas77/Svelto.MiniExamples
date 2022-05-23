@@ -14,14 +14,12 @@ namespace Svelto.ECS.MiniExamples.GameObjectsLayer
         {
             _pool                 = new GameObjectPool();
             _prefabs              = new FasterList<GameObject>();
-            _instancesMap         = new FasterDictionary<int, FasterDictionary<int, int>>();
             _transformAccessArray = new FasterDictionary<int, TransformAccessArray>();
         }
 
         public void Dispose()
         {
             _pool?.Dispose();
-            _instancesMap?.Dispose();
             for (int i = 0; i < _transformAccessArray.count; i++)
                 _transformAccessArray.unsafeValues[i].Dispose();
                     
@@ -34,7 +32,7 @@ namespace Svelto.ECS.MiniExamples.GameObjectsLayer
             return _prefabs.count - 1;
         }
 
-        internal int FetchGameObject(int prefabID, int poolID)
+        internal int FetchGameObject(int poolID, int prefabID)
         {
             //optimization alert: this will allocate every time is used, not good. However it's used only 
             //when entities are created so..meh
@@ -46,28 +44,25 @@ namespace Svelto.ECS.MiniExamples.GameObjectsLayer
             var go = _pool.Use(poolID, OnFirstUse);
             go.SetActive(true);
 
-            _instancesMap.GetOrAdd(poolID, () => new FasterDictionary<int, int>()).Add(_lastIndex, _lastIndex);
-            _transformAccessArray.GetOrAdd(poolID, () => new TransformAccessArray(1)).Add(go.transform);
+            var transformAccessArray = _transformAccessArray.GetOrAdd(poolID, () => new TransformAccessArray(1));
+            transformAccessArray.Add(go.transform);
 
-            return _lastIndex++;
+            return transformAccessArray.length - 1;
         }
 
-        internal void Recycle(int gameObjectID, int poolID)
+        internal void Recycle(int poolID)
         {
-            var sparseSet            = _instancesMap[poolID];
-            var index                = sparseSet.GetIndex(gameObjectID);
             var transformAccessArray = _transformAccessArray[poolID];
-            var go                   = transformAccessArray[(int) index].gameObject;
+            var go                   = transformAccessArray[transformAccessArray.length - 1].gameObject;
             _pool.Recycle(go, poolID);
             go.SetActive(false);
 
-            sparseSet.Remove(gameObjectID);
-            transformAccessArray.RemoveAtSwapBack((int) index);
+            transformAccessArray.RemoveAtSwapBack((int) transformAccessArray.length - 1);
         }
 
         internal void SetPosition(int gameobjectID, int poolID, float3 position)
         {
-            _transformAccessArray[poolID][(int) _instancesMap[poolID].GetIndex(gameobjectID)].position = position;
+            _transformAccessArray[poolID][gameobjectID].position = position;
         }
 
         internal TransformAccessArray Transforms(int ID)
@@ -75,11 +70,10 @@ namespace Svelto.ECS.MiniExamples.GameObjectsLayer
             return _transformAccessArray[ID];
         }
 
-        readonly FasterDictionary<int, FasterDictionary<int, int>> _instancesMap;
-
         readonly GameObjectPool                              _pool;
         readonly FasterList<GameObject>                      _prefabs;
         readonly FasterDictionary<int, TransformAccessArray> _transformAccessArray;
+        
         int                                                  _lastIndex;
     }
 }

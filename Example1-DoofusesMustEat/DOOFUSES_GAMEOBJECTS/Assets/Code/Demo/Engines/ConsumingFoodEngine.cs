@@ -125,7 +125,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
 
                 // //food found
                 // //Change Doofuses State
-            //     _nativeSwap.SwapEntity(new EGID(_nativeEntityIDs[index], _doofuseFromGroup), _doofuseMealLockedGroup, _threadIndex);
+                 _nativeSwap.SwapEntity(new EGID(_nativeEntityIDs[index], _doofuseFromGroup), _doofuseMealLockedGroup, _threadIndex);
                  //Remove Eaten Food
                  _nativeRemove.RemoveEntity(mealInfoEGID, _threadIndex);
 

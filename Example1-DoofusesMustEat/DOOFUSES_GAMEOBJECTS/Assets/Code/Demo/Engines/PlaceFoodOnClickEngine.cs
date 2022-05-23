@@ -16,7 +16,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
     [Sequenced(nameof(DoofusesEngineNames.PlaceFoodOnClickEngine))]
     public class PlaceFoodOnClickEngine : IQueryingEntitiesEngine, IJobifiedEngine
     {
-        const int MaxMeals = 1;
+        const int MaxMeals = 500;
 
         public PlaceFoodOnClickEngine(int redfood, int bluefood, IEntityFactory entityFactory)
         {
@@ -36,7 +36,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
             {
                 //note: in a complex project an engine shouldn't ever poll input directly, it should instead poll
                 //entity states
-                if (Input.GetMouseButton(0) || Input.GetMouseButton(1) == true)
+                if (Input.GetMouseButton(0) || Input.GetMouseButton(2) == true)
                 {
                     //I am cheating a bit with the MouseToPosition function, but for the purposes of this demo
                     //creating a Camera Entity was an overkill

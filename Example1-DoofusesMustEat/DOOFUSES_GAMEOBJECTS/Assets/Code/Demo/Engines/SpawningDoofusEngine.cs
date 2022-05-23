@@ -92,7 +92,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
                 init.Init(positionEntityComponent);
                 init.Init(new SpeedEntityComponent
                 {
-                    speed = _random.NextFloat(0.1f, 1.0f)
+                    speed = _random.NextFloat(0.8f, 1.0f)
                 });
             }
         }

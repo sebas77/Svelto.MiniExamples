@@ -641,7 +641,7 @@ namespace Svelto.DataStructures
         public uint GetIndex(TKey key)
         {
 #if DEBUG && !PROFILE_SVELTO
-            if (TryFindIndex(key, out var findIndex))
+            if (TryFindIndex(key, out var findIndex) == true)
                 return findIndex;
 
             throw new SveltoDictionaryException("Key not found");

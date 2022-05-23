@@ -6,8 +6,7 @@ namespace Svelto.ECS.MiniExamples.GameObjectsLayer
     /// Note this can be easily moved to using Entity Command Buffer and I should do it at a given point
     /// </summary>
     class InstantiateGameObjectOnSveltoEntityEngine : IQueryingEntitiesEngine
-                                                    , IReactOnAddEx<GameObjectEntityComponent>, IReactOnRemoveEx<GameObjectEntityComponent>
-                                                    , IReactOnSwapEx<GameObjectEntityComponent>
+                                                    , IReactOnRemoveEx<GameObjectEntityComponent>, IReactOnAddEx<GameObjectEntityComponent>, IReactOnSwapEx<GameObjectEntityComponent>
     {
         public InstantiateGameObjectOnSveltoEntityEngine(GameObjectManager goManager)
         {
@@ -27,11 +26,9 @@ namespace Svelto.ECS.MiniExamples.GameObjectsLayer
 
                 ref var entityComponent = ref buffer[i];
 
-                var gameObjectID = _goManager.FetchGameObject(entityComponent.prefabID, (int)(uint)groupID.id);
+                var gameObjectID = _goManager.FetchGameObject((int)groupID.id, entityComponent.prefabID);
 
                 _goManager.SetPosition(gameObjectID, (int)(uint)groupID.id, entityComponent.spawnPosition);
-
-                entityComponent.gameObjectID = gameObjectID;
             }
         }
 
@@ -45,7 +42,7 @@ namespace Svelto.ECS.MiniExamples.GameObjectsLayer
 
                 ref var entityComponent = ref buffer[i];
 
-                _goManager.Recycle(entityComponent.gameObjectID, (int)(uint)groupID.id);
+                _goManager.Recycle((int)groupID.id);
             }
         }
 
