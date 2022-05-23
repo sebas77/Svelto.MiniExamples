@@ -6,7 +6,7 @@ namespace Svelto.ECS.MiniExamples.GameObjectsLayer
     /// Note this can be easily moved to using Entity Command Buffer and I should do it at a given point
     /// </summary>
     class InstantiateGameObjectOnSveltoEntityEngine : IQueryingEntitiesEngine
-                                                    , IReactOnAddAndRemoveEx<GameObjectEntityComponent>
+                                                    , IReactOnAddEx<GameObjectEntityComponent>, IReactOnRemoveEx<GameObjectEntityComponent>
                                                     , IReactOnSwapEx<GameObjectEntityComponent>
     {
         public InstantiateGameObjectOnSveltoEntityEngine(GameObjectManager goManager)
