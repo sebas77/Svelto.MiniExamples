@@ -12,7 +12,10 @@ namespace Svelto.ECS.MiniExamples.GameObjectsLayer
         public EntitiesDB entitiesDB { get; set; }
         public void       Ready()    { }
 
-        public RenderingGameObjectSynchronizationEngine(GameObjectManager goManager) { this._goManager = goManager; }
+        public RenderingGameObjectSynchronizationEngine(GameObjectManager goManager)
+        {
+            this._goManager = goManager;
+        }
 
         public JobHandle Execute(JobHandle inputDeps)
         {
@@ -23,12 +26,12 @@ namespace Svelto.ECS.MiniExamples.GameObjectsLayer
             //abstract and it makes sense to have the concept at framework level
             foreach (var ((positions, count), group) in entitiesDB.QueryEntities<PositionEntityComponent>())
             {
-                Check.Require(_goManager.Transforms((int) group.id).length == count
+                Check.Require(_goManager.Transforms((int)group.id).length == count
                             , $"component array length doesn't match. Expected {count} - found {_goManager.Transforms((int)group.id).length} - group {group.ToString()}");
                 combineDependencies = JobHandle.CombineDependencies(inputDeps, new ParallelLabelTransformJob()
                 {
                     _position = positions
-                }.Schedule(_goManager.Transforms((int) (uint) group.id), inputDeps), combineDependencies);
+                }.Schedule(_goManager.Transforms((int)(uint)group.id), inputDeps), combineDependencies);
             }
 
             return combineDependencies;

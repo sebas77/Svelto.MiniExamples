@@ -6,33 +6,57 @@ namespace Svelto.ECS.MiniExamples.GameObjectsLayer
     /// Note this can be easily moved to using Entity Command Buffer and I should do it at a given point
     /// </summary>
     class InstantiateGameObjectOnSveltoEntityEngine : IQueryingEntitiesEngine
-                                                    , IReactOnAddAndRemove<GameObjectEntityComponent>, IReactOnSwap<GameObjectEntityComponent>
+                                                    , IReactOnAddAndRemoveEx<GameObjectEntityComponent>
+                                                    , IReactOnSwapEx<GameObjectEntityComponent>
     {
-        public InstantiateGameObjectOnSveltoEntityEngine(GameObjectManager goManager) { _goManager = goManager; }
+        public InstantiateGameObjectOnSveltoEntityEngine(GameObjectManager goManager)
+        {
+            _goManager = goManager;
+        }
+
         public EntitiesDB entitiesDB { get; set; }
         public void       Ready()    { }
 
-        public void Add(ref GameObjectEntityComponent entityComponent, EGID egid)
+        public void Add
+        ((uint start, uint end) rangeOfEntities, in EntityCollection<GameObjectEntityComponent> collection
+       , ExclusiveGroupStruct groupID)
         {
-            var gameObjectID = _goManager.FetchGameObject(entityComponent.prefabID, (int)(uint)egid.groupID.id);
+            for (uint i = rangeOfEntities.start; i < rangeOfEntities.end; ++i)
+            {
+                var (buffer, _) = collection;
 
-            _goManager.SetPosition(gameObjectID, (int)(uint)egid.groupID.id, entityComponent.spawnPosition);
+                ref var entityComponent = ref buffer[i];
 
-            entityComponent.gameObjectID = gameObjectID;
+                var gameObjectID = _goManager.FetchGameObject(entityComponent.prefabID, (int)(uint)groupID.id);
+
+                _goManager.SetPosition(gameObjectID, (int)(uint)groupID.id, entityComponent.spawnPosition);
+
+                entityComponent.gameObjectID = gameObjectID;
+            }
         }
 
-        public void Remove(ref GameObjectEntityComponent entityComponent, EGID egid)
+        public void Remove
+        ((uint start, uint end) rangeOfEntities, in EntityCollection<GameObjectEntityComponent> collection
+       , ExclusiveGroupStruct groupID)
         {
-            _goManager.Recycle(entityComponent.gameObjectID, (int)(uint)egid.groupID.id);
+            for (uint i = rangeOfEntities.start; i < rangeOfEntities.end; ++i)
+            {
+                var (buffer, _, _) = collection;
+
+                ref var entityComponent = ref buffer[i];
+
+                _goManager.Recycle(entityComponent.gameObjectID, (int)(uint)groupID.id);
+            }
         }
 
         public void MovedTo
-            (ref GameObjectEntityComponent entityComponent, ExclusiveGroupStruct previousGroup, EGID egid)
+        ((uint start, uint end) rangeOfEntities, in EntityCollection<GameObjectEntityComponent> collection
+       , ExclusiveGroupStruct fromGroup, ExclusiveGroupStruct toGroup)
         {
-            Remove(ref entityComponent, new EGID(egid.entityID, previousGroup));
-            Add(ref entityComponent, egid);
+            Remove(rangeOfEntities, collection, fromGroup);
+            Add(rangeOfEntities, collection, toGroup);
         }
-        
+
         readonly GameObjectManager _goManager;
     }
 }

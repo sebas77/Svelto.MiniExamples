@@ -16,7 +16,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
     [Sequenced(nameof(DoofusesEngineNames.PlaceFoodOnClickEngine))]
     public class PlaceFoodOnClickEngine : IQueryingEntitiesEngine, IJobifiedEngine
     {
-        const int MaxMeals = 500;
+        const int MaxMeals = 1;
 
         public PlaceFoodOnClickEngine(int redfood, int bluefood, IEntityFactory entityFactory)
         {

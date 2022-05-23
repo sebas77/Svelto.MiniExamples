@@ -41,12 +41,12 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
-    <Analyzer Include="C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\PackageCache\com.unity.entities@0.50.0-preview.24\Unity.Entities\SourceGenerators\Unity.Entities.SourceGen.SystemGenerator.dll" />
-    <Analyzer Include="C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\PackageCache\com.unity.entities@0.50.0-preview.24\Unity.Entities\SourceGenerators\Unity.Entities.SourceGen.LambdaJobs.dll" />
-    <Analyzer Include="C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\PackageCache\com.unity.entities@0.50.0-preview.24\Unity.Entities\SourceGenerators\Unity.Entities.SourceGen.JobEntity.dll" />
-    <Analyzer Include="C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\PackageCache\com.unity.entities@0.50.0-preview.24\Unity.Entities\SourceGenerators\Unity.Entities.SourceGen.Sample.dll" />
-    <Analyzer Include="C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\PackageCache\com.unity.entities@0.50.0-preview.24\Unity.Entities\SourceGenerators\Unity.Entities.SourceGen.Common.dll" />
-    <Analyzer Include="C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\PackageCache\com.unity.entities@0.50.0-preview.24\Unity.Entities\SourceGenerators\Unity.Entities.SourceGen.AuthoringComponent.dll" />
+    <Analyzer Include="C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DoofusesMustEat\DOOFUSES_UECS\Library\PackageCache\com.unity.entities@0.50.0-preview.24\Unity.Entities\SourceGenerators\Unity.Entities.SourceGen.SystemGenerator.dll" />
+    <Analyzer Include="C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DoofusesMustEat\DOOFUSES_UECS\Library\PackageCache\com.unity.entities@0.50.0-preview.24\Unity.Entities\SourceGenerators\Unity.Entities.SourceGen.LambdaJobs.dll" />
+    <Analyzer Include="C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DoofusesMustEat\DOOFUSES_UECS\Library\PackageCache\com.unity.entities@0.50.0-preview.24\Unity.Entities\SourceGenerators\Unity.Entities.SourceGen.JobEntity.dll" />
+    <Analyzer Include="C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DoofusesMustEat\DOOFUSES_UECS\Library\PackageCache\com.unity.entities@0.50.0-preview.24\Unity.Entities\SourceGenerators\Unity.Entities.SourceGen.Sample.dll" />
+    <Analyzer Include="C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DoofusesMustEat\DOOFUSES_UECS\Library\PackageCache\com.unity.entities@0.50.0-preview.24\Unity.Entities\SourceGenerators\Unity.Entities.SourceGen.Common.dll" />
+    <Analyzer Include="C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DoofusesMustEat\DOOFUSES_UECS\Library\PackageCache\com.unity.entities@0.50.0-preview.24\Unity.Entities\SourceGenerators\Unity.Entities.SourceGen.AuthoringComponent.dll" />
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Filters\EntityFilterCollection.cs" />
@@ -452,7 +452,7 @@
      <HintPath>C:\Program Files\Unity\Hub\Editor\2020.3.33f1\Editor\Data\PlaybackEngines\WindowsStandaloneSupport\UnityEditor.WindowsStandalone.Extensions.dll</HintPath>
      </Reference>
      <Reference Include="System.Runtime.CompilerServices.Unsafe">
-     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\PackageCache\org.nuget.system.runtime.compilerservices.unsafe@5.0.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DoofusesMustEat\DOOFUSES_UECS\Library\PackageCache\org.nuget.system.runtime.compilerservices.unsafe@5.0.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
      </Reference>
      <Reference Include="netstandard">
      <HintPath>C:\Program Files\Unity\Hub\Editor\2020.3.33f1\Editor\Data\NetStandard\ref\2.0.0\netstandard.dll</HintPath>
@@ -800,22 +800,22 @@
      <HintPath>C:\Program Files\Unity\Hub\Editor\2020.3.33f1\Editor\Data\NetStandard\compat\2.0.0\shims\netfx\System.Xml.Serialization.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Entities">
-     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Entities.dll</HintPath>
+     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Entities.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Collections">
-     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Collections.dll</HintPath>
+     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Collections.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Burst">
-     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Burst.dll</HintPath>
+     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Burst.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Jobs">
-     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Jobs.dll</HintPath>
+     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\Unity.Jobs.dll</HintPath>
      </Reference>
      <Reference Include="UnityEditor.UI">
-     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\UnityEditor.UI.dll</HintPath>
+     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\UnityEditor.UI.dll</HintPath>
      </Reference>
      <Reference Include="UnityEngine.UI">
-     <HintPath>C:\Perforce\Svelto\Svelto.Miniexamples\Example1-DOTS-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\UnityEngine.UI.dll</HintPath>
+     <HintPath>C:\Prgdir\Svelto\Svelto.MiniExamples\Example1-DoofusesMustEat\DOOFUSES_UECS\Library\ScriptAssemblies\UnityEngine.UI.dll</HintPath>
      </Reference>
   </ItemGroup>
   <ItemGroup>
