@@ -73,8 +73,8 @@ Hierarchy:
                         Name: null
                         Projection: Perspective
                         Slot: a1a68d6b-0329-4ae6-a17b-50fe3202189a
-                    7fe8d90a980c8d48334adfd987ed691c: !DoofusesComputeSharp.BasicCameraController,DoofusesComputeSharp
-                        Id: 985a5b63-8ca2-476b-b466-e533c60cf9d9
+                    b69862dd11ea794500753a650ba31944: !DoofusesComputeSharp.BasicCameraController,DoofusesStride
+                        Id: 32ee9ce1-22e2-4ac6-a3cf-c78193190159
                         Gamepad: false
                         KeyboardMovementSpeed: {X: 5.0, Y: 5.0, Z: 5.0}
                         TouchMovementSpeed: {X: 0.7, Y: 0.7, Z: 0.3}
@@ -82,8 +82,8 @@ Hierarchy:
                         KeyboardRotationSpeed: {X: 3.0, Y: 3.0}
                         MouseRotationSpeed: {X: 1.0, Y: 1.0}
                         TouchRotationSpeed: {X: 1.0, Y: 0.7}
-                    ff0aaa58a2444c2a15175b225ea51307: !DoofusesComputeSharp.GameProfiler,DoofusesComputeSharp
-                        Id: 56d8b3a4-8112-4976-9374-8452500c6b53
+                    34ab7f460727842acd22711f710411c5: !DoofusesComputeSharp.GameProfiler,DoofusesStride
+                        Id: 849326a0-6f3b-4308-a32c-17165a8fc36b
                         Enabled: true
                         TextColor: {R: 144, G: 238, B: 144, A: 255}
                         RefreshTime: 500.0

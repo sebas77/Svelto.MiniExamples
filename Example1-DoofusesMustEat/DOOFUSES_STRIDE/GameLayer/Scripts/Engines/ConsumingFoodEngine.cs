@@ -1,11 +1,9 @@
-using System;
 using Stride.Core.Mathematics;
 using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.ECS.EntityComponents;
 using Svelto.ECS.Internal;
 using Svelto.ECS.MiniExamples.Turrets;
-using Svelto.ECS.Native;
 
 namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
 {
