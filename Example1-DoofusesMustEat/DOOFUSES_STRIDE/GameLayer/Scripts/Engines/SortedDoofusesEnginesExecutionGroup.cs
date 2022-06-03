@@ -1,7 +1,7 @@
 using Svelto.Common;
 using Svelto.DataStructures;
 
-namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
+namespace Svelto.ECS.MiniExamples.Doofuses.Stride
 {
     ///it's important to note that the names of the engines used in the ISequenceOrder, do NOT need to come from the
     /// same enum. This will allow the user to declare enums in their own assemblies. 

@@ -1,6 +1,6 @@
 using Stride.Core.Mathematics;
 
-namespace  Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
+namespace  Svelto.ECS.MiniExamples.Doofuses.Stride
 {
     public struct RotationComponent : IEntityComponent
     {

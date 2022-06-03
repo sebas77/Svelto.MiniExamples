@@ -1,9 +1,9 @@
 using System;
 using Stride.Core.Mathematics;
 using Svelto.Common;
-using Svelto.ECS.MiniExamples.Doofuses.ComputeSharp.StrideLayer;
+using Svelto.ECS.MiniExamples.Doofuses.Stride.StrideLayer;
 
-namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
+namespace Svelto.ECS.MiniExamples.Doofuses.Stride
 {
     [Sequenced(nameof(DoofusesEngineNames.SpawningDoofusEngine))]
     public class SpawningDoofusEngine : IQueryingEntitiesEngine, IUpdateEngine

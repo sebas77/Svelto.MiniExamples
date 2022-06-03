@@ -1,4 +1,4 @@
-﻿namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp.StrideLayer
+﻿namespace Svelto.ECS.MiniExamples.Doofuses.Stride.StrideLayer
 {
     class AddStrideEntityToFiltersEngine : IReactOnAddEx<StrideComponent>, IQueryingEntitiesEngine
     {

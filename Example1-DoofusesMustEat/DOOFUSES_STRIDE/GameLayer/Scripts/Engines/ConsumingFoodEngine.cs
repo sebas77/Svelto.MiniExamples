@@ -5,7 +5,7 @@ using Svelto.ECS.EntityComponents;
 using Svelto.ECS.Internal;
 using Svelto.ECS.MiniExamples.Turrets;
 
-namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
+namespace Svelto.ECS.MiniExamples.Doofuses.Stride
 {
     [Sequenced(nameof(DoofusesEngineNames.ConsumingFoodEngine))]
     public class ConsumingFoodEngine : IQueryingEntitiesEngine, IUpdateEngine

@@ -1,6 +1,6 @@
 using System;
 
-namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
+namespace Svelto.ECS.MiniExamples.Doofuses.Stride
 {
     public static class TransformableContext
     {

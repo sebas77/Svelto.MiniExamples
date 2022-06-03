@@ -3,7 +3,7 @@ using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.ECS.Internal;
 
-namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
+namespace Svelto.ECS.MiniExamples.Doofuses.Stride
 {
     [Sequenced(nameof(DoofusesEngineNames.LookingForFoodDoofusesEngine))]
     public class LookingForFoodDoofusesEngine : IQueryingEntitiesEngine, IUpdateEngine

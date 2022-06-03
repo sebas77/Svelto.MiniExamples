@@ -1,6 +1,6 @@
 ﻿using Stride.Core.Mathematics;
 
-namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp.StrideLayer
+namespace Svelto.ECS.MiniExamples.Doofuses.Stride.StrideLayer
 {
     public struct StrideComponent: IEntityComponent
     {

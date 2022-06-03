@@ -2,7 +2,7 @@ using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.ECS.EntityComponents;
 
-namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
+namespace Svelto.ECS.MiniExamples.Doofuses.Stride
 {
     [Sequenced(nameof(DoofusesEngineNames.VelocityToPositionDoofusesEngine))]
     public class VelocityToPositionDoofusesEngine : IQueryingEntitiesEngine, IUpdateEngine

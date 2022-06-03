@@ -6,9 +6,9 @@ using Stride.Engine;
 using Stride.Input;
 using Stride.Physics;
 using Svelto.Common;
-using Svelto.ECS.MiniExamples.Doofuses.ComputeSharp.StrideLayer;
+using Svelto.ECS.MiniExamples.Doofuses.Stride.StrideLayer;
 
-namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
+namespace Svelto.ECS.MiniExamples.Doofuses.Stride
 {
     [Sequenced(nameof(DoofusesEngineNames.PlaceFoodOnClickEngine))]
     public class PlaceFoodOnClickEngine : IQueryingEntitiesEngine, IUpdateEngine, IReactOnRemoveEx<MealInfoComponent>
@@ -129,7 +129,6 @@ namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
                     init.Init(new StrideComponent()
                     {
                         instancingEntity = _prefabID
-                       ,
                     });
                 }
             }

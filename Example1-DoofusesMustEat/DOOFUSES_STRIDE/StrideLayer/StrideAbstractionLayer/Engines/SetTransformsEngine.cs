@@ -3,7 +3,7 @@ using Svelto.Common;
 using Svelto.Common.Internal;
 using Svelto.DataStructures;
 
-namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp.StrideLayer
+namespace Svelto.ECS.MiniExamples.Doofuses.Stride.StrideLayer
 {
     /// <summary>
         ///     Iterate all the entities that have matrices and, assuming they are stride objects, set the matrices to the

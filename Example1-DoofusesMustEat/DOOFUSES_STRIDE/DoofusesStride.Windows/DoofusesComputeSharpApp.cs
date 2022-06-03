@@ -1,5 +1,5 @@
 using Stride.Engine;
-using Svelto.ECS.MiniExamples.Doofuses.ComputeSharp;
+using Svelto.ECS.MiniExamples.Doofuses.Stride;
 
 namespace DoofusesComputeSharp
 {

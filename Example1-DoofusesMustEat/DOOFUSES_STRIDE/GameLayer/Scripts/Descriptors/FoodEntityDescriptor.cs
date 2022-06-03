@@ -1,7 +1,7 @@
 using Svelto.ECS.EntityComponents;
-using Svelto.ECS.MiniExamples.Doofuses.ComputeSharp.StrideLayer;
+using Svelto.ECS.MiniExamples.Doofuses.Stride.StrideLayer;
 
-namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
+namespace Svelto.ECS.MiniExamples.Doofuses.Stride
 {
     class FoodEntityDescriptor: ExtendibleEntityDescriptor<StrideEntityDescriptor>
     {

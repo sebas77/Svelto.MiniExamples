@@ -1,4 +1,4 @@
-﻿namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp.StrideLayer
+﻿namespace Svelto.ECS.MiniExamples.Doofuses.Stride.StrideLayer
 {
     public static class StrideFilterContext
     {

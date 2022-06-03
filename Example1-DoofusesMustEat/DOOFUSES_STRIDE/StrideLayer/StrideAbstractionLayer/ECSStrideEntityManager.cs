@@ -4,7 +4,7 @@ using Stride.Engine;
 using Stride.Rendering;
 using Svelto.DataStructures;
 
-namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp.StrideLayer
+namespace Svelto.ECS.MiniExamples.Doofuses.Stride.StrideLayer
 {
     public class ECSStrideEntityManager
     {

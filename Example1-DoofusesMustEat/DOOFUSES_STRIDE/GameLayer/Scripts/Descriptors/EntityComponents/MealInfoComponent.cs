@@ -1,4 +1,4 @@
-namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
+namespace Svelto.ECS.MiniExamples.Doofuses.Stride
 {
     public struct MealInfoComponent : IEntityComponent
     {

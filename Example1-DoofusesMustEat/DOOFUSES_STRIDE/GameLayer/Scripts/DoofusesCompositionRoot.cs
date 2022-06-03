@@ -7,10 +7,10 @@ using Stride.Graphics;
 using Stride.Graphics.GeometricPrimitives;
 using Stride.Rendering;
 using Svelto.DataStructures;
-using Svelto.ECS.MiniExamples.Doofuses.ComputeSharp.StrideLayer;
+using Svelto.ECS.MiniExamples.Doofuses.Stride.StrideLayer;
 using Svelto.ECS.Schedulers;
 
-namespace Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
+namespace Svelto.ECS.MiniExamples.Doofuses.Stride
 {
     public class DoofusesCompositionRoot : Game
     {

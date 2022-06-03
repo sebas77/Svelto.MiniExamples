@@ -2,7 +2,7 @@ using Stride.Core.Mathematics;
 using Svelto.Common;
 using Svelto.Common.Internal;
 
-namespace  Svelto.ECS.MiniExamples.Doofuses.ComputeSharp
+namespace  Svelto.ECS.MiniExamples.Doofuses.Stride
 {
     public enum TransformableLayerEngineNames
     {
