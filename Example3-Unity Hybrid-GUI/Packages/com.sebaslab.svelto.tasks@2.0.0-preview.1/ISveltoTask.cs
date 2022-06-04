@@ -8,6 +8,8 @@ namespace Svelto.Tasks
         bool MoveNext();
 
         void Stop();
+        
+        bool isCompleted { get; }
 
         string name { get; }
     }

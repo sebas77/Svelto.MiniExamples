@@ -8,7 +8,6 @@ namespace Svelto.DataStructures
         int       capacity           { get; }
         bool      isValid            { get; }
 
-
         void   Alloc(uint size, Allocator allocator, bool clear = true);
         void   ShiftRight(uint index, uint count);
         void   ShiftLeft(uint index, uint count);

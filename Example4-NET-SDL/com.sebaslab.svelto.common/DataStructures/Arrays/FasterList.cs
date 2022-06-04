@@ -133,6 +133,17 @@ namespace Svelto.DataStructures
 
             _buffer[location] = item;
         }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ref T GetOrCreate(uint location, in Func<T> item)
+        {
+            EnsureCountIsAtLeast(location + 1);
+
+            if (_comp.Equals(this[location], default) == true)
+                this[location] = item();
+
+            return ref this[location];
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public FasterList<T> AddRange(in FasterList<T> items)

@@ -54,33 +54,25 @@ namespace Svelto.Common
         /// </summary>
         Invalid = Unity.Collections.Allocator.Invalid
 
-       ,
-
         /// <summary>
         ///   <para>No allocation.</para>
         /// </summary>
-        None = Unity.Collections.Allocator.None
-
-       ,
+       ,None = Unity.Collections.Allocator.None
 
         /// <summary>
         ///   <para>Temporary allocation.</para>
         /// </summary>
-        Temp = Unity.Collections.Allocator.Temp
-
-       ,
+      , Temp = Unity.Collections.Allocator.Temp
 
         /// <summary>
         ///   <para>Temporary job allocation.</para>
         /// </summary>
-        TempJob = Unity.Collections.Allocator.TempJob
-
-       ,
+      , TempJob = Unity.Collections.Allocator.TempJob
 
         /// <summary>
         ///   <para>Persistent allocation.</para>
         /// </summary>
-        Persistent = Unity.Collections.Allocator.Persistent
+      , Persistent = Unity.Collections.Allocator.Persistent
 
       , Managed
     }
@@ -96,11 +88,8 @@ namespace Svelto.Common
             var castedAllocator = (Unity.Collections.Allocator) allocator;
             unsafe
             {
-                var tempPointer =
-                    Unity.Collections.LowLevel.Unsafe.UnsafeUtility.Malloc(
-                        signedCapacity, (int) OptimalAlignment.alignment, castedAllocator);
-
-                newPointer = (IntPtr) tempPointer;
+                newPointer = (IntPtr) Unity.Collections.LowLevel.Unsafe.UnsafeUtility.Malloc(
+                    signedCapacity, (int) OptimalAlignment.alignment, castedAllocator);
             }
 #else
             newPointer = Marshal.AllocHGlobal(signedCapacity); //this is guaranteed to be aligned by design
@@ -223,31 +212,44 @@ namespace Svelto.Common
         /// <summary>
         /// Like Memcpy but safe when memory overlaps
         /// </summary>
-        public static void Memmove<T>(IntPtr source, uint sourceStartIndex, uint destinationStartIndex, uint size)
+        public static void MemMove<T>(IntPtr source, uint sourceStartIndex, uint destinationStartIndex, uint count)
             where T : struct
         {
             unsafe
             {
                 var sizeOf        = SizeOf<T>();
-                var sizeOfInBytes = (uint) (sizeOf * size);
-                //issues cpblk that assumes that both the source and destination addressed are aligned to the natural size of the machine.
-                Unsafe.CopyBlock((void*) (source + (int) destinationStartIndex * sizeOf)
-                               , (void*) (source + (int) sourceStartIndex * sizeOf), sizeOfInBytes);
+                var sizeOfInBytes = (uint) (sizeOf * count);
+                //this uses System.Runtime.RuntimeImports::Memmove which is safe if memory overlaps
+                /*
+                 *  public static void MemoryCopy(
+                        void* source,
+                        void* destination,
+                        long destinationSizeInBytes,
+                        long sourceBytesToCopy);
+                 */
+                Buffer.MemoryCopy((void*) (source + (int) sourceStartIndex * sizeOf)
+                  , (void*) (source + (int) destinationStartIndex * sizeOf), sizeOfInBytes, sizeOfInBytes);
             }
         }
 
-        public static void Memcpy<T>
-            (IntPtr source, uint sourceStartIndex, IntPtr destination, uint destinationStartIndex, uint size)
+        /// <summary>
+        /// this is not safe if memory overlaps
+        /// </summary>
+        public static void MemCpy<T>
+            (IntPtr source, uint sourceStartIndex, IntPtr destination, uint destinationStartIndex, uint count)
             where T : struct
         {
             unsafe
             {
                 var sizeOf        = SizeOf<T>();
-                var sizeOfInBytes = (uint) (sizeOf * size);
-                Buffer.MemoryCopy((void*) (source + (int) sourceStartIndex * sizeOf)
-                                , (void*) (destination + (int) destinationStartIndex * sizeOf), sizeOfInBytes
-                                , sizeOfInBytes);
-            }
+                var sizeOfInBytes = (uint) (sizeOf * count);
+                //issues cpblk that assumes that both the source and destination addressed are aligned to the natural size of the machine.
+                /*
+                 * public static unsafe void CopyBlock(void* destination, void* source, uint byteCount)
+                 * */
+                Unsafe.CopyBlock(Unsafe.Add<T>((void*)destination, ((int) destinationStartIndex)),
+                    Unsafe.Add<T>((void*)source, ((int) sourceStartIndex)), sizeOfInBytes);
+            }           
         }
 
 #if UNITY_COLLECTIONS

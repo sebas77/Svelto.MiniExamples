@@ -23,7 +23,7 @@ namespace Svelto.Tasks.ExtraLean
             
             _threadSafeSveltoTaskStates.started = true;
 
-            runner.StartCoroutine(this);
+            runner.StartTask(this);
         }
 
         public override string ToString()
@@ -44,6 +44,8 @@ namespace Svelto.Tasks.ExtraLean
         {
             _threadSafeSveltoTaskStates.explicitlyStopped = true;
         }
+
+        public bool isCompleted => _threadSafeSveltoTaskStates.completed;
 
         public string name => ToString();
 

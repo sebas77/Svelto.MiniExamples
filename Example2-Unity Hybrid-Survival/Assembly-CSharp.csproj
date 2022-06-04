@@ -113,6 +113,10 @@
      <Compile Include="Assets\Code\Factories\EnemyFactory.cs" />
      <Compile Include="Assets\Code\Factories\GameObjectFactory.cs" />
      <Compile Include="Assets\Code\GlobalSuppressions.cs" />
+     <Compile Include="Assets\Code\Legacy\Implementors\EntityReferenceHolderImplementor.cs" />
+     <Compile Include="Assets\Code\Legacy\Implementors\IECSManager.cs" />
+     <Compile Include="Assets\Code\Legacy\Implementors\IUseMultipleResourceManagerImplementor.cs" />
+     <Compile Include="Assets\Code\Legacy\Implementors\IUseResourceManagerImplementor.cs" />
      <Compile Include="Assets\Code\Legacy\LinkedEntityComponent.cs" />
      <Compile Include="Assets\Code\Legacy\SveltoGUIHelper.cs" />
      <Compile Include="Assets\Code\MainCompositionRoot.cs" />

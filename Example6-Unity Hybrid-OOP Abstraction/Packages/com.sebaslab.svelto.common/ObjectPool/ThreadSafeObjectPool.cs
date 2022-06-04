@@ -121,9 +121,9 @@ namespace Svelto.ObjectPool
 
         public int GetNumberOfObjectsRecycledSinceLastTime()
         {
-            var ret = _objectsRecyled;
+            var ret = _objectsRecycled;
 
-            _objectsRecyled = 0;
+            _objectsRecycled = 0;
 
             return ret;
         }
@@ -183,7 +183,7 @@ namespace Svelto.ObjectPool
 
             _recycledPools[pool].Push(obj);
 
-            _objectsRecyled++;
+            _objectsRecycled++;
         }
 
         ThreadSafeStack<T> ReturnValidPool(ThreadSafeDictionary<int, ThreadSafeStack<T>> pools, int pool)
@@ -241,7 +241,7 @@ namespace Svelto.ObjectPool
 
         int _objectsReused;
         int _objectsCreated;
-        int _objectsRecyled;
+        int _objectsRecycled;
 
         bool _disposed;
     }

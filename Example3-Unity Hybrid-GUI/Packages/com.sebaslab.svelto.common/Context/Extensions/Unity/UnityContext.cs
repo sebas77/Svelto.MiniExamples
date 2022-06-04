@@ -22,7 +22,7 @@ namespace Svelto.Context
         
         void OnDestroy()
         {
-            _applicationRoot.OnContextDestroyed(_hasBeenInitialised);
+            _applicationRoot?.OnContextDestroyed(_hasBeenInitialised);
         }
 
         void Start()

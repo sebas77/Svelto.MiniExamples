@@ -52,6 +52,16 @@ namespace Svelto.DataStructures
             }
         }
 
+        public IntPtr AsBytesPointer()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void   SerialiseFrom(IntPtr bytesPointer)
+        {
+            throw new NotImplementedException();
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ShiftLeft(uint index, uint count)
         {
@@ -94,22 +104,14 @@ namespace Svelto.DataStructures
         public ref T this[uint index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
-            {
-                return ref _realBuffer[index];
-            }
+            get => ref _realBuffer[index];
         }
 
         public ref T this[int index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
-            {
-                return ref _realBuffer[index];
-            }
+            get => ref _realBuffer[index];
         }
-
-        public Allocator allocationStrategy => Allocator.Managed;
 
         public MB<T> ToRealBuffer() { return _realBuffer; }
         

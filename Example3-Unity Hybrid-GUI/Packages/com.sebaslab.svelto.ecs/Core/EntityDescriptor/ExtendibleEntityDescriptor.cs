@@ -1,6 +1,3 @@
-using System;
-using Svelto.ECS.Serialization;
-
 namespace Svelto.ECS
 {
     /// <summary>
@@ -25,9 +22,11 @@ namespace Svelto.ECS
     {
         static ExtendibleEntityDescriptor()
         {
-            if (typeof(ISerializableEntityDescriptor).IsAssignableFrom(typeof(TType)))
-                throw new Exception(
-                    $"SerializableEntityDescriptors cannot be used as base entity descriptor: {typeof(TType)}");
+            //I am removing this check because in reality there is not a strong reason to forbid it and
+            //furthermore it's already possible to extend a SerializableEntityDescriptor through DynamicEntityDescriptor
+            // if (typeof(ISerializableEntityDescriptor).IsAssignableFrom(typeof(TType)))
+            //     throw new Exception(
+            //         $"SerializableEntityDescriptors cannot be used as base entity descriptor: {typeof(TType)}");
         }
 
         protected ExtendibleEntityDescriptor(IComponentBuilder[] extraEntities)
@@ -54,16 +53,15 @@ namespace Svelto.ECS
             return this;
         }
 
-
-        protected void Add<T>() where T : struct, IEntityComponent
+        protected void Add<T>() where T : struct, IBaseEntityComponent
         {
             _dynamicDescriptor.Add<T>();
         }
-        protected void Add<T, U>() where T : struct,  IEntityComponent where U : struct,  IEntityComponent
+        protected void Add<T, U>() where T : struct,  IBaseEntityComponent where U : struct,  IBaseEntityComponent
         {
             _dynamicDescriptor.Add<T, U>();
         }
-        protected void Add<T, U, V>() where T : struct,  IEntityComponent where U : struct,  IEntityComponent where V : struct,  IEntityComponent
+        protected void Add<T, U, V>() where T : struct,  IBaseEntityComponent where U : struct,  IBaseEntityComponent where V : struct,  IBaseEntityComponent
         {
             _dynamicDescriptor.Add<T, U, V>();
         }

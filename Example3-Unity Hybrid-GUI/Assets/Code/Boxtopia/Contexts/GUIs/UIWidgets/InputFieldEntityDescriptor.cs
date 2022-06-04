@@ -1,3 +1,4 @@
+using Boxtopia.GUIs.Generic;
 using Boxtopia.GUIs.LocalisedText;
 using Svelto.ECS;
 

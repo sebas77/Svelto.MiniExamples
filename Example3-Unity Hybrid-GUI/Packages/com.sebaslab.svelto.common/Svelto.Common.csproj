@@ -4,9 +4,12 @@
         <LangVersion>8</LangVersion>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <TargetFramework>netstandard2.0</TargetFramework>
-        <PackageVersion>3.2.0</PackageVersion>
-        <AssemblyVersion>3.2.0</AssemblyVersion>
+        <PackageVersion>3.3.0</PackageVersion>
+        <AssemblyVersion>3.3.0</AssemblyVersion>
         <Company>Svelto</Company>
+        <IsPackable>true</IsPackable>
+        <Configurations>Debug;Release;SlowSubmissionRelease;SlowSubmissionDebug</Configurations>
+        <Platforms>AnyCPU</Platforms>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -32,9 +35,18 @@
         <UseSharedCompilation>false</UseSharedCompilation>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)' == 'SlowSubmissionRelease' ">
+      <DefineConstants>TRACE;SLOW_SVELTO_SUBMISSION;RELEASE</DefineConstants>
+      <Optimize>true</Optimize>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)' == 'SlowSubmissionDebug' ">
+      <DefineConstants>TRACE;SLOW_SVELTO_SUBMISSION;DEBUG</DefineConstants>
+      <DebugSymbols>true</DebugSymbols>
+    </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="System.Memory" Version="4.5.4" />
         <None Remove="**\*.meta" />
+        <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
     </ItemGroup>
 </Project>

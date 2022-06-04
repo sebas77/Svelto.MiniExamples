@@ -1,11 +1,10 @@
-using Svelto.ECS.Reference;
-
+#if SLOW_SVELTO_SUBMISSION
 namespace Svelto.ECS.Internal
 {
-    delegate void SetEGIDWithoutBoxingActionCast<T>(ref T target, EGID egid) where T : struct, IEntityComponent;
-    delegate void SetReferenceWithoutBoxingActionCast<T>(ref T target, EntityReference egid) where T : struct, IEntityComponent;
+    delegate void SetEGIDWithoutBoxingActionCast<T>(ref T target, EGID egid) where T : struct, IBaseEntityComponent;
+    delegate void SetReferenceWithoutBoxingActionCast<T>(ref T target, EntityReference egid) where T : struct, IBaseEntityComponent;
 
-    static class SetEGIDWithoutBoxing<T> where T : struct, IEntityComponent
+    static class SetEGIDWithoutBoxing<T> where T : struct, IBaseEntityComponent
     {
         public static readonly SetEGIDWithoutBoxingActionCast<T>      SetIDWithoutBoxing  = MakeSetter();
         public static readonly SetReferenceWithoutBoxingActionCast<T> SetRefWithoutBoxing = MakeSetterReference();
@@ -68,3 +67,4 @@ namespace Svelto.ECS.Internal
         }
     }
 }
+#endif

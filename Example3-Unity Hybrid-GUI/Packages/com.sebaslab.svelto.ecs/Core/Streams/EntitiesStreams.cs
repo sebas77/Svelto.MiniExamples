@@ -4,20 +4,18 @@ using Svelto.DataStructures;
 namespace Svelto.ECS
 {
     /// <summary>
-    ///     I eventually realised that, with the ECS design, no form of communication other than polling entity components can
-    ///     exist.
-    ///     Using groups, you can have always an optimal set of entity components to poll. However EntityStreams
-    ///     can be useful if:
-    ///     - you need to react on seldom entity changes, usually due to user events
-    ///     - you want engines to be able to track entity changes
-    ///     - you want a thread-safe way to read entity states, which includes all the state changes and not the last
-    ///     one only
-    ///     - you want to communicate between EnginesRoots
+    ///     I eventually realised that, with the ECS design, no form of engines (systems) communication other
+    ///     than polling entity components is effective.
+    ///     The only purpose of this publisher/consumer model is to let two enginesroots communicate with each other
+    ///     through a thread safe ring buffer.
+    ///     The engines root A publishes entities.
+    ///     The engines root B can consume those entities at any time, as they will be a copy of the original
+    ///     entities and won't point directly to the database of the engines root A
     /// </summary>
     struct EntitiesStreams : IDisposable
     {
         internal Consumer<T> GenerateConsumer<T>(string name, uint capacity)
-            where T : unmanaged, IEntityComponent
+            where T : unmanaged, IBaseEntityComponent
         {
             if (_streams.ContainsKey(TypeRefWrapper<T>.wrapper) == false)
                 _streams[TypeRefWrapper<T>.wrapper] = new EntityStream<T>();
@@ -26,7 +24,7 @@ namespace Svelto.ECS
         }
 
         public Consumer<T> GenerateConsumer<T>(ExclusiveGroupStruct group, string name, uint capacity)
-            where T : unmanaged, IEntityComponent
+            where T : unmanaged, IBaseEntityComponent
         {
             if (_streams.ContainsKey(TypeRefWrapper<T>.wrapper) == false)
                 _streams[TypeRefWrapper<T>.wrapper] = new EntityStream<T>();
@@ -35,7 +33,7 @@ namespace Svelto.ECS
             return typeSafeStream.GenerateConsumer(group, name, capacity);
         }
 
-        internal void PublishEntity<T>(ref T entity, EGID egid) where T : unmanaged, IEntityComponent
+        internal void PublishEntity<T>(ref T entity, EGID egid) where T : unmanaged, IBaseEntityComponent
         {
             if (_streams.TryGetValue(TypeRefWrapper<T>.wrapper, out var typeSafeStream))
                 (typeSafeStream as EntityStream<T>).PublishEntity(ref entity, egid);
@@ -46,7 +44,7 @@ namespace Svelto.ECS
         public void Dispose()
         {
             foreach (var stream in _streams)
-                stream.Value.Dispose();
+                stream.value.Dispose();
         }
 
         public static EntitiesStreams Create()

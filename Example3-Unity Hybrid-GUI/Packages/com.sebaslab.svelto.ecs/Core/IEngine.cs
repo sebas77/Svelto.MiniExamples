@@ -2,41 +2,132 @@ using Svelto.ECS.Internal;
 
 namespace Svelto.ECS.Internal
 {
-    public interface IReactEngine: IEngine
-    {}
+    public interface IReactEngine : IEngine
+    {
+    }
+#region legacy interfaces
+    /// <summary>
+    /// This is now considered legacy and it will be deprecated in future
+    /// </summary>
+    public interface IReactOnAdd : IReactEngine
+    {
+    }
     
-    public interface IReactOnAddAndRemove : IReactEngine
-    {}
+    /// <summary>
+    /// This is now considered legacy and it will be deprecated in future
+    /// </summary>
+    public interface IReactOnRemove : IReactEngine
+    {
+    }
     
-    public interface IReactOnDispose : IReactEngine
-    {}
-
+    /// <summary>
+    /// This is now considered legacy and it will be deprecated in future
+    /// </summary>
     public interface IReactOnSwap : IReactEngine
-    {}
+    {
+    }
+#endregion    
+
+    public interface IReactOnAddEx : IReactEngine
+    {
+    }
+
+    public interface IReactOnRemoveEx : IReactEngine
+    {
+    }
+
+    public interface IReactOnSwapEx : IReactEngine
+    {
+    }
+
+    public interface IReactOnDispose : IReactEngine
+    {
+    }
 }
 
 namespace Svelto.ECS
 {
     public interface IEngine
-    {}
-    
-    public interface IReactOnAddAndRemove<T> : IReactOnAddAndRemove where T : IEntityComponent
+    {
+    }
+
+    public interface IGetReadyEngine : IEngine
+    {
+        void Ready();
+    }
+
+    public interface IQueryingEntitiesEngine : IGetReadyEngine
+    {
+        EntitiesDB entitiesDB { set; }
+    }
+
+    /// <summary>
+    /// Interface to mark an Engine as reacting on entities added
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public interface IReactOnAdd<T> : IReactOnAdd where T : IBaseEntityComponent
     {
         void Add(ref T entityComponent, EGID egid);
-        void Remove(ref T entityComponent, EGID egid);
     }
-    
-    public interface IReactOnDispose<T> : IReactOnDispose where T : IEntityComponent
+
+    public interface IReactOnAddEx<T> : IReactOnAddEx where T : struct, IBaseEntityComponent
+    {
+        void Add((uint start, uint end) rangeOfEntities, in EntityCollection<T> collection,
+            ExclusiveGroupStruct groupID);
+    }
+
+    /// <summary>
+    /// Interface to mark an Engine as reacting on entities removed
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public interface IReactOnRemove<T> : IReactOnRemove where T : IBaseEntityComponent
     {
         void Remove(ref T entityComponent, EGID egid);
     }
     
-    public interface IReactOnSwap<T> : IReactOnSwap where T : IEntityComponent
+    public interface IReactOnAddAndRemoveEx<T> : IReactOnAddEx<T>, IReactOnRemoveEx<T> where T : struct, IBaseEntityComponent 
+    {
+    }
+
+    public interface IReactOnRemoveEx<T> : IReactOnRemoveEx where T : struct, IBaseEntityComponent
+    {
+        void Remove((uint start, uint end) rangeOfEntities, in EntityCollection<T> collection,
+            ExclusiveGroupStruct groupID);
+    }
+
+    public interface IReactOnAddAndRemove<T> : IReactOnAdd<T>, IReactOnRemove<T> where T : IBaseEntityComponent
+    {
+    }
+
+    /// <summary>
+    /// Interface to mark an Engine as reacting on engines root disposed.
+    /// It can work together with IReactOnRemove which normally is not called on enginesroot disposed
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public interface IReactOnDispose<T> : IReactOnDispose where T : IBaseEntityComponent
+    {
+        void Remove(ref T entityComponent, EGID egid);
+    }
+
+    /// <summary>
+    /// Interface to mark an Engine as reacting to entities swapping group
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public interface IReactOnSwap<T> : IReactOnSwap where T : IBaseEntityComponent
     {
         void MovedTo(ref T entityComponent, ExclusiveGroupStruct previousGroup, EGID egid);
     }
 
-    public interface IReactOnSubmission:IReactEngine
+    public interface IReactOnSwapEx<T> : IReactOnSwapEx where T : struct, IBaseEntityComponent
+    {
+        void MovedTo((uint start, uint end) rangeOfEntities, in EntityCollection<T> collection,
+            ExclusiveGroupStruct fromGroup, ExclusiveGroupStruct toGroup);
+    }
+
+    /// <summary>
+    /// Interface to mark an Engine as reacting after each entities submission phase
+    /// </summary>
+    public interface IReactOnSubmission : IReactEngine
     {
         void EntitiesSubmitted();
     }

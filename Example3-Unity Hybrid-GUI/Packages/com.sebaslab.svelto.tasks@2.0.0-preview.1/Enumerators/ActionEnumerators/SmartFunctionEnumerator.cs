@@ -13,13 +13,13 @@ namespace Svelto.Tasks.Enumerators
     /// </typeparam>
     public class SmartFunctionEnumerator<TVal>: IEnumerator<TaskContract>
     {
-        public SmartFunctionEnumerator(FuncIn<TVal, bool> func, TVal value)
+        public SmartFunctionEnumerator(FuncRef<TVal, bool> func, TVal value)
         {
             _func  = func;
             _value = value;
         }
 
-        public bool MoveNext() { return _func(_value); }
+        public bool MoveNext() { return _func(ref _value); }
         public void Reset() {}
 
         public TaskContract Current => Yield.It;
@@ -40,8 +40,8 @@ namespace Svelto.Tasks.Enumerators
 
         public void Dispose() {}
 
-        readonly FuncIn<TVal, bool> _func;
-        readonly TVal               _value;
-        string                      _name;
+        readonly FuncRef<TVal, bool> _func;
+        TVal                         _value;
+        string                       _name;
     }
 }
