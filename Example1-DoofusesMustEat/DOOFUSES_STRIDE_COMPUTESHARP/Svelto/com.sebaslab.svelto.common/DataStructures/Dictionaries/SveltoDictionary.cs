@@ -492,10 +492,10 @@ namespace Svelto.DataStructures
 
         public bool Remove(TKey key)
         {
-            return Remove(key, out _);
+            return Remove(key, out _, out _);
         }
 
-        public bool Remove(TKey key, out TValue value)
+        public bool Remove(TKey key, out int index, out TValue value)
         {
             int  hash        = key.GetHashCode();
             uint bucketIndex = Reduce((uint)hash, (uint)_buckets.capacity, _fastModBucketsMultiplier);
@@ -547,13 +547,15 @@ namespace Svelto.DataStructures
 
             if (indexToValueToRemove == -1)
             {
+                index = default;
                 value = default;
                 return false; //not found!
             }
-
-            value = _values[indexToValueToRemove];
+            
+            index = indexToValueToRemove;
 
             _freeValueCellIndex--; //one less value to iterate
+            value = _values[indexToValueToRemove];
 
             //Part two:
             //At this point nodes pointers and buckets are updated, but the _values array

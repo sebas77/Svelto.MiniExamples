@@ -11,7 +11,7 @@ namespace Svelto.ECS
         {
             FasterList<ExclusiveGroupStruct> result = localgroups.Value.groupArray;
             result.FastClear();
-            if (groupsPerEntity.TryGetValue(TypeRefWrapper<T1>.wrapper
+            if (groupsPerComponent.TryGetValue(TypeRefWrapper<T1>.wrapper
                                           , out FasterDictionary<ExclusiveGroupStruct, ITypeSafeDictionary> result1)
              == false)
                 return result;
@@ -36,11 +36,11 @@ namespace Svelto.ECS
         {
             FasterList<ExclusiveGroupStruct> result = localgroups.Value.groupArray;
             result.FastClear();
-            if (groupsPerEntity.TryGetValue(TypeRefWrapper<T1>.wrapper
+            if (groupsPerComponent.TryGetValue(TypeRefWrapper<T1>.wrapper
                                           , out FasterDictionary<ExclusiveGroupStruct, ITypeSafeDictionary> result1)
              == false)
                 return result;
-            if (groupsPerEntity.TryGetValue(TypeRefWrapper<T2>.wrapper
+            if (groupsPerComponent.TryGetValue(TypeRefWrapper<T2>.wrapper
                                           , out FasterDictionary<ExclusiveGroupStruct, ITypeSafeDictionary> result2)
              == false)
                 return result;
@@ -88,13 +88,13 @@ namespace Svelto.ECS
             FasterList<FasterDictionary<ExclusiveGroupStruct, ITypeSafeDictionary>> localArray =
                 localgroups.Value.listOfGroups;
 
-            if (groupsPerEntity.TryGetValue(TypeRefWrapper<T1>.wrapper, out localArray[0]) == false || localArray[0].count == 0)
+            if (groupsPerComponent.TryGetValue(TypeRefWrapper<T1>.wrapper, out localArray[0]) == false || localArray[0].count == 0)
                 return new LocalFasterReadOnlyList<ExclusiveGroupStruct>(
                     FasterReadOnlyList<ExclusiveGroupStruct>.DefaultEmptyList);
-            if (groupsPerEntity.TryGetValue(TypeRefWrapper<T2>.wrapper, out localArray[1]) == false || localArray[1].count == 0)
+            if (groupsPerComponent.TryGetValue(TypeRefWrapper<T2>.wrapper, out localArray[1]) == false || localArray[1].count == 0)
                 return new LocalFasterReadOnlyList<ExclusiveGroupStruct>(
                     FasterReadOnlyList<ExclusiveGroupStruct>.DefaultEmptyList);
-            if (groupsPerEntity.TryGetValue(TypeRefWrapper<T3>.wrapper, out localArray[2]) == false || localArray[2].count == 0)
+            if (groupsPerComponent.TryGetValue(TypeRefWrapper<T3>.wrapper, out localArray[2]) == false || localArray[2].count == 0)
                 return new LocalFasterReadOnlyList<ExclusiveGroupStruct>(
                     FasterReadOnlyList<ExclusiveGroupStruct>.DefaultEmptyList);
 
@@ -141,16 +141,16 @@ namespace Svelto.ECS
             FasterList<FasterDictionary<ExclusiveGroupStruct, ITypeSafeDictionary>> localArray =
                 localgroups.Value.listOfGroups;
 
-            if (groupsPerEntity.TryGetValue(TypeRefWrapper<T1>.wrapper, out localArray[0]) == false || localArray[0].count == 0)
+            if (groupsPerComponent.TryGetValue(TypeRefWrapper<T1>.wrapper, out localArray[0]) == false || localArray[0].count == 0)
                 return new LocalFasterReadOnlyList<ExclusiveGroupStruct>(
                     FasterReadOnlyList<ExclusiveGroupStruct>.DefaultEmptyList);
-            if (groupsPerEntity.TryGetValue(TypeRefWrapper<T2>.wrapper, out localArray[1]) == false || localArray[1].count == 0)
+            if (groupsPerComponent.TryGetValue(TypeRefWrapper<T2>.wrapper, out localArray[1]) == false || localArray[1].count == 0)
                 return new LocalFasterReadOnlyList<ExclusiveGroupStruct>(
                     FasterReadOnlyList<ExclusiveGroupStruct>.DefaultEmptyList);
-            if (groupsPerEntity.TryGetValue(TypeRefWrapper<T3>.wrapper, out localArray[2]) == false || localArray[2].count == 0)
+            if (groupsPerComponent.TryGetValue(TypeRefWrapper<T3>.wrapper, out localArray[2]) == false || localArray[2].count == 0)
                 return new LocalFasterReadOnlyList<ExclusiveGroupStruct>(
                     FasterReadOnlyList<ExclusiveGroupStruct>.DefaultEmptyList);
-            if (groupsPerEntity.TryGetValue(TypeRefWrapper<T4>.wrapper, out localArray[3]) == false || localArray[3].count == 0)
+            if (groupsPerComponent.TryGetValue(TypeRefWrapper<T4>.wrapper, out localArray[3]) == false || localArray[3].count == 0)
                 return new LocalFasterReadOnlyList<ExclusiveGroupStruct>(
                     FasterReadOnlyList<ExclusiveGroupStruct>.DefaultEmptyList);
 
@@ -195,10 +195,10 @@ namespace Svelto.ECS
 
         internal FasterDictionary<ExclusiveGroupStruct, ITypeSafeDictionary> FindGroups_INTERNAL(Type type)
         {
-            if (groupsPerEntity.ContainsKey(new RefWrapperType(type)) == false)
+            if (groupsPerComponent.ContainsKey(new RefWrapperType(type)) == false)
                 return _emptyDictionary;
 
-            return groupsPerEntity[new RefWrapperType(type)];
+            return groupsPerComponent[new RefWrapperType(type)];
         }
 
         struct GroupsList

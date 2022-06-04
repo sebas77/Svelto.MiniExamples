@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.CompilerServices;
 using DBC.ECS;
 using Svelto.Common;
 using Svelto.DataStructures;
@@ -7,17 +8,17 @@ namespace Svelto.ECS.Internal
 {
     public static class TypeSafeDictionaryMethods
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void AddEntitiesToDictionary<Strategy1, Strategy2, Strategy3, TValue>
         (in SveltoDictionary<uint, TValue, Strategy1, Strategy2, Strategy3> fromDictionary
        , ITypeSafeDictionary<TValue> toDic
 #if SLOW_SVELTO_SUBMISSION
-       , in EnginesRoot.EntityReferenceMap entityLocator
-#endif         
-       , ExclusiveGroupStruct toGroupID)
-            where Strategy1 : struct, IBufferStrategy<SveltoDictionaryNode<uint>>
-            where Strategy2 : struct, IBufferStrategy<TValue>
-            where Strategy3 : struct, IBufferStrategy<int>
-            where TValue : struct, IBaseEntityComponent
+, in EnginesRoot.EntityReferenceMap entityLocator
+#endif
+       , ExclusiveGroupStruct toGroupID) where Strategy1 : struct, IBufferStrategy<SveltoDictionaryNode<uint>>
+                                         where Strategy2 : struct, IBufferStrategy<TValue>
+                                         where Strategy3 : struct, IBufferStrategy<int>
+                                         where TValue : struct, IBaseEntityComponent
         {
             foreach (var tuple in fromDictionary)
             {
@@ -48,6 +49,7 @@ namespace Svelto.ECS.Internal
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ExecuteEnginesAddCallbacks<Strategy1, Strategy2, Strategy3, TValue>
         (ref SveltoDictionary<uint, TValue, Strategy1, Strategy2, Strategy3> fromDictionary
        , ITypeSafeDictionary<TValue> todic, ExclusiveGroupStruct togroup
@@ -89,6 +91,7 @@ namespace Svelto.ECS.Internal
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ExecuteEnginesDisposeCallbacks_Group<Strategy1, Strategy2, Strategy3, TValue>
         (ref SveltoDictionary<uint, TValue, Strategy1, Strategy2, Strategy3> fromDictionary
        , FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<IReactOnDispose>>> allEngines
@@ -98,8 +101,8 @@ namespace Svelto.ECS.Internal
             where Strategy3 : struct, IBufferStrategy<int>
             where TValue : struct, IBaseEntityComponent
         {
-            if (allEngines.TryGetValue(new RefWrapperType(TypeCache<TValue>.type)
-                                     , out var entityComponentsEngines) == false)
+            if (allEngines.TryGetValue(new RefWrapperType(TypeCache<TValue>.type), out var entityComponentsEngines)
+             == false)
                 return;
 
             for (var i = 0; i < entityComponentsEngines.count; i++)
@@ -125,6 +128,7 @@ namespace Svelto.ECS.Internal
                 }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ExecuteEnginesRemoveCallbacks<Strategy1, Strategy2, Strategy3, TValue>
         (FasterList<(uint, string)> infostoprocess
        , ref SveltoDictionary<uint, TValue, Strategy1, Strategy2, Strategy3> fromDictionary
@@ -170,6 +174,7 @@ namespace Svelto.ECS.Internal
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ExecuteEnginesRemoveCallbacks_Group<Strategy1, Strategy2, Strategy3, TValue>
         (ref SveltoDictionary<uint, TValue, Strategy1, Strategy2, Strategy3> fromDictionary
        , ITypeSafeDictionary<TValue> typeSafeDictionary
@@ -222,8 +227,8 @@ namespace Svelto.ECS.Internal
                         {
                             ((IReactOnRemoveEx<TValue>)reactiveEnginesRemoveExPerType[i].engine).Remove(
                                 (0, (uint)count)
-                              , new EntityCollection<TValue>(typeSafeDictionary.GetValues(out _), (uint)count
-                                                           , entityids), group);
+                              , new EntityCollection<TValue>(typeSafeDictionary.GetValues(out _), entityids
+                                                           , (uint)count), group);
                         }
                     }
                     catch
@@ -236,6 +241,7 @@ namespace Svelto.ECS.Internal
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ExecuteEnginesSwapCallbacks<Strategy1, Strategy2, Strategy3, TValue>
         (FasterList<(uint, uint, string)> infostoprocess
        , ref SveltoDictionary<uint, TValue, Strategy1, Strategy2, Strategy3> fromDictionary
@@ -278,6 +284,7 @@ namespace Svelto.ECS.Internal
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ExecuteEnginesSwapCallbacks_Group<Strategy1, Strategy2, Strategy3, TValue>
         (ref SveltoDictionary<uint, TValue, Strategy1, Strategy2, Strategy3> fromDictionary
        , ITypeSafeDictionary<TValue> toDic, ExclusiveGroupStruct togroup, ExclusiveGroupStruct fromgroup
@@ -332,8 +339,8 @@ namespace Svelto.ECS.Internal
                         {
                             ((IReactOnSwapEx<TValue>)reactiveEnginesRemoveExPerType[i].engine).MovedTo(
                                 (0, (uint)count)
-                              , new EntityCollection<TValue>(typeSafeDictionary.GetValues(out _), (uint)count
-                                                           , entityids), fromgroup, togroup);
+                              , new EntityCollection<TValue>(typeSafeDictionary.GetValues(out _), entityids
+                                                           , (uint)count), fromgroup, togroup);
                         }
                     }
                     catch
@@ -346,11 +353,11 @@ namespace Svelto.ECS.Internal
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void RemoveEntitiesFromDictionary<Strategy1, Strategy2, Strategy3, TValue>
         (FasterList<(uint, string)> infostoprocess
        , ref SveltoDictionary<uint, TValue, Strategy1, Strategy2, Strategy3> fromDictionary
-       , FasterList<uint> entityIDsAffectedByRemoval
-        )
+       , FasterList<uint> entityIDsAffectedByRemoval)
             where Strategy1 : struct, IBufferStrategy<SveltoDictionaryNode<uint>>
             where Strategy2 : struct, IBufferStrategy<TValue>
             where Strategy3 : struct, IBufferStrategy<int>
@@ -364,15 +371,21 @@ namespace Svelto.ECS.Internal
 
                 try
                 {
-                    var lastIndex = fromDictionary.count - 1;
-                    if (fromDictionary.Remove(id, out var value))
+                    if (fromDictionary.Remove(id, out var index, out var value))
                     {
                         //Note I am doing this to be able to use a range of values even with the 
                         //remove Ex callbacks. Basically I am copying back the deleted value
-                        //at the end of the array, so I can use as range 
-                        //count, count + number of deleted entities
-                        fromDictionary.GetDirectValueByRef((uint)fromDictionary.count) = value;
-                        entityIDsAffectedByRemoval.Add(fromDictionary.unsafeKeys[lastIndex].key);
+                        //at the end of the array, so I can use as range count, count + number of deleted entities
+                        //I need to swap the keys too to have matching EntityIDs
+                        fromDictionary.unsafeValues[(uint)fromDictionary.count] = value;
+                        fromDictionary.unsafeKeys[(uint)fromDictionary.count] = new SveltoDictionaryNode<uint>(ref id, 0);
+                        //when a component is removed from a component array, a remove swap back happens. This means
+                        //that not only we have to remove the index of the component of the entity deleted from the array
+                        //but we need also to update the index of the component that has been swapped in the cell
+                        //of the deleted component 
+                        //entityIDsAffectedByRemoval tracks all the entitiesID of the components that need to be updated
+                        //in the filters because their indices in the array changed. 
+                        entityIDsAffectedByRemoval.Add(fromDictionary.unsafeKeys[index].key);
                     }
                 }
                 catch
@@ -387,6 +400,7 @@ namespace Svelto.ECS.Internal
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void SwapEntitiesBetweenDictionaries<Strategy1, Strategy2, Strategy3, TValue>
         (FasterList<(uint, uint, string)> infostoprocess
        , ref SveltoDictionary<uint, TValue, Strategy1, Strategy2, Strategy3> fromDictionary
@@ -410,17 +424,17 @@ namespace Svelto.ECS.Internal
 
                     Check.Require(togroup.isInvalid == false, "Invalid To Group");
 
-                    var lastIndex = fromDictionary.count - 1;
-                    if (fromDictionary.Remove(fromEntityGid.entityID, out var entity))
-                        entityIDsAffectedByRemoval.Add(fromDictionary.unsafeKeys[lastIndex].key);
+                    if (fromDictionary.Remove(fromEntityGid.entityID, out var index, out var value))
+                        entityIDsAffectedByRemoval.Add(fromDictionary.unsafeKeys[index].key);
                     else
                         Check.Assert(false, "Swapping an entity that doesn't exist");
+
 #if SLOW_SVELTO_SUBMISSION
-                        if (SlowSubmissionInfo<TValue>.hasEgid)
-                            SetEGIDWithoutBoxing<TValue>.SetIDWithoutBoxing(ref entity, toEntityEgid);
+                    if (SlowSubmissionInfo<TValue>.hasEgid)
+                        SetEGIDWithoutBoxing<TValue>.SetIDWithoutBoxing(ref value, toEntityEgid);
 #endif
 
-                    toDictionary.Add(toEntityEgid.entityID, entity);
+                    toDictionary.Add(toEntityEgid.entityID, value);
 
 #if PARANOID_CHECK
                         DBC.ECS.Check.Ensure(_hasEgid == false || ((INeedEGID)toGroupCasted[toEntityEGID.entityID]).ID == toEntityEGID, "impossible situation happened during swap");
@@ -438,10 +452,12 @@ namespace Svelto.ECS.Internal
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ExecuteEnginesAddEntityCallbacksFast<TValue>
         (FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<IReactOnAddEx>>> fasterDictionary
        , ExclusiveGroupStruct groupId, (uint, uint) valueTuple, IEntityIDs entityids
-       , ITypeSafeDictionary<TValue> typeSafeDictionary, PlatformProfiler profiler) where TValue : struct, IBaseEntityComponent
+       , ITypeSafeDictionary<TValue> typeSafeDictionary, PlatformProfiler profiler)
+            where TValue : struct, IBaseEntityComponent
         {
             //get all the engines linked to TValue
             if (!fasterDictionary.TryGetValue(new RefWrapperType(TypeCache<TValue>.type)
@@ -455,8 +471,8 @@ namespace Svelto.ECS.Internal
                     {
                         ((IReactOnAddEx<TValue>)entityComponentsEngines[i].engine).Add(
                             valueTuple
-                          , new EntityCollection<TValue>(typeSafeDictionary.GetValues(out var count), count
-                                                       , entityids), groupId);
+                          , new EntityCollection<TValue>(typeSafeDictionary.GetValues(out var count), entityids, count)
+                          , groupId);
                     }
                 }
                 catch (Exception e)
@@ -468,11 +484,11 @@ namespace Svelto.ECS.Internal
                 }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ExecuteEnginesSwapCallbacksFast<TValue>
         (FasterList<ReactEngineContainer<IReactOnSwapEx>> fasterList, ExclusiveGroupStruct fromGroup
-       , ExclusiveGroupStruct toGroup, IEntityIDs entityids
-       , ITypeSafeDictionary<TValue> typeSafeDictionary, (uint, uint) rangeofsubmittedentitiesindicies
-       , PlatformProfiler sampler)
+       , ExclusiveGroupStruct toGroup, IEntityIDs entityids, ITypeSafeDictionary<TValue> typeSafeDictionary
+       , (uint, uint) rangeofsubmittedentitiesindicies, PlatformProfiler sampler)
             where TValue : struct, IBaseEntityComponent
         {
             for (var i = 0; i < fasterList.count; i++)
@@ -482,10 +498,9 @@ namespace Svelto.ECS.Internal
                     {
                         ((IReactOnSwapEx<TValue>)fasterList[i].engine).MovedTo(rangeofsubmittedentitiesindicies
                                                                              , new EntityCollection<TValue>(
-                                                                                   typeSafeDictionary
-                                                                                      .GetValues(out var count), count
-                                                                                 , entityids), fromGroup
-                                                                             , toGroup);
+                                                                                   typeSafeDictionary.GetValues(
+                                                                                       out var count), entityids, count)
+                                                                             , fromGroup, toGroup);
                     }
                 }
                 catch (Exception e)
@@ -496,6 +511,7 @@ namespace Svelto.ECS.Internal
                 }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ExecuteEnginesRemoveCallbacksFast<TValue>
         (FasterList<ReactEngineContainer<IReactOnRemoveEx>> fasterList, ExclusiveGroupStruct exclusiveGroupStruct
        , (uint, uint) valueTuple, IEntityIDs entityids, ITypeSafeDictionary<TValue> typeSafeDictionary
@@ -508,8 +524,8 @@ namespace Svelto.ECS.Internal
                     {
                         ((IReactOnRemoveEx<TValue>)fasterList[i].engine).Remove(
                             valueTuple
-                          , new EntityCollection<TValue>(typeSafeDictionary.GetValues(out var count), count
-                                                       , entityids), exclusiveGroupStruct);
+                          , new EntityCollection<TValue>(typeSafeDictionary.GetValues(out var count), entityids, count)
+                          , exclusiveGroupStruct);
                     }
                 }
                 catch (Exception e)

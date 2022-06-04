@@ -14,7 +14,7 @@ namespace Svelto.ECS
     {
         internal EntitiesDB(EnginesRoot enginesRoot, EnginesRoot.EntityReferenceMap entityReferencesMap)
         {
-            _enginesRoot   = enginesRoot;
+            _enginesRoot         = enginesRoot;
             _entityReferencesMap = entityReferencesMap;
         }
 
@@ -24,9 +24,9 @@ namespace Svelto.ECS
         {
             uint       count = 0;
             IBuffer<T> buffer;
-            IEntityIDs  ids = default;
+            IEntityIDs ids = default;
             if (SafeQueryEntityDictionary<T>(out var typeSafeDictionary, entitiesInGroupPerType) == false)
-                buffer = RetrieveEmptyEntityComponentArray<T>();
+                buffer = default;
             else
             {
                 ITypeSafeDictionary<T> safeDictionary = (typeSafeDictionary as ITypeSafeDictionary<T>);
@@ -34,7 +34,7 @@ namespace Svelto.ECS
                 ids    = safeDictionary.entityIDs;
             }
 
-            return new EntityCollection<T>(buffer, count, ids);
+            return new EntityCollection<T>(buffer, ids, count);
         }
 
         /// <summary>
@@ -50,8 +50,7 @@ namespace Svelto.ECS
         {
             if (groupEntityComponentsDB.TryGetValue(groupStructId, out var entitiesInGroupPerType) == false)
             {
-                var buffer = RetrieveEmptyEntityComponentArray<T>();
-                return new EntityCollection<T>(buffer, 0);
+                return new EntityCollection<T>(default, default, 0);
             }
 
             return InternalQueryEntities<T>(entitiesInGroupPerType);
@@ -62,9 +61,9 @@ namespace Svelto.ECS
         {
             if (groupEntityComponentsDB.TryGetValue(groupStruct, out var entitiesInGroupPerType) == false)
             {
-                return new EntityCollection<T1, T2>(new EntityCollection<T1>(RetrieveEmptyEntityComponentArray<T1>(), 0)
-                                                  , new EntityCollection<T2>(
-                                                        RetrieveEmptyEntityComponentArray<T2>(), 0));
+                return new EntityCollection<T1, T2>(
+                    new EntityCollection<T1>(default, default, 0)
+                  , new EntityCollection<T2>(default, default, 0));
             }
 
             var T1entities = InternalQueryEntities<T1>(entitiesInGroupPerType);
@@ -81,16 +80,18 @@ namespace Svelto.ECS
 
             return new EntityCollection<T1, T2>(T1entities, T2entities);
         }
-        
+
         public EntityCollection<T1, T2, T3> QueryEntities<T1, T2, T3>(ExclusiveGroupStruct groupStruct)
-            where T1 : struct, IBaseEntityComponent where T2 : struct, IBaseEntityComponent where T3 : struct, IBaseEntityComponent
+            where T1 : struct, IBaseEntityComponent
+            where T2 : struct, IBaseEntityComponent
+            where T3 : struct, IBaseEntityComponent
         {
             if (groupEntityComponentsDB.TryGetValue(groupStruct, out var entitiesInGroupPerType) == false)
             {
                 return new EntityCollection<T1, T2, T3>(
-                    new EntityCollection<T1>(RetrieveEmptyEntityComponentArray<T1>(), 0)
-                  , new EntityCollection<T2>(RetrieveEmptyEntityComponentArray<T2>(), 0)
-                  , new EntityCollection<T3>(RetrieveEmptyEntityComponentArray<T3>(), 0));
+                    new EntityCollection<T1>(default, default, 0)
+                  , new EntityCollection<T2>(default, default, 0)
+                  , new EntityCollection<T3>(default, default, 0));
             }
 
             var T1entities = InternalQueryEntities<T1>(entitiesInGroupPerType);
@@ -119,10 +120,10 @@ namespace Svelto.ECS
             if (groupEntityComponentsDB.TryGetValue(groupStruct, out var entitiesInGroupPerType) == false)
             {
                 return new EntityCollection<T1, T2, T3, T4>(
-                    new EntityCollection<T1>(RetrieveEmptyEntityComponentArray<T1>(), 0)
-                  , new EntityCollection<T2>(RetrieveEmptyEntityComponentArray<T2>(), 0)
-                  , new EntityCollection<T3>(RetrieveEmptyEntityComponentArray<T3>(), 0)
-                  , new EntityCollection<T4>(RetrieveEmptyEntityComponentArray<T4>(), 0));
+                    new EntityCollection<T1>(default, default, 0)
+                  , new EntityCollection<T2>(default, default, 0)
+                  , new EntityCollection<T3>(default, default, 0)
+                  , new EntityCollection<T4>(default, default, 0));
             }
 
             var T1entities = InternalQueryEntities<T1>(entitiesInGroupPerType);
@@ -162,21 +163,20 @@ namespace Svelto.ECS
         {
             return new GroupsEnumerable<T1, T2>(this, groups);
         }
-        
 
         public GroupsEnumerable<T1, T2, T3> QueryEntities<T1, T2, T3>
-            (in LocalFasterReadOnlyList<ExclusiveGroupStruct> groups)
-            where T1 : struct, IBaseEntityComponent where T2 : struct, IBaseEntityComponent where T3 : struct, IBaseEntityComponent
+            (in LocalFasterReadOnlyList<ExclusiveGroupStruct> groups) where T1 : struct, IBaseEntityComponent
+                                                                      where T2 : struct, IBaseEntityComponent
+                                                                      where T3 : struct, IBaseEntityComponent
         {
             return new GroupsEnumerable<T1, T2, T3>(this, groups);
         }
 
         public GroupsEnumerable<T1, T2, T3, T4> QueryEntities<T1, T2, T3, T4>
-            (in LocalFasterReadOnlyList<ExclusiveGroupStruct> groups)
-            where T1 : struct, IBaseEntityComponent
-            where T2 : struct, IBaseEntityComponent
-            where T3 : struct, IBaseEntityComponent
-            where T4 : struct, IBaseEntityComponent
+            (in LocalFasterReadOnlyList<ExclusiveGroupStruct> groups) where T1 : struct, IBaseEntityComponent
+                                                                      where T2 : struct, IBaseEntityComponent
+                                                                      where T3 : struct, IBaseEntityComponent
+                                                                      where T4 : struct, IBaseEntityComponent
         {
             return new GroupsEnumerable<T1, T2, T3, T4>(this, groups);
         }
@@ -227,7 +227,7 @@ namespace Svelto.ECS
         public bool ExistsAndIsNotEmpty(ExclusiveGroupStruct gid)
         {
             if (groupEntityComponentsDB.TryGetValue(
-                gid, out FasterDictionary<RefWrapperType, ITypeSafeDictionary> group) == true)
+                    gid, out FasterDictionary<RefWrapperType, ITypeSafeDictionary> group) == true)
             {
                 return group.count > 0;
             }
@@ -247,12 +247,12 @@ namespace Svelto.ECS
             if (SafeQueryEntityDictionary<T>(groupStruct, out var typeSafeDictionary) == false)
                 return 0;
 
-            return (int) typeSafeDictionary.count;
+            return (int)typeSafeDictionary.count;
         }
 
         public bool FoundInGroups<T1>() where T1 : IBaseEntityComponent
         {
-            return groupsPerEntity.ContainsKey(TypeRefWrapper<T1>.wrapper);
+            return groupsPerComponent.ContainsKey(TypeRefWrapper<T1>.wrapper);
         }
 
         public bool IsDisposing => _enginesRoot._isDisposing;
@@ -306,33 +306,6 @@ namespace Svelto.ECS
             return entitiesInGroupPerType.TryGetValue(new RefWrapperType(type), out typeSafeDictionary);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static IBuffer<T> RetrieveEmptyEntityComponentArray<T>() where T : struct, IBaseEntityComponent
-        {
-            return EmptyList<T>.emptyArray;
-        }
-
-        static class EmptyList<T> where T : struct, IBaseEntityComponent
-        {
-            internal static readonly IBuffer<T> emptyArray;
-
-            static EmptyList()
-            {
-                if (ComponentBuilder<T>.IS_ENTITY_VIEW_COMPONENT)
-                {
-                    MB<T> b = default;
-
-                    emptyArray = b;
-                }
-                else
-                {
-                    NB<T> b = default;
-
-                    emptyArray = b;
-                }
-            }
-        }
-
         static readonly FasterDictionary<ExclusiveGroupStruct, ITypeSafeDictionary> _emptyDictionary =
             new FasterDictionary<ExclusiveGroupStruct, ITypeSafeDictionary>();
 
@@ -351,7 +324,7 @@ namespace Svelto.ECS
         //found indexed by group id. TypeSafeDictionary are never created, they instead point to the ones hold
         //by _groupEntityComponentsDB
         //                        <EntityComponentType                            <groupID  <entityID, EntityComponent>>>
-        FasterDictionary<RefWrapperType, FasterDictionary<ExclusiveGroupStruct, ITypeSafeDictionary>> groupsPerEntity =>
+        FasterDictionary<RefWrapperType, FasterDictionary<ExclusiveGroupStruct, ITypeSafeDictionary>> groupsPerComponent =>
             _enginesRoot._groupsPerEntity;
 
         EnginesRoot.EntityReferenceMap _entityReferencesMap;

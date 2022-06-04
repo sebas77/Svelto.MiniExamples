@@ -158,6 +158,7 @@ namespace Svelto.ECS.Internal
         /// *********************************
         /// the following methods are executed during the submission of entities
         /// *********************************
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void AddEntitiesToDictionary
         (ITypeSafeDictionary toDictionary, ExclusiveGroupStruct groupId
 #if SLOW_SVELTO_SUBMISSION
@@ -188,14 +189,13 @@ namespace Svelto.ECS.Internal
        , FasterList<uint> entityIDsAffectedByRemoval)
         {
             TypeSafeDictionaryMethods.SwapEntitiesBetweenDictionaries(infosToProcess, ref implUnmgd.value
-                                                                    , toComponentsDictionary as
-                                                                          ITypeSafeDictionary<TValue>, fromGroup
-                                                                    , toGroup, entityIDsAffectedByRemoval);
+                ,toComponentsDictionary as ITypeSafeDictionary<TValue>, fromGroup, toGroup, entityIDsAffectedByRemoval);
         }
 
         /// <summary>
         ///     Execute all the engine IReactOnAdd callbacks linked to components added this submit
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ExecuteEnginesAddCallbacks
         (FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<IReactOnAdd>>> entityComponentEnginesDB
        , ITypeSafeDictionary toDic, ExclusiveGroupStruct toGroup, in PlatformProfiler profiler)
@@ -207,6 +207,7 @@ namespace Svelto.ECS.Internal
         /// <summary>
         ///     Execute all the engine IReactOnSwap callbacks linked to components swapped this submit
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ExecuteEnginesSwapCallbacks
         (FasterList<(uint, uint, string)> infosToProcess
        , FasterList<ReactEngineContainer<IReactOnSwap>> reactiveEnginesSwap, ExclusiveGroupStruct fromGroup
@@ -219,6 +220,7 @@ namespace Svelto.ECS.Internal
         /// <summary>
         ///     Execute all the engine IReactOnREmove callbacks linked to components removed this submit
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ExecuteEnginesRemoveCallbacks
         (FasterList<(uint, string)> infosToProcess
        , FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<IReactOnRemove>>> reactiveEnginesRemove
@@ -231,6 +233,7 @@ namespace Svelto.ECS.Internal
         /// <summary>
         ///     Execute all the engine IReactOnAddEx callbacks linked to components added this submit
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ExecuteEnginesAddEntityCallbacksFast
         (FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<IReactOnAddEx>>> reactiveEnginesAdd
        , ExclusiveGroupStruct groupID, (uint, uint) rangeOfSubmittedEntitiesIndicies, in PlatformProfiler profiler)
@@ -242,6 +245,7 @@ namespace Svelto.ECS.Internal
         /// <summary>
         ///     Execute all the engine IReactOnSwapEx callbacks linked to components swapped this submit
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ExecuteEnginesSwapCallbacksFast
         (FasterList<ReactEngineContainer<IReactOnSwapEx>> reactiveEnginesSwap, ExclusiveGroupStruct fromGroup
        , ExclusiveGroupStruct toGroup, (uint, uint) rangeOfSubmittedEntitiesIndicies, in PlatformProfiler sampler)
@@ -253,6 +257,7 @@ namespace Svelto.ECS.Internal
         /// <summary>
         ///     Execute all the engine IReactOnRemoveEx callbacks linked to components removed this submit
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ExecuteEnginesRemoveCallbacksFast
         (FasterList<ReactEngineContainer<IReactOnRemoveEx>> reactiveEnginesRemoveEx, ExclusiveGroupStruct fromGroup
        , (uint, uint) rangeOfSubmittedEntitiesIndicies, in PlatformProfiler sampler)
@@ -266,6 +271,7 @@ namespace Svelto.ECS.Internal
         ///     Execute all the engine IReactOnSwap and IReactOnSwapEx callbacks linked to components swapped between
         ///     whole groups swapped during this submit
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ExecuteEnginesSwapCallbacks_Group
         (FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<IReactOnSwap>>> reactiveEnginesSwap
        , FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<IReactOnSwapEx>>> reactiveEnginesSwapEx
@@ -281,6 +287,7 @@ namespace Svelto.ECS.Internal
         ///     Execute all the engine IReactOnRemove and IReactOnRemoveEx callbacks linked to components remove from
         ///     whole groups removed during this submit
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ExecuteEnginesRemoveCallbacks_Group
         (FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<IReactOnRemove>>> reactiveEnginesRemove
        , FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<IReactOnRemoveEx>>> reactiveEnginesRemoveEx
@@ -294,6 +301,7 @@ namespace Svelto.ECS.Internal
         /// <summary>
         ///     Execute all the engine IReactOnDispose for eahc component registered in the DB when it's disposed of
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ExecuteEnginesDisposeCallbacks_Group
         (FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<IReactOnDispose>>> engines
        , ExclusiveGroupStruct group, in PlatformProfiler profiler)

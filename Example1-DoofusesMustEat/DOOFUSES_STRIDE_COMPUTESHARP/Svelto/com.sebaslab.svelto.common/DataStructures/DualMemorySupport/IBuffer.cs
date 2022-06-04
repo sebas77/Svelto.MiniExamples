@@ -1,5 +1,3 @@
-using System;
-
 namespace Svelto.DataStructures
 {
     public interface IBufferBase
