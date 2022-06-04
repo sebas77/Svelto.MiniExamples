@@ -51,13 +51,7 @@ namespace Svelto.ECS.Native
                     LocalFasterReadOnlyList<ExclusiveGroupStruct> groups, Allocator allocator)
             where T : unmanaged, IBaseEntityComponent
         {
-            var dictionary = new SveltoDictionary<
-                    /*key  */ExclusiveGroupStruct,  
-                    /*value*/SharedDisposableNative<SveltoDictionary<uint, T, NativeStrategy<SveltoDictionaryNode<uint>>, NativeStrategy<T>, NativeStrategy<int>>>, 
-                    /*strategy to store the key*/  NativeStrategy<SveltoDictionaryNode<ExclusiveGroupStruct>>, 
-                    /*strategy to store the value*/NativeStrategy<
-                             SharedDisposableNative<SveltoDictionary<uint, T, NativeStrategy<SveltoDictionaryNode<uint>>, NativeStrategy<T>, NativeStrategy<int>>>>
-                  , NativeStrategy<int>>  
+            var dictionary = new SveltoDictionaryNative<ExclusiveGroupStruct, SharedSveltoDictionaryNative<uint, T>>  
                     ((uint) groups.count, allocator);
         
             foreach (var group in groups)

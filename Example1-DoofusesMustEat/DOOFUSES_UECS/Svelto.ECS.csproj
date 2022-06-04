@@ -74,6 +74,7 @@
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\AssemblyUtility.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\EntityDescriptorTemplate.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\ComponentBuilder.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.ecs\obj\Debug\netstandard2.0\Svelto.ECS.AssemblyInfo.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\EntityReference\EntityReference.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\DOTS\UECS\EntityCommandBufferForSvelto.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Serialization\DefaultVersioningFactory.cs" />
@@ -186,7 +187,6 @@
      <Compile Include="Packages\com.sebaslab.svelto.ecs\DataStructures\TypeSafeDictionaryMethods.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\DataStructures\EntityIDs\IEntityIDs.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Svelto\EntitiesDBFiltersExtension.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\GameObjects\Implementors\EntityReferenceHolderImplementor.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\SimpleEntitiesSubmissionScheduler.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Svelto\EGIDMultiMapper.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\DOTS\UECS\SveltoOnDOTSEnginesGroup.cs" />
@@ -223,6 +223,9 @@
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Groups\EntityGroupNotFoundException.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\EnginesRoot.DoubleBufferedEntitiesToAdd.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\EnginesGroup\UnsortedEnginesGroup.cs" />
+     <None Include="Packages\com.sebaslab.svelto.ecs\obj\project.packagespec.json" />
+     <None Include="Packages\com.sebaslab.svelto.ecs\obj\Svelto.ECS.csproj.nuget.dgspec.json" />
+     <None Include="Packages\com.sebaslab.svelto.ecs\obj\project.assets.json" />
      <None Include="Packages\com.sebaslab.svelto.ecs\version.json" />
      <None Include="Packages\com.sebaslab.svelto.ecs\Svelto.ECS.asmdef" />
      <None Include="Packages\com.sebaslab.svelto.ecs\package.json" />

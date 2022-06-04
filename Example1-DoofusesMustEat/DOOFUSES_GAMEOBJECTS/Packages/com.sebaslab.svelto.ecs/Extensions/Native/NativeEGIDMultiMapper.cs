@@ -16,15 +16,7 @@ namespace Svelto.ECS.Native
     /// </summary>
     public struct NativeEGIDMultiMapper<T> : IDisposable where T : unmanaged, IBaseEntityComponent
     {
-        public NativeEGIDMultiMapper(in SveltoDictionary<
-            /*key  */ExclusiveGroupStruct,
-            /*value*/
-            SharedDisposableNative<SveltoDictionary<uint, T, NativeStrategy<SveltoDictionaryNode<uint>>, NativeStrategy<T>,
-                NativeStrategy<int>>>,
-            /*strategy to store the key*/ NativeStrategy<SveltoDictionaryNode<ExclusiveGroupStruct>>,
-            /*strategy to store the value*/
-            NativeStrategy<SharedDisposableNative<SveltoDictionary<uint, T, NativeStrategy<SveltoDictionaryNode<uint>>,
-                NativeStrategy<T>, NativeStrategy<int>>>>, NativeStrategy<int>> dictionary)
+        public NativeEGIDMultiMapper(in SveltoDictionaryNative<ExclusiveGroupStruct, SharedSveltoDictionaryNative<uint, T>> dictionary)
         {
             _dic = dictionary;
         }
@@ -43,7 +35,7 @@ namespace Svelto.ECS.Native
                 throw new Exception($"NativeEGIDMultiMapper: Entity not found {entity}");
 #endif
             ref var sveltoDictionary = ref _dic.GetValueByRef(entity.groupID);
-            return ref sveltoDictionary.value.GetValueByRef(entity.entityID);
+            return ref sveltoDictionary.dictionary.GetValueByRef(entity.entityID);
         }
 
         public uint GetIndex(EGID entity)
@@ -53,26 +45,22 @@ namespace Svelto.ECS.Native
                 throw new Exception($"NativeEGIDMultiMapper: Entity not found {entity}");
 #endif
             ref var sveltoDictionary = ref _dic.GetValueByRef(entity.groupID);
-            return sveltoDictionary.value.GetIndex(entity.entityID);
+            return sveltoDictionary.dictionary.GetIndex(entity.entityID);
         }
 
         public bool Exists(EGID entity)
         {
             return _dic.TryFindIndex(entity.groupID, out var index) &&
-                _dic.GetDirectValueByRef(index).value.ContainsKey(entity.entityID);
+                _dic.GetDirectValueByRef(index).dictionary.ContainsKey(entity.entityID);
         }
 
         public bool TryGetEntity(EGID entity, out T component)
         {
             component = default;
             return _dic.TryFindIndex(entity.groupID, out var index) &&
-                _dic.GetDirectValueByRef(index).value.TryGetValue(entity.entityID, out component);
+                _dic.GetDirectValueByRef(index).dictionary.TryGetValue(entity.entityID, out component);
         }
 
-        SveltoDictionary<ExclusiveGroupStruct,
-            SharedDisposableNative<SveltoDictionary<uint, T, NativeStrategy<SveltoDictionaryNode<uint>>, NativeStrategy<T>,
-                NativeStrategy<int>>>, NativeStrategy<SveltoDictionaryNode<ExclusiveGroupStruct>>, NativeStrategy<
-                SharedDisposableNative<SveltoDictionary<uint, T, NativeStrategy<SveltoDictionaryNode<uint>>, NativeStrategy<T>,
-                    NativeStrategy<int>>>>, NativeStrategy<int>> _dic;
+        SveltoDictionaryNative<ExclusiveGroupStruct, SharedSveltoDictionaryNative<uint, T>> _dic;
     }
 }

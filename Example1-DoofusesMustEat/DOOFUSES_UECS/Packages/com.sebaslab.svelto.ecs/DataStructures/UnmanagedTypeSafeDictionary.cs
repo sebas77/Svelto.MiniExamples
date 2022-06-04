@@ -29,10 +29,7 @@ namespace Svelto.ECS.Internal
         public UnmanagedTypeSafeDictionary(uint size)
         {
             implUnmgd =
-                new SharedDisposableNative<SveltoDictionary<uint, TValue, NativeStrategy<SveltoDictionaryNode<uint>>,
-                    NativeStrategy<TValue>, NativeStrategy<int>>>(
-                    new SveltoDictionary<uint, TValue, NativeStrategy<SveltoDictionaryNode<uint>>,
-                        NativeStrategy<TValue>, NativeStrategy<int>>(size, Allocator.Persistent));
+                new SharedSveltoDictionaryNative<uint, TValue>(size, Allocator.Persistent);
         }
 
         public IEntityIDs entityIDs
@@ -41,7 +38,7 @@ namespace Svelto.ECS.Internal
             {
                 ref var unboxed = ref Unsafe.Unbox<NativeEntityIDs>(cachedEntityIDN.Value);
 
-                unboxed.Update(implUnmgd.value.unsafeKeys.ToRealBuffer());
+                unboxed.Update(implUnmgd.dictionary.unsafeKeys.ToRealBuffer());
 
                 return cachedEntityIDN.Value;
             }
@@ -50,60 +47,60 @@ namespace Svelto.ECS.Internal
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool ContainsKey(uint egidEntityId)
         {
-            return implUnmgd.value.ContainsKey(egidEntityId);
+            return implUnmgd.dictionary.ContainsKey(egidEntityId);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public uint GetIndex(uint valueEntityId)
         {
-            return implUnmgd.value.GetIndex(valueEntityId);
+            return implUnmgd.dictionary.GetIndex(valueEntityId);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref TValue GetOrAdd(uint idEntityId)
         {
-            return ref implUnmgd.value.GetOrAdd(idEntityId);
+            return ref implUnmgd.dictionary.GetOrAdd(idEntityId);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public IBuffer<TValue> GetValues(out uint count)
         {
-            return implUnmgd.value.UnsafeGetValues(out count);
+            return implUnmgd.dictionary.UnsafeGetValues(out count);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref TValue GetDirectValueByRef(uint key)
         {
-            return ref implUnmgd.value.GetDirectValueByRef(key);
+            return ref implUnmgd.dictionary.GetDirectValueByRef(key);
         }
 
         public ref TValue GetValueByRef(uint key)
         {
-            return ref implUnmgd.value.GetValueByRef(key);
+            return ref implUnmgd.dictionary.GetValueByRef(key);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Has(uint key)
         {
-            return implUnmgd.value.ContainsKey(key);
+            return implUnmgd.dictionary.ContainsKey(key);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool TryFindIndex(uint entityId, out uint index)
         {
-            return implUnmgd.value.TryFindIndex(entityId, out index);
+            return implUnmgd.dictionary.TryFindIndex(entityId, out index);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool TryGetValue(uint entityId, out TValue item)
         {
-            return implUnmgd.value.TryGetValue(entityId, out item);
+            return implUnmgd.dictionary.TryGetValue(entityId, out item);
         }
 
         public int count
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => implUnmgd.value.count;
+            get => implUnmgd.dictionary.count;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -115,37 +112,37 @@ namespace Svelto.ECS.Internal
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Clear()
         {
-            implUnmgd.value.FastClear();
+            implUnmgd.dictionary.FastClear();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void EnsureCapacity(uint size)
         {
-            implUnmgd.value.EnsureCapacity(size);
+            implUnmgd.dictionary.EnsureCapacity(size);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void IncreaseCapacityBy(uint size)
         {
-            implUnmgd.value.IncreaseCapacityBy(size);
+            implUnmgd.dictionary.IncreaseCapacityBy(size);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Trim()
         {
-            implUnmgd.value.Trim();
+            implUnmgd.dictionary.Trim();
         }
 
         public void KeysEvaluator(Action<uint> action)
         {
-            foreach (var key in implUnmgd.value.keys)
+            foreach (var key in implUnmgd.dictionary.keys)
                 action(key);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Add(uint egidEntityId, in TValue entityComponent)
         {
-            implUnmgd.value.Add(egidEntityId, entityComponent);
+            implUnmgd.dictionary.Add(egidEntityId, entityComponent);
         }
 
         public void Dispose()
@@ -167,7 +164,7 @@ namespace Svelto.ECS.Internal
         )
 
         {
-            TypeSafeDictionaryMethods.AddEntitiesToDictionary(implUnmgd.value
+            TypeSafeDictionaryMethods.AddEntitiesToDictionary(implUnmgd.dictionary
                                                             , toDictionary as ITypeSafeDictionary<TValue>
 #if SLOW_SVELTO_SUBMISSION
                                                             , entityLocator
@@ -179,7 +176,7 @@ namespace Svelto.ECS.Internal
         public void RemoveEntitiesFromDictionary
             (FasterList<(uint, string)> infosToProcess, FasterList<uint> entityIDsAffectedByRemoval)
         {
-            TypeSafeDictionaryMethods.RemoveEntitiesFromDictionary(infosToProcess, ref implUnmgd.value
+            TypeSafeDictionaryMethods.RemoveEntitiesFromDictionary(infosToProcess, ref implUnmgd.dictionary
                                                                  , entityIDsAffectedByRemoval);
         }
 
@@ -188,7 +185,7 @@ namespace Svelto.ECS.Internal
        , ExclusiveGroupStruct toGroup, ITypeSafeDictionary toComponentsDictionary
        , FasterList<uint> entityIDsAffectedByRemoval)
         {
-            TypeSafeDictionaryMethods.SwapEntitiesBetweenDictionaries(infosToProcess, ref implUnmgd.value
+            TypeSafeDictionaryMethods.SwapEntitiesBetweenDictionaries(infosToProcess, ref implUnmgd.dictionary
                 ,toComponentsDictionary as ITypeSafeDictionary<TValue>, fromGroup, toGroup, entityIDsAffectedByRemoval);
         }
 
@@ -200,7 +197,7 @@ namespace Svelto.ECS.Internal
         (FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<IReactOnAdd>>> entityComponentEnginesDB
        , ITypeSafeDictionary toDic, ExclusiveGroupStruct toGroup, in PlatformProfiler profiler)
         {
-            TypeSafeDictionaryMethods.ExecuteEnginesAddCallbacks(ref implUnmgd.value, (ITypeSafeDictionary<TValue>)toDic
+            TypeSafeDictionaryMethods.ExecuteEnginesAddCallbacks(ref implUnmgd.dictionary, (ITypeSafeDictionary<TValue>)toDic
                                                                , toGroup, entityComponentEnginesDB, in profiler);
         }
 
@@ -213,7 +210,7 @@ namespace Svelto.ECS.Internal
        , FasterList<ReactEngineContainer<IReactOnSwap>> reactiveEnginesSwap, ExclusiveGroupStruct fromGroup
        , ExclusiveGroupStruct toGroup, in PlatformProfiler profiler)
         {
-            TypeSafeDictionaryMethods.ExecuteEnginesSwapCallbacks(infosToProcess, ref implUnmgd.value
+            TypeSafeDictionaryMethods.ExecuteEnginesSwapCallbacks(infosToProcess, ref implUnmgd.dictionary
                                                                 , reactiveEnginesSwap, toGroup, fromGroup, in profiler);
         }
 
@@ -226,7 +223,7 @@ namespace Svelto.ECS.Internal
        , FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<IReactOnRemove>>> reactiveEnginesRemove
        , ExclusiveGroupStruct fromGroup, in PlatformProfiler sampler)
         {
-            TypeSafeDictionaryMethods.ExecuteEnginesRemoveCallbacks(infosToProcess, ref implUnmgd.value
+            TypeSafeDictionaryMethods.ExecuteEnginesRemoveCallbacks(infosToProcess, ref implUnmgd.dictionary
                                                                   , reactiveEnginesRemove, fromGroup, in sampler);
         }
 
@@ -279,7 +276,7 @@ namespace Svelto.ECS.Internal
        , in PlatformProfiler profiler)
         {
             TypeSafeDictionaryMethods.ExecuteEnginesSwapCallbacks_Group(
-                ref implUnmgd.value, (ITypeSafeDictionary<TValue>)toDictionary, toGroup, fromGroup, this
+                ref implUnmgd.dictionary, (ITypeSafeDictionary<TValue>)toDictionary, toGroup, fromGroup, this
               , reactiveEnginesSwap, reactiveEnginesSwapEx, count, entityIDs, in profiler);
         }
 
@@ -294,7 +291,7 @@ namespace Svelto.ECS.Internal
        , ExclusiveGroupStruct group, in PlatformProfiler profiler)
         {
             TypeSafeDictionaryMethods.ExecuteEnginesRemoveCallbacks_Group(
-                ref implUnmgd.value, this, reactiveEnginesRemove, reactiveEnginesRemoveEx, count, entityIDs, group
+                ref implUnmgd.dictionary, this, reactiveEnginesRemove, reactiveEnginesRemoveEx, count, entityIDs, group
               , in profiler);
         }
 
@@ -307,10 +304,9 @@ namespace Svelto.ECS.Internal
        , ExclusiveGroupStruct group, in PlatformProfiler profiler)
         {
             TypeSafeDictionaryMethods.ExecuteEnginesDisposeCallbacks_Group(
-                ref implUnmgd.value, engines, group, in profiler);
+                ref implUnmgd.dictionary, engines, group, in profiler);
         }
 
-        internal SharedDisposableNative<SveltoDictionary<uint, TValue, NativeStrategy<SveltoDictionaryNode<uint>>,
-            NativeStrategy<TValue>, NativeStrategy<int>>> implUnmgd;
+        internal SharedSveltoDictionaryNative<uint, TValue> implUnmgd;
     }
 }

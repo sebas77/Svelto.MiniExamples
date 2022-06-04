@@ -57,6 +57,7 @@
      <Compile Include="Packages\com.sebaslab.svelto.common\ObjectPool\IObjectPoolDebug.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\Command\ICommandFactory.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\HashHelpers.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.common\obj\Debug\netstandard2.0\Svelto.Common.AssemblyInfo.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\ThreadSafeStack.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\Context\ContextNotifier.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\ObjectPool\ThreadSafeObjectPool.cs" />
@@ -114,8 +115,11 @@
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\DualMemorySupport\IBufferStrategy.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Dictionaries\FasterDictionary.cs" />
      <None Include="Packages\com.sebaslab.svelto.common\Svelto.Common.asmdef" />
+     <None Include="Packages\com.sebaslab.svelto.common\obj\project.packagespec.json" />
+     <None Include="Packages\com.sebaslab.svelto.common\obj\Svelto.Common.csproj.nuget.dgspec.json" />
      <None Include="Packages\com.sebaslab.svelto.common\version.json" />
      <None Include="Packages\com.sebaslab.svelto.common\package.json" />
+     <None Include="Packages\com.sebaslab.svelto.common\obj\project.assets.json" />
      <Reference Include="UnityEngine">
      <HintPath>C:\Program Files\Unity\Hub\Editor\2020.3.33f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
      </Reference>

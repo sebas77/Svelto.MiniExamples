@@ -178,7 +178,6 @@
      <Compile Include="Packages\com.sebaslab.svelto.ecs\DataStructures\TypeSafeDictionaryMethods.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\DataStructures\EntityIDs\IEntityIDs.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Svelto\EntitiesDBFiltersExtension.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\GameObjects\Implementors\EntityReferenceHolderImplementor.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\SimpleEntitiesSubmissionScheduler.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Svelto\EGIDMultiMapper.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\DOTS\UECS\SveltoOnDOTSEnginesGroup.cs" />
