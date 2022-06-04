@@ -1,7 +1,8 @@
 using System;
 using System.Collections;
+using System.Threading;
 using Svelto.Common;
-using Svelto.ECS.MiniExamples.GameObjectsLayer;
+using Svelto.ECS.Miniexamples.Doofuses.GameObjectsLayer;
 using Svelto.ECS.Native;
 using Svelto.ECS.SveltoOnDOTS;
 using Unity.Burst;
@@ -11,12 +12,12 @@ using Unity.Mathematics;
 using UnityEngine;
 using Random = Unity.Mathematics.Random;
 
-namespace Svelto.ECS.MiniExamples.Example1C
+namespace Svelto.ECS.Miniexamples.Doofuses.Gameobjects
 {
     [Sequenced(nameof(DoofusesEngineNames.PlaceFoodOnClickEngine))]
     public class PlaceFoodOnClickEngine : IQueryingEntitiesEngine, IJobifiedEngine
     {
-        const int MaxMeals = 500;
+        const int MaxMeals = 250;
 
         public PlaceFoodOnClickEngine(int redfood, int bluefood, IEntityFactory entityFactory)
         {
@@ -30,13 +31,13 @@ namespace Svelto.ECS.MiniExamples.Example1C
 
         IEnumerator CheckClick()
         {
-            _inputDeps = default;
-
+            var threadLocalRandom = new ThreadLocalRandom(256);
+            
             while (true)
             {
                 //note: in a complex project an engine shouldn't ever poll input directly, it should instead poll
                 //entity states
-                if (Input.GetMouseButton(0) || Input.GetMouseButton(2) == true)
+                if (Input.GetMouseButton(0) || Input.GetMouseButton(1) == true)
                 {
                     //I am cheating a bit with the MouseToPosition function, but for the purposes of this demo
                     //creating a Camera Entity was an overkill
@@ -46,13 +47,13 @@ namespace Svelto.ECS.MiniExamples.Example1C
                         {
                             _inputDeps =
                                 new PlaceFood(position, _entityFactory, GameGroups.RED_FOOD_NOT_EATEN.BuildGroup
-                                  , _redfood, _foodPlaced).ScheduleParallel(MaxMeals, _inputDeps);
+                                  , _redfood, _foodPlaced, threadLocalRandom).ScheduleParallel(MaxMeals, _inputDeps);
                         }
                         else
                         {
                             _inputDeps =
                                 new PlaceFood(position, _entityFactory, GameGroups.BLUE_FOOD_NOT_EATEN.BuildGroup
-                                  , _bluefood, _foodPlaced).ScheduleParallel(MaxMeals, _inputDeps);
+                                  , _bluefood, _foodPlaced, threadLocalRandom).ScheduleParallel(MaxMeals, _inputDeps);
                         }
 
                         _foodPlaced += MaxMeals;
@@ -70,38 +71,36 @@ namespace Svelto.ECS.MiniExamples.Example1C
         [BurstCompile]
         struct PlaceFood : IJobParallelFor
         {
-            readonly                        Vector3                  _position;
-            readonly                        NativeEntityFactory      _entityFactory;
-            readonly                        ExclusiveBuildGroup      _exclusiveBuildGroup;
-            readonly                        int                      _prefabID;
-            readonly                        uint                     _foodPlaced;
-            public                          Unity.Mathematics.Random _random;
-            [NativeSetThreadIndex] readonly int                      _threadIndex;
+            readonly Vector3                    _position;
+            readonly NativeEntityFactory        _entityFactory;
+            readonly ExclusiveBuildGroup        _exclusiveBuildGroup;
+            readonly int                        _prefabID;
+            readonly uint                       _foodPlaced;
+            readonly ThreadLocalRandom          _threadLocalRandom;
+            [NativeSetThreadIndex] readonly int _threadIndex;
 
             public PlaceFood
             (Vector3 position, NativeEntityFactory factory, ExclusiveBuildGroup exclusiveBuildGroup, int prefabID
-           , uint foodPlaced) : this()
+           , uint foodPlaced, ThreadLocalRandom threadLocalRandom) : this()
             {
                 _position            = position;
                 _entityFactory       = factory;
                 _exclusiveBuildGroup = exclusiveBuildGroup;
                 _prefabID            = prefabID;
                 _foodPlaced          = foodPlaced;
-                _random              = new Random(foodPlaced + 1);
+                _threadLocalRandom   = threadLocalRandom;
             }
 
             public void Execute(int index)
             {
-                //BuildEntity returns an EntityInitialized that is used to set the default values of the
-                //entity that will be built.
-                NativeEntityInitializer init;
-
-                var randX       = _position.x + _random.NextFloat(-50, 50);
-                var randZ       = _position.z + _random.NextFloat(-50, 50);
+                var randX       = _position.x + _threadLocalRandom.Next(-50, 50, _threadIndex);
+                var randZ       = _position.z + _threadLocalRandom.Next(-50, 50, _threadIndex);
                 var newposition = new float3(randX, _position.y, randZ);
 
-                init = _entityFactory.BuildEntity(new EGID((uint) (_foodPlaced + index), _exclusiveBuildGroup)
-                                                , _threadIndex);
+                //BuildEntity returns an EntityInitialized that is used to set the default values of the
+                //entity that will be built.
+                var init = _entityFactory.BuildEntity(new EGID((uint) (_foodPlaced + index), _exclusiveBuildGroup)
+                                                    , _threadIndex);
 
                 init.Init(new PositionEntityComponent
                 {

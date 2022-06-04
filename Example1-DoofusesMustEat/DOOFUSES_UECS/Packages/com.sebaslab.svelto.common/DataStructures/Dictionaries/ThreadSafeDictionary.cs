@@ -3,6 +3,13 @@ using System.Runtime.CompilerServices;
 
 namespace Svelto.DataStructures
 {
+    /// <summary>
+    /// Remember: concurrent dictionary allocates for each node add in the dictionary for each TValue that is not
+    /// recognised as atomic (64bit max). This is the reason I keep this around. For all the atomic TValues
+    /// Concurrent dictionary should be used
+    /// </summary>
+    /// <typeparam name="TKey"></typeparam>
+    /// <typeparam name="TValue"></typeparam>
     public sealed class ThreadSafeDictionary<TKey, TValue> : IDisposable where TKey : struct, IEquatable<TKey>
     {
         public ThreadSafeDictionary(int size)
@@ -288,12 +295,12 @@ namespace Svelto.DataStructures
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool TryRemove(TKey key, out TValue o)
+        public bool TryRemove(TKey key)
         {
             _lockQ.EnterWriteLock();
             try
             {
-                return _dict.Remove(key, out o);
+                return _dict.Remove(key);
             }
             finally
             {

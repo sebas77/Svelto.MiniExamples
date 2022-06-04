@@ -2,12 +2,12 @@ namespace Svelto.DataStructures
 {
     public ref struct FasterListEnumerator<T>
     {
-        public T Current
+        public ref T Current
         {
             get
             {
                 DBC.Common.Check.Require(_counter <= _size);
-                return _buffer[(uint)_counter - 1];
+                return ref _buffer[(uint)_counter - 1];
             }
         }
 

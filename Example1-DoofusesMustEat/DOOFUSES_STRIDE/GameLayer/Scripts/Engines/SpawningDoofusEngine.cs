@@ -27,14 +27,14 @@ namespace Svelto.ECS.MiniExamples.Doofuses.Stride
             {
                 _group   = GameGroups.RED_DOOFUSES_NOT_EATING.BuildGroup
               , _factory = _factory, _random = new Random(123456)
-              , _entity  = _redCapsule
+              , _prefabID  = _redCapsule
             }.Execute();
 
             new SpawningJob()
             {
                 _group    = GameGroups.BLUE_DOOFUSES_NOT_EATING.BuildGroup
               , _factory  = _factory, _random = new Random(987654321)
-              , _entity = _blueCapsule
+              , _prefabID = _blueCapsule
             }.Execute();
 
             //Yeah this shouldn't be solved like this, but I keep it in this way for simplicity sake 
@@ -58,7 +58,7 @@ namespace Svelto.ECS.MiniExamples.Doofuses.Stride
             internal IEntityFactory      _factory;
             internal ExclusiveBuildGroup _group;
             internal Random              _random;
-            internal uint                _entity;
+            internal uint                _prefabID;
 
             public void Execute()
             {
@@ -79,7 +79,7 @@ namespace Svelto.ECS.MiniExamples.Doofuses.Stride
                     });
                     init.Init(new StrideComponent()
                     {
-                        instancingEntity = _entity
+                        prefabID = _prefabID
                     });
                 }
             }

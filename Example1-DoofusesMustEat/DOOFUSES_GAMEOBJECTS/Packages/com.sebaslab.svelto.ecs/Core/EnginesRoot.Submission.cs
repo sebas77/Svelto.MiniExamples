@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Svelto.Common;
 using Svelto.DataStructures;
-using Svelto.ECS.DataStructures;
 using Svelto.ECS.Internal;
 
 namespace Svelto.ECS
@@ -403,6 +401,7 @@ namespace Svelto.ECS
             return _groupedEntityToAdd.AnyEntityCreated() || _entitiesOperations.AnyOperationQueued();
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         void RemoveEntitiesFromGroup(ExclusiveGroupStruct groupID, in PlatformProfiler profiler)
         {
             _entityLocator.RemoveAllGroupReferenceLocators(groupID);
@@ -425,6 +424,7 @@ namespace Svelto.ECS
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         void SwapEntitiesBetweenGroups
             (ExclusiveGroupStruct fromGroupId, ExclusiveGroupStruct toGroupId, PlatformProfiler platformProfiler)
         {
@@ -514,9 +514,8 @@ namespace Svelto.ECS
 
         //transient caches>>>>>>>>>>>>>>>>>>>>>
         readonly FasterList<(uint, uint)>    _cachedRangeOfSubmittedIndices;
-        readonly FasterDictionary<uint, int> _entityIDsLeftWithoutDuplicates;
-
-        readonly FasterList<uint> _transientEntityIDsLeftAndAffectedByRemoval;
+        readonly FasterDictionary<uint, int> _transientEntityIDsLeftWithoutDuplicates;
+        readonly FasterList<uint>            _transientEntityIDsLeftAndAffectedByRemoval;
         //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
         static readonly

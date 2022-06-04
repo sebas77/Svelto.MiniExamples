@@ -3,8 +3,8 @@
 #endif
 using Svelto.Context;
 using Svelto.DataStructures;
-using Svelto.ECS.Extensions.Unity;
-using Svelto.ECS.MiniExamples.GameObjectsLayer;
+using Svelto.ECS.MiniExamples.Doofuses.GameObjects.GameobjectLayer;
+using Svelto.ECS.Miniexamples.Doofuses.GameObjectsLayer;
 using Svelto.ECS.Schedulers;
 using Svelto.ECS.SveltoOnDOTS;
 using UnityEngine;
@@ -12,7 +12,7 @@ using UnityEngine;
 #if !PROFILE_SVELTO
 #warning for maximum performance you need to enable PROFILE_SVELTO (this is not needed for a release client)
 #endif
-namespace Svelto.ECS.MiniExamples.Example1C
+namespace Svelto.ECS.Miniexamples.Doofuses.Gameobjects
 {
     public class SveltoCompositionRoot : ICompositionRoot
     {
@@ -37,7 +37,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
 
         public void OnContextDestroyed(bool hasBeenInitialised) 
         {
-            _gameObjectManager.Dispose();
+            _ECSGameObjectsEntityManager.Dispose();
             _enginesRoot.Dispose();
             _mainLoop.Dispose();
             _simpleSubmitScheduler.Dispose();
@@ -48,28 +48,30 @@ namespace Svelto.ECS.MiniExamples.Example1C
             var entityFactory   = _enginesRoot.GenerateEntityFactory();
             var entityFunctions = _enginesRoot.GenerateEntityFunctions();
             
-            GameObjectToSveltoCompositionRoot.Compose(_enginesRoot, _enginesToTick, out _gameObjectManager);
+            _ECSGameObjectsEntityManager = new ECSGameObjectsEntityManager();
             
-            LoadAssetAndCreatePrefabs(_gameObjectManager, out var redFoodPrefab, out var blueFootPrefab
+            GameObjectToSveltoCompositionRoot.Compose(_enginesRoot, _enginesToTick, _ECSGameObjectsEntityManager);
+            
+            LoadAssetAndCreatePrefabs(_ECSGameObjectsEntityManager, out var redFoodPrefab, out var blueFootPrefab
                                     , out var redDoofusPrefab, out var blueDoofusPrefab);
 
             //Compose the game level engines
-            AddSveltoEngineToTick(new PlaceFoodOnClickEngine(redFoodPrefab, blueFootPrefab, entityFactory));
-            AddSveltoEngineToTick(new SpawningDoofusEngine(redDoofusPrefab, blueDoofusPrefab, entityFactory));
+            AddSveltoEngineToTick(new PlaceFoodOnClickEngine((int)redFoodPrefab, (int)blueFootPrefab, entityFactory));
+            AddSveltoEngineToTick(new SpawningDoofusEngine((int)redDoofusPrefab, (int)blueDoofusPrefab, entityFactory));
             AddSveltoEngineToTick(new ConsumingFoodEngine(entityFunctions));
             AddSveltoEngineToTick(new LookingForFoodDoofusesEngine(entityFunctions));
             AddSveltoEngineToTick(new VelocityToPositionDoofusesEngine());
         }
 
         static void LoadAssetAndCreatePrefabs
-        (GameObjectManager gom, out int redFoodPrefab, out int blueFootPrefab, out int redDoofusPrefab
-       , out int blueDoofusPrefab)
+        (ECSGameObjectsEntityManager gom, out uint redFoodPrefab, out uint blueFootPrefab, out uint redDoofusPrefab
+       , out uint blueDoofusPrefab)
         {
             //Register the loaded prefabs in the GameObject layer. The returning id is the ECS id to the prefab
-            redFoodPrefab    = gom.RegisterPrefab(Resources.Load("Sphere") as GameObject);
-            blueFootPrefab   = gom.RegisterPrefab(Resources.Load("Sphereblue") as GameObject);
-            redDoofusPrefab  = gom.RegisterPrefab(Resources.Load("RedCapsule") as GameObject);
-            blueDoofusPrefab = gom.RegisterPrefab(Resources.Load("BlueCapsule") as GameObject);
+            redFoodPrefab    = gom.LoadAndRegisterPrefab("Sphere");
+            blueFootPrefab   = gom.LoadAndRegisterPrefab("Sphereblue");
+            redDoofusPrefab  = gom.LoadAndRegisterPrefab("RedCapsule");
+            blueDoofusPrefab = gom.LoadAndRegisterPrefab("BlueCapsule");
         }
 
         void AddSveltoEngineToTick(IJobifiedEngine engine)
@@ -82,7 +84,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
         EnginesRoot                          _enginesRoot;
         SimpleEntitiesSubmissionScheduler    _simpleSubmitScheduler;
         MainLoop                             _mainLoop;
-        GameObjectManager                    _gameObjectManager;
+        ECSGameObjectsEntityManager                    _ECSGameObjectsEntityManager;
         
         readonly FasterList<IJobifiedEngine> _enginesToTick = new FasterList<IJobifiedEngine>();
     }

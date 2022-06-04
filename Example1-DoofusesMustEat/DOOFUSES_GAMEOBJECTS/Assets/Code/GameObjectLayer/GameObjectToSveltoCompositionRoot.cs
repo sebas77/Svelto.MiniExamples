@@ -1,20 +1,16 @@
 using Svelto.DataStructures;
+using Svelto.ECS.MiniExamples.Doofuses.GameObjects.GameobjectLayer;
 using Svelto.ECS.SveltoOnDOTS;
 
-namespace Svelto.ECS.MiniExamples.GameObjectsLayer
+namespace Svelto.ECS.Miniexamples.Doofuses.GameObjectsLayer
 {
     public static class GameObjectToSveltoCompositionRoot
     {
         public static void Compose
-        (EnginesRoot enginesRoot, FasterList<IJobifiedEngine> enginesToTick
-       , out GameObjectManager gameObjectManager)
+            (EnginesRoot enginesRoot, FasterList<IJobifiedEngine> enginesToTick, ECSGameObjectsEntityManager goManager)
         {
-            var goManager = new GameObjectManager();
-
             enginesRoot.AddEngine(new InstantiateGameObjectOnSveltoEntityEngine(goManager));
             AddSveltoEngineToTick(new RenderingGameObjectSynchronizationEngine(goManager), enginesRoot, enginesToTick);
-
-            gameObjectManager = goManager;
         }
 
         static void AddSveltoEngineToTick

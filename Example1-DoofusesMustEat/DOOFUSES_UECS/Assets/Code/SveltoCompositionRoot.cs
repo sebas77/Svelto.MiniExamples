@@ -56,7 +56,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
             AddSveltoEngineToTick(new VelocityToPositionDoofusesEngine());
 
             _sveltoOverDotsEnginesGroupEnginesGroup.AddDOTSSubmissionEngine(new SpawnUnityEntityOnSveltoEntityEngine());
-            _sveltoOverDotsEnginesGroupEnginesGroup.AddDOTSSubmissionEngine(new SetFiltersOnBlueDoofusesSpawned());
+            _sveltoOverDotsEnginesGroupEnginesGroup.AddDOTSSubmissionEngine(new SetFiltersOnBlueDoofusesSpawnedEngine());
             _sveltoOverDotsEnginesGroupEnginesGroup.AddSveltoToDOTSEngine(new RenderingDOTSDataSynchronizationEngine());
         }
 

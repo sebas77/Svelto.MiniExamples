@@ -1,6 +1,6 @@
 using Unity.Mathematics;
 
-namespace Svelto.ECS.MiniExamples.GameObjectsLayer
+namespace Svelto.ECS.Miniexamples.Doofuses.GameObjectsLayer
 {
     public struct GameObjectEntityComponent : IEntityComponent
     {

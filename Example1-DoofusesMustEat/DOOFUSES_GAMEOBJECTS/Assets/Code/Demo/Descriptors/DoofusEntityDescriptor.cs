@@ -1,7 +1,7 @@
 using Svelto.ECS.EntityComponents;
-using Svelto.ECS.MiniExamples.GameObjectsLayer;
+using Svelto.ECS.Miniexamples.Doofuses.GameObjectsLayer;
 
-namespace Svelto.ECS.MiniExamples.Example1C
+namespace Svelto.ECS.Miniexamples.Doofuses.Gameobjects
 {
     class DoofusEntityDescriptor
         : GenericEntityDescriptor<PositionEntityComponent, GameObjectEntityComponent, VelocityEntityComponent,

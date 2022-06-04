@@ -1,10 +1,10 @@
 using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.ECS.Extensions.Unity;
-using Svelto.ECS.MiniExamples.GameObjectsLayer;
+using Svelto.ECS.Miniexamples.Doofuses.GameObjectsLayer;
 using Svelto.ECS.SveltoOnDOTS;
 
-namespace Svelto.ECS.MiniExamples.Example1C
+namespace Svelto.ECS.Miniexamples.Doofuses.Gameobjects
 {
     ///it's important to note that the names of the engines used in the ISequenceOrder, do NOT need to come from the
     /// same enum. This will allow the user to declare enums in their own assemblies. 

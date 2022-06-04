@@ -1,10 +1,11 @@
 using Svelto.Common;
 using Svelto.DataStructures;
+using Svelto.ECS.MiniExamples.Doofuses.GameObjects.GameobjectLayer;
 using Svelto.ECS.SveltoOnDOTS;
 using Unity.Jobs;
 using UnityEngine.Jobs;
 
-namespace Svelto.ECS.MiniExamples.GameObjectsLayer
+namespace Svelto.ECS.Miniexamples.Doofuses.GameObjectsLayer
 {
     [Sequenced(nameof(GameObjectLayerEngineNames.RenderingGameObjectSynchronizationEngine))]
     class RenderingGameObjectSynchronizationEngine : IQueryingEntitiesEngine, IJobifiedEngine
@@ -12,7 +13,7 @@ namespace Svelto.ECS.MiniExamples.GameObjectsLayer
         public EntitiesDB entitiesDB { get; set; }
         public void       Ready()    { }
 
-        public RenderingGameObjectSynchronizationEngine(GameObjectManager goManager)
+        public RenderingGameObjectSynchronizationEngine(ECSGameObjectsEntityManager goManager)
         {
             this._goManager = goManager;
         }
@@ -26,12 +27,12 @@ namespace Svelto.ECS.MiniExamples.GameObjectsLayer
             //abstract and it makes sense to have the concept at framework level
             foreach (var ((positions, count), group) in entitiesDB.QueryEntities<PositionEntityComponent>())
             {
-                Check.Require(_goManager.Transforms((int)group.id).length == count
-                            , $"component array length doesn't match. Expected {count} - found {_goManager.Transforms((int)group.id).length} - group {group.ToString()}");
+                Check.Require(_goManager.Transforms(group.id).length == count
+                            , $"component array length doesn't match. Expected {count} - found {_goManager.Transforms(group.id).length} - group {group.ToString()}");
                 combineDependencies = JobHandle.CombineDependencies(inputDeps, new ParallelLabelTransformJob()
                 {
                     _position = positions
-                }.Schedule(_goManager.Transforms((int)(uint)group.id), inputDeps), combineDependencies);
+                }.Schedule(_goManager.Transforms((uint)group.id), inputDeps), combineDependencies);
             }
 
             return combineDependencies;
@@ -39,7 +40,7 @@ namespace Svelto.ECS.MiniExamples.GameObjectsLayer
 
         public string name => nameof(RenderingGameObjectSynchronizationEngine);
 
-        readonly GameObjectManager _goManager;
+        readonly ECSGameObjectsEntityManager _goManager;
 
         struct ParallelLabelTransformJob : IJobParallelForTransform
         {

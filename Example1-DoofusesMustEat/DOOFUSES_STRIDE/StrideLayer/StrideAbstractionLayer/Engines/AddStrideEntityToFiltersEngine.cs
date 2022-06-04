@@ -1,5 +1,11 @@
 ﻿namespace Svelto.ECS.MiniExamples.Doofuses.Stride.StrideLayer
 {
+    /// <summary>
+    /// Handle the filters of instanced objects. For each prefab, there is a filter set to encompass the instances
+    /// of that specific prefab. The goal is in fact to be able to identify gameobjects of a specific prefab through
+    /// its filter.
+    /// Swap and Remove of persistent filters are automatically handled by the framework
+    /// </summary>
     class AddStrideEntityToFiltersEngine : IReactOnAddEx<StrideComponent>, IQueryingEntitiesEngine
     {
         public void Add((uint start, uint end) rangeOfEntities, in EntityCollection<StrideComponent> collection,
@@ -16,8 +22,8 @@
             //for each entity added in this submission phase
             for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
             {
-                //get the Stride entityID that will be instanced multipled times
-                var entity = (int)buffer[index].instancingEntity;
+                //get the Stride entityID that will be instanced multiple times
+                var entity = (int)buffer[index].prefabID;
                 
                 //if it doesn't match last one used, let's fetch the filter that is linked to this ID
                 if (lastEntity != entity)

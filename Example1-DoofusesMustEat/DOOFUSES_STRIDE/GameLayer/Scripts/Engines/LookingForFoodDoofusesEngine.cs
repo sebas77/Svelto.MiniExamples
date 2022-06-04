@@ -36,31 +36,37 @@ namespace Svelto.ECS.MiniExamples.Doofuses.Stride
         /// All the available doofuses will start to hunt for available food
         /// </summary>
         void CreateJobForDoofusesAndFood
-        (FasterReadOnlyList<ExclusiveGroupStruct> availableFood
-       , FasterReadOnlyList<ExclusiveGroupStruct> availableDoofuses, ExclusiveBuildGroup eatingDoofusesGroup
+        (FasterReadOnlyList<ExclusiveGroupStruct> groupsWithAvailableFood
+       , FasterReadOnlyList<ExclusiveGroupStruct> groupsWithAvailableDoofuses, ExclusiveBuildGroup eatingDoofusesGroup
        , ExclusiveBuildGroup eatenFoodGroup)
         {
-            foreach (var ((_, foodEntities, availableFoodCount), fromGroup) in entitiesDB
-                        .QueryEntities<PositionComponent>(availableFood))
-            {
-                foreach (var ((doofuses, egids, doofusesCount), fromDoofusesGroup) in entitiesDB
-                            .QueryEntities<MealInfoComponent>(availableDoofuses))
-                {
-                    var willEatDoofusesCount = Math.Min(availableFoodCount, doofusesCount);
+            //query all the available food
+            var availableFoodComponents = entitiesDB.QueryEntities<PositionComponent>(groupsWithAvailableFood).GetEnumerator();
+            //query all the doofuses that are not eating
+            var availableDoofusesComponents = entitiesDB.QueryEntities<MealInfoComponent>(groupsWithAvailableDoofuses).GetEnumerator();
 
-                    //schedule the job
-                    new LookingForFoodDoofusesJob()
+            while (availableFoodComponents.MoveNext() && availableDoofusesComponents.MoveNext())
+            {
+                var ((_, foodIDs, availableFoodCount), currentFoodGroup) = availableFoodComponents.Current;
+                var ((doofusesEntities, doofusesIDs, doofusesCount), currentDoofusesGroup) = availableDoofusesComponents.Current;
+                {
+                    var eatingDoofuses = MathF.Min(availableFoodCount, doofusesCount);
+
+                    if (eatingDoofuses > 0)
                     {
-                        _doofuses                    = doofuses
-                      , _doofusesegids               = egids
-                      , _food                        = foodEntities
-                      , _functions                   = _functions
-                      , _doofusesEatingGroup         = eatingDoofusesGroup
-                      , _lockedFood                  = eatenFoodGroup
-                      , _fromFoodGroup               = fromGroup
-                      , _doofusesLookingForFoodGroup = fromDoofusesGroup
-                      , _count                       = willEatDoofusesCount
-                    }.Execute();
+                        new LookingForFoodDoofusesJob()
+                        {
+                            _doofuses                    = doofusesEntities
+                          , _doofusesegids               = doofusesIDs
+                          , _food                        = foodIDs
+                          , _functions                   = _functions
+                          , _doofusesEatingGroup         = eatingDoofusesGroup
+                          , _lockedFood                  = eatenFoodGroup
+                          , _fromFoodGroup               = currentFoodGroup
+                          , _doofusesLookingForFoodGroup = currentDoofusesGroup
+                          , _count                       = (int)eatingDoofuses
+                        }.Execute();
+                    }
                 }
             }
         }

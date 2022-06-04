@@ -19,11 +19,11 @@ namespace Svelto.ECS.Native
         public NativeEGIDMultiMapper(in SveltoDictionary<
             /*key  */ExclusiveGroupStruct,
             /*value*/
-            SharedNative<SveltoDictionary<uint, T, NativeStrategy<SveltoDictionaryNode<uint>>, NativeStrategy<T>,
+            SharedDisposableNative<SveltoDictionary<uint, T, NativeStrategy<SveltoDictionaryNode<uint>>, NativeStrategy<T>,
                 NativeStrategy<int>>>,
             /*strategy to store the key*/ NativeStrategy<SveltoDictionaryNode<ExclusiveGroupStruct>>,
             /*strategy to store the value*/
-            NativeStrategy<SharedNative<SveltoDictionary<uint, T, NativeStrategy<SveltoDictionaryNode<uint>>,
+            NativeStrategy<SharedDisposableNative<SveltoDictionary<uint, T, NativeStrategy<SveltoDictionaryNode<uint>>,
                 NativeStrategy<T>, NativeStrategy<int>>>>, NativeStrategy<int>> dictionary)
         {
             _dic = dictionary;
@@ -70,9 +70,9 @@ namespace Svelto.ECS.Native
         }
 
         SveltoDictionary<ExclusiveGroupStruct,
-            SharedNative<SveltoDictionary<uint, T, NativeStrategy<SveltoDictionaryNode<uint>>, NativeStrategy<T>,
+            SharedDisposableNative<SveltoDictionary<uint, T, NativeStrategy<SveltoDictionaryNode<uint>>, NativeStrategy<T>,
                 NativeStrategy<int>>>, NativeStrategy<SveltoDictionaryNode<ExclusiveGroupStruct>>, NativeStrategy<
-                SharedNative<SveltoDictionary<uint, T, NativeStrategy<SveltoDictionaryNode<uint>>, NativeStrategy<T>,
+                SharedDisposableNative<SveltoDictionary<uint, T, NativeStrategy<SveltoDictionaryNode<uint>>, NativeStrategy<T>,
                     NativeStrategy<int>>>>, NativeStrategy<int>> _dic;
     }
 }

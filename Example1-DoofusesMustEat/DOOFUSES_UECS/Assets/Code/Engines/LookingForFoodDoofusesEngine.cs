@@ -29,15 +29,15 @@ namespace Svelto.ECS.MiniExamples.Example1C
         {
             //Iterate NOEATING RED doofuses to look for RED food and MOVE them to EATING state if food is found
             var handle1 = DoofusesLookingForFoodJob(_jobHandle, GameGroups.RED_FOOD_NOT_EATEN.Groups
-                                                    , GameGroups.RED_DOOFUSES_NOT_EATING.Groups
-                                                    , GameGroups.RED_DOOFUSES_EATING.BuildGroup
-                                                    , GameGroups.RED_FOOD_EATEN.BuildGroup);
+                                                  , GameGroups.RED_DOOFUSES_NOT_EATING.Groups
+                                                  , GameGroups.RED_DOOFUSES_EATING.BuildGroup
+                                                  , GameGroups.RED_FOOD_EATEN.BuildGroup);
 
             //Iterate NOEATING BLUE doofuses to look for BLUE food and MOVE them to EATING state if food is found
             var handle2 = DoofusesLookingForFoodJob(_jobHandle, GameGroups.BLUE_FOOD_NOT_EATEN.Groups
-                                                    , GameGroups.BLUE_DOOFUSES_NOT_EATING.Groups
-                                                    , GameGroups.BLUE_DOOFUSES_EATING.BuildGroup
-                                                    , GameGroups.BLUE_FOOD_EATEN.BuildGroup);
+                                                  , GameGroups.BLUE_DOOFUSES_NOT_EATING.Groups
+                                                  , GameGroups.BLUE_DOOFUSES_EATING.BuildGroup
+                                                  , GameGroups.BLUE_FOOD_EATEN.BuildGroup);
 
             //can run in parallel
             return JobHandle.CombineDependencies(handle1, handle2);
@@ -47,37 +47,43 @@ namespace Svelto.ECS.MiniExamples.Example1C
         /// All the available doofuses will start to hunt for available food
         /// </summary>
         JobHandle DoofusesLookingForFoodJob
-        (JobHandle inputDeps, FasterReadOnlyList<ExclusiveGroupStruct> availableFood
-       , FasterReadOnlyList<ExclusiveGroupStruct> availableDoofuses, ExclusiveBuildGroup eatingDoofusesGroup
+        (JobHandle inputDeps, FasterReadOnlyList<ExclusiveGroupStruct> groupsWithAvailableFood
+       , FasterReadOnlyList<ExclusiveGroupStruct> groupsWithAvailableDoofuses, ExclusiveBuildGroup eatingDoofusesGroup
        , ExclusiveBuildGroup eatenFoodGroup)
         {
-            JobHandle deps = inputDeps;
+            JobHandle combinedDeps = inputDeps;
 
-            foreach (var ((_, foodIDs, availableFoodCount), fromGoodGroup) in entitiesDB.QueryEntities<PositionEntityComponent>(
-                availableFood))
+            //query all the available food
+            var availableFoodComponents = entitiesDB.QueryEntities<PositionEntityComponent>(groupsWithAvailableFood).GetEnumerator();
+            //query all the doofuses that are not eating
+            var availableDoofusesComponents = entitiesDB.QueryEntities<MealInfoComponent>(groupsWithAvailableDoofuses).GetEnumerator();
+
+            while (availableFoodComponents.MoveNext() && availableDoofusesComponents.MoveNext())
             {
-                foreach (var ((doofuses, doofusesIDs, doofusesCount), fromDoofusesGroup) in entitiesDB
-                   .QueryEntities<MealInfoComponent>(availableDoofuses))
+                var ((_, foodIDs, availableFoodCount), currentFoodGroup) = availableFoodComponents.Current;
+                var ((doofusesEntities, doofusesIDs, doofusesCount), currentDoofusesGroup) = availableDoofusesComponents.Current;
                 {
-                    var eatingDoofusesCount = math.min(availableFoodCount, doofusesCount);
+                    var eatingDoofuses = math.min(availableFoodCount, doofusesCount);
 
-                    //schedule the job
-                    deps = JobHandle.CombineDependencies(deps, new LookingForFoodDoofusesJob()
+                    if (eatingDoofuses > 0)
                     {
-                        _doofusesTargetMeals  = doofuses
-                      , _doofuses             = doofusesIDs
-                      , _food                 = foodIDs
-                      , _nativeDoofusesSwap   = _nativeDoofusesSwap
-                      , _nativeFoodSwap       = _nativeFoodSwap
-                      , _doofuseEatingGroup   = eatingDoofusesGroup
-                      , _eatenFoodGroup       = eatenFoodGroup
-                        , _fromFoodGroup      =fromGoodGroup
-                         , _fromDoofusesGroup =fromDoofusesGroup
-                    }.ScheduleParallel(eatingDoofusesCount, inputDeps));
+                        combinedDeps = JobHandle.CombineDependencies(combinedDeps, new LookingForFoodDoofusesJob()
+                        {
+                            doofuses            = doofusesEntities
+                          , _doofusesIDs        = doofusesIDs
+                          , _food               = foodIDs
+                          , _nativeDoofusesSwap = _nativeDoofusesSwap
+                          , _nativeFoodSwap     = _nativeFoodSwap
+                          , _doofuseEatingGroup = eatingDoofusesGroup
+                          , _eatenFoodGroup     = eatenFoodGroup
+                          , _fromFoodGroup      =currentFoodGroup
+                          , _fromDoofusesGroup  =currentDoofusesGroup
+                        }.ScheduleParallel(eatingDoofuses, inputDeps));
+                    }
                 }
             }
 
-            return deps;
+            return combinedDeps;
         }
 
         readonly NativeEntitySwap _nativeDoofusesSwap;
@@ -89,16 +95,16 @@ namespace Svelto.ECS.MiniExamples.Example1C
         struct LookingForFoodDoofusesJob : IJobParallelFor
         {
             [ReadOnly] public NativeEntityIDs _food;
-            [ReadOnly] public NativeEntityIDs _doofuses;
-            
-            [WriteOnly] public NB<MealInfoComponent> _doofusesTargetMeals;
-            
-            public NativeEntitySwap      _nativeDoofusesSwap;
-            public NativeEntitySwap      _nativeFoodSwap;
-            
-            public ExclusiveBuildGroup   _doofuseEatingGroup;
-            public ExclusiveBuildGroup   _eatenFoodGroup;
-            
+            [ReadOnly] public NativeEntityIDs _doofusesIDs;
+
+            [WriteOnly] public NB<MealInfoComponent> doofuses;
+
+            public NativeEntitySwap _nativeDoofusesSwap;
+            public NativeEntitySwap _nativeFoodSwap;
+
+            public ExclusiveBuildGroup _doofuseEatingGroup;
+            public ExclusiveBuildGroup _eatenFoodGroup;
+
             public ExclusiveGroupStruct _fromFoodGroup;
             public ExclusiveGroupStruct _fromDoofusesGroup;
 
@@ -112,12 +118,13 @@ namespace Svelto.ECS.MiniExamples.Example1C
             public void Execute(int index)
             {
                 //pickup the meal for this doofus
-                var mealID = new EGID(_food[(uint) index], _fromFoodGroup);
+                var mealID = new EGID(_food[(uint)index], _fromFoodGroup);
                 //Set the target meal for this doofus
-                _doofusesTargetMeals[index].targetMeal = new EGID(mealID.entityID, _eatenFoodGroup);
+                doofuses[index].targetMeal = new EGID(mealID.entityID, _eatenFoodGroup);
 
                 //swap this doofus to the eating group so it won't be picked up again
-               _nativeDoofusesSwap.SwapEntity(new EGID(_doofuses[index], _fromDoofusesGroup), _doofuseEatingGroup, _threadIndex);
+                _nativeDoofusesSwap.SwapEntity(new EGID(_doofusesIDs[index], _fromDoofusesGroup), _doofuseEatingGroup
+                                             , _threadIndex);
                 //swap the meal to the being eating group, so it won't be picked up again
                 _nativeFoodSwap.SwapEntity(mealID, _eatenFoodGroup, _threadIndex);
             }

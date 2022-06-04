@@ -30,6 +30,8 @@ namespace Svelto.DataStructures.Native
 #if DEBUG && !PROFILE_SVELTO
             if (!(this._realBuffer.ToNativeArray(out _) == IntPtr.Zero))
                 throw new DBC.Common.PreconditionException("can't alloc an already allocated buffer");
+            if (allocator != Allocator.Persistent && allocator != Allocator.Temp && allocator != Allocator.TempJob)
+                throw new Exception("invalid allocator used for native strategy");
 #endif
             _nativeAllocator = allocator;
 

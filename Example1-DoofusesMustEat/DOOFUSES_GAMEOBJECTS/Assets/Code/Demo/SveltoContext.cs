@@ -1,6 +1,6 @@
 using Svelto.Context;
 
-namespace Svelto.ECS.MiniExamples.Example1C
+namespace Svelto.ECS.Miniexamples.Doofuses.Gameobjects
 {
     public class SveltoContext : UnityContext<SveltoCompositionRoot>
     {

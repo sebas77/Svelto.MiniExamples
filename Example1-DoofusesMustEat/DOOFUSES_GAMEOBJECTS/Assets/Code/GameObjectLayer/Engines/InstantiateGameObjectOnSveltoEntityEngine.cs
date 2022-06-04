@@ -1,4 +1,7 @@
-namespace Svelto.ECS.MiniExamples.GameObjectsLayer
+using Svelto.ECS.MiniExamples.Doofuses.GameObjects.GameobjectLayer;
+using UnityEngine;
+
+namespace Svelto.ECS.Miniexamples.Doofuses.GameObjectsLayer
 {
     /// <summary>
     /// In a Svelto<->UECS scenario, is common to have UECS entity created on creation of Svelto ones. Same for
@@ -6,9 +9,10 @@ namespace Svelto.ECS.MiniExamples.GameObjectsLayer
     /// Note this can be easily moved to using Entity Command Buffer and I should do it at a given point
     /// </summary>
     class InstantiateGameObjectOnSveltoEntityEngine : IQueryingEntitiesEngine
-                                                    , IReactOnRemoveEx<GameObjectEntityComponent>, IReactOnAddEx<GameObjectEntityComponent>, IReactOnSwapEx<GameObjectEntityComponent>
+                                                    , IReactOnAddAndRemoveEx<GameObjectEntityComponent>
+                                                    , IReactOnSwapEx<GameObjectEntityComponent>
     {
-        public InstantiateGameObjectOnSveltoEntityEngine(GameObjectManager goManager)
+        public InstantiateGameObjectOnSveltoEntityEngine(ECSGameObjectsEntityManager goManager)
         {
             _goManager = goManager;
         }
@@ -26,9 +30,9 @@ namespace Svelto.ECS.MiniExamples.GameObjectsLayer
 
                 ref var entityComponent = ref buffer[i];
 
-                var gameObjectID = _goManager.FetchGameObject((int)groupID.id, entityComponent.prefabID);
+                var gameObjectID = _goManager.InstantiatePrefab(entityComponent.prefabID, groupID.id);
 
-                _goManager.SetPosition(gameObjectID, (int)(uint)groupID.id, entityComponent.spawnPosition);
+                gameObjectID.SetPositionAndRotation(entityComponent.spawnPosition.xyz, Quaternion.identity);
             }
         }
 
@@ -42,7 +46,7 @@ namespace Svelto.ECS.MiniExamples.GameObjectsLayer
 
                 ref var entityComponent = ref buffer[i];
 
-                _goManager.Recycle((int)groupID.id);
+                _goManager.Recycle(entityComponent.prefabID, groupID.id);
             }
         }
 
@@ -50,10 +54,16 @@ namespace Svelto.ECS.MiniExamples.GameObjectsLayer
         ((uint start, uint end) rangeOfEntities, in EntityCollection<GameObjectEntityComponent> collection
        , ExclusiveGroupStruct fromGroup, ExclusiveGroupStruct toGroup)
         {
-            Remove(rangeOfEntities, collection, fromGroup);
-            Add(rangeOfEntities, collection, toGroup);
+            for (uint i = rangeOfEntities.start; i < rangeOfEntities.end; ++i)
+            {
+                var (buffer, _, _) = collection;
+                
+                ref var entityComponent = ref buffer[i];
+
+                _goManager.Swap(fromGroup.id, toGroup.id);
+            }
         }
 
-        readonly GameObjectManager _goManager;
+        readonly ECSGameObjectsEntityManager _goManager;
     }
 }

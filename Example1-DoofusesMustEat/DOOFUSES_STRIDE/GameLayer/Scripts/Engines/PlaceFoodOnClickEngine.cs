@@ -128,7 +128,7 @@ namespace Svelto.ECS.MiniExamples.Doofuses.Stride
                     //these structs are used for ReactOnAdd callback to create unity Entities later
                     init.Init(new StrideComponent()
                     {
-                        instancingEntity = _prefabID
+                        prefabID = _prefabID
                     });
                 }
             }

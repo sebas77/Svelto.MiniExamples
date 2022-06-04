@@ -3,7 +3,7 @@
 using System.Diagnostics;
 #endif
 using System;
-namespace Svelto.ECS.MiniExamples.GameObjectsLayer
+namespace Svelto.ECS.Miniexamples.Doofuses.GameObjectsLayer
 {
 	/// <summary>
 	/// Design By Contract Checks.

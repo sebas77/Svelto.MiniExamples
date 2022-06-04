@@ -86,7 +86,7 @@
      <Compile Include="Assets\Tayx\Graphy - Ultimate Stats Monitor\Scripts\Audio\G_AudioText.cs" />
      <Compile Include="Assets\Tayx\Graphy - Ultimate Stats Monitor\Scripts\Util\G_FloatString.cs" />
      <Compile Include="Assets\Tayx\Graphy - Ultimate Stats Monitor\Scripts\GraphyDebugger.cs" />
-     <Compile Include="Assets\Code\Engines\UECSSveltoEngines\SetFiltersOnBlueDoofusesSpawned.cs" />
+     <Compile Include="Assets\Code\Engines\UECSSveltoEngines\SetFiltersOnBlueDoofusesSpawnedEngine.cs" />
      <Compile Include="Assets\Tayx\Graphy - Ultimate Stats Monitor\Scene\Customization Scripts\UpdateTextWithSliderValue.cs" />
      <Compile Include="Assets\Code\Engines\UECSSveltoEngines\RenderingUECSDataSynchronizationEngine.cs" />
      <Compile Include="Assets\Tayx\Graphy - Ultimate Stats Monitor\Scripts\Util\G_Intstring.cs" />

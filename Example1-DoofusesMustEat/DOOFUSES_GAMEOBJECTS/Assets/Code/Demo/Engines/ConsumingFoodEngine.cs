@@ -3,7 +3,7 @@ using Svelto.DataStructures;
 using Svelto.ECS.EntityComponents;
 using Svelto.ECS.Extensions.Unity;
 using Svelto.ECS.Internal;
-using Svelto.ECS.MiniExamples.GameObjectsLayer;
+using Svelto.ECS.Miniexamples.Doofuses.GameObjectsLayer;
 using Svelto.ECS.Native;
 using Svelto.ECS.SveltoOnDOTS;
 using Unity.Burst;
@@ -11,7 +11,7 @@ using Unity.Collections.LowLevel.Unsafe;
 using Unity.Jobs;
 using Unity.Mathematics;
 
-namespace Svelto.ECS.MiniExamples.Example1C
+namespace Svelto.ECS.Miniexamples.Doofuses.Gameobjects
 {
     [Sequenced(nameof(DoofusesEngineNames.ConsumingFoodEngine))]
     public class ConsumingFoodEngine : IQueryingEntitiesEngine, IJobifiedEngine
@@ -28,12 +28,14 @@ namespace Svelto.ECS.MiniExamples.Example1C
         {
             //Iterate EATING RED doofuses to move toward locked food and move to NOEATING if food is ATE
             //todo: this is a double responsibility. Move toward food and eating the food may work in separate engines
-            var handle1 = CreateJobForDoofusesAndFood(inputDeps, GameGroups.RED_DOOFUSES_EATING.Groups
+            var handle1 = CreateJobForDoofusesAndFood(inputDeps
+                                                    , GameGroups.RED_DOOFUSES_EATING.Groups //
                                                     , GameGroups.RED_DOOFUSES_NOT_EATING.BuildGroup
                                                     , GameGroups.RED_FOOD_EATEN.Groups);
             //Iterate EATING BLUE doofuses to look for BLUE food and MOVE them to NOEATING if food is ATE
             //todo: this is a double responsibility. Move toward food and eating the food may work in separate engines
-            var handle2 = CreateJobForDoofusesAndFood(inputDeps, GameGroups.BLUE_DOOFUSES_EATING.Groups
+            var handle2 = CreateJobForDoofusesAndFood(inputDeps
+                                                    , GameGroups.BLUE_DOOFUSES_EATING.Groups
                                                     , GameGroups.BLUE_DOOFUSES_NOT_EATING.BuildGroup
                                                     , GameGroups.BLUE_FOOD_EATEN.Groups);
 
@@ -44,25 +46,28 @@ namespace Svelto.ECS.MiniExamples.Example1C
         public string name => nameof(ConsumingFoodEngine);
 
         JobHandle CreateJobForDoofusesAndFood
-        (JobHandle inputDeps, in LocalFasterReadOnlyList<ExclusiveGroupStruct> doofusesEatingGroups
-       , ExclusiveBuildGroup foodEatenGroup, in LocalFasterReadOnlyList<ExclusiveGroupStruct> foodGroup)
+        (JobHandle inputDeps
+       , in LocalFasterReadOnlyList<ExclusiveGroupStruct> doofusesEatingGroups
+       , ExclusiveBuildGroup foodEatenGroup
+       , in LocalFasterReadOnlyList<ExclusiveGroupStruct> foodGroups)
         {
             var foodPositionMapper =
-                entitiesDB.QueryNativeMappedEntities<PositionEntityComponent>(foodGroup, Allocator.TempJob);
+                entitiesDB.QueryNativeMappedEntities<PositionEntityComponent>(foodGroups, Allocator.TempJob);
 
             //against all the doofuses
-            JobHandle deps = default;
+            JobHandle deps = inputDeps;
             foreach (var (doofusesBuffer, fromGroup) in entitiesDB
-               .QueryEntities<PositionEntityComponent, VelocityEntityComponent, MealInfoComponent>(
-                    doofusesEatingGroups))
+                        .QueryEntities<PositionEntityComponent, VelocityEntityComponent, MealInfoComponent>(
+                             doofusesEatingGroups))
             {
-                var (buffer1, buffer2, buffer3, entityIDs, count) = doofusesBuffer;
+                var (positions, velocities, mealInfos, entityIDs, count) = doofusesBuffer;
                 var doofusesCount = count;
 
                 //schedule the job
-                deps = JobHandle.CombineDependencies(inputDeps, new ConsumingFoodJob(
-                    (buffer1, buffer2, buffer3, count), entityIDs, foodPositionMapper, _nativeSwap, _nativeRemove
-                                                       , foodEatenGroup, fromGroup).ScheduleParallel(doofusesCount, inputDeps));
+                deps = JobHandle.CombineDependencies(inputDeps
+                    , new ConsumingFoodJob((positions, velocities, mealInfos, count), entityIDs, foodPositionMapper
+                                                              , _nativeSwap, _nativeRemove, foodEatenGroup, fromGroup)
+                                                        .ScheduleParallel(doofusesCount, inputDeps));
             }
 
             foodPositionMapper.ScheduleDispose(deps);
@@ -79,8 +84,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
     [BurstCompile]
     public readonly struct ConsumingFoodJob : IJobParallelFor
     {
-        readonly BT<NB<PositionEntityComponent>, NB<VelocityEntityComponent>, NB<MealInfoComponent>>
-            _doofuses;
+        readonly BT<NB<PositionEntityComponent>, NB<VelocityEntityComponent>, NB<MealInfoComponent>> _doofuses;
 
         readonly NativeEntityIDs _nativeEntityIDs;
 
@@ -88,14 +92,15 @@ namespace Svelto.ECS.MiniExamples.Example1C
         readonly NativeEntitySwap                               _nativeSwap;
         readonly NativeEntityRemove                             _nativeRemove;
 
-        [NativeSetThreadIndex] readonly int                 _threadIndex;
-        readonly                        ExclusiveBuildGroup _doofuseMealLockedGroup;
+        [NativeSetThreadIndex] readonly int                  _threadIndex;
+        readonly                        ExclusiveBuildGroup  _doofuseMealLockedGroup;
         readonly                        ExclusiveGroupStruct _doofuseFromGroup;
 
-        public ConsumingFoodJob(
-            in BT<NB<PositionEntityComponent>, NB<VelocityEntityComponent>, NB<MealInfoComponent>> doofuses,
-            NativeEntityIDs nativeEntityIDs, NativeEGIDMultiMapper<PositionEntityComponent> foodPositionMapper,
-            NativeEntitySwap swap, NativeEntityRemove nativeRemove, ExclusiveBuildGroup doofuseMealLockedGroup, ExclusiveGroupStruct doofuseFromGroup) : this()
+        public ConsumingFoodJob
+        (in BT<NB<PositionEntityComponent>, NB<VelocityEntityComponent>, NB<MealInfoComponent>> doofuses
+       , NativeEntityIDs nativeEntityIDs, NativeEGIDMultiMapper<PositionEntityComponent> foodPositionMapper
+       , NativeEntitySwap swap, NativeEntityRemove nativeRemove, ExclusiveBuildGroup doofuseMealLockedGroup
+       , ExclusiveGroupStruct doofuseFromGroup) : this()
         {
             _doofuses               = doofuses;
             _nativeEntityIDs        = nativeEntityIDs;
@@ -125,9 +130,10 @@ namespace Svelto.ECS.MiniExamples.Example1C
 
                 // //food found
                 // //Change Doofuses State
-                 _nativeSwap.SwapEntity(new EGID(_nativeEntityIDs[index], _doofuseFromGroup), _doofuseMealLockedGroup, _threadIndex);
-                 //Remove Eaten Food
-                 _nativeRemove.RemoveEntity(mealInfoEGID, _threadIndex);
+                _nativeSwap.SwapEntity(new EGID(_nativeEntityIDs[index], _doofuseFromGroup), _doofuseMealLockedGroup
+                                     , _threadIndex);
+                //Remove Eaten Food
+                _nativeRemove.RemoveEntity(mealInfoEGID, _threadIndex);
 
                 return;
             }

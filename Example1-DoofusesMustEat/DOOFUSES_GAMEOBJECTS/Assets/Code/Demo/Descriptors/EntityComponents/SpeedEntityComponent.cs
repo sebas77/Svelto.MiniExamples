@@ -1,4 +1,4 @@
-namespace Svelto.ECS.MiniExamples.Example1C
+namespace Svelto.ECS.Miniexamples.Doofuses.Gameobjects
 {
     struct SpeedEntityComponent : IEntityComponent
     {

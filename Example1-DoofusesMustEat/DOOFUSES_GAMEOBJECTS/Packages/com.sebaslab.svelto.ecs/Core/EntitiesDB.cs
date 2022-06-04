@@ -252,7 +252,7 @@ namespace Svelto.ECS
 
         public bool FoundInGroups<T1>() where T1 : IBaseEntityComponent
         {
-            return groupsPerEntity.ContainsKey(TypeRefWrapper<T1>.wrapper);
+            return groupsPerComponent.ContainsKey(TypeRefWrapper<T1>.wrapper);
         }
 
         public bool IsDisposing => _enginesRoot._isDisposing;
@@ -324,7 +324,7 @@ namespace Svelto.ECS
         //found indexed by group id. TypeSafeDictionary are never created, they instead point to the ones hold
         //by _groupEntityComponentsDB
         //                        <EntityComponentType                            <groupID  <entityID, EntityComponent>>>
-        FasterDictionary<RefWrapperType, FasterDictionary<ExclusiveGroupStruct, ITypeSafeDictionary>> groupsPerEntity =>
+        FasterDictionary<RefWrapperType, FasterDictionary<ExclusiveGroupStruct, ITypeSafeDictionary>> groupsPerComponent =>
             _enginesRoot._groupsPerEntity;
 
         EnginesRoot.EntityReferenceMap _entityReferencesMap;

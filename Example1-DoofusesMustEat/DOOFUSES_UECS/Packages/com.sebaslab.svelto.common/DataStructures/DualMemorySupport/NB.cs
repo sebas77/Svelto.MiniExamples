@@ -86,11 +86,6 @@ namespace Svelto.DataStructures
             }
         }
 
-        public T[] ToManagedArray()
-        {
-            throw new NotImplementedException();
-        }
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public IntPtr ToNativeArray(out int capacity)
         {

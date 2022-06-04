@@ -2,12 +2,12 @@ using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.ECS.EntityComponents;
 using Svelto.ECS.Extensions.Unity;
-using Svelto.ECS.MiniExamples.GameObjectsLayer;
+using Svelto.ECS.Miniexamples.Doofuses.GameObjectsLayer;
 using Svelto.ECS.SveltoOnDOTS;
 using Unity.Jobs;
 using UnityEngine;
 
-namespace Svelto.ECS.MiniExamples.Example1C
+namespace Svelto.ECS.Miniexamples.Doofuses.Gameobjects
 {
     [Sequenced(nameof(DoofusesEngineNames.VelocityToPositionDoofusesEngine))]
     public class VelocityToPositionDoofusesEngine : IQueryingEntitiesEngine, IJobifiedEngine
@@ -24,16 +24,18 @@ namespace Svelto.ECS.MiniExamples.Example1C
                 entitiesDB.QueryEntities<PositionEntityComponent, VelocityEntityComponent, SpeedEntityComponent>(   
                     GameGroups.DOOFUSES_EATING.Groups);
 
+            JobHandle combined = inputDeps;
+
             foreach (var (doofuses, _) in doofusesEntityGroups)
             {
                 var (buffer1, buffer2, buffer3, count) = doofuses;
                 var dep = new ComputePostionFromVelocityJob((buffer1, buffer2, buffer3, count), Time.deltaTime).ScheduleParallel(
                         count, inputDeps);
 
-                inputDeps = JobHandle.CombineDependencies(inputDeps, dep);
+                combined = JobHandle.CombineDependencies(combined, dep);
             }
 
-            return inputDeps;
+            return combined;
         }
 
         readonly struct ComputePostionFromVelocityJob : IJobParallelFor

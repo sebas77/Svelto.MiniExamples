@@ -9,7 +9,12 @@ using Svelto.ECS.SveltoOnDOTS;
 using Unity.Jobs;
 using UnityEngine;
 
-namespace Svelto.ECS.MiniExamples.Example1C
+//////////////////////////////////////////
+/// This demo can still be optimised. For example is useless to transform the meal entities since they don't move.
+/// This demo is also not using filters like the other variances, this because DOTS TransformArray is very limiting
+/// to use and wouldn't work well with filters.
+/// //////////////////////////////////////////
+namespace Svelto.ECS.Miniexamples.Doofuses.Gameobjects
 {
     class MainLoop
     {
@@ -24,8 +29,9 @@ namespace Svelto.ECS.MiniExamples.Example1C
         
         void Loop()
         {
-            //pure DOTS, no need to complete any job, just be sure that the previous lot is an input dependency                
             _job = _sveltoEngines.Execute(_job);
+            
+            _job.Complete();  //Job Sync Point
             
             _simpleEntitiesSubmissionScheduler.SubmitEntities();
         }

@@ -33,10 +33,10 @@ namespace Svelto.ECS.MiniExamples.Doofuses.Stride.StrideLayer
                 //iterate all the filters linked to the context StrideInstanceContext
                 foreach (ref var filter in filters)
                 {
-                    var useFilterIDAsEntityID = (uint)filter.combinedFilterID.filterID;
+                    var filterIDasPrefabID = (uint)filter.combinedFilterID.filterID;
      
                     //the id of the filter is the id of the instancing entity.
-                    var matrices = _ECSStrideEntityManager.GetInstancingTransformations(useFilterIDAsEntityID);
+                    var matrices = _ECSStrideEntityManager.GetInstancingTransformations(filterIDasPrefabID);
      
                     //each batch of instances needs to have its own array of matrices
                     //in order to allocate less often, we allocate more than needed
@@ -45,7 +45,7 @@ namespace Svelto.ECS.MiniExamples.Doofuses.Stride.StrideLayer
                     if (matrices.Length < entitiesCount)
                         Array.Resize(ref matrices, HashHelpers.Expand(entitiesCount));
                     
-                    //each filter can spread over multiple groups, so we iterate the filters per group
+                    //each filter set of entities can spread over multiple groups, so we iterate the filters per group
                     int matrixIndex       = 0;
                     foreach (var (indices, currentGroup) in filter)
                     {
@@ -63,7 +63,7 @@ namespace Svelto.ECS.MiniExamples.Doofuses.Stride.StrideLayer
                     }
      
                     //finally we set the array of matrices in Stride. remember the filter id was the entityID
-                    _ECSStrideEntityManager.SetInstancingTransformations(useFilterIDAsEntityID,
+                    _ECSStrideEntityManager.SetInstancingTransformations(filterIDasPrefabID,
                         matrices, entitiesCount);
                 }
             }

@@ -646,7 +646,7 @@ PlayerSettings:
   webGLThreadsSupport: 0
   webGLDecompressionFallback: 0
   scriptingDefineSymbols:
-    Standalone: ENABLE_PLATFORM_PROFILER;PROFILE_SVELTO
+    Standalone: ENABLE_PLATFORM_PROFILER
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend:

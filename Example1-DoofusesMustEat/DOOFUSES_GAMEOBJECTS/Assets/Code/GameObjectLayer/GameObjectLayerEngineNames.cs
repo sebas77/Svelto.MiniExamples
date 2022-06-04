@@ -1,4 +1,4 @@
-namespace Svelto.ECS.MiniExamples.GameObjectsLayer
+namespace Svelto.ECS.Miniexamples.Doofuses.GameObjectsLayer
 {
     public enum GameObjectLayerEngineNames
     {
