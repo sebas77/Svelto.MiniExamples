@@ -55,7 +55,7 @@ Most of the source code has been rewritten to work with Svelto.ECS framework. Th
 
 ~~Main article: http://www.sebaslab.com/svelto-miniexamples-gui-and-services-layer/~~
 
-this example has been removed has using ECS for GUI is totally discouraged and alternative patterns will be presented in my articles in due time.
+UI and ECS is an on going problem to solve. I have some better solution than what proposed in this example now.
 
 ## Example 4: Pure .net + SDL example
 
