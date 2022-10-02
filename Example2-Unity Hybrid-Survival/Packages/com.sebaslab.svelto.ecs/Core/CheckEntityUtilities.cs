@@ -88,7 +88,9 @@ namespace Svelto.ECS
 #endif
         void ClearDebugChecks() { _multipleOperationOnSameEGIDChecker.FastClear(); }
 
+#if DEBUG && !PROFILE_SVELTO        
         readonly FasterDictionary<EGID, uint>                          _multipleOperationOnSameEGIDChecker;
         readonly FasterDictionary<ExclusiveGroupStruct, HashSet<uint>> _idChecker;
+#endif
     }
 }

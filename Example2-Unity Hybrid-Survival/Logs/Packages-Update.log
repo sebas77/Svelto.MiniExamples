@@ -131,3 +131,13 @@ Update Mode: updateDependencies
 
 The following packages were updated:
   com.unity.ide.visualstudio from version 2.0.9 to 2.0.11
+
+=== Sat Sep 24 19:00:16 2022
+
+Packages were changed.
+Update Mode: updateDependencies
+
+The following packages were updated:
+  com.unity.ide.visualstudio from version 2.0.14 to 2.0.15
+  com.unity.mathematics from version 1.2.5 to 1.2.6
+  com.unity.nuget.newtonsoft-json from version 2.0.0 to 3.0.2

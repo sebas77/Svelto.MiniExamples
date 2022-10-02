@@ -11,12 +11,12 @@ namespace Svelto.ECS
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         void SingleSubmission(PlatformProfiler profiler)
         {
-            ClearDebugChecks(); //this must be done first as I need the carry the last states after the submission
-
             _entitiesOperations.ExecuteRemoveAndSwappingOperations(_swapEntities, _removeEntities, _removeGroup
                                                                  , _swapGroup, this);
 
             AddEntities(profiler);
+            
+            ClearDebugChecks(); //this must be done first as I need the carry the last states after the submission
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -521,8 +521,7 @@ namespace Svelto.ECS
         static readonly
             Action<FasterDictionary<ExclusiveGroupStruct, FasterDictionary<RefWrapperType,
                     FasterDictionary<ExclusiveGroupStruct, FasterList<(uint, uint, string)>>>>, FasterList<(EGID, EGID)>
-               ,
-                EnginesRoot> _swapEntities;
+               , EnginesRoot> _swapEntities;
 
         static readonly Action<
             FasterDictionary<ExclusiveGroupStruct, FasterDictionary<RefWrapperType, FasterList<(uint, string)>>>,

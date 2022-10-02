@@ -155,7 +155,7 @@ namespace Svelto.ECS
 
         /// <summary>
         /// Note: Remember that EntityViewComponents are always put at the end of the generic parameters tuple.
-        /// It won't compile otherwise
+        /// The Query entity code won't inexplicably compile otherwise
         /// </summary>
         /// <returns></returns>
         public GroupsEnumerable<T1, T2> QueryEntities<T1, T2>(in LocalFasterReadOnlyList<ExclusiveGroupStruct> groups)

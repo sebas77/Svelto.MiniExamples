@@ -218,6 +218,15 @@ namespace Svelto.DataStructures
 #endif
             _count = 0;
         }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void SmartClear()
+        {
+            if (TypeCache<T>.type.IsClass)
+                Clear();
+            else
+                FastClear();
+        }
 
         public static FasterList<T> Fill<U>(uint initialSize) where U : T, new()
         {

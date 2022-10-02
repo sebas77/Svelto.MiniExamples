@@ -41,14 +41,14 @@ namespace Svelto.DataStructures.Native
             _realBuffer    = b;
         }
 
-        public void Resize(uint newSize, bool copyContent = true)
+        public void Resize(uint newSize, bool copyContent = true, bool memClear = true)
         {
             if (newSize != capacity)
             {
                 IntPtr pointer = _realBuffer.ToNativeArray(out _);
                 pointer = MemoryUtilities.Realloc<T>(pointer, newSize, _nativeAllocator
                                                    , newSize > capacity ? (uint) capacity : newSize
-                                                   , copyContent);
+                                                   , copyContent, memClear);
                 NB<T> b = new NB<T>(pointer, newSize);
                 _realBuffer    = b;
                 _invalidHandle = true;

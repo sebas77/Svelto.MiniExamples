@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -18,7 +19,7 @@ namespace Svelto.DataStructures
         {
             _dic = dic;
         }
-        
+
         public uint count => (uint)_dic.count;
 
         [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
@@ -52,7 +53,7 @@ namespace Svelto.DataStructures
     /// value with shared hash hence bucket list index.
     /// </summary>
     [DebuggerTypeProxy(typeof(SveltoDictionaryDebugProxy<,,,,>))]
-    public struct SveltoDictionary<TKey, TValue, TKeyStrategy, TValueStrategy, TBucketStrategy>: IDisposable
+    public struct SveltoDictionary<TKey, TValue, TKeyStrategy, TValueStrategy, TBucketStrategy> : IDisposable
         where TKey : struct, IEquatable<TKey>
         where TKeyStrategy : struct, IBufferStrategy<SveltoDictionaryNode<TKey>>
         where TValueStrategy : struct, IBufferStrategy<TValue>
@@ -62,12 +63,13 @@ namespace Svelto.DataStructures
         {
             try
             {
-                if (typeof(TKey).GetMethod("GetHashCode", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly) == null)
-                    Svelto.Console.LogWarning(typeof(TKey).Name + " does not implement GetHashCode -> This will cause unwanted allocations (boxing)");
+                if (typeof(TKey).GetMethod("GetHashCode"
+                                         , BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
+                 == null)
+                    Svelto.Console.LogWarning(typeof(TKey).Name
+                                            + " does not implement GetHashCode -> This will cause unwanted allocations (boxing)");
             }
-            catch(AmbiguousMatchException)
-            {
-            }
+            catch (AmbiguousMatchException) { }
         }
 
         public SveltoDictionary(uint size, Allocator allocator) : this()
@@ -80,7 +82,7 @@ namespace Svelto.DataStructures
             _values.Alloc(size, allocator);
             _buckets = default;
             _buckets.Alloc((uint)HashHelpers.GetPrime((int)size), allocator);
-            
+
             if (size > 0)
                 _fastModBucketsMultiplier = HashHelpers.GetFastModMultiplier(size);
         }
@@ -90,13 +92,13 @@ namespace Svelto.DataStructures
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => _valuesInfo;
         }
-        
+
         public TValueStrategy unsafeValues
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => _values;
         }
-        
+
         /// <summary>
         /// Note: the NativeStrategy implementations always hold an pre-boxed version of the buffer, so boxing
         /// never happens at run time. Unboxing does happen at runtime, but it's very cheap and never incur in
@@ -111,11 +113,11 @@ namespace Svelto.DataStructures
             return _values.ToBuffer();
         }
 
-        public int                           count   => (int)_freeValueCellIndex;
-        public bool                          isValid => _buckets.isValid;
-        
+        public int  count   => (int)_freeValueCellIndex;
+        public bool isValid => _buckets.isValid;
+
         public SveltoDictionaryKeyEnumerable keys => new SveltoDictionaryKeyEnumerable(this);
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         //note, this returns readonly because the enumerator cannot be, but at the same time, it cannot be modified
         public SveltoDictionaryKeyValueEnumerator<TKey, TValue, TKeyStrategy, TValueStrategy, TBucketStrategy>
@@ -137,7 +139,7 @@ namespace Svelto.DataStructures
 
             _values[index] = value;
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool TryAdd(TKey key, in TValue value, out uint index)
         {
@@ -182,7 +184,7 @@ namespace Svelto.DataStructures
 
         static bool IsUnmanaged()
         {
-#if UNITY_COLLECTIONS || UNITY_JOBS || UNITY_BURST            
+#if UNITY_COLLECTIONS || UNITY_JOBS || UNITY_BURST
             return Unity.Collections.LowLevel.Unsafe.UnsafeUtility.IsUnmanaged<TValue>();
 #else
             return typeof(TValue).IsUnmanagedEx();
@@ -287,7 +289,7 @@ namespace Svelto.DataStructures
 
             return ref _values[(int)findIndex];
         }
-        
+
         /// <summary>
         /// RecycledOrCreate makes sense to use on dictionaries that are fast cleared and use objects
         /// as value. Once the dictionary is fast cleared, it will try to reuse object values that are
@@ -301,8 +303,9 @@ namespace Svelto.DataStructures
         /// <typeparam name="W"></typeparam>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ref TValue RecycleOrAdd<TValueProxy, W>(TKey key, FuncRef<W, TValue> builder,
-            ActionRef<TValueProxy, W> recycler, ref W parameter) where TValueProxy : class, TValue
+        public ref TValue RecycleOrAdd<TValueProxy, W>
+            (TKey key, FuncRef<W, TValue> builder, ActionRef<TValueProxy, W> recycler, ref W parameter)
+            where TValueProxy : class, TValue
         {
             if (TryFindIndex(key, out var findIndex) == true)
             {
@@ -347,19 +350,13 @@ namespace Svelto.DataStructures
         {
             if (_values.capacity < size)
             {
-                var expandPrime = HashHelpers.Expand((int)size);
-
-                _values.Resize((uint)expandPrime);
-                _valuesInfo.Resize((uint)expandPrime);
+                ResizeStorage(size);
             }
         }
-        
+
         public void IncreaseCapacityBy(uint size)
         {
-            var expandPrime = HashHelpers.Expand(_values.capacity + (int)size);
-
-            _values.Resize((uint)expandPrime);
-            _valuesInfo.Resize((uint)expandPrime);
+            ResizeStorage((uint)(_values.capacity + (int)size));
         }
         
         public TValue this[TKey key]
@@ -375,6 +372,7 @@ namespace Svelto.DataStructures
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         bool AddValue(TKey key, out uint indexSet)
         {
             int  hash        = key.GetHashCode(); //IEquatable doesn't enforce the override of GetHashCode
@@ -396,7 +394,7 @@ namespace Svelto.DataStructures
                 {
                     //must check if the key already exists in the dictionary
                     //Comparer<TKey>.default needs to create a new comparer, so it is much slower
-                    //than assuming that Equals is implemented through IEquatable
+                    //than assuming that Equals is implemented through IEquatable (but what if the comparer is statically cached?)
                     ref var fasterDictionaryNode = ref _valuesInfo[currentValueIndex];
                     if (fasterDictionaryNode.hashcode == hash && fasterDictionaryNode.key.Equals(key) == true)
                     {
@@ -432,61 +430,55 @@ namespace Svelto.DataStructures
 
             //too many collisions?
             if (_collisions > _buckets.capacity)
-            {
-                //we need more space and less collisions
-                _buckets.Resize((uint)HashHelpers.Expand((int)_collisions), false);
-                _collisions = 0;
-                _fastModBucketsMultiplier = HashHelpers.GetFastModMultiplier((uint) _buckets.capacity);
-
-                //we need to get all the hash code of all the values stored so far and spread them over the new bucket
-                //length
-                for (int newValueIndex = 0; newValueIndex < _freeValueCellIndex; newValueIndex++)
-                {
-                    //get the original hash code and find the new bucketIndex due to the new length
-                    ref var fasterDictionaryNode = ref _valuesInfo[newValueIndex];
-                    bucketIndex = Reduce((uint)fasterDictionaryNode.hashcode, (uint)_buckets.capacity, _fastModBucketsMultiplier);
-                    //bucketsIndex can be -1 or a next value. If it's -1 means no collisions. If there is collision,
-                    //we create a new node which prev points to the old one. Old one next points to the new one.
-                    //the bucket will now points to the new one
-                    //In this way we can rebuild the linkedlist.
-                    //get the current valueIndex, it's -1 if no collision happens
-                    int existingValueIndex = _buckets[bucketIndex] - 1;
-                    //update the bucket index to the index of the current item that share the bucketIndex
-                    //(last found is always the one in the bucket)
-                    _buckets[bucketIndex] = newValueIndex + 1;
-                    if (existingValueIndex != -1)
-                    {
-                        //oops a value was already being pointed by this cell in the new bucket list,
-                        //it means there is a collision, problem
-                        _collisions++;
-                        //the bucket will point to this value, so 
-                        //the previous index will be used as previous for the new value.
-                        fasterDictionaryNode.previous = existingValueIndex;
-                        fasterDictionaryNode.next     = -1;
-                        //and update the previous next index to the new one
-                        _valuesInfo[existingValueIndex].next = newValueIndex;
-                    }
-                    else
-                    {
-                        //ok nothing was indexed, the bucket was empty. We need to update the previous
-                        //values of next and previous
-                        fasterDictionaryNode.next     = -1;
-                        fasterDictionaryNode.previous = -1;
-                    }
-                }
-            }
+                ResizeBucket(_collisions);
 
             return true;
         }
 
-        void ResizeIfNeeded()
+        void ResizeBucket(uint newSize)
         {
-            if (_freeValueCellIndex == _values.capacity)
-            {
-                var expandPrime = HashHelpers.Expand((int)_freeValueCellIndex);
+            //we need more space and less collisions
+            _buckets.Resize((uint)HashHelpers.Expand((int)newSize), false, true);
+            _collisions               = 0;
+            _fastModBucketsMultiplier = HashHelpers.GetFastModMultiplier((uint)_buckets.capacity);
+            var bucketsCapacity = (uint)_buckets.capacity;
 
-                _values.Resize((uint)expandPrime);
-                _valuesInfo.Resize((uint)expandPrime);
+            //we need to get all the hash code of all the values stored so far and spread them over the new bucket
+            //length
+            var freeValueCellIndex = _freeValueCellIndex;
+            for (int newValueIndex = 0; newValueIndex < freeValueCellIndex; ++newValueIndex)
+            {
+                //get the original hash code and find the new bucketIndex due to the new length
+                ref var valueInfoNode   = ref _valuesInfo[newValueIndex];
+                var    bucketIndex = Reduce((uint)valueInfoNode.hashcode, bucketsCapacity, _fastModBucketsMultiplier);
+                //bucketsIndex can be -1 or a next value. If it's -1 means no collisions. If there is collision,
+                //we create a new node which prev points to the old one. Old one next points to the new one.
+                //the bucket will now points to the new one
+                //In this way we can rebuild the linkedlist.
+                //get the current valueIndex, it's -1 if no collision happens
+                int existingValueIndex = _buckets[bucketIndex] - 1;
+                //update the bucket index to the index of the current item that share the bucketIndex
+                //(last found is always the one in the bucket)
+                _buckets[bucketIndex] = newValueIndex + 1;
+                if (existingValueIndex == -1)
+                {
+                    //ok nothing was indexed, the bucket was empty. We need to update the previous
+                    //values of next and previous
+                    valueInfoNode.next     = -1;
+                    valueInfoNode.previous = -1;
+                }
+                else
+                {
+                    //oops a value was already being pointed by this cell in the new bucket list,
+                    //it means there is a collision, problem
+                    _collisions++;
+                    //the bucket will point to this value, so 
+                    //the previous index will be used as previous for the new value.
+                    valueInfoNode.previous = existingValueIndex;
+                    valueInfoNode.next     = -1;
+                    //and update the previous next index to the new one
+                    _valuesInfo[existingValueIndex].next = newValueIndex;
+                }
             }
         }
 
@@ -551,7 +543,7 @@ namespace Svelto.DataStructures
                 value = default;
                 return false; //not found!
             }
-            
+
             index = indexToValueToRemove;
 
             _freeValueCellIndex--; //one less value to iterate
@@ -571,7 +563,8 @@ namespace Svelto.DataStructures
                 //first we find the index in the bucket list of the pointer that points to the cell
                 //to move
                 ref var fasterDictionaryNode = ref _valuesInfo[_freeValueCellIndex];
-                var     movingBucketIndex    = Reduce((uint)fasterDictionaryNode.hashcode, (uint)_buckets.capacity, _fastModBucketsMultiplier);
+                var movingBucketIndex = Reduce((uint)fasterDictionaryNode.hashcode, (uint)_buckets.capacity
+                                             , _fastModBucketsMultiplier);
 
                 //if the key is found and the bucket points directly to the node to remove
                 //it must now point to the cell where it's going to be moved
@@ -596,7 +589,7 @@ namespace Svelto.DataStructures
 
             return true;
         }
-
+        
         public void Trim()
         {
             _values.Resize(_freeValueCellIndex);
@@ -698,7 +691,7 @@ namespace Svelto.DataStructures
                 this[other.key] = other.value;
             }
         }
-        
+
         public void CopyFrom<OTKeyStrategy, OTValueStrategy, OTBucketStrategy>
             (SveltoDictionary<TKey, TValue, OTKeyStrategy, OTValueStrategy, OTBucketStrategy> otherDicKeys)
             where OTKeyStrategy : struct, IBufferStrategy<SveltoDictionaryNode<TKey>>
@@ -709,15 +702,41 @@ namespace Svelto.DataStructures
             _values.SerialiseFrom(otherDicKeys._values.AsBytesPointer());
             _buckets.SerialiseFrom(otherDicKeys._buckets.AsBytesPointer());
 
-            this._collisions = otherDicKeys._collisions;
+            this._collisions         = otherDicKeys._collisions;
             this._freeValueCellIndex = otherDicKeys._freeValueCellIndex;
         }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        void ResizeIfNeeded()
+        {
+            if (_freeValueCellIndex == _values.capacity)
+            {
+                var expandPrime = HashHelpers.Expand((int)_freeValueCellIndex);
+
+                _values.Resize((uint)expandPrime, true, false);
+                _valuesInfo.Resize((uint)expandPrime, true, false);
+            }
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        void ResizeStorage(uint size)
+        {
+            var expandPrime = HashHelpers.Expand((int)size);
+
+            _values.Resize((uint)expandPrime, true, false);
+            _valuesInfo.Resize((uint)expandPrime, true, false);
+            ResizeBucket(size);
+        }
+
+        static readonly bool Is64BitProcess = Environment.Is64BitProcess; 
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         static uint Reduce(uint hashcode, uint N, ulong fastModBucketsMultiplier)
         {
             if (hashcode >= N) //is the condition return actually an optimization?
-                return Environment.Is64BitProcess ? HashHelpers.FastMod(hashcode, N, fastModBucketsMultiplier) : hashcode % N;
+                return Is64BitProcess
+                    ? HashHelpers.FastMod(hashcode, N, fastModBucketsMultiplier)
+                    : hashcode % N;
 
             return hashcode;
         }
@@ -791,10 +810,10 @@ namespace Svelto.DataStructures
         internal TKeyStrategy   _valuesInfo;
         internal TValueStrategy _values;
         TBucketStrategy         _buckets;
-        
-        uint        _freeValueCellIndex;
-        uint        _collisions;
-        ulong       _fastModBucketsMultiplier;
+
+        uint  _freeValueCellIndex;
+        uint  _collisions;
+        ulong _fastModBucketsMultiplier;
     }
 
     public class SveltoDictionaryException : Exception

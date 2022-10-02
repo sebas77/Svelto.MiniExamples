@@ -1,0 +1,18 @@
+{
+    "name": "SharedLayer",
+    "references": [
+        "Svelto.ECS",
+        "Unity.Addressables",
+        "Unity.ResourceManager",
+        "Svelto.Common"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

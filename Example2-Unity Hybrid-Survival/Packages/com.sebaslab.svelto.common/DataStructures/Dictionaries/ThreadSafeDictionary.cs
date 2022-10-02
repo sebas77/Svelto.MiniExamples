@@ -307,6 +307,20 @@ namespace Svelto.DataStructures
                 _lockQ.ExitWriteLock();
             }
         }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool TryRemove(TKey key, out TValue val)
+        {
+            _lockQ.EnterWriteLock();
+            try
+            {
+                return _dict.Remove(key, out val);
+            }
+            finally
+            {
+                _lockQ.ExitWriteLock();
+            }
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Trim()

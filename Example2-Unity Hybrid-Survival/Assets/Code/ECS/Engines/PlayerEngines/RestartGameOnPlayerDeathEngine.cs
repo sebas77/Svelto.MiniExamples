@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 namespace Svelto.ECS.Example.Survive
 {
-    public class RestartGameOnPlayerDeathEngine : IQueryingEntitiesEngine, IReactOnAddAndRemove<PlayerEntityViewComponent>, IStepEngine
+    public class RestartGameOnPlayerDeathEngine : IQueryingEntitiesEngine, IReactOnAddAndRemove<PlayerEntityComponent>, IStepEngine
     {
         public RestartGameOnPlayerDeathEngine()
         {
@@ -14,10 +14,10 @@ namespace Svelto.ECS.Example.Survive
         
         public EntitiesDB entitiesDB { get; set; }
         
-        public void                           Add(ref PlayerEntityViewComponent entityComponent, EGID egid)    
+        public void                           Add(ref PlayerEntityComponent entityComponent, EGID egid)    
         {}
 
-        public void Remove(ref PlayerEntityViewComponent entityComponent, EGID egid)
+        public void Remove(ref PlayerEntityComponent entityComponent, EGID egid)
         {
             _execute = true;
         }

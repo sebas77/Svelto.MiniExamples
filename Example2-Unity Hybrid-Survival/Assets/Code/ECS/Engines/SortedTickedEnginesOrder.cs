@@ -1,4 +1,5 @@
 using Svelto.Common;
+using Svelto.ECS.Example.Survive.Player;
 
 namespace Svelto.ECS.Example.Survive
 {
@@ -7,12 +8,6 @@ namespace Svelto.ECS.Example.Survive
         SurvivalUnsortedEngines
       , UpdateScoreEngine
        , DamageUnsortedEngines
-    }
-
-    public enum PlayerEnginesNames
-    {
-       PlayerDeathEngine
-      , PlayerGunShootingEngine
     }
 
     public enum EnemyEnginesNames

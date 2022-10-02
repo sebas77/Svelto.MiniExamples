@@ -1,28 +1,14 @@
 using System;
 using Svelto.ECS.Example.Survive.Player;
 
-namespace Svelto.ECS.Example.Survive
-{
-    public class Dead : GroupTag<Dead> { };
-
-    public class Damageable : GroupTag<Damageable> { };
-}
-
 namespace Svelto.ECS.Example.Survive.Weapons
 {
     public class Gun : GroupTag<Gun> { };
 }
 
-namespace Svelto.ECS.Example.Survive.Player
-{
-    public class PlayerTag : GroupTag<PlayerTag> { };
-    public class Player : GroupCompound<PlayerTag, Damageable> { };
-}
 
-namespace Svelto.ECS.Example.Survive.Camera
-{
-    public class Camera : GroupTag<Camera> { };
-}
+
+
 
 namespace Svelto.ECS.Example.Survive.Enemies
 {

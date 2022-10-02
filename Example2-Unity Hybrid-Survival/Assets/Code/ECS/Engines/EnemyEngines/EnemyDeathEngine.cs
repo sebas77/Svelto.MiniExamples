@@ -95,7 +95,7 @@ namespace Svelto.ECS.Example.Survive.Enemies
         readonly IEntityStreamConsumerFactory _consumerFactory;
         readonly ITime                        _time;
         Consumer<DeathComponent>              _consumer;
-        WaitForSubmissionEnumerator           _waitForSubmission;
+        readonly WaitForSubmissionEnumerator           _waitForSubmission;
         readonly FasterList<IEnumerator>      _animations;
     }
 }

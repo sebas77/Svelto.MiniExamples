@@ -11,9 +11,9 @@ namespace Svelto.DataStructures
         void   Alloc(uint size, Allocator allocator, bool clear = true);
         void   ShiftRight(uint index, uint count);
         void   ShiftLeft(uint index, uint count);
-        void   Resize(uint newCapacity, bool copyContent = true);
+        void   Resize(uint newCapacity, bool copyContent = true, bool memClear = true);
         IntPtr AsBytesPointer();
-        void SerialiseFrom(IntPtr bytesPointer);
+        void   SerialiseFrom(IntPtr bytesPointer);
         void   Clear();
         
         ref T this[uint index] { get ; }

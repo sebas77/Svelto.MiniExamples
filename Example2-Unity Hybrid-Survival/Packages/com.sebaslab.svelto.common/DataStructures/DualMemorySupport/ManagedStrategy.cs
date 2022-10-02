@@ -35,7 +35,7 @@ namespace Svelto.DataStructures
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Resize(uint newSize, bool copyContent = true)
+        public void Resize(uint newSize, bool copyContent = true, bool memClear = true)
         {
             if (newSize != capacity)
             {

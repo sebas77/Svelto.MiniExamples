@@ -1,0 +1,20 @@
+{
+    "name": "PlayerEntityLayer",
+    "references": [
+        "Svelto.Common",
+        "Svelto.ECS",
+        "AnimationLayer",
+        "DamageableEntityLayers",
+        "CameraLayer",
+        "SharedLayer"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

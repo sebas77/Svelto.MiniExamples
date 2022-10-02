@@ -334,8 +334,7 @@ namespace Svelto.ECS
 
                             _enginesRoot.Target.SingleSubmission(profiler);
 #if UNITY_NATIVE
-                            if (enginesRootTarget.HasMadeNewStructuralChangesInThisIteration())
-                                enginesRootTarget.FlushNativeOperations(profiler);
+                            enginesRootTarget.FlushNativeOperations(profiler);
 #endif
                         }
 

@@ -1,3 +1,4 @@
+using Code.ECS.Shared;
 using Svelto.Context;
 using Svelto.DataStructures;
 using Svelto.ECS.Example.Survive.Camera;
@@ -108,6 +109,7 @@ namespace Svelto.ECS.Example.Survive
             //While it seems a complication it's important to keep the engines testable and not coupled with hard
             //dependencies
             var gameObjectFactory = new GameObjectFactory();
+            var playerGameObjectResourceManager = new GameObjectResourceManager();
 
             //Player related engines. ALL the dependencies must be solved at this point through constructor injection.
             var playerShootingEngine       = new PlayerGunShootingEngine(rayCaster, time);
@@ -117,7 +119,7 @@ namespace Svelto.ECS.Example.Survive
             var playerInputEngine          = new PlayerInputEngine();
             var playerGunShootingFXsEngine = new PlayerGunShootingFXsEngine(entityStreamConsumerFactory);
             //Spawner engines are factories engines that can build entities
-            var playerSpawnerEngine      = new PlayerSpawnerEngine(gameObjectFactory, entityFactory);
+            var playerSpawnerEngine      = new PlayerSpawnerEngine(playerGameObjectResourceManager, entityFactory);
             var restartGameOnPlayerDeath = new RestartGameOnPlayerDeathEngine();
 
             //Player engines
