@@ -1,4 +1,6 @@
-﻿namespace Svelto.ECS
+﻿using Svelto.ECS.Internal;
+
+namespace Svelto.ECS
 {
     public abstract class GenericEntityDescriptor<T> : IEntityDescriptor where T : struct, _IInternalEntityComponent
     {

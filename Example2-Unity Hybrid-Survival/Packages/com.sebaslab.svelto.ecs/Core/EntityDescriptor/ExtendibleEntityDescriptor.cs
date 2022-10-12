@@ -1,3 +1,5 @@
+using Svelto.ECS.Internal;
+
 namespace Svelto.ECS
 {
     /// <summary>

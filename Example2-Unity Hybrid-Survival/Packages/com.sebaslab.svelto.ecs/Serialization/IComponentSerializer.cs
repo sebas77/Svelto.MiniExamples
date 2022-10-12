@@ -1,3 +1,4 @@
+using Svelto.ECS.Internal;
 #if DEBUG && !PROFILE_SVELTO
 #endif
 namespace Svelto.ECS.Serialization

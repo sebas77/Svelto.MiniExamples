@@ -1,3 +1,5 @@
+using Svelto.ECS.Internal;
+
 namespace Svelto.ECS.Serialization
 {
     public class DontSerialize<T> : IComponentSerializer<T> where T : unmanaged, _IInternalEntityComponent

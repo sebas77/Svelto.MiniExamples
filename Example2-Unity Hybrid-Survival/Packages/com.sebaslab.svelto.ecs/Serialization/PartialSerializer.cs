@@ -2,6 +2,7 @@ using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using Svelto.DataStructures;
+using Svelto.ECS.Internal;
 using Attribute = System.Attribute;
 
 namespace Svelto.ECS.Serialization

@@ -1,3 +1,5 @@
+using Svelto.ECS.Internal;
+
 namespace Svelto.ECS.Hybrid
 {
     ///IManagedComponents are pure struct components stored in managed memory

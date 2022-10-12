@@ -1,6 +1,7 @@
 using System.Threading;
 using Svelto.Common;
 using Svelto.ECS.DataStructures;
+using Svelto.ECS.Internal;
 
 namespace Svelto.ECS
 {
