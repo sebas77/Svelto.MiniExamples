@@ -210,7 +210,7 @@ namespace Svelto.ECS.Experimental
         readonly FasterReadOnlyList<ExclusiveGroupStruct> _group;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int Count<T>(EntitiesDB entitiesDB) where T : struct, IBaseEntityComponent
+        public int Count<T>(EntitiesDB entitiesDB) where T : struct, _IInternalEntityComponent
         {
             var count = 0;
 
@@ -220,7 +220,7 @@ namespace Svelto.ECS.Experimental
             return count;
         }
 
-        public int Max<T>(EntitiesDB entitiesDB) where T : struct, IBaseEntityComponent
+        public int Max<T>(EntitiesDB entitiesDB) where T : struct, _IInternalEntityComponent
         {
             var max = 0;
 

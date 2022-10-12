@@ -89,7 +89,7 @@ namespace Svelto.ECS
             /// <returns></returns>
             public T DeserializeEntityComponent<T>(ISerializationData serializationData,
                 ISerializableEntityDescriptor entityDescriptor, int serializationType)
-                where T : unmanaged, IBaseEntityComponent
+                where T : unmanaged, _IInternalEntityComponent
             {
                 var readPos         = serializationData.dataPos;
                 T   entityComponent = default;

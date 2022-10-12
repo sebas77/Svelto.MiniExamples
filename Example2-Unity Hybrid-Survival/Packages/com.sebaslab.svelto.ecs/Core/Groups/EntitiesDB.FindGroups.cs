@@ -7,7 +7,7 @@ namespace Svelto.ECS
 {
     public partial class EntitiesDB
     {
-        public LocalFasterReadOnlyList<ExclusiveGroupStruct> FindGroups<T1>() where T1 : IBaseEntityComponent
+        public LocalFasterReadOnlyList<ExclusiveGroupStruct> FindGroups<T1>() where T1 : _IInternalEntityComponent
         {
             FasterList<ExclusiveGroupStruct> result = localgroups.Value.groupArray;
             result.FastClear();
@@ -32,7 +32,7 @@ namespace Svelto.ECS
         }
 
         public LocalFasterReadOnlyList<ExclusiveGroupStruct> FindGroups<T1, T2>()
-            where T1 : IBaseEntityComponent where T2 : IBaseEntityComponent
+            where T1 : _IInternalEntityComponent where T2 : _IInternalEntityComponent
         {
             FasterList<ExclusiveGroupStruct> result = localgroups.Value.groupArray;
             result.FastClear();
@@ -83,7 +83,7 @@ namespace Svelto.ECS
         /// <typeparam name="T3"></typeparam>
         /// <returns></returns>
         public LocalFasterReadOnlyList<ExclusiveGroupStruct> FindGroups<T1, T2, T3>()
-            where T1 : IBaseEntityComponent where T2 : IBaseEntityComponent where T3 : IBaseEntityComponent
+            where T1 : _IInternalEntityComponent where T2 : _IInternalEntityComponent where T3 : _IInternalEntityComponent
         {
             FasterList<FasterDictionary<ExclusiveGroupStruct, ITypeSafeDictionary>> localArray =
                 localgroups.Value.listOfGroups;
@@ -133,10 +133,10 @@ namespace Svelto.ECS
         }
 
         public LocalFasterReadOnlyList<ExclusiveGroupStruct> FindGroups<T1, T2, T3, T4>()
-            where T1 : IBaseEntityComponent
-            where T2 : IBaseEntityComponent
-            where T3 : IBaseEntityComponent
-            where T4 : IBaseEntityComponent
+            where T1 : _IInternalEntityComponent
+            where T2 : _IInternalEntityComponent
+            where T3 : _IInternalEntityComponent
+            where T4 : _IInternalEntityComponent
         {
             FasterList<FasterDictionary<ExclusiveGroupStruct, ITypeSafeDictionary>> localArray =
                 localgroups.Value.listOfGroups;

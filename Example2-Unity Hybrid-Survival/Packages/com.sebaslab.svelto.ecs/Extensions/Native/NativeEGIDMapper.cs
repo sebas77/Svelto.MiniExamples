@@ -13,7 +13,7 @@ namespace Svelto.ECS.Native
     /// that a job can use it as long as nothing else is modifying the entities database and the NativeEGIDMapper
     /// is disposed right after the use.
     /// </summary>
-    public readonly struct NativeEGIDMapper<T> : IEGIDMapper where T : unmanaged, IBaseEntityComponent
+    public readonly struct NativeEGIDMapper<T> : IEGIDMapper where T : unmanaged, _IInternalEntityComponent
     {
         public static readonly NativeEGIDMapper<T> empty = new NativeEGIDMapper<T>
             (default, new SharedSveltoDictionaryNative<uint, T>(0, Allocator.Persistent));

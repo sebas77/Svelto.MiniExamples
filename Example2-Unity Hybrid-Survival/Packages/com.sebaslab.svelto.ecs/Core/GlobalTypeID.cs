@@ -18,7 +18,7 @@ namespace Svelto.ECS
         void FillFromByteArray(EntityInitializer init, NativeBag buffer);
     }
 
-    class Filler<T> : IFiller where T : struct, IBaseEntityComponent
+    class Filler<T> : IFiller where T : struct, _IInternalEntityComponent
     {
         static Filler()
         {

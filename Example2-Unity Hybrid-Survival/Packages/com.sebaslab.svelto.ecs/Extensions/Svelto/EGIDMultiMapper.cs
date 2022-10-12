@@ -9,7 +9,7 @@ namespace Svelto.ECS
 {
     namespace Native
     {
-        public struct EGIDMultiMapper<T> where T : unmanaged, IBaseEntityComponent
+        public struct EGIDMultiMapper<T> where T : unmanaged, _IInternalEntityComponent
         {
             public EGIDMultiMapper
             (SveltoDictionary<ExclusiveGroupStruct,

@@ -21,7 +21,7 @@ namespace Svelto.ECS.Internal
 #endif
 
     public sealed class UnmanagedTypeSafeDictionary<TValue> : ITypeSafeDictionary<TValue>
-        where TValue : struct, IBaseEntityComponent
+        where TValue : struct, _IInternalEntityComponent
     {
         static readonly ThreadLocal<IEntityIDs> cachedEntityIDN =
             new ThreadLocal<IEntityIDs>(() => new NativeEntityIDs());

@@ -7,7 +7,7 @@ namespace Svelto.ECS
         void Dispose();
     }
 
-    public class EntityStream<T> : ITypeSafeStream where T : unmanaged, IBaseEntityComponent
+    public class EntityStream<T> : ITypeSafeStream where T : unmanaged, _IInternalEntityComponent
     {
         readonly ThreadSafeFasterList<Consumer<T>> _consumers;
 
