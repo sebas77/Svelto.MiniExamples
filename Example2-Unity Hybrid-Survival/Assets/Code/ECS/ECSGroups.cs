@@ -1,15 +1,6 @@
 using System;
 using Svelto.ECS.Example.Survive.Player;
 
-namespace Svelto.ECS.Example.Survive.Weapons
-{
-    public class Gun : GroupTag<Gun> { };
-}
-
-
-
-
-
 namespace Svelto.ECS.Example.Survive.Enemies
 {
     public class EnemyTag : GroupTag<EnemyTag> { };

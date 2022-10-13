@@ -1,3 +1,4 @@
+using System.Collections;
 using Code.ECS.Shared;
 using Svelto.Context;
 using Svelto.DataStructures;
@@ -46,8 +47,6 @@ namespace Svelto.ECS.Example.Survive
     /// </summary>
     public class MainCompositionRoot : ICompositionRoot
     {
-        EnginesRoot _enginesRoot;
-
         public MainCompositionRoot()
         {
             QualitySettings.vSyncCount = 1;
@@ -75,12 +74,12 @@ namespace Svelto.ECS.Example.Survive
         ///     Where all the logic lies. Engines operates on Entity Components
         ///     - IEntityComponent:
         ///     It's an Entity Component which can be used with Pure ECS
-        ///     - IEntityViewComponent:
+        ///     - IEntityComponent:
         ///     structs implementing this are used to wrap Objects that come from OOP libraries. You will never use it unless
         ///     you are forced to mix your ECS code with OOP code because of external libraries or platforms. These special
         ///     "Hybrid" component can hold only interfaces
         ///     - Implementors:
-        ///     The EntityViewComponent exposed interfaces must be implemented by Implementors that are actually the
+        ///     The EntityComponent exposed interfaces must be implemented by Implementors that are actually the
         ///     Objects you need to wrap.
         ///     - EntityDescriptors:
         ///     Gives a way to formalise your Entity, it also defines the components that must
@@ -109,18 +108,17 @@ namespace Svelto.ECS.Example.Survive
             //While it seems a complication it's important to keep the engines testable and not coupled with hard
             //dependencies
             var gameObjectFactory = new GameObjectFactory();
-            var playerGameObjectResourceManager = new GameObjectResourceManager();
+            var gameObjectResourceManager = new GameObjectResourceManager();
 
             //Player related engines. ALL the dependencies must be solved at this point through constructor injection.
-            var playerShootingEngine       = new PlayerGunShootingEngine(rayCaster, time);
+            var playerShootingEngine       = new PlayerFiresGunEngine(rayCaster, time, GAME_LAYERS.ENEMY_LAYER, GAME_LAYERS.SHOOTABLE_MASK | GAME_LAYERS.ENEMY_MASK);
             var playerMovementEngine       = new PlayerMovementEngine(rayCaster);
             var playerAnimationEngine      = new PlayerAnimationEngine();
             var playerDeathEngine          = new PlayerDeathEngine(entityFunctions, entityStreamConsumerFactory);
             var playerInputEngine          = new PlayerInputEngine();
             var playerGunShootingFXsEngine = new PlayerGunShootingFXsEngine(entityStreamConsumerFactory);
             //Spawner engines are factories engines that can build entities
-            var playerSpawnerEngine      = new PlayerSpawnerEngine(playerGameObjectResourceManager, entityFactory);
-            var restartGameOnPlayerDeath = new RestartGameOnPlayerDeathEngine();
+        //    var restartGameOnPlayerDeath = new RestartGameOnPlayerDeathEngine();
 
             //Player engines
             _enginesRoot.AddEngine(playerMovementEngine);
@@ -129,8 +127,7 @@ namespace Svelto.ECS.Example.Survive
             _enginesRoot.AddEngine(playerInputEngine);
             _enginesRoot.AddEngine(playerGunShootingFXsEngine);
             _enginesRoot.AddEngine(playerDeathEngine);
-            _enginesRoot.AddEngine(playerSpawnerEngine);
-            _enginesRoot.AddEngine(restartGameOnPlayerDeath);
+          //  _enginesRoot.AddEngine(restartGameOnPlayerDeath);
 
             //Factory is one of the few OOP patterns that work very well with ECS. Its use is highly encouraged
             var enemyFactory = new EnemyFactory(gameObjectFactory, entityFactory);
@@ -142,8 +139,7 @@ namespace Svelto.ECS.Example.Survive
             //Spawner engines are factories engines that can build entities
             var enemySpawnerEngine = new EnemySpawnerEngine(enemyFactory, entityFunctions);
             var enemyDeathEngine = new EnemyDeathEngine(entityFunctions, entityStreamConsumerFactory, time
-                                                      , new WaitForSubmissionEnumerator(
-                                                            unityEntitySubmissionScheduler));
+                                                      , new WaitForSubmissionEnumerator(unityEntitySubmissionScheduler));
 
             //enemy engines
             _enginesRoot.AddEngine(enemySpawnerEngine);
@@ -179,13 +175,12 @@ namespace Svelto.ECS.Example.Survive
                                                                            playerMovementEngine
                                                                          , playerInputEngine
                                                                          , playerGunShootingFXsEngine
-                                                                         , playerSpawnerEngine
                                                                          , playerAnimationEngine
                                                                          , enemySpawnerEngine
                                                                          , enemyMovementEngine
                                                                          , cameraFollowTargetEngine
                                                                          , hudEngine
-                                                                         , restartGameOnPlayerDeath
+                                                                     //    , restartGameOnPlayerDeath
                                                                        }));
 
             var unsortedDamageEngines = new DamageUnsortedEngines(new FasterList<IStepEngine>(
@@ -210,6 +205,7 @@ namespace Svelto.ECS.Example.Survive
               , scoreEngine
             })));
 
+            CoroutineRunner.Run(new PlayerSpawner(gameObjectResourceManager, entityFactory).SpawnPlayer());
             BuildGUIEntitiesFromScene(contextHolder, entityFactory);
         }
 
@@ -233,5 +229,27 @@ namespace Svelto.ECS.Example.Survive
             SveltoGUIHelper.Create<HudEntityDescriptorHolder>(ECSGroups.HUD, contextHolder.transform, entityFactory
                                                             , true);
         }
+        
+        EnginesRoot _enginesRoot;
+    }
+
+    static class CoroutineRunner
+    {
+        static CoroutineRunner()
+        {
+            var gameObject = new GameObject("CoroutineRunner");
+            _coroutineRunnerMB = gameObject.AddComponent<CoroutineRunnerMB>();
+        }
+
+        public static void Run(IEnumerator coroutine)
+        {
+            _coroutineRunnerMB.StartCoroutine(coroutine);
+        }
+        
+        static readonly CoroutineRunnerMB _coroutineRunnerMB;
+    }
+
+    public class CoroutineRunnerMB:MonoBehaviour
+    {
     }
 }

@@ -43,6 +43,9 @@
   <ItemGroup>
      <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\ApplyDamageToDamageableEntitiesEngine.cs" />
      <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\DamageInfo.cs" />
+     <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\DamageSoundEngine.cs" />
+     <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\DamageSoundEntityComponent.cs" />
+     <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\DamageUnsortedEngines.cs" />
      <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\DamageableComponent.cs" />
      <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\DamageableEntityDescriptor.cs" />
      <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\DeathComponent.cs" />
@@ -605,6 +608,10 @@
     <ProjectReference Include="Svelto.Common.csproj">
       <Project>{53ca5d34-0f9e-ae64-6d32-8d74a6f2e9d4}</Project>
       <Name>Svelto.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="AudioLayer.csproj">
+      <Project>{b0248dd3-7f6e-ab2b-974b-6eb71fa3bce7}</Project>
+      <Name>AudioLayer</Name>
     </ProjectReference>
     <ProjectReference Include="UnityEditor.UI.csproj">
       <Project>{071fa4f6-95c0-6054-c479-b9199d4dc847}</Project>

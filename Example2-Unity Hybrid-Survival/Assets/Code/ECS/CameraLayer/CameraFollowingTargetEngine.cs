@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace Svelto.ECS.Example.Survive.Camera
 {
@@ -14,11 +15,17 @@ namespace Svelto.ECS.Example.Survive.Camera
             _update = Update();
         }
 
-        public void       Ready()    { }
+        public void Ready()
+        {
+        }
+
         public EntitiesDB entitiesDB { get; set; }
         public string     name       => nameof(CameraFollowingTargetEngine);
 
-        public void Step() { _update.MoveNext(); }
+        public void Step()
+        {
+            _update.MoveNext();
+        }
 
         IEnumerator Update()
         {
@@ -26,24 +33,25 @@ namespace Svelto.ECS.Example.Survive.Camera
 
             void TrackCameraTarget()
             {
-                foreach (var ((targets, cameras, count), _) in entitiesDB
-                   .QueryEntities<CameraTargetEntityReferenceComponent, CameraEntityViewComponent>(Camera.Groups))
+                foreach (var ((targets, cameras, cameraPositions, count), _) in entitiesDB
+                            .QueryEntities<CameraTargetEntityReferenceComponent, CameraEntityComponent,
+                                 PositionComponent>(Camera.Groups))
                 {
                     for (uint i = 0; i < count; i++)
                     {
-                        ref var camera = ref cameras[i];
+                        ref var camera         = ref cameras[i];
+                        ref var cameraPosition = ref cameraPositions[i];
 
                         EntityReference entityReference = targets[i].targetEntity;
                         //The camera target can be destroyed while the camera is still active
                         if (entityReference.ToEGID(entitiesDB, out var targetEGID))
                         {
-                            ref var cameraTarget =
-                                ref entitiesDB.QueryEntity<CameraTargetEntityViewComponent>(targetEGID);
+                            ref var cameraTarget = ref entitiesDB.QueryEntity<PositionComponent>(targetEGID);
 
-                            var targetCameraPos = cameraTarget.targetComponent.position + camera.cameraComponent.offset;
+                            var targetCameraPos = cameraTarget.position + camera.offset;
 
-                            camera.transformComponent.position = Vector3.Lerp(
-                                camera.positionComponent.position, targetCameraPos, smoothing * _time.deltaTime);
+                            cameraPosition.position = Vector3.Lerp(cameraPosition.position, targetCameraPos,
+                                smoothing * _time.deltaTime);
                         }
                     }
                 }

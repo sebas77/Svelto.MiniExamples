@@ -41,13 +41,12 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
+     <Compile Include="Assets\Code\ECS\CameraLayer\CameraEntityComponent.cs" />
      <Compile Include="Assets\Code\ECS\CameraLayer\CameraEntityDescriptor.cs" />
-     <Compile Include="Assets\Code\ECS\CameraLayer\CameraEntityViewComponent.cs" />
      <Compile Include="Assets\Code\ECS\CameraLayer\CameraFollowingTargetEngine.cs" />
      <Compile Include="Assets\Code\ECS\CameraLayer\CameraImplementor.cs" />
      <Compile Include="Assets\Code\ECS\CameraLayer\CameraReferenceComponent.cs" />
      <Compile Include="Assets\Code\ECS\CameraLayer\CameraTargetEntityReferenceComponent.cs" />
-     <Compile Include="Assets\Code\ECS\CameraLayer\CameraTargetEntityViewComponent.cs" />
      <Compile Include="Assets\Code\ECS\CameraLayer\Groups.cs" />
      <Compile Include="Assets\Code\ECS\CameraLayer\ICameraComponent.cs" />
      <None Include="Assets\Code\ECS\CameraLayer\CameraLayer.asmdef" />

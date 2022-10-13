@@ -30,9 +30,4 @@ namespace Svelto.ECS.Example.Survive
         bool    isKinematic { set; }
         Vector3 velocity    { set; }
     }
-
-    public interface IDamageSoundComponent
-    {
-        AudioType playOneShot { set; }
-    }
 }

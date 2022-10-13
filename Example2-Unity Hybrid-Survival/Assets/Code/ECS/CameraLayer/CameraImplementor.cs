@@ -2,16 +2,10 @@
 
 namespace Svelto.ECS.Example.Survive.Camera
 {
-    public class CameraImplementor : MonoBehaviour, ITransformComponent, ICameraComponent
+    public class CameraImplementor
     {
         public Vector3    position { get => _cameraTransform.position; set => _cameraTransform.position = value; }
         public Quaternion rotation { set => _cameraTransform.rotation = value; }
-
-        void Awake()
-        {
-            _cameraTransform = transform;
-            _camera          = GetComponent<UnityEngine.Camera>();
-        }
 
         public Ray camRay => _camRay;
 

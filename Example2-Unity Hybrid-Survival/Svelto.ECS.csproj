@@ -110,10 +110,10 @@
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Hybrid\IEntityViewComponent.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Hybrid\IImplementor.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Hybrid\ValueReference.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\IBaseEntityComponent.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\IComponentBuilder.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\IDisposingEngine.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\IEngine.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\IEntityComponent.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\IEntityFactory.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\IEntityFunctions.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\INeedEGID.cs" />
@@ -130,6 +130,7 @@
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Streams\EntityStream.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Streams\GenericentityStreamConsumerFactory.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\TypeSafeDictionaryFactory.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\_IInternalEntityComponent.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\DataStructures\EntityIDs\IEntityIDs.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\DataStructures\EntityIDs\ManagedEntityIDs.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\DataStructures\EntityIDs\NativeEntityIDs.cs" />
@@ -149,6 +150,7 @@
      <Compile Include="Packages\com.sebaslab.svelto.ecs\DataStructures\Unmanaged\UnsafeBlob.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\DataStructures\UnmanagedTypeSafeDictionary.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Dispatcher\ReactiveValue.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.ecs\ECSResources\ECSResourceManager.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\ECSResources\ECSResources.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\ECSResources\ECSString.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Native\EnginesRoot.NativeOperation.cs" />

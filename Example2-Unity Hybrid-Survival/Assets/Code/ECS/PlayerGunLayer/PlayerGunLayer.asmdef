@@ -1,9 +1,9 @@
 {
-    "name": "DamageableEntityLayers",
+    "name": "PlayerGunLayer",
     "references": [
         "Svelto.ECS",
         "Svelto.Common",
-        "AudioLayer"
+        "SharedLayer"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
