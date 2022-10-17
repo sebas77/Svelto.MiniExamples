@@ -1,4 +1,7 @@
-﻿#if UNITY_5_3_OR_NEWER || UNITY_5
+#if UNITY_5_3_OR_NEWER || UNITY_5
+
+//#define DEBUG_FASTER
+
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -12,10 +15,9 @@ using Debug = UnityEngine.Debug;
 using ThreadPriority = System.Threading.ThreadPriority;
 using Volatile = System.Threading.Volatile;
 
-// Scene, LoadSceneMode
-
 namespace Svelto.Utilities
 {
+#if !UNITY_EDITOR || DEBUG_FASTER
     static class FasterUnityLoggerUtility
     {
         const string CUSTOM_NAME_FLAG = "-customLogName";
@@ -97,6 +99,7 @@ namespace Svelto.Utilities
             return _baseName + i + ".txt";
         }
     }
+#endif
 
     class FasterUnityLogger : ILogger
     {
@@ -116,18 +119,23 @@ namespace Svelto.Utilities
 
         static FasterUnityLogger()
         {
+#if !UNITY_EDITOR || DEBUG_FASTER         
+            FasterUnityLoggerUtility.Init();
+#endif
+            Console.batchLog = true;
+            
             var gameObject = new GameObject("FastMonoLogger");
             gameObject.AddComponent<FastMonoLogger>();
 
             _comparison       = new ErrorComparer();
             _batchedErrorLogs = new ThreadSafeDictionary<uint, ErrorLogObject>();
-
-            _lowPrioThread          = new Thread(StartQueue) { IsBackground = true };
-            _notBatchedQueue        = new ConcurrentQueue<ErrorLogObject>();
-            _lowPrioThread.Priority = ThreadPriority.BelowNormal;
-            _lowPrioThread.Start();
+            _notBatchedQueue = new ConcurrentQueue<ErrorLogObject>();
 
             _logs = new FasterList<ErrorLogObject>(_batchedErrorLogs.count + _notBatchedQueue.Count);
+
+            _lowPrioThread          = new Thread(StartQueue) { IsBackground = true };
+            _lowPrioThread.Priority = ThreadPriority.BelowNormal;
+            _lowPrioThread.Start();
         }
 
         public void OnLoggerAdded()
@@ -139,7 +147,7 @@ namespace Svelto.Utilities
             Application.SetStackTraceLogType(UnityEngine.LogType.Error, StackTraceLogType.None);
             Application.SetStackTraceLogType(UnityEngine.LogType.Log, StackTraceLogType.None);
 
-            Debug.Log("Fast Unity Logger added");
+            Debug.Log("Svelto Fast Unity Logger added");
         }
 
         public void Log(string txt, LogType type = LogType.Log, bool showLogStack = true, Exception e = null,
@@ -291,11 +299,15 @@ namespace Svelto.Utilities
             while (_quitThread == false)
             {
                 OtherThreadFlushLogger();
-#if !UNITY_EDITOR
+#if !UNITY_EDITOR || DEBUG_FASTER
                 FasterUnityLoggerUtility.ForceFlush();
-#endif
+#endif                
+
                 Thread.Sleep(1000);
             }
+#if !UNITY_EDITOR || DEBUG_FASTER
+            FasterUnityLoggerUtility.Close();
+#endif            
         }
 
         class FastMonoLogger : MonoBehaviour
@@ -386,11 +398,7 @@ namespace Svelto.Utilities
 
         public static void Init()
         {
-            FasterUnityLoggerUtility.Init();
-
             Console.SetLogger(new FasterUnityLogger());
-
-            Console.batchLog = true;
         }
     }
 }

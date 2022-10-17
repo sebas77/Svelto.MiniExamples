@@ -82,8 +82,10 @@ namespace Svelto
 
         public static class FasterLog
         {
-            public static void Use()
+            public static void Use(bool catchEmAll)
             {
+                if (catchEmAll)
+                    Console.CatchEmAll(); //this must happen first otherwise it will override the set out console of FasterUnityLogger
 #if !UNITY_EDITOR                
                 FasterUnityLogger.Init();
 #else

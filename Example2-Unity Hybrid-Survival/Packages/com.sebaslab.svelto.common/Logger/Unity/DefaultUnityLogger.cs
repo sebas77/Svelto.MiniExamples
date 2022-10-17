@@ -11,7 +11,6 @@ namespace Svelto.Utilities
         public static void Init()
         {
             Console.SetLogger(new DefaultUnityLogger());
-            Console.CatchEmAll();
         }
 
         public void Log(string txt, LogType type = LogType.Log, bool showLogStack = true, Exception e = null,
@@ -148,7 +147,7 @@ namespace Svelto.Utilities
             Application.SetStackTraceLogType(UnityEngine.LogType.Log, StackTraceLogType.None);
 #endif
 
-            Console.Log("Slow Unity Logger added");
+            Console.Log("Svelto Default Unity Logger added");
         }
 
         static int MAINTHREADID;
