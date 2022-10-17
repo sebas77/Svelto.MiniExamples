@@ -85,12 +85,8 @@ namespace Svelto
             public static void Use()
             {
 #if !UNITY_EDITOR                
-                FasterUnityLoggerUtility.Init();
-
-                Console.SetLogger(new FasterUnityLogger());
-
-                Console.batchLog = true;
-#else                
+                FasterUnityLogger.Init();
+#else
                 DefaultUnityLogger.Init();
 #endif                
             }

@@ -383,6 +383,15 @@ namespace Svelto.Utilities
             public readonly string  frame;
             public readonly string  dataString;
         }
+
+        public static void Init()
+        {
+            FasterUnityLoggerUtility.Init();
+
+            Console.SetLogger(new FasterUnityLogger());
+
+            Console.batchLog = true;
+        }
     }
 }
 #endif
