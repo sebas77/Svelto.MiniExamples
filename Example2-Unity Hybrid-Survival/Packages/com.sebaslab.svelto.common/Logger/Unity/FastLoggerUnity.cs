@@ -16,11 +16,10 @@ using Volatile = System.Threading.Volatile;
 
 namespace Svelto.Utilities
 {
-#if !UNITY_EDITOR
     static class FasterUnityLoggerUtility
     {
         const string CUSTOM_NAME_FLAG = "-customLogName";
-        const int    CYCLE_SIZE = 10;
+        const int    CYCLE_SIZE       = 10;
 
         static string _baseName = "outputLog";
 
@@ -60,7 +59,7 @@ namespace Svelto.Utilities
         static void GetFilenameFromCommandLine(ref string fileName)
         {
             bool     foundFlag = false;
-            string[] args = Environment.GetCommandLineArgs();
+            string[] args      = Environment.GetCommandLineArgs();
             for (int iArg = 0; iArg < args.Length; ++iArg)
             {
                 if (foundFlag)
@@ -83,7 +82,7 @@ namespace Svelto.Utilities
                     break;
             }
 
-            int    nextFileId = (i + 1) % (CYCLE_SIZE + 1);
+            int    nextFileId   = (i + 1) % (CYCLE_SIZE + 1);
             string nextFileName = GenerateName(nextFileId);
 
             //use the fact that the file doesn't exist to determine which file to write in the cycle
@@ -98,20 +97,6 @@ namespace Svelto.Utilities
             return _baseName + i + ".txt";
         }
     }
-#endif
-
-    public static class FasterLog
-    {
-        public static void Use()
-        {
-#if !DEBUG || PROFILE_SVELTO            
-#if !UNITY_EDITOR
-            FasterUnityLoggerUtility.Init();
-#endif
-            Console.SetLogger(new FasterUnityLogger());
-#endif
-        }
-    }
 
     class FasterUnityLogger : ILogger
     {
@@ -120,8 +105,9 @@ namespace Svelto.Utilities
         static bool _quitThread;
 
         static readonly ThreadSafeDictionary<uint, ErrorLogObject> _batchedErrorLogs;
-        static readonly IComparer<ErrorLogObject>                      _comparison;
-        static readonly ConcurrentQueue<ErrorLogObject>                _notBatchedQueue;
+
+        static readonly IComparer<ErrorLogObject>       _comparison;
+        static readonly ConcurrentQueue<ErrorLogObject> _notBatchedQueue;
 
         static readonly Thread _lowPrioThread;
 
@@ -140,7 +126,7 @@ namespace Svelto.Utilities
             _notBatchedQueue        = new ConcurrentQueue<ErrorLogObject>();
             _lowPrioThread.Priority = ThreadPriority.BelowNormal;
             _lowPrioThread.Start();
-            
+
             _logs = new FasterList<ErrorLogObject>(_batchedErrorLogs.count + _notBatchedQueue.Count);
         }
 
@@ -162,11 +148,12 @@ namespace Svelto.Utilities
             var dataString = string.Empty;
             if (data != null)
                 dataString = DataToString.DetailString(data);
-            
+
             var frame = $"[{DateTime.UtcNow.ToString("HH:mm:ss.fff")}] thread: {Environment.CurrentManagedThreadId}";
             try
             {
-                if (MAINTHREADID == Environment.CurrentManagedThreadId) frame += $" frame: {Time.frameCount}";
+                if (MAINTHREADID == Environment.CurrentManagedThreadId)
+                    frame += $" frame: {Time.frameCount}";
             }
             catch
             {
@@ -174,19 +161,33 @@ namespace Svelto.Utilities
             }
 
             StackTrace stack = null;
+            if (showLogStack)
+            {
 #if UNITY_EDITOR
-            stack = new StackTrace(3, true);
+                stack = new StackTrace(Console.StackDepth, true);
 #else
-            if (type == LogType.Error || type == LogType.Exception)
-                stack = new StackTrace(3, true);
+                if (type == LogType.Error || type == LogType.Exception)
+                    stack = new StackTrace(Console.StackDepth, true);
 #endif
+            }
+            else
+            {
+#if UNITY_EDITOR
+                stack = new StackTrace(Console.StackDepth, false);
+#else
+                if (type == LogType.Error || type == LogType.Exception)
+                    stack = new StackTrace(Console.StackDepth, false);
+#endif
+            }
 
             if (Volatile.Read(ref Console.batchLog) == true)
             {
+                //todo: why am I not enqueuing here too and batching in another thread?
                 var stackString = stack == null ? string.Empty : stack.GetFrame(0).ToString();
                 var strArray    = Encoding.UTF8.GetBytes(txt.FastConcat(stackString));
                 var logHash     = Murmur3.MurmurHash3_x86_32(strArray, SEED);
 
+                //todo: this can be optimized
                 if (_batchedErrorLogs.ContainsKey(logHash))
                 {
                     _batchedErrorLogs[logHash] = new ErrorLogObject(_batchedErrorLogs[logHash]);
@@ -194,7 +195,7 @@ namespace Svelto.Utilities
                 else
                 {
 #if !UNITY_EDITOR
-                    if (type == LogType.Error) stack = new StackTrace(3, true);
+                    if (type == LogType.Error) stack = new StackTrace(Console.StackDepth, true);
 #endif
 
                     _batchedErrorLogs[logHash] =
@@ -204,11 +205,10 @@ namespace Svelto.Utilities
             else
             {
 #if !UNITY_EDITOR
-                    if (type == LogType.Error) stack = new StackTrace(3, true);
+                    if (type == LogType.Error) stack = new StackTrace(Console.StackDepth, true);
 #endif
 
-                _notBatchedQueue.Enqueue(new ErrorLogObject(txt, stack, type, e, frame, showLogStack, dataString,
-                    0));
+                _notBatchedQueue.Enqueue(new ErrorLogObject(txt, stack, type, e, frame, showLogStack, dataString, 0));
             }
         }
 
@@ -216,13 +216,13 @@ namespace Svelto.Utilities
         {
             if (_batchedErrorLogs.count + _notBatchedQueue.Count == 0)
                 return;
-            
+
             _logs.FastClear();
-            
+
             using (var recycledPoolsGetValues = _batchedErrorLogs.GetValues)
             {
                 var values = recycledPoolsGetValues.GetValues(out var logsCount);
-                for (int i = 0; i < logsCount; i++)                     
+                for (int i = 0; i < logsCount; i++)
                 {
                     _logs.Add(values[i]);
                 }
@@ -239,10 +239,10 @@ namespace Svelto.Utilities
                 var instance = _logs[i];
                 var intCount = instance.count;
 
-                var log = SlowUnityLogger.LogFormatter(instance.msg, instance.logType, instance.showStack,
+                var log = ConsoleUtilityForUnity.LogFormatter(instance.msg, instance.logType, instance.showStack,
                     instance.exception, instance.frame, instance.dataString, instance.stackT);
 
-                if (intCount != 0)
+                if (intCount > 1)
                     LOG("Hit count: ".FastConcat(intCount.ToString(), " ", log), instance.logType);
                 else
                     LOG(log, instance.logType);
@@ -252,20 +252,21 @@ namespace Svelto.Utilities
         static void LOG(string str, LogType instanceLOGType)
         {
 #if !UNITY_EDITOR
+            str = System.Text.RegularExpressions.Regex.Replace(str, "</?[a-z](?:[^>\"']|\"[^\"]*\"|'[^']*')*>", "");
             System.Console.Write(str);
 #else
             switch (instanceLOGType)
             {
                 case LogType.Error:
                 case LogType.Exception:
-                    Debug.LogError(str);
+                    ConsoleUtilityForUnity.defaultLogHandler.LogFormat(UnityEngine.LogType.Error, null, str);
                     break;
                 case LogType.Log:
                 case LogType.LogDebug:
-                    Debug.Log(str);
+                    ConsoleUtilityForUnity.defaultLogHandler.LogFormat(UnityEngine.LogType.Log, null, str);
                     break;
                 case LogType.Warning:
-                    Debug.LogWarning(str);
+                    ConsoleUtilityForUnity.defaultLogHandler.LogFormat(UnityEngine.LogType.Warning, null, str);
                     break;
             }
 #endif
@@ -332,11 +333,11 @@ namespace Svelto.Utilities
 
             public string msg { get; }
 
-            public          StackTrace stackT   { get; }
+            public          StackTrace stackT { get; }
             public readonly Exception  exception;
 
-            public ErrorLogObject(string msg, StackTrace stack, LogType logType, Exception exc,
-                string frm, bool sstack, string dataString, ushort initialCount = 1)
+            public ErrorLogObject(string msg, StackTrace stack, LogType logType, Exception exc, string frm, bool sstack,
+                string dataString, ushort initialCount = 1)
             {
                 count           = initialCount;
                 this.msg        = msg;

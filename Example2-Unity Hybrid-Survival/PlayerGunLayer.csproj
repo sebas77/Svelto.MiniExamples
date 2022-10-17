@@ -46,7 +46,6 @@
      <Compile Include="Assets\Code\ECS\PlayerGunLayer\GunEntityComponent.cs" />
      <Compile Include="Assets\Code\ECS\PlayerGunLayer\PlayerGunEntityDescriptor.cs" />
      <Compile Include="Assets\Code\ECS\PlayerGunLayer\PlayerGunShootingFXsEngine.cs" />
-     <Compile Include="Assets\Code\ECS\PlayerGunLayer\WaitForSecondsEnumerator.cs" />
      <None Include="Assets\Code\ECS\PlayerGunLayer\PlayerGunLayer.asmdef" />
      <Reference Include="UnityEngine">
      <HintPath>C:\Program Files\Unity\2019.4.40f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
@@ -607,6 +606,10 @@
     <ProjectReference Include="SharedLayer.csproj">
       <Project>{31b44fb7-fb91-b289-6f3b-8e62cb8565e2}</Project>
       <Name>SharedLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="Utility.csproj">
+      <Project>{61523958-85ca-4e2e-e8e7-aea8b6c3f736}</Project>
+      <Name>Utility</Name>
     </ProjectReference>
     <ProjectReference Include="UnityEditor.UI.csproj">
       <Project>{071fa4f6-95c0-6054-c479-b9199d4dc847}</Project>

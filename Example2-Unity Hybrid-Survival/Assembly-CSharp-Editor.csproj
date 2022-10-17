@@ -637,10 +637,6 @@
       <Project>{fc3e0f5a-ff0e-0a6d-b67a-f24cfb2a602b}</Project>
       <Name>Unity.ScriptableBuildPipeline.Editor</Name>
     </ProjectReference>
-    <ProjectReference Include="Svelto.Pool.Debugger.csproj">
-      <Project>{c746b42f-36b3-0eae-2d23-d1cf4b74f48b}</Project>
-      <Name>Svelto.Pool.Debugger</Name>
-    </ProjectReference>
     <ProjectReference Include="AudioLayer.csproj">
       <Project>{b0248dd3-7f6e-ab2b-974b-6eb71fa3bce7}</Project>
       <Name>AudioLayer</Name>
@@ -652,6 +648,14 @@
     <ProjectReference Include="Svelto.ECS.csproj">
       <Project>{8d2eb115-c2e2-3719-ca04-08d3c302a5a1}</Project>
       <Name>Svelto.ECS</Name>
+    </ProjectReference>
+    <ProjectReference Include="Svelto.Pool.Debugger.csproj">
+      <Project>{c746b42f-36b3-0eae-2d23-d1cf4b74f48b}</Project>
+      <Name>Svelto.Pool.Debugger</Name>
+    </ProjectReference>
+    <ProjectReference Include="Svelto.Common.csproj">
+      <Project>{53ca5d34-0f9e-ae64-6d32-8d74a6f2e9d4}</Project>
+      <Name>Svelto.Common</Name>
     </ProjectReference>
     <ProjectReference Include="Unity.ResourceManager.csproj">
       <Project>{716ea4f8-08d0-1229-8ecb-bd1945d5e600}</Project>
@@ -709,13 +713,13 @@
       <Project>{d9a7d8a0-8f9e-1bcb-7579-d17993648fbc}</Project>
       <Name>Unity.SysrootPackage.Editor</Name>
     </ProjectReference>
-    <ProjectReference Include="Svelto.Common.csproj">
-      <Project>{53ca5d34-0f9e-ae64-6d32-8d74a6f2e9d4}</Project>
-      <Name>Svelto.Common</Name>
-    </ProjectReference>
     <ProjectReference Include="UnityEditor.UI.csproj">
       <Project>{071fa4f6-95c0-6054-c479-b9199d4dc847}</Project>
       <Name>UnityEditor.UI</Name>
+    </ProjectReference>
+    <ProjectReference Include="Utility.csproj">
+      <Project>{61523958-85ca-4e2e-e8e7-aea8b6c3f736}</Project>
+      <Name>Utility</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

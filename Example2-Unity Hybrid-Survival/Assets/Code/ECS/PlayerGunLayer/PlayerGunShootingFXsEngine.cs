@@ -4,21 +4,29 @@ namespace Svelto.ECS.Example.Survive.Player.Gun
 {
     public class PlayerGunShootingFXsEngine : IQueryingEntitiesEngine, IStepEngine
     {
-        public EntitiesDB        entitiesDB { set; private get; }
+        public EntitiesDB entitiesDB { set; private get; }
 
-        public PlayerGunShootingFXsEngine(IEntityStreamConsumerFactory factory) { _factory = factory; }
+        public PlayerGunShootingFXsEngine(IEntityStreamConsumerFactory factory)
+        {
+            _factory = factory;
+        }
 
         public void Ready()
         {
             _playerHasShot = PlayerHasShot();
         }
-        
-        public void   Step() { _playerHasShot.MoveNext(); }
-        public string name   => nameof(PlayerGunShootingFXsEngine);
+
+        public void Step()
+        {
+            _playerHasShot.MoveNext();
+        }
+
+        public string name => nameof(PlayerGunShootingFXsEngine);
 
         IEnumerator PlayerHasShot()
         {
-            void SetValues(GunAttributesComponent gunComponent, out float waitTime, ref GunEntityComponent gunFXComponent)
+            void SetValues(GunAttributesComponent gunComponent, out float waitTime,
+                ref GunEntityComponent gunFXComponent)
             {
                 // Play the gun shot audioclip.
                 gunFXComponent.playAudio = true;
@@ -35,7 +43,7 @@ namespace Svelto.ECS.Example.Survive.Player.Gun
                 // Enable the line renderer and set it's first position to be the end of the gun.
                 gunFXComponent.lineEnabled       = true;
                 gunFXComponent.lineStartPosition = shootRay.origin;
-                gunFXComponent.lineEndPosition = gunComponent.lastTargetPosition;
+                gunFXComponent.lineEndPosition   = gunComponent.lastTargetPosition;
 
                 waitTime = gunComponent.timeBetweenBullets * gunFXComponent.effectsDisplayTime;
             }

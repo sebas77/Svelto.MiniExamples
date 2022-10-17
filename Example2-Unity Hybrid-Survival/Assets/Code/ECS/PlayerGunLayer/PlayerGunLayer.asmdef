@@ -3,7 +3,8 @@
     "references": [
         "Svelto.ECS",
         "Svelto.Common",
-        "SharedLayer"
+        "SharedLayer",
+        "Utility"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

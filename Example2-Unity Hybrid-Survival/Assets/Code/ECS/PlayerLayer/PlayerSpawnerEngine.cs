@@ -17,7 +17,7 @@ namespace Svelto.ECS.Example.Survive.Player
         public PlayerSpawner(GameObjectResourceManager gameObjectResourceManager, IEntityFactory entityFactory)
         {
             _gameObjectResourceManager = gameObjectResourceManager;
-            _entityFactory     = entityFactory;
+            _entityFactory             = entityFactory;
         }
 
         public IEnumerator SpawnPlayer()
@@ -33,7 +33,7 @@ namespace Svelto.ECS.Example.Survive.Player
             uint playerID = playerLoading.Current.Value;
             uint cameraID = cameraLoading.Current.Value;
 
-            BuildPlayerEntity(playerID ,out var playerInitializer);
+            BuildPlayerEntity(playerID, out var playerInitializer);
             BuildGunEntity(playerInitializer);
             BuildCameraEntity(ref playerInitializer, cameraID);
         }
@@ -64,7 +64,7 @@ namespace Svelto.ECS.Example.Survive.Player
             playerInitializer.Init(new SpeedComponent(6));
             playerInitializer.Init(new PlayerEntityComponent()
             {
-                resourceIndex =  playerID
+                resourceIndex = playerID
             });
 
             var playerResource = _gameObjectResourceManager[playerID];
@@ -83,18 +83,15 @@ namespace Svelto.ECS.Example.Survive.Player
             //Note: in the last refactoring I changed the code to not rely on the knowledge that the ID is known
             //as this trick cannot be used to determine an EGID anymore once group compounds are used. 
             //therefore I switched to the use of EntityReferences.
-            var init = _entityFactory.BuildEntity<PlayerGunEntityDescriptor>(playerInitializer.EGID.entityID
-                                                                           , Survive.Weapons.Gun.BuildGroup);
-            
+            var init = _entityFactory.BuildEntity<PlayerGunEntityDescriptor>(playerInitializer.EGID.entityID,
+                Survive.Weapons.Gun.BuildGroup);
+
             //being lazy here, it should be read from json file
             init.Init(new GunAttributesComponent()
             {
-                timeBetweenBullets = 0.15f
-              , range              = 100f
-              , damagePerShot      = 20
-               ,
+                timeBetweenBullets = 0.15f, range = 100f, damagePerShot = 20,
             });
-            
+
             playerInitializer.Init(new PlayerWeaponComponent()
             {
                 weapon = init.reference
@@ -112,18 +109,19 @@ namespace Svelto.ECS.Example.Survive.Player
             // //implementors can be attatched at run time, while not? Check the player spawner engine to 
             // //read more about implementors
             var playerPosition = playerID.Get<PositionComponent>();
-            
-            var cameraInit = _entityFactory.BuildEntity<CameraEntityDescriptor>(playerID.EGID.entityID, Camera.Camera.BuildGroup);
-            
-            cameraInit.Init(new CameraTargetEntityReferenceComponent() { targetEntity = playerID.reference } );
+
+            var cameraInit =
+                _entityFactory.BuildEntity<CameraEntityDescriptor>(playerID.EGID.entityID, Camera.Camera.BuildGroup);
+
+            cameraInit.Init(new CameraTargetEntityReferenceComponent() { targetEntity = playerID.reference });
             cameraInit.Init(new CameraEntityComponent()
             {
-                offset =  cameraResource.transform.position - playerPosition.position
+                offset = cameraResource.transform.position - playerPosition.position
             });
             playerID.Init(new CameraReferenceComponent()
             {
                 cameraReference = cameraInit.reference
-            } );
+            });
         }
 
         readonly IEntityFactory            _entityFactory;

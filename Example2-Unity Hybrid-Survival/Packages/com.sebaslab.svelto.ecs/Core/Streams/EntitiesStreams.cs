@@ -39,7 +39,7 @@ namespace Svelto.ECS
             if (_streams.TryGetValue(TypeRefWrapper<T>.wrapper, out var typeSafeStream))
                 (typeSafeStream as EntityStream<T>).PublishEntity(ref entity, egid);
             else
-                Console.LogDebug("No Consumers are waiting for this entity to change ", typeof(T));
+                Console.LogDebug($"No Consumers are waiting for this entity to change {typeof(T)}");
         }
 
         public void Dispose()
