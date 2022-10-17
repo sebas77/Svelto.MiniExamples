@@ -1,14 +1,7 @@
 using System.Collections;
-using System.Collections.Generic;
 using Code.ECS.Shared;
 using Svelto.ECS.Example.Survive.Camera;
 using Svelto.ECS.Example.Survive.Player.Gun;
-using Svelto.ECS.Example.Survive.ResourceManager;
-// using Svelto.ECS.Example.Survive.Player.Gun;
-// using Svelto.ECS.Example.Survive.ResourceManager;
-using Svelto.ECS.Extensions.Unity;
-using Svelto.ECS.Hybrid;
-using UnityEngine;
 
 namespace Svelto.ECS.Example.Survive.Player
 {

@@ -243,10 +243,21 @@ namespace Svelto.Utilities
                     instance.exception, instance.frame, instance.dataString, instance.stackT);
 
                 if (intCount > 1)
-                    LOG("Hit count: ".FastConcat(intCount.ToString(), " ", log), instance.logType);
+                {
+                    log = ReplaceFirstOccurrence(log, "thread: ",
+                        "Hit count: ".FastConcat(intCount).FastConcat(" thread: "));
+                    LOG(log, instance.logType);
+                }
                 else
                     LOG(log, instance.logType);
             }
+        }
+
+        static string ReplaceFirstOccurrence(string Source, string Find, string Replace)
+        {
+            int    Place  = Source.IndexOf(Find);
+            string result = Source.Remove(Place, Find.Length).Insert(Place, Replace);
+            return result;
         }
 
         static void LOG(string str, LogType instanceLOGType)

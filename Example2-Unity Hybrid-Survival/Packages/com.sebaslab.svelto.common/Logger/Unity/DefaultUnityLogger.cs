@@ -8,8 +8,7 @@ namespace Svelto.Utilities
 {
     public class DefaultUnityLogger : ILogger
     {
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-        static void Init()
+        public static void Init()
         {
             Console.SetLogger(new DefaultUnityLogger());
             Console.CatchEmAll();

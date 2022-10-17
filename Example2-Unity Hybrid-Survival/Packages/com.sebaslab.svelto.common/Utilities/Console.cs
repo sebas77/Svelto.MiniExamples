@@ -100,11 +100,12 @@ namespace Svelto
             string toPrint = "-!!!!!!-> ";
 
             Exception tracingE = exception;
+            int level = 0;
             while (tracingE.InnerException != null)
             {
                 tracingE = tracingE.InnerException;
 
-                InternalLog("-!!!!!!-> ", LogType.Error, true, tracingE);
+                InternalLog($"-!!!!!!->Internal Exception - Level [{level++}] ", LogType.Exception, false, tracingE);
             }
 
             if (message != null)
@@ -115,7 +116,7 @@ namespace Svelto
 
                 toPrint = builder.ToString();
             }
-
+ 
             //the goal of this is to show the stack from the real error
             InternalLog(toPrint, LogType.Exception, true, exception, extraData);
         }

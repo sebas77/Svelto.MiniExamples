@@ -671,6 +671,10 @@
       <Project>{716ea4f8-08d0-1229-8ecb-bd1945d5e600}</Project>
       <Name>Unity.ResourceManager</Name>
     </ProjectReference>
+    <ProjectReference Include="Utility.csproj">
+      <Project>{61523958-85ca-4e2e-e8e7-aea8b6c3f736}</Project>
+      <Name>Utility</Name>
+    </ProjectReference>
     <ProjectReference Include="UnityEngine.UI.csproj">
       <Project>{3e7c1439-e1cb-04d6-7ab4-616865f0e651}</Project>
       <Name>UnityEngine.UI</Name>
@@ -726,10 +730,6 @@
     <ProjectReference Include="UnityEditor.UI.csproj">
       <Project>{071fa4f6-95c0-6054-c479-b9199d4dc847}</Project>
       <Name>UnityEditor.UI</Name>
-    </ProjectReference>
-    <ProjectReference Include="Utility.csproj">
-      <Project>{61523958-85ca-4e2e-e8e7-aea8b6c3f736}</Project>
-      <Name>Utility</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

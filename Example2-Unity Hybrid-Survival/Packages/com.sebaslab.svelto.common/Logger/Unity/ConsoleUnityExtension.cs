@@ -54,37 +54,45 @@ namespace Svelto
 
         public static void CatchEmAll()
         {
-            _originalConsoleOutput = System.Console.Out;
-            System.Console.SetOut(new SveltoSystemOutInterceptor());
+            if (_initialized == false)
+            {
+                _originalConsoleOutput = System.Console.Out;
+                System.Console.SetOut(new SveltoSystemOutInterceptor());
 
-            _originals = (Application.GetStackTraceLogType(LogType.Warning),
-                Application.GetStackTraceLogType(LogType.Assert), Application.GetStackTraceLogType(LogType.Error),
-                Application.GetStackTraceLogType(LogType.Log));
+                _originals = (Application.GetStackTraceLogType(LogType.Warning),
+                    Application.GetStackTraceLogType(LogType.Assert), Application.GetStackTraceLogType(LogType.Error),
+                    Application.GetStackTraceLogType(LogType.Log));
 
-            Application.SetStackTraceLogType(LogType.Warning, StackTraceLogType.None);
-            Application.SetStackTraceLogType(LogType.Assert, StackTraceLogType.None);
-            Application.SetStackTraceLogType(LogType.Error, StackTraceLogType.None);
-            Application.SetStackTraceLogType(LogType.Log, StackTraceLogType.None);
+                Application.SetStackTraceLogType(LogType.Warning, StackTraceLogType.None);
+                Application.SetStackTraceLogType(LogType.Assert, StackTraceLogType.None);
+                Application.SetStackTraceLogType(LogType.Error, StackTraceLogType.None);
+                Application.SetStackTraceLogType(LogType.Log, StackTraceLogType.None);
 
-            ConsoleUtilityForUnity.defaultLogHandler = Debug.unityLogger.logHandler;
-            Debug.unityLogger.logHandler             = new SveltoConsoleLogHandler();
-            StackDepth                               = 5;
+                ConsoleUtilityForUnity.defaultLogHandler = Debug.unityLogger.logHandler;
+                Debug.unityLogger.logHandler             = new SveltoConsoleLogHandler();
+                StackDepth                               = 5;
 
 #if UNITY_EDITOR
-            EditorApplication.playModeStateChanged -= EditorApplicationOnplayModeStateChanged;
-            EditorApplication.playModeStateChanged += EditorApplicationOnplayModeStateChanged;
+                EditorApplication.playModeStateChanged -= EditorApplicationOnplayModeStateChanged;
+                EditorApplication.playModeStateChanged += EditorApplicationOnplayModeStateChanged;
 #endif
+                _initialized = true;
+            }
         }
 
         public static class FasterLog
         {
             public static void Use()
             {
+#if !UNITY_EDITOR                
                 FasterUnityLoggerUtility.Init();
 
                 Console.SetLogger(new FasterUnityLogger());
 
                 Console.batchLog = true;
+#else                
+                DefaultUnityLogger.Init();
+#endif                
             }
         }
 #if UNITY_EDITOR
@@ -112,6 +120,7 @@ namespace Svelto
             _originals;
 
         static System.IO.TextWriter _originalConsoleOutput;
+        static bool _initialized;
     }
 }
 #endif

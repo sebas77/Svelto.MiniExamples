@@ -63,7 +63,7 @@ namespace Svelto.Utilities
 
                     return stack;
 #else
-                   return ($"!! {frame} ".FastConcat(txt).FastConcat(Environment.NewLine, dataString));
+                   return ($"{frame} ".FastConcat(txt).FastConcat(Environment.NewLine, dataString));
 #endif
                 }
                 case LogType.Error:
@@ -72,22 +72,22 @@ namespace Svelto.Utilities
                     if (e != null)
                     {
                         txt   = txt.FastConcat(" ", e.Message);
-                        stack = ExtractFormattedStackTrace(new StackTrace(e, true), stackTrace);
+                        var trace = new StackTrace(e, true);
+                        stack = showLogStack ? ExtractFormattedStackTrace(trace, stackTrace) : ExtractFormattedStackTrace(trace);
                     }
                     else
-                        stack = showLogStack
-                            ? ExtractFormattedStackTrace(stackTrace)
-                            : string.Empty;
+                        stack = showLogStack ? ExtractFormattedStackTrace(stackTrace) : string.Empty;
 
 #if UNITY_EDITOR
                     stack = ($"{frame} ".FastConcat(txt, " ", Environment.NewLine, stack)
                        .FastConcat(Environment.NewLine, dataString));
+                    
+                    return stack;
 #else
-                   return($"!!! {frame} "
+                   return($"{frame} "
                            .FastConcat(txt, Environment.NewLine, stack)
                            .FastConcat(dataString));
 #endif
-                    return stack;
                 }
             }
 
@@ -114,9 +114,9 @@ namespace Svelto.Utilities
 
         static string ExtractFormattedStackTrace(StackTrace stackTrace, StackTrace stackTrace1)
         {
-            return ExtractFormattedStackTrace(stackTrace, null)
+            return ExtractFormattedStackTrace(stackTrace)
                .FastConcat(Environment.NewLine, "---------------", Environment.NewLine)
-               .FastConcat(ExtractFormattedStackTrace(stackTrace1, null));
+               .FastConcat(ExtractFormattedStackTrace(stackTrace1));
         }
 
         static void PrintStack(StackTrace stackTrace, StringBuilder builder)
