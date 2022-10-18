@@ -84,12 +84,12 @@ namespace Svelto
         {
             public static void Use(bool catchEmAll)
             {
+                DefaultUnityLogger.Init(); //first set to the Default Logger to avoid stack overflow with SimpleLogger due to SveltoSystemOutInterceptor
+                
                 if (catchEmAll)
                     Console.CatchEmAll(); //this must happen first otherwise it will override the set out console of FasterUnityLogger
 #if !UNITY_EDITOR                
                 FasterUnityLogger.Init();
-#else
-                DefaultUnityLogger.Init();
 #endif                
             }
         }
