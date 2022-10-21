@@ -8,7 +8,7 @@ These examples use the last beta version of unity available at the moment of the
 
 Warning: these examples may use using unofficial versions of Svelto that you won't find on the main repository until officially released.
 
-## Example 1: Doofuses Must Eat (Pure ECS)
+## Example 1: Doofuses Must Eat (Pure ECS/GameObject versions/Stride version)
 
 ![Image](https://github.com/sebas77/Svelto.MiniExamples/blob/master/Example1-DoofusesMustEat/2020-12-22%2016-05-22.gif)
 
@@ -18,12 +18,20 @@ Article:
 
 http://www.sebaslab.com/svelto-mini-examples-doofuses-must-eat/
 
-Goals of this example are to: 
+Goals of the Pure ECS example are to: 
 * intoduce to the concept of entity descriptors, entity structs and groups. 
 * Show the integration with UnityECS, shows the use of Svelto.Tasks 2.0 (alpha state) 
 * show the integration with Unity Jobs and Burst (using Svelto.ECS 3.0)
 * test Full jobified/burstified code with Svelto ECS 3.0
 * test integration with IL2CPP
+
+Goals of the GameObjects example are to: 
+* show how the OOP abtraction layer works (https://www.sebaslab.com/oop-abstraction-layer-in-a-ecs-centric-application/)
+* show how the resource managers work to interface objects and entities 
+* show that even with OOP interfacing, ECS helps to achieve high performance
+
+Goals of the Stride example are to: 
+* show a complex integration with an engine different than Unity (Stride Engine)
   
 ## Example 2: The classic Survival demo (Hybrid ECS)
 
