@@ -85,7 +85,7 @@ Basic Platform Agnostic Svelto.ECS 3.0 example
 ## Example 6: Abstract Object Oriented Code
 
 * Goal: this example shows the two main strategies to abstract OOP code. Mixing the two strategies will result in the least boiler plate and fastest code.
-* Fist integration wraps gameobjects through the use of EntityViewComponents like seen in MiniExamples 2 Survival
+* Fist integration wraps gameobjects through the use of EntityViewComponents like seen in MiniExamples 2 Survival. **Attention** EntityViewComponents and Implementors are NOT reccomended to use over the second approach.
 * Second integration shows a more efficent approach, where pure ECS is used as much as possible and engines objects are synched only as late as possible.
 
 ## Example 7: Awkward foundation for a possible defense game built with the magnificent engine that Stride is
