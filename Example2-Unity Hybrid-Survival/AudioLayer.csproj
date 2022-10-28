@@ -43,7 +43,7 @@
   <ItemGroup>
      <Compile Include="Assets\Code\ECS\AudioLayer\AudioImplementor.cs" />
      <Compile Include="Assets\Code\ECS\AudioLayer\AudioType.cs" />
-     <Compile Include="Assets\Code\ECS\AudioLayer\IDamageSoundComponent.cs" />
+     <Compile Include="Assets\Code\ECS\AudioLayer\ISoundComponent.cs" />
      <None Include="Assets\Code\ECS\AudioLayer\AudioLayer.asmdef" />
      <Folder Include="Assets\Code\ECS\AudioLayer" />
      <Reference Include="UnityEngine">

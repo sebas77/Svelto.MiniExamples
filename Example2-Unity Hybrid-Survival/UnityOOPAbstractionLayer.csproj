@@ -41,13 +41,9 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
-     <Compile Include="Assets\Code\ECS\UnityOOPAbstractionLayer\EntityReferenceHolderImplementor.cs" />
+     <Compile Include="Assets\Code\ECS\UnityOOPAbstractionLayer\GAME_LAYERS.cs" />
      <Compile Include="Assets\Code\ECS\UnityOOPAbstractionLayer\GameObjectFactory.cs" />
      <Compile Include="Assets\Code\ECS\UnityOOPAbstractionLayer\GameObjectResourceManager.cs" />
-     <Compile Include="Assets\Code\ECS\UnityOOPAbstractionLayer\ITime.cs" />
-     <Compile Include="Assets\Code\ECS\UnityOOPAbstractionLayer\RayCaster.cs" />
-     <Compile Include="Assets\Code\ECS\UnityOOPAbstractionLayer\SharedComponentInterfaces.cs" />
-     <Compile Include="Assets\Code\ECS\UnityOOPAbstractionLayer\SpeedComponent.cs" />
      <Folder Include="Assets\Code\ECS\UnityOOPAbstractionLayer" />
      <None Include="Assets\Code\ECS\UnityOOPAbstractionLayer\UnityOOPAbstractionLayer.asmdef" />
      <Reference Include="UnityEngine">

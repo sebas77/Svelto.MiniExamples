@@ -46,6 +46,7 @@
      <Compile Include="Assets\Code\ECS\PlayerGunLayer\GunEntityComponent.cs" />
      <Compile Include="Assets\Code\ECS\PlayerGunLayer\PlayerGunEntityDescriptor.cs" />
      <Compile Include="Assets\Code\ECS\PlayerGunLayer\PlayerGunShootingFXsEngine.cs" />
+     <Compile Include="Assets\Code\ECS\PlayerGunLayer\WeaponComponent.cs" />
      <Folder Include="Assets\Code\ECS\PlayerGunLayer" />
      <None Include="Assets\Code\ECS\PlayerGunLayer\PlayerGunLayer.asmdef" />
      <Reference Include="UnityEngine">
@@ -607,6 +608,14 @@
     <ProjectReference Include="Utility.csproj">
       <Project>{61523958-85ca-4e2e-e8e7-aea8b6c3f736}</Project>
       <Name>Utility</Name>
+    </ProjectReference>
+    <ProjectReference Include="UnityOOPAbstractionLayer.csproj">
+      <Project>{4acf9cc6-6765-a5db-89c1-c202f09fdf16}</Project>
+      <Name>UnityOOPAbstractionLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="DamageableEntityLayers.csproj">
+      <Project>{5303ef99-64f3-a3a6-fbce-286aa0ed9a52}</Project>
+      <Name>DamageableEntityLayers</Name>
     </ProjectReference>
     <ProjectReference Include="UnityEditor.UI.csproj">
       <Project>{071fa4f6-95c0-6054-c479-b9199d4dc847}</Project>

@@ -626,6 +626,10 @@
       <Project>{e10b0fe7-3633-f710-70a4-4ed3149dee79}</Project>
       <Name>UnityEditor.CacheServer</Name>
     </ProjectReference>
+    <ProjectReference Include="AudioLayer.csproj">
+      <Project>{b0248dd3-7f6e-ab2b-974b-6eb71fa3bce7}</Project>
+      <Name>AudioLayer</Name>
+    </ProjectReference>
     <ProjectReference Include="Unity.Toolchain.Win-x86_64-Linux-x86_64.csproj">
       <Project>{21703ca7-598c-e476-261d-a39cdf0e045b}</Project>
       <Name>Unity.Toolchain.Win-x86_64-Linux-x86_64</Name>
@@ -633,6 +637,10 @@
     <ProjectReference Include="Unity.ScriptableBuildPipeline.Editor.csproj">
       <Project>{fc3e0f5a-ff0e-0a6d-b67a-f24cfb2a602b}</Project>
       <Name>Unity.ScriptableBuildPipeline.Editor</Name>
+    </ProjectReference>
+    <ProjectReference Include="PlayerGunLayer.csproj">
+      <Project>{6432b4c6-45ae-c615-a641-a3cf8bf8e7e0}</Project>
+      <Name>PlayerGunLayer</Name>
     </ProjectReference>
     <ProjectReference Include="Svelto.ECS.csproj">
       <Project>{8d2eb115-c2e2-3719-ca04-08d3c302a5a1}</Project>
@@ -670,6 +678,14 @@
       <Project>{7a573d4a-d782-95ae-d4ec-cc8dd9df7288}</Project>
       <Name>Unity.Mathematics</Name>
     </ProjectReference>
+    <ProjectReference Include="AnimationLayer.csproj">
+      <Project>{59e9f197-bda3-ff91-2f6b-e150b462fed8}</Project>
+      <Name>AnimationLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="PlayerEntityLayer.csproj">
+      <Project>{305cd92c-d135-5769-0803-174343592e6c}</Project>
+      <Name>PlayerEntityLayer</Name>
+    </ProjectReference>
     <ProjectReference Include="CameraLayer.csproj">
       <Project>{244bd38c-fe73-9b87-5070-1d7b3f94730c}</Project>
       <Name>CameraLayer</Name>
@@ -702,25 +718,13 @@
       <Project>{071fa4f6-95c0-6054-c479-b9199d4dc847}</Project>
       <Name>UnityEditor.UI</Name>
     </ProjectReference>
-    <ProjectReference Include="AudioLayer.csproj">
-      <Project>{b0248dd3-7f6e-ab2b-974b-6eb71fa3bce7}</Project>
-      <Name>AudioLayer</Name>
-    </ProjectReference>
-    <ProjectReference Include="PlayerGunLayer.csproj">
-      <Project>{6432b4c6-45ae-c615-a641-a3cf8bf8e7e0}</Project>
-      <Name>PlayerGunLayer</Name>
-    </ProjectReference>
     <ProjectReference Include="Utility.csproj">
       <Project>{61523958-85ca-4e2e-e8e7-aea8b6c3f736}</Project>
       <Name>Utility</Name>
     </ProjectReference>
-    <ProjectReference Include="AnimationLayer.csproj">
-      <Project>{59e9f197-bda3-ff91-2f6b-e150b462fed8}</Project>
-      <Name>AnimationLayer</Name>
-    </ProjectReference>
-    <ProjectReference Include="PlayerEntityLayer.csproj">
-      <Project>{305cd92c-d135-5769-0803-174343592e6c}</Project>
-      <Name>PlayerEntityLayer</Name>
+    <ProjectReference Include="EnemiesLayer.csproj">
+      <Project>{5ab236e2-05ce-c020-ed35-80dc1c78838f}</Project>
+      <Name>EnemiesLayer</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

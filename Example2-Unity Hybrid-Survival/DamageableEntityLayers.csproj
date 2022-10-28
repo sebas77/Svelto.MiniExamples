@@ -53,6 +53,7 @@
      <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\DispatchKilledEntitiesEngine.cs" />
      <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\Groups.cs" />
      <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\HealthComponent.cs" />
+     <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\ScoreValueEntityComponent.cs" />
      <None Include="Assets\Code\ECS\DamageableEntitiesLayer\DamageableEntityLayers.asmdef" />
      <Folder Include="Assets\Code\ECS\DamageableEntitiesLayer" />
      <Reference Include="UnityEngine">

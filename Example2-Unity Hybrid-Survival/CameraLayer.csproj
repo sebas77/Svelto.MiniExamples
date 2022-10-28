@@ -611,6 +611,10 @@
       <Project>{4acf9cc6-6765-a5db-89c1-c202f09fdf16}</Project>
       <Name>UnityOOPAbstractionLayer</Name>
     </ProjectReference>
+    <ProjectReference Include="Utility.csproj">
+      <Project>{61523958-85ca-4e2e-e8e7-aea8b6c3f736}</Project>
+      <Name>Utility</Name>
+    </ProjectReference>
     <ProjectReference Include="UnityEditor.UI.csproj">
       <Project>{071fa4f6-95c0-6054-c479-b9199d4dc847}</Project>
       <Name>UnityEditor.UI</Name>

@@ -41,21 +41,25 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
-     <Compile Include="Assets\Code\ECS\PlayerLayer\Groups.cs" />
-     <Compile Include="Assets\Code\ECS\PlayerLayer\PlayerAnimationEngine.cs" />
+     <Compile Include="Assets\Code\ECS\PlayerLayer\Engines\PlayerAnimationEngine.cs" />
+     <Compile Include="Assets\Code\ECS\PlayerLayer\Engines\PlayerDeathEngine.cs" />
+     <Compile Include="Assets\Code\ECS\PlayerLayer\Engines\PlayerFiresGunEngine.cs" />
+     <Compile Include="Assets\Code\ECS\PlayerLayer\Engines\PlayerInputEngine.cs" />
+     <Compile Include="Assets\Code\ECS\PlayerLayer\Engines\PlayerMovementEngine.cs" />
+     <Compile Include="Assets\Code\ECS\PlayerLayer\Engines\PlayerSpawnerEngine.cs" />
+     <Compile Include="Assets\Code\ECS\PlayerLayer\Engines\RestartGameOnPlayerDeathEngine.cs" />
+     <Compile Include="Assets\Code\ECS\PlayerLayer\Entities\IPositionComponent.cs" />
+     <Compile Include="Assets\Code\ECS\PlayerLayer\Entities\ITransformComponent.cs" />
+     <Compile Include="Assets\Code\ECS\PlayerLayer\Entities\PlayerEntityComponent.cs" />
+     <Compile Include="Assets\Code\ECS\PlayerLayer\Entities\PlayerEntityDescriptor.cs" />
+     <Compile Include="Assets\Code\ECS\PlayerLayer\Entities\PlayerInputDataComponent.cs" />
+     <Compile Include="Assets\Code\ECS\PlayerLayer\Entities\SpeedComponent.cs" />
      <Compile Include="Assets\Code\ECS\PlayerLayer\PlayerAnimations.cs" />
-     <Compile Include="Assets\Code\ECS\PlayerLayer\PlayerDeathEngine.cs" />
      <Compile Include="Assets\Code\ECS\PlayerLayer\PlayerEnginesNames.cs" />
-     <Compile Include="Assets\Code\ECS\PlayerLayer\PlayerEntityComponent.cs" />
-     <Compile Include="Assets\Code\ECS\PlayerLayer\PlayerEntityDescriptor.cs" />
-     <Compile Include="Assets\Code\ECS\PlayerLayer\PlayerFiresGunEngine.cs" />
-     <Compile Include="Assets\Code\ECS\PlayerLayer\PlayerInputDataComponent.cs" />
-     <Compile Include="Assets\Code\ECS\PlayerLayer\PlayerInputEngine.cs" />
-     <Compile Include="Assets\Code\ECS\PlayerLayer\PlayerMovementEngine.cs" />
-     <Compile Include="Assets\Code\ECS\PlayerLayer\PlayerSpawnerEngine.cs" />
-     <Compile Include="Assets\Code\ECS\PlayerLayer\PlayerWeaponComponent.cs" />
-     <Compile Include="Assets\Code\ECS\PlayerLayer\RestartGameOnPlayerDeathEngine.cs" />
+     <Compile Include="Assets\Code\ECS\PlayerLayer\PlayerGroups.cs" />
+     <Folder Include="Assets\Code\ECS\PlayerLayer\Engines" />
      <Folder Include="Assets\Code\ECS\PlayerLayer" />
+     <Folder Include="Assets\Code\ECS\PlayerLayer\Entities" />
      <None Include="Assets\Code\ECS\PlayerLayer\PlayerEntityLayer.asmdef" />
      <Reference Include="UnityEngine">
      <HintPath>C:\Program Files\Unity\2019.4.40f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
@@ -632,6 +636,10 @@
     <ProjectReference Include="PlayerGunLayer.csproj">
       <Project>{6432b4c6-45ae-c615-a641-a3cf8bf8e7e0}</Project>
       <Name>PlayerGunLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="Utility.csproj">
+      <Project>{61523958-85ca-4e2e-e8e7-aea8b6c3f736}</Project>
+      <Name>Utility</Name>
     </ProjectReference>
     <ProjectReference Include="UnityEditor.UI.csproj">
       <Project>{071fa4f6-95c0-6054-c479-b9199d4dc847}</Project>

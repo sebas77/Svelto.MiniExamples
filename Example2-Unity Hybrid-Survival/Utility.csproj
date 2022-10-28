@@ -41,9 +41,19 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
-     <Compile Include="Assets\Code\ECS\UtilityLayer\WaitForSecondsEnumerator.cs" />
-     <None Include="Assets\Code\ECS\UtilityLayer\Utility.asmdef" />
-     <Folder Include="Assets\Code\ECS\UtilityLayer" />
+     <Compile Include="Assets\Code\Others\UtilityLayer\DataSources\EnemyData.cs" />
+     <Compile Include="Assets\Code\Others\UtilityLayer\DataSources\JSonEnemyAttackData.cs" />
+     <Compile Include="Assets\Code\Others\UtilityLayer\DataSources\JSonEnemySpawnData.cs" />
+     <Compile Include="Assets\Code\Others\UtilityLayer\DataSources\JsonHelper.cs" />
+     <Compile Include="Assets\Code\Others\UtilityLayer\DataSources\PlayerTargetType.cs" />
+     <Compile Include="Assets\Code\Others\UtilityLayer\DataSources\SpawningData.cs" />
+     <Compile Include="Assets\Code\Others\UtilityLayer\EntityReferenceHolderImplementor.cs" />
+     <Compile Include="Assets\Code\Others\UtilityLayer\ITime.cs" />
+     <Compile Include="Assets\Code\Others\UtilityLayer\RayCaster.cs" />
+     <Compile Include="Assets\Code\Others\UtilityLayer\WaitForSecondsEnumerator.cs" />
+     <None Include="Assets\Code\Others\UtilityLayer\Utility.asmdef" />
+     <Folder Include="Assets\Code\Others\UtilityLayer" />
+     <Folder Include="Assets\Code\Others\UtilityLayer\DataSources" />
      <Reference Include="UnityEngine">
      <HintPath>C:\Program Files\Unity\2019.4.40f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
      </Reference>
@@ -592,6 +602,14 @@
      </Reference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="Svelto.ECS.csproj">
+      <Project>{8d2eb115-c2e2-3719-ca04-08d3c302a5a1}</Project>
+      <Name>Svelto.ECS</Name>
+    </ProjectReference>
+    <ProjectReference Include="Svelto.Common.csproj">
+      <Project>{53ca5d34-0f9e-ae64-6d32-8d74a6f2e9d4}</Project>
+      <Name>Svelto.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="UnityEditor.UI.csproj">
       <Project>{071fa4f6-95c0-6054-c479-b9199d4dc847}</Project>
       <Name>UnityEditor.UI</Name>
