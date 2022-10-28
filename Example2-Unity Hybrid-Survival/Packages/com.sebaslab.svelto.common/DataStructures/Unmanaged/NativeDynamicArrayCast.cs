@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Svelto.Common;
 
-namespace Svelto.ECS.DataStructures
+namespace Svelto.Common.DataStructures
 {
     public struct NativeDynamicArrayCast<T>:IDisposable where T : struct
     {
@@ -74,6 +75,29 @@ namespace Svelto.ECS.DataStructures
         {
             _array.Set((uint)index, value);
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Contains(in T value)
+        {
+            for (uint index = 0; index < Count(); index++)
+                if (_comp.Equals(this[index], value))
+                    return true;
+
+            return false;
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Remove(in T value)
+        {
+            for (uint index = 0; index < Count(); index++)
+                if (_comp.Equals(this[index], value))
+                {
+                    RemoveAt(index);
+                    return;
+                }
+        }
+        
+        static readonly EqualityComparer<T> _comp = EqualityComparer<T>.Default;
 
         public bool isValid => _array.isValid;
 

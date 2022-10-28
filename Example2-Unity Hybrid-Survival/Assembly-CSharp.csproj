@@ -86,11 +86,169 @@
      <Compile Include="Assets\Code\Others\DataSources\SpawningData.cs" />
      <Compile Include="Assets\Code\Others\JsonHelper.cs" />
      <Compile Include="Assets\Code\Others\PlayerTargetType.cs" />
+     <Folder Include="Assets" />
+     <None Include="Library\PackageCache\com.unity.modules.subsystems@1.0.0\package.json" />
+     <None Include="Library\PackageCache\com.unity.modules.jsonserialize@1.0.0\package.json" />
+     <Folder Include="Library\PackageCache\com.unity.test-framework@1.1.31" />
+     <Folder Include="Library\PackageCache\com.unity.sysroot@1.0.0" />
+     <None Include="Library\PackageCache\com.unity.modules.screencapture@1.0.0\package.json" />
+     <None Include="Library\PackageCache\com.unity.modules.cloth@1.0.0\package.json" />
+     <Folder Include="Assets\AddressableAssetsData\AssetGroupTemplates" />
+     <Folder Include="Library\PackageCache\com.unity.modules.imgui@1.0.0" />
+     <None Include="Library\PackageCache\com.unity.modules.unitywebrequesttexture@1.0.0\package.json" />
+     <None Include="Library\PackageCache\com.unity.modules.ai@1.0.0\package.json" />
+     <Folder Include="Library\PackageCache\org.nuget.system.memory@4.5.5" />
+     <Folder Include="Library\PackageCache\com.unity.modules.animation@1.0.0" />
+     <Folder Include="Library\PackageCache\com.unity.sysroot@1.0.0\Tests" />
+     <None Include="Library\PackageCache\com.unity.ugui@1.0.0\package.json" />
+     <Folder Include="Library\PackageCache\com.unity.modules.xr@1.0.0" />
+     <Folder Include="Assets\Models\Characters" />
+     <None Include="Library\PackageCache\com.unity.ext.nunit@1.0.6\package.json" />
+     <Folder Include="Library\PackageCache\com.unity.ide.rider@3.0.16\Rider" />
+     <Folder Include="Assets\AddressableAssetsData\DataBuilders" />
+     <None Include="Library\PackageCache\com.unity.modules.assetbundle@1.0.0\package.json" />
+     <Folder Include="Assets\AddressableAssetsData\AssetGroups\Schemas" />
+     <Folder Include="Library\PackageCache\org.nuget.system.runtime.compilerservices.unsafe@6.0.0" />
+     <Folder Include="Assets\AddressableAssetsData\Windows" />
+     <Folder Include="Assets\Textures" />
+     <None Include="Library\PackageCache\com.unity.modules.imgui@1.0.0\package.json" />
+     <Folder Include="Library\PackageCache\com.unity.sysroot.linux-x86_64@1.0.0" />
      <None Include="Assets\Fonts\LuckiestGuy\LICENSE.txt" />
+     <None Include="Library\PackageCache\com.unity.sysroot.linux-x86_64@1.0.0\package.json" />
+     <None Include="Library\PackageCache\com.unity.modules.tilemap@1.0.0\package.json" />
+     <Folder Include="Library\PackageCache\com.unity.modules.assetbundle@1.0.0" />
+     <Folder Include="Library\PackageCache\com.unity.ext.nunit@1.0.6\net35\unity-custom" />
+     <None Include="Library\PackageCache\org.nuget.system.memory@4.5.5\System.Memory.xml" />
+     <Folder Include="Assets\Shaders" />
+     <None Include="Library\PackageCache\com.unity.toolchain.win-x86_64-linux-x86_64@1.0.0\package.json" />
+     <None Include="Library\PackageCache\com.unity.ide.visualstudio@2.0.15\ValidationConfig.json" />
+     <Folder Include="Library\PackageCache\com.unity.ext.nunit@1.0.6\net35" />
+     <None Include="Library\PackageCache\com.unity.modules.terrainphysics@1.0.0\package.json" />
+     <None Include="Library\PackageCache\com.unity.mathematics@1.2.6\package.json" />
+     <None Include="Library\PackageCache\com.unity.scriptablebuildpipeline@1.20.2\package.json" />
+     <None Include="Library\PackageCache\org.nuget.system.buffers@4.5.1\package.json" />
+     <Folder Include="Assets\Code\Others" />
+     <None Include="Library\PackageCache\com.unity.sysroot@1.0.0\package.json" />
+     <Folder Include="Library\PackageCache\org.nuget.system.numerics.vectors@4.4.0" />
+     <Folder Include="Library\PackageCache\com.unity.nuget.newtonsoft-json@3.0.2\Runtime\AOT" />
+     <Folder Include="Library\PackageCache\com.unity.modules.screencapture@1.0.0" />
+     <Folder Include="Assets\Code\ECS\EntityDescriptors" />
+     <None Include="Library\PackageCache\com.unity.addressables@1.18.19\package.json" />
+     <Folder Include="Library\PackageCache\com.unity.modules.cloth@1.0.0" />
+     <Folder Include="Assets\Code" />
+     <Folder Include="Assets\Code\ECS\Engines\EnemyEngines" />
+     <None Include="Library\PackageCache\com.unity.modules.unitywebrequestassetbundle@1.0.0\package.json" />
+     <Folder Include="Library\PackageCache\com.unity.ext.nunit@1.0.6" />
+     <Folder Include="Assets\Code\ECS\Engines\OtherEngines" />
+     <None Include="Library\PackageCache\com.unity.ide.visualstudio@2.0.15\package.json" />
+     <Folder Include="Library\PackageCache\com.unity.modules.imageconversion@1.0.0" />
+     <Folder Include="Library\PackageCache\com.unity.modules.terrainphysics@1.0.0" />
+     <None Include="Library\PackageCache\com.unity.modules.imageconversion@1.0.0\package.json" />
+     <Folder Include="Assets\Audio" />
+     <Folder Include="Library\PackageCache\com.unity.modules.unitywebrequest@1.0.0" />
+     <Folder Include="Assets\Code\ECS\EntityViewComponents\Implementors\Enemies" />
+     <Folder Include="Library\PackageCache\com.unity.modules.unitywebrequestassetbundle@1.0.0" />
+     <None Include="Library\PackageCache\com.unity.modules.unityanalytics@1.0.0\package.json" />
+     <Folder Include="Library\PackageCache\com.unity.modules.subsystems@1.0.0" />
+     <None Include="Library\PackageCache\com.unity.ide.rider@3.0.16\package.json" />
+     <None Include="Library\PackageCache\com.unity.modules.video@1.0.0\package.json" />
+     <None Include="Library\PackageCache\com.unity.test-framework@1.1.31\package.json" />
+     <Folder Include="Library\PackageCache\com.unity.modules.unityanalytics@1.0.0" />
+     <Folder Include="Library\PackageCache\com.unity.modules.physics@1.0.0" />
+     <Folder Include="Assets\Fonts\LuckiestGuy" />
+     <Folder Include="Library\PackageCache\com.unity.modules.vr@1.0.0" />
+     <None Include="Library\PackageCache\org.nuget.system.numerics.vectors@4.4.0\package.json" />
+     <Folder Include="Library\PackageCache\com.unity.sysroot.linux-x86_64@1.0.0\Tests" />
+     <Folder Include="Library\PackageCache\com.unity.modules.physics2d@1.0.0" />
+     <Folder Include="Library\PackageCache\org.nuget.system.buffers@4.5.1" />
+     <Folder Include="Library\PackageCache\com.unity.toolchain.win-x86_64-linux-x86_64@1.0.0\Tests" />
+     <Folder Include="Assets\Scenes" />
+     <None Include="Library\PackageCache\com.unity.modules.particlesystem@1.0.0\package.json" />
+     <Folder Include="Library\PackageCache\com.unity.modules.wind@1.0.0" />
+     <None Include="Library\PackageCache\org.nuget.system.runtime.compilerservices.unsafe@6.0.0\package.json" />
+     <None Include="Library\PackageCache\com.unity.modules.physics2d@1.0.0\package.json" />
+     <None Include="Library\PackageCache\com.unity.modules.vr@1.0.0\package.json" />
+     <Folder Include="Assets\Code\ECS\EntityViewComponents\ComponentInterfaces" />
+     <Folder Include="Library\PackageCache\com.unity.modules.uielements@1.0.0" />
+     <Folder Include="Library\PackageCache\com.unity.modules.unitywebrequestaudio@1.0.0" />
+     <Folder Include="Assets\Models" />
+     <Folder Include="Library\PackageCache\com.unity.modules.particlesystem@1.0.0" />
+     <Folder Include="Assets\Code\Factories" />
+     <Folder Include="Assets\Code\ECS\EntityComponents" />
+     <None Include="Library\PackageCache\com.unity.toolchain.win-x86_64-linux-x86_64@1.0.0\ValidationConfig.json" />
+     <None Include="Library\PackageCache\com.unity.ide.visualstudio@2.0.15\ValidationExceptions.json" />
+     <None Include="Library\PackageCache\com.unity.nuget.newtonsoft-json@3.0.2\link.xml" />
+     <None Include="Library\PackageCache\com.unity.modules.wind@1.0.0\package.json" />
+     <Folder Include="Library\PackageCache\com.unity.ugui@1.0.0\Tests" />
+     <None Include="Library\PackageCache\com.unity.modules.umbra@1.0.0\package.json" />
+     <None Include="Library\PackageCache\org.nuget.system.runtime.compilerservices.unsafe@6.0.0\System.Runtime.CompilerServices.Unsafe.xml" />
+     <None Include="Library\PackageCache\com.unity.nuget.newtonsoft-json@3.0.2\package.json" />
+     <Folder Include="Library\PackageCache\com.unity.modules.tilemap@1.0.0" />
+     <Folder Include="Library\PackageCache\com.unity.modules.ui@1.0.0" />
+     <Folder Include="Assets\Code\Legacy" />
+     <None Include="Library\PackageCache\com.unity.addressables@1.18.19\ValidationExceptions.json" />
      <None Include="Assets\Shaders\Rim Lit Bumped Specular.shader" />
+     <Folder Include="Library\PackageCache\com.unity.mathematics@1.2.6" />
+     <Folder Include="Library\PackageCache\com.unity.modules.androidjni@1.0.0" />
+     <Folder Include="Assets\AddressableAssetsData\AssetGroups" />
+     <Folder Include="Assets\Json" />
+     <None Include="Library\PackageCache\com.unity.modules.audio@1.0.0\package.json" />
+     <Folder Include="Library\PackageCache\com.unity.addressables@1.18.19" />
+     <None Include="Library\PackageCache\com.unity.modules.physics@1.0.0\package.json" />
+     <Folder Include="Library\PackageCache\com.unity.toolchain.win-x86_64-linux-x86_64@1.0.0" />
+     <Folder Include="Assets\Scenes\Level 01" />
+     <Folder Include="Assets\Code\ECS\EntityViewComponents" />
+     <None Include="Library\PackageCache\com.unity.modules.vehicles@1.0.0\package.json" />
+     <Folder Include="Library\PackageCache\com.unity.addressables@1.18.19\Tests" />
+     <Folder Include="Library\PackageCache\com.unity.scriptablebuildpipeline@1.20.2" />
+     <Folder Include="Library\PackageCache\com.unity.ide.rider@3.0.16" />
      <None Include="Assets\Json\EnemySpawningData.json" />
+     <None Include="Library\PackageCache\com.unity.modules.unitywebrequestwww@1.0.0\package.json" />
+     <Folder Include="Assets\AddressableAssetsData" />
+     <None Include="Library\PackageCache\com.unity.modules.unitywebrequestaudio@1.0.0\package.json" />
+     <Folder Include="Assets\Prefabs" />
+     <Folder Include="Assets\Code\ECS\Engines" />
+     <Folder Include="Assets\Fonts" />
+     <Folder Include="Assets\AddressableAssetsData\WebGL" />
+     <Folder Include="Assets\Code\ECS\EntityViewComponents\Implementors\GUI" />
+     <Folder Include="Library\PackageCache\com.unity.modules.vehicles@1.0.0" />
+     <None Include="Library\PackageCache\com.unity.modules.xr@1.0.0\package.json" />
+     <None Include="Library\PackageCache\org.nuget.system.numerics.vectors@4.4.0\System.Numerics.Vectors.xml" />
+     <Folder Include="Assets\Models\Environment" />
+     <Folder Include="Library\PackageCache\com.unity.modules.umbra@1.0.0" />
+     <Folder Include="Library\PackageCache\com.unity.modules.unitywebrequestwww@1.0.0" />
+     <None Include="Library\PackageCache\com.unity.modules.director@1.0.0\package.json" />
+     <Folder Include="Library\PackageCache\com.unity.modules.jsonserialize@1.0.0" />
+     <Folder Include="Library\PackageCache\com.unity.modules.director@1.0.0" />
+     <Folder Include="Library\PackageCache\com.unity.modules.audio@1.0.0" />
+     <Folder Include="Assets\Audio\Effects" />
+     <Folder Include="Assets\Code\ECS\EntityViewComponents\Implementors" />
+     <Folder Include="Assets\Animation" />
+     <None Include="Library\PackageCache\com.unity.modules.terrain@1.0.0\package.json" />
+     <Folder Include="Library\PackageCache\com.unity.ide.visualstudio@2.0.15" />
+     <None Include="Library\PackageCache\com.unity.modules.androidjni@1.0.0\package.json" />
+     <Folder Include="Assets\AddressableAssetsData\AnalyzeData" />
+     <Folder Include="Library\PackageCache\com.unity.modules.video@1.0.0" />
+     <Folder Include="Assets\Code\ECS" />
+     <Folder Include="Library\PackageCache\com.unity.modules.ai@1.0.0" />
+     <None Include="Library\PackageCache\com.unity.mathematics@1.2.6\ValidationExceptions.json" />
+     <None Include="Library\PackageCache\com.unity.scriptablebuildpipeline@1.20.2\ValidationExceptions.json" />
+     <Folder Include="Library\PackageCache\com.unity.modules.terrain@1.0.0" />
+     <None Include="Library\PackageCache\com.unity.modules.animation@1.0.0\package.json" />
+     <Folder Include="Library\PackageCache\com.unity.nuget.newtonsoft-json@3.0.2" />
+     <None Include="Library\PackageCache\org.nuget.system.memory@4.5.5\package.json" />
      <None Include="Assets\Json\prefabs.json" />
+     <Folder Include="Assets\Code\Legacy\Implementors" />
+     <Folder Include="Library\PackageCache\com.unity.nuget.newtonsoft-json@3.0.2\Runtime" />
+     <None Include="Library\PackageCache\org.nuget.system.buffers@4.5.1\System.Buffers.xml" />
      <None Include="Assets\Json\EnemyAttackData.json" />
+     <None Include="Library\PackageCache\com.unity.modules.unitywebrequest@1.0.0\package.json" />
+     <Folder Include="Assets\Code\Others\DataSources" />
+     <None Include="Library\PackageCache\com.unity.modules.uielements@1.0.0\package.json" />
+     <Folder Include="Library\PackageCache\com.unity.modules.unitywebrequesttexture@1.0.0" />
+     <Folder Include="Library\PackageCache\com.unity.ugui@1.0.0" />
+     <Folder Include="Assets\Materials" />
+     <None Include="Library\PackageCache\com.unity.modules.ui@1.0.0\package.json" />
      <Reference Include="UnityEngine">
      <HintPath>C:\Program Files\Unity\2019.4.40f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
      </Reference>
@@ -276,6 +434,15 @@
      </Reference>
      <Reference Include="Newtonsoft.Json">
      <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example2-Unity Hybrid-Survival\Library\PackageCache\com.unity.nuget.newtonsoft-json@3.0.2\Runtime\Newtonsoft.Json.dll</HintPath>
+     </Reference>
+     <Reference Include="System.Buffers">
+     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example2-Unity Hybrid-Survival\Library\PackageCache\org.nuget.system.buffers@4.5.1\System.Buffers.dll</HintPath>
+     </Reference>
+     <Reference Include="System.Memory">
+     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example2-Unity Hybrid-Survival\Library\PackageCache\org.nuget.system.memory@4.5.5\System.Memory.dll</HintPath>
+     </Reference>
+     <Reference Include="System.Numerics.Vectors">
+     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example2-Unity Hybrid-Survival\Library\PackageCache\org.nuget.system.numerics.vectors@4.4.0\System.Numerics.Vectors.dll</HintPath>
      </Reference>
      <Reference Include="System.Runtime.CompilerServices.Unsafe">
      <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example2-Unity Hybrid-Survival\Library\PackageCache\org.nuget.system.runtime.compilerservices.unsafe@6.0.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
@@ -659,13 +826,13 @@
       <Project>{8d2eb115-c2e2-3719-ca04-08d3c302a5a1}</Project>
       <Name>Svelto.ECS</Name>
     </ProjectReference>
-    <ProjectReference Include="Svelto.Pool.Debugger.csproj">
-      <Project>{c746b42f-36b3-0eae-2d23-d1cf4b74f48b}</Project>
-      <Name>Svelto.Pool.Debugger</Name>
-    </ProjectReference>
     <ProjectReference Include="Svelto.Common.csproj">
       <Project>{53ca5d34-0f9e-ae64-6d32-8d74a6f2e9d4}</Project>
       <Name>Svelto.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="Svelto.Pool.Debugger.csproj">
+      <Project>{c746b42f-36b3-0eae-2d23-d1cf4b74f48b}</Project>
+      <Name>Svelto.Pool.Debugger</Name>
     </ProjectReference>
     <ProjectReference Include="Unity.ResourceManager.csproj">
       <Project>{716ea4f8-08d0-1229-8ecb-bd1945d5e600}</Project>

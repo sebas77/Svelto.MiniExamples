@@ -160,7 +160,22 @@
      <Compile Include="Library\PackageCache\com.unity.addressables@1.18.19\Editor\Settings\ProfileGroupType.cs" />
      <Compile Include="Library\PackageCache\com.unity.addressables@1.18.19\Editor\Settings\ProfileValueReference.cs" />
      <Compile Include="Library\PackageCache\com.unity.addressables@1.18.19\Editor\Settings\ProjectConfigData.cs" />
+     <Folder Include="Library\PackageCache\com.unity.addressables@1.18.19\Editor\Build\DataBuilders" />
+     <Folder Include="Library\PackageCache\com.unity.addressables@1.18.19\Editor\Diagnostics\GUI\Graph" />
+     <Folder Include="Library\PackageCache\com.unity.addressables@1.18.19\Editor\Diagnostics\Data" />
+     <Folder Include="Library\PackageCache\com.unity.addressables@1.18.19\Editor\GUI" />
+     <Folder Include="Library\PackageCache\com.unity.addressables@1.18.19\Editor" />
+     <Folder Include="Library\PackageCache\com.unity.addressables@1.18.19\Editor\Build" />
+     <Folder Include="Library\PackageCache\com.unity.addressables@1.18.19\Editor\HostingServices" />
+     <Folder Include="Library\PackageCache\com.unity.addressables@1.18.19\Editor\Diagnostics\GUI" />
+     <Folder Include="Library\PackageCache\com.unity.addressables@1.18.19\Editor\Build\AnalyzeRules" />
+     <Folder Include="Library\PackageCache\com.unity.addressables@1.18.19\Editor\Settings" />
+     <Folder Include="Library\PackageCache\com.unity.addressables@1.18.19\Editor\Settings\GroupSchemas" />
      <None Include="Library\PackageCache\com.unity.addressables@1.18.19\Editor\Unity.Addressables.Editor.asmdef" />
+     <Folder Include="Library\PackageCache\com.unity.addressables@1.18.19\Editor\Diagnostics" />
+     <Folder Include="Library\PackageCache\com.unity.addressables@1.18.19\Editor\Build\Layout" />
+     <Folder Include="Library\PackageCache\com.unity.addressables@1.18.19\Editor\Icons" />
+     <Folder Include="Library\PackageCache\com.unity.addressables@1.18.19\Editor\Build\BuildPipelineTasks" />
      <Reference Include="UnityEngine">
      <HintPath>C:\Program Files\Unity\2019.4.40f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
      </Reference>
@@ -358,6 +373,15 @@
      </Reference>
      <Reference Include="Newtonsoft.Json">
      <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example2-Unity Hybrid-Survival\Library\PackageCache\com.unity.nuget.newtonsoft-json@3.0.2\Runtime\Newtonsoft.Json.dll</HintPath>
+     </Reference>
+     <Reference Include="System.Buffers">
+     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example2-Unity Hybrid-Survival\Library\PackageCache\org.nuget.system.buffers@4.5.1\System.Buffers.dll</HintPath>
+     </Reference>
+     <Reference Include="System.Memory">
+     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example2-Unity Hybrid-Survival\Library\PackageCache\org.nuget.system.memory@4.5.5\System.Memory.dll</HintPath>
+     </Reference>
+     <Reference Include="System.Numerics.Vectors">
+     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example2-Unity Hybrid-Survival\Library\PackageCache\org.nuget.system.numerics.vectors@4.4.0\System.Numerics.Vectors.dll</HintPath>
      </Reference>
      <Reference Include="System.Runtime.CompilerServices.Unsafe">
      <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example2-Unity Hybrid-Survival\Library\PackageCache\org.nuget.system.runtime.compilerservices.unsafe@6.0.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>

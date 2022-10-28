@@ -180,14 +180,6 @@ namespace Svelto.DataStructures
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Clear()
-        {
-            Array.Clear(_buffer, 0, _buffer.Length);
-
-            _count = 0;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Contains(T item)
         {
             for (uint index = 0; index < _count; index++)
@@ -220,12 +212,18 @@ namespace Svelto.DataStructures
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void SmartClear()
+        public void Clear()
         {
-            if (TypeCache<T>.type.IsClass)
-                Clear();
-            else
+            if (TypeCache<T>.type.isUnmanaged())
+            {
                 FastClear();
+            }
+            else
+            {
+                Array.Clear(_buffer, 0, _buffer.Length);
+
+                _count = 0;
+            }
         }
 
         public static FasterList<T> Fill<U>(uint initialSize) where U : T, new()

@@ -43,7 +43,9 @@
   <ItemGroup>
      <Compile Include="Library\PackageCache\com.unity.scriptablebuildpipeline@1.20.2\Runtime\CompatibilityAssetBundleManifest.cs" />
      <Compile Include="Library\PackageCache\com.unity.scriptablebuildpipeline@1.20.2\Runtime\Shared\BundleDetails.cs" />
+     <Folder Include="Library\PackageCache\com.unity.scriptablebuildpipeline@1.20.2\Runtime\Shared" />
      <None Include="Library\PackageCache\com.unity.scriptablebuildpipeline@1.20.2\Runtime\Unity.ScriptableBuildPipeline.asmdef" />
+     <Folder Include="Library\PackageCache\com.unity.scriptablebuildpipeline@1.20.2\Runtime" />
      <Reference Include="UnityEngine">
      <HintPath>C:\Program Files\Unity\2019.4.40f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
      </Reference>
@@ -241,6 +243,15 @@
      </Reference>
      <Reference Include="Newtonsoft.Json">
      <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example2-Unity Hybrid-Survival\Library\PackageCache\com.unity.nuget.newtonsoft-json@3.0.2\Runtime\Newtonsoft.Json.dll</HintPath>
+     </Reference>
+     <Reference Include="System.Buffers">
+     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example2-Unity Hybrid-Survival\Library\PackageCache\org.nuget.system.buffers@4.5.1\System.Buffers.dll</HintPath>
+     </Reference>
+     <Reference Include="System.Memory">
+     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example2-Unity Hybrid-Survival\Library\PackageCache\org.nuget.system.memory@4.5.5\System.Memory.dll</HintPath>
+     </Reference>
+     <Reference Include="System.Numerics.Vectors">
+     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example2-Unity Hybrid-Survival\Library\PackageCache\org.nuget.system.numerics.vectors@4.4.0\System.Numerics.Vectors.dll</HintPath>
      </Reference>
      <Reference Include="System.Runtime.CompilerServices.Unsafe">
      <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example2-Unity Hybrid-Survival\Library\PackageCache\org.nuget.system.runtime.compilerservices.unsafe@6.0.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>

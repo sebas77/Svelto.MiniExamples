@@ -56,12 +56,14 @@ namespace Svelto
         {
             if (_initialized == false)
             {
+#if UNITY_EDITOR                
                 _originalConsoleOutput = System.Console.Out;
                 System.Console.SetOut(new SveltoSystemOutInterceptor());
 
                 _originals = (Application.GetStackTraceLogType(LogType.Warning),
                     Application.GetStackTraceLogType(LogType.Assert), Application.GetStackTraceLogType(LogType.Error),
                     Application.GetStackTraceLogType(LogType.Log));
+#endif                
 
                 Application.SetStackTraceLogType(LogType.Warning, StackTraceLogType.None);
                 Application.SetStackTraceLogType(LogType.Assert, StackTraceLogType.None);
@@ -113,11 +115,12 @@ namespace Svelto
         static readonly Action<PlayModeStateChange> EditorApplicationOnplayModeStateChanged = OnEditorChangedMode;
 #endif
         private static readonly ILogHandler defaultLogHandler = Debug.unityLogger.logHandler;
-
+#if UNITY_EDITOR
         static (StackTraceLogType warning, StackTraceLogType assert, StackTraceLogType error, StackTraceLogType log)
             _originals;
 
         static System.IO.TextWriter _originalConsoleOutput;
+#endif        
         static bool _initialized;
     }
 }

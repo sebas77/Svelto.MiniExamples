@@ -42,6 +42,7 @@
   </PropertyGroup>
   <ItemGroup>
      <Compile Include="Assets\Code\Others\Editor\SerializeDataInspector.cs" />
+     <Folder Include="Assets\Code\Others\Editor" />
      <Reference Include="UnityEngine">
      <HintPath>C:\Program Files\Unity\2019.4.40f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
      </Reference>
@@ -239,6 +240,15 @@
      </Reference>
      <Reference Include="Newtonsoft.Json">
      <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example2-Unity Hybrid-Survival\Library\PackageCache\com.unity.nuget.newtonsoft-json@3.0.2\Runtime\Newtonsoft.Json.dll</HintPath>
+     </Reference>
+     <Reference Include="System.Buffers">
+     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example2-Unity Hybrid-Survival\Library\PackageCache\org.nuget.system.buffers@4.5.1\System.Buffers.dll</HintPath>
+     </Reference>
+     <Reference Include="System.Memory">
+     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example2-Unity Hybrid-Survival\Library\PackageCache\org.nuget.system.memory@4.5.5\System.Memory.dll</HintPath>
+     </Reference>
+     <Reference Include="System.Numerics.Vectors">
+     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example2-Unity Hybrid-Survival\Library\PackageCache\org.nuget.system.numerics.vectors@4.4.0\System.Numerics.Vectors.dll</HintPath>
      </Reference>
      <Reference Include="System.Runtime.CompilerServices.Unsafe">
      <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example2-Unity Hybrid-Survival\Library\PackageCache\org.nuget.system.runtime.compilerservices.unsafe@6.0.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
@@ -649,13 +659,13 @@
       <Project>{8d2eb115-c2e2-3719-ca04-08d3c302a5a1}</Project>
       <Name>Svelto.ECS</Name>
     </ProjectReference>
-    <ProjectReference Include="Svelto.Pool.Debugger.csproj">
-      <Project>{c746b42f-36b3-0eae-2d23-d1cf4b74f48b}</Project>
-      <Name>Svelto.Pool.Debugger</Name>
-    </ProjectReference>
     <ProjectReference Include="Svelto.Common.csproj">
       <Project>{53ca5d34-0f9e-ae64-6d32-8d74a6f2e9d4}</Project>
       <Name>Svelto.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="Svelto.Pool.Debugger.csproj">
+      <Project>{c746b42f-36b3-0eae-2d23-d1cf4b74f48b}</Project>
+      <Name>Svelto.Pool.Debugger</Name>
     </ProjectReference>
     <ProjectReference Include="Unity.ResourceManager.csproj">
       <Project>{716ea4f8-08d0-1229-8ecb-bd1945d5e600}</Project>

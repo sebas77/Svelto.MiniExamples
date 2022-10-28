@@ -50,15 +50,6 @@ namespace Svelto.ECS.Example.Survive.Player
             }
         }
 
-        /// <summary>
-        ///     In order to keep the class testable, we need to reduce the number of
-        ///     dependencies injected through static classes at its minimum.
-        ///     Implementors are the place where platform dependencies can be transformed into
-        ///     entity components, so that here we can use inputComponent instead of
-        ///     the class Input.
-        /// </summary>
-        /// <param name="playerInput"></param>
-        /// <param name="playerComponent"></param>
         void Movement(in PlayerInputDataComponent playerInput, ref PlayerEntityComponent playerComponent,
             in SpeedComponent speedComponent)
         {

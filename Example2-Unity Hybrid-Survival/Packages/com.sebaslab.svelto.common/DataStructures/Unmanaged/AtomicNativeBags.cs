@@ -5,7 +5,7 @@ using Svelto.Common;
 using Unity.Jobs.LowLevel.Unsafe;
 using Allocator = Svelto.Common.Allocator;
 
-namespace Svelto.ECS.DataStructures
+namespace Svelto.Common.DataStructures
 {
     public unsafe struct AtomicNativeBags:IDisposable
     {

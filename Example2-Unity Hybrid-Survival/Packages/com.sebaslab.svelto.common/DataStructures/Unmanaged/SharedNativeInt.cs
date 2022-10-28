@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using Svelto.Common;
 
-namespace Svelto.ECS.DataStructures
+namespace Svelto.Common.DataStructures
 {
     public struct SharedNativeInt: IDisposable
     {

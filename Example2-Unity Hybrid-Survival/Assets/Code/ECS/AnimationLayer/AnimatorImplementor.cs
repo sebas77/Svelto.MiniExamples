@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
+using Svelto.ECS.Hybrid;
 
 namespace Svelto.ECS.Example.Survive.Implementors
 {
-    public class AnimatorImplementor : MonoBehaviour
+    public class AnimatorImplementor : MonoBehaviour, IImplementor, IAnimationComponent
     {
         public string playAnimation
         {
@@ -14,10 +15,7 @@ namespace Svelto.ECS.Example.Survive.Implementors
             }
         }
 
-        // public AnimationState animationState
-        // {
-        //     set => _anim.SetBool(value.name.ToString(), value.state);
-        // }
+        public AnimationState animationState { set => _anim.SetBool(value.animationID.id, value.state); }
 
         public bool reset
         {

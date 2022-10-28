@@ -3,7 +3,8 @@
   "category": "Svelto",
   "description": "Svelto common utilities and datastructures",
  "dependencies": {
-   "org.nuget.system.runtime.compilerservices.unsafe":"5.0.0"
+   "org.nuget.system.runtime.compilerservices.unsafe":"5.0.0",
+   "org.nuget.system.memory":"4.5.5"
   },
   "keywords": [
     "svelto"

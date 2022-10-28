@@ -42,8 +42,6 @@ namespace Svelto.ECS.Example.Survive.Player
             //ECSGroups.Player is the group where the entity player will be built. I usually expect a 
             //group for entity descriptor. It is the safest way to go, but advanced users may decide to use different
             //groups layout if needed.
-            //if the Svelto entity is linked to an external OOP resource, like the GameObject in this case, the
-            //relative implementor must be passed to the BuildEntity method.
             //Pure ECS (no OOP) entities do not need implementors passed.
             playerInitializer = _entityFactory.BuildEntity<PlayerEntityDescriptor>(0, Player.BuildGroup);
 
@@ -99,8 +97,6 @@ namespace Svelto.ECS.Example.Survive.Player
         void BuildCameraEntity(ref EntityInitializer playerID, uint cameraID)
         {
             var cameraResource = _gameObjectResourceManager[cameraID];
-            // //implementors can be attatched at run time, while not? Check the player spawner engine to 
-            // //read more about implementors
             var playerPosition = playerID.Get<PositionComponent>();
 
             var cameraInit =

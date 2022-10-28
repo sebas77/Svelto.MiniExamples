@@ -1,7 +1,7 @@
 using System;
 using Svelto.DataStructures;
 using Svelto.DataStructures.Native;
-using Svelto.ECS.DataStructures;
+using Svelto.Common.DataStructures;
 using Svelto.ECS.Internal;
 
 namespace Svelto.ECS.Native

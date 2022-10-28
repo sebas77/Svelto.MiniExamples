@@ -3,12 +3,13 @@
 #endif
 
 using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Svelto.Common;
 using Svelto.Common.DataStructures;
 using Allocator = Svelto.Common.Allocator;
 
-namespace Svelto.ECS.DataStructures
+namespace Svelto.Common.DataStructures
 {
     public struct NativeDynamicArray : IDisposable
     {

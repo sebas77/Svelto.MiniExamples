@@ -41,6 +41,7 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
+     <Folder Include="Library\PackageCache\com.unity.scriptablebuildpipeline@1.20.2\Tests\Editor\CacheServer" />
      <None Include="Library\PackageCache\com.unity.scriptablebuildpipeline@1.20.2\Tests\Editor\CacheServer\UnityEditor.CacheServerTests.asmdef" />
      <Reference Include="UnityEngine">
      <HintPath>C:\Program Files\Unity\2019.4.40f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>

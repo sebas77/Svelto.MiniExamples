@@ -48,10 +48,11 @@ namespace Svelto.Utilities
 
                     stack = ($"{frame} <b><color=yellow> ".FastConcat(txt, " </color></b> ", Environment.NewLine, stack)
                        .FastConcat(Environment.NewLine, dataString));
+                    
+                    return stack;
 #else
                     return "";
 #endif
-                    return stack;
                 }
                 case LogType.Warning:
                 {

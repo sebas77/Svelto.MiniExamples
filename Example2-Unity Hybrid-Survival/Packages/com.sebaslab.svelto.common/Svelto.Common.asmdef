@@ -1,6 +1,5 @@
 {
     "name": "Svelto.Common",
-    "rootNamespace": "",
     "references": [
         "Unity.Collections",
         "Unity.Burst"
@@ -49,6 +48,11 @@
             "name": "com.unity.collections",
             "expression": "",
             "define": "UNITY_NATIVE"
+        },
+        {
+            "name": "Unity",
+            "expression": "2020.1",
+            "define": "NEW_C_SHARP"
         }
     ],
     "noEngineReferences": false

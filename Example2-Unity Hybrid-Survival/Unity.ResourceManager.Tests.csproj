@@ -42,6 +42,9 @@
   </PropertyGroup>
   <ItemGroup>
      <None Include="Library\PackageCache\com.unity.addressables@1.18.19\Tests\Runtime\ResourceManager\Unity.ResourceManager.Tests.asmdef" />
+     <Folder Include="Library\PackageCache\com.unity.addressables@1.18.19\Tests\Runtime\ResourceManager\Operations" />
+     <Folder Include="Library\PackageCache\com.unity.addressables@1.18.19\Tests\Runtime\ResourceManager" />
+     <Folder Include="Library\PackageCache\com.unity.addressables@1.18.19\Tests\Runtime\ResourceManager\TestUtil" />
      <Reference Include="UnityEngine">
      <HintPath>C:\Program Files\Unity\2019.4.40f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
      </Reference>

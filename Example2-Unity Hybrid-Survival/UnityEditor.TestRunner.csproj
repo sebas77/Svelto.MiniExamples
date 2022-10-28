@@ -204,7 +204,28 @@
      <Compile Include="Library\PackageCache\com.unity.test-framework@1.1.31\UnityEditor.TestRunner\UnityTestProtocol\UnityTestProtocolStarter.cs" />
      <Compile Include="Library\PackageCache\com.unity.test-framework@1.1.31\UnityEditor.TestRunner\UnityTestProtocol\UtpDebuglogger.cs" />
      <Compile Include="Library\PackageCache\com.unity.test-framework@1.1.31\UnityEditor.TestRunner\UnityTestProtocol\UtpMessageReporter.cs" />
+     <Folder Include="Library\PackageCache\com.unity.test-framework@1.1.31\UnityEditor.TestRunner\UnityTestProtocol" />
+     <Folder Include="Library\PackageCache\com.unity.test-framework@1.1.31\UnityEditor.TestRunner\CommandLineTest" />
+     <Folder Include="Library\PackageCache\com.unity.test-framework@1.1.31\UnityEditor.TestRunner\TestSettings" />
+     <Folder Include="Library\PackageCache\com.unity.test-framework@1.1.31\UnityEditor.TestRunner" />
+     <Folder Include="Library\PackageCache\com.unity.test-framework@1.1.31\UnityEditor.TestRunner\GUI\Views" />
+     <Folder Include="Library\PackageCache\com.unity.test-framework@1.1.31\UnityEditor.TestRunner\CommandLineParser" />
+     <Folder Include="Library\PackageCache\com.unity.test-framework@1.1.31\UnityEditor.TestRunner\NUnitExtension\Attributes" />
+     <Folder Include="Library\PackageCache\com.unity.test-framework@1.1.31\UnityEditor.TestRunner\TestLaunchers" />
+     <Folder Include="Library\PackageCache\com.unity.test-framework@1.1.31\UnityEditor.TestRunner\GUI\TestListBuilder" />
+     <Folder Include="Library\PackageCache\com.unity.test-framework@1.1.31\UnityEditor.TestRunner\TestRun" />
+     <Folder Include="Library\PackageCache\com.unity.test-framework@1.1.31\UnityEditor.TestRunner\GUI\TestListTreeView" />
+     <Folder Include="Library\PackageCache\com.unity.test-framework@1.1.31\UnityEditor.TestRunner\TestRunner" />
+     <Folder Include="Library\PackageCache\com.unity.test-framework@1.1.31\UnityEditor.TestRunner\Api\Analytics" />
+     <Folder Include="Library\PackageCache\com.unity.test-framework@1.1.31\UnityEditor.TestRunner\TestRunner\Messages" />
      <None Include="Library\PackageCache\com.unity.test-framework@1.1.31\UnityEditor.TestRunner\UnityEditor.TestRunner.asmdef" />
+     <Folder Include="Library\PackageCache\com.unity.test-framework@1.1.31\UnityEditor.TestRunner\Api" />
+     <Folder Include="Library\PackageCache\com.unity.test-framework@1.1.31\UnityEditor.TestRunner\TestLaunchers\PlatformSetup" />
+     <Folder Include="Library\PackageCache\com.unity.test-framework@1.1.31\UnityEditor.TestRunner\TestRunner\Callbacks" />
+     <Folder Include="Library\PackageCache\com.unity.test-framework@1.1.31\UnityEditor.TestRunner\TestRun\Tasks" />
+     <Folder Include="Library\PackageCache\com.unity.test-framework@1.1.31\UnityEditor.TestRunner\GUI" />
+     <Folder Include="Library\PackageCache\com.unity.test-framework@1.1.31\UnityEditor.TestRunner\TestRunner\Utils" />
+     <Folder Include="Library\PackageCache\com.unity.test-framework@1.1.31\UnityEditor.TestRunner\NUnitExtension" />
      <Reference Include="UnityEngine">
      <HintPath>C:\Program Files\Unity\2019.4.40f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
      </Reference>

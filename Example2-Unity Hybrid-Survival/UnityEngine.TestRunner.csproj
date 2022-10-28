@@ -152,7 +152,22 @@
      <Compile Include="Library\PackageCache\com.unity.test-framework@1.1.31\UnityEngine.TestRunner\Utils\Vector3EqualityComparer.cs" />
      <Compile Include="Library\PackageCache\com.unity.test-framework@1.1.31\UnityEngine.TestRunner\Utils\Vector4ComparerWithEqualsOperator.cs" />
      <Compile Include="Library\PackageCache\com.unity.test-framework@1.1.31\UnityEngine.TestRunner\Utils\Vector4EqualityComparer.cs" />
+     <Folder Include="Library\PackageCache\com.unity.test-framework@1.1.31\UnityEngine.TestRunner\Utils\AssemblyProvider" />
+     <Folder Include="Library\PackageCache\com.unity.test-framework@1.1.31\UnityEngine.TestRunner\TestRunner\Callbacks" />
+     <Folder Include="Library\PackageCache\com.unity.test-framework@1.1.31\UnityEngine.TestRunner\TestRunner\RemoteHelpers" />
+     <Folder Include="Library\PackageCache\com.unity.test-framework@1.1.31\UnityEngine.TestRunner\Assertions\LogScope" />
+     <Folder Include="Library\PackageCache\com.unity.test-framework@1.1.31\UnityEngine.TestRunner\NUnitExtensions\Filters" />
+     <Folder Include="Library\PackageCache\com.unity.test-framework@1.1.31\UnityEngine.TestRunner\TestRunner\Messages" />
+     <Folder Include="Library\PackageCache\com.unity.test-framework@1.1.31\UnityEngine.TestRunner" />
      <None Include="Library\PackageCache\com.unity.test-framework@1.1.31\UnityEngine.TestRunner\UnityEngine.TestRunner.asmdef" />
+     <Folder Include="Library\PackageCache\com.unity.test-framework@1.1.31\UnityEngine.TestRunner\NUnitExtensions\Runner" />
+     <Folder Include="Library\PackageCache\com.unity.test-framework@1.1.31\UnityEngine.TestRunner\Assertions" />
+     <Folder Include="Library\PackageCache\com.unity.test-framework@1.1.31\UnityEngine.TestRunner\NUnitExtensions\Commands" />
+     <Folder Include="Library\PackageCache\com.unity.test-framework@1.1.31\UnityEngine.TestRunner\Utils" />
+     <Folder Include="Library\PackageCache\com.unity.test-framework@1.1.31\UnityEngine.TestRunner\NUnitExtensions\Attributes" />
+     <Folder Include="Library\PackageCache\com.unity.test-framework@1.1.31\UnityEngine.TestRunner\TestRunner" />
+     <Folder Include="Library\PackageCache\com.unity.test-framework@1.1.31\UnityEngine.TestRunner\NUnitExtensions" />
+     <Folder Include="Library\PackageCache\com.unity.test-framework@1.1.31\UnityEngine.TestRunner\Utils\MonoBehaviourTest" />
      <Reference Include="UnityEngine">
      <HintPath>C:\Program Files\Unity\2019.4.40f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
      </Reference>

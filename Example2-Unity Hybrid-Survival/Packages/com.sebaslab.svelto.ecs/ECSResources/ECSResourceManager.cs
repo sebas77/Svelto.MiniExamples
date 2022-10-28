@@ -35,7 +35,7 @@ namespace Code.ECS.Shared
         public void Clear()
         {
             _sparse.FastClear();
-            _dense.SmartClear();
+            _dense.Clear();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

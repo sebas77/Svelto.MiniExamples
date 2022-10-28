@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Svelto.ECS.Example.Survive.Player
 {
     /// <summary>
-    ///     if you need to test input, you can mock this class alternatively you can mock the implementor.
+    ///     if you need to test input, you can mock this class 
     /// </summary>
     public class PlayerInputEngine : IQueryingEntitiesEngine, IStepEngine
     {

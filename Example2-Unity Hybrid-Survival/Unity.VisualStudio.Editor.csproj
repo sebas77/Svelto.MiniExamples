@@ -80,7 +80,19 @@
      <Compile Include="Library\PackageCache\com.unity.ide.visualstudio@2.0.15\Editor\VisualStudioEditor.cs" />
      <Compile Include="Library\PackageCache\com.unity.ide.visualstudio@2.0.15\Editor\VisualStudioInstallation.cs" />
      <Compile Include="Library\PackageCache\com.unity.ide.visualstudio@2.0.15\Editor\VisualStudioIntegration.cs" />
+     <Folder Include="Library\PackageCache\com.unity.ide.visualstudio@2.0.15\Editor\Plugins\AppleEventIntegration.bundle\Contents\_CodeSignature" />
+     <Folder Include="Library\PackageCache\com.unity.ide.visualstudio@2.0.15\Editor\COMIntegration\Release" />
+     <Folder Include="Library\PackageCache\com.unity.ide.visualstudio@2.0.15\Editor\Plugins\AppleEventIntegration.bundle" />
+     <Folder Include="Library\PackageCache\com.unity.ide.visualstudio@2.0.15\Editor\Plugins\AppleEventIntegration.bundle\Contents" />
+     <Folder Include="Library\PackageCache\com.unity.ide.visualstudio@2.0.15\Editor\COMIntegration" />
+     <Folder Include="Library\PackageCache\com.unity.ide.visualstudio@2.0.15\Editor\Plugins\AppleEventIntegration.bundle\Contents\MacOS" />
      <None Include="Library\PackageCache\com.unity.ide.visualstudio@2.0.15\Editor\com.unity.ide.visualstudio.asmdef" />
+     <Folder Include="Library\PackageCache\com.unity.ide.visualstudio@2.0.15\Editor" />
+     <Folder Include="Library\PackageCache\com.unity.ide.visualstudio@2.0.15\Editor\VSWhere" />
+     <Folder Include="Library\PackageCache\com.unity.ide.visualstudio@2.0.15\Editor\ProjectGeneration" />
+     <Folder Include="Library\PackageCache\com.unity.ide.visualstudio@2.0.15\Editor\Plugins" />
+     <Folder Include="Library\PackageCache\com.unity.ide.visualstudio@2.0.15\Editor\Messaging" />
+     <Folder Include="Library\PackageCache\com.unity.ide.visualstudio@2.0.15\Editor\Testing" />
      <Reference Include="UnityEngine">
      <HintPath>C:\Program Files\Unity\2019.4.40f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
      </Reference>

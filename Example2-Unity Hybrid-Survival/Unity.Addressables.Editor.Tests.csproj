@@ -42,6 +42,11 @@
   </PropertyGroup>
   <ItemGroup>
      <None Include="Library\PackageCache\com.unity.addressables@1.18.19\Tests\Editor\Unity.Addressables.Editor.Tests.asmdef" />
+     <Folder Include="Library\PackageCache\com.unity.addressables@1.18.19\Tests\Editor\Build" />
+     <Folder Include="Library\PackageCache\com.unity.addressables@1.18.19\Tests\Editor\HostingServices" />
+     <Folder Include="Library\PackageCache\com.unity.addressables@1.18.19\Tests\Editor" />
+     <Folder Include="Library\PackageCache\com.unity.addressables@1.18.19\Tests\Editor\Diagnostics" />
+     <Folder Include="Library\PackageCache\com.unity.addressables@1.18.19\Tests\Editor\AnalyzeRules" />
      <Reference Include="UnityEngine">
      <HintPath>C:\Program Files\Unity\2019.4.40f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
      </Reference>

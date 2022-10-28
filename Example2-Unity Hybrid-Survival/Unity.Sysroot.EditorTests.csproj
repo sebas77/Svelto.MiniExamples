@@ -42,6 +42,7 @@
   </PropertyGroup>
   <ItemGroup>
      <None Include="Library\PackageCache\com.unity.sysroot@1.0.0\Tests\Editor\Unity.Sysroot.EditorTests.asmdef" />
+     <Folder Include="Library\PackageCache\com.unity.sysroot@1.0.0\Tests\Editor" />
      <Reference Include="UnityEngine">
      <HintPath>C:\Program Files\Unity\2019.4.40f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
      </Reference>

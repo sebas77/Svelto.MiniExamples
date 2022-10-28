@@ -1,5 +1,5 @@
 #if UNITY_NATIVE
-using Svelto.ECS.DataStructures;
+using Svelto.Common.DataStructures;
 
 namespace Svelto.ECS.Native
 {

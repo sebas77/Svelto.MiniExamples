@@ -133,7 +133,7 @@ namespace Svelto.DataStructures.Native
             _invalidHandle = false;
             if (((IntPtr) _cachedReference == IntPtr.Zero))
             {
-                _cachedReference = GCHandle.Alloc(_realBuffer, GCHandleType.Normal);
+                    _cachedReference = GCHandle.Alloc(_realBuffer, GCHandleType.Normal);
             }
 
             return (IBuffer<T>) _cachedReference.Target;
@@ -173,6 +173,7 @@ namespace Svelto.DataStructures.Native
 #if UNITY_COLLECTIONS || UNITY_JOBS || UNITY_BURST
         [Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction]
 #endif
+        //NativeStrategy must stay unmanaged so it cannot hold on an IBuffer reference
         GCHandle _cachedReference;
     }
 }

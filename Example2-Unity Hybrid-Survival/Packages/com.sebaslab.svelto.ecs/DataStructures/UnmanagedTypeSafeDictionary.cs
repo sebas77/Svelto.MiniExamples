@@ -8,7 +8,7 @@ using System.Threading;
 using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.DataStructures.Native;
-using Svelto.ECS.DataStructures;
+using Svelto.Common.DataStructures;
 
 namespace Svelto.ECS.Internal
 {

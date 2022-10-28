@@ -42,6 +42,10 @@
   </PropertyGroup>
   <ItemGroup>
      <None Include="Library\PackageCache\com.unity.mathematics@1.2.6\Tests\Unity.Mathematics.Tests.asmdef" />
+     <Folder Include="Library\PackageCache\com.unity.mathematics@1.2.6\Tests" />
+     <Folder Include="Library\PackageCache\com.unity.mathematics@1.2.6\Tests\Properties" />
+     <Folder Include="Library\PackageCache\com.unity.mathematics@1.2.6\Tests\Tests" />
+     <Folder Include="Library\PackageCache\com.unity.mathematics@1.2.6\Tests\Tests\Shared" />
      <Reference Include="UnityEngine">
      <HintPath>C:\Program Files\Unity\2019.4.40f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
      </Reference>

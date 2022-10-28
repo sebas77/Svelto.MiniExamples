@@ -41,7 +41,10 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
+     <Folder Include="Library\PackageCache\com.unity.addressables@1.18.19\Tests\Runtime" />
      <None Include="Library\PackageCache\com.unity.addressables@1.18.19\Tests\Runtime\Unity.Addressables.Runtime.Tests.asmdef" />
+     <Folder Include="Library\PackageCache\com.unity.addressables@1.18.19\Tests\Runtime\ResourceProviders" />
+     <Folder Include="Library\PackageCache\com.unity.addressables@1.18.19\Tests\Runtime\Initialization" />
      <Reference Include="UnityEngine">
      <HintPath>C:\Program Files\Unity\2019.4.40f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
      </Reference>

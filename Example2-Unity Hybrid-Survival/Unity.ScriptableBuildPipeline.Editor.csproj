@@ -141,7 +141,17 @@
      <Compile Include="Library\PackageCache\com.unity.scriptablebuildpipeline@1.20.2\Editor\WriteTypes\SceneBundleWriteOperation.cs" />
      <Compile Include="Library\PackageCache\com.unity.scriptablebuildpipeline@1.20.2\Editor\WriteTypes\SceneDataWriteOperation.cs" />
      <Compile Include="Library\PackageCache\com.unity.scriptablebuildpipeline@1.20.2\Editor\WriteTypes\SceneRawWriteOperation.cs" />
+     <Folder Include="Library\PackageCache\com.unity.scriptablebuildpipeline@1.20.2\Editor\Shared" />
+     <Folder Include="Library\PackageCache\com.unity.scriptablebuildpipeline@1.20.2\Editor\Utilities\USerializeTools" />
+     <Folder Include="Library\PackageCache\com.unity.scriptablebuildpipeline@1.20.2\Editor\Injector" />
+     <Folder Include="Library\PackageCache\com.unity.scriptablebuildpipeline@1.20.2\Editor\Tasks" />
+     <Folder Include="Library\PackageCache\com.unity.scriptablebuildpipeline@1.20.2\Editor\Profiler" />
      <None Include="Library\PackageCache\com.unity.scriptablebuildpipeline@1.20.2\Editor\Unity.ScriptableBuildPipeline.Editor.asmdef" />
+     <Folder Include="Library\PackageCache\com.unity.scriptablebuildpipeline@1.20.2\Editor\Interfaces" />
+     <Folder Include="Library\PackageCache\com.unity.scriptablebuildpipeline@1.20.2\Editor\WriteTypes" />
+     <Folder Include="Library\PackageCache\com.unity.scriptablebuildpipeline@1.20.2\Editor\Utilities" />
+     <Folder Include="Library\PackageCache\com.unity.scriptablebuildpipeline@1.20.2\Editor" />
+     <Folder Include="Library\PackageCache\com.unity.scriptablebuildpipeline@1.20.2\Editor\Utilities\USerialize" />
      <Reference Include="UnityEngine">
      <HintPath>C:\Program Files\Unity\2019.4.40f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
      </Reference>
@@ -339,6 +349,15 @@
      </Reference>
      <Reference Include="Newtonsoft.Json">
      <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example2-Unity Hybrid-Survival\Library\PackageCache\com.unity.nuget.newtonsoft-json@3.0.2\Runtime\Newtonsoft.Json.dll</HintPath>
+     </Reference>
+     <Reference Include="System.Buffers">
+     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example2-Unity Hybrid-Survival\Library\PackageCache\org.nuget.system.buffers@4.5.1\System.Buffers.dll</HintPath>
+     </Reference>
+     <Reference Include="System.Memory">
+     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example2-Unity Hybrid-Survival\Library\PackageCache\org.nuget.system.memory@4.5.5\System.Memory.dll</HintPath>
+     </Reference>
+     <Reference Include="System.Numerics.Vectors">
+     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example2-Unity Hybrid-Survival\Library\PackageCache\org.nuget.system.numerics.vectors@4.4.0\System.Numerics.Vectors.dll</HintPath>
      </Reference>
      <Reference Include="System.Runtime.CompilerServices.Unsafe">
      <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example2-Unity Hybrid-Survival\Library\PackageCache\org.nuget.system.runtime.compilerservices.unsafe@6.0.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>

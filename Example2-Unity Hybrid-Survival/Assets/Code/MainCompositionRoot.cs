@@ -74,7 +74,7 @@ namespace Svelto.ECS.Example.Survive
         ///     Where all the logic lies. Engines operates on Entity Components
         ///     - IEntityComponent:
         ///     It's an Entity Component which can be used with Pure ECS
-        ///     - IEntityComponent:
+        ///     - IEntityViewComponent:
         ///     structs implementing this are used to wrap Objects that come from OOP libraries. You will never use it unless
         ///     you are forced to mix your ECS code with OOP code because of external libraries or platforms. These special
         ///     "Hybrid" component can hold only interfaces

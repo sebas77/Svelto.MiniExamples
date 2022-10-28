@@ -114,6 +114,12 @@ namespace Svelto.DataStructures
         {
             _dictionary.FastClear();
         }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Recycle()
+        {
+            _dictionary.FastClear();
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool ContainsKey(TKey key)
