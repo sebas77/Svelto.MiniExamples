@@ -110,7 +110,7 @@ namespace Svelto.ECS.Example.Survive
             FasterList<IStepEngine> orderedEngines = new FasterList<IStepEngine>();
             FasterList<IStepEngine> unorderedEngines = new FasterList<IStepEngine>();
 
-            var unsortedDamageEngines = DamageLayerSetup(entityStreamConsumerFactory, _enginesRoot);
+            var unsortedDamageEngines = DamageContextLayer.DamageLayerSetup(entityStreamConsumerFactory, _enginesRoot);
 
             CameraLayerContext.CameraLayerSetup(time, unorderedEngines, _enginesRoot);
 
@@ -136,7 +136,7 @@ namespace Svelto.ECS.Example.Survive
 
             HudLayerContext.HudLayerSetup(entityStreamConsumerFactory, unorderedEngines, orderedEngines, _enginesRoot);
 
-//group engines for order of execution
+//group engines for order of execution. Ordering and Ticking is 100% user responsibility. This is just one of the possible way to achieve the result desired
             var unsortedEngines = new SurvivalUnsortedEnginesGroup(unorderedEngines);
 
             orderedEngines.Add(unsortedEngines);
@@ -150,22 +150,6 @@ namespace Svelto.ECS.Example.Survive
             CoroutineRunner.Run(new PlayerFactory(gameObjectResourceManager, entityFactory).SpawnPlayer());
 
             BuildGUIEntitiesFromScene(contextHolder, entityFactory);
-        }
-
-        static DamageUnsortedEngines DamageLayerSetup(IEntityStreamConsumerFactory entityStreamConsumerFactory, EnginesRoot enginesRoot)
-        {
-            //damage engines
-            var applyDamageEngine = new ApplyDamageToDamageableEntitiesEngine(entityStreamConsumerFactory);
-            var deathEngine = new DispatchKilledEntitiesEngine();
-            var damageSoundEngine = new DamageSoundEngine(entityStreamConsumerFactory);
-
-            enginesRoot.AddEngine(applyDamageEngine);
-            enginesRoot.AddEngine(deathEngine);
-            enginesRoot.AddEngine(damageSoundEngine);
-
-            var unsortedDamageEngines = new DamageUnsortedEngines(
-                new FasterList<IStepEngine>(applyDamageEngine, damageSoundEngine, deathEngine));
-            return unsortedDamageEngines;
         }
 
         /// <summary>

@@ -42,6 +42,7 @@
   </PropertyGroup>
   <ItemGroup>
      <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\ApplyDamageToDamageableEntitiesEngine.cs" />
+     <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\DamageContextLayer.cs" />
      <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\DamageInfo.cs" />
      <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\DamageSoundEngine.cs" />
      <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\DamageSoundEntityComponent.cs" />
