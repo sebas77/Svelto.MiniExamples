@@ -4,7 +4,8 @@ namespace Svelto.ECS.Example.Survive.Damage
 {
     public static class DamageContextLayer
     {
-        public static DamageUnsortedEngines DamageLayerSetup(IEntityStreamConsumerFactory entityStreamConsumerFactory, EnginesRoot enginesRoot)
+        public static void DamageLayerSetup(IEntityStreamConsumerFactory entityStreamConsumerFactory,
+            EnginesRoot enginesRoot, FasterList<IStepEngine> orderedEngines)
         {
             //damage engines
             var applyDamageEngine = new ApplyDamageToDamageableEntitiesEngine(entityStreamConsumerFactory);
@@ -17,7 +18,8 @@ namespace Svelto.ECS.Example.Survive.Damage
 
             var unsortedDamageEngines = new DamageUnsortedEngines(
                 new FasterList<IStepEngine>(applyDamageEngine, damageSoundEngine, deathEngine));
-            return unsortedDamageEngines;
+
+            orderedEngines.Add(unsortedDamageEngines);
         }
     }
 }

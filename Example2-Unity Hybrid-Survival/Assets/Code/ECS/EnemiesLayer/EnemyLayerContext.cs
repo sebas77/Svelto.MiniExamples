@@ -1,6 +1,5 @@
 ﻿using Svelto.DataStructures;
 using Svelto.ECS.Example.Survive.ResourceManager;
-using Svelto.ECS.Schedulers.Unity;
 
 namespace Svelto.ECS.Example.Survive.Enemies
 {
@@ -8,8 +7,8 @@ namespace Svelto.ECS.Example.Survive.Enemies
     {
         public static void EnemyLayerSetup(GameObjectFactory gameObjectFactory, IEntityFactory entityFactory,
             IEntityStreamConsumerFactory entityStreamConsumerFactory, ITime time, IEntityFunctions entityFunctions,
-            UnityEntitiesSubmissionScheduler unityEntitySubmissionScheduler, FasterList<IStepEngine> unorderedEngines,
-            FasterList<IStepEngine> orderedEngines, EnginesRoot enginesRoot)
+            FasterList<IStepEngine> unorderedEngines, FasterList<IStepEngine> orderedEngines,
+            WaitForSubmissionEnumerator waitForSubmissionEnumerator, EnginesRoot enginesRoot)
         {
             //Factory is one of the few OOP patterns that work very well with ECS. Its use is highly encouraged
             var enemyFactory = new EnemyFactory(gameObjectFactory, entityFactory);
@@ -24,7 +23,7 @@ namespace Svelto.ECS.Example.Survive.Enemies
                 entityFunctions,
                 entityStreamConsumerFactory,
                 time,
-                new WaitForSubmissionEnumerator(unityEntitySubmissionScheduler));
+                waitForSubmissionEnumerator);
 
 //enemy engines
             enginesRoot.AddEngine(enemySpawnerEngine);

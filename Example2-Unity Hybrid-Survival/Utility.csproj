@@ -41,21 +41,21 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
-     <Compile Include="Assets\Code\Others\UtilityLayer\CoroutineRunner.cs" />
-     <Compile Include="Assets\Code\Others\UtilityLayer\CoroutineRunnerMB.cs" />
-     <Compile Include="Assets\Code\Others\UtilityLayer\DataSources\EnemyData.cs" />
-     <Compile Include="Assets\Code\Others\UtilityLayer\DataSources\JSonEnemyAttackData.cs" />
-     <Compile Include="Assets\Code\Others\UtilityLayer\DataSources\JSonEnemySpawnData.cs" />
-     <Compile Include="Assets\Code\Others\UtilityLayer\DataSources\JsonHelper.cs" />
-     <Compile Include="Assets\Code\Others\UtilityLayer\DataSources\PlayerTargetType.cs" />
-     <Compile Include="Assets\Code\Others\UtilityLayer\DataSources\SpawningData.cs" />
-     <Compile Include="Assets\Code\Others\UtilityLayer\EntityReferenceHolderImplementor.cs" />
-     <Compile Include="Assets\Code\Others\UtilityLayer\ITime.cs" />
-     <Compile Include="Assets\Code\Others\UtilityLayer\RayCaster.cs" />
-     <Compile Include="Assets\Code\Others\UtilityLayer\WaitForSecondsEnumerator.cs" />
-     <None Include="Assets\Code\Others\UtilityLayer\Utility.asmdef" />
-     <Folder Include="Assets\Code\Others\UtilityLayer" />
-     <Folder Include="Assets\Code\Others\UtilityLayer\DataSources" />
+     <Compile Include="Assets\Code\UtilityLayer\CoroutineRunner.cs" />
+     <Compile Include="Assets\Code\UtilityLayer\CoroutineRunnerMB.cs" />
+     <Compile Include="Assets\Code\UtilityLayer\DataSources\EnemyData.cs" />
+     <Compile Include="Assets\Code\UtilityLayer\DataSources\JSonEnemyAttackData.cs" />
+     <Compile Include="Assets\Code\UtilityLayer\DataSources\JSonEnemySpawnData.cs" />
+     <Compile Include="Assets\Code\UtilityLayer\DataSources\JsonHelper.cs" />
+     <Compile Include="Assets\Code\UtilityLayer\DataSources\PlayerTargetType.cs" />
+     <Compile Include="Assets\Code\UtilityLayer\DataSources\SpawningData.cs" />
+     <Compile Include="Assets\Code\UtilityLayer\EntityReferenceHolderImplementor.cs" />
+     <Compile Include="Assets\Code\UtilityLayer\ITime.cs" />
+     <Compile Include="Assets\Code\UtilityLayer\RayCaster.cs" />
+     <Compile Include="Assets\Code\UtilityLayer\WaitForSecondsEnumerator.cs" />
+     <None Include="Assets\Code\UtilityLayer\Utility.asmdef" />
+     <Folder Include="Assets\Code\UtilityLayer" />
+     <Folder Include="Assets\Code\UtilityLayer\DataSources" />
      <Reference Include="UnityEngine">
      <HintPath>C:\Program Files\Unity\2019.4.40f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
      </Reference>

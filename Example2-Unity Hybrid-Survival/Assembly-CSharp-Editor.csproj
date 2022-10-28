@@ -714,10 +714,6 @@
       <Project>{071fa4f6-95c0-6054-c479-b9199d4dc847}</Project>
       <Name>UnityEditor.UI</Name>
     </ProjectReference>
-    <ProjectReference Include="Utility.csproj">
-      <Project>{61523958-85ca-4e2e-e8e7-aea8b6c3f736}</Project>
-      <Name>Utility</Name>
-    </ProjectReference>
     <ProjectReference Include="EnemiesLayer.csproj">
       <Project>{5ab236e2-05ce-c020-ed35-80dc1c78838f}</Project>
       <Name>EnemiesLayer</Name>
@@ -729,6 +725,10 @@
     <ProjectReference Include="DamageableEntityLayers.csproj">
       <Project>{5303ef99-64f3-a3a6-fbce-286aa0ed9a52}</Project>
       <Name>DamageableEntityLayers</Name>
+    </ProjectReference>
+    <ProjectReference Include="Utility.csproj">
+      <Project>{61523958-85ca-4e2e-e8e7-aea8b6c3f736}</Project>
+      <Name>Utility</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

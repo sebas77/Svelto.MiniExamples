@@ -8,6 +8,7 @@ using Svelto.ECS.Example.Survive.Player;
 using Svelto.ECS.Example.Survive.HUD;
 using Svelto.ECS.Example.Survive.ResourceManager;
 using Svelto.ECS.Extensions.Unity;
+using Svelto.ECS.Schedulers;
 using Svelto.ECS.Schedulers.Unity;
 using UnityEngine;
 
@@ -84,9 +85,10 @@ namespace Svelto.ECS.Example.Survive
         /// </summary>
         void CompositionRoot(UnityContext contextHolder)
         {
-//the UnitySubmissionEntityViewScheduler is the scheduler that is used by the EnginesRoot to know
-//when to submit the entities. Custom ones can be created for special cases.
-            var unityEntitySubmissionScheduler = new UnityEntitiesSubmissionScheduler("survival");
+//the SimpleEntitiesSubmissionScheduler is the scheduler that is used by the EnginesRoot to know
+//when to submit the entities. Custom ones can be created for special cases. This is the simplest default and it must
+//be ticked explicitly.
+            var unityEntitySubmissionScheduler = new SimpleEntitiesSubmissionScheduler();
 //The Engines Root is the core of Svelto.ECS. You shouldn't inject the EngineRoot,
 //therefore the composition root class must hold a reference or it will be garbage collected.
             _enginesRoot = new EnginesRoot(unityEntitySubmissionScheduler);
@@ -110,8 +112,8 @@ namespace Svelto.ECS.Example.Survive
             FasterList<IStepEngine> orderedEngines = new FasterList<IStepEngine>();
             FasterList<IStepEngine> unorderedEngines = new FasterList<IStepEngine>();
 
-            var unsortedDamageEngines = DamageContextLayer.DamageLayerSetup(entityStreamConsumerFactory, _enginesRoot);
-
+            DamageContextLayer.DamageLayerSetup(entityStreamConsumerFactory, _enginesRoot, orderedEngines);
+            
             CameraLayerContext.CameraLayerSetup(time, unorderedEngines, _enginesRoot);
 
             PlayerLayerContext.PlayerLayerSetup(
@@ -129,9 +131,9 @@ namespace Svelto.ECS.Example.Survive
                 entityStreamConsumerFactory,
                 time,
                 entityFunctions,
-                unityEntitySubmissionScheduler,
                 unorderedEngines,
                 orderedEngines,
+                new WaitForSubmissionEnumerator(unityEntitySubmissionScheduler),
                 _enginesRoot);
 
             HudLayerContext.HudLayerSetup(entityStreamConsumerFactory, unorderedEngines, orderedEngines, _enginesRoot);
@@ -140,14 +142,15 @@ namespace Svelto.ECS.Example.Survive
             var unsortedEngines = new SurvivalUnsortedEnginesGroup(unorderedEngines);
 
             orderedEngines.Add(unsortedEngines);
-            orderedEngines.Add(unsortedDamageEngines);
 
-            var gameEnginesGroup = new SortedEnginesGroup(orderedEngines);
+            var tickingEnginesGroup = new SortedEnginesGroup(orderedEngines);
 
 //Svelto ECS doesn't provide a ticking system, the user is responsible for it
-            CoroutineRunner.RunEveryFrame(gameEnginesGroup.Step);
+            CoroutineRunner.RunEveryFrame(tickingEnginesGroup.Step);
 //PlayerSpawner is not an engine, it could have been, but since it doesn't have an update, it's better to be a factory
             CoroutineRunner.Run(new PlayerFactory(gameObjectResourceManager, entityFactory).SpawnPlayer());
+//The user decides when to submit the last built/removed/swapped entities. In this case we use the default behaviour to submit them every frame            
+            CoroutineRunner.RunEveryFrame(unityEntitySubmissionScheduler.SubmitEntities);
 
             BuildGUIEntitiesFromScene(contextHolder, entityFactory);
         }
