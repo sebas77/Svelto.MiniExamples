@@ -46,8 +46,8 @@
      <Compile Include="Assets\Code\ECS\PlayerGunLayer\GunEntityComponent.cs" />
      <Compile Include="Assets\Code\ECS\PlayerGunLayer\PlayerGunEntityDescriptor.cs" />
      <Compile Include="Assets\Code\ECS\PlayerGunLayer\PlayerGunShootingFXsEngine.cs" />
-     <None Include="Assets\Code\ECS\PlayerGunLayer\PlayerGunLayer.asmdef" />
      <Folder Include="Assets\Code\ECS\PlayerGunLayer" />
+     <None Include="Assets\Code\ECS\PlayerGunLayer\PlayerGunLayer.asmdef" />
      <Reference Include="UnityEngine">
      <HintPath>C:\Program Files\Unity\2019.4.40f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
      </Reference>
@@ -245,15 +245,6 @@
      </Reference>
      <Reference Include="Newtonsoft.Json">
      <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example2-Unity Hybrid-Survival\Library\PackageCache\com.unity.nuget.newtonsoft-json@3.0.2\Runtime\Newtonsoft.Json.dll</HintPath>
-     </Reference>
-     <Reference Include="System.Buffers">
-     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example2-Unity Hybrid-Survival\Library\PackageCache\org.nuget.system.buffers@4.5.1\System.Buffers.dll</HintPath>
-     </Reference>
-     <Reference Include="System.Memory">
-     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example2-Unity Hybrid-Survival\Library\PackageCache\org.nuget.system.memory@4.5.5\System.Memory.dll</HintPath>
-     </Reference>
-     <Reference Include="System.Numerics.Vectors">
-     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example2-Unity Hybrid-Survival\Library\PackageCache\org.nuget.system.numerics.vectors@4.4.0\System.Numerics.Vectors.dll</HintPath>
      </Reference>
      <Reference Include="System.Runtime.CompilerServices.Unsafe">
      <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example2-Unity Hybrid-Survival\Library\PackageCache\org.nuget.system.runtime.compilerservices.unsafe@6.0.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
@@ -612,10 +603,6 @@
     <ProjectReference Include="Svelto.Common.csproj">
       <Project>{53ca5d34-0f9e-ae64-6d32-8d74a6f2e9d4}</Project>
       <Name>Svelto.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="SharedLayer.csproj">
-      <Project>{31b44fb7-fb91-b289-6f3b-8e62cb8565e2}</Project>
-      <Name>SharedLayer</Name>
     </ProjectReference>
     <ProjectReference Include="Utility.csproj">
       <Project>{61523958-85ca-4e2e-e8e7-aea8b6c3f736}</Project>

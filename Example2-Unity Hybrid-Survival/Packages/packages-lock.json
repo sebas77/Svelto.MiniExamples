@@ -5,8 +5,7 @@
       "depth": 0,
       "source": "embedded",
       "dependencies": {
-        "org.nuget.system.runtime.compilerservices.unsafe": "5.0.0",
-        "org.nuget.system.memory": "4.5.5"
+        "org.nuget.system.runtime.compilerservices.unsafe": "5.0.0"
       }
     },
     "com.sebaslab.svelto.ecs": {
@@ -122,31 +121,6 @@
         "com.unity.modules.ui": "1.0.0",
         "com.unity.modules.imgui": "1.0.0"
       }
-    },
-    "org.nuget.system.buffers": {
-      "version": "4.5.1",
-      "depth": 2,
-      "source": "registry",
-      "dependencies": {},
-      "url": "https://package.openupm.com"
-    },
-    "org.nuget.system.memory": {
-      "version": "4.5.5",
-      "depth": 1,
-      "source": "registry",
-      "dependencies": {
-        "org.nuget.system.buffers": "4.5.1",
-        "org.nuget.system.numerics.vectors": "4.4.0",
-        "org.nuget.system.runtime.compilerservices.unsafe": "4.5.3"
-      },
-      "url": "https://package.openupm.com"
-    },
-    "org.nuget.system.numerics.vectors": {
-      "version": "4.4.0",
-      "depth": 2,
-      "source": "registry",
-      "dependencies": {},
-      "url": "https://package.openupm.com"
     },
     "org.nuget.system.runtime.compilerservices.unsafe": {
       "version": "6.0.0",

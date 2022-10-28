@@ -6,7 +6,7 @@
         "AnimationLayer",
         "DamageableEntityLayers",
         "CameraLayer",
-        "SharedLayer",
+        "UnityOOPAbstractionLayer",
         "PlayerGunLayer"
     ],
     "includePlatforms": [],

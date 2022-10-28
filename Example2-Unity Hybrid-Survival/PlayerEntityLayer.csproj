@@ -255,15 +255,6 @@
      <Reference Include="Newtonsoft.Json">
      <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example2-Unity Hybrid-Survival\Library\PackageCache\com.unity.nuget.newtonsoft-json@3.0.2\Runtime\Newtonsoft.Json.dll</HintPath>
      </Reference>
-     <Reference Include="System.Buffers">
-     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example2-Unity Hybrid-Survival\Library\PackageCache\org.nuget.system.buffers@4.5.1\System.Buffers.dll</HintPath>
-     </Reference>
-     <Reference Include="System.Memory">
-     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example2-Unity Hybrid-Survival\Library\PackageCache\org.nuget.system.memory@4.5.5\System.Memory.dll</HintPath>
-     </Reference>
-     <Reference Include="System.Numerics.Vectors">
-     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example2-Unity Hybrid-Survival\Library\PackageCache\org.nuget.system.numerics.vectors@4.4.0\System.Numerics.Vectors.dll</HintPath>
-     </Reference>
      <Reference Include="System.Runtime.CompilerServices.Unsafe">
      <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example2-Unity Hybrid-Survival\Library\PackageCache\org.nuget.system.runtime.compilerservices.unsafe@6.0.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
      </Reference>
@@ -634,9 +625,9 @@
       <Project>{244bd38c-fe73-9b87-5070-1d7b3f94730c}</Project>
       <Name>CameraLayer</Name>
     </ProjectReference>
-    <ProjectReference Include="SharedLayer.csproj">
-      <Project>{31b44fb7-fb91-b289-6f3b-8e62cb8565e2}</Project>
-      <Name>SharedLayer</Name>
+    <ProjectReference Include="UnityOOPAbstractionLayer.csproj">
+      <Project>{4acf9cc6-6765-a5db-89c1-c202f09fdf16}</Project>
+      <Name>UnityOOPAbstractionLayer</Name>
     </ProjectReference>
     <ProjectReference Include="PlayerGunLayer.csproj">
       <Project>{6432b4c6-45ae-c615-a641-a3cf8bf8e7e0}</Project>

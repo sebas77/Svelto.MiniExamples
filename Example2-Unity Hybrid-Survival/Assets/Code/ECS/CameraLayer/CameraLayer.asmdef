@@ -3,7 +3,7 @@
     "references": [
         "Svelto.Common",
         "Svelto.ECS",
-        "SharedLayer"
+        "UnityOOPAbstractionLayer"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

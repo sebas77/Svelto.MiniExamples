@@ -97,7 +97,6 @@
      <Folder Include="Library\PackageCache\com.unity.modules.imgui@1.0.0" />
      <None Include="Library\PackageCache\com.unity.modules.unitywebrequesttexture@1.0.0\package.json" />
      <None Include="Library\PackageCache\com.unity.modules.ai@1.0.0\package.json" />
-     <Folder Include="Library\PackageCache\org.nuget.system.memory@4.5.5" />
      <Folder Include="Library\PackageCache\com.unity.modules.animation@1.0.0" />
      <Folder Include="Library\PackageCache\com.unity.sysroot@1.0.0\Tests" />
      <None Include="Library\PackageCache\com.unity.ugui@1.0.0\package.json" />
@@ -118,7 +117,6 @@
      <None Include="Library\PackageCache\com.unity.modules.tilemap@1.0.0\package.json" />
      <Folder Include="Library\PackageCache\com.unity.modules.assetbundle@1.0.0" />
      <Folder Include="Library\PackageCache\com.unity.ext.nunit@1.0.6\net35\unity-custom" />
-     <None Include="Library\PackageCache\org.nuget.system.memory@4.5.5\System.Memory.xml" />
      <Folder Include="Assets\Shaders" />
      <None Include="Library\PackageCache\com.unity.toolchain.win-x86_64-linux-x86_64@1.0.0\package.json" />
      <None Include="Library\PackageCache\com.unity.ide.visualstudio@2.0.15\ValidationConfig.json" />
@@ -126,10 +124,8 @@
      <None Include="Library\PackageCache\com.unity.modules.terrainphysics@1.0.0\package.json" />
      <None Include="Library\PackageCache\com.unity.mathematics@1.2.6\package.json" />
      <None Include="Library\PackageCache\com.unity.scriptablebuildpipeline@1.20.2\package.json" />
-     <None Include="Library\PackageCache\org.nuget.system.buffers@4.5.1\package.json" />
      <Folder Include="Assets\Code\Others" />
      <None Include="Library\PackageCache\com.unity.sysroot@1.0.0\package.json" />
-     <Folder Include="Library\PackageCache\org.nuget.system.numerics.vectors@4.4.0" />
      <Folder Include="Library\PackageCache\com.unity.nuget.newtonsoft-json@3.0.2\Runtime\AOT" />
      <Folder Include="Library\PackageCache\com.unity.modules.screencapture@1.0.0" />
      <Folder Include="Assets\Code\ECS\EntityDescriptors" />
@@ -157,10 +153,8 @@
      <Folder Include="Library\PackageCache\com.unity.modules.physics@1.0.0" />
      <Folder Include="Assets\Fonts\LuckiestGuy" />
      <Folder Include="Library\PackageCache\com.unity.modules.vr@1.0.0" />
-     <None Include="Library\PackageCache\org.nuget.system.numerics.vectors@4.4.0\package.json" />
      <Folder Include="Library\PackageCache\com.unity.sysroot.linux-x86_64@1.0.0\Tests" />
      <Folder Include="Library\PackageCache\com.unity.modules.physics2d@1.0.0" />
-     <Folder Include="Library\PackageCache\org.nuget.system.buffers@4.5.1" />
      <Folder Include="Library\PackageCache\com.unity.toolchain.win-x86_64-linux-x86_64@1.0.0\Tests" />
      <Folder Include="Assets\Scenes" />
      <None Include="Library\PackageCache\com.unity.modules.particlesystem@1.0.0\package.json" />
@@ -213,7 +207,6 @@
      <Folder Include="Assets\Code\ECS\EntityViewComponents\Implementors\GUI" />
      <Folder Include="Library\PackageCache\com.unity.modules.vehicles@1.0.0" />
      <None Include="Library\PackageCache\com.unity.modules.xr@1.0.0\package.json" />
-     <None Include="Library\PackageCache\org.nuget.system.numerics.vectors@4.4.0\System.Numerics.Vectors.xml" />
      <Folder Include="Assets\Models\Environment" />
      <Folder Include="Library\PackageCache\com.unity.modules.umbra@1.0.0" />
      <Folder Include="Library\PackageCache\com.unity.modules.unitywebrequestwww@1.0.0" />
@@ -236,11 +229,9 @@
      <Folder Include="Library\PackageCache\com.unity.modules.terrain@1.0.0" />
      <None Include="Library\PackageCache\com.unity.modules.animation@1.0.0\package.json" />
      <Folder Include="Library\PackageCache\com.unity.nuget.newtonsoft-json@3.0.2" />
-     <None Include="Library\PackageCache\org.nuget.system.memory@4.5.5\package.json" />
      <None Include="Assets\Json\prefabs.json" />
      <Folder Include="Assets\Code\Legacy\Implementors" />
      <Folder Include="Library\PackageCache\com.unity.nuget.newtonsoft-json@3.0.2\Runtime" />
-     <None Include="Library\PackageCache\org.nuget.system.buffers@4.5.1\System.Buffers.xml" />
      <None Include="Assets\Json\EnemyAttackData.json" />
      <None Include="Library\PackageCache\com.unity.modules.unitywebrequest@1.0.0\package.json" />
      <Folder Include="Assets\Code\Others\DataSources" />
@@ -434,15 +425,6 @@
      </Reference>
      <Reference Include="Newtonsoft.Json">
      <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example2-Unity Hybrid-Survival\Library\PackageCache\com.unity.nuget.newtonsoft-json@3.0.2\Runtime\Newtonsoft.Json.dll</HintPath>
-     </Reference>
-     <Reference Include="System.Buffers">
-     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example2-Unity Hybrid-Survival\Library\PackageCache\org.nuget.system.buffers@4.5.1\System.Buffers.dll</HintPath>
-     </Reference>
-     <Reference Include="System.Memory">
-     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example2-Unity Hybrid-Survival\Library\PackageCache\org.nuget.system.memory@4.5.5\System.Memory.dll</HintPath>
-     </Reference>
-     <Reference Include="System.Numerics.Vectors">
-     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example2-Unity Hybrid-Survival\Library\PackageCache\org.nuget.system.numerics.vectors@4.4.0\System.Numerics.Vectors.dll</HintPath>
      </Reference>
      <Reference Include="System.Runtime.CompilerServices.Unsafe">
      <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example2-Unity Hybrid-Survival\Library\PackageCache\org.nuget.system.runtime.compilerservices.unsafe@6.0.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
@@ -794,6 +776,10 @@
      </Reference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="DamageableEntityLayers.csproj">
+      <Project>{5303ef99-64f3-a3a6-fbce-286aa0ed9a52}</Project>
+      <Name>DamageableEntityLayers</Name>
+    </ProjectReference>
     <ProjectReference Include="UnityEditor.CacheServer.csproj">
       <Project>{e10b0fe7-3633-f710-70a4-4ed3149dee79}</Project>
       <Name>UnityEditor.CacheServer</Name>
@@ -802,29 +788,17 @@
       <Project>{21703ca7-598c-e476-261d-a39cdf0e045b}</Project>
       <Name>Unity.Toolchain.Win-x86_64-Linux-x86_64</Name>
     </ProjectReference>
-    <ProjectReference Include="SharedLayer.csproj">
-      <Project>{31b44fb7-fb91-b289-6f3b-8e62cb8565e2}</Project>
-      <Name>SharedLayer</Name>
-    </ProjectReference>
-    <ProjectReference Include="PlayerGunLayer.csproj">
-      <Project>{6432b4c6-45ae-c615-a641-a3cf8bf8e7e0}</Project>
-      <Name>PlayerGunLayer</Name>
-    </ProjectReference>
     <ProjectReference Include="Unity.ScriptableBuildPipeline.Editor.csproj">
       <Project>{fc3e0f5a-ff0e-0a6d-b67a-f24cfb2a602b}</Project>
       <Name>Unity.ScriptableBuildPipeline.Editor</Name>
     </ProjectReference>
-    <ProjectReference Include="AudioLayer.csproj">
-      <Project>{b0248dd3-7f6e-ab2b-974b-6eb71fa3bce7}</Project>
-      <Name>AudioLayer</Name>
-    </ProjectReference>
-    <ProjectReference Include="AnimationLayer.csproj">
-      <Project>{59e9f197-bda3-ff91-2f6b-e150b462fed8}</Project>
-      <Name>AnimationLayer</Name>
-    </ProjectReference>
     <ProjectReference Include="Svelto.ECS.csproj">
       <Project>{8d2eb115-c2e2-3719-ca04-08d3c302a5a1}</Project>
       <Name>Svelto.ECS</Name>
+    </ProjectReference>
+    <ProjectReference Include="UnityOOPAbstractionLayer.csproj">
+      <Project>{4acf9cc6-6765-a5db-89c1-c202f09fdf16}</Project>
+      <Name>UnityOOPAbstractionLayer</Name>
     </ProjectReference>
     <ProjectReference Include="Svelto.Common.csproj">
       <Project>{53ca5d34-0f9e-ae64-6d32-8d74a6f2e9d4}</Project>
@@ -838,10 +812,6 @@
       <Project>{716ea4f8-08d0-1229-8ecb-bd1945d5e600}</Project>
       <Name>Unity.ResourceManager</Name>
     </ProjectReference>
-    <ProjectReference Include="Utility.csproj">
-      <Project>{61523958-85ca-4e2e-e8e7-aea8b6c3f736}</Project>
-      <Name>Utility</Name>
-    </ProjectReference>
     <ProjectReference Include="UnityEngine.UI.csproj">
       <Project>{3e7c1439-e1cb-04d6-7ab4-616865f0e651}</Project>
       <Name>UnityEngine.UI</Name>
@@ -854,21 +824,13 @@
       <Project>{8a6f1830-974a-3b6d-fc46-278716c722f5}</Project>
       <Name>Unity.Rider.Editor</Name>
     </ProjectReference>
-    <ProjectReference Include="DamageableEntityLayers.csproj">
-      <Project>{5303ef99-64f3-a3a6-fbce-286aa0ed9a52}</Project>
-      <Name>DamageableEntityLayers</Name>
-    </ProjectReference>
-    <ProjectReference Include="CameraLayer.csproj">
-      <Project>{244bd38c-fe73-9b87-5070-1d7b3f94730c}</Project>
-      <Name>CameraLayer</Name>
-    </ProjectReference>
     <ProjectReference Include="Unity.Mathematics.csproj">
       <Project>{7a573d4a-d782-95ae-d4ec-cc8dd9df7288}</Project>
       <Name>Unity.Mathematics</Name>
     </ProjectReference>
-    <ProjectReference Include="PlayerEntityLayer.csproj">
-      <Project>{305cd92c-d135-5769-0803-174343592e6c}</Project>
-      <Name>PlayerEntityLayer</Name>
+    <ProjectReference Include="CameraLayer.csproj">
+      <Project>{244bd38c-fe73-9b87-5070-1d7b3f94730c}</Project>
+      <Name>CameraLayer</Name>
     </ProjectReference>
     <ProjectReference Include="Unity.Sysroot.Linux_x86_64.csproj">
       <Project>{eec2d969-eb02-0972-5671-3cc3d6734d4b}</Project>
@@ -897,6 +859,26 @@
     <ProjectReference Include="UnityEditor.UI.csproj">
       <Project>{071fa4f6-95c0-6054-c479-b9199d4dc847}</Project>
       <Name>UnityEditor.UI</Name>
+    </ProjectReference>
+    <ProjectReference Include="AudioLayer.csproj">
+      <Project>{b0248dd3-7f6e-ab2b-974b-6eb71fa3bce7}</Project>
+      <Name>AudioLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="PlayerGunLayer.csproj">
+      <Project>{6432b4c6-45ae-c615-a641-a3cf8bf8e7e0}</Project>
+      <Name>PlayerGunLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="Utility.csproj">
+      <Project>{61523958-85ca-4e2e-e8e7-aea8b6c3f736}</Project>
+      <Name>Utility</Name>
+    </ProjectReference>
+    <ProjectReference Include="AnimationLayer.csproj">
+      <Project>{59e9f197-bda3-ff91-2f6b-e150b462fed8}</Project>
+      <Name>AnimationLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="PlayerEntityLayer.csproj">
+      <Project>{305cd92c-d135-5769-0803-174343592e6c}</Project>
+      <Name>PlayerEntityLayer</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

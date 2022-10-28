@@ -1,5 +1,5 @@
 {
-    "name": "SharedLayer",
+    "name": "UnityOOPAbstractionLayer",
     "references": [
         "Svelto.ECS",
         "Unity.Addressables",
