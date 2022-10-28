@@ -1,4 +1,4 @@
-namespace Svelto.ECS.Example.Survive.HUD
+namespace Svelto.ECS.Example.Survive.Damage
 {
     public struct ScoreValueComponent : IEntityComponent
     {

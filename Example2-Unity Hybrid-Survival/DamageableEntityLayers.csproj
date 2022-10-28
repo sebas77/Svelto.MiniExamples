@@ -54,7 +54,7 @@
      <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\Groups.cs" />
      <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\HealthComponent.cs" />
      <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\ScoreValueEntityComponent.cs" />
-     <None Include="Assets\Code\ECS\DamageableEntitiesLayer\DamageableEntityLayers.asmdef" />
+     <None Include="Assets\Code\ECS\DamageableEntitiesLayer\DamageableEntityLayer.asmdef" />
      <Folder Include="Assets\Code\ECS\DamageableEntitiesLayer" />
      <Reference Include="UnityEngine">
      <HintPath>C:\Program Files\Unity\2019.4.40f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>

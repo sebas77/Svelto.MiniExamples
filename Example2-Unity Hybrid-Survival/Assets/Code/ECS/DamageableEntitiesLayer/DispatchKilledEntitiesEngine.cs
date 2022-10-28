@@ -1,4 +1,4 @@
-﻿namespace Svelto.ECS.Example.Survive.Characters
+﻿namespace Svelto.ECS.Example.Survive.Damage
 {
     /// <summary>
     /// What happens when the health reach 0? The fact the entity "dies" is one consequence. I could have merged
@@ -6,7 +6,7 @@
     /// happening may not have to happen in the same code. This engine is also taking the responsibility of deciding
     /// if the entity must die or not and will communicate it through the use of the Publisher/Consumer pattern.
     /// </summary>
-    public class DispatchKilledEntitiesEngine : IQueryingEntitiesEngine, IStepEngine
+    public class  DispatchKilledEntitiesEngine : IQueryingEntitiesEngine, IStepEngine
     {
         public void Ready() { }
 

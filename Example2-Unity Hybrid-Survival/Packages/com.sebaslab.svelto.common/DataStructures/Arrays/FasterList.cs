@@ -33,7 +33,7 @@ namespace Svelto.DataStructures
         {
         }
 
-        public FasterList(T[] collection)
+        public FasterList(params T[] collection)
         {
             _buffer = new T[collection.Length];
 

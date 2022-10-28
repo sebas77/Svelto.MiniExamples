@@ -50,6 +50,7 @@
      <Compile Include="Assets\Code\ECS\EnemiesLayer\EnemyEnginesNames.cs" />
      <Compile Include="Assets\Code\ECS\EnemiesLayer\EnemyFactory.cs" />
      <Compile Include="Assets\Code\ECS\EnemiesLayer\EnemyGroups.cs" />
+     <Compile Include="Assets\Code\ECS\EnemiesLayer\EnemyLayerContext.cs" />
      <Compile Include="Assets\Code\ECS\EnemiesLayer\Entities\EnemyAttackComponent.cs" />
      <Compile Include="Assets\Code\ECS\EnemiesLayer\Entities\EnemyComponent.cs" />
      <Compile Include="Assets\Code\ECS\EnemiesLayer\Entities\EnemyComponentInterfaces.cs" />
@@ -60,6 +61,8 @@
      <Compile Include="Assets\Code\ECS\EnemiesLayer\Entities\EnemyTriggerImplementor.cs" />
      <Compile Include="Assets\Code\ECS\EnemiesLayer\Entities\EnemyVFXImplementor.cs" />
      <Compile Include="Assets\Code\ECS\EnemiesLayer\Entities\ILayerComponent.cs" />
+     <Compile Include="Assets\Code\ECS\EnemiesLayer\Entities\IPositionComponent.cs" />
+     <Compile Include="Assets\Code\ECS\EnemiesLayer\Entities\ITransformComponent.cs" />
      <None Include="Assets\Code\ECS\EnemiesLayer\EnemiesLayer.asmdef" />
      <Folder Include="Assets\Code\ECS\EnemiesLayer\EnemyEngines" />
      <Folder Include="Assets\Code\ECS\EnemiesLayer" />

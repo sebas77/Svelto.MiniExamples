@@ -1,7 +1,8 @@
 ﻿using System.Collections;
 using Svelto.Common;
 using Svelto.DataStructures;
-using Svelto.ECS.Example.Survive.Enemies.Svelto.ECS.Example.Survive.Enemies;
+using Svelto.ECS.Example.Survive.Damage;
+using Svelto.ECS.Example.Survive.Enemies;
 using UnityEngine;
 
 namespace Svelto.ECS.Example.Survive.Enemies

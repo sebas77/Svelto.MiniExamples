@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EnemiesLayer", "EnemiesLaye
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AudioLayer", "AudioLayer.csproj", "{b0248dd3-7f6e-ab2b-974b-6eb71fa3bce7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HudLayer", "HudLayer.csproj", "{55af3f68-33bd-cdcf-d090-ab0f1db9b6d2}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnityOOPAbstractionLayer", "UnityOOPAbstractionLayer.csproj", "{4acf9cc6-6765-a5db-89c1-c202f09fdf16}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnimationLayer", "AnimationLayer.csproj", "{59e9f197-bda3-ff91-2f6b-e150b462fed8}"
@@ -120,6 +122,8 @@ Global
 		{5ab236e2-05ce-c020-ed35-80dc1c78838f}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{b0248dd3-7f6e-ab2b-974b-6eb71fa3bce7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{b0248dd3-7f6e-ab2b-974b-6eb71fa3bce7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55af3f68-33bd-cdcf-d090-ab0f1db9b6d2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55af3f68-33bd-cdcf-d090-ab0f1db9b6d2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4acf9cc6-6765-a5db-89c1-c202f09fdf16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4acf9cc6-6765-a5db-89c1-c202f09fdf16}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{59e9f197-bda3-ff91-2f6b-e150b462fed8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU

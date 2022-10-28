@@ -1,7 +1,7 @@
 using Svelto.Common;
 using Svelto.DataStructures;
 
-namespace Svelto.ECS.Example.Survive
+namespace Svelto.ECS.Example.Survive.Damage
 {
     public enum DamageEnginesNames
     {

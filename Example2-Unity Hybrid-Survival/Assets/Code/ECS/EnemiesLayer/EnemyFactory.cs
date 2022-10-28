@@ -1,8 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using Svelto.ECS.Example.Survive.Damage;
 using Svelto.ECS.Example.Survive.Enemies;
-using Svelto.ECS.Example.Survive.Enemies.Svelto.ECS.Example.Survive.Enemies;
-using Svelto.ECS.Example.Survive.HUD;
 using Svelto.ECS.Example.Survive.ResourceManager;
 using Svelto.ECS.Extensions.Unity;
 using Svelto.ECS.Hybrid;

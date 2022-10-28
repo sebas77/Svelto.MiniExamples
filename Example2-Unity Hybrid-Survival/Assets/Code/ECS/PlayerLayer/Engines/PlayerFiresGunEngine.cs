@@ -1,5 +1,6 @@
 using System.Collections;
 using Svelto.Common;
+using Svelto.ECS.Example.Survive.Damage;
 using UnityEngine;
 
 namespace Svelto.ECS.Example.Survive.Player.Gun

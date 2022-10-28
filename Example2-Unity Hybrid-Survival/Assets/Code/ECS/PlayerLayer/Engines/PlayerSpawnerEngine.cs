@@ -1,13 +1,14 @@
 using System.Collections;
 using Code.ECS.Shared;
 using Svelto.ECS.Example.Survive.Camera;
+using Svelto.ECS.Example.Survive.Damage;
 using Svelto.ECS.Example.Survive.Player.Gun;
 
 namespace Svelto.ECS.Example.Survive.Player
 {
-    public class PlayerSpawner
+    public class PlayerFactory
     {
-        public PlayerSpawner(GameObjectResourceManager gameObjectResourceManager, IEntityFactory entityFactory)
+        public PlayerFactory(GameObjectResourceManager gameObjectResourceManager, IEntityFactory entityFactory)
         {
             _gameObjectResourceManager = gameObjectResourceManager;
             _entityFactory             = entityFactory;

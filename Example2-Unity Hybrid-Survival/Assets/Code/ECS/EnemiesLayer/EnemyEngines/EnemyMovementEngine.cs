@@ -1,5 +1,5 @@
 using System.Collections;
-using Svelto.ECS.Example.Survive.Enemies.Svelto.ECS.Example.Survive.Enemies;
+using Svelto.ECS.Example.Survive.Enemies;
 
 namespace Svelto.ECS.Example.Survive.Enemies
 {

@@ -1,4 +1,5 @@
 using Svelto.Common;
+using Svelto.ECS.Example.Survive.Damage;
 using Svelto.ECS.Example.Survive.Player;
 using Svelto.ECS.Example.Survive.Player.Gun;
 

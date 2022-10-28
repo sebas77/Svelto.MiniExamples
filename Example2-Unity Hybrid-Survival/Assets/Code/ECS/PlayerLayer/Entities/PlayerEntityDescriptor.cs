@@ -1,4 +1,6 @@
 ﻿using Svelto.ECS.Example.Survive.Camera;
+using Svelto.ECS.Example.Survive.Damage;
+
 //using Svelto.ECS.Example.Survive.Enemies;
 
 namespace Svelto.ECS.Example.Survive.Player

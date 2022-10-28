@@ -1,5 +1,3 @@
-using System;
-using Svelto.ECS.Example.Survive.Player;
 
 namespace Svelto.ECS.Example.Survive
 {

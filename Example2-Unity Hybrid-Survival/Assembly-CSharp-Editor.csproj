@@ -618,10 +618,6 @@
       <Project>{0430568b-37f1-a040-1d86-266034325e5f}</Project>
       <Name>UnityEngine.TestRunner</Name>
     </ProjectReference>
-    <ProjectReference Include="DamageableEntityLayers.csproj">
-      <Project>{5303ef99-64f3-a3a6-fbce-286aa0ed9a52}</Project>
-      <Name>DamageableEntityLayers</Name>
-    </ProjectReference>
     <ProjectReference Include="UnityEditor.CacheServer.csproj">
       <Project>{e10b0fe7-3633-f710-70a4-4ed3149dee79}</Project>
       <Name>UnityEditor.CacheServer</Name>
@@ -725,6 +721,14 @@
     <ProjectReference Include="EnemiesLayer.csproj">
       <Project>{5ab236e2-05ce-c020-ed35-80dc1c78838f}</Project>
       <Name>EnemiesLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="HudLayer.csproj">
+      <Project>{55af3f68-33bd-cdcf-d090-ab0f1db9b6d2}</Project>
+      <Name>HudLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="DamageableEntityLayers.csproj">
+      <Project>{5303ef99-64f3-a3a6-fbce-286aa0ed9a52}</Project>
+      <Name>DamageableEntityLayers</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

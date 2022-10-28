@@ -42,19 +42,6 @@
   </PropertyGroup>
   <ItemGroup>
      <Compile Include="Assets\Code\DBC.cs" />
-     <Compile Include="Assets\Code\ECS\GameLayer\DamageHUDImplementor.cs" />
-     <Compile Include="Assets\Code\ECS\GameLayer\ECSGroups.cs" />
-     <Compile Include="Assets\Code\ECS\GameLayer\EnginesNames.cs" />
-     <Compile Include="Assets\Code\ECS\GameLayer\GUIComponentInterfaces.cs" />
-     <Compile Include="Assets\Code\ECS\GameLayer\HUDEntityViewComponent.cs" />
-     <Compile Include="Assets\Code\ECS\GameLayer\HealthSliderImplementor.cs" />
-     <Compile Include="Assets\Code\ECS\GameLayer\HudEntityDescriptorHolder.cs" />
-     <Compile Include="Assets\Code\ECS\GameLayer\OtherEngines\HUDEngine.cs" />
-     <Compile Include="Assets\Code\ECS\GameLayer\OtherEngines\UpdateScoreEngine.cs" />
-     <Compile Include="Assets\Code\ECS\GameLayer\ScoreManagerImplementor.cs" />
-     <Compile Include="Assets\Code\ECS\GameLayer\SortedTickedEnginesOrder.cs" />
-     <Compile Include="Assets\Code\ECS\GameLayer\SurvivalUnsortedEnginesGroup.cs" />
-     <Compile Include="Assets\Code\ECS\GameLayer\TickEnginesGroup.cs" />
      <Compile Include="Assets\Code\GlobalSuppressions.cs" />
      <Compile Include="Assets\Code\MainCompositionRoot.cs" />
      <Compile Include="Assets\Code\MainContext.cs" />
@@ -63,6 +50,9 @@
      <Compile Include="Assets\Code\Others\Legacy\Implementors\IUseResourceManagerImplementor.cs" />
      <Compile Include="Assets\Code\Others\Legacy\LinkedEntityComponent.cs" />
      <Compile Include="Assets\Code\Others\Legacy\SveltoGUIHelper.cs" />
+     <Compile Include="Assets\Code\SortedTickedEnginesOrder.cs" />
+     <Compile Include="Assets\Code\SurvivalUnsortedEnginesGroup.cs" />
+     <Compile Include="Assets\Code\TickEnginesGroup.cs" />
      <Folder Include="Assets" />
      <None Include="Library\PackageCache\com.unity.modules.subsystems@1.0.0\package.json" />
      <None Include="Library\PackageCache\com.unity.modules.jsonserialize@1.0.0\package.json" />
@@ -110,7 +100,6 @@
      <Folder Include="Assets\Code" />
      <None Include="Library\PackageCache\com.unity.modules.unitywebrequestassetbundle@1.0.0\package.json" />
      <Folder Include="Library\PackageCache\com.unity.ext.nunit@1.0.6" />
-     <Folder Include="Assets\Code\ECS\GameLayer\OtherEngines" />
      <None Include="Library\PackageCache\com.unity.ide.visualstudio@2.0.15\package.json" />
      <Folder Include="Library\PackageCache\com.unity.modules.imageconversion@1.0.0" />
      <Folder Include="Library\PackageCache\com.unity.modules.terrainphysics@1.0.0" />
@@ -171,7 +160,6 @@
      <Folder Include="Assets\AddressableAssetsData" />
      <None Include="Library\PackageCache\com.unity.modules.unitywebrequestaudio@1.0.0\package.json" />
      <Folder Include="Assets\Prefabs" />
-     <Folder Include="Assets\Code\ECS\GameLayer" />
      <Folder Include="Assets\Fonts" />
      <Folder Include="Assets\AddressableAssetsData\WebGL" />
      <Folder Include="Library\PackageCache\com.unity.modules.vehicles@1.0.0" />
@@ -743,10 +731,6 @@
      </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="DamageableEntityLayers.csproj">
-      <Project>{5303ef99-64f3-a3a6-fbce-286aa0ed9a52}</Project>
-      <Name>DamageableEntityLayers</Name>
-    </ProjectReference>
     <ProjectReference Include="UnityEditor.CacheServer.csproj">
       <Project>{e10b0fe7-3633-f710-70a4-4ed3149dee79}</Project>
       <Name>UnityEditor.CacheServer</Name>
@@ -850,6 +834,14 @@
     <ProjectReference Include="EnemiesLayer.csproj">
       <Project>{5ab236e2-05ce-c020-ed35-80dc1c78838f}</Project>
       <Name>EnemiesLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="HudLayer.csproj">
+      <Project>{55af3f68-33bd-cdcf-d090-ab0f1db9b6d2}</Project>
+      <Name>HudLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="DamageableEntityLayers.csproj">
+      <Project>{5303ef99-64f3-a3a6-fbce-286aa0ed9a52}</Project>
+      <Name>DamageableEntityLayers</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

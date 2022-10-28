@@ -1,4 +1,4 @@
-﻿using Svelto.ECS.Example.Survive.HUD;
+﻿using Svelto.ECS.Example.Survive.Damage;
 
 namespace Svelto.ECS.Example.Survive.Enemies
 {
