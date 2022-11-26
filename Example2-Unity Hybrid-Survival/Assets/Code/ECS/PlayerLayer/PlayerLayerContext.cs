@@ -20,8 +20,6 @@ namespace Svelto.ECS.Example.Survive.Player
             var playerDeathEngine = new PlayerDeathEngine(entityFunctions, entityStreamConsumerFactory);
             var playerInputEngine = new PlayerInputEngine();
             var playerGunShootingFXsEngine = new PlayerGunShootingFXsEngine(entityStreamConsumerFactory);
-//Spawner engines are factories engines that can build entities
-            //    var restartGameOnPlayerDeath = new RestartGameOnPlayerDeathEngine();
 
 //Player engines
             enginesRoot.AddEngine(playerMovementEngine);
@@ -30,8 +28,7 @@ namespace Svelto.ECS.Example.Survive.Player
             enginesRoot.AddEngine(playerInputEngine);
             enginesRoot.AddEngine(playerGunShootingFXsEngine);
             enginesRoot.AddEngine(playerDeathEngine);
-            //  _enginesRoot.AddEngine(restartGameOnPlayerDeath);
-
+    
             unorderedEngines.Add(playerMovementEngine);
             unorderedEngines.Add(playerInputEngine);
             unorderedEngines.Add(playerGunShootingFXsEngine);

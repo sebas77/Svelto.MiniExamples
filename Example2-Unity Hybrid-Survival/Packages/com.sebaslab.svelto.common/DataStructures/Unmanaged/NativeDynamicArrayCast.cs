@@ -50,7 +50,7 @@ namespace Svelto.Common.DataStructures
         public void RemoveAt(uint index) { _array.RemoveAt<T>(index); }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Clear() { _array.FastClear(); }
+        public void Clear() { _array.Clear(); }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Dispose() { _array.Dispose(); }

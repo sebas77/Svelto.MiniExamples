@@ -6,7 +6,7 @@ namespace Code.ECS.Shared
 {
     public class GameObjectResourceManager : ECSResourceManager<GameObject>
     {
-        public GameObjectResourceManager() : base(100)
+        public GameObjectResourceManager() : base()
         {
             _factory = new GameObjectFactory();
         }

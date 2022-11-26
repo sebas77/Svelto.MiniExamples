@@ -1,6 +1,8 @@
 using Code.ECS.Shared;
 using Svelto.Context;
 using Svelto.DataStructures;
+using Svelto.DataStructures.Experimental;
+using Svelto.DataStructures.Native;
 using Svelto.ECS.Example.Survive.Camera;
 using Svelto.ECS.Example.Survive.Damage;
 using Svelto.ECS.Example.Survive.Enemies;
@@ -85,6 +87,18 @@ namespace Svelto.ECS.Example.Survive
         /// </summary>
         void CompositionRoot(UnityContext contextHolder)
         {
+            ValueContainer<GameObject, ManagedStrategy<GameObject>, NativeStrategy<int>> test =
+                new ValueContainer<GameObject, ManagedStrategy<GameObject>, NativeStrategy<int>>();
+
+            test.Add(GameObject.CreatePrimitive(PrimitiveType.Capsule));
+            test.Add(GameObject.CreatePrimitive(PrimitiveType.Cube));
+            test.Add(GameObject.CreatePrimitive(PrimitiveType.Cylinder));
+            test.Add(GameObject.CreatePrimitive(PrimitiveType.Sphere));
+            
+            
+
+            return;
+            
 //the SimpleEntitiesSubmissionScheduler is the scheduler that is used by the EnginesRoot to know
 //when to submit the entities. Custom ones can be created for special cases. This is the simplest default and it must
 //be ticked explicitly.
@@ -175,7 +189,7 @@ namespace Svelto.ECS.Example.Survive
         /// <param name="contextHolder"></param>
         void BuildGUIEntitiesFromScene(UnityContext contextHolder, IEntityFactory entityFactory)
         {
-            SveltoGUIHelper.Create<HudEntityDescriptorHolder>(
+            SveltoGUIHelper.Create<HUDEntityDescriptorHolder>(
                 ECSGroups.HUD,
                 contextHolder.transform,
                 entityFactory,

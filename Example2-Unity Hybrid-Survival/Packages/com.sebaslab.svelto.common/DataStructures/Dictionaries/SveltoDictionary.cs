@@ -163,6 +163,18 @@ namespace Svelto.DataStructures
 
             _values[index] = value;
         }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Recycle()
+        {
+            if (_freeValueCellIndex == 0)
+                return;
+
+            _freeValueCellIndex = 0;
+
+            //Buckets cannot be FastCleared because it's important that the values are reset to 0
+            _buckets.MemClear();
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Clear()
@@ -173,34 +185,10 @@ namespace Svelto.DataStructures
             _freeValueCellIndex = 0;
 
             //Buckets cannot be FastCleared because it's important that the values are reset to 0
-            _buckets.Clear();
+            _buckets.MemClear();
 
-            if (IsUnmanaged() == false)
-            {
-                _values.Clear();
-                _valuesInfo.Clear();
-            }
-        }
-
-        static bool IsUnmanaged()
-        {
-#if UNITY_COLLECTIONS || UNITY_JOBS || UNITY_BURST
-            return Unity.Collections.LowLevel.Unsafe.UnsafeUtility.IsUnmanaged<TValue>();
-#else
-            return typeof(TValue).IsUnmanagedEx();
-#endif
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void FastClear()
-        {
-            if (_freeValueCellIndex == 0)
-                return;
-
-            _freeValueCellIndex = 0;
-
-            //Buckets cannot be FastCleared because it's important that the values are reset to 0
-            _buckets.Clear();
+            _values.Clear();
+            _valuesInfo.Clear();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -271,6 +259,14 @@ namespace Svelto.DataStructures
             return ref _values[(int)findIndex];
         }
 
+        /// <summary>
+        /// This must be unit tested properly
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="builder"></param>
+        /// <param name="recycler"></param>
+        /// <typeparam name="TValueProxy"></typeparam>
+        /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref TValue RecycleOrAdd<TValueProxy>
             (TKey key, Func<TValueProxy> builder, ActionRef<TValueProxy> recycler) where TValueProxy : class, TValue

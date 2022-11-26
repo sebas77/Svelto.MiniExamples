@@ -99,7 +99,16 @@ namespace Svelto.DataStructures
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Clear() { _realBuffer.Clear(); }
+        public void Clear()
+        {
+            if (TypeCache<T>.type.isUnmanaged() == false)
+                _realBuffer.Clear();
+        }
+        
+        public void MemClear()
+        {
+            _realBuffer.Clear();
+        }
 
         public ref T this[uint index]
         {

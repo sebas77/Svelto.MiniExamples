@@ -150,6 +150,11 @@ namespace Svelto.Utilities
             Console.Log("Svelto Default Unity Logger added");
         }
 
+        public void CompressLogsToZipAndShow(string zipName)
+        {
+            
+        }
+
         static int MAINTHREADID;
     }
 }

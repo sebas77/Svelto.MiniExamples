@@ -67,7 +67,7 @@ namespace Svelto.ECS
                 var filters         = _persistentEntityFilters.unsafeValues;
                 
                 //remove duplicates
-                _transientEntityIDsLeftWithoutDuplicates.FastClear();
+                _transientEntityIDsLeftWithoutDuplicates.Clear();
                 var entityAffectedCount = entityIDsLeftAndAffectedByRemoval.count;
                 for (int i = 0; i < entityAffectedCount; i++)
                 {
@@ -129,7 +129,7 @@ namespace Svelto.ECS
                 var numberOfFilters = listOfFilters.count;
                 
                 //remove duplicates
-                _transientEntityIDsLeftWithoutDuplicates.FastClear();
+                _transientEntityIDsLeftWithoutDuplicates.Clear();
                 var entityAffectedCount = entityIDsLeftAndAffectedByRemoval.count;
                 for (int i = 0; i < entityAffectedCount; i++)
                 {

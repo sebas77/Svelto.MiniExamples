@@ -1,60 +1,42 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using Svelto.DataStructures;
+using Svelto.DataStructures.Experimental;
+using Svelto.DataStructures.Native;
 
 namespace Code.ECS.Shared
 {
     /// <summary>
     ///     Inherit this class to have the base functionalities to implement a custom ECS compatible resource manager
     /// </summary>
-    public class ECSResourceManager<T> where T:class
+    public class ECSResourceManager<T> where T : class
     {
-        readonly FasterList<uint>        _sparse; //maybe one day this could become a bit array if it would ever make sense
-        readonly FasterList<T> _dense;
-
-        static readonly EqualityComparer<T> _comparer = EqualityComparer<T>.Default;
-
-        protected ECSResourceManager(uint maxSparseSize)
+        protected ECSResourceManager()
         {
-            _sparse = new FasterList<uint>(maxSparseSize);
-            _dense  = new FasterList<T>();
+            _sparse = new ValueContainer<T, ManagedStrategy<T>, NativeStrategy<int>>();
         }
 
         protected uint Add(in T resource)
         {
-            var denseCount = (uint)_dense.count;
-            _sparse[denseCount] = denseCount;
-
-            _dense.Add(resource);
-
-            return denseCount;
+            return _sparse.Add(resource);
         }
         
+        protected void Remove(uint index)
+        {
+            _sparse.Remove(index);
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Clear()
         {
-            _sparse.FastClear();
-            _dense.Clear();
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Has(uint id, in T value)
-        {
-            return id < _sparse.count && _sparse[id] < _dense.count && _comparer.Equals(_dense[_sparse[id]], value);
+            _sparse.Clear();
         }
 
         public T this[uint index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
-            {
-#if DEBUG && !PROFILE_SVELTO
-                if (index >= _sparse.count)
-                    throw new Exception($"SparseSet - out of bound access: index {index} - capacity {_sparse.count}");
-#endif
-                return _dense[index];
-            }
+            get => _sparse[index];
         }
+        
+        readonly ValueContainer<T, ManagedStrategy<T>, NativeStrategy<int>> _sparse;
     }
 }

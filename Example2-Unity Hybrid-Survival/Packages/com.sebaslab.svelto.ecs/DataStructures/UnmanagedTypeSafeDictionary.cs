@@ -112,7 +112,7 @@ namespace Svelto.ECS.Internal
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Clear()
         {
-            implUnmgd.dictionary.FastClear();
+            implUnmgd.dictionary.Clear();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

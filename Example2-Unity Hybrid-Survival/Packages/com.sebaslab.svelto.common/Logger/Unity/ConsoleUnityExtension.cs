@@ -56,15 +56,13 @@ namespace Svelto
         {
             if (_initialized == false)
             {
-#if UNITY_EDITOR                
                 _originalConsoleOutput = System.Console.Out;
                 System.Console.SetOut(new SveltoSystemOutInterceptor());
-
+#if UNITY_EDITOR
                 _originals = (Application.GetStackTraceLogType(LogType.Warning),
                     Application.GetStackTraceLogType(LogType.Assert), Application.GetStackTraceLogType(LogType.Error),
                     Application.GetStackTraceLogType(LogType.Log));
-#endif                
-
+#endif
                 Application.SetStackTraceLogType(LogType.Warning, StackTraceLogType.None);
                 Application.SetStackTraceLogType(LogType.Assert, StackTraceLogType.None);
                 Application.SetStackTraceLogType(LogType.Error, StackTraceLogType.None);
@@ -90,9 +88,8 @@ namespace Svelto
                 
                 if (catchEmAll)
                     Console.CatchEmAll(); //this must happen first otherwise it will override the set out console of FasterUnityLogger
-#if !UNITY_EDITOR                
+
                 FasterUnityLogger.Init();
-#endif                
             }
         }
 #if UNITY_EDITOR
@@ -118,9 +115,9 @@ namespace Svelto
 #if UNITY_EDITOR
         static (StackTraceLogType warning, StackTraceLogType assert, StackTraceLogType error, StackTraceLogType log)
             _originals;
+#endif        
 
         static System.IO.TextWriter _originalConsoleOutput;
-#endif        
         static bool _initialized;
     }
 }

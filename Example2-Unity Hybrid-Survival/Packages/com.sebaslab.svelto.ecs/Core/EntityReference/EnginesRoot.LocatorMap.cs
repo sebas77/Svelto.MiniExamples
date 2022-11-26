@@ -7,7 +7,7 @@ using Svelto.ECS.Reference;
 namespace Svelto.ECS
 {
     // The EntityLocatorMap provides a bidirectional map to help locate entities without using an EGID which might
-    // change in runtime. The Entity Locator map uses a reusable unique identifier struct called EntityLocator to
+    // change at runtime. The Entity Locator map uses a reusable unique identifier struct called EntityLocator to
     // find the last known EGID from last entity submission.
     public partial class EnginesRoot
     {
@@ -51,7 +51,8 @@ namespace Svelto.ECS
             internal void SetReference(EntityReference reference, EGID egid)
             {
                 // Since references can be claimed in parallel now, it might happen that they are set out of order,
-                // so we need to resize instead of add.
+                // so we need to resize instead of add. TODO: what did this comment mean?
+                
                 if (reference.index >= _entityReferenceMap.count)
                 {
 #if DEBUG && !PROFILE_SVELTO //THIS IS TO VALIDATE DATE DBC LIKE
@@ -66,13 +67,13 @@ namespace Svelto.ECS
 
 #if DEBUG && !PROFILE_SVELTO
                 // These debug tests should be enough to detect if indices are being used correctly under native factories
-                if (_entityReferenceMap[reference.index].version != reference.version
-                 || _entityReferenceMap[reference.index].egid.groupID != ExclusiveGroupStruct.Invalid)
+                ref var entityReferenceMapElement = ref _entityReferenceMap[reference.index];
+                if (entityReferenceMapElement.version != reference.version
+                 || entityReferenceMapElement.egid.groupID != ExclusiveGroupStruct.Invalid)
                 {
                     throw new ECSException("Entity reference already set. This should never happen, please report it.");
                 }
 #endif
-
                 _entityReferenceMap[reference.index] = new EntityReferenceMapElement(egid, reference.version);
 
                 // Update reverse map from egid to locator.
@@ -100,7 +101,7 @@ namespace Svelto.ECS
 
                 // Invalidate the entity locator element by bumping its version and setting the egid to point to a not existing element.
                 ref var entityReferenceMapElement = ref _entityReferenceMap[reference.index];
-                entityReferenceMapElement.egid = new EGID((uint)(int)_nextFreeIndex, 0);
+                entityReferenceMapElement.egid = new EGID((uint)(int)_nextFreeIndex, 0); //keep the free linked list updated
                 entityReferenceMapElement.version++;
 
                 // Mark the element as the last element used.
@@ -110,8 +111,8 @@ namespace Svelto.ECS
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             EntityReference FetchAndRemoveReference(EGID @from)
             {
-                var egidToReference = _egidToReferenceMap[@from.groupID];
-                var reference = egidToReference[@from.entityID];
+                SharedSveltoDictionaryNative<uint, EntityReference> egidToReference = _egidToReferenceMap[@from.groupID];
+                EntityReference reference = egidToReference[@from.entityID]; //todo: double searching fro entityID
                 egidToReference.Remove(@from.entityID);
 
                 return reference;
@@ -169,9 +170,10 @@ namespace Svelto.ECS
                     return false;
                 // Make sure we are querying for the current version of the locator.
                 // Otherwise the locator is pointing to a removed entity.
-                if (_entityReferenceMap[reference.index].version == reference.version)
+                ref var entityReferenceMapElement = ref _entityReferenceMap[reference.index];
+                if (entityReferenceMapElement.version == reference.version)
                 {
-                    egid = _entityReferenceMap[reference.index].egid;
+                    egid = entityReferenceMapElement.egid;
                     return true;
                 }
 
@@ -184,10 +186,11 @@ namespace Svelto.ECS
                     throw new ECSException("Invalid Reference");
                 // Make sure we are querying for the current version of the locator.
                 // Otherwise the locator is pointing to a removed entity.
-                if (_entityReferenceMap[reference.index].version != reference.version)
+                ref var entityReferenceMapElement = ref _entityReferenceMap[reference.index];
+                if (entityReferenceMapElement.version != reference.version)
                     throw new ECSException("outdated Reference");
 
-                return _entityReferenceMap[reference.index].egid;
+                return entityReferenceMapElement.egid;
             }
 
             internal void PreallocateReferenceMaps(ExclusiveGroupStruct groupID, uint size)
@@ -221,9 +224,15 @@ namespace Svelto.ECS
 
             SharedNativeInt _nextFreeIndex;
             NativeDynamicArrayCast<EntityReferenceMapElement> _entityReferenceMap;
-
+            
+            //todo: this should be just one dictionary <EGID, REference> it's a double one to be 
+            //able to remove entire groups at once. IT's wasteful since the operation is very rare
+            //we should find an alternative solution
+            //alternatively since the groups are guaranteed to be sequential an array should be used instead
+            //than a dictionary for groups. It could be a good case to implement a 4k chunk based sparseset
+            
             SharedSveltoDictionaryNative<ExclusiveGroupStruct, SharedSveltoDictionaryNative<uint, EntityReference>>
-                _egidToReferenceMap;
+                _egidToReferenceMap; 
         }
 
         EntityReferenceMap entityLocator => _entityLocator;

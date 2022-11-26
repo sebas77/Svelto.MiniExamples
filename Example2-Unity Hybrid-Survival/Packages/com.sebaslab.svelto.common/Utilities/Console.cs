@@ -158,5 +158,10 @@ namespace Svelto
                 _loggers[i].Log(txt, type, showLogStack, e, extraData);
             }
         }
+
+        public static void CompressLogsToZipAndShow(string zipName)
+        {
+            _loggers[0]?.CompressLogsToZipAndShow(zipName);
+        }
     }
 }

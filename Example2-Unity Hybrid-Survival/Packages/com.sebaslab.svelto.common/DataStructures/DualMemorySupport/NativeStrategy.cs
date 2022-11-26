@@ -25,6 +25,7 @@ namespace Svelto.DataStructures.Native
 
         public int       capacity           => _realBuffer.capacity;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Alloc(uint newCapacity, Allocator allocator, bool clear)
         {
 #if DEBUG && !PROFILE_SVELTO
@@ -41,6 +42,7 @@ namespace Svelto.DataStructures.Native
             _realBuffer    = b;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Resize(uint newSize, bool copyContent = true, bool memClear = true)
         {
             if (newSize != capacity)
@@ -65,6 +67,7 @@ namespace Svelto.DataStructures.Native
             throw new NotImplementedException();
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ShiftLeft(uint index, uint count)
         {
             DBC.Common.Check.Require(index < capacity, "out of bounds index");
@@ -80,6 +83,7 @@ namespace Svelto.DataStructures.Native
             MemoryUtilities.MemMove<T>(array, index + 1, index, count - index);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ShiftRight(uint index, uint count)
         {
             DBC.Common.Check.Require(index < capacity, "out of bounds index");
@@ -97,7 +101,9 @@ namespace Svelto.DataStructures.Native
 
         public bool isValid => _realBuffer.isValid;
 
-        public void Clear() => _realBuffer.Clear();
+        public void Clear() {}
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void MemClear() => _realBuffer.Clear();
 
         public ref T this[uint index]
         {

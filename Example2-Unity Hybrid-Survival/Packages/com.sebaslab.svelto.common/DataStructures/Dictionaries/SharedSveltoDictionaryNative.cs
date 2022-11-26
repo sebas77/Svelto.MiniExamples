@@ -89,12 +89,6 @@ namespace Svelto.DataStructures.Native
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void FastClear()
-        {
-            dictionary.FastClear();
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool ContainsKey(TKey key)
         {
             return dictionary.ContainsKey(key);

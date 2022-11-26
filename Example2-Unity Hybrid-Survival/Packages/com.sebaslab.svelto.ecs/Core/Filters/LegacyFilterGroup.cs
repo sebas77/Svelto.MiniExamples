@@ -125,7 +125,7 @@ namespace Svelto.ECS
             if (_denseListOfIndicesToEntityComponentArray.isValid == false)
                 throw new ECSException($"invalid Filter");
 #endif
-            _indexOfEntityInDenseList.FastClear();
+            _indexOfEntityInDenseList.Clear();
             _reverseEIDs.Clear();
             _denseListOfIndicesToEntityComponentArray.Clear();
         }
@@ -195,7 +195,7 @@ namespace Svelto.ECS
                 }
                 else
                 {
-                    _indexOfEntityInDenseList.FastClear();
+                    _indexOfEntityInDenseList.Clear();
                     _reverseEIDs.Clear();
                     _denseListOfIndicesToEntityComponentArray.Clear();
                 }

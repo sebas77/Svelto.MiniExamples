@@ -17,5 +17,6 @@ namespace Svelto.Utilities
             Dictionary<string, string> data = null);
 
         void OnLoggerAdded();
+        void CompressLogsToZipAndShow(string zipName);
     }
 }

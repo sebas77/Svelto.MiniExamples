@@ -11,11 +11,15 @@ namespace Svelto.ECS
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         void SingleSubmission(PlatformProfiler profiler)
         {
-            _entitiesOperations.ExecuteRemoveAndSwappingOperations(_swapEntities, _removeEntities, _removeGroup
-                                                                 , _swapGroup, this);
+            _entitiesOperations.ExecuteRemoveAndSwappingOperations(
+                _swapEntities,
+                _removeEntities,
+                _removeGroup,
+                _swapGroup,
+                this);
 
             AddEntities(profiler);
-            
+
             ClearDebugChecks(); //this must be done first as I need the carry the last states after the submission
         }
 
@@ -37,9 +41,9 @@ namespace Svelto.ECS
             }
         }
 
-        static void RemoveEntities
-        (FasterDictionary<ExclusiveGroupStruct, FasterDictionary<RefWrapperType, FasterList<(uint, string)>>>
-             removeOperations, FasterList<EGID> entitiesRemoved, EnginesRoot enginesRoot)
+        static void RemoveEntities(
+            FasterDictionary<ExclusiveGroupStruct, FasterDictionary<RefWrapperType, FasterList<(uint, string)>>>
+                removeOperations, FasterList<EGID> entitiesRemoved, EnginesRoot enginesRoot)
         {
             using (var sampler = new PlatformProfiler("remove Entities"))
             {
@@ -56,54 +60,60 @@ namespace Svelto.ECS
                 {
                     foreach (var entitiesToRemove in removeOperations)
                     {
-                        ExclusiveGroupStruct group               = entitiesToRemove.key;
-                        var                  fromGroupDictionary = enginesRoot.GetDBGroup(group);
+                        ExclusiveGroupStruct group = entitiesToRemove.key;
+                        var fromGroupDictionary = enginesRoot.GetDBGroup(group);
 
                         foreach (var groupedEntitiesToRemove in entitiesToRemove.value)
                         {
-                            var                 componentType            = groupedEntitiesToRemove.key;
+                            var componentType = groupedEntitiesToRemove.key;
                             ITypeSafeDictionary fromComponentsDictionary = fromGroupDictionary[componentType];
 
                             FasterList<(uint, string)> infosToProcess = groupedEntitiesToRemove.value;
 
                             fromComponentsDictionary.ExecuteEnginesRemoveCallbacks(
-                                infosToProcess, enginesRoot._reactiveEnginesRemove, group, in sampler);
+                                infosToProcess,
+                                enginesRoot._reactiveEnginesRemove,
+                                group,
+                                in sampler);
                         }
                     }
                 }
 
                 using (sampler.Sample("Remove Entities"))
                 {
-                    enginesRoot._cachedRangeOfSubmittedIndices.FastClear();
+                    enginesRoot._cachedRangeOfSubmittedIndices.Clear();
 
                     foreach (var entitiesToRemove in removeOperations)
                     {
-                        ExclusiveGroupStruct fromGroup           = entitiesToRemove.key;
-                        var                  fromGroupDictionary = enginesRoot.GetDBGroup(fromGroup);
+                        ExclusiveGroupStruct fromGroup = entitiesToRemove.key;
+                        var fromGroupDictionary = enginesRoot.GetDBGroup(fromGroup);
 
                         foreach (var groupedEntitiesToRemove in entitiesToRemove.value)
                         {
-                            RefWrapperType      componentType            = groupedEntitiesToRemove.key;
+                            RefWrapperType componentType = groupedEntitiesToRemove.key;
                             ITypeSafeDictionary fromComponentsDictionary = fromGroupDictionary[componentType];
 
                             FasterList<(uint, string)> entityIDsToRemove = groupedEntitiesToRemove.value;
 
-                            enginesRoot._transientEntityIDsLeftAndAffectedByRemoval.FastClear();
+                            enginesRoot._transientEntityIDsLeftAndAffectedByRemoval.Clear();
 
                             fromComponentsDictionary.RemoveEntitiesFromDictionary(
-                                entityIDsToRemove, enginesRoot._transientEntityIDsLeftAndAffectedByRemoval);
+                                entityIDsToRemove,
+                                enginesRoot._transientEntityIDsLeftAndAffectedByRemoval);
 
                             //important: remove from the filter must happen after remove from the dictionary
                             //as we need to read the new indices linked to entities after the removal
                             enginesRoot.RemoveEntitiesFromPersistentFilters(
-                                entityIDsToRemove, fromGroup, componentType, fromComponentsDictionary
-                              , enginesRoot._transientEntityIDsLeftAndAffectedByRemoval);
+                                entityIDsToRemove,
+                                fromGroup,
+                                componentType,
+                                fromComponentsDictionary,
+                                enginesRoot._transientEntityIDsLeftAndAffectedByRemoval);
 
                             //store new database count after the entities are removed from the datatabase, plus the number of entities removed
-                            enginesRoot._cachedRangeOfSubmittedIndices.Add(((uint, uint))(
-                                                                               fromComponentsDictionary.count
-                                                                             , fromComponentsDictionary.count
-                                                                             + entityIDsToRemove.count));
+                            enginesRoot._cachedRangeOfSubmittedIndices.Add(
+                                ((uint, uint))(fromComponentsDictionary.count,
+                                    fromComponentsDictionary.count + entityIDsToRemove.count));
                         }
                     }
                 }
@@ -120,33 +130,36 @@ namespace Svelto.ECS
                 {
                     foreach (var entitiesToRemove in removeOperations)
                     {
-                        ExclusiveGroupStruct group               = entitiesToRemove.key;
-                        var                  fromGroupDictionary = enginesRoot.GetDBGroup(group);
+                        ExclusiveGroupStruct group = entitiesToRemove.key;
+                        var fromGroupDictionary = enginesRoot.GetDBGroup(group);
 
                         foreach (var groupedEntitiesToRemove in entitiesToRemove.value)
                         {
                             rangeEnumerator.MoveNext();
 
-                            var                 componentType            = groupedEntitiesToRemove.key;
+                            var componentType = groupedEntitiesToRemove.key;
                             ITypeSafeDictionary fromComponentsDictionary = fromGroupDictionary[componentType];
 
                             //get all the engines linked to TValue
                             if (!enginesRoot._reactiveEnginesRemoveEx.TryGetValue(
-                                    componentType, out var entityComponentsEngines))
+                                    componentType,
+                                    out var entityComponentsEngines))
                                 continue;
 
                             fromComponentsDictionary.ExecuteEnginesRemoveCallbacksFast(
-                                entityComponentsEngines, group, rangeEnumerator.Current, in sampler);
+                                entityComponentsEngines,
+                                group,
+                                rangeEnumerator.Current,
+                                in sampler);
                         }
                     }
                 }
             }
         }
 
-        static void SwapEntities
-        (FasterDictionary<ExclusiveGroupStruct, FasterDictionary<RefWrapperType,
-             FasterDictionary<ExclusiveGroupStruct, FasterList<(uint, uint, string)>>>> swapEntitiesOperations
-       , FasterList<(EGID, EGID)> entitiesIDSwaps, EnginesRoot enginesRoot)
+        static void SwapEntities(FasterDictionary<ExclusiveGroupStruct, FasterDictionary<RefWrapperType,
+                FasterDictionary<ExclusiveGroupStruct, FasterList<(uint, uint, string)>>>> swapEntitiesOperations,
+            FasterList<(EGID, EGID)> entitiesIDSwaps, EnginesRoot enginesRoot)
         {
             using (var sampler = new PlatformProfiler("Swap entities between groups"))
             {
@@ -163,7 +176,7 @@ namespace Svelto.ECS
 
                 using (sampler.Sample("Swap Entities"))
                 {
-                    enginesRoot._cachedRangeOfSubmittedIndices.FastClear();
+                    enginesRoot._cachedRangeOfSubmittedIndices.Clear();
 
                     //Entities to swap are organised in order to minimise the amount of dictionary lookups.
                     //swapEntitiesOperations iterations happen in the following order:
@@ -172,26 +185,28 @@ namespace Svelto.ECS
                     //now swap the set of FromGroup -> ToGroup entities per ID.
                     foreach (var entitiesToSwap in swapEntitiesOperations)
                     {
-                        ExclusiveGroupStruct fromGroup           = entitiesToSwap.key;
-                        var                  fromGroupDictionary = enginesRoot.GetDBGroup(fromGroup);
+                        ExclusiveGroupStruct fromGroup = entitiesToSwap.key;
+                        var fromGroupDictionary = enginesRoot.GetDBGroup(fromGroup);
 
                         //iterate all the fromgroups
                         foreach (var groupedEntitiesToSwap in entitiesToSwap.value)
                         {
-                            var                 componentType            = groupedEntitiesToSwap.key;
+                            var componentType = groupedEntitiesToSwap.key;
                             ITypeSafeDictionary fromComponentsDictionary = fromGroupDictionary[componentType];
 
                             //get the subset of togroups that come from from group
                             foreach (var entitiesInfoToSwap in groupedEntitiesToSwap.value)
                             {
                                 ExclusiveGroupStruct toGroup = entitiesInfoToSwap.key;
-                                ITypeSafeDictionary toComponentsDictionary =
-                                    enginesRoot.GetOrAddTypeSafeDictionary(
-                                        toGroup, enginesRoot.GetOrAddDBGroup(toGroup), componentType
-                                      , fromComponentsDictionary);
+                                ITypeSafeDictionary toComponentsDictionary = enginesRoot.GetOrAddTypeSafeDictionary(
+                                    toGroup,
+                                    enginesRoot.GetOrAddDBGroup(toGroup),
+                                    componentType,
+                                    fromComponentsDictionary);
 
-                                DBC.ECS.Check.Assert(toComponentsDictionary != null
-                                                   , "something went wrong with the creation of dictionaries");
+                                DBC.ECS.Check.Assert(
+                                    toComponentsDictionary != null,
+                                    "something went wrong with the creation of dictionaries");
 
                                 //this list represents the set of entities that come from fromGroup and need
                                 //to be swapped to toGroup. Most of the times will be 1 of few units.
@@ -204,21 +219,28 @@ namespace Svelto.ECS
                                 //fortunately swap means that entities are added at the end of each destination
                                 //dictionary list, so we can just iterate the list using the indices ranges added in the
                                 //_cachedIndices
-                                enginesRoot._cachedRangeOfSubmittedIndices.Add(((uint, uint))(
-                                                                                   toComponentsDictionary.count
-                                                                                 , toComponentsDictionary.count
-                                                                                 + fromEntityToEntityIDs.count));
+                                enginesRoot._cachedRangeOfSubmittedIndices.Add(
+                                    ((uint, uint))(toComponentsDictionary.count,
+                                        toComponentsDictionary.count + fromEntityToEntityIDs.count));
 
-                                enginesRoot._transientEntityIDsLeftAndAffectedByRemoval.FastClear();
+                                enginesRoot._transientEntityIDsLeftAndAffectedByRemoval.Clear();
 
                                 fromComponentsDictionary.SwapEntitiesBetweenDictionaries(
-                                    fromEntityToEntityIDs, fromGroup, toGroup, toComponentsDictionary
-                                  , enginesRoot._transientEntityIDsLeftAndAffectedByRemoval);
+                                    fromEntityToEntityIDs,
+                                    fromGroup,
+                                    toGroup,
+                                    toComponentsDictionary,
+                                    enginesRoot._transientEntityIDsLeftAndAffectedByRemoval);
 
                                 //important: this must happen after the entities are swapped in the database
                                 enginesRoot.SwapEntityBetweenPersistentFilters(
-                                    fromEntityToEntityIDs, fromComponentsDictionary, toComponentsDictionary, fromGroup
-                                  , toGroup, componentType, enginesRoot._transientEntityIDsLeftAndAffectedByRemoval);
+                                    fromEntityToEntityIDs,
+                                    fromComponentsDictionary,
+                                    toComponentsDictionary,
+                                    fromGroup,
+                                    toGroup,
+                                    componentType,
+                                    enginesRoot._transientEntityIDsLeftAndAffectedByRemoval);
                             }
                         }
                     }
@@ -236,19 +258,26 @@ namespace Svelto.ECS
 
                             //get all the engines linked to TValue
                             if (!enginesRoot._reactiveEnginesSwap.TryGetValue(
-                                    new RefWrapperType(componentType), out var entityComponentsEngines))
+                                    new RefWrapperType(componentType),
+                                    out var entityComponentsEngines))
                                 continue;
 
                             foreach (var entitiesInfoToSwap in groupedEntitiesToSwap.value)
                             {
                                 ExclusiveGroupStruct toGroup = entitiesInfoToSwap.key;
-                                ITypeSafeDictionary toComponentsDictionary =
-                                    GetTypeSafeDictionary(toGroup, enginesRoot.GetDBGroup(toGroup), componentType);
+                                ITypeSafeDictionary toComponentsDictionary = GetTypeSafeDictionary(
+                                    toGroup,
+                                    enginesRoot.GetDBGroup(toGroup),
+                                    componentType);
 
                                 var infosToProcess = entitiesInfoToSwap.value;
 
                                 toComponentsDictionary.ExecuteEnginesSwapCallbacks(
-                                    infosToProcess, entityComponentsEngines, fromGroup, toGroup, in sampler);
+                                    infosToProcess,
+                                    entityComponentsEngines,
+                                    fromGroup,
+                                    toGroup,
+                                    in sampler);
                             }
                         }
                     }
@@ -271,15 +300,22 @@ namespace Svelto.ECS
 
                                 //get all the engines linked to TValue
                                 if (!enginesRoot._reactiveEnginesSwapEx.TryGetValue(
-                                        new RefWrapperType(componentType), out var entityComponentsEngines))
+                                        new RefWrapperType(componentType),
+                                        out var entityComponentsEngines))
                                     continue;
 
                                 ExclusiveGroupStruct toGroup = entitiesInfoToSwap.key;
-                                ITypeSafeDictionary toComponentsDictionary =
-                                    GetTypeSafeDictionary(toGroup, enginesRoot.GetDBGroup(toGroup), componentType);
+                                ITypeSafeDictionary toComponentsDictionary = GetTypeSafeDictionary(
+                                    toGroup,
+                                    enginesRoot.GetDBGroup(toGroup),
+                                    componentType);
 
                                 toComponentsDictionary.ExecuteEnginesSwapCallbacksFast(
-                                    entityComponentsEngines, fromGroup, toGroup, rangeEnumerator.Current, in sampler);
+                                    entityComponentsEngines,
+                                    fromGroup,
+                                    toGroup,
+                                    rangeEnumerator.Current,
+                                    in sampler);
                             }
                         }
                     }
@@ -295,7 +331,7 @@ namespace Svelto.ECS
             //I need to iterate the previous current, which is now other
             if (_groupedEntityToAdd.AnyPreviousEntityCreated())
             {
-                _cachedRangeOfSubmittedIndices.FastClear();
+                _cachedRangeOfSubmittedIndices.Clear();
                 using (sampler.Sample("Add operations"))
                 {
                     try
@@ -312,21 +348,26 @@ namespace Svelto.ECS
                                 //add the entityComponents in the group
                                 foreach (var entityComponentsToSubmit in groupToSubmit.components)
                                 {
-                                    var type           = entityComponentsToSubmit.key;
+                                    var type = entityComponentsToSubmit.key;
                                     var fromDictionary = entityComponentsToSubmit.value;
-                                    var wrapper        = new RefWrapperType(type);
+                                    var wrapper = new RefWrapperType(type);
 
-                                    var toDictionary =
-                                        GetOrAddTypeSafeDictionary(groupID, groupDB, wrapper, fromDictionary);
+                                    var toDictionary = GetOrAddTypeSafeDictionary(
+                                        groupID
+                                      , groupDB
+                                      , wrapper
+                                      , fromDictionary);
 
                                     //all the new entities are added at the end of each dictionary list, so we can
                                     //just iterate the list using the indices ranges added in the _cachedIndices
                                     _cachedRangeOfSubmittedIndices.Add(
                                         ((uint, uint))(toDictionary.count, toDictionary.count + fromDictionary.count));
                                     //Fill the DB with the entity components generated this frame.
-                                    fromDictionary.AddEntitiesToDictionary(toDictionary, groupID
+                                    fromDictionary.AddEntitiesToDictionary(
+                                        toDictionary, 
+                                        groupID
 #if SLOW_SVELTO_SUBMISSION
-                                                                     , entityLocator
+                                       , entityLocator
 #endif
                                     );
                                 }
@@ -345,13 +386,16 @@ namespace Svelto.ECS
 
                                 foreach (var entityComponentsToSubmit in groupToSubmit.components)
                                 {
-                                    var type    = entityComponentsToSubmit.key;
+                                    var type = entityComponentsToSubmit.key;
                                     var wrapper = new RefWrapperType(type);
 
                                     var toDictionary = GetTypeSafeDictionary(groupID, groupDB, wrapper);
                                     enumerator.MoveNext();
                                     toDictionary.ExecuteEnginesAddEntityCallbacksFast(
-                                        _reactiveEnginesAddEx, groupID, enumerator.Current, in sampler);
+                                        _reactiveEnginesAddEx,
+                                        groupID,
+                                        enumerator.Current,
+                                        in sampler);
                                 }
                             }
                         }
@@ -372,14 +416,17 @@ namespace Svelto.ECS
                                 //design of the transient buffer of added entities.
                                 foreach (var entityComponentsToSubmit in groupToSubmit.components)
                                 {
-                                    var type           = entityComponentsToSubmit.key;
+                                    var type = entityComponentsToSubmit.key;
                                     var fromDictionary = entityComponentsToSubmit.value;
 
                                     //this contains the total number of components ever submitted in the DB
                                     ITypeSafeDictionary toDictionary = GetTypeSafeDictionary(groupID, groupDB, type);
 
                                     fromDictionary.ExecuteEnginesAddCallbacks(
-                                        _reactiveEnginesAdd, toDictionary, groupID, in sampler);
+                                        _reactiveEnginesAdd,
+                                        toDictionary,
+                                        groupID,
+                                        in sampler);
                                 }
                             }
                         }
@@ -412,7 +459,10 @@ namespace Svelto.ECS
                 {
                     //RemoveEX happens inside
                     dictionaryOfEntities.value.ExecuteEnginesRemoveCallbacks_Group(
-                        _reactiveEnginesRemove, _reactiveEnginesRemoveEx, groupID, profiler);
+                        _reactiveEnginesRemove,
+                        _reactiveEnginesRemoveEx,
+                        groupID,
+                        profiler);
                 }
 
                 foreach (var dictionaryOfEntities in dictionariesOfEntities)
@@ -425,11 +475,11 @@ namespace Svelto.ECS
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        void SwapEntitiesBetweenGroups
-            (ExclusiveGroupStruct fromGroupId, ExclusiveGroupStruct toGroupId, PlatformProfiler platformProfiler)
+        void SwapEntitiesBetweenGroups(ExclusiveGroupStruct fromGroupId, ExclusiveGroupStruct toGroupId,
+            PlatformProfiler platformProfiler)
         {
             FasterDictionary<RefWrapperType, ITypeSafeDictionary> fromGroup = GetDBGroup(fromGroupId);
-            FasterDictionary<RefWrapperType, ITypeSafeDictionary> toGroup   = GetOrAddDBGroup(toGroupId);
+            FasterDictionary<RefWrapperType, ITypeSafeDictionary> toGroup = GetOrAddDBGroup(toGroupId);
 
             _entityLocator.UpdateAllGroupReferenceLocators(fromGroupId, toGroupId);
 
@@ -439,12 +489,17 @@ namespace Svelto.ECS
                 RefWrapperType refWrapperType = dictionaryOfEntities.key;
 
                 ITypeSafeDictionary fromDictionary = dictionaryOfEntities.value;
-                ITypeSafeDictionary toDictionary =
-                    GetOrAddTypeSafeDictionary(toGroupId, toGroup, refWrapperType, fromDictionary);
+                ITypeSafeDictionary toDictionary = GetOrAddTypeSafeDictionary(
+                    toGroupId,
+                    toGroup,
+                    refWrapperType,
+                    fromDictionary);
 
-                fromDictionary.AddEntitiesToDictionary(toDictionary, toGroupId
+                fromDictionary.AddEntitiesToDictionary(
+                    toDictionary,
+                    toGroupId
 #if SLOW_SVELTO_SUBMISSION
-                                                 , this.entityLocator
+                                         , this.entityLocator
 #endif
                 );
             }
@@ -455,12 +510,16 @@ namespace Svelto.ECS
                 RefWrapperType refWrapperType = dictionaryOfEntities.key;
 
                 ITypeSafeDictionary fromDictionary = dictionaryOfEntities.value;
-                ITypeSafeDictionary toDictionary   = GetTypeSafeDictionary(toGroupId, toGroup, refWrapperType);
+                ITypeSafeDictionary toDictionary = GetTypeSafeDictionary(toGroupId, toGroup, refWrapperType);
 
                 //SwapEX happens inside
-                fromDictionary.ExecuteEnginesSwapCallbacks_Group(_reactiveEnginesSwap, _reactiveEnginesSwapEx
-                                                               , toDictionary, fromGroupId, toGroupId
-                                                               , platformProfiler);
+                fromDictionary.ExecuteEnginesSwapCallbacks_Group(
+                    _reactiveEnginesSwap,
+                    _reactiveEnginesSwapEx,
+                    toDictionary,
+                    fromGroupId,
+                    toGroupId,
+                    platformProfiler);
             }
 
             //remove entities from dictionaries
@@ -473,9 +532,9 @@ namespace Svelto.ECS
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        ITypeSafeDictionary GetOrAddTypeSafeDictionary
-        (ExclusiveGroupStruct groupId, FasterDictionary<RefWrapperType, ITypeSafeDictionary> groupPerComponentType
-       , RefWrapperType type, ITypeSafeDictionary fromDictionary)
+        ITypeSafeDictionary GetOrAddTypeSafeDictionary(ExclusiveGroupStruct groupId,
+            FasterDictionary<RefWrapperType, ITypeSafeDictionary> groupPerComponentType, RefWrapperType type,
+            ITypeSafeDictionary fromDictionary)
         {
             //be sure that the TypeSafeDictionary for the entity Type exists
             if (groupPerComponentType.TryGetValue(type, out ITypeSafeDictionary toEntitiesDictionary) == false)
@@ -497,9 +556,8 @@ namespace Svelto.ECS
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static ITypeSafeDictionary GetTypeSafeDictionary
-        (ExclusiveGroupStruct groupID, FasterDictionary<RefWrapperType, ITypeSafeDictionary> @group
-       , RefWrapperType refWrapper)
+        static ITypeSafeDictionary GetTypeSafeDictionary(ExclusiveGroupStruct groupID,
+            FasterDictionary<RefWrapperType, ITypeSafeDictionary> @group, RefWrapperType refWrapper)
         {
             if (@group.TryGetValue(refWrapper, out ITypeSafeDictionary fromTypeSafeDictionary) == false)
             {
@@ -510,24 +568,26 @@ namespace Svelto.ECS
         }
 
         readonly DoubleBufferedEntitiesToAdd _groupedEntityToAdd;
-        readonly EntitiesOperations          _entitiesOperations;
+        readonly EntitiesOperations _entitiesOperations;
 
         //transient caches>>>>>>>>>>>>>>>>>>>>>
-        readonly FasterList<(uint, uint)>    _cachedRangeOfSubmittedIndices;
+        readonly FasterList<(uint, uint)> _cachedRangeOfSubmittedIndices;
         readonly FasterDictionary<uint, int> _transientEntityIDsLeftWithoutDuplicates;
-        readonly FasterList<uint>            _transientEntityIDsLeftAndAffectedByRemoval;
+
+        readonly FasterList<uint> _transientEntityIDsLeftAndAffectedByRemoval;
         //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
         static readonly
             Action<FasterDictionary<ExclusiveGroupStruct, FasterDictionary<RefWrapperType,
                     FasterDictionary<ExclusiveGroupStruct, FasterList<(uint, uint, string)>>>>, FasterList<(EGID, EGID)>
-               , EnginesRoot> _swapEntities;
+               ,
+                EnginesRoot> _swapEntities;
 
         static readonly Action<
             FasterDictionary<ExclusiveGroupStruct, FasterDictionary<RefWrapperType, FasterList<(uint, string)>>>,
             FasterList<EGID>, EnginesRoot> _removeEntities;
 
-        static readonly Action<ExclusiveGroupStruct, EnginesRoot>                       _removeGroup;
+        static readonly Action<ExclusiveGroupStruct, EnginesRoot> _removeGroup;
         static readonly Action<ExclusiveGroupStruct, ExclusiveGroupStruct, EnginesRoot> _swapGroup;
     }
 }

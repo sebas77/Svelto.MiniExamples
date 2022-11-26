@@ -1,14 +1,8 @@
 {
-    "name": "EnemiesLayer",
+    "name": "TransformableLayer",
     "references": [
-        "Svelto.Common",
         "Svelto.ECS",
-        "Utility",
-        "UnityOOPAbstractionLayer",
-        "DamageableEntityLayer",
-        "AnimationLayer",
-        "Unity.Addressables",
-        "Unity.ResourceManager"
+        "Svelto.Common"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

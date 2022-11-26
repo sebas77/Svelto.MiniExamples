@@ -184,7 +184,7 @@ namespace Svelto.ECS
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             internal void Clear()
             {
-                _entityIDToDenseIndex.FastClear();
+                _entityIDToDenseIndex.Clear();
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -3,11 +3,7 @@
 #endif
 
 using System;
-using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using Svelto.Common;
-using Svelto.Common.DataStructures;
-using Allocator = Svelto.Common.Allocator;
 
 namespace Svelto.Common.DataStructures
 {
@@ -349,7 +345,7 @@ namespace Svelto.Common.DataStructures
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void FastClear()
+        public void Clear()
         {
             unsafe
             {

@@ -118,20 +118,6 @@ namespace Svelto.DataStructures
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void FastClear()
-        {
-            _lockQ.EnterWriteLock();
-            try
-            {
-                _dict.FastClear();
-            }
-            finally
-            {
-                _lockQ.ExitWriteLock();
-            }
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool ContainsKey(TKey key)
         {
             _lockQ.EnterReadLock();

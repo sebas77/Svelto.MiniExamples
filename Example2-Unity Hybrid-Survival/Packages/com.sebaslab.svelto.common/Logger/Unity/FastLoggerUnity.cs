@@ -2,10 +2,15 @@
 
 //#define DEBUG_FASTER
 
+#if UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX || UNITY_STANDALONE_LINUX || DEBUG_FASTER
+#define REDIRECT_CONSOLE
+#endif
+
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO.Compression;
 using System.Text;
 using System.Threading;
 using Svelto.DataStructures;
@@ -17,25 +22,26 @@ using Volatile = System.Threading.Volatile;
 
 namespace Svelto.Utilities
 {
-#if !UNITY_EDITOR || DEBUG_FASTER
     static class FasterUnityLoggerUtility
     {
         const string CUSTOM_NAME_FLAG = "-customLogName";
         const int    CYCLE_SIZE       = 10;
 
-        static string _baseName = "outputLog";
+        static string BASENAME = "outputLog";
+        static readonly string FOLDER = System.IO.Path.GetDirectoryName(Application.dataPath)+ System.IO.Path.DirectorySeparatorChar+"debuglogs";
 
-        static System.IO.StreamWriter _consoleOut;
-        static System.IO.TextWriter   _originalConsoleOutput;
-
+        [Conditional("REDIRECT_CONSOLE")]
         internal static void Init()
         {
             //overwrites if commandline found
-            GetFilenameFromCommandLine(ref _baseName);
+            GetFilenameFromCommandLine(ref BASENAME);
+
+            _folder = System.IO.Directory.CreateDirectory(FOLDER);
 
             SetupLogger();
         }
 
+        [Conditional("REDIRECT_CONSOLE")]
         internal static void Close()
         {
             _consoleOut.Flush();
@@ -44,11 +50,13 @@ namespace Svelto.Utilities
             System.Console.SetOut(_originalConsoleOutput);
         }
 
+        [Conditional("REDIRECT_CONSOLE")]
         internal static void ForceFlush()
         {
             _consoleOut.Flush();
         }
 
+        [Conditional("REDIRECT_CONSOLE")]
         static void SetupLogger()
         {
             _originalConsoleOutput = System.Console.Out;
@@ -96,10 +104,28 @@ namespace Svelto.Utilities
 
         static string GenerateName(int i)
         {
-            return _baseName + i + ".txt";
+            return _folder.FullName + System.IO.Path.DirectorySeparatorChar + BASENAME + i + ".txt";
         }
+        
+        public static void CompressLogsToZipAndShow(string zipName)
+        {
+            Close();
+            
+            var destinationArchiveFileName = Application.persistentDataPath+System.IO.Path.DirectorySeparatorChar + zipName;
+            if (System.IO.File.Exists(destinationArchiveFileName))
+                System.IO.File.Delete(destinationArchiveFileName);
+            
+            ZipFile.CreateFromDirectory(_folder.FullName, destinationArchiveFileName);
+            
+            Init();
+            
+            Application.OpenURL($"file://{Application.persistentDataPath}");
+        }
+        
+        static System.IO.StreamWriter _consoleOut;
+        static System.IO.TextWriter   _originalConsoleOutput;
+        static System.IO.DirectoryInfo _folder;
     }
-#endif
 
     class FasterUnityLogger : ILogger
     {
@@ -119,13 +145,12 @@ namespace Svelto.Utilities
 
         static FasterUnityLogger()
         {
-#if !UNITY_EDITOR || DEBUG_FASTER         
             FasterUnityLoggerUtility.Init();
-#endif
             Console.batchLog = true;
             
             var gameObject = new GameObject("FastMonoLogger");
             gameObject.AddComponent<FastMonoLogger>();
+            GameObject.DontDestroyOnLoad(gameObject);
 
             _comparison       = new ErrorComparer();
             _batchedErrorLogs = new ThreadSafeDictionary<uint, ErrorLogObject>();
@@ -148,6 +173,11 @@ namespace Svelto.Utilities
             Application.SetStackTraceLogType(UnityEngine.LogType.Log, StackTraceLogType.None);
 
             Debug.Log("Svelto Fast Unity Logger added");
+        }
+
+        public void CompressLogsToZipAndShow(string zipName)
+        {
+            FasterUnityLoggerUtility.CompressLogsToZipAndShow(zipName);
         }
 
         public void Log(string txt, LogType type = LogType.Log, bool showLogStack = true, Exception e = null,
@@ -225,7 +255,7 @@ namespace Svelto.Utilities
             if (_batchedErrorLogs.count + _notBatchedQueue.Count == 0)
                 return;
 
-            _logs.FastClear();
+            _logs.Clear();
 
             using (var recycledPoolsGetValues = _batchedErrorLogs.GetValues)
             {
@@ -298,47 +328,39 @@ namespace Svelto.Utilities
             Thread.MemoryBarrier();
             while (_quitThread == false)
             {
-                OtherThreadFlushLogger();
-#if !UNITY_EDITOR || DEBUG_FASTER
-                FasterUnityLoggerUtility.ForceFlush();
-#endif                
+                FlushToFile();
 
                 Thread.Sleep(1000);
             }
-#if !UNITY_EDITOR || DEBUG_FASTER
             FasterUnityLoggerUtility.Close();
-#endif            
+        }
+
+        static void FlushToFile()
+        {
+            OtherThreadFlushLogger();
+
+            FasterUnityLoggerUtility.ForceFlush();
         }
 
         class FastMonoLogger : MonoBehaviour
         {
             void Awake()
             {
-                DontDestroyOnLoad(gameObject);
-            }
-
-            // `OnEnable` is called after `Awake`
-            void OnEnable()
-            {
                 SceneManager.sceneLoaded += FlushLogger;
             }
 
-            // called when the game is terminated
-            void OnDisable()
+            void OnDestroy()
             {
                 SceneManager.sceneLoaded -= FlushLogger;
-            }
-
-            void OnApplicationQuit()
-            {
+                
                 Volatile.Write(ref _quitThread, true);
 
-                OtherThreadFlushLogger();
+                FlushToFile();
             }
 
             static void FlushLogger(Scene arg0, LoadSceneMode arg1)
             {
-                OtherThreadFlushLogger();
+                FlushToFile();
             }
         }
 

@@ -1,7 +1,6 @@
 ﻿using Svelto.ECS.Example.Survive.Camera;
 using Svelto.ECS.Example.Survive.Damage;
-
-//using Svelto.ECS.Example.Survive.Enemies;
+using Svelto.ECS.Example.Survive.Enemies;
 
 namespace Svelto.ECS.Example.Survive.Player
 {
@@ -13,11 +12,11 @@ namespace Svelto.ECS.Example.Survive.Player
             {
                 new ComponentBuilder<PlayerEntityComponent>(),
                 new ComponentBuilder<PositionComponent>()
-             // , new ComponentBuilder<EnemyTargetEntityComponent>()
+              , new ComponentBuilder<EnemyTargetEntityViewComponent>()
               , new ComponentBuilder<PlayerInputDataComponent>()
-                , new ComponentBuilder<AnimationComponent>()
-//              , new ComponentBuilder<PlayerWeaponComponent>()
-  //            , new ComponentBuilder<SpeedComponent>()
+              , new ComponentBuilder<AnimationComponent>()
+              , new ComponentBuilder<WeaponComponent>()
+              , new ComponentBuilder<SpeedComponent>()
               , new ComponentBuilder<CameraReferenceComponent>()
             });
         }

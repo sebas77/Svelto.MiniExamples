@@ -1,5 +1,5 @@
 {
-    "name": "DamageableEntityLayers",
+    "name": "DamageableEntityLayer",
     "references": [
         "Svelto.ECS",
         "Svelto.Common",

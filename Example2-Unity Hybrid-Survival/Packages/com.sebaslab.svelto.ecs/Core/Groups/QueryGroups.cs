@@ -50,7 +50,7 @@ namespace Svelto.ECS.Experimental
 
         public FasterList<ExclusiveGroupStruct> Evaluate()
         {
-            _groups.FastClear();
+            _groups.Clear();
 
             foreach (var item in _sets) _groups.Add(item);
 

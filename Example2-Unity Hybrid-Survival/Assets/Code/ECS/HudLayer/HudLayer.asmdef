@@ -3,10 +3,11 @@
     "references": [
         "Svelto.Common",
         "Svelto.ECS",
-        "DamageableEntityLayers",
         "EnemiesLayer",
         "PlayerEntityLayer",
-        "AnimationLayer"
+        "AnimationLayer",
+        "DamageableEntityLayer",
+        "Utility"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

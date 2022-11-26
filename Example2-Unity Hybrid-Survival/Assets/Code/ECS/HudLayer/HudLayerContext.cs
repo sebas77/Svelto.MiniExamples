@@ -11,12 +11,15 @@ namespace Svelto.ECS.Example.Survive
             //hud and sound engines
             var hudEngine = new HUDEngine(entityStreamConsumerFactory);
             var scoreEngine = new UpdateScoreEngine(entityStreamConsumerFactory);
+            var restartGameOnPlayerDeath = new RestartGameOnPlayerDeathEngine();
 
             enginesRoot.AddEngine(hudEngine);
             enginesRoot.AddEngine(scoreEngine);
 
             unorderedEngines.Add(hudEngine);
             orderedEngines.Add(scoreEngine);
+            
+            unorderedEngines.Add(restartGameOnPlayerDeath);
         }
     }
 }

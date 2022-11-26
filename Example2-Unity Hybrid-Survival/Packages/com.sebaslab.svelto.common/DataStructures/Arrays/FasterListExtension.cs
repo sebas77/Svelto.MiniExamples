@@ -8,7 +8,7 @@ namespace Svelto.DataStructures
     {
 #if NEW_C_SHARP || !UNITY_5_3_OR_NEWER    
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Span<byte> ToSpan<T>(this FasterList<T> list) where T : unmanaged
+        public static Span<byte> ToByteSpan<T>(this FasterList<T> list) where T : unmanaged
         {
             T[] array = list.ToArrayFast(out var count);
             

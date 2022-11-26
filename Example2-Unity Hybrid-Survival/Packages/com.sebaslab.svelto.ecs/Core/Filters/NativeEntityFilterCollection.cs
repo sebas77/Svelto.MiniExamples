@@ -115,8 +115,8 @@ namespace Svelto.ECS
 
             internal void Clear()
             {
-                _indexToEntityId.FastClear();
-                _entityIDToDenseIndex.FastClear();
+                _indexToEntityId.Clear();
+                _entityIDToDenseIndex.Clear();
             }
 
             internal bool HasEntity(uint entityId) => _entityIDToDenseIndex.ContainsKey(entityId);

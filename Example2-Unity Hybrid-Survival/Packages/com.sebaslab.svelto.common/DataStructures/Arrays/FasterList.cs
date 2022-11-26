@@ -195,20 +195,10 @@ namespace Svelto.DataStructures
             Array.Copy(_buffer, 0, array, arrayIndex, count);
         }
 
-        /// <summary>
-        ///     Careful, you could keep on holding references you don't want to hold to anymore
-        ///     Use Clear in case.
-        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void FastClear()
+        public void MemClear()
         {
-#if DEBUG && !PROFILE_SVELTO
-            if (TypeCache<T>.type.IsClass)
-                Console.LogWarning(
-                    "Warning: objects held by this list won't be garbage collected. Use ResetToReuse or Clear " +
-                    "to avoid this warning");
-#endif
-            _count = 0;
+            Array.Clear(_buffer, 0, _buffer.Length);
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -216,14 +206,13 @@ namespace Svelto.DataStructures
         {
             if (TypeCache<T>.type.isUnmanaged())
             {
-                FastClear();
             }
             else
             {
                 Array.Clear(_buffer, 0, _buffer.Length);
-
-                _count = 0;
             }
+            
+            _count = 0;
         }
 
         public static FasterList<T> Fill<U>(uint initialSize) where U : T, new()

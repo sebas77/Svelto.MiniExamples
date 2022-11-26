@@ -23,14 +23,14 @@ namespace Svelto.ECS
             //recycle or create dictionaries of components per group
             var removedComponentsPerType = _thisSubmissionInfo._currentRemoveEntitiesOperations.RecycleOrAdd(
                 entityEgid.groupID, () => new FasterDictionary<RefWrapperType, FasterList<(uint, string)>>()
-              , (ref FasterDictionary<RefWrapperType, FasterList<(uint, string)>> recycled) => recycled.FastClear());
+              , (ref FasterDictionary<RefWrapperType, FasterList<(uint, string)>> recycled) => recycled.Clear());
 
             foreach (var operation in componentBuilders)
                 removedComponentsPerType
                     //recycle or create dictionaries per component type
                    .RecycleOrAdd(new RefWrapperType(operation.GetEntityComponentType())
                                , () => new FasterList<(uint, string)>()
-                               , (ref FasterList<(uint, string)> target) => target.FastClear())
+                               , (ref FasterList<(uint, string)> target) => target.Clear())
                     //add entity to remove
                    .Add((entityEgid.entityID, caller));
         }
@@ -52,7 +52,7 @@ namespace Svelto.ECS
                         FasterDictionary<ExclusiveGroupStruct, FasterList<(uint, uint, string)>>>()
                , (ref FasterDictionary<RefWrapperType, //recycle case (called at first recycle)
                         FasterDictionary<ExclusiveGroupStruct, FasterList<(uint, uint, string)>>> recycled) =>
-                    recycled.FastClear());
+                    recycled.Clear());
 
             foreach (var operation in componentBuilders)
                 swappedComponentsPerType
@@ -61,10 +61,10 @@ namespace Svelto.ECS
                                , () => new FasterDictionary<ExclusiveGroupStruct, FasterList<(uint, uint, string)>>()
                                 ,
                                  (ref FasterDictionary<ExclusiveGroupStruct, FasterList<(uint, uint, string)>>
-                                     target) => target.FastClear())
+                                     target) => target.Clear())
                     //recycle or create list of entities to swap
                    .RecycleOrAdd(toID.groupID, () => new FasterList<(uint, uint, string)>()
-                               , (ref FasterList<(uint, uint, string)> target) => target.FastClear())
+                               , (ref FasterList<(uint, uint, string)> target) => target.Clear())
                     //add entity to swap
                    .Add((fromID.entityID, toID.entityID, caller));
         }
@@ -151,12 +151,12 @@ namespace Svelto.ECS
 
             internal void Clear()
             {
-                _currentSwapEntitiesOperations.FastClear();
-                _currentRemoveEntitiesOperations.FastClear();
-                _entitiesSwapped.FastClear();
-                _entitiesRemoved.FastClear();
-                _groupsToRemove.FastClear();
-                _groupsToSwap.FastClear();
+                _currentSwapEntitiesOperations.Clear();
+                _currentRemoveEntitiesOperations.Clear();
+                _entitiesSwapped.Clear();
+                _entitiesRemoved.Clear();
+                _groupsToRemove.Clear();
+                _groupsToSwap.Clear();
             }
 
             internal void Init()

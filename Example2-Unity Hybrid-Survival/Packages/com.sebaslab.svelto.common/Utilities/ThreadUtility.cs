@@ -16,6 +16,7 @@ namespace Svelto.Utilities
         /// that is the core is given to a thread that is already running on that core. Sleep(0) may cause
         /// a context switch, yielding the processor to a thread from ANY process. Thread.Yield yields
         /// the processor to any thread associated with the current core.
+        /// Remember that sleep(1) does FORCE a context switch instead, while with sleep(0) is only if required.
         /// </summary>
         public static void Yield()
         {

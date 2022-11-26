@@ -43,17 +43,19 @@
   <ItemGroup>
      <Compile Include="Assets\Code\ECS\HudLayer\DamageHUDImplementor.cs" />
      <Compile Include="Assets\Code\ECS\HudLayer\ECSGroups.cs" />
+     <Compile Include="Assets\Code\ECS\HudLayer\Engines\HUDEngine.cs" />
+     <Compile Include="Assets\Code\ECS\HudLayer\Engines\RestartGameOnPlayerDeathEngine.cs" />
+     <Compile Include="Assets\Code\ECS\HudLayer\Engines\UpdateScoreEngine.cs" />
      <Compile Include="Assets\Code\ECS\HudLayer\EnginesNames.cs" />
      <Compile Include="Assets\Code\ECS\HudLayer\GUIComponentInterfaces.cs" />
+     <Compile Include="Assets\Code\ECS\HudLayer\HUDEntityDescriptorHolder.cs" />
      <Compile Include="Assets\Code\ECS\HudLayer\HUDEntityViewComponent.cs" />
      <Compile Include="Assets\Code\ECS\HudLayer\HealthSliderImplementor.cs" />
-     <Compile Include="Assets\Code\ECS\HudLayer\HudEntityDescriptorHolder.cs" />
+     <Compile Include="Assets\Code\ECS\HudLayer\HudEntityDescriptor.cs" />
      <Compile Include="Assets\Code\ECS\HudLayer\HudLayerContext.cs" />
-     <Compile Include="Assets\Code\ECS\HudLayer\OtherEngines\HUDEngine.cs" />
-     <Compile Include="Assets\Code\ECS\HudLayer\OtherEngines\UpdateScoreEngine.cs" />
      <Compile Include="Assets\Code\ECS\HudLayer\ScoreManagerImplementor.cs" />
      <None Include="Assets\Code\ECS\HudLayer\HudLayer.asmdef" />
-     <Folder Include="Assets\Code\ECS\HudLayer\OtherEngines" />
+     <Folder Include="Assets\Code\ECS\HudLayer\Engines" />
      <Folder Include="Assets\Code\ECS\HudLayer" />
      <Reference Include="UnityEngine">
      <HintPath>C:\Program Files\Unity\2019.4.40f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
@@ -611,10 +613,6 @@
       <Project>{8d2eb115-c2e2-3719-ca04-08d3c302a5a1}</Project>
       <Name>Svelto.ECS</Name>
     </ProjectReference>
-    <ProjectReference Include="DamageableEntityLayers.csproj">
-      <Project>{5303ef99-64f3-a3a6-fbce-286aa0ed9a52}</Project>
-      <Name>DamageableEntityLayers</Name>
-    </ProjectReference>
     <ProjectReference Include="EnemiesLayer.csproj">
       <Project>{5ab236e2-05ce-c020-ed35-80dc1c78838f}</Project>
       <Name>EnemiesLayer</Name>
@@ -626,6 +624,14 @@
     <ProjectReference Include="AnimationLayer.csproj">
       <Project>{59e9f197-bda3-ff91-2f6b-e150b462fed8}</Project>
       <Name>AnimationLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="DamageableEntityLayer.csproj">
+      <Project>{aeea405b-755d-b192-f746-16b655660ec3}</Project>
+      <Name>DamageableEntityLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="Utility.csproj">
+      <Project>{61523958-85ca-4e2e-e8e7-aea8b6c3f736}</Project>
+      <Name>Utility</Name>
     </ProjectReference>
     <ProjectReference Include="UnityEditor.UI.csproj">
       <Project>{071fa4f6-95c0-6054-c479-b9199d4dc847}</Project>

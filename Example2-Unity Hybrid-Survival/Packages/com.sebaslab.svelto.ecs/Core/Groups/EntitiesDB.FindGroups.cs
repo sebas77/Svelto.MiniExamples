@@ -10,7 +10,7 @@ namespace Svelto.ECS
         public LocalFasterReadOnlyList<ExclusiveGroupStruct> FindGroups<T1>() where T1 : _IInternalEntityComponent
         {
             FasterList<ExclusiveGroupStruct> result = localgroups.Value.groupArray;
-            result.FastClear();
+            result.Clear();
             if (groupsPerComponent.TryGetValue(TypeRefWrapper<T1>.wrapper
                                           , out FasterDictionary<ExclusiveGroupStruct, ITypeSafeDictionary> result1)
              == false)
@@ -35,7 +35,7 @@ namespace Svelto.ECS
             where T1 : _IInternalEntityComponent where T2 : _IInternalEntityComponent
         {
             FasterList<ExclusiveGroupStruct> result = localgroups.Value.groupArray;
-            result.FastClear();
+            result.Clear();
             if (groupsPerComponent.TryGetValue(TypeRefWrapper<T1>.wrapper
                                           , out FasterDictionary<ExclusiveGroupStruct, ITypeSafeDictionary> result1)
              == false)
@@ -98,7 +98,7 @@ namespace Svelto.ECS
                 return new LocalFasterReadOnlyList<ExclusiveGroupStruct>(
                     FasterReadOnlyList<ExclusiveGroupStruct>.DefaultEmptyList);
 
-            localgroups.Value.groups.FastClear();
+            localgroups.Value.groups.Clear();
 
             FasterDictionary<ExclusiveGroupStruct, ExclusiveGroupStruct> localGroups = localgroups.Value.groups;
 
@@ -154,7 +154,7 @@ namespace Svelto.ECS
                 return new LocalFasterReadOnlyList<ExclusiveGroupStruct>(
                     FasterReadOnlyList<ExclusiveGroupStruct>.DefaultEmptyList);
 
-            localgroups.Value.groups.FastClear();
+            localgroups.Value.groups.Clear();
 
             FasterDictionary<ExclusiveGroupStruct, ExclusiveGroupStruct> localGroups = localgroups.Value.groups;
 
