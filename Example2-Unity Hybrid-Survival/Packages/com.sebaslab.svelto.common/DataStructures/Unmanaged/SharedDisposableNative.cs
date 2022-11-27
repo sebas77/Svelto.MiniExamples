@@ -15,7 +15,7 @@ namespace Svelto.Common.DataStructures
         {
             unsafe
             {
-                ptr = MemoryUtilities.Alloc<T>(1, Allocator.Persistent);
+                ptr = MemoryUtilities.NativeAlloc<T>(1, Allocator.Persistent);
                 Unsafe.Write((void*)ptr, value);
             }
         }
@@ -26,7 +26,7 @@ namespace Svelto.Common.DataStructures
             {
                 Unsafe.AsRef<T>((void*)ptr).Dispose();
                 
-                MemoryUtilities.Free((IntPtr)ptr, Allocator.Persistent);
+                MemoryUtilities.NativeFree((IntPtr)ptr, Allocator.Persistent);
                 ptr = IntPtr.Zero;
             }
         }

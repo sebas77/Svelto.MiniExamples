@@ -4,8 +4,6 @@
 using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using Svelto.Common;
-using Svelto.Common.DataStructures;
 
 namespace Svelto.Common.DataStructures
 {
@@ -60,7 +58,7 @@ namespace Svelto.Common.DataStructures
         {
             unsafe
             {
-                var listData = (UnsafeBlob*)MemoryUtilities.Alloc<UnsafeBlob>((uint)1, allocator);
+                var listData = (UnsafeBlob*)MemoryUtilities.NativeAlloc<UnsafeBlob>((uint)1, allocator);
 
                 listData->allocator = allocator;
                 _queue              = listData;
@@ -94,7 +92,7 @@ namespace Svelto.Common.DataStructures
                 using (_threadSentinel.TestThreadSafety())
                 {
                     _queue->Dispose();
-                    MemoryUtilities.Free((IntPtr)_queue, _queue->allocator);
+                    MemoryUtilities.NativeFree((IntPtr)_queue, _queue->allocator);
                     _queue = null;
                 }
             }
@@ -124,8 +122,7 @@ namespace Svelto.Common.DataStructures
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Enqueue<T>
-            (in T item) where T : struct //should be unmanaged, but it's not due to Svelto.ECS constraints.
+        public void Enqueue<T>(in T item) where T : struct //should be unmanaged, but it's not due to Svelto.ECS constraints.
         {
             unsafe
             {

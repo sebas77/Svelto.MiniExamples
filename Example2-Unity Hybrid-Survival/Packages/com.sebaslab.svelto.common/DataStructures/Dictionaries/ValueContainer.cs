@@ -1,6 +1,8 @@
 using System;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using Svelto.Common;
+using UnityEngine;
 
 namespace Svelto.DataStructures.Experimental
 {
@@ -16,55 +18,33 @@ namespace Svelto.DataStructures.Experimental
     ///
     /// it's possible to intersect bitsets to know the entities that have all the components shared
     ///
+    /// it is confirmed that when using a bit set this operation is necessary components[denseset[i]]
+    ///
     /// The following class is not a sparse set, it's more an optimised dictionary for cases where the user
     /// cannot decide the key value.
     /// 
     public sealed class ValueContainer<T, StrategyD, StrategyS> where StrategyD : IBufferStrategy<T>, new()
-        where StrategyS : IBufferStrategy<int>, new()
+        where StrategyS : IBufferStrategy<SparseIndex>, new()
     {
-        public ValueContainer()
+        public ValueContainer(uint initialSize)
         {
             _sparse = new StrategyS();
-            _sparse.Alloc(1, Allocator.Persistent, false);
-            _sparse[0] = 0;
+            _sparse.Alloc(initialSize, Allocator.Persistent, true);
             _dense = new StrategyD();
-            _dense.Alloc(1, Allocator.Persistent, false);
-        }
-
-        public ValueContainer(uint size)
-        {
-            _sparse = new StrategyS();
-            _sparse.Alloc(size, Allocator.Persistent, true);
-            _dense = new StrategyD();
-            _dense.Alloc(size, Allocator.Persistent, false);
+            _dense.Alloc(initialSize, Allocator.Persistent, false);
         }
 
         public int capacity => _dense.capacity;
         public int count => (int)_count;
 
-        public ref T this[uint index]
+        public ref T this[ValueIndex index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-#if DEBUG && !PROFILE_SVELTO
-                if (index >= count)
-                    throw new Exception($"SparseSet - out of bound access: index {count} - capacity {count}");
-#endif
-                return ref _dense[index];
-            }
-        }
+                DBC.Common.Check.Require(Has(index) == true, $"SparseSet - invalid index: index {index}");
 
-        public ref T this[int index]
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
-            {
-#if DEBUG && !PROFILE_SVELTO
-                if (index >= count)
-                    throw new Exception($"SparseSet - out of bound access: index {count} - capacity {count}");
-#endif
-                return ref _dense[index];
+                return ref _dense[index.sparseIndex];
             }
         }
 
@@ -72,54 +52,58 @@ namespace Svelto.DataStructures.Experimental
         public void Clear()
         {
             _count = 0;
-            
+
             _dense.Clear();
             _sparse.Clear();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Has(uint index)
+        public bool Has(ValueIndex index)
         {
-            return index < capacity && _sparse[index] < count && _sparse[index] >= 0;
+            return index.version > 0
+             && index.sparseIndex < capacity
+             && index.version == _sparse[index.sparseIndex].version
+             && _sparse[index.sparseIndex].denseIndex < count;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public uint Add(T val)
+        public ValueIndex Add(T val)
         {
-            uint index;
-            if (_lastFreeIndex == 0)
-            {
-                index = (uint)count;
-                if (index >= capacity)
-                    Reserve((uint)Math.Ceiling(capacity * 1.5f));
-                ++_count;
-            }
-            else
-            {
-                index = _lastFreeIndex;
-                _lastFreeIndex = (uint)-_sparse[index];
-            }
+            var index = (uint)count;
+            if (index >= capacity)
+                Reserve((uint)Math.Ceiling((capacity + 1) * 1.5f));
+
+            ++_count;
 
             _dense[index] = val;
-            _sparse[index] = (int)index;
+            var version = (byte)(_sparse[index].version + 1);
+            _sparse[index] = new SparseIndex(index, version); //base count is 1 so 0 can be used as invalid
 
-            return (uint)index;
+            return new ValueIndex(index, version);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Remove(uint index)
+        public void Remove(ValueIndex index)
         {
-            var denseIndex = _sparse[index]; //from index to the index in dense
-            _dense[denseIndex] = _dense[_count - 1]; //move the value to the index to replace
-            _sparse[count - 1] = denseIndex;
-            _sparse[index] = (int)-_lastFreeIndex;
-            _lastFreeIndex = (uint)denseIndex;
-            --_count;
+            DBC.Common.Check.Require(Has(index) == true, $"SparseSet - invalid index: index {index}");
+
+            var denseIndexToReplace = _sparse[index.sparseIndex].denseIndex;
+
+            var sparseIndexToSwap = _count - 1;
+            _dense[denseIndexToReplace] = _dense[sparseIndexToSwap]; //swap the last value 
+
+            _sparse[index.sparseIndex] = new SparseIndex(
+                denseIndexToReplace
+              , (byte)(_sparse[index.sparseIndex].version + 1)); //invalidate swapped sparse index
+
+            --_count; //I don't need to invalidate the sparse value linked to dense[count - 1] because checking that sparseindex < count is enough
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Reserve(uint u)
         {
+            DBC.Common.Check.Require(u < MAX_SIZE, "Max size reached");
+
             if (u > capacity)
             {
                 _dense.Resize(u);
@@ -136,6 +120,66 @@ namespace Svelto.DataStructures.Experimental
         readonly StrategyD _dense;  //Dense set of elements
         readonly StrategyS _sparse; //Map of elements to dense set indices //Should this be a bitset?
         uint _count;
-        uint _lastFreeIndex;
+
+        static int MAX_SIZE = (int)Math.Pow(2, 24);
     }
+
+    [StructLayout(LayoutKind.Explicit)]
+    public struct ValueIndex
+    {
+        internal uint sparseIndex => _sparseIndex & 0x00FFFFFF;
+        internal byte version => _version;
+        
+        [FieldOffset(0)] readonly uint _sparseIndex;
+        [FieldOffset(3)] readonly byte _version;
+
+        public ValueIndex(uint index, byte ver)
+        {
+            _sparseIndex = index;
+            _version = ver;
+        }
+    }
+
+    [StructLayout(LayoutKind.Explicit)]
+    public struct SparseIndex
+    {
+        internal uint denseIndex => _denseIndex & 0x00FFFFFF;
+        internal byte version => _version;
+        
+        [FieldOffset(0)] readonly uint _denseIndex;
+        [FieldOffset(3)] readonly byte _version;
+
+        public SparseIndex(uint index, byte ver)
+        {
+            _denseIndex = index;
+            _version = ver;
+        }
+    }
+    
+//    ValueContainer<GameObject, ManagedStrategy<GameObject>, NativeStrategy<SparseIndex>> test =
+//        new ValueContainer<GameObject, ManagedStrategy<GameObject>, NativeStrategy<SparseIndex>>(16);
+//
+//    var index = test.Add(GameObject.CreatePrimitive(PrimitiveType.Capsule));
+//    var b = test.Has(index);
+//    DBC.Check.Ensure(b == true);
+//    index =             test.Add(GameObject.CreatePrimitive(PrimitiveType.Cube));
+//    b = test.Has(index);
+//    DBC.Check.Ensure(b == true);
+//    var index2 = test.Add(GameObject.CreatePrimitive(PrimitiveType.Cylinder));
+//    b = test.Has(index2);
+//    DBC.Check.Ensure(b == true);
+//    test.Remove(index2);
+//    b = test.Has(index2);
+//    DBC.Check.Ensure(b == false);
+//    index = test.Add(GameObject.CreatePrimitive(PrimitiveType.Sphere));
+//    b = test.Has(index);
+//    DBC.Check.Ensure(b == true);
+//    b = test.Has(index2);
+//    DBC.Check.Ensure(b == false);
+//    index = test.Add(GameObject.CreatePrimitive(PrimitiveType.Cylinder));
+//    b = test.Has(index);
+//    DBC.Check.Ensure(b == true);
+//    b = test.Has(index2);
+//    DBC.Check.Ensure(b == false);
+
 }

@@ -12,15 +12,15 @@ namespace Code.ECS.Shared
     {
         protected ECSResourceManager()
         {
-            _sparse = new ValueContainer<T, ManagedStrategy<T>, NativeStrategy<int>>();
+            _sparse = new ValueContainer<T, ManagedStrategy<T>, NativeStrategy<SparseIndex>>(16);
         }
 
-        protected uint Add(in T resource)
+        protected ValueIndex Add(in T resource)
         {
             return _sparse.Add(resource);
         }
         
-        protected void Remove(uint index)
+        protected void Remove(ValueIndex index)
         {
             _sparse.Remove(index);
         }
@@ -31,12 +31,12 @@ namespace Code.ECS.Shared
             _sparse.Clear();
         }
 
-        public T this[uint index]
+        public T this[ValueIndex index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => _sparse[index];
         }
         
-        readonly ValueContainer<T, ManagedStrategy<T>, NativeStrategy<int>> _sparse;
+        readonly ValueContainer<T, ManagedStrategy<T>, NativeStrategy<SparseIndex>> _sparse;
     }
 }

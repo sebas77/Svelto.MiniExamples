@@ -26,7 +26,7 @@ namespace Svelto.DataStructures.Native
         public int       capacity           => _realBuffer.capacity;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Alloc(uint newCapacity, Allocator allocator, bool clear)
+        public void Alloc(uint newCapacity, Allocator allocator, bool memClear)
         {
 #if DEBUG && !PROFILE_SVELTO
             if (!(this._realBuffer.ToNativeArray(out _) == IntPtr.Zero))
@@ -36,7 +36,7 @@ namespace Svelto.DataStructures.Native
 #endif
             _nativeAllocator = allocator;
 
-            IntPtr   realBuffer = MemoryUtilities.Alloc<T>(newCapacity, _nativeAllocator, clear);
+            IntPtr   realBuffer = MemoryUtilities.NativeAlloc<T>(newCapacity, _nativeAllocator, memClear);
             NB<T> b          = new NB<T>(realBuffer, newCapacity);
             _invalidHandle = true;
             _realBuffer    = b;
@@ -48,7 +48,7 @@ namespace Svelto.DataStructures.Native
             if (newSize != capacity)
             {
                 IntPtr pointer = _realBuffer.ToNativeArray(out _);
-                pointer = MemoryUtilities.Realloc<T>(pointer, newSize, _nativeAllocator
+                pointer = MemoryUtilities.NativeRealloc<T>(pointer, newSize, _nativeAllocator
                                                    , newSize > capacity ? (uint) capacity : newSize
                                                    , copyContent, memClear);
                 NB<T> b = new NB<T>(pointer, newSize);
@@ -155,7 +155,7 @@ namespace Svelto.DataStructures.Native
             ReleaseCachedReference();
 
             if (_realBuffer.ToNativeArray(out _) != IntPtr.Zero)
-                MemoryUtilities.Free(_realBuffer.ToNativeArray(out _), _nativeAllocator);
+                MemoryUtilities.NativeFree(_realBuffer.ToNativeArray(out _), _nativeAllocator);
             else
                 throw new Exception("trying to dispose disposed buffer");
 

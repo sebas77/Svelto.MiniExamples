@@ -6,30 +6,41 @@ using System.Runtime.CompilerServices;
 public struct FixedTypedArray4<T> where T : unmanaged
 {
     static readonly int Length = 4;
-    
+
     T field0;
     T field1;
     T field2;
     T field3;
 
     public int length => Length;
-    
-    public ref T this[int index]
+
+    public T this[int index]
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get
         {
             unsafe
             {
-                 if (index >= Length)
-                                    throw new Exception("out of bound index");
-                
-                fixed (FixedTypedArray4<T>* thisPtr = &this)
-                {
-                    var source = Unsafe.Add<T>(thisPtr, index);
-                    ref var asRef = ref Unsafe.AsRef<T>(source);
-                    return ref asRef;
-                }
+                if (index >= Length)
+                    throw new Exception("out of bound index");
+
+                void* thisPtr = Unsafe.AsPointer(ref this);
+                var source = Unsafe.Add<T>(thisPtr, index);
+                ref var asRef = ref Unsafe.AsRef<T>(source);
+                return asRef; //must return a copy to be safe
+            }
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        set
+        {
+            unsafe
+            {
+                if (index >= Length)
+                    throw new Exception("out of bound index");
+
+                void* thisPtr = Unsafe.AsPointer(ref this);
+                var source = Unsafe.Add<T>(thisPtr, index);
+                Unsafe.AsRef<T>(source) = value;
             }
         }
     }
@@ -38,10 +49,10 @@ public struct FixedTypedArray4<T> where T : unmanaged
     {
         return new FixedTypeEnumerator(ref Unsafe.AsRef<T>(field0));
     }
-    
+
     public ref struct FixedTypeEnumerator
     {
-        public FixedTypeEnumerator(ref T fixedTypedArray4):this()
+        public FixedTypeEnumerator(ref T fixedTypedArray4): this()
         {
             unsafe
             {
@@ -55,25 +66,25 @@ public struct FixedTypedArray4<T> where T : unmanaged
             if (_index < Length - 1)
             {
                 _index++;
-                
+
                 return true;
             }
 
             return false;
         }
-        
-        public ref T Current
+
+        public T Current
         {
             get
             {
                 unsafe
                 {
-                    return ref Unsafe.AsRef<FixedTypedArray4<T>>(_fixedTypedArray4)[_index];
+                    return Unsafe.AsRef<FixedTypedArray4<T>>(_fixedTypedArray4)[_index];
                 }
             }
         }
-        
-        readonly unsafe void * _fixedTypedArray4;
+
+        readonly unsafe void* _fixedTypedArray4;
         int _index;
     }
 }

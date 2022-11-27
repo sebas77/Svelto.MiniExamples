@@ -84,7 +84,7 @@ namespace Svelto.Common.DataStructures
 #else
                 NativeDynamicArray rtnStruc = default;
 #endif
-                UnsafeArray* listData = (UnsafeArray*)MemoryUtilities.Alloc<UnsafeArray>(1, allocator);
+                UnsafeArray* listData = (UnsafeArray*)MemoryUtilities.NativeAlloc<UnsafeArray>(1, allocator);
 
                 //clear to nullify the pointers
                 //MemoryUtilities.MemClear((IntPtr) listData, structSize);
@@ -168,7 +168,7 @@ namespace Svelto.Common.DataStructures
             {
 #endif
                 _list->Dispose(_allocator);
-                MemoryUtilities.Free((IntPtr)_list, _allocator);
+                MemoryUtilities.NativeFree((IntPtr)_list, _allocator);
                 
 #if ENABLE_DEBUG_CHECKS
             }

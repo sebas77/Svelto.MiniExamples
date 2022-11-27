@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Svelto.DataStructures.Experimental;
 using Svelto.ECS.Example.Survive.ResourceManager;
 using UnityEngine;
 
@@ -11,7 +12,7 @@ namespace Code.ECS.Shared
             _factory = new GameObjectFactory();
         }
 
-        public IEnumerator<uint?> Build(string prefabName)
+        public IEnumerable<ValueIndex?> Build(string prefabName)
         {
             var gameObject = _factory.Build(prefabName);
 

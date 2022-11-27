@@ -62,7 +62,6 @@
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Dictionaries\LocalSveltoDictionaryNative.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Dictionaries\ReadonlySveltoDictionaryNative.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Dictionaries\SharedSveltoDictionaryNative.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Dictionaries\SparseSet.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Dictionaries\SveltoDictionary.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Dictionaries\SveltoDictionaryNative.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Dictionaries\SveltoDictionaryNode.cs" />
@@ -85,6 +84,9 @@
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Sentinel\SentinelNativeStrategy.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Sentinel\SharedDictionaryStruct.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Sentinel\SharedDictonary.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Streams\ByteArraySegment.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Streams\ManagerVOSerializationHelper.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Streams\UnmanagedStream.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\ThreadSafeQueue.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\ThreadSafeStack.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\TypeCache.cs" />
@@ -136,6 +138,7 @@
      <Folder Include="Packages\com.sebaslab.svelto.common" />
      <None Include="Packages\com.sebaslab.svelto.common\Svelto.Common.asmdef" />
      <None Include="Packages\com.sebaslab.svelto.common\package.json" />
+     <Folder Include="Packages\com.sebaslab.svelto.common\DataStructures\Streams" />
      <Folder Include="Packages\com.sebaslab.svelto.common\Context\Extensions\Unity" />
      <Folder Include="Packages\com.sebaslab.svelto.common\ObjectPool\Unity" />
      <Folder Include="Packages\com.sebaslab.svelto.common\DataStructures\Arrays" />

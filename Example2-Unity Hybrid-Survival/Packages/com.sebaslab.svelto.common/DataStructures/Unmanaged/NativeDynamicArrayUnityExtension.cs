@@ -6,7 +6,7 @@ namespace Svelto.Common.DataStructures
 {
     public static class NativeDynamicArrayUnityExtension
     {
-        public static NativeArray<T> ToNativeArray<T>(this NativeDynamicArray array) where T : struct
+        public static NativeArray<T> ToNativeArray<T>(this in NativeDynamicArray array) where T : struct
         {
             unsafe
             {

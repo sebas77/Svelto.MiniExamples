@@ -87,18 +87,6 @@ namespace Svelto.ECS.Example.Survive
         /// </summary>
         void CompositionRoot(UnityContext contextHolder)
         {
-            ValueContainer<GameObject, ManagedStrategy<GameObject>, NativeStrategy<int>> test =
-                new ValueContainer<GameObject, ManagedStrategy<GameObject>, NativeStrategy<int>>();
-
-            test.Add(GameObject.CreatePrimitive(PrimitiveType.Capsule));
-            test.Add(GameObject.CreatePrimitive(PrimitiveType.Cube));
-            test.Add(GameObject.CreatePrimitive(PrimitiveType.Cylinder));
-            test.Add(GameObject.CreatePrimitive(PrimitiveType.Sphere));
-            
-            
-
-            return;
-            
 //the SimpleEntitiesSubmissionScheduler is the scheduler that is used by the EnginesRoot to know
 //when to submit the entities. Custom ones can be created for special cases. This is the simplest default and it must
 //be ticked explicitly.

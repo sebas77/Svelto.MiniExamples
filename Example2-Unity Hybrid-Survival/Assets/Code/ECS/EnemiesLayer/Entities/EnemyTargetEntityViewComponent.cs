@@ -1,11 +1,9 @@
-using Svelto.ECS.Hybrid;
+using UnityEngine;
 
 namespace Svelto.ECS.Example.Survive.Enemies
 {
-    public struct EnemyTargetEntityViewComponent : IEntityViewComponent
+    public struct EnemyTargetEntityViewComponent : IEntityComponent
     {
-        public IPositionComponent targetPositionComponent;
-        
-        public EGID ID { get; set; }
+        public Vector3 position;
     }
 }

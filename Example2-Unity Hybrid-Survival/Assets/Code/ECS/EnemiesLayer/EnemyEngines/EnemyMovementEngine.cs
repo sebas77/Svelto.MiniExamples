@@ -24,8 +24,7 @@ namespace Svelto.ECS.Example.Survive.Enemies
                         //there were more, I could use different strategies, like choose the closest. This is 
                         //for a very simple AI scenario of course.
                         for (var i = 0; i < enemiesCount; i++)
-                            enemies[i].movementComponent.navMeshDestination =
-                                enemiesTarget[0].targetPositionComponent.position;
+                            enemies[i].movementComponent.navMeshDestination = enemiesTarget[0].position;
                     }
                 }
             }

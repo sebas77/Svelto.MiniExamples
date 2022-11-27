@@ -96,9 +96,9 @@ namespace Svelto.Common.DataStructures
 
                 uint newCapacityInBytes = structSize * newCapacity;
                 if (_ptr == null)
-                    _ptr = (byte*) MemoryUtilities.Alloc(newCapacityInBytes, allocator);
+                    _ptr = (byte*) MemoryUtilities.NativeAlloc(newCapacityInBytes, allocator);
                 else
-                    _ptr = (byte*) MemoryUtilities.Realloc((IntPtr) _ptr, newCapacityInBytes, allocator, (uint) count);
+                    _ptr = (byte*) MemoryUtilities.NativeRealloc((IntPtr) _ptr, newCapacityInBytes, allocator, (uint) count);
 
                 _capacity = newCapacityInBytes;
             }
@@ -113,7 +113,7 @@ namespace Svelto.Common.DataStructures
                 if (ptr == null)
                     throw new Exception("UnsafeArray: try to dispose an already disposed array");
 #endif                
-                 MemoryUtilities.Free((IntPtr) ptr, allocator);
+                 MemoryUtilities.NativeFree((IntPtr) ptr, allocator);
                  
                 _ptr        = null;
                 _writeIndex = 0;

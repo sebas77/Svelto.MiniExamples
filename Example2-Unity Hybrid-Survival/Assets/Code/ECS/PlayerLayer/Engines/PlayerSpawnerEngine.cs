@@ -1,5 +1,6 @@
 using System.Collections;
 using Code.ECS.Shared;
+using Svelto.DataStructures.Experimental;
 using Svelto.ECS.Example.Survive.Camera;
 using Svelto.ECS.Example.Survive.Damage;
 using Svelto.ECS.Example.Survive.Player.Gun;
@@ -16,23 +17,23 @@ namespace Svelto.ECS.Example.Survive.Player
 
         public IEnumerator SpawnPlayer()
         {
-            var playerLoading = _gameObjectResourceManager.Build("Player");
+            var playerLoading = _gameObjectResourceManager.Build("Player").GetEnumerator();
 
             while (playerLoading.MoveNext()) yield return null;
 
-            var cameraLoading = _gameObjectResourceManager.Build("CameraPrefab");
+            var cameraLoading = _gameObjectResourceManager.Build("CameraPrefab").GetEnumerator();
 
             while (cameraLoading.MoveNext()) yield return null;
 
-            uint playerID = playerLoading.Current.Value;
-            uint cameraID = cameraLoading.Current.Value;
+            ValueIndex playerID = playerLoading.Current.Value;
+            ValueIndex cameraID = cameraLoading.Current.Value;
 
             BuildPlayerEntity(playerID, out var playerInitializer);
             BuildGunEntity(playerInitializer);
             BuildCameraEntity(ref playerInitializer, cameraID);
         }
 
-        void BuildPlayerEntity(uint playerID, out EntityInitializer playerInitializer)
+        void BuildPlayerEntity(ValueIndex playerID, out EntityInitializer playerInitializer)
         {
             //Build the Svelto ECS entity for the player. Svelto.ECS has the unique feature to let the user decide
             //the ID of the entity (which must be anyway unique). The user may think that using, for example, 
@@ -43,7 +44,6 @@ namespace Svelto.ECS.Example.Survive.Player
             //ECSGroups.Player is the group where the entity player will be built. I usually expect a 
             //group for entity descriptor. It is the safest way to go, but advanced users may decide to use different
             //groups layout if needed.
-            //Pure ECS (no OOP) entities do not need implementors passed.
             playerInitializer = _entityFactory.BuildEntity<PlayerEntityDescriptor>(0, Player.BuildGroup);
 
             //BuildEntity returns an initializer that can be used to initialise all the entity components generated
@@ -95,7 +95,7 @@ namespace Svelto.ECS.Example.Survive.Player
         /// screen scenario. 
         /// <param name="playerID"></param>
         /// <param name="gameObject"></param>
-        void BuildCameraEntity(ref EntityInitializer playerID, uint cameraID)
+        void BuildCameraEntity(ref EntityInitializer playerID, ValueIndex cameraID)
         {
             var cameraResource = _gameObjectResourceManager[cameraID];
             var playerPosition = playerID.Get<PositionComponent>();

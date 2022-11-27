@@ -1,4 +1,5 @@
-﻿using Svelto.ECS.Hybrid;
+﻿using Svelto.DataStructures.Experimental;
+using Svelto.ECS.Hybrid;
 using UnityEngine;
 
 namespace Svelto.ECS.Example.Survive.Player
@@ -10,6 +11,6 @@ namespace Svelto.ECS.Example.Survive.Player
         public Vector3 position;
         public Quaternion rotation;
 
-        public uint resourceIndex;
+        public ValueIndex resourceIndex;
     }
 }

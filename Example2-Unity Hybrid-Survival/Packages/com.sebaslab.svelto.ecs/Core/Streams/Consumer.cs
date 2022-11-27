@@ -21,10 +21,10 @@ namespace Svelto.ECS
                 string.Empty
 #endif
                 );
-                mustBeDisposed          = MemoryUtilities.Alloc<bool>(1, Allocator.Persistent);
+                mustBeDisposed          = MemoryUtilities.NativeAlloc<bool>(1, Allocator.Persistent);
                 *(bool*) mustBeDisposed = false;
 
-                isActive          = MemoryUtilities.Alloc<bool>(1, Allocator.Persistent);
+                isActive          = MemoryUtilities.NativeAlloc<bool>(1, Allocator.Persistent);
                 *(bool*) isActive = true;
             }
         }
@@ -80,8 +80,8 @@ namespace Svelto.ECS
 
         public void Free()
         {
-            MemoryUtilities.Free(mustBeDisposed, Allocator.Persistent);
-            MemoryUtilities.Free(isActive,       Allocator.Persistent);
+            MemoryUtilities.NativeFree(mustBeDisposed, Allocator.Persistent);
+            MemoryUtilities.NativeFree(isActive,       Allocator.Persistent);
         }
 
         public void Pause()

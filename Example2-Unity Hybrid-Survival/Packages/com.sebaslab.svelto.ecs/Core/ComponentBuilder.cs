@@ -104,7 +104,7 @@ namespace Svelto.ECS
 
         public bool isUnmanaged => IS_UNMANAGED;
 
-        static ThreadLocal<EntityViewComponentCache> _localCache = new ThreadLocal<EntityViewComponentCache>(() => new EntityViewComponentCache());
+        static readonly ThreadLocal<EntityViewComponentCache> _localCache = new ThreadLocal<EntityViewComponentCache>(() => new EntityViewComponentCache());
 
         public void BuildEntityAndAddToList(ITypeSafeDictionary dictionary, EGID egid, IEnumerable<object> implementors)
         {
