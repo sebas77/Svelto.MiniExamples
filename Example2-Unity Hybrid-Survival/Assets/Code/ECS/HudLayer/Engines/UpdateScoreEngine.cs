@@ -5,7 +5,7 @@ using Svelto.ECS.Example.Survive.Enemies;
 
 namespace Svelto.ECS.Example.Survive.HUD
 {
-    [Sequenced(nameof(EnginesNames.UpdateScoreEngine))]
+    [Sequenced(nameof(HUDEnginesNames.UpdateScoreEngine))]
     public class UpdateScoreEngine : IQueryingEntitiesEngine, IStepEngine
     {
         public EntitiesDB entitiesDB { get; set; }

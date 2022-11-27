@@ -2,8 +2,10 @@
 
 namespace Svelto.ECS.Example.Survive.Transformable
 {
-    public struct PositionComponent : IEntityComponent
+    public struct RigidBodyComponent: IEntityComponent
     {
+        public bool isKinematic;
+        public Vector3 velocity;
         public Vector3 position;
     }
 }

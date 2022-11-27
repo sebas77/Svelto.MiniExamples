@@ -41,24 +41,32 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
+     <Compile Include="Assets\Code\ECS\PlayerLayer\Engines\Gun\PlayerFiresGunEngine.cs" />
+     <Compile Include="Assets\Code\ECS\PlayerLayer\Engines\Gun\PlayerGunShootingFXsEngine.cs" />
      <Compile Include="Assets\Code\ECS\PlayerLayer\Engines\PlayerAnimationEngine.cs" />
      <Compile Include="Assets\Code\ECS\PlayerLayer\Engines\PlayerDeathEngine.cs" />
-     <Compile Include="Assets\Code\ECS\PlayerLayer\Engines\PlayerFiresGunEngine.cs" />
      <Compile Include="Assets\Code\ECS\PlayerLayer\Engines\PlayerInputEngine.cs" />
      <Compile Include="Assets\Code\ECS\PlayerLayer\Engines\PlayerMovementEngine.cs" />
      <Compile Include="Assets\Code\ECS\PlayerLayer\Engines\PlayerSpawnerEngine.cs" />
+     <Compile Include="Assets\Code\ECS\PlayerLayer\Entities\Gun\GunAttributesComponent.cs" />
+     <Compile Include="Assets\Code\ECS\PlayerLayer\Entities\Gun\GunEntityComponent.cs" />
+     <Compile Include="Assets\Code\ECS\PlayerLayer\Entities\Gun\PlayerGunEntityDescriptor.cs" />
      <Compile Include="Assets\Code\ECS\PlayerLayer\Entities\PlayerEntityComponent.cs" />
      <Compile Include="Assets\Code\ECS\PlayerLayer\Entities\PlayerEntityDescriptor.cs" />
      <Compile Include="Assets\Code\ECS\PlayerLayer\Entities\PlayerInputDataComponent.cs" />
      <Compile Include="Assets\Code\ECS\PlayerLayer\Entities\SpeedComponent.cs" />
+     <Compile Include="Assets\Code\ECS\PlayerLayer\Entities\WeaponComponent.cs" />
+     <Compile Include="Assets\Code\ECS\PlayerLayer\GunGroups.cs" />
      <Compile Include="Assets\Code\ECS\PlayerLayer\PlayerAnimations.cs" />
      <Compile Include="Assets\Code\ECS\PlayerLayer\PlayerEnginesNames.cs" />
      <Compile Include="Assets\Code\ECS\PlayerLayer\PlayerGroups.cs" />
      <Compile Include="Assets\Code\ECS\PlayerLayer\PlayerLayerContext.cs" />
      <Folder Include="Assets\Code\ECS\PlayerLayer\Engines" />
      <Folder Include="Assets\Code\ECS\PlayerLayer" />
+     <Folder Include="Assets\Code\ECS\PlayerLayer\Entities\Gun" />
      <Folder Include="Assets\Code\ECS\PlayerLayer\Entities" />
      <None Include="Assets\Code\ECS\PlayerLayer\PlayerEntityLayer.asmdef" />
+     <Folder Include="Assets\Code\ECS\PlayerLayer\Engines\Gun" />
      <Reference Include="UnityEngine">
      <HintPath>C:\Program Files\Unity\2019.4.40f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
      </Reference>
@@ -626,10 +634,6 @@
     <ProjectReference Include="UnityOOPAbstractionLayer.csproj">
       <Project>{4acf9cc6-6765-a5db-89c1-c202f09fdf16}</Project>
       <Name>UnityOOPAbstractionLayer</Name>
-    </ProjectReference>
-    <ProjectReference Include="PlayerGunLayer.csproj">
-      <Project>{6432b4c6-45ae-c615-a641-a3cf8bf8e7e0}</Project>
-      <Name>PlayerGunLayer</Name>
     </ProjectReference>
     <ProjectReference Include="Utility.csproj">
       <Project>{61523958-85ca-4e2e-e8e7-aea8b6c3f736}</Project>

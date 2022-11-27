@@ -1,11 +1,12 @@
+using Svelto.ECS.Example.Survive.Transformable;
+
 namespace Svelto.ECS.Example.Survive.Player
 {
     public class PlayerAnimationEngine: IQueryingEntitiesEngine, IStepEngine, IReactOnRemoveEx<PlayerEntityComponent>
     {
         public EntitiesDB entitiesDB { get; set; }
 
-        public void Ready()
-        { }
+        public void Ready() { }
 
         public void Step()
         {
@@ -33,16 +34,22 @@ namespace Svelto.ECS.Example.Survive.Player
         
         public string name => nameof(PlayerAnimationEngine);
  
+        /// <summary>
+        /// This call back is called when players are removed. rangeOfEntities are the id if the players removed
+        /// the same id can be used to index other player components
+        /// </summary>
+        /// <param name="rangeOfEntities"></param>
+        /// <param name="collection"></param>
+        /// <param name="groupID"></param>
         public void Remove((uint start, uint end) rangeOfEntities,
             in EntityCollection<PlayerEntityComponent> collection, ExclusiveGroupStruct groupID)
         {
-            var (playerEntity, _) = collection;
-            var (animations, _) = entitiesDB.QueryEntities<AnimationComponent>(groupID);
+            var (animations, rbs, _) = entitiesDB.QueryEntities<AnimationComponent, RigidBodyComponent>(groupID);
             
             for (uint i = rangeOfEntities.start; i < rangeOfEntities.end; i++)
             {
-                //Disable the RB to avoid further gameobject collisions while the player entity doesn't exist
-                playerEntity[i].isKinematic   = true;
+                rbs[i].isKinematic   = true; //Disable the RB to avoid further gameobject collisions while the player entity doesn't exist
+                
                 animations[i].animationState = new AnimationState(PlayerAnimations.Die);
             }
         }

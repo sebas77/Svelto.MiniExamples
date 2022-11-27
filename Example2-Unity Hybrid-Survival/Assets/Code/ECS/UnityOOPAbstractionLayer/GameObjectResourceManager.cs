@@ -5,6 +5,10 @@ using UnityEngine;
 
 namespace Code.ECS.Shared
 {
+    /// <summary>
+    /// Holds the resources used by the game and map them to unmanaged indices usable by Svelto Components
+    /// To know more about Resource Managers read: https://www.sebaslab.com/oop-abstraction-layer-in-a-ecs-centric-application/
+    /// </summary>
     public class GameObjectResourceManager : ECSResourceManager<GameObject>
     {
         public GameObjectResourceManager() : base()

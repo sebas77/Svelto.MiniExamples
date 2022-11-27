@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Svelto.ECS.Example.Survive.HUD
 {
     [DisallowMultipleComponent]
-    public class HUDEntityDescriptorHolder : GenericEntityDescriptorHolder<HudEntityDescriptor>
+    public class HUDEntityDescriptorHolder : GenericEntityDescriptorHolder<HUDEntityDescriptor>
     {
     }
 }

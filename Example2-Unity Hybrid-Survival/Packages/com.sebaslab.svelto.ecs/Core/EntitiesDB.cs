@@ -75,7 +75,7 @@ namespace Svelto.ECS
                                       .FastConcat("'. Entity 2: ' count: ".FastConcat(T2entities.count)
                                                                           .FastConcat(" ", typeof(T2).ToString())
                                                                           .FastConcat(
-                                                                               "' group: ", groupStruct.ToName())));
+                                                                               "' group: ", groupStruct.ToName())).FastConcat(" this means that you are mixing descriptors in the same group that do not share the components that you are querying"));
 #endif
 
             return new EntityCollection<T1, T2>(T1entities, T2entities);
@@ -105,7 +105,7 @@ namespace Svelto.ECS
                                            " Entity 2: ".FastConcat(typeof(T2).ToString()).FastConcat(" count: ")
                                                         .FastConcat(T2entities.count)
                                                         .FastConcat(" Entity 3: ".FastConcat(typeof(T3).ToString()))
-                                                        .FastConcat(" count: ").FastConcat(T3entities.count)));
+                                                        .FastConcat(" count: ").FastConcat(T3entities.count)).FastConcat(" this means that you are mixing descriptors in the same group that do not share the components that you are querying"));
 #endif
 
             return new EntityCollection<T1, T2, T3>(T1entities, T2entities, T3entities);
@@ -141,7 +141,7 @@ namespace Svelto.ECS
                                                         .FastConcat(" Entity 3: ".FastConcat(typeof(T3).ToString()))
                                                         .FastConcat(" count: ").FastConcat(T3entities.count)
                                                         .FastConcat(" Entity 4: ".FastConcat(typeof(T4).ToString()))
-                                                        .FastConcat(" count: ").FastConcat(T4entities.count)));
+                                                        .FastConcat(" count: ").FastConcat(T4entities.count)).FastConcat(" this means that you are mixing descriptors in the same group that do not share the components that you are querying"));
 #endif
 
             return new EntityCollection<T1, T2, T3, T4>(T1entities, T2entities, T3entities, T4entities);

@@ -41,14 +41,6 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
-     <Compile Include="Assets\Code\ECS\PlayerGunLayer\Gun.cs" />
-     <Compile Include="Assets\Code\ECS\PlayerGunLayer\GunAttributesComponent.cs" />
-     <Compile Include="Assets\Code\ECS\PlayerGunLayer\GunEntityComponent.cs" />
-     <Compile Include="Assets\Code\ECS\PlayerGunLayer\PlayerGunEntityDescriptor.cs" />
-     <Compile Include="Assets\Code\ECS\PlayerGunLayer\PlayerGunShootingFXsEngine.cs" />
-     <Compile Include="Assets\Code\ECS\PlayerGunLayer\WeaponComponent.cs" />
-     <Folder Include="Assets\Code\ECS\PlayerGunLayer" />
-     <None Include="Assets\Code\ECS\PlayerGunLayer\PlayerGunLayer.asmdef" />
      <Reference Include="UnityEngine">
      <HintPath>C:\Program Files\Unity\2019.4.40f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
      </Reference>
@@ -621,6 +613,9 @@
       <Project>{3e7c1439-e1cb-04d6-7ab4-616865f0e651}</Project>
       <Name>UnityEngine.UI</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Assets\Code\ECS" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

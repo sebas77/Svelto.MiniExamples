@@ -50,8 +50,6 @@
      <Compile Include="Assets\Code\Others\Legacy\Implementors\IUseResourceManagerImplementor.cs" />
      <Compile Include="Assets\Code\Others\Legacy\LinkedEntityComponent.cs" />
      <Compile Include="Assets\Code\Others\Legacy\SveltoGUIHelper.cs" />
-     <Compile Include="Assets\Code\SortedTickedEnginesOrder.cs" />
-     <Compile Include="Assets\Code\SurvivalUnsortedEnginesGroup.cs" />
      <Compile Include="Assets\Code\TickEnginesGroup.cs" />
      <Folder Include="Assets" />
      <None Include="Library\PackageCache\com.unity.modules.subsystems@1.0.0\package.json" />
@@ -758,10 +756,6 @@
     <ProjectReference Include="TransformableLayer.csproj">
       <Project>{18457d9e-b04e-0cec-b1cc-2289d7294499}</Project>
       <Name>TransformableLayer</Name>
-    </ProjectReference>
-    <ProjectReference Include="PlayerGunLayer.csproj">
-      <Project>{6432b4c6-45ae-c615-a641-a3cf8bf8e7e0}</Project>
-      <Name>PlayerGunLayer</Name>
     </ProjectReference>
     <ProjectReference Include="Utility.csproj">
       <Project>{61523958-85ca-4e2e-e8e7-aea8b6c3f736}</Project>

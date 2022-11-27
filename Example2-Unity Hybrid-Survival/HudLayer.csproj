@@ -46,12 +46,12 @@
      <Compile Include="Assets\Code\ECS\HudLayer\Engines\HUDEngine.cs" />
      <Compile Include="Assets\Code\ECS\HudLayer\Engines\RestartGameOnPlayerDeathEngine.cs" />
      <Compile Include="Assets\Code\ECS\HudLayer\Engines\UpdateScoreEngine.cs" />
-     <Compile Include="Assets\Code\ECS\HudLayer\EnginesNames.cs" />
      <Compile Include="Assets\Code\ECS\HudLayer\GUIComponentInterfaces.cs" />
+     <Compile Include="Assets\Code\ECS\HudLayer\HUDEnginesNames.cs" />
+     <Compile Include="Assets\Code\ECS\HudLayer\HUDEntityDescriptor.cs" />
      <Compile Include="Assets\Code\ECS\HudLayer\HUDEntityDescriptorHolder.cs" />
      <Compile Include="Assets\Code\ECS\HudLayer\HUDEntityViewComponent.cs" />
      <Compile Include="Assets\Code\ECS\HudLayer\HealthSliderImplementor.cs" />
-     <Compile Include="Assets\Code\ECS\HudLayer\HudEntityDescriptor.cs" />
      <Compile Include="Assets\Code\ECS\HudLayer\HudLayerContext.cs" />
      <Compile Include="Assets\Code\ECS\HudLayer\ScoreManagerImplementor.cs" />
      <None Include="Assets\Code\ECS\HudLayer\HudLayer.asmdef" />

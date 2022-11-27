@@ -113,42 +113,32 @@ namespace Svelto.ECS.Example.Survive
 //IStepEngines are engine that can be stepped (ticked) manually and explicitly with a Step() method
             FasterList<IStepEngine> orderedEngines = new FasterList<IStepEngine>();
             FasterList<IStepEngine> unorderedEngines = new FasterList<IStepEngine>();
-
-            DamageContextLayer.DamageLayerSetup(entityStreamConsumerFactory, _enginesRoot, orderedEngines);
             
+//This example has been refactored to show some advanced users of Svelto.ECS in a simple scenario
+//to know more about ECS abstraction layers read: https://www.sebaslab.com/ecs-abstraction-layers-and-modules-encapsulation/
+
+//Compose engines from the Damage Layer
+            //DamageContextLayer.DamageLayerSetup(entityStreamConsumerFactory, _enginesRoot, orderedEngines);
+//Compose engines from the Camera Layer            
             CameraLayerContext.CameraLayerSetup(time, unorderedEngines, _enginesRoot);
-
+//Compose engines from the Player Layer
             PlayerLayerContext.PlayerLayerSetup(
-                rayCaster,
-                time,
-                entityFunctions,
-                entityStreamConsumerFactory,
-                unorderedEngines,
-                orderedEngines,
+                rayCaster, time, entityFunctions, entityStreamConsumerFactory, unorderedEngines, orderedEngines,
                 _enginesRoot);
-
-            EnemyLayerContext.EnemyLayerSetup(
-                gameObjectFactory,
-                entityFactory,
-                entityStreamConsumerFactory,
-                time,
-                entityFunctions,
-                unorderedEngines,
-                orderedEngines,
-                new WaitForSubmissionEnumerator(unityEntitySubmissionScheduler),
-                _enginesRoot);
-
+//Compose engines from the Enemy Layer
+//            EnemyLayerContext.EnemyLayerSetup(
+//                gameObjectFactory, entityFactory, entityStreamConsumerFactory, time, entityFunctions,
+//                unorderedEngines, orderedEngines, new WaitForSubmissionEnumerator(unityEntitySubmissionScheduler),
+//                _enginesRoot);
+//Compose engines from the Hud Layer
             HudLayerContext.HudLayerSetup(entityStreamConsumerFactory, unorderedEngines, orderedEngines, _enginesRoot);
 
 //group engines for order of execution. Ordering and Ticking is 100% user responsibility. This is just one of the possible way to achieve the result desired
-            var unsortedEngines = new SurvivalUnsortedEnginesGroup(unorderedEngines);
-
-            orderedEngines.Add(unsortedEngines);
-
-            var tickingEnginesGroup = new SortedEnginesGroup(orderedEngines);
+            var enginesToTick = new SurvivalUnsortedEnginesGroup(unorderedEngines);
+            enginesToTick.Add(new SortedEnginesGroup(orderedEngines));
 
 //Svelto ECS doesn't provide a ticking system, the user is responsible for it
-            CoroutineRunner.RunEveryFrame(tickingEnginesGroup.Step);
+            CoroutineRunner.RunEveryFrame(enginesToTick.Step);
 //PlayerSpawner is not an engine, it could have been, but since it doesn't have an update, it's better to be a factory
             CoroutineRunner.Run(new PlayerFactory(gameObjectResourceManager, entityFactory).SpawnPlayer());
 //The user decides when to submit the last built/removed/swapped entities. In this case we use the default behaviour to submit them every frame            
@@ -161,8 +151,7 @@ namespace Svelto.ECS.Example.Survive
         /// An EntityDescriptorHolder is a special Svelto.ECS hybrid class dedicated to the unity platform.
         /// Once attached to a gameobject it automatically retrieves implementors from the hierarchy.
         /// This pattern is usually useful for guis where complex hierarchy of gameobjects are necessary, but
-        /// otherwise you should always create entities in factories. In the mini examples repository is possible
-        /// to find a more advanced GUI example
+        /// otherwise you should always create entities in factories. 
         /// The gui of this project is ultra simple and is all managed by one entity only. This way won't do
         /// for a complex GUI.
         /// Note that creating an entity to manage a complex gui like this, is OK only for such a simple scenario
