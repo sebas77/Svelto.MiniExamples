@@ -2,7 +2,7 @@ using System;
 using System.Runtime.CompilerServices;
 using Svelto.Common;
 
-namespace Svelto.Common.DataStructures
+namespace Svelto.DataStructures
 {
     struct UnsafeArray
     {

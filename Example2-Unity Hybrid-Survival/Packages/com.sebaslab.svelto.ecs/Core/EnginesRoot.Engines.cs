@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using DBC.ECS;
 using Svelto.Common;
-using Svelto.Common.DataStructures;
+using Svelto.DataStructures;
 using Svelto.DataStructures;
 using Svelto.ECS.Internal;
 using Svelto.ECS.Schedulers;
@@ -46,9 +46,9 @@ namespace Svelto.ECS
             
             _multipleOperationOnSameEGIDChecker            = new FasterDictionary<EGID, uint>();
 #if UNITY_NATIVE //because of the thread count, ATM this is only for unity
-            _nativeSwapOperationQueue   = new Svelto.ECS.DataStructures.AtomicNativeBags(Allocator.Persistent);
-            _nativeRemoveOperationQueue = new Svelto.ECS.DataStructures.AtomicNativeBags(Allocator.Persistent);
-            _nativeAddOperationQueue    = new Svelto.ECS.DataStructures.AtomicNativeBags(Allocator.Persistent);
+            _nativeSwapOperationQueue   = new AtomicNativeBags(Allocator.Persistent);
+            _nativeRemoveOperationQueue = new AtomicNativeBags(Allocator.Persistent);
+            _nativeAddOperationQueue    = new AtomicNativeBags(Allocator.Persistent);
 #endif
             _serializationDescriptorMap = new SerializationDescriptorMap();
             _reactiveEnginesAdd = new FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<IReactOnAdd>>>();

@@ -2,7 +2,6 @@ using System;
 using System.Runtime.CompilerServices;
 using DBC.Common;
 using Svelto.Common;
-using Unity.Burst.CompilerServices;
 
 namespace Svelto.DataStructures
 {

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Svelto.DataStructures.Experimental;
 using Svelto.ECS.Example.Survive.ResourceManager;
-using Svelto.ECS.Resources;
+using Svelto.ECS.ResourceManager;
 using UnityEngine;
 
 namespace Code.ECS.Shared
@@ -12,7 +12,7 @@ namespace Code.ECS.Shared
     /// </summary>
     public class GameObjectResourceManager : ECSResourceManager<GameObject>
     {
-        public GameObjectResourceManager() : base()
+        public GameObjectResourceManager()
         {
             _factory = new GameObjectFactory();
         }

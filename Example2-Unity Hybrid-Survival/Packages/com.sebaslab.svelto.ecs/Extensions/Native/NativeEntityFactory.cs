@@ -1,5 +1,5 @@
 #if UNITY_NATIVE
-using Svelto.Common.DataStructures;
+using Svelto.DataStructures;
 
 namespace Svelto.ECS.Native
 {
@@ -18,7 +18,7 @@ namespace Svelto.ECS.Native
         /// var entity1Init   = nativeFactory.BuildEntity(new EGID(1, Group.TestGroupA), threadIndex);
         /// var entity2Init   = nativeFactory.BuildEntity(new EGID(2, Group.TestGroupA), threadIndex);
         /// and expect that entity1Init is still valid and I have to invalidate it
-        /// I think I fixed it, but not deployed yet officially.
+        /// I think I fixed it, but needs more test
         /// However we should remove atomicBags and use svelto dictionar
         /// </summary>
         /// <param name="eindex"></param>

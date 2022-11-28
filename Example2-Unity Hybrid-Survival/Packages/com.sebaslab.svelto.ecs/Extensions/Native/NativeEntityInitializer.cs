@@ -1,5 +1,5 @@
 #if UNITY_NATIVE //at the moment I am still considering NativeOperations useful only for Unity
-using Svelto.Common.DataStructures;
+using Svelto.DataStructures;
 
 namespace Svelto.ECS.Native
 {

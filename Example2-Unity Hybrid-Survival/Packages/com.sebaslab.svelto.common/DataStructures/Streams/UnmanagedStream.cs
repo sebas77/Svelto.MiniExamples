@@ -2,8 +2,9 @@
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using Svelto.Common;
 
-namespace Svelto.Common.DataStructures
+namespace Svelto.DataStructures
 {
     public struct SveltoStream
     {

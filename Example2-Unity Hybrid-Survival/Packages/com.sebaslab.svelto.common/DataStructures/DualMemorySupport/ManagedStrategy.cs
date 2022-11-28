@@ -26,15 +26,15 @@ namespace Svelto.DataStructures
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#if NEW_C_SHARP
+#if (NEW_C_SHARP || !UNITY_5_3_OR_NEWER) && TEST
         [SkipLocalsInit]
 #endif
         public void Alloc(uint size, Allocator allocator, bool memClear)
         {
             var b =  default(MB<T>);
             var array = new T[size];
-#if NEW_C_SHARP            
-            if (memClear) asd test this
+#if (NEW_C_SHARP || !UNITY_5_3_OR_NEWER) && TEST
+            if (memClear)
                 Array.Clear(array, 0, array.Length);
 #endif
             b.Set(array);
@@ -43,7 +43,7 @@ namespace Svelto.DataStructures
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#if NEW_C_SHARP
+#if (NEW_C_SHARP || !UNITY_5_3_OR_NEWER) && TEST
         [SkipLocalsInit]
 #endif
         public void Resize(uint newSize, bool copyContent = true, bool memClear = true)
@@ -56,8 +56,8 @@ namespace Svelto.DataStructures
                 else
                     realBuffer = new T[newSize];
                 
-#if NEW_C_SHARP            
-            if (memClear) asd test this
+#if (NEW_C_SHARP || !UNITY_5_3_OR_NEWER) && TEST
+            if (memClear)
                 Array.Clear(realBuffer, 0, realBuffer.Length);
 #endif                
                 var b = default(MB<T>);

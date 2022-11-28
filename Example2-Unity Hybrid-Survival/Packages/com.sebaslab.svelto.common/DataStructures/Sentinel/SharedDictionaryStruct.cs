@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
+using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.DataStructures.Native;
 
-namespace Svelto.Common.DataStructures
+namespace Svelto.DataStructures
 {
     public struct SharedDictionaryStruct
     {

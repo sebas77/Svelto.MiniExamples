@@ -3,7 +3,7 @@ using System.Threading;
 using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.DataStructures.Native;
-using Svelto.Common.DataStructures;
+using Svelto.DataStructures;
 using Svelto.ECS.Internal;
 
 namespace Svelto.ECS

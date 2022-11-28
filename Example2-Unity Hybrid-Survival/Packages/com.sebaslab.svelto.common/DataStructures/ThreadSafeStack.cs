@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Svelto.DataStructures;
 
-namespace Svelto.Common.DataStructures
+namespace Svelto.DataStructures
 {
     public class ThreadSafeStack<T>
     {

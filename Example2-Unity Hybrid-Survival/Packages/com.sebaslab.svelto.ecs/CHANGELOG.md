@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file. Changes are
 ## [3.3.2] - 04-06-2022
 
 * Internal refactoring to support future features. Currently it may translate to a small performance boost
-* IEntityComponent and IEntityViewComponent now implements IBaseEntityComponent. This shouldn't affect existing code
+* IEntityComponent and IEntityViewComponent now implements _IInternalEntityComponent. This shouldn't affect existing code
 * Improve thread-safety of entity building
 * Fixed serious bug that affected the integrity of the EntityIDs values during RemoveEX callbacks
 * The point above may result in a performance boost in the Filters updates during submission

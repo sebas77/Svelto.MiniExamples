@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using UnityEngine;
 
 /// <span class="code-SummaryComment"><summary></span>
 /// Represents a weak reference, which references an object while still allowing

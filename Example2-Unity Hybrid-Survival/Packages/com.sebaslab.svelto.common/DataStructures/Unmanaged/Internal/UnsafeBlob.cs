@@ -2,7 +2,7 @@ using System;
 using System.Runtime.CompilerServices;
 using Svelto.Common;
 
-namespace Svelto.Common.DataStructures
+namespace Svelto.DataStructures
 {
     //Necessary to be sure that the user won't pass random values
     public struct UnsafeArrayIndex

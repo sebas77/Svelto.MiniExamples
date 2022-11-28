@@ -3,9 +3,8 @@ using System;
 using System.Runtime.CompilerServices;
 using Svelto.Common;
 using Unity.Jobs.LowLevel.Unsafe;
-using Allocator = Svelto.Common.Allocator;
 
-namespace Svelto.Common.DataStructures
+namespace Svelto.DataStructures
 {
     public unsafe struct AtomicNativeBags:IDisposable
     {
@@ -20,9 +19,9 @@ namespace Svelto.Common.DataStructures
             var bufferCount = _threadsCount;
             var allocationSize = bufferSize * bufferCount;
 
-            var ptr = (byte*)MemoryUtilities.Alloc((uint) allocationSize, allocator);
-           // MemoryUtilities.MemClear((IntPtr) ptr, (uint) allocationSize);
-
+            //I am not clearing it on purpose
+            var ptr = (byte*)MemoryUtilities.NativeAlloc((uint) allocationSize, allocator);
+           
             for (int i = 0; i < bufferCount; i++)
             {
                 var bufferPtr = (NativeBag*)(ptr + bufferSize * i);
@@ -55,7 +54,7 @@ namespace Svelto.Common.DataStructures
             {
                 GetBuffer(i).Dispose();
             }
-            MemoryUtilities.Free((IntPtr) _data, _allocator);
+            MemoryUtilities.NativeFree((IntPtr) _data, _allocator);
             _data = null;
         }
 

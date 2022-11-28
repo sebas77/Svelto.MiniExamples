@@ -1,6 +1,6 @@
 using Svelto.DataStructures;
 
-namespace Svelto.ECS.Resources
+namespace Svelto.ECS.ResourceManager
 {
     /// <summary>
     /// To do. Or we reuse the ID or we need to clear this

@@ -254,12 +254,6 @@ namespace Svelto.DataStructures
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Reset()
-        {
-            _count = 0;
-        }
-        
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void EnsureCountIsAtLeast(uint newCount)
         {
             if (_buffer.Length < newCount)

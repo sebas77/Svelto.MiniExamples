@@ -1,11 +1,9 @@
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using Svelto.Common;
 using Svelto.Utilities;
-using Unity.Burst;
 
 namespace Svelto.DataStructures
 {
@@ -65,7 +63,7 @@ namespace Svelto.DataStructures
             NoBurstCheck();
         }
 #if UNITY_BURST
-        [BurstDiscard]
+        [Unity.Burst.BurstDiscard]
 #endif        
         static void NoBurstCheck()
         {

@@ -2,7 +2,6 @@ using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Svelto.Common;
-using UnityEngine;
 
 namespace Svelto.DataStructures.Experimental
 {
@@ -23,10 +22,10 @@ namespace Svelto.DataStructures.Experimental
     /// The following class is not a sparse set, it's more an optimised dictionary for cases where the user
     /// cannot decide the key value.
     /// 
-    public sealed class ValueContainer<T, StrategyD, StrategyS> where StrategyD : IBufferStrategy<T>, new()
+    public struct ValueContainer<T, StrategyD, StrategyS> where StrategyD : IBufferStrategy<T>, new()
         where StrategyS : IBufferStrategy<SparseIndex>, new()
     {
-        public ValueContainer(uint initialSize)
+        public ValueContainer(uint initialSize):this()
         {
             _sparse = new StrategyS();
             _sparse.Alloc(initialSize, Allocator.Persistent, true);
@@ -111,7 +110,7 @@ namespace Svelto.DataStructures.Experimental
             }
         }
 
-        ~ValueContainer()
+        public void Dispose()
         {
             _sparse.Dispose();
             _dense.Dispose();

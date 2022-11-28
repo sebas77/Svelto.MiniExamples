@@ -3,7 +3,7 @@ using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace Svelto.Common.DataStructures
+namespace Svelto.DataStructures
 {
     public readonly struct ByteArraySegment<T> where T : unmanaged
     {

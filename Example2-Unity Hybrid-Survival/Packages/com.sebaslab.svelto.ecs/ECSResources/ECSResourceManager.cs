@@ -3,7 +3,7 @@ using Svelto.DataStructures;
 using Svelto.DataStructures.Experimental;
 using Svelto.DataStructures.Native;
 
-namespace Svelto.ECS.Resources
+namespace Svelto.ECS.ResourceManager
 {
     /// <summary>
     ///     Inherit this class to have the base functionalities to implement a custom ECS compatible resource manager
@@ -20,7 +20,7 @@ namespace Svelto.ECS.Resources
         {
             return _sparse.Add(resource);
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         protected void Remove(ValueIndex index)
         {
@@ -38,7 +38,12 @@ namespace Svelto.ECS.Resources
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => _sparse[index];
         }
-        
+
+        ~ECSResourceManager()
+        {
+            _sparse.Dispose();
+        }
+
         readonly ValueContainer<T, ManagedStrategy<T>, NativeStrategy<SparseIndex>> _sparse;
     }
 }

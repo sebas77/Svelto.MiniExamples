@@ -3,7 +3,7 @@
 // using System.Runtime.InteropServices;
 // using Svelto.DataStructures;
 //
-// namespace Svelto.Common.DataStructures
+// namespace Svelto.DataStructures
 // {
 //     /// <summary>
 //     /// internal structure just for the sake of creating the sentinel dictionary

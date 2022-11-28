@@ -4,8 +4,9 @@
 using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using Svelto.Common;
 
-namespace Svelto.Common.DataStructures
+namespace Svelto.DataStructures
 {
     /// <summary>
     ///     Burst friendly RingBuffer on steroid:

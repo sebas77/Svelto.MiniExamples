@@ -2,7 +2,7 @@
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 
-namespace Svelto.Common.DataStructures
+namespace Svelto.DataStructures
 {
     public static class NativeDynamicArrayUnityExtension
     {
