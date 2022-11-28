@@ -9,11 +9,14 @@ namespace Svelto.Utilities
 {
     public static class ThreadUtility
     {
+        public static uint processorNumber => (uint)Environment.ProcessorCount;
+        public static string currentThreadName => Thread.CurrentThread.Name;
         /// <summary>
         /// The main difference between Yield and Sleep(0) is that Yield doesn't allow a switch of context
         /// that is the core is given to a thread that is already running on that core. Sleep(0) may cause
         /// a context switch, yielding the processor to a thread from ANY process. Thread.Yield yields
         /// the processor to any thread associated with the current core.
+        /// Remember that sleep(1) does FORCE a context switch instead, while with sleep(0) is only if required.
         /// </summary>
         public static void Yield()
         {
@@ -55,7 +58,7 @@ namespace Svelto.Utilities
 
         /// DO NOT TOUCH THE NUMBERS, THEY ARE THE BEST BALANCE BETWEEN CPU OCCUPATION AND RESUME SPEED
         /// DO NOT ADD THREAD.SLEEP(1) it KILLS THE RESUME
-        public static void LongWait(ref int quickIterations, Stopwatch watch, int frequency = 256)
+        public static void LongWait(ref int quickIterations, in Stopwatch watch, int frequency = 256)
         {
             if (watch.ElapsedTicks < 16_000)
             {
@@ -70,13 +73,18 @@ namespace Svelto.Utilities
                     Yield();
             }
         }
-
-        public static string name            => Thread.CurrentThread.Name;
-        public static uint   ProcessorNumber => (uint)Environment.ProcessorCount;
-
-        public static void MemoryBarrier()
+        
+        public static void SleepWithOneEyeOpen(uint waitTimeMs)
         {
-            Interlocked.MemoryBarrier();
+            int quickIterations = 0;
+            Stopwatch stopwatch = new Stopwatch();
+            
+            stopwatch.Start();
+
+            while (stopwatch.ElapsedMilliseconds < waitTimeMs)
+                ThreadUtility.LongWait(ref quickIterations, stopwatch, 64);
         }
+        
+        public static void MemoryBarrier() => Interlocked.MemoryBarrier();
     }
 }

@@ -3,7 +3,7 @@ using Svelto.DataStructures;
 using Svelto.DataStructures.Experimental;
 using Svelto.DataStructures.Native;
 
-namespace Code.ECS.Shared
+namespace Svelto.ECS.Resources
 {
     /// <summary>
     ///     Inherit this class to have the base functionalities to implement a custom ECS compatible resource manager
@@ -15,11 +15,13 @@ namespace Code.ECS.Shared
             _sparse = new ValueContainer<T, ManagedStrategy<T>, NativeStrategy<SparseIndex>>(16);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         protected ValueIndex Add(in T resource)
         {
             return _sparse.Add(resource);
         }
         
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         protected void Remove(ValueIndex index)
         {
             _sparse.Remove(index);

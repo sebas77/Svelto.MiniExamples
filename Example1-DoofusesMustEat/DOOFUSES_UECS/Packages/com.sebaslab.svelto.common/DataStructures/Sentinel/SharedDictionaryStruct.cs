@@ -1,23 +1,25 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
+using Svelto.Common;
 using Svelto.DataStructures;
+using Svelto.DataStructures.Native;
 
-namespace Svelto.Common.DataStructures
+namespace Svelto.DataStructures
 {
     public struct SharedDictionaryStruct
     {
         public IntPtr test;
 
-        SveltoDictionary<long, Sentinel, SentinelNativeStrategy<SveltoDictionaryNode<long>>,
-            SentinelNativeStrategy<Sentinel>, SentinelNativeStrategy<int>> cast
+        SveltoDictionary<long, Sentinel, NativeStrategy<SveltoDictionaryNode<long>>,
+            NativeStrategy<Sentinel>, NativeStrategy<int>> cast
         {
             get
             {
                 unsafe
                 {
                     return Unsafe
-                       .AsRef<SveltoDictionary<long, Sentinel, SentinelNativeStrategy<SveltoDictionaryNode<long>>,
-                            SentinelNativeStrategy<Sentinel>, SentinelNativeStrategy<int>>>((void*)test);
+                       .AsRef<SveltoDictionary<long, Sentinel, NativeStrategy<SveltoDictionaryNode<long>>,
+                            NativeStrategy<Sentinel>, NativeStrategy<int>>>((void*)test);
                 }
             }
         }
@@ -44,14 +46,14 @@ namespace Svelto.Common.DataStructures
             {
                 //allocate the pointer to the dictionary
                 IntPtr dic =  MemoryUtilities
-                   .Alloc<SveltoDictionary<long, Sentinel, SentinelNativeStrategy<SveltoDictionaryNode<long>>,
-                        SentinelNativeStrategy<Sentinel>, SentinelNativeStrategy<int>>>(1, Allocator.Persistent);
+                   .NativeAlloc<SveltoDictionary<long, Sentinel, NativeStrategy<SveltoDictionaryNode<long>>,
+                        NativeStrategy<Sentinel>, NativeStrategy<int>>>(1, Allocator.Persistent);
             
                 //allocate the dictionary itself
-                Unsafe.AsRef<SveltoDictionary<long, Sentinel, SentinelNativeStrategy<SveltoDictionaryNode<long>>,
-                        SentinelNativeStrategy<Sentinel>, SentinelNativeStrategy<int>>>((void*)dic) =
-                    new SveltoDictionary<long, Sentinel, SentinelNativeStrategy<SveltoDictionaryNode<long>>,
-                        SentinelNativeStrategy<Sentinel>, SentinelNativeStrategy<int>>(1, Allocator.Persistent);
+                Unsafe.AsRef<SveltoDictionary<long, Sentinel, NativeStrategy<SveltoDictionaryNode<long>>,
+                        NativeStrategy<Sentinel>, NativeStrategy<int>>>((void*)dic) =
+                    new SveltoDictionary<long, Sentinel, NativeStrategy<SveltoDictionaryNode<long>>,
+                        NativeStrategy<Sentinel>, NativeStrategy<int>>(1, Allocator.Persistent);
 
                 return dic;
             }

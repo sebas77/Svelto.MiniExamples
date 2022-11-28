@@ -13,7 +13,7 @@ namespace Svelto.ECS.Example.Survive.Player
             //Remembering the syntax to query groups may be hard at first. You get used of it over the time, but 
             //Rider and VS can help you with this work. Follow this trick:
             //first use a random variable name in the foreach like asd
-            // foreach (var asd in entitiesDB.QueryEntities<PlayerInputDataComponent, PlayerEntityComponent>(Player.Groups))
+            //foreach (var asd in entitiesDB.QueryEntities<PlayerInputDataComponent, PlayerEntityComponent>(Player.Groups))
             //then go over asd and ask Rider or VS to deconstruct the variable,  now it should look like
             //foreach (var ((buffer1, buffer2, count), exclusiveGroupStruct) in entitiesDB.QueryEntities<PlayerInputDataComponent, PlayerEntityComponent>(Player.Groups))
             foreach (var ((animation, playersInput, count), _) in entitiesDB

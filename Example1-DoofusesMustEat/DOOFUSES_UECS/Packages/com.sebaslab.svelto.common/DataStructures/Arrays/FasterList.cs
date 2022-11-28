@@ -33,7 +33,7 @@ namespace Svelto.DataStructures
         {
         }
 
-        public FasterList(T[] collection)
+        public FasterList(params T[] collection)
         {
             _buffer = new T[collection.Length];
 
@@ -180,14 +180,6 @@ namespace Svelto.DataStructures
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Clear()
-        {
-            Array.Clear(_buffer, 0, _buffer.Length);
-
-            _count = 0;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Contains(T item)
         {
             for (uint index = 0; index < _count; index++)
@@ -203,19 +195,23 @@ namespace Svelto.DataStructures
             Array.Copy(_buffer, 0, array, arrayIndex, count);
         }
 
-        /// <summary>
-        ///     Careful, you could keep on holding references you don't want to hold to anymore
-        ///     Use Clear in case.
-        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void FastClear()
+        public void MemClear()
         {
-#if DEBUG && !PROFILE_SVELTO
-            if (TypeCache<T>.type.IsClass)
-                Console.LogWarning(
-                    "Warning: objects held by this list won't be garbage collected. Use ResetToReuse or Clear " +
-                    "to avoid this warning");
-#endif
+            Array.Clear(_buffer, 0, _buffer.Length);
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Clear()
+        {
+            if (TypeCache<T>.type.isUnmanaged())
+            {
+            }
+            else
+            {
+                Array.Clear(_buffer, 0, _buffer.Length);
+            }
+            
             _count = 0;
         }
 

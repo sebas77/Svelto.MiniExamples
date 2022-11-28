@@ -50,8 +50,6 @@ namespace Svelto.ECS.Example.Survive.Player
                     }
                 }
             }
-            
-            
 
             while (true)
             {

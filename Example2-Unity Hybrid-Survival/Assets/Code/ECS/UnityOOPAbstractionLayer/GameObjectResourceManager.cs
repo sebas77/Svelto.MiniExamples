@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Svelto.DataStructures.Experimental;
 using Svelto.ECS.Example.Survive.ResourceManager;
+using Svelto.ECS.Resources;
 using UnityEngine;
 
 namespace Code.ECS.Shared
