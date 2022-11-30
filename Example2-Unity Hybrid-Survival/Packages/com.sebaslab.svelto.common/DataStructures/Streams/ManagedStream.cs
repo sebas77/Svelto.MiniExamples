@@ -4,9 +4,9 @@ using System.Runtime.CompilerServices;
 
 namespace Svelto.DataStructures
 {
-    public struct UnmanagedStream
+    public struct ManagedStream
     {
-        public unsafe UnmanagedStream(byte* ptr, int sizeInByte):this()
+        public ManagedStream(byte[] ptr, int sizeInByte):this()
         {
             _ptr = ptr;
             _sveltoStream = new SveltoStream(sizeInByte);
@@ -14,6 +14,9 @@ namespace Svelto.DataStructures
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public T Read<T>() where T : unmanaged => _sveltoStream.Read<T>(ToSpan());
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public T Read<T>(in T fieldName) where T : unmanaged => _sveltoStream.Read<T>(ToSpan());
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Write<T>(in T value) where T : unmanaged => _sveltoStream.Write(ToSpan(), value);
@@ -31,26 +34,17 @@ namespace Svelto.DataStructures
         public bool CanAdvance() => _sveltoStream.CanAdvance();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Span<byte> ToSpan()
-        {
-            unsafe
-            {
-                return new Span<byte>(_ptr, _sveltoStream.capacity);
-            }
-        }
-        
+        public Span<byte> ToSpan() => _ptr;
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int AdvanceCursor(int sizeOf) => _sveltoStream.AdvanceCursor(sizeOf);
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public byte[] ToPTR() => _ptr;
 
         SveltoStream _sveltoStream; //CANNOT BE READ ONLY
 
-#if UNITY_COLLECTIONS || UNITY_JOBS || UNITY_BURST    
-#if UNITY_BURST
-        [Unity.Burst.NoAlias]
-#endif
-        [Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction]
-#endif
-        readonly unsafe byte* _ptr;
+        readonly byte[] _ptr;
     }
 }
 #endif

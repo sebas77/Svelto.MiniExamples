@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Concurrent;
 using Svelto.DataStructures;
-using Svelto.DataStructures;
 #if DEBUG && !PROFILE_SVELTO
 using System.Collections.Generic;
 #endif

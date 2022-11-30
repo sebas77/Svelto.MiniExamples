@@ -270,6 +270,9 @@ namespace Svelto.Common
         //DOING SUBTRACT OPERATION EXPECTING TO BE < 0 AND THEY WON'T BE
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int SizeOf<T>() where T : struct { return (int) CachedSize<T>.cachedSize; }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int SizeOf<T>(in T value) where T : struct { return (int) CachedSize<T>.cachedSize; }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int SizeOfAligned<T>() where T : struct { return (int) CachedSize<T>.cachedSizeAligned; }

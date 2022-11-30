@@ -17,73 +17,18 @@ public struct FixedTypedArray8<T> where T : unmanaged
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get
         {
-            unsafe
-            {
-                if (index >= Length)
-                    throw new Exception("out of bound index");
-
-                void* thisPtr = Unsafe.AsPointer(ref this);
-                var source = Unsafe.Add<T>(thisPtr, index);
-                ref var asRef = ref Unsafe.AsRef<T>(source);
-                return asRef; //must return a copy to be safe
-            }
+            DBC.Common.Check.Require(index < Length, "out of bound index");
+                
+            return Unsafe.Add(ref Unsafe.As<FixedTypedArray8<T>, T>(ref this), index);
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         set
         {
-            unsafe
-            {
-                if (index >= Length)
-                    throw new Exception("out of bound index");
+            DBC.Common.Check.Require(index < Length, "out of bound index");
 
-                void* thisPtr = Unsafe.AsPointer(ref this);
-                var source = Unsafe.Add<T>(thisPtr, index);
-                Unsafe.AsRef<T>(source) = value;
-            }
+            Unsafe.Add(ref Unsafe.As<FixedTypedArray8<T>, T>(ref this), index) = value;
         }
     }
 
-    public FixedTypeEnumerator GetEnumerator()
-    {
-        return new FixedTypeEnumerator(ref Unsafe.AsRef<T>(foursA[0]));
-    }
-
-    public ref struct FixedTypeEnumerator
-    {
-        public FixedTypeEnumerator(ref T fixedTypedArray8): this()
-        {
-            unsafe
-            {
-                _fixedTypedArray8 = Unsafe.AsPointer(ref fixedTypedArray8);
-                _index = -1;
-            }
-        }
-
-        public bool MoveNext()
-        {
-            if (_index < Length - 1)
-            {
-                _index++;
-
-                return true;
-            }
-
-            return false;
-        }
-
-        public T Current
-        {
-            get
-            {
-                unsafe
-                {
-                    return Unsafe.AsRef<FixedTypedArray8<T>>(_fixedTypedArray8)[_index];
-                }
-            }
-        }
-
-        readonly unsafe void* _fixedTypedArray8;
-        int _index;
-    }
 }
 #endif

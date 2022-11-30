@@ -44,6 +44,6 @@ namespace Svelto.ECS.ResourceManager
             _sparse.Dispose();
         }
 
-        readonly ValueContainer<T, ManagedStrategy<T>, NativeStrategy<SparseIndex>> _sparse;
+        ValueContainer<T, ManagedStrategy<T>, NativeStrategy<SparseIndex>> _sparse;
     }
 }

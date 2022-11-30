@@ -1,4 +1,6 @@
 using System;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace Svelto.Common
 {
