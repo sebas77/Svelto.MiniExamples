@@ -51,7 +51,7 @@ namespace Svelto.ECS.Example.Survive.Player
             {
                 rbs[i].isKinematic   = true; //Disable the RB to avoid further gameobject collisions while the player entity doesn't exist
                 
-                animations[i].animationState = new AnimationState(PlayerAnimations.Die);
+                animations[i].animationState = new AnimationState((int)PlayerAnimations.Die);
             }
         }
     }

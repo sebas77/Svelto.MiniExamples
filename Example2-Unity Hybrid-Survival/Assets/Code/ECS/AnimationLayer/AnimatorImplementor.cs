@@ -15,7 +15,7 @@ namespace Svelto.ECS.Example.Survive.Implementors
             }
         }
 
-        public AnimationState animationState { set => _anim.SetBool(value.animationID.id, value.state); }
+        public AnimationState animationState { set => _anim.SetBool(value.animationID, value.state); }
 
         public bool reset
         {

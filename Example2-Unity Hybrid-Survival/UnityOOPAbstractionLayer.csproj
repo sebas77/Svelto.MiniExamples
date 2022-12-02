@@ -45,9 +45,9 @@
      <Compile Include="Assets\Code\ECS\UnityOOPAbstractionLayer\GameObjectResourceManager.cs" />
      <Compile Include="Assets\Code\ECS\UnityOOPAbstractionLayer\GameObjectFactory.cs" />
      <Compile Include="Assets\Code\ECS\UnityOOPAbstractionLayer\GAME_LAYERS.cs" />
-     <Compile Include="Assets\Code\ECS\UnityOOPAbstractionLayer\EnginesNames.cs" />
      <Compile Include="Assets\Code\ECS\UnityOOPAbstractionLayer\Engines\SyncGameObjectsEngine.cs" />
      <Compile Include="Assets\Code\ECS\UnityOOPAbstractionLayer\TransformableLayerContext.cs" />
+     <Compile Include="Assets\Code\ECS\UnityOOPAbstractionLayer\EnginesNames.cs" />
      <Folder Include="Assets\Code\ECS\UnityOOPAbstractionLayer\Engines" />
      <Folder Include="Assets\Code\ECS\UnityOOPAbstractionLayer" />
      <None Include="Assets\Code\ECS\UnityOOPAbstractionLayer\UnityOOPAbstractionLayer.asmdef" />
@@ -654,6 +654,10 @@
     <ProjectReference Include="TransformableLayer.csproj">
       <Project>{18457d9e-b04e-0cec-b1cc-2289d7294499}</Project>
       <Name>TransformableLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="AnimationLayer.csproj">
+      <Project>{59e9f197-bda3-ff91-2f6b-e150b462fed8}</Project>
+      <Name>AnimationLayer</Name>
     </ProjectReference>
     <ProjectReference Include="UnityEditor.UI.csproj">
       <Project>{071fa4f6-95c0-6054-c479-b9199d4dc847}</Project>

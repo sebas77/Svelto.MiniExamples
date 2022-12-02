@@ -15,7 +15,7 @@
         public void Step()
         {
             foreach (var ((healths, egids, count), fromGroup) in entitiesDB.QueryEntities<HealthComponent>(
-                Damageable.Groups))
+                DamageableTag.Groups))
             {
                 for (int i = 0; i < count; ++i)
                     if (healths[i].currentHealth <= 0)

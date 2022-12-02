@@ -101,13 +101,18 @@ namespace Svelto.ECS.Example.Survive.Player
             var playerPosition = playerID.Get<PositionComponent>();
 
             var cameraInit =
-                _entityFactory.BuildEntity<CameraEntityDescriptor>(playerID.EGID.entityID, Camera.Camera.BuildGroup);
+                _entityFactory.BuildEntity<CameraEntityDescriptor>(playerID.EGID.entityID, Camera.Camera.Group);
 
             cameraInit.Init(new CameraTargetEntityReferenceComponent() { targetEntity = playerID.reference });
             cameraInit.Init(new CameraEntityComponent()
             {
                 offset = cameraResource.transform.position - playerPosition.position
             });
+            cameraInit.Init(new GameObjectEntityComponent
+            {
+                resourceIndex = cameraID
+            });
+            
             playerID.Init(new CameraReferenceComponent()
             {
                 cameraReference = cameraInit.reference

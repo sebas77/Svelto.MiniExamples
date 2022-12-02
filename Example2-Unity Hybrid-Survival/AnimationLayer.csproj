@@ -45,7 +45,6 @@
      <Compile Include="Assets\Code\ECS\AnimationLayer\AnimationComponent.cs" />
      <Compile Include="Assets\Code\ECS\AnimationLayer\AnimatorImplementor.cs" />
      <Compile Include="Assets\Code\ECS\AnimationLayer\AnimationState.cs" />
-     <Compile Include="Assets\Code\ECS\AnimationLayer\SyncAnimationEngine.cs" />
      <None Include="Assets\Code\ECS\AnimationLayer\AnimationLayer.asmdef" />
      <Folder Include="Assets\Code\ECS\AnimationLayer" />
      <Reference Include="UnityEngine">

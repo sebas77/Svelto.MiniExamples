@@ -11,7 +11,7 @@ namespace Svelto.ECS
     //the type doesn't implement IEqualityComparer, what implements it is a custom comparer
     public readonly struct ExclusiveGroupStruct : IEquatable<ExclusiveGroupStruct>, IComparable<ExclusiveGroupStruct>
     {
-        public static readonly ExclusiveGroupStruct Invalid = default; //must stay here because of Burst
+        public static readonly ExclusiveGroupStruct Invalid; //must stay here because of Burst
 
         public ExclusiveGroupStruct(byte[] data, uint pos):this()
         {

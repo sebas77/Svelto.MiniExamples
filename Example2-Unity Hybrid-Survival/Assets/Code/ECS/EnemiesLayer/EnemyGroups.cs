@@ -11,5 +11,5 @@ namespace Svelto.ECS.Example.Survive.Enemies
 
     public class EnemyTag: GroupTag<EnemyTag> { };
     public class DeadEnemies: GroupCompound<EnemyTag, Dead> { };
-    public class AliveEnemies: GroupCompound<EnemyTag, Damageable> { };
+    public class AliveEnemies: GroupCompound<EnemyTag, DamageableTag> { };
 }

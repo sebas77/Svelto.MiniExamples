@@ -48,6 +48,8 @@ namespace Svelto.ECS
                 //guarantees the hash to be the same across different machines
                 GroupHashMap.RegisterGroup(group, typeof(GroupCompound<G1, G2, G3, G4>).FullName);
 
+                //ToArrayFast is theoretically not correct, but since multiple 0s are ignored and we don't care if we 
+                //add one, we avoid an allocation
                 _GroupsHashSet = new HashSet<ExclusiveGroupStruct>(_Groups.ToArrayFast(out _));
 
                 GroupCompoundInitializer.skipStaticCompoundConstructorsWith4Tags.Value = true;
@@ -133,6 +135,8 @@ namespace Svelto.ECS
 
         public static bool Includes(ExclusiveGroupStruct group)
         {
+            DBC.ECS.Check.Require(group != ExclusiveGroupStruct.Invalid, "invalid group passed");
+            
             return _GroupsHashSet.Contains(group);
         }
 
@@ -218,6 +222,8 @@ namespace Svelto.ECS
 
         public static bool Includes(ExclusiveGroupStruct group)
         {
+            DBC.ECS.Check.Require(group != ExclusiveGroupStruct.Invalid, "invalid group passed");
+            
             return _GroupsHashSet.Contains(group);
         }
 
@@ -281,6 +287,8 @@ namespace Svelto.ECS
 
         public static bool Includes(ExclusiveGroupStruct group)
         {
+            DBC.ECS.Check.Require(group != ExclusiveGroupStruct.Invalid, "invalid group passed");
+            
             return _GroupsHashSet.Contains(group);
         }
 
@@ -344,6 +352,8 @@ namespace Svelto.ECS
 
         public static bool Includes(ExclusiveGroupStruct group)
         {
+            DBC.ECS.Check.Require(group != ExclusiveGroupStruct.Invalid, "invalid group passed");
+            
             return _GroupsHashSet.Contains(group);
         }
 

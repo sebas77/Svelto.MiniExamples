@@ -6,7 +6,8 @@
         "Unity.Addressables",
         "Unity.ResourceManager",
         "Svelto.Common",
-        "TransformableLayer"
+        "TransformableLayer",
+        "AnimationLayer"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

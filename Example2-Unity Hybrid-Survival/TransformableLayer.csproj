@@ -41,11 +41,11 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
+     <Compile Include="Assets\Code\ECS\TransformationLayer\TransformableEntityDescriptor.cs" />
+     <Compile Include="Assets\Code\ECS\TransformationLayer\RBEntityDescriptor.cs" />
      <Compile Include="Assets\Code\ECS\TransformationLayer\RotationComponent.cs" />
      <Compile Include="Assets\Code\ECS\TransformationLayer\PositionComponent.cs" />
      <Compile Include="Assets\Code\ECS\TransformationLayer\RigidBodyComponent.cs" />
-     <Compile Include="Assets\Code\ECS\TransformationLayer\TransformableEntityDescriptor.cs" />
-     <Compile Include="Assets\Code\ECS\TransformationLayer\RBEntityDescriptor.cs" />
      <Folder Include="Assets\Code\ECS\TransformationLayer" />
      <None Include="Assets\Code\ECS\TransformationLayer\TransformableLayer.asmdef" />
      <Reference Include="UnityEngine">

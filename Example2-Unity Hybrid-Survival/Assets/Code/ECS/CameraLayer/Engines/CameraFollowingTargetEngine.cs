@@ -1,7 +1,6 @@
 using System.Collections;
 using Svelto.ECS.Example.Survive.Transformable;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace Svelto.ECS.Example.Survive.Camera
 {
@@ -34,9 +33,9 @@ namespace Svelto.ECS.Example.Survive.Camera
 
             void TrackCameraTarget()
             {
-                foreach (var ((targets, cameras, cameraPositions, count), _) in entitiesDB
-                            .QueryEntities<CameraTargetEntityReferenceComponent, CameraEntityComponent,
-                                 PositionComponent>(Camera.Groups))
+                var (targets, cameras, cameraPositions, count) = entitiesDB
+                   .QueryEntities<CameraTargetEntityReferenceComponent, CameraEntityComponent,
+                        PositionComponent>(Camera.Group);
                 {
                     for (uint i = 0; i < count; i++)
                     {

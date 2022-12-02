@@ -156,17 +156,20 @@ namespace Svelto.ECS
 
             localgroups.Value.groups.Clear();
 
-            FasterDictionary<ExclusiveGroupStruct, ExclusiveGroupStruct> localGroups = localgroups.Value.groups;
+            var localGroups = localgroups.Value.groups;
 
             int startIndex = 0;
             int min        = int.MaxValue;
 
             for (int i = 0; i < 4; i++)
-                if (localArray[i].count < min)
+            {
+                var fasterDictionary = localArray[i];
+                if (fasterDictionary.count < min)
                 {
-                    min        = localArray[i].count;
+                    min        = fasterDictionary.count;
                     startIndex = i;
                 }
+            }
 
             foreach (var value in localArray[startIndex])
             {
