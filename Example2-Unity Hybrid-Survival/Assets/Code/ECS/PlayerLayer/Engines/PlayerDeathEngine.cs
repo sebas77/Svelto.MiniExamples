@@ -1,8 +1,7 @@
 using Svelto.Common;
 using Svelto.ECS.Example.Survive.Damage;
-using Svelto.ECS.Example.Survive.Player;
 
-namespace Svelto.ECS.Example.Survive
+namespace Svelto.ECS.Example.Survive.Player
 {
     [Sequenced(nameof(PlayerEnginesNames.PlayerDeathEngine))]
     public class PlayerDeathEngine : IStepEngine, IQueryingEntitiesEngine
@@ -23,7 +22,7 @@ namespace Svelto.ECS.Example.Survive
         {
             while (_consumer.TryDequeue(out _, out EGID id))
             {
-                if (id.groupID.FoundIn(Player.Player.Groups))
+                if (id.groupID.FoundIn(Player.Groups))
                 {
                     //remove the player entity so the player engines will stop processing it 
                     _DBFunctions.RemoveEntity<PlayerEntityDescriptor>(id);

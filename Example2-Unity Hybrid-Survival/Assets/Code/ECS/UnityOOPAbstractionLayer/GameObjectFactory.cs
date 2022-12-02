@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
-namespace Svelto.ECS.Example.Survive.ResourceManager
+namespace Svelto.ECS.Example.Survive.OOPLayer
 {
     public class GameObjectFactory
     {

@@ -29,24 +29,24 @@ namespace Svelto.ECS.Example.Survive.Player
             {
                 //Exploit everywhere the power of deconstruct to tuples. Every query entities can be deconstruct
                 //to what you are going to use directly
-                foreach (var ((playersInput, speedInfos, rbs, count), _) in entitiesDB
-                            .QueryEntities<PlayerInputDataComponent, SpeedComponent, RigidBodyComponent>(Player.Groups))
+                foreach (var ((playersInput, rbs, count), _) in entitiesDB
+                            .QueryEntities<PlayerInputDataComponent, RigidBodyComponent>(Player.Groups))
                 {
                     for (int i = 0; i < count; i++)
                     {
-                        Movement(playersInput[i], ref rbs[i], speedInfos[i]);
+                        Movement(playersInput[i], ref rbs[i]);
                     }
                 }
                 
-                foreach (var ((rotations, cameraReference, rbs, count), _) in entitiesDB
+                foreach (var ((rotations, cameraReference, pos, count), _) in entitiesDB
                             .QueryEntities<RotationComponent, CameraReferenceComponent,
-                                 RigidBodyComponent>(Player.Groups))
+                                 PositionComponent>(Player.Groups))
                 {
                     for (int i = 0; i < count; i++)
                     {
                         Turning(
                             ref entitiesDB.QueryEntity<CameraEntityComponent>(cameraReference[i].cameraReference
-                               .ToEGID(entitiesDB)), ref rbs[i], ref rotations[i]);
+                               .ToEGID(entitiesDB)), ref pos[i], ref rotations[i]);
                     }
                 }
             }
@@ -59,17 +59,16 @@ namespace Svelto.ECS.Example.Survive.Player
             }
         }
 
-        void Movement(in PlayerInputDataComponent playerInput, ref RigidBodyComponent playerComponent,
-            in SpeedComponent speedComponent)
+        void Movement(in PlayerInputDataComponent playerInput, ref RigidBodyComponent playerComponent)
         {
             // Normalise the movement vector and make it proportional to the speed per second.
-            var movement = playerInput.input.normalized * speedComponent.movementSpeed;
+            var movement = playerInput.input.normalized * PlayerSpeed;
 
             // Move the player to it's current position plus the movement.
             playerComponent.velocity = movement;
         }
 
-        void Turning(ref CameraEntityComponent cameraInfo, ref RigidBodyComponent rb, ref RotationComponent rotation)
+        void Turning(ref CameraEntityComponent cameraInfo, ref PositionComponent pos, ref RotationComponent rotation)
         {
             // Create a ray from the mouse cursor on screen in the direction of the camera.
             var camRay = cameraInfo.camRay;
@@ -78,7 +77,7 @@ namespace Svelto.ECS.Example.Survive.Player
             if (_rayCaster.CheckHit(camRay, camRayLength, floorMask, out var point))
             {
                 // Create a vector from the player to the point on the floor the raycast from the mouse hit.
-                var playerToMouse = point - rb.position;
+                var playerToMouse = point - pos.position;
 
                 // Ensure the vector is entirely along the floor plane.
                 playerToMouse.y = 0f;
@@ -95,5 +94,6 @@ namespace Svelto.ECS.Example.Survive.Player
         readonly IEnumerator _tick;
 
         readonly int floorMask = LayerMask.GetMask("Floor"); // A layer mask so that a ray can be cast just at gameobjects on the floor layer.
+        const float PlayerSpeed = 6.0f;
     }
 }

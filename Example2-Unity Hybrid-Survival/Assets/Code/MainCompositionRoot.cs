@@ -1,17 +1,11 @@
-using Code.ECS.Shared;
 using Svelto.Context;
 using Svelto.DataStructures;
-using Svelto.DataStructures.Experimental;
-using Svelto.DataStructures.Native;
 using Svelto.ECS.Example.Survive.Camera;
-using Svelto.ECS.Example.Survive.Damage;
-using Svelto.ECS.Example.Survive.Enemies;
 using Svelto.ECS.Example.Survive.Player;
 using Svelto.ECS.Example.Survive.HUD;
-using Svelto.ECS.Example.Survive.ResourceManager;
+using Svelto.ECS.Example.Survive.OOPLayer;
 using Svelto.ECS.Extensions.Unity;
 using Svelto.ECS.Schedulers;
-using Svelto.ECS.Schedulers.Unity;
 using UnityEngine;
 
 //Note on this example:
@@ -117,25 +111,22 @@ namespace Svelto.ECS.Example.Survive
 //This example has been refactored to show some advanced users of Svelto.ECS in a simple scenario
 //to know more about ECS abstraction layers read: https://www.sebaslab.com/ecs-abstraction-layers-and-modules-encapsulation/
 
-//Compose engines from the Damage Layer
+//Setup all the layers engines
+            OOPLayerContext.OOPLayerSetup(orderedEngines, _enginesRoot, gameObjectResourceManager);
             //DamageContextLayer.DamageLayerSetup(entityStreamConsumerFactory, _enginesRoot, orderedEngines);
-//Compose engines from the Camera Layer            
             CameraLayerContext.CameraLayerSetup(time, unorderedEngines, _enginesRoot);
-//Compose engines from the Player Layer
             PlayerLayerContext.PlayerLayerSetup(
                 rayCaster, time, entityFunctions, entityStreamConsumerFactory, unorderedEngines, orderedEngines,
                 _enginesRoot);
-//Compose engines from the Enemy Layer
 //            EnemyLayerContext.EnemyLayerSetup(
 //                gameObjectFactory, entityFactory, entityStreamConsumerFactory, time, entityFunctions,
 //                unorderedEngines, orderedEngines, new WaitForSubmissionEnumerator(unityEntitySubmissionScheduler),
 //                _enginesRoot);
-//Compose engines from the Hud Layer
             HudLayerContext.HudLayerSetup(entityStreamConsumerFactory, unorderedEngines, orderedEngines, _enginesRoot);
 
 //group engines for order of execution. Ordering and Ticking is 100% user responsibility. This is just one of the possible way to achieve the result desired
             var enginesToTick = new SurvivalUnsortedEnginesGroup(unorderedEngines);
-            enginesToTick.Add(new SortedEnginesGroup(orderedEngines));
+            enginesToTick.Add(new SortedEnginesGroup(orderedEngines)); //sorted engines run ordered, but after all the unsorted ones
 
 //Svelto ECS doesn't provide a ticking system, the user is responsible for it
             CoroutineRunner.RunEveryFrame(enginesToTick.Step);

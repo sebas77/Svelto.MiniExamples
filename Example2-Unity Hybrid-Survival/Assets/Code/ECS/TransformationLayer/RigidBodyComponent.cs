@@ -6,6 +6,5 @@ namespace Svelto.ECS.Example.Survive.Transformable
     {
         public bool isKinematic;
         public Vector3 velocity;
-        public Vector3 position;
     }
 }

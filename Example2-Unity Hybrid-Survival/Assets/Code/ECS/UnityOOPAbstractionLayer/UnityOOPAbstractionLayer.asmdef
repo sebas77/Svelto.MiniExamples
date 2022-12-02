@@ -1,10 +1,12 @@
 {
     "name": "UnityOOPAbstractionLayer",
+    "rootNamespace": "",
     "references": [
         "Svelto.ECS",
         "Unity.Addressables",
         "Unity.ResourceManager",
-        "Svelto.Common"
+        "Svelto.Common",
+        "TransformableLayer"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

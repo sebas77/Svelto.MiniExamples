@@ -1,8 +1,8 @@
 using System.Collections;
-using Code.ECS.Shared;
 using Svelto.DataStructures.Experimental;
 using Svelto.ECS.Example.Survive.Camera;
 using Svelto.ECS.Example.Survive.Damage;
+using Svelto.ECS.Example.Survive.OOPLayer;
 using Svelto.ECS.Example.Survive.Player.Gun;
 using Svelto.ECS.Example.Survive.Transformable;
 
@@ -54,8 +54,7 @@ namespace Svelto.ECS.Example.Survive.Player
             {
                 currentHealth = 100
             });
-            playerInitializer.Init(new SpeedComponent(6));
-            playerInitializer.Init(new PlayerEntityComponent()
+            playerInitializer.Init(new GameObjectEntityComponent()
             {
                 resourceIndex = playerID
             });
@@ -77,7 +76,7 @@ namespace Svelto.ECS.Example.Survive.Player
             //as this trick cannot be used to determine an EGID anymore once group compounds are used. 
             //therefore I switched to the use of EntityReferences.
             var init = _entityFactory.BuildEntity<PlayerGunEntityDescriptor>(playerInitializer.EGID.entityID,
-                Survive.Weapons.Gun.BuildGroup);
+                Survive.PlayerGun.Gun.BuildGroup);
 
             //being lazy here, it should be read from json file
             init.Init(new GunAttributesComponent()

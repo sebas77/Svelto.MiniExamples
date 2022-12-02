@@ -1,5 +1,6 @@
 using Svelto.Common;
 using Svelto.DataStructures;
+using Svelto.ECS.Example.Survive.OOPLayer;
 using Svelto.ECS.Example.Survive.Player;
 using Svelto.ECS.Example.Survive.Player.Gun;
 
@@ -18,6 +19,7 @@ namespace Svelto.ECS.Example.Survive
 //          , nameof(EnemyEnginesNames.EnemySpawnEffectOnDamage)
 //          , nameof(DamageEnginesNames.DamageUnsortedEngines)
 //          , nameof(EnemyEnginesNames.EnemyDeathEngine)
+            , nameof(GameObjectsEnginesNames.SyncGameObjectsEngine)
           , nameof(PlayerEnginesNames.PlayerDeathEngine)
           , nameof(HUDEnginesNames.UpdateScoreEngine)
         };

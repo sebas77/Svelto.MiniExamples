@@ -1,4 +1,5 @@
 ﻿using Svelto.DataStructures;
+using Svelto.ECS.Example.Survive.OOPLayer;
 using Svelto.ECS.Example.Survive.Player.Gun;
 
 namespace Svelto.ECS.Example.Survive.Player

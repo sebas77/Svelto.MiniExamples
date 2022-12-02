@@ -2,7 +2,7 @@
 using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.ECS.Example.Survive.Damage;
-using Svelto.ECS.Example.Survive.Enemies;
+using Svelto.ECS.Example.Survive.OOPLayer;
 using UnityEngine;
 
 namespace Svelto.ECS.Example.Survive.Enemies

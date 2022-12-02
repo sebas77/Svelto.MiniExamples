@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
 using Svelto.DataStructures.Experimental;
-using Svelto.ECS.Example.Survive.ResourceManager;
 using Svelto.ECS.ResourceManager;
 using UnityEngine;
 
-namespace Code.ECS.Shared
+namespace Svelto.ECS.Example.Survive.OOPLayer
 {
     /// <summary>
     /// Holds the resources used by the game and map them to unmanaged indices usable by Svelto Components

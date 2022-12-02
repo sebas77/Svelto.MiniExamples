@@ -1,7 +1,6 @@
 using System;
 using Svelto.Common;
 using Svelto.ECS.Example.Survive.Damage;
-using Svelto.ECS.Example.Survive.Enemies;
 using UnityEngine;
 
 namespace Svelto.ECS.Example.Survive.Enemies

@@ -1,4 +1,4 @@
-namespace Svelto.ECS.Example.Survive.Player
+namespace Svelto.ECS.Example.Survive.Camera
 {
     public struct CameraReferenceComponent : IEntityComponent
     {

@@ -1,8 +1,9 @@
+using Svelto.ECS.Example.Survive.OOPLayer;
 using Svelto.ECS.Example.Survive.Transformable;
 
 namespace Svelto.ECS.Example.Survive.Player
 {
-    public class PlayerAnimationEngine: IQueryingEntitiesEngine, IStepEngine, IReactOnRemoveEx<PlayerEntityComponent>
+    public class PlayerAnimationEngine: IQueryingEntitiesEngine, IStepEngine, IReactOnRemoveEx<GameObjectEntityComponent>
     {
         public EntitiesDB entitiesDB { get; set; }
 
@@ -42,7 +43,7 @@ namespace Svelto.ECS.Example.Survive.Player
         /// <param name="collection"></param>
         /// <param name="groupID"></param>
         public void Remove((uint start, uint end) rangeOfEntities,
-            in EntityCollection<PlayerEntityComponent> collection, ExclusiveGroupStruct groupID)
+            in EntityCollection<GameObjectEntityComponent> collection, ExclusiveGroupStruct groupID)
         {
             var (animations, rbs, _) = entitiesDB.QueryEntities<AnimationComponent, RigidBodyComponent>(groupID);
             

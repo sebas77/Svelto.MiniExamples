@@ -1,5 +1,5 @@
 ﻿using Svelto.DataStructures;
-using Svelto.ECS.Example.Survive.ResourceManager;
+using Svelto.ECS.Example.Survive.OOPLayer;
 
 namespace Svelto.ECS.Example.Survive.Enemies
 {

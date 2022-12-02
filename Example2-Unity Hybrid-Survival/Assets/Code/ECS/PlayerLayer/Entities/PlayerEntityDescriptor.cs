@@ -1,6 +1,7 @@
 ﻿using Svelto.ECS.Example.Survive.Camera;
 using Svelto.ECS.Example.Survive.Damage;
 using Svelto.ECS.Example.Survive.Enemies;
+using Svelto.ECS.Example.Survive.OOPLayer;
 using Svelto.ECS.Example.Survive.Transformable;
 
 namespace Svelto.ECS.Example.Survive.Player
@@ -9,15 +10,14 @@ namespace Svelto.ECS.Example.Survive.Player
     {
         public PlayerEntityDescriptor()
         {
+            ExtendWith<RBEntityDescriptor>();
             ExtendWith(new IComponentBuilder[]
             {
-                new ComponentBuilder<PlayerEntityComponent>(),
-                new ComponentBuilder<PositionComponent>()
+                new ComponentBuilder<GameObjectEntityComponent>()
               , new ComponentBuilder<EnemyTargetEntityViewComponent>()
               , new ComponentBuilder<PlayerInputDataComponent>()
               , new ComponentBuilder<AnimationComponent>()
               , new ComponentBuilder<WeaponComponent>()
-              , new ComponentBuilder<SpeedComponent>()
               , new ComponentBuilder<CameraReferenceComponent>()
             });
         }

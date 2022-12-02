@@ -17,6 +17,9 @@ namespace Svelto.DataStructures
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Write<T>(in T value) where T : unmanaged => _sveltoStream.Write(ToSpan(), value);
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Write<T>(in T value, int size) where T : struct => _sveltoStream.Write(ToSpan(), value, size);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Write<T>(in Span<T> valueSpan) where T : unmanaged => _sveltoStream.WriteSpan(ToSpan(), valueSpan);
