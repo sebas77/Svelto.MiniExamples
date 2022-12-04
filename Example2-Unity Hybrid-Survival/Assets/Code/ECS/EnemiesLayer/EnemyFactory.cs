@@ -1,30 +1,31 @@
 using System.Collections;
 using System.Collections.Generic;
+using Svelto.DataStructures.Experimental;
 using Svelto.ECS.Example.Survive.Damage;
 using Svelto.ECS.Example.Survive.Enemies;
 using Svelto.ECS.Example.Survive.OOPLayer;
-using Svelto.ECS.Extensions.Unity;
 using Svelto.ECS.Hybrid;
-using UnityEngine;
 
 namespace Svelto.ECS.Example.Survive
 {
     public class EnemyFactory
     {
-        public EnemyFactory(GameObjectFactory gameObjectFactory, IEntityFactory entityFactory)
+        public EnemyFactory(IEntityFactory entityFactory, GameObjectResourceManager gameObjectResourceManager)
         {
-            _gameobjectFactory = gameObjectFactory;
             _entityFactory     = entityFactory;
+            _gameObjectResourceManager = gameObjectResourceManager;
         }
 
         public IEnumerator Build(EnemySpawnData enemySpawnData, EnemyAttackComponent EnemyAttackComponent)
         {
-            var build = _gameobjectFactory.Build(enemySpawnData.enemyPrefab, false);
-
+            var build = _gameObjectResourceManager.Reuse(enemySpawnData.enemyPrefab, (int)enemySpawnData.targetType).GetEnumerator();
+            
             while (build.MoveNext())
                 yield return null;
 
-            GameObject enemyGO = build.Current;
+            ValueIndex gameObjectIndex = build.Current.Value;
+            var enemyGO = _gameObjectResourceManager[gameObjectIndex];
+            enemyGO.SetActive(false);
 
             //implementors are ONLY necessary if you need to wrap objects around entity view structs. In the case
             //of Unity, they are needed to wrap Monobehaviours and not used in any other case
@@ -61,10 +62,15 @@ namespace Svelto.ECS.Example.Survive
 
             enemyGO.SetActive(true);
             transform.position = spawnPoint;
+
+            initializer.Init(new GameObjectEntityComponent
+            {
+                resourceIndex = gameObjectIndex
+            });
         }
 
         readonly IEntityFactory    _entityFactory;
-        readonly GameObjectFactory _gameobjectFactory;
+        readonly GameObjectResourceManager _gameObjectResourceManager;
         uint                       _enemiesCreated;
     }
 }

@@ -24,19 +24,18 @@ namespace Svelto.ECS.Example.Survive.OOPLayer
                 {
                     ref var gunOopEntityComponent = ref guns[i];
 
+                    var go = _manager[entity[i].resourceIndex];
+                    var psfx = go.GetComponent<PlayerShootingFX>();
+                    gunOopEntityComponent.shootRay = psfx.shootRay;
+
                     var effectState = gunOopEntityComponent.GetStateAndReset();
                     if (effectState == PlayState.start)
                     {
-                        var go = _manager[entity[i].resourceIndex];
-                        var psfx = go.GetComponent<PlayerShootingFX>();
-                        gunOopEntityComponent.shootRay = psfx.shootRay;
                         psfx.PlayEffects(gunOopEntityComponent.lineEndPosition);
                         gunOopEntityComponent.effectsDisplayTime = psfx.effectsDisplayTime;
                     }
                     else if (effectState == PlayState.stop)
                     {
-                        var go = _manager[entity[i].resourceIndex];
-                        var psfx = go.GetComponent<PlayerShootingFX>();
                         psfx.StopEffects();
                     }
                 }

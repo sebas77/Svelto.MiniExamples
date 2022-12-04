@@ -5,13 +5,14 @@ namespace Svelto.ECS.Example.Survive.Enemies
 {
     public static class EnemyLayerContext
     {
-        public static void EnemyLayerSetup(GameObjectFactory gameObjectFactory, IEntityFactory entityFactory,
+        public static void EnemyLayerSetup(IEntityFactory entityFactory,
             IEntityStreamConsumerFactory entityStreamConsumerFactory, ITime time, IEntityFunctions entityFunctions,
             FasterList<IStepEngine> unorderedEngines, FasterList<IStepEngine> orderedEngines,
-            WaitForSubmissionEnumerator waitForSubmissionEnumerator, EnginesRoot enginesRoot)
+            WaitForSubmissionEnumerator waitForSubmissionEnumerator, EnginesRoot enginesRoot,
+            GameObjectResourceManager gameObjectResourceManager)
         {
             //Factory is one of the few OOP patterns that work very well with ECS. Its use is highly encouraged
-            var enemyFactory = new EnemyFactory(gameObjectFactory, entityFactory);
+            var enemyFactory = new EnemyFactory(entityFactory, gameObjectResourceManager);
 //Enemy related engines
             var enemyAnimationEngine = new EnemyChangeAnimationOnPlayerDeathEngine();
             var enemyDamageFXEngine = new EnemySpawnEffectOnDamageEngine(entityStreamConsumerFactory);
@@ -19,11 +20,8 @@ namespace Svelto.ECS.Example.Survive.Enemies
             var enemyMovementEngine = new EnemyMovementEngine();
 //Spawner engines are factories engines that can build entities
             var enemySpawnerEngine = new EnemySpawnerEngine(enemyFactory, entityFunctions);
-            var enemyDeathEngine = new EnemyDeathEngine(
-                entityFunctions,
-                entityStreamConsumerFactory,
-                time,
-                waitForSubmissionEnumerator);
+            var enemyDeathEngine = new EnemyDeathEngine(entityFunctions, entityStreamConsumerFactory,
+                time, waitForSubmissionEnumerator, gameObjectResourceManager);
 
 //enemy engines
             enginesRoot.AddEngine(enemySpawnerEngine);

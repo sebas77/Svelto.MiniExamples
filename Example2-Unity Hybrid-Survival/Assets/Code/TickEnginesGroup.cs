@@ -15,10 +15,10 @@ namespace Svelto.ECS.Example.Survive
         public string[] enginesOrder => new[]
         {
            nameof(PlayerGunEnginesNames.PlayerGunShootingEngine) 
-//          , nameof(EnemyEnginesNames.EnemyAttackEngine)
-//          , nameof(EnemyEnginesNames.EnemySpawnEffectOnDamage)
+          , nameof(EnemyEnginesNames.EnemyAttackEngine)
+          , nameof(EnemyEnginesNames.EnemySpawnEffectOnDamage)
 //          , nameof(DamageEnginesNames.DamageUnsortedEngines)
-//          , nameof(EnemyEnginesNames.EnemyDeathEngine)
+          , nameof(EnemyEnginesNames.EnemyDeathEngine)
             , nameof(GameObjectsEnginesNames.SyncOOPEnginesGroup)
           , nameof(PlayerEnginesNames.PlayerDeathEngine)
           , nameof(HUDEnginesNames.UpdateScoreEngine)

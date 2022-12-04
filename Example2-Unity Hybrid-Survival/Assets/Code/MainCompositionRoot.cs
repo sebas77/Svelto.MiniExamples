@@ -1,6 +1,7 @@
 using Svelto.Context;
 using Svelto.DataStructures;
 using Svelto.ECS.Example.Survive.Camera;
+using Svelto.ECS.Example.Survive.Enemies;
 using Svelto.ECS.Example.Survive.Player;
 using Svelto.ECS.Example.Survive.HUD;
 using Svelto.ECS.Example.Survive.OOPLayer;
@@ -102,7 +103,6 @@ namespace Svelto.ECS.Example.Survive
 //GameObjectFactory allows to create GameObjects without using the Static method GameObject.Instantiate.
 //While it seems a complication it's important to keep the engines testable and not coupled with hard
 //dependencies
-            var gameObjectFactory = new GameObjectFactory();
             var gameObjectResourceManager = new GameObjectResourceManager();
 //IStepEngines are engine that can be stepped (ticked) manually and explicitly with a Step() method
             FasterList<IStepEngine> orderedEngines = new FasterList<IStepEngine>();
@@ -118,10 +118,10 @@ namespace Svelto.ECS.Example.Survive
             PlayerLayerContext.Setup(
                 rayCaster, time, entityFunctions, entityStreamConsumerFactory, unorderedEngines, orderedEngines,
                 _enginesRoot);
-//            EnemyLayerContext.EnemyLayerSetup(
-//                gameObjectFactory, entityFactory, entityStreamConsumerFactory, time, entityFunctions,
-//                unorderedEngines, orderedEngines, new WaitForSubmissionEnumerator(unityEntitySubmissionScheduler),
-//                _enginesRoot);
+            EnemyLayerContext.EnemyLayerSetup(
+                entityFactory, entityStreamConsumerFactory, time, entityFunctions,
+                unorderedEngines, orderedEngines, new WaitForSubmissionEnumerator(unityEntitySubmissionScheduler),
+                _enginesRoot, gameObjectResourceManager);
             HudLayerContext.Setup(entityStreamConsumerFactory, unorderedEngines, orderedEngines, _enginesRoot);
 
 //group engines for order of execution. Ordering and Ticking is 100% user responsibility. This is just one of the possible way to achieve the result desired

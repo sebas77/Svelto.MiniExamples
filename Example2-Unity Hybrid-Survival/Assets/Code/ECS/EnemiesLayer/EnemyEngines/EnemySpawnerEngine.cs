@@ -35,9 +35,7 @@ namespace Svelto.ECS.Example.Survive.Enemies
 
         IEnumerator IntervaledTick()
         {
-            //this is of fundamental importance: Never create implementors as Monobehaviour just to hold 
-            //data (especially if read only data). Data should always been retrieved through a service layer
-            //regardless the data source.
+            //Data should always been retrieved through a service layer regardless the data source.
             //The benefits are numerous, including the fact that changing data source would require
             //only changing the service code. In this simple example I am not using a Service Layer
             //but you can see the point.          
@@ -62,9 +60,6 @@ namespace Svelto.ECS.Example.Survive.Enemies
 
             while (true)
             {
-                //Svelto.Tasks can yield Unity YieldInstructions but this comes with a performance hit
-                //so the fastest solution is always to use custom enumerators. To be honest the hit is minimal
-                //but it's better to not abuse it.                
                 var waitForSecondsEnumerator = new WaitForSecondsEnumerator(SECONDS_BETWEEN_SPAWNS);
                 while (waitForSecondsEnumerator.MoveNext())
                     yield return null;
@@ -76,35 +71,17 @@ namespace Svelto.ECS.Example.Survive.Enemies
                     {
                         var spawnData = enemiestoSpawn[i];
 
-                        //In this example every kind of enemy generates the same list of EntityViews
-                        //therefore I always use the same EntityDescriptor. However if the 
-                        //different enemies had to create different EntityViews for different
-                        //engines, this would have been a good example where EntityDescriptorHolder
-                        //could have been used to exploit the the kind of polymorphism explained
-                        //in my articles.
+                        //In this example every kind of enemy generates the same list of components
+                        //therefore I always use the same EntityDescriptor.
                         var EnemyAttackComponent = new EnemyAttackComponent
                         {
                             attackDamage      = enemyAttackData[i].enemyAttackData.attackDamage
                           , timeBetweenAttack = enemyAttackData[i].enemyAttackData.timeBetweenAttacks
                         };
 
-                        //have we got a compatible entity previously disabled and can it be reused?
-                        //Note, pooling make sense only for Entities that use implementors.
-                        //A pure struct based entity doesn't need pooling because it never allocates.
-                        //to simplify the logic, we use a recycle group for each entity type
-                        //For the sake of this example, we don't need a different enemy group for each enemy type
-                        //however since we need to fetch the right prefab from the pool (because of the graphic)
-                        //using a range group for pooling helps.
-                        var fromGroupId = EnemyGroups.EnemiesToRecycleGroups + (uint) spawnData.enemySpawnData.targetType;
-
-                        if (entitiesDB.HasAny<EnemyEntityViewComponent>(fromGroupId))
-                            ReuseEnemy(fromGroupId, spawnData);
-                        else
-                        {
-                            var build = _enemyFactory.Build(spawnData.enemySpawnData, EnemyAttackComponent);
+                        var build = _enemyFactory.Build(spawnData.enemySpawnData, EnemyAttackComponent);
                             while (build.MoveNext())
                                 yield return null;
-                        }
 
                         spawningTimes[i] = spawnData.enemySpawnData.spawnTime;
                         _numberOfEnemyToSpawn--;

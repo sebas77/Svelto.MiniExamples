@@ -5,7 +5,6 @@ using Svelto.DataStructures;
 using System.Collections.Generic;
 #endif
 
-
 namespace Svelto.ObjectPool
 {
     public class ThreadSafeObjectPool<T> : IObjectPool<T>, IDisposable
@@ -22,9 +21,9 @@ namespace Svelto.ObjectPool
 #endif
         }
 
-        public ThreadSafeObjectPool(Func<T> onFirstUse) : base()
+        public ThreadSafeObjectPool(Func<T> objectFactoryFunc) : base()
         {
-            _onFirstUse = onFirstUse;
+            _objectFactoryFunc = objectFactoryFunc;
         }
 
         protected virtual void OnDispose()
@@ -88,16 +87,38 @@ namespace Svelto.ObjectPool
 
         public T Use(int pool)
         {
-            DBC.Common.Check.Require(_onFirstUse != null, "You need to pass a function to create the object");
+            DBC.Common.Check.Require(_objectFactoryFunc != null, "You need to pass a function to create the object");
 
-            return ReuseInstance(pool, _onFirstUse);
+            return ReuseInstance(pool, _objectFactoryFunc);
         }
 
         public T Use()
         {
-            DBC.Common.Check.Require(_onFirstUse != null, "You need to pass a function to create the object");
+            DBC.Common.Check.Require(_objectFactoryFunc != null, "You need to pass a function to create the object");
 
-            return ReuseInstance(0, _onFirstUse);
+            return ReuseInstance(0, _objectFactoryFunc);
+        }
+        
+        public bool Reuse(int pool, out T obj)
+        {
+            obj = null;
+
+            ThreadSafeStack<T> localPool = ReturnValidPool(_recycledPools, pool);
+
+            while (IsNull(obj) == true && localPool.count > 0)
+                localPool.TryPop(out obj);
+
+            if (IsNull(obj) == false)
+            {
+#if DEBUG && !PROFILE_SVELTO
+                _alreadyRecycled.TryRemove(obj, out _);
+#endif
+                _objectsReused++;
+
+                return true;
+            }
+
+            return false;
         }
 
         public int GetNumberOfObjectsCreatedSinceLastTime()
@@ -233,7 +254,7 @@ namespace Svelto.ObjectPool
         // readonly ConcurrentDictionary<int, ConcurrentStack<T>> _usedPools =
         //     new ConcurrentDictionary<int, ConcurrentStack<T>>();
         
-        readonly Func<T> _onFirstUse;
+        readonly Func<T> _objectFactoryFunc;
 #if DEBUG && !PROFILE_SVELTO
         readonly ConcurrentDictionary<T, bool> _alreadyRecycled = new ConcurrentDictionary<T, bool>();
 #endif

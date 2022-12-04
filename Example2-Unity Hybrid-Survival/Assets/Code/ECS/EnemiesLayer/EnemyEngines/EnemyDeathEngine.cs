@@ -12,12 +12,13 @@ namespace Svelto.ECS.Example.Survive.Enemies
     {
         public EnemyDeathEngine
         (IEntityFunctions entityFunctions, IEntityStreamConsumerFactory consumerFactory, ITime time
-       , WaitForSubmissionEnumerator waitForSubmission)
+       , WaitForSubmissionEnumerator waitForSubmission, GameObjectResourceManager manager)
         {
             _entityFunctions   = entityFunctions;
             _consumerFactory   = consumerFactory;
             _time              = time;
             _waitForSubmission = waitForSubmission;
+            _manager = manager;
             _animations        = new FasterList<IEnumerator>();
             _consumer = _consumerFactory.GenerateConsumer<DeathComponent>("EnemyDeathEngine", 10);
         }
@@ -28,12 +29,12 @@ namespace Svelto.ECS.Example.Survive.Enemies
 
         public void Step()
         {
-            while (_consumer.TryDequeue(out _, out EGID egid))
+            while (_consumer.TryDequeue(out _, out EGID enemyID))
             {
                 //publisher/consumer pattern will be replaces with better patterns in future for these cases.
                 //The problem is obvious, DeathComponent is abstract and could have came from the player
-                if (AliveEnemies.Includes(egid.groupID)) 
-                    _animations.Add(StartSeparateAnimation(egid));
+                if (AliveEnemies.Includes(enemyID.groupID)) 
+                    _animations.Add(PlayDeathSequence(enemyID));
             }
 
             for (uint i = 0; i < _animations.count; i++)
@@ -59,11 +60,13 @@ namespace Svelto.ECS.Example.Survive.Enemies
             }
         }
 
-        IEnumerator StartSeparateAnimation(EGID egid)
+        IEnumerator PlayDeathSequence(EGID egid)
         {
             var enemyView = entitiesDB.QueryEntity<EnemyEntityViewComponent>(egid);
 
             enemyView.animationComponent.playAnimation = "Dead";
+            
+            var goComponent = entitiesDB.QueryEntity<GameObjectEntityComponent>(egid);
 
             //Any build/swap/remove do not happen immediately, but at specific sync points
             //swapping group because we don't want any engine to pick up this entity while it's animating for death
@@ -85,12 +88,9 @@ namespace Svelto.ECS.Example.Survive.Enemies
 
             //new egid after the swap
             var entityGid = new EGID(egid.entityID, DeadEnemies.BuildGroup);
-
             var enemyType = entitiesDB.QueryEntity<EnemyComponent>(entityGid).enemyType;
 
-            //getting ready to recycle it
-            _entityFunctions.SwapEntityGroup<EnemyEntityDescriptor>(
-                entityGid, EnemyGroups.EnemiesToRecycleGroups + (uint) enemyType);
+            _manager.Recycle(goComponent.resourceIndex, (int)enemyType);
         }
 
         readonly IEntityFunctions             _entityFunctions;
@@ -98,6 +98,7 @@ namespace Svelto.ECS.Example.Survive.Enemies
         readonly ITime                        _time;
         Consumer<DeathComponent>              _consumer;
         readonly WaitForSubmissionEnumerator           _waitForSubmission;
+        readonly GameObjectResourceManager _manager;
         readonly FasterList<IEnumerator>      _animations;
     }
 }

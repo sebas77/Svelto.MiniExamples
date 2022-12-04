@@ -5,9 +5,9 @@ using UnityEngine.AddressableAssets;
 
 namespace Svelto.ECS.Example.Survive.OOPLayer
 {
-    public class GameObjectFactory
+    class GameObjectFactory
     {
-        public IEnumerator<GameObject> Build(string prefabName, bool startActive = true)
+        internal IEnumerator<GameObject> Build(string prefabName, bool startActive = true)
         {
             var load = Addressables.LoadAssetAsync<GameObject>(prefabName);
 
