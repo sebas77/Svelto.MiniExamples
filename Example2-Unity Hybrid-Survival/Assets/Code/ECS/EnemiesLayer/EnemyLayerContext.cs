@@ -14,7 +14,7 @@ namespace Svelto.ECS.Example.Survive.Enemies
             //Factory is one of the few OOP patterns that work very well with ECS. Its use is highly encouraged
             var enemyFactory = new EnemyFactory(entityFactory, gameObjectResourceManager);
 //Enemy related engines
-            var enemyAnimationEngine = new EnemyChangeAnimationOnPlayerDeathEngine();
+            //var enemyAnimationEngine = new EnemyChangeAnimationOnPlayerDeathEngine();
             var enemyDamageFXEngine = new EnemySpawnEffectOnDamageEngine(entityStreamConsumerFactory);
             var enemyAttackEngine = new EnemyAttackEngine(time);
             var enemyMovementEngine = new EnemyMovementEngine();
@@ -27,7 +27,7 @@ namespace Svelto.ECS.Example.Survive.Enemies
             enginesRoot.AddEngine(enemySpawnerEngine);
             enginesRoot.AddEngine(enemyAttackEngine);
             enginesRoot.AddEngine(enemyMovementEngine);
-            enginesRoot.AddEngine(enemyAnimationEngine);
+            //enginesRoot.AddEngine(enemyAnimationEngine);
             enginesRoot.AddEngine(enemyDeathEngine);
             enginesRoot.AddEngine(enemyDamageFXEngine);
 

@@ -20,9 +20,9 @@ namespace Svelto.ECS.Example.Survive.OOPLayer
             _factory = new GameObjectFactory();
         }
 
-        public IEnumerable<ValueIndex?> Build(string prefabName)
+        public IEnumerable<ValueIndex?> Build(string prefabName, bool startActive = true)
         {
-            var gameObject = _factory.Build(prefabName);
+            var gameObject = _factory.Build(prefabName, startActive);
 
             while (gameObject.MoveNext()) 
                 yield return null;
@@ -34,7 +34,7 @@ namespace Svelto.ECS.Example.Survive.OOPLayer
         {
             if (_resourcePool.Reuse(pool, out var obj) == false)
             {
-                return Build(prefabName);
+                return Build(prefabName, false);
             }
 
             return new ValueIndex?[] {Add(obj)};

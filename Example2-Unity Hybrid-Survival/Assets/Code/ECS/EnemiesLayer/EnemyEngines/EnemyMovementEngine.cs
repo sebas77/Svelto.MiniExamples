@@ -1,4 +1,5 @@
 using System.Collections;
+using Svelto.ECS.Example.Survive.Transformable;
 
 namespace Svelto.ECS.Example.Survive.Enemies
 {
@@ -12,7 +13,7 @@ namespace Svelto.ECS.Example.Survive.Enemies
         {
             void RefHelper()
             {
-                foreach (var ((enemiesTarget, _), _) in entitiesDB.QueryEntities<EnemyTargetEntityViewComponent>())
+                foreach (var ((targetsPosition, _), _) in entitiesDB.QueryEntities<PositionComponent>(EnemyTarget.Groups))
                 {
                     //If there were more than one player, this must be smarter, for example choose the target
                     //according the distance
@@ -23,7 +24,7 @@ namespace Svelto.ECS.Example.Survive.Enemies
                         //there were more, I could use different strategies, like choose the closest. This is 
                         //for a very simple AI scenario of course.
                         for (var i = 0; i < enemiesCount; i++)
-                            enemies[i].movementComponent.navMeshDestination = enemiesTarget[0].position;
+                            enemies[i].movementComponent.navMeshDestination = targetsPosition[0].position;
                     }
                 }
             }

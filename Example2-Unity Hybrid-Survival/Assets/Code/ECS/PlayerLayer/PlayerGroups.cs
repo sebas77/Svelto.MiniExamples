@@ -1,4 +1,5 @@
 ﻿using Svelto.ECS.Example.Survive.Damage;
+using Svelto.ECS.Example.Survive.Enemies;
 
 namespace Svelto.ECS.Example.Survive.Player
 {
@@ -9,5 +10,8 @@ namespace Svelto.ECS.Example.Survive.Player
     //the entities that are damageable in the abstracted damage layer engines
     //Group compound tags should be seen ad adjective and states of a tag, can also be seen as an alternative
     //approach to have components that can be removed and added in entities to model dynamic states
-    public class Player : GroupCompound<PlayerTag, DamageableTag> { };
+    //The player is also an enemy target. The tag is provided by the EnemyLayer (thus more abstract than the player one)
+    //however GroupCompound supports up to 4 tags only, so if they are not enough filters could be used
+    //i.e.: the enemy layers could have worked just with filters and player added in the enemy target filter
+    public class Player : GroupCompound<PlayerTag, DamageableTag, EnemyTarget> { };
 }

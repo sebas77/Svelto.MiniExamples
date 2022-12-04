@@ -55,7 +55,6 @@
      <Compile Include="Assets\Code\ECS\EnemiesLayer\Entities\EnemyAttackComponent.cs" />
      <Compile Include="Assets\Code\ECS\EnemiesLayer\Entities\ITransformComponent.cs" />
      <Compile Include="Assets\Code\ECS\EnemiesLayer\EnemyGroups.cs" />
-     <Compile Include="Assets\Code\ECS\EnemiesLayer\Entities\EnemyTargetEntityViewComponent.cs" />
      <Compile Include="Assets\Code\ECS\EnemiesLayer\EnemyFactory.cs" />
      <Compile Include="Assets\Code\ECS\EnemiesLayer\EnemyEngines\EnemyAttackEngine.cs" />
      <Compile Include="Assets\Code\ECS\EnemiesLayer\EnemyEngines\EnemySpawnerEngine.cs" />
@@ -682,6 +681,10 @@
     <ProjectReference Include="Unity.ResourceManager.csproj">
       <Project>{716ea4f8-08d0-1229-8ecb-bd1945d5e600}</Project>
       <Name>Unity.ResourceManager</Name>
+    </ProjectReference>
+    <ProjectReference Include="TransformableLayer.csproj">
+      <Project>{18457d9e-b04e-0cec-b1cc-2289d7294499}</Project>
+      <Name>TransformableLayer</Name>
     </ProjectReference>
     <ProjectReference Include="UnityEditor.UI.csproj">
       <Project>{071fa4f6-95c0-6054-c479-b9199d4dc847}</Project>
