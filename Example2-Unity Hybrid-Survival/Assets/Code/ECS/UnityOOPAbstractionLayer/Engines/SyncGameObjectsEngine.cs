@@ -1,11 +1,9 @@
-﻿using Svelto.Common;
-using Svelto.ECS.Example.Survive.Player;
+﻿using Svelto.ECS.Example.Survive.Player;
 using Svelto.ECS.Example.Survive.Transformable;
 using UnityEngine;
 
 namespace Svelto.ECS.Example.Survive.OOPLayer
 {
-    [Sequenced(nameof(GameObjectsEnginesNames.SyncGameObjectsEngine))]
     public class SyncGameObjectsEngine: IQueryingEntitiesEngine, IStepEngine
     {
         public SyncGameObjectsEngine(GameObjectResourceManager manager)

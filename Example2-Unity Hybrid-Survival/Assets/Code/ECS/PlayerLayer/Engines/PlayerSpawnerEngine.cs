@@ -25,12 +25,12 @@ namespace Svelto.ECS.Example.Survive.Player
             var cameraLoading = _gameObjectResourceManager.Build("CameraPrefab").GetEnumerator();
 
             while (cameraLoading.MoveNext()) yield return null;
-
+            
             ValueIndex playerID = playerLoading.Current.Value;
             ValueIndex cameraID = cameraLoading.Current.Value;
-
+            
             BuildPlayerEntity(playerID, out var playerInitializer);
-            BuildGunEntity(playerInitializer);
+            BuildGunEntity(playerInitializer, playerID);
             BuildCameraEntity(ref playerInitializer, cameraID);
         }
 
@@ -66,7 +66,7 @@ namespace Svelto.ECS.Example.Survive.Player
             });
         }
 
-        void BuildGunEntity(EntityInitializer playerInitializer)
+        void BuildGunEntity(EntityInitializer playerInitializer, ValueIndex valueIndex)
         {
             //Gun and player are two different entities, but they are linked by the EGID
             //in this case we assume that we know at all the time the ID of the gun and the group where the gun is
@@ -76,14 +76,23 @@ namespace Svelto.ECS.Example.Survive.Player
             //as this trick cannot be used to determine an EGID anymore once group compounds are used. 
             //therefore I switched to the use of EntityReferences.
             var init = _entityFactory.BuildEntity<PlayerGunEntityDescriptor>(playerInitializer.EGID.entityID,
-                Survive.PlayerGun.Gun.BuildGroup);
+                PlayerGun.Gun.Group);
 
             //being lazy here, it should be read from json file
-            init.Init(new GunAttributesComponent()
+            init.Init(new GunComponent()
             {
-                timeBetweenBullets = 0.15f, range = 100f, damagePerShot = 20,
+                timeBetweenBullets = 0.3f, range = 100f, damagePerShot = 20, timer = 0.3f
             });
 
+            var gunObject = _gameObjectResourceManager[valueIndex].GetComponentInChildren<PlayerShootingFX>().gameObject;
+            var gunIndex = _gameObjectResourceManager.Add(gunObject);
+            
+            init.Init(new GameObjectEntityComponent
+            {
+                resourceIndex = gunIndex
+            });
+
+            //set the gun to the player component
             playerInitializer.Init(new WeaponComponent()
             {
                 weapon = init.reference
@@ -104,7 +113,7 @@ namespace Svelto.ECS.Example.Survive.Player
                 _entityFactory.BuildEntity<CameraEntityDescriptor>(playerID.EGID.entityID, Camera.Camera.Group);
 
             cameraInit.Init(new CameraTargetEntityReferenceComponent() { targetEntity = playerID.reference });
-            cameraInit.Init(new CameraEntityComponent()
+            cameraInit.Init(new CameraOOPEntityComponent()
             {
                 offset = cameraResource.transform.position - playerPosition.position
             });

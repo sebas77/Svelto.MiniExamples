@@ -1,15 +1,11 @@
 using System.Collections;
 using Svelto.Common;
 using Svelto.ECS.Example.Survive.Damage;
+using Svelto.ECS.Example.Survive.OOPLayer;
 using UnityEngine;
 
 namespace Svelto.ECS.Example.Survive.Player.Gun
 {
-    public enum PlayerGunEnginesNames
-    {
-        PlayerGunShootingEngine
-    }
-
     [Sequenced(nameof(PlayerGunEnginesNames.PlayerGunShootingEngine))]
     public class PlayerFiresGunEngine : IQueryingEntitiesEngine, IStepEngine
     {
@@ -24,14 +20,9 @@ namespace Svelto.ECS.Example.Survive.Player.Gun
 
         public EntitiesDB entitiesDB { set; private get; }
 
-        public void Ready()
-        {
-        }
+        public void Ready() { }
 
-        public void Step()
-        {
-            _shootTick.MoveNext();
-        }
+        public void Step() => _shootTick.MoveNext();
 
         public string name => nameof(PlayerFiresGunEngine);
 
@@ -41,24 +32,24 @@ namespace Svelto.ECS.Example.Survive.Player.Gun
         ///     this level of abstraction. Never abstract too early! Early abstraction is the root of all the evil!
         ///     Svelto and ECS help immensely to abstract only when it's actually needed
         /// </summary>
-        /// <param name="playerGunEntityView"></param>
-        /// <param name="gunFxComponent"></param>
+        /// <param name="gunComponent"></param>
+        /// <param name="gunOopFxComponent"></param>
         /// <param name="gunFxComponentID"></param>
-        void Shoot(ref GunAttributesComponent playerGunEntityView, in GunEntityComponent gunFxComponent,
+        void Shoot(ref GunComponent gunComponent, in GunOOPEntityComponent gunOopFxComponent,
             EGID gunFxComponentID)
         {
-            playerGunEntityView.timer = 0;
+            gunComponent.timer = 0;
 
-            Ray shootRay = gunFxComponent.shootRay;
+            Ray shootRay = gunOopFxComponent.shootRay;
 
             //CheckHit returns the EGID of the entity linked to the gameobject hit
-            var hit = _rayCaster.CheckHit(shootRay, playerGunEntityView.range, _shootableLayer, _shootableMask,
+            var hit = _rayCaster.CheckHit(shootRay, gunComponent.range, _shootableLayer, _shootableMask,
                 out var point, out var referenceID);
 
             //invalid entity reference is a valid return from CheckHit, it means that something has been hit but it's not an entity
             if (hit && referenceID != EntityReference.Invalid)
             {
-                var damageInfo = new DamageInfo(playerGunEntityView.damagePerShot, point);
+                var damageInfo = new DamageInfo(gunComponent.damagePerShot, point);
 
                 var instanceID = referenceID.ToEGID(entitiesDB);
                 {
@@ -67,38 +58,29 @@ namespace Svelto.ECS.Example.Survive.Player.Gun
                     entitiesDB.PublishEntityChange<DamageableComponent>(instanceID);
                 }
 
-                playerGunEntityView.lastTargetPosition = point;
+                gunComponent.lastTargetPosition = point;
             }
             else
-                playerGunEntityView.lastTargetPosition =
-                    shootRay.origin + shootRay.direction * playerGunEntityView.range;
+                gunComponent.lastTargetPosition = shootRay.origin + shootRay.direction * gunComponent.range;
 
-            entitiesDB.PublishEntityChange<GunAttributesComponent>(gunFxComponentID);
+            entitiesDB.PublishEntityChange<GunComponent>(gunFxComponentID);
         }
-
+        
         IEnumerator Tick()
         {
             void Shoot()
             {
-                //todo: this needs to be split. This will just set the gunComponent to fire state
-                //the rest of the code will be executed by an engine in the gun layer
-                foreach (var ((playersInputs, weapons, count), _) in entitiesDB
-                            .QueryEntities<PlayerInputDataComponent, WeaponComponent>(Player.Groups))
+                var (weapons, oopComponent, IDs, count) = entitiesDB
+                   .QueryEntities<GunComponent, GunOOPEntityComponent>(PlayerGun.Gun.Group);
+                
+                for (var i = 0; i < count; i++)
                 {
-                    for (var i = 0; i < count; i++)
+                    ref GunComponent playerGunComponent = ref weapons[i];
+                    playerGunComponent.timer += _time.deltaTime;
+
+                    if (playerGunComponent.fired && playerGunComponent.timer >= playerGunComponent.timeBetweenBullets)
                     {
-                        var input = playersInputs[i];
-                        if (input.fire)
-                        {
-                            var     gunEGID = weapons[i].weapon.ToEGID(entitiesDB);
-                            ref var playerGunComponent = ref entitiesDB.QueryEntity<GunAttributesComponent>(gunEGID);
-                            ref var playerVisualGunComponent = ref entitiesDB.QueryEntity<GunEntityComponent>(gunEGID);
-
-                            playerGunComponent.timer += _time.deltaTime;
-
-                            if (playerGunComponent.timer >= playerGunComponent.timeBetweenBullets)
-                                this.Shoot(ref playerGunComponent, playerVisualGunComponent, gunEGID);
-                        }
+                        this.Shoot(ref playerGunComponent, oopComponent[i], new EGID(IDs[i], PlayerGun.Gun.Group));
                     }
                 }
             }

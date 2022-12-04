@@ -41,13 +41,24 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
-     <Compile Include="Assets\Code\ECS\UnityOOPAbstractionLayer\GameObjectEntityComponent.cs" />
+     <Compile Include="Assets\Code\ECS\UnityOOPAbstractionLayer\Entities\GameObjectEntityComponent.cs" />
+     <Compile Include="Assets\Code\ECS\UnityOOPAbstractionLayer\Entities\GunOOPEntityComponent.cs" />
      <Compile Include="Assets\Code\ECS\UnityOOPAbstractionLayer\GameObjectResourceManager.cs" />
+     <Compile Include="Assets\Code\ECS\UnityOOPAbstractionLayer\Objects\EntityReferenceHolder.cs" />
      <Compile Include="Assets\Code\ECS\UnityOOPAbstractionLayer\GameObjectFactory.cs" />
+     <Compile Include="Assets\Code\ECS\UnityOOPAbstractionLayer\IRayCaster.cs" />
+     <Compile Include="Assets\Code\ECS\UnityOOPAbstractionLayer\Objects\PlayerShootingFX.cs" />
+     <Compile Include="Assets\Code\ECS\UnityOOPAbstractionLayer\Entities\CameraOOPEntityComponent.cs" />
+     <Compile Include="Assets\Code\ECS\UnityOOPAbstractionLayer\Engines\SyncGunToObjectsEngine.cs" />
      <Compile Include="Assets\Code\ECS\UnityOOPAbstractionLayer\GAME_LAYERS.cs" />
+     <Compile Include="Assets\Code\ECS\UnityOOPAbstractionLayer\Engines\SyncCameraToObjectsEngine.cs" />
      <Compile Include="Assets\Code\ECS\UnityOOPAbstractionLayer\Engines\SyncGameObjectsEngine.cs" />
-     <Compile Include="Assets\Code\ECS\UnityOOPAbstractionLayer\TransformableLayerContext.cs" />
+     <Compile Include="Assets\Code\ECS\UnityOOPAbstractionLayer\OOPLayerContext.cs" />
      <Compile Include="Assets\Code\ECS\UnityOOPAbstractionLayer\EnginesNames.cs" />
+     <Compile Include="Assets\Code\ECS\UnityOOPAbstractionLayer\RayCaster.cs" />
+     <Compile Include="Assets\Code\ECS\UnityOOPAbstractionLayer\Engines\SyncOOPEnginesGroup.cs" />
+     <Folder Include="Assets\Code\ECS\UnityOOPAbstractionLayer\Objects" />
+     <Folder Include="Assets\Code\ECS\UnityOOPAbstractionLayer\Entities" />
      <Folder Include="Assets\Code\ECS\UnityOOPAbstractionLayer\Engines" />
      <Folder Include="Assets\Code\ECS\UnityOOPAbstractionLayer" />
      <None Include="Assets\Code\ECS\UnityOOPAbstractionLayer\UnityOOPAbstractionLayer.asmdef" />

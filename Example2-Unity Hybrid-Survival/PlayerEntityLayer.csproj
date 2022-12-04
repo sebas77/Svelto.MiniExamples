@@ -41,7 +41,6 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
-     <Compile Include="Assets\Code\ECS\PlayerLayer\Entities\Gun\GunEntityComponent.cs" />
      <Compile Include="Assets\Code\ECS\PlayerLayer\Engines\Gun\PlayerFiresGunEngine.cs" />
      <Compile Include="Assets\Code\ECS\PlayerLayer\Engines\Gun\PlayerGunShootingFXsEngine.cs" />
      <Compile Include="Assets\Code\ECS\PlayerLayer\Engines\PlayerMovementEngine.cs" />
@@ -50,9 +49,10 @@
      <Compile Include="Assets\Code\ECS\PlayerLayer\PlayerEnginesNames.cs" />
      <Compile Include="Assets\Code\ECS\PlayerLayer\Engines\PlayerSpawnerEngine.cs" />
      <Compile Include="Assets\Code\ECS\PlayerLayer\Engines\PlayerInputEngine.cs" />
-     <Compile Include="Assets\Code\ECS\PlayerLayer\Entities\Gun\GunAttributesComponent.cs" />
+     <Compile Include="Assets\Code\ECS\PlayerLayer\Entities\Gun\GunComponent.cs" />
      <Compile Include="Assets\Code\ECS\PlayerLayer\PlayerLayerContext.cs" />
      <Compile Include="Assets\Code\ECS\PlayerLayer\Engines\PlayerAnimationEngine.cs" />
+     <Compile Include="Assets\Code\ECS\PlayerLayer\Engines\Gun\PlayerGunEnginesNames.cs" />
      <Compile Include="Assets\Code\ECS\PlayerLayer\GunGroups.cs" />
      <Compile Include="Assets\Code\ECS\PlayerLayer\Entities\WeaponComponent.cs" />
      <Compile Include="Assets\Code\ECS\PlayerLayer\PlayerGroups.cs" />

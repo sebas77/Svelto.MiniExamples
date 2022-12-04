@@ -53,7 +53,6 @@
      <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\DamageInfo.cs" />
      <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\DamageableComponent.cs" />
      <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\ApplyDamageToDamageableEntitiesEngine.cs" />
-     <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\DamageUnsortedEngines.cs" />
      <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\DamageSoundEntityComponent.cs" />
      <None Include="Assets\Code\ECS\DamageableEntitiesLayer\DamageableEntityLayer.asmdef" />
      <Folder Include="Assets\Code\ECS\DamageableEntitiesLayer" />

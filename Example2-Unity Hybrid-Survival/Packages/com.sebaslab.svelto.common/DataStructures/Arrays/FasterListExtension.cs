@@ -1,8 +1,4 @@
-﻿using System;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-
-namespace Svelto.DataStructures
+﻿namespace Svelto.DataStructures
 {
     public static class FasterListExtension
     {

@@ -1,3 +1,4 @@
+using Svelto.ECS.Example.Survive.OOPLayer;
 using Svelto.ECS.Extensions.Unity;
 using Svelto.ECS.Hybrid;
 using UnityEngine;
@@ -24,7 +25,7 @@ namespace Svelto.ECS.Example.Survive.Enemies
         {
             if (hitChange != null && other.attachedRigidbody != null)
             {
-                EntityReferenceHolderImplementor enemyTargetEntityViewComponent = other.gameObject.GetComponent<EntityReferenceHolderImplementor>();
+                EntityReferenceHolder enemyTargetEntityViewComponent = other.gameObject.GetComponent<EntityReferenceHolder>();
                 if (enemyTargetEntityViewComponent != null)
                     hitChange.value = new EnemyCollisionData(enemyTargetEntityViewComponent.reference, true);
             }
@@ -34,7 +35,7 @@ namespace Svelto.ECS.Example.Survive.Enemies
         {
             if (hitChange != null && other.attachedRigidbody != null)
             {
-                EntityReferenceHolderImplementor enemyTargetEntityViewComponent = other.gameObject.GetComponent<EntityReferenceHolderImplementor>();
+                EntityReferenceHolder enemyTargetEntityViewComponent = other.gameObject.GetComponent<EntityReferenceHolder>();
                 if (enemyTargetEntityViewComponent != null)
                     hitChange.value = new EnemyCollisionData(enemyTargetEntityViewComponent.reference, false);
             }

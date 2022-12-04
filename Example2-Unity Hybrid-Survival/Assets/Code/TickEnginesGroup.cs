@@ -19,7 +19,7 @@ namespace Svelto.ECS.Example.Survive
 //          , nameof(EnemyEnginesNames.EnemySpawnEffectOnDamage)
 //          , nameof(DamageEnginesNames.DamageUnsortedEngines)
 //          , nameof(EnemyEnginesNames.EnemyDeathEngine)
-            , nameof(GameObjectsEnginesNames.SyncGameObjectsEngine)
+            , nameof(GameObjectsEnginesNames.SyncOOPEnginesGroup)
           , nameof(PlayerEnginesNames.PlayerDeathEngine)
           , nameof(HUDEnginesNames.UpdateScoreEngine)
         };

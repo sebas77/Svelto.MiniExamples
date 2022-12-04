@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using DBC.ECS;
 using Svelto.Common;
 using Svelto.DataStructures;
-using Svelto.DataStructures;
 using Svelto.ECS.Internal;
 using Svelto.ECS.Schedulers;
 

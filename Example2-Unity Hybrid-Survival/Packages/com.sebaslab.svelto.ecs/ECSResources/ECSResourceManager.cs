@@ -16,13 +16,13 @@ namespace Svelto.ECS.ResourceManager
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        protected ValueIndex Add(in T resource)
+        public ValueIndex Add(in T resource)
         {
             return _sparse.Add(resource);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        protected void Remove(ValueIndex index)
+        public void Remove(ValueIndex index)
         {
             _sparse.Remove(index);
         }

@@ -11,7 +11,8 @@
         "Utility",
         "DamageableEntityLayer",
         "TransformableLayer",
-        "EnemiesLayer"
+        "EnemiesLayer",
+        "CameraOOPAbstractionLayer"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

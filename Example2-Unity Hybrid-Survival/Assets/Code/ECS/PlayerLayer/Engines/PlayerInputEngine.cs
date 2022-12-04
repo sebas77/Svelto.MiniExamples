@@ -1,5 +1,6 @@
 ﻿using System.Collections;
-using Svelto.ECS.Example.Survive.Camera;
+using Svelto.ECS.Example.Survive.OOPLayer;
+using Svelto.ECS.Example.Survive.Player.Gun;
 using UnityEngine;
 
 namespace Svelto.ECS.Example.Survive.Player
@@ -30,14 +31,17 @@ namespace Svelto.ECS.Example.Survive.Player
                         var v = Input.GetAxisRaw("Vertical");
 
                         playerComponents[0].input = new Vector3(h, 0f, v);
-                        playerComponents[0].fire  = Input.GetButton("Fire1");
                     }
                 }
+
+                var (gunComponents, count) = entitiesDB.QueryEntities<GunComponent>(PlayerGun.Gun.Group);
+                for (int i = count - 1; i >= 0; i--)
+                    gunComponents[0].fired = Input.GetButton("Fire1");
 
                 //is it correct that a player engine iterates cameras? The answer is no: in a pure sense this
                 //engine has too many responsibilities. A camera engine should do this.
                 var (cameraComponents, camerasCount) = entitiesDB
-                   .QueryEntities<CameraEntityComponent>(Camera.Camera.Group);
+                   .QueryEntities<CameraOOPEntityComponent>(Camera.Camera.Group);
                 for (int i = 0; i < camerasCount; i++)
                     cameraComponents[i].camRayInput = Input.mousePosition;
             }

@@ -1,5 +1,6 @@
 using System.Collections;
 using Svelto.ECS.Example.Survive.Camera;
+using Svelto.ECS.Example.Survive.OOPLayer;
 using Svelto.ECS.Example.Survive.Transformable;
 using UnityEngine;
 
@@ -45,7 +46,7 @@ namespace Svelto.ECS.Example.Survive.Player
                     for (int i = 0; i < count; i++)
                     {
                         Turning(
-                            ref entitiesDB.QueryEntity<CameraEntityComponent>(cameraReference[i].cameraReference
+                            entitiesDB.QueryEntity<CameraOOPEntityComponent>(cameraReference[i].cameraReference
                                .ToEGID(entitiesDB)), ref pos[i], ref rotations[i]);
                     }
                 }
@@ -68,13 +69,10 @@ namespace Svelto.ECS.Example.Survive.Player
             playerComponent.velocity = movement;
         }
 
-        void Turning(ref CameraEntityComponent cameraInfo, ref PositionComponent pos, ref RotationComponent rotation)
+        void Turning(in CameraOOPEntityComponent cameraInfo, ref PositionComponent pos, ref RotationComponent rotation)
         {
             // Create a ray from the mouse cursor on screen in the direction of the camera.
-            var camRay = cameraInfo.camRay;
-
-            // Perform the raycast and if it hits something on the floor layer...
-            if (_rayCaster.CheckHit(camRay, camRayLength, floorMask, out var point))
+            if (_rayCaster.CheckHit(cameraInfo.camRay, camRayLength, floorMask, out var point))
             {
                 // Create a vector from the player to the point on the floor the raycast from the mouse hit.
                 var playerToMouse = point - pos.position;

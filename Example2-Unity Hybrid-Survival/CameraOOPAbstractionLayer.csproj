@@ -12,11 +12,11 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{244bd38c-fe73-9b87-5070-1d7b3f94730c}</ProjectGuid>
+    <ProjectGuid>{4285b3db-ac0b-9d2b-2e9d-e9cff3846091}</ProjectGuid>
     <ProjectTypeGuids>{E097FAD1-6243-4DAD-9C02-E9B9EFC3FFC1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <AssemblyName>CameraLayer</AssemblyName>
+    <AssemblyName>CameraOOPAbstractionLayer</AssemblyName>
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <BaseDirectory>.</BaseDirectory>
@@ -25,7 +25,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>Temp\Bin\Debug\CameraLayer\</OutputPath>
+    <OutputPath>Temp\Bin\Debug\CameraOOPAbstractionLayer\</OutputPath>
     <DefineConstants>UNITY_2020_3_42;UNITY_2020_3;UNITY_2020;UNITY_5_3_OR_NEWER;UNITY_5_4_OR_NEWER;UNITY_5_5_OR_NEWER;UNITY_5_6_OR_NEWER;UNITY_2017_1_OR_NEWER;UNITY_2017_2_OR_NEWER;UNITY_2017_3_OR_NEWER;UNITY_2017_4_OR_NEWER;UNITY_2018_1_OR_NEWER;UNITY_2018_2_OR_NEWER;UNITY_2018_3_OR_NEWER;UNITY_2018_4_OR_NEWER;UNITY_2019_1_OR_NEWER;UNITY_2019_2_OR_NEWER;UNITY_2019_3_OR_NEWER;UNITY_2019_4_OR_NEWER;UNITY_2020_1_OR_NEWER;UNITY_2020_2_OR_NEWER;UNITY_2020_3_OR_NEWER;PLATFORM_ARCH_64;UNITY_64;UNITY_INCLUDE_TESTS;USE_SEARCH_ENGINE_API;ENABLE_AR;ENABLE_AUDIO;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_EVENT_QUEUE;ENABLE_MICROPHONE;ENABLE_MULTIPLE_DISPLAYS;ENABLE_PHYSICS;ENABLE_TEXTURE_STREAMING;ENABLE_VIRTUALTEXTURING;ENABLE_UNET;ENABLE_LZMA;ENABLE_UNITYEVENTS;ENABLE_VR;ENABLE_WEBCAM;ENABLE_UNITYWEBREQUEST;ENABLE_WWW;ENABLE_CLOUD_SERVICES;ENABLE_CLOUD_SERVICES_COLLAB;ENABLE_CLOUD_SERVICES_COLLAB_SOFTLOCKS;ENABLE_CLOUD_SERVICES_ADS;ENABLE_CLOUD_SERVICES_USE_WEBREQUEST;ENABLE_CLOUD_SERVICES_CRASH_REPORTING;ENABLE_CLOUD_SERVICES_PURCHASING;ENABLE_CLOUD_SERVICES_ANALYTICS;ENABLE_CLOUD_SERVICES_UNET;ENABLE_CLOUD_SERVICES_BUILD;ENABLE_CLOUD_LICENSE;ENABLE_EDITOR_HUB_LICENSE;ENABLE_WEBSOCKET_CLIENT;ENABLE_DIRECTOR_AUDIO;ENABLE_DIRECTOR_TEXTURE;ENABLE_MANAGED_JOBS;ENABLE_MANAGED_TRANSFORM_JOBS;ENABLE_MANAGED_ANIMATION_JOBS;ENABLE_MANAGED_AUDIO_JOBS;ENABLE_MANAGED_UNITYTLS;INCLUDE_DYNAMIC_GI;ENABLE_MONO_BDWGC;ENABLE_SCRIPTING_GC_WBARRIERS;PLATFORM_SUPPORTS_MONO;RENDER_SOFTWARE_CURSOR;ENABLE_VIDEO;PLATFORM_STANDALONE;PLATFORM_STANDALONE_WIN;UNITY_STANDALONE_WIN;UNITY_STANDALONE;ENABLE_RUNTIME_GI;ENABLE_MOVIES;ENABLE_NETWORK;ENABLE_CRUNCH_TEXTURE_COMPRESSION;ENABLE_UNITY_GAME_SERVICES_ANALYTICS_SUPPORT;ENABLE_OUT_OF_PROCESS_CRASH_HANDLER;ENABLE_CLUSTER_SYNC;ENABLE_CLUSTERINPUT;PLATFORM_UPDATES_TIME_OUTSIDE_OF_PLAYER_LOOP;GFXDEVICE_WAITFOREVENT_MESSAGEPUMP;ENABLE_WEBSOCKET_HOST;ENABLE_MONO;NET_STANDARD_2_0;ENABLE_PROFILER;DEBUG;TRACE;UNITY_ASSERTIONS;UNITY_EDITOR;UNITY_EDITOR_64;UNITY_EDITOR_WIN;ENABLE_UNITY_COLLECTIONS_CHECKS;ENABLE_BURST_AOT;UNITY_TEAM_LICENSE;UNITY_PRO_LICENSE;ENABLE_CUSTOM_RENDER_TEXTURE;ENABLE_DIRECTOR;ENABLE_LOCALIZATION;ENABLE_SPRITES;ENABLE_TERRAIN;ENABLE_TILEMAP;ENABLE_TIMELINE;ENABLE_LEGACY_INPUT_MANAGER;ENABLE_PLATFORM_PROFILER;TASK_PROFILER_ENABLED;CROSS_PLATFORM_INPUT;TASKS_PROFILER_ENABLED;CSHARP_7_OR_LATER;CSHARP_7_3_OR_NEWER</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -41,16 +41,7 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
-     <Compile Include="Assets\Code\ECS\CameraLayer\Groups.cs" />
-     <Compile Include="Assets\Code\ECS\CameraLayer\Engines\CameraFollowingTargetEngine.cs" />
-     <Compile Include="Assets\Code\ECS\CameraLayer\Entities\CameraEntityDescriptor.cs" />
-     <Compile Include="Assets\Code\ECS\CameraLayer\CameraLayerContext.cs" />
-     <Compile Include="Assets\Code\ECS\CameraLayer\Entities\CameraReferenceComponent.cs" />
-     <Compile Include="Assets\Code\ECS\CameraLayer\Entities\CameraTargetEntityReferenceComponent.cs" />
-     <None Include="Assets\Code\ECS\CameraLayer\CameraLayer.asmdef" />
-     <Folder Include="Assets\Code\ECS\CameraLayer" />
-     <Folder Include="Assets\Code\ECS\CameraLayer\Engines" />
-     <Folder Include="Assets\Code\ECS\CameraLayer\Entities" />
+     <Folder Include="Assets\Code\ECS\UnityOOPAbstractionLayer" />
      <Reference Include="UnityEngine">
      <HintPath>C:\Program Files\Unity\2020.3.42f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
      </Reference>
@@ -635,25 +626,33 @@
      </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="Svelto.Common.csproj">
-      <Project>{53ca5d34-0f9e-ae64-6d32-8d74a6f2e9d4}</Project>
-      <Name>Svelto.Common</Name>
-    </ProjectReference>
     <ProjectReference Include="Svelto.ECS.csproj">
       <Project>{8d2eb115-c2e2-3719-ca04-08d3c302a5a1}</Project>
       <Name>Svelto.ECS</Name>
     </ProjectReference>
-    <ProjectReference Include="UnityOOPAbstractionLayer.csproj">
-      <Project>{4acf9cc6-6765-a5db-89c1-c202f09fdf16}</Project>
-      <Name>UnityOOPAbstractionLayer</Name>
+    <ProjectReference Include="Unity.Addressables.csproj">
+      <Project>{b7e76152-ddc0-c4f5-b60d-2bcd0f21c24e}</Project>
+      <Name>Unity.Addressables</Name>
     </ProjectReference>
-    <ProjectReference Include="Utility.csproj">
-      <Project>{61523958-85ca-4e2e-e8e7-aea8b6c3f736}</Project>
-      <Name>Utility</Name>
+    <ProjectReference Include="Unity.ResourceManager.csproj">
+      <Project>{716ea4f8-08d0-1229-8ecb-bd1945d5e600}</Project>
+      <Name>Unity.ResourceManager</Name>
+    </ProjectReference>
+    <ProjectReference Include="Svelto.Common.csproj">
+      <Project>{53ca5d34-0f9e-ae64-6d32-8d74a6f2e9d4}</Project>
+      <Name>Svelto.Common</Name>
     </ProjectReference>
     <ProjectReference Include="TransformableLayer.csproj">
       <Project>{18457d9e-b04e-0cec-b1cc-2289d7294499}</Project>
       <Name>TransformableLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="AnimationLayer.csproj">
+      <Project>{59e9f197-bda3-ff91-2f6b-e150b462fed8}</Project>
+      <Name>AnimationLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="UnityOOPAbstractionLayer.csproj">
+      <Project>{4acf9cc6-6765-a5db-89c1-c202f09fdf16}</Project>
+      <Name>UnityOOPAbstractionLayer</Name>
     </ProjectReference>
     <ProjectReference Include="UnityEditor.UI.csproj">
       <Project>{071fa4f6-95c0-6054-c479-b9199d4dc847}</Project>

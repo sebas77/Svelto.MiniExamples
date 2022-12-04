@@ -1,5 +1,3 @@
-using UnityEngine;
-
 namespace Svelto.ECS.Example.Survive.Damage
 {
     public class DamageSoundEngine : IQueryingEntitiesEngine, IStepEngine, IReactOnAddAndRemove<DamageSoundEntityComponent>

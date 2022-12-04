@@ -31,9 +31,8 @@ namespace Svelto.ECS.Example.Survive
 
             List<IImplementor> implementors = new List<IImplementor>();
             enemyGO.GetComponentsInChildren(implementors);
-            var egidHolderImplementor = enemyGO.AddComponent<EntityReferenceHolderImplementor>();
-            implementors.Add(egidHolderImplementor);
-
+            var egidHolderImplementor = enemyGO.AddComponent<EntityReferenceHolder>();
+            
             //using the GameObject GetInstanceID() as entityID would help to directly use the result of Unity functions
             //to index the entity in the Svelto database. However I want in this demo how to not rely on it.
             var initializer =

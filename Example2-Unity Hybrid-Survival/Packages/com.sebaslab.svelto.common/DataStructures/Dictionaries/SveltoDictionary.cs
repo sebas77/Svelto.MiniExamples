@@ -665,10 +665,7 @@ namespace Svelto.DataStructures
             for (int i = count - 1; i >= 0; i--)
             {
                 var tKey = unsafeKeys[i].key;
-                if (otherDicKeys.ContainsKey(tKey) == false)
-                {
-                    this.Remove(tKey);
-                }
+                if (otherDicKeys.ContainsKey(tKey) == false) Remove(tKey);
             }
         }
 
@@ -681,10 +678,7 @@ namespace Svelto.DataStructures
             for (int i = count - 1; i >= 0; i--)
             {
                 var tKey = unsafeKeys[i].key;
-                if (otherDicKeys.ContainsKey(tKey) == true)
-                {
-                    this.Remove(tKey);
-                }
+                if (otherDicKeys.ContainsKey(tKey) == true) Remove(tKey);
             }
         }
 

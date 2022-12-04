@@ -2,6 +2,6 @@
 {
     public enum GameObjectsEnginesNames
     {
-        SyncGameObjectsEngine
+        SyncOOPEnginesGroup
     }
 }

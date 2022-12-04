@@ -6,7 +6,7 @@ namespace Svelto.ECS.Example.Survive.Player
 {
     public static class PlayerLayerContext
     {
-        public static void PlayerLayerSetup(IRayCaster rayCaster, ITime time, IEntityFunctions entityFunctions,
+        public static void Setup(IRayCaster rayCaster, ITime time, IEntityFunctions entityFunctions,
             IEntityStreamConsumerFactory entityStreamConsumerFactory, FasterList<IStepEngine> unorderedEngines,
             FasterList<IStepEngine> orderedEngines, EnginesRoot enginesRoot)
         {

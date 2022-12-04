@@ -41,22 +41,23 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
-     <Compile Include="Assets\Code\ECS\HudLayer\DamageHUDImplementor.cs" />
+     <Compile Include="Assets\Code\ECS\HudLayer\Entities\DamageHUDImplementor.cs" />
      <Compile Include="Assets\Code\ECS\HudLayer\Engines\HUDEngine.cs" />
-     <Compile Include="Assets\Code\ECS\HudLayer\HUDEntityViewComponent.cs" />
+     <Compile Include="Assets\Code\ECS\HudLayer\Entities\HUDEntityViewComponent.cs" />
      <Compile Include="Assets\Code\ECS\HudLayer\HudLayerContext.cs" />
      <Compile Include="Assets\Code\ECS\HudLayer\HUDEnginesNames.cs" />
-     <Compile Include="Assets\Code\ECS\HudLayer\ScoreManagerImplementor.cs" />
-     <Compile Include="Assets\Code\ECS\HudLayer\GUIComponentInterfaces.cs" />
-     <Compile Include="Assets\Code\ECS\HudLayer\HealthSliderImplementor.cs" />
-     <Compile Include="Assets\Code\ECS\HudLayer\HUDEntityDescriptor.cs" />
+     <Compile Include="Assets\Code\ECS\HudLayer\Entities\ScoreManagerImplementor.cs" />
+     <Compile Include="Assets\Code\ECS\HudLayer\Entities\GUIComponentInterfaces.cs" />
+     <Compile Include="Assets\Code\ECS\HudLayer\Entities\HealthSliderImplementor.cs" />
+     <Compile Include="Assets\Code\ECS\HudLayer\Entities\HUDEntityDescriptor.cs" />
      <Compile Include="Assets\Code\ECS\HudLayer\Engines\UpdateScoreEngine.cs" />
      <Compile Include="Assets\Code\ECS\HudLayer\ECSGroups.cs" />
-     <Compile Include="Assets\Code\ECS\HudLayer\HUDEntityDescriptorHolder.cs" />
+     <Compile Include="Assets\Code\ECS\HudLayer\Entities\HUDEntityDescriptorHolder.cs" />
      <Compile Include="Assets\Code\ECS\HudLayer\Engines\RestartGameOnPlayerDeathEngine.cs" />
      <None Include="Assets\Code\ECS\HudLayer\HudLayer.asmdef" />
      <Folder Include="Assets\Code\ECS\HudLayer\Engines" />
      <Folder Include="Assets\Code\ECS\HudLayer" />
+     <Folder Include="Assets\Code\ECS\HudLayer\Entities" />
      <Reference Include="UnityEngine">
      <HintPath>C:\Program Files\Unity\2020.3.42f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
      </Reference>

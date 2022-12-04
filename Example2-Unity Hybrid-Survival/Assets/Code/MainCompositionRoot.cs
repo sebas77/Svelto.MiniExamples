@@ -112,17 +112,17 @@ namespace Svelto.ECS.Example.Survive
 //to know more about ECS abstraction layers read: https://www.sebaslab.com/ecs-abstraction-layers-and-modules-encapsulation/
 
 //Setup all the layers engines
-            OOPLayerContext.OOPLayerSetup(orderedEngines, _enginesRoot, gameObjectResourceManager);
+            OOPLayerContext.Setup(orderedEngines, _enginesRoot, gameObjectResourceManager);
             //DamageContextLayer.DamageLayerSetup(entityStreamConsumerFactory, _enginesRoot, orderedEngines);
-            CameraLayerContext.CameraLayerSetup(time, unorderedEngines, _enginesRoot);
-            PlayerLayerContext.PlayerLayerSetup(
+            CameraLayerContext.Setup(time, unorderedEngines, _enginesRoot);
+            PlayerLayerContext.Setup(
                 rayCaster, time, entityFunctions, entityStreamConsumerFactory, unorderedEngines, orderedEngines,
                 _enginesRoot);
 //            EnemyLayerContext.EnemyLayerSetup(
 //                gameObjectFactory, entityFactory, entityStreamConsumerFactory, time, entityFunctions,
 //                unorderedEngines, orderedEngines, new WaitForSubmissionEnumerator(unityEntitySubmissionScheduler),
 //                _enginesRoot);
-            HudLayerContext.HudLayerSetup(entityStreamConsumerFactory, unorderedEngines, orderedEngines, _enginesRoot);
+            HudLayerContext.Setup(entityStreamConsumerFactory, unorderedEngines, orderedEngines, _enginesRoot);
 
 //group engines for order of execution. Ordering and Ticking is 100% user responsibility. This is just one of the possible way to achieve the result desired
             var enginesToTick = new SurvivalUnsortedEnginesGroup(unorderedEngines);

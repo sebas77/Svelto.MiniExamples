@@ -16,10 +16,10 @@ namespace Svelto.ECS.Example.Survive.Damage
             enginesRoot.AddEngine(deathEngine);
             enginesRoot.AddEngine(damageSoundEngine);
 
-            var unsortedDamageEngines = new DamageUnsortedEngines(
-                new FasterList<IStepEngine>(applyDamageEngine, damageSoundEngine, deathEngine));
-
-            orderedEngines.Add(unsortedDamageEngines);
+//            var unsortedDamageEngines = new DamageUnsortedEngines(
+//                new FasterList<IStepEngine>(applyDamageEngine, damageSoundEngine, deathEngine));
+//
+//            orderedEngines.Add(unsortedDamageEngines);
         }
     }
 }

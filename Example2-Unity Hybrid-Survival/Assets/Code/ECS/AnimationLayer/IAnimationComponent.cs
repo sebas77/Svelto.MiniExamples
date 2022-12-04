@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-namespace Svelto.ECS.Example.Survive
+﻿namespace Svelto.ECS.Example.Survive
 {
     public interface IAnimationComponent
     {

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Svelto.DataStructures.Experimental;
 using Svelto.ECS.ResourceManager;
 using UnityEngine;
@@ -24,6 +25,17 @@ namespace Svelto.ECS.Example.Survive.OOPLayer
                 yield return null;
 
             yield return Add(gameObject.Current);
+        }
+        
+        /// <summary>
+        /// The assembly gives the opportunity to encapsulate completely objects. Only this layer can retrieve
+        /// objects from the manager
+        /// </summary>
+        /// <param name="index"></param>
+        internal new GameObject this[ValueIndex index]
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => base[index];
         }
 
         readonly GameObjectFactory _factory;

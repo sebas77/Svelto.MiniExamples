@@ -5,10 +5,14 @@ namespace Svelto.ECS.Example.Survive
 {
     public static class HudLayerContext
     {
-        public static void HudLayerSetup(IEntityStreamConsumerFactory entityStreamConsumerFactory,
+        /// <summary>
+        /// HudLayer is the only layer in this example that will interface with gameobject using the Svelto Implementors
+        /// technique. Which is fine for simple GUI like ths one.
+        /// </summary>
+        public static void Setup(IEntityStreamConsumerFactory entityStreamConsumerFactory,
             FasterList<IStepEngine> unorderedEngines, FasterList<IStepEngine> orderedEngines, EnginesRoot enginesRoot)
         {
-            //hud and sound engines
+            //hud engines
             var hudEngine = new HUDEngine(entityStreamConsumerFactory);
             var scoreEngine = new UpdateScoreEngine(entityStreamConsumerFactory);
             var restartGameOnPlayerDeath = new RestartGameOnPlayerDeathEngine();
