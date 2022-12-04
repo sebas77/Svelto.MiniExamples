@@ -9,12 +9,16 @@ namespace Svelto.ECS.Example.Survive.OOPLayer
         {
             var group = new SyncOOPEnginesGroup();
 
-            IStepEngine syncEngine = new SyncCameraToObjectsEngine(gameObjectResourceManager);
+            IStepEngine syncEngine = null;
+
+            syncEngine = new SyncCameraToObjectsEngine(gameObjectResourceManager);
             enginesRoot.AddEngine(syncEngine);
             group.Add(syncEngine);
+            
             syncEngine = new SyncGameObjectsEngine(gameObjectResourceManager);
             enginesRoot.AddEngine(syncEngine);
             group.Add(syncEngine);
+            
             syncEngine = new SyncGunToObjectsEngine(gameObjectResourceManager);
             enginesRoot.AddEngine(syncEngine);
             group.Add(syncEngine);

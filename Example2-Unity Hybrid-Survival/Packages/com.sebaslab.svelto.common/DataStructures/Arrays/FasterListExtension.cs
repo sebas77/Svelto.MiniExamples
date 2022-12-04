@@ -1,8 +1,12 @@
-﻿namespace Svelto.DataStructures
+﻿#if NEW_C_SHARP || !UNITY_5_3_OR_NEWER
+using System;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+
+namespace Svelto.DataStructures
 {
     public static class FasterListExtension
     {
-#if NEW_C_SHARP || !UNITY_5_3_OR_NEWER
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Span<byte> ToByteSpan<T>(this FasterList<T> list) where T : unmanaged
         {
@@ -13,8 +17,6 @@
             Span<byte> span = MemoryMarshal.AsBytes(spanT);
             return span;
         }
-#endif
-
 #if IF_THE_OTHER_SOLUTION_FAILS
         internal readonly ref struct DisposableHandle
         {
@@ -50,3 +52,4 @@
 #endif
     }
 }
+#endif

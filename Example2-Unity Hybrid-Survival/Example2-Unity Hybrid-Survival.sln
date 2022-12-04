@@ -7,9 +7,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnityOOPAbstractionLayer", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnityEngine.TestRunner", "UnityEngine.TestRunner.csproj", "{0430568b-37f1-a040-1d86-266034325e5f}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.Mathematics", "Unity.Mathematics.csproj", "{7a573d4a-d782-95ae-d4ec-cc8dd9df7288}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnityEngine.UI", "UnityEngine.UI.csproj", "{3e7c1439-e1cb-04d6-7ab4-616865f0e651}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.Mathematics", "Unity.Mathematics.csproj", "{7a573d4a-d782-95ae-d4ec-cc8dd9df7288}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.Common", "Svelto.Common.csproj", "{53ca5d34-0f9e-ae64-6d32-8d74a6f2e9d4}"
 EndProject
@@ -100,10 +100,10 @@ Global
 		{4acf9cc6-6765-a5db-89c1-c202f09fdf16}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0430568b-37f1-a040-1d86-266034325e5f}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0430568b-37f1-a040-1d86-266034325e5f}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7a573d4a-d782-95ae-d4ec-cc8dd9df7288}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7a573d4a-d782-95ae-d4ec-cc8dd9df7288}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3e7c1439-e1cb-04d6-7ab4-616865f0e651}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3e7c1439-e1cb-04d6-7ab4-616865f0e651}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7a573d4a-d782-95ae-d4ec-cc8dd9df7288}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7a573d4a-d782-95ae-d4ec-cc8dd9df7288}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{53ca5d34-0f9e-ae64-6d32-8d74a6f2e9d4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{53ca5d34-0f9e-ae64-6d32-8d74a6f2e9d4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{b7e76152-ddc0-c4f5-b60d-2bcd0f21c24e}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
