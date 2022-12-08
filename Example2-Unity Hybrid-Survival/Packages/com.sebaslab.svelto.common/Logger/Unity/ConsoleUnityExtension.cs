@@ -89,7 +89,14 @@ namespace Svelto
                 if (catchEmAll)
                     Console.CatchEmAll(); //this must happen first otherwise it will override the set out console of FasterUnityLogger
 
-                FasterUnityLogger.Init();
+                try
+                {
+                    FasterUnityLogger.Init();
+                }
+                catch (Exception e)
+                {
+                    LogException(e, "something went wrong when initializing FasterLog");
+                }
             }
         }
 #if UNITY_EDITOR

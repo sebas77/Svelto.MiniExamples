@@ -89,7 +89,6 @@
      <None Include="Library\PackageCache\com.unity.sysroot@1.0.0\package.json" />
      <Folder Include="Library\PackageCache\com.unity.nuget.newtonsoft-json@3.0.2\Runtime\AOT" />
      <Folder Include="Library\PackageCache\com.unity.modules.screencapture@1.0.0" />
-     <None Include="Assets\AddressableAssetsData\link.xml" />
      <None Include="Library\PackageCache\com.unity.addressables@1.19.19\package.json" />
      <Folder Include="Library\PackageCache\com.unity.modules.cloth@1.0.0" />
      <Folder Include="Assets\Code" />
