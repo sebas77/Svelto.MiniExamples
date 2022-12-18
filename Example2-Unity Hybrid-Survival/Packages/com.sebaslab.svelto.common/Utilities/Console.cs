@@ -157,11 +157,16 @@ namespace Svelto
             {
                 _loggers[i].Log(txt, type, showLogStack, e, extraData);
             }
-        }
 
+            if (logMessage != null) logMessage(txt, type, e);
+        }
+#if UNITY_2021_3_OR_NEWER
         public static void CompressLogsToZipAndShow(string zipName)
         {
             _loggers[0]?.CompressLogsToZipAndShow(zipName);
         }
+#endif
+
+        public static event Action<string, LogType, Exception> logMessage;
     }
 }

@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnityEngine.UI", "UnityEngi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.Mathematics", "Unity.Mathematics.csproj", "{7a573d4a-d782-95ae-d4ec-cc8dd9df7288}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleWebTransport", "SimpleWebTransport.csproj", "{8753cb05-0dfa-dabb-f698-0b35ce443f0e}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.Common", "Svelto.Common.csproj", "{53ca5d34-0f9e-ae64-6d32-8d74a6f2e9d4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.Addressables", "Unity.Addressables.csproj", "{b7e76152-ddc0-c4f5-b60d-2bcd0f21c24e}"
@@ -38,6 +40,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TransformableLayer", "TransformableLayer.csproj", "{18457d9e-b04e-0cec-b1cc-2289d7294499}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AudioLayer", "AudioLayer.csproj", "{b0248dd3-7f6e-ab2b-974b-6eb71fa3bce7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AkroGame.ECS.WebSocketWrapper", "AkroGame.ECS.WebSocketWrapper.csproj", "{74fe11bd-7e89-b1b1-d00d-f8a864be6545}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.ScriptableBuildPipeline.Editor", "Unity.ScriptableBuildPipeline.Editor.csproj", "{fc3e0f5a-ff0e-0a6d-b67a-f24cfb2a602b}"
 EndProject
@@ -104,6 +108,8 @@ Global
 		{3e7c1439-e1cb-04d6-7ab4-616865f0e651}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7a573d4a-d782-95ae-d4ec-cc8dd9df7288}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7a573d4a-d782-95ae-d4ec-cc8dd9df7288}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8753cb05-0dfa-dabb-f698-0b35ce443f0e}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8753cb05-0dfa-dabb-f698-0b35ce443f0e}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{53ca5d34-0f9e-ae64-6d32-8d74a6f2e9d4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{53ca5d34-0f9e-ae64-6d32-8d74a6f2e9d4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{b7e76152-ddc0-c4f5-b60d-2bcd0f21c24e}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -132,6 +138,8 @@ Global
 		{18457d9e-b04e-0cec-b1cc-2289d7294499}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{b0248dd3-7f6e-ab2b-974b-6eb71fa3bce7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{b0248dd3-7f6e-ab2b-974b-6eb71fa3bce7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{74fe11bd-7e89-b1b1-d00d-f8a864be6545}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{74fe11bd-7e89-b1b1-d00d-f8a864be6545}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{fc3e0f5a-ff0e-0a6d-b67a-f24cfb2a602b}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{fc3e0f5a-ff0e-0a6d-b67a-f24cfb2a602b}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6d195a08-77fd-c453-82f8-0e76b30a2e5a}.Debug|Any CPU.ActiveCfg = Debug|Any CPU

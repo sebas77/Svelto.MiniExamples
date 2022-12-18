@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using Svelto.DataStructures.Experimental;
 using Svelto.ECS.ResourceManager;
 using Svelto.ObjectPool;
@@ -20,29 +21,31 @@ namespace Svelto.ECS.Example.Survive.OOPLayer
             _factory = new GameObjectFactory();
         }
 
-        public IEnumerable<ValueIndex?> Build(string prefabName, bool startActive = true)
+        public async Task<ValueIndex> Build(string prefabName, bool startActive = true)
         {
-            var gameObject = _factory.Build(prefabName, startActive);
+            var gameObject = await _factory.Build(prefabName, startActive);
 
-            while (gameObject.MoveNext()) 
-                yield return null;
-
-            yield return Add(gameObject.Current);
+            return Add(gameObject);
         }
         
-        public IEnumerable<ValueIndex?> Reuse(string prefabName, int pool)
+        public async Task Preallocate(string prefabName, int pool, int size)
         {
-            if (_resourcePool.Reuse(pool, out var obj) == false)
+            await _resourcePool.Preallocate(pool, size, () => _factory.Build(prefabName, false)); 
+        }
+        
+        public async Task<ValueIndex> Reuse(string prefabName, int pool)
+        {
+            if (_resourcePool.TryReuse(pool, out var obj) == false)
             {
-                return Build(prefabName, false);
+                return await Build(prefabName, false); //build is async
             }
 
-            return new ValueIndex?[] {Add(obj)};
+            return Add(obj);
         }
         
         public void Recycle(ValueIndex indextoRecycle, int pool)
         {
-            throw new NotImplementedException();
+            _resourcePool.Recycle(this[indextoRecycle], pool);
         }
         
         /// <summary>

@@ -1,6 +1,8 @@
+using System.Threading.Tasks;
 using Svelto.Context;
 using Svelto.DataStructures;
 using Svelto.ECS.Example.Survive.Camera;
+using Svelto.ECS.Example.Survive.Damage;
 using Svelto.ECS.Example.Survive.Enemies;
 using Svelto.ECS.Example.Survive.Player;
 using Svelto.ECS.Example.Survive.HUD;
@@ -128,14 +130,30 @@ namespace Svelto.ECS.Example.Survive
             var enginesToTick = new SurvivalUnsortedEnginesGroup(unorderedEngines);
             enginesToTick.Add(new SortedEnginesGroup(orderedEngines)); //sorted engines run ordered, but after all the unsorted ones
 
-//Svelto ECS doesn't provide a ticking system, the user is responsible for it
-            CoroutineRunner.RunEveryFrame(enginesToTick.Step);
 //PlayerSpawner is not an engine, it could have been, but since it doesn't have an update, it's better to be a factory
-            CoroutineRunner.Run(new PlayerFactory(gameObjectResourceManager, entityFactory).SpawnPlayer());
-//The user decides when to submit the last built/removed/swapped entities. In this case we use the default behaviour to submit them every frame            
-            CoroutineRunner.RunEveryFrame(unityEntitySubmissionScheduler.SubmitEntities);
-
+            var playerSpanwer = new PlayerFactory(gameObjectResourceManager, entityFactory);
+            
             BuildGUIEntitiesFromScene(contextHolder, entityFactory);
+            
+            StartTick(enginesToTick, unityEntitySubmissionScheduler, playerSpanwer);
+            
+            SveltoInspector.Attach(_enginesRoot);
+        }
+
+        //Svelto ECS doesn't provide a ticking system, the user is responsible for it
+        async void StartTick(SurvivalUnsortedEnginesGroup enginesToTick,
+            SimpleEntitiesSubmissionScheduler unityEntitySubmissionScheduler, PlayerFactory playerSpanwer)
+        {
+            await playerSpanwer.StartSpawningPlayerTask();
+            
+            while (Application.isPlaying)
+            {
+                enginesToTick.Step();
+                //The user decides when to submit the last built/removed/swapped entities. In this case we use the default behaviour to submit them every frame            
+                unityEntitySubmissionScheduler.SubmitEntities();
+
+                await Task.Yield();
+            }
         }
 
         /// <summary>

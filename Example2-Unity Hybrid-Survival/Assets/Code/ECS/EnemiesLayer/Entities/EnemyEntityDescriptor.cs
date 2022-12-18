@@ -1,5 +1,6 @@
 ﻿using Svelto.ECS.Example.Survive.Damage;
 using Svelto.ECS.Example.Survive.OOPLayer;
+using Svelto.ECS.Example.Survive.Transformable;
 
 namespace Svelto.ECS.Example.Survive.Enemies
 {
@@ -7,6 +8,7 @@ namespace Svelto.ECS.Example.Survive.Enemies
     {
         public EnemyEntityDescriptor()
         {
+            Add<PositionComponent>();
             ExtendWith(new IComponentBuilder[]
             {
                 new ComponentBuilder<GameObjectEntityComponent>(),

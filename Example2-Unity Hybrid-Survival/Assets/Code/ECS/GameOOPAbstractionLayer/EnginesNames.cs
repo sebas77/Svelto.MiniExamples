@@ -2,6 +2,7 @@
 {
     public enum GameObjectsEnginesNames
     {
-        SyncOOPEnginesGroup
+        SyncOOPEnginesGroup,
+        SyncObjectsToEntitiesEngine
     }
 }

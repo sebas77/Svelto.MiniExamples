@@ -1,5 +1,6 @@
 {
     "name": "EnemiesLayer",
+    "rootNamespace": "",
     "references": [
         "Svelto.Common",
         "Svelto.ECS",
@@ -9,7 +10,8 @@
         "AnimationLayer",
         "Unity.Addressables",
         "Unity.ResourceManager",
-        "TransformableLayer"
+        "TransformableLayer",
+        ""
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

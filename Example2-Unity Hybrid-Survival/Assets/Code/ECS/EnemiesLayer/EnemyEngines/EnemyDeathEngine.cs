@@ -3,23 +3,23 @@ using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.ECS.Example.Survive.Damage;
 using Svelto.ECS.Example.Survive.OOPLayer;
+using Svelto.ECS.Example.Survive.Transformable;
 using UnityEngine;
 
 namespace Svelto.ECS.Example.Survive.Enemies
 {
     [Sequenced(nameof(EnemyEnginesNames.EnemyDeathEngine))]
-    public class EnemyDeathEngine : IQueryingEntitiesEngine, IStepEngine, IReactOnSwap<EnemyEntityViewComponent>
+    public class EnemyDeathEngine: IQueryingEntitiesEngine, IStepEngine, IReactOnSwap<EnemyEntityViewComponent>
     {
-        public EnemyDeathEngine
-        (IEntityFunctions entityFunctions, IEntityStreamConsumerFactory consumerFactory, ITime time
-       , WaitForSubmissionEnumerator waitForSubmission, GameObjectResourceManager manager)
+        public EnemyDeathEngine(IEntityFunctions entityFunctions, IEntityStreamConsumerFactory consumerFactory,
+            ITime time, WaitForSubmissionEnumerator waitForSubmission, GameObjectResourceManager manager)
         {
-            _entityFunctions   = entityFunctions;
-            _consumerFactory   = consumerFactory;
-            _time              = time;
+            _entityFunctions = entityFunctions;
+            _consumerFactory = consumerFactory;
+            _time = time;
             _waitForSubmission = waitForSubmission;
             _manager = manager;
-            _animations        = new FasterList<IEnumerator>();
+            _animations = new FasterList<IEnumerator>();
             _consumer = _consumerFactory.GenerateConsumer<DeathComponent>("EnemyDeathEngine", 10);
         }
 
@@ -33,7 +33,7 @@ namespace Svelto.ECS.Example.Survive.Enemies
             {
                 //publisher/consumer pattern will be replaces with better patterns in future for these cases.
                 //The problem is obvious, DeathComponent is abstract and could have came from the player
-                if (AliveEnemies.Includes(enemyID.groupID)) 
+                if (AliveEnemies.Includes(enemyID.groupID))
                     _animations.Add(PlayDeathSequence(enemyID));
             }
 
@@ -54,8 +54,8 @@ namespace Svelto.ECS.Example.Survive.Enemies
         {
             if (DeadEnemies.Includes(egid.groupID))
             {
-                enemyView.layerComponent.layer                  = GAME_LAYERS.NOT_SHOOTABLE_MASK;
-                enemyView.movementComponent.navMeshEnabled      = false;
+                enemyView.layerComponent.layer = GAME_LAYERS.NOT_SHOOTABLE_MASK;
+                enemyView.movementComponent.navMeshEnabled = false;
                 enemyView.movementComponent.setCapsuleAsTrigger = true;
             }
         }
@@ -63,9 +63,10 @@ namespace Svelto.ECS.Example.Survive.Enemies
         IEnumerator PlayDeathSequence(EGID egid)
         {
             var enemyView = entitiesDB.QueryEntity<EnemyEntityViewComponent>(egid);
+            var enemyPos = entitiesDB.QueryEntity<PositionComponent>(egid);
 
             enemyView.animationComponent.playAnimation = "Dead";
-            
+
             var goComponent = entitiesDB.QueryEntity<GameObjectEntityComponent>(egid);
 
             //Any build/swap/remove do not happen immediately, but at specific sync points
@@ -80,8 +81,7 @@ namespace Svelto.ECS.Example.Survive.Enemies
 
             while (wait.MoveNext())
             {
-                enemyView.transformComponent.position =
-                    enemyView.positionComponent.position + -Vector3.up * 1.2f * _time.deltaTime;
+                enemyPos.position += -Vector3.up * 1.2f * _time.deltaTime;
 
                 yield return null;
             }
@@ -93,12 +93,12 @@ namespace Svelto.ECS.Example.Survive.Enemies
             _manager.Recycle(goComponent.resourceIndex, (int)enemyType);
         }
 
-        readonly IEntityFunctions             _entityFunctions;
+        readonly IEntityFunctions _entityFunctions;
         readonly IEntityStreamConsumerFactory _consumerFactory;
-        readonly ITime                        _time;
-        Consumer<DeathComponent>              _consumer;
-        readonly WaitForSubmissionEnumerator           _waitForSubmission;
+        readonly ITime _time;
+        Consumer<DeathComponent> _consumer;
+        readonly WaitForSubmissionEnumerator _waitForSubmission;
         readonly GameObjectResourceManager _manager;
-        readonly FasterList<IEnumerator>      _animations;
+        readonly FasterList<IEnumerator> _animations;
     }
 }

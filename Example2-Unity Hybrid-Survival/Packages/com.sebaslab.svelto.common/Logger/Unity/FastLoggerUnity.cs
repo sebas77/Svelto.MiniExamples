@@ -13,7 +13,9 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
@@ -91,23 +93,44 @@ namespace Svelto.Utilities
 
         static string GetFileNameToUse()
         {
-            int i = 0;
-            for (; i < CYCLE_SIZE + 1; ++i)
+            var directory = new DirectoryInfo(_folder.FullName);
+
+            var fileInfos = directory.GetFiles(BASENAME + "*.txt");
+
+            int nextFileId = 0;
+            if (fileInfos.Length > 0)
             {
-                if (System.IO.File.Exists(GenerateName(i)) == false)
-                    break;
+                nextFileId = -1;
+                do
+                {
+                    var myFile = fileInfos
+                           .OrderByDescending(f => f.LastWriteTime)
+                           .First();
+                    try
+                    {
+                        string index = new String(myFile.Name.Where(Char.IsDigit).ToArray());
+
+                        var i = int.Parse(index);
+                        
+                        nextFileId = (i + 1) % CYCLE_SIZE;
+                    }
+                    catch
+                    {
+                        System.IO.File.Delete(myFile.FullName);
+                        fileInfos = directory.GetFiles(BASENAME + "*.txt");
+                    }
+                } while (nextFileId == -1 && fileInfos.Length > 0);
             }
 
-            int nextFileId = (i + 1) % (CYCLE_SIZE + 1);
             string nextFileName = GenerateName(nextFileId);
 
             //overwrite file if exists
             System.IO.File.Delete(nextFileName);
 
-            var consoleLogPath = Application.persistentDataPath+ System.IO.Path.DirectorySeparatorChar + "Player-prev.log";
+            var consoleLogPath = Application.persistentDataPath + System.IO.Path.DirectorySeparatorChar + "Player-prev.log";
             if (System.IO.File.Exists(consoleLogPath))
             {
-                var generateUnityLogName = GenerateNameForUnityLogCopy(i);
+                var generateUnityLogName = GenerateNameForUnityLogCopy(nextFileId);
                 System.IO.File.Delete(generateUnityLogName);
                 System.IO.File.Copy(consoleLogPath, generateUnityLogName);
             }
@@ -124,10 +147,18 @@ namespace Svelto.Utilities
         {
             return _folder.FullName + System.IO.Path.DirectorySeparatorChar + "PlayerLog" + i + ".txt";
         }
-
+#if UNITY_2021_3_OR_NEWER
         public static void CompressLogsToZipAndShow(string zipName)
         {
             Close();
+            
+            var consoleLogPath = Application.persistentDataPath+ System.IO.Path.DirectorySeparatorChar + "Player.log";
+            if (System.IO.File.Exists(consoleLogPath))
+            {
+                var generateUnityLogName = _folder.FullName + System.IO.Path.DirectorySeparatorChar + "LastPlayerLog.txt";
+                System.IO.File.Delete(generateUnityLogName);
+                System.IO.File.Copy(consoleLogPath, generateUnityLogName);
+            }
 
             var destinationArchiveFileName =
                 Application.persistentDataPath + System.IO.Path.DirectorySeparatorChar + zipName;
@@ -140,6 +171,7 @@ namespace Svelto.Utilities
 
             Application.OpenURL($"file://{Application.persistentDataPath}");
         }
+#endif
 
         static System.IO.StreamWriter _consoleOut;
         static System.IO.TextWriter _originalConsoleOutput;
@@ -188,19 +220,17 @@ namespace Svelto.Utilities
         public void OnLoggerAdded()
         {
             MAINTHREADID = Environment.CurrentManagedThreadId;
-
-            Application.SetStackTraceLogType(UnityEngine.LogType.Warning, StackTraceLogType.None);
-            Application.SetStackTraceLogType(UnityEngine.LogType.Assert, StackTraceLogType.None);
-            Application.SetStackTraceLogType(UnityEngine.LogType.Error, StackTraceLogType.None);
-            Application.SetStackTraceLogType(UnityEngine.LogType.Log, StackTraceLogType.None);
+            
+            //FasterLog doesn't use Unity Debug Log so we don't need to disable the stack
 
             Debug.Log("Svelto Fast Unity Logger added");
         }
-
+#if UNITY_2021_3_OR_NEWER
         public void CompressLogsToZipAndShow(string zipName)
         {
             FasterUnityLoggerUtility.CompressLogsToZipAndShow(zipName);
         }
+#endif  
 
         public void Log(string txt, LogType type = LogType.Log, bool showLogStack = true, Exception e = null,
             Dictionary<string, string> data = null)

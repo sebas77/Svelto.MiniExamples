@@ -3,7 +3,6 @@
 namespace Svelto.ECS.Example.Survive.Damage
 {
     public class
-        DamageableEntityDescriptor : GenericEntityDescriptor<DamageableComponent, HealthComponent, DeathComponent, DamageSoundEntityComponent>
-    {
-    }
+        DamageableEntityDescriptor: GenericEntityDescriptor<DamageableComponent, HealthComponent, DeathComponent,
+            DamageSoundEntityComponent> { }
 }

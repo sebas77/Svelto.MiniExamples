@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Threading.Tasks;
 using Svelto.DataStructures.Experimental;
 using Svelto.ECS.Example.Survive.Camera;
 using Svelto.ECS.Example.Survive.Damage;
@@ -16,22 +17,22 @@ namespace Svelto.ECS.Example.Survive.Player
             _entityFactory             = entityFactory;
         }
 
-        public IEnumerator SpawnPlayer()
+        public async Task StartSpawningPlayerTask()
         {
-            var playerLoading = _gameObjectResourceManager.Build("Player").GetEnumerator();
+            var playerLoading = await _gameObjectResourceManager.Build("Player");
+            var cameraLoading = await _gameObjectResourceManager.Build("CameraPrefab");
 
-            while (playerLoading.MoveNext()) yield return null;
-
-            var cameraLoading = _gameObjectResourceManager.Build("CameraPrefab").GetEnumerator();
-
-            while (cameraLoading.MoveNext()) yield return null;
+            ValueIndex playerID = playerLoading;
+            ValueIndex cameraID = cameraLoading;
             
-            ValueIndex playerID = playerLoading.Current.Value;
-            ValueIndex cameraID = cameraLoading.Current.Value;
-            
-            BuildPlayerEntity(playerID, out var playerInitializer);
-            BuildGunEntity(playerInitializer, playerID);
-            BuildCameraEntity(ref playerInitializer, cameraID);
+            Init();
+
+            void Init()
+            {
+                BuildPlayerEntity(playerID, out var playerInitializer);
+                BuildGunEntity(playerInitializer, playerID);
+                BuildCameraEntity(ref playerInitializer, cameraID);
+            }
         }
 
         void BuildPlayerEntity(ValueIndex playerID, out EntityInitializer playerInitializer)

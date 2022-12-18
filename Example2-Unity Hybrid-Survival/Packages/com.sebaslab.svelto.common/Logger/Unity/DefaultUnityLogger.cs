@@ -146,7 +146,6 @@ namespace Svelto.Utilities
             Application.SetStackTraceLogType(UnityEngine.LogType.Warning, StackTraceLogType.None);
             Application.SetStackTraceLogType(UnityEngine.LogType.Log, StackTraceLogType.None);
 #endif
-
             Console.Log("Svelto Default Unity Logger added");
         }
 

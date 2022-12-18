@@ -15,8 +15,6 @@ namespace Svelto.ECS.Example.Survive.Enemies
         public IEnemyTriggerComponent  targetTriggerComponent;
 
         public IAnimationComponent    animationComponent;
-        public ITransformComponent    transformComponent;
-        public IPositionComponent     positionComponent;
         public ILayerComponent        layerComponent;
     }
 }
