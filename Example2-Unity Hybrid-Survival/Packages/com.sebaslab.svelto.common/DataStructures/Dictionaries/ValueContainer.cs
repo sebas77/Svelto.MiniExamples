@@ -22,10 +22,11 @@ namespace Svelto.DataStructures.Experimental
     /// The following class is not a sparse set, it's more an optimised dictionary for cases where the user
     /// cannot decide the key value.
     /// 
-    public struct ValueContainer<T, StrategyD, StrategyS> where StrategyD : IBufferStrategy<T>, new()
-        where StrategyS : IBufferStrategy<SparseIndex>, new()
+    public struct ValueContainer<T, StrategyD, StrategyS>
+            where StrategyD : IBufferStrategy<T>, new()
+            where StrategyS : IBufferStrategy<SparseIndex>, new()
     {
-        public ValueContainer(uint initialSize):this()
+        public ValueContainer(uint initialSize): this()
         {
             _sparse = new StrategyS();
             _sparse.Alloc(initialSize, Allocator.Persistent, true);
@@ -60,14 +61,24 @@ namespace Svelto.DataStructures.Experimental
         public bool Has(ValueIndex index)
         {
             return index.version > 0
-             && index.sparseIndex < capacity
-             && index.version == _sparse[index.sparseIndex].version
-             && _sparse[index.sparseIndex].denseIndex < count;
+                 && index.sparseIndex < capacity
+                 && index.version == _sparse[index.sparseIndex].version
+                 && _sparse[index.sparseIndex].denseIndex < count;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ValueIndex Add(T val)
         {
+            if (_freeList.IsValid())
+            {
+                _dense[_freeList.denseIndex] = val;
+
+                ValueIndex ret = new ValueIndex(_freeList.denseIndex, _freeList.version);
+
+                _freeList = _freeList.Next();
+
+                return ret;
+            }
             var index = (uint)count;
             if (index >= capacity)
                 Reserve((uint)Math.Ceiling((capacity + 1) * 1.5f));
@@ -85,17 +96,14 @@ namespace Svelto.DataStructures.Experimental
         public void Remove(ValueIndex index)
         {
             DBC.Common.Check.Require(Has(index) == true, $"SparseSet - invalid index: index {index}");
-
-            var denseIndexToReplace = _sparse[index.sparseIndex].denseIndex;
-
-            var sparseIndexToSwap = _count - 1;
-            _dense[denseIndexToReplace] = _dense[sparseIndexToSwap]; //swap the last value 
-
-            _sparse[index.sparseIndex] = new SparseIndex(
-                denseIndexToReplace
-              , (byte)(_sparse[index.sparseIndex].version + 1)); //invalidate swapped sparse index
-
-            --_count; //I don't need to invalidate the sparse value linked to dense[count - 1] because checking that sparseindex < count is enough
+            
+            ref var sparseIndex = ref _sparse[index.sparseIndex];
+            
+            //invalidate value index as the sparse index version will increment
+            //store the current _freelist to create a list of free spots
+            _sparse[index.sparseIndex] = new SparseIndex(sparseIndex, _freeList);
+            //set the new free list to the just cleared spot
+            _freeList = sparseIndex;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -116,11 +124,13 @@ namespace Svelto.DataStructures.Experimental
             _dense.Dispose();
         }
 
-        readonly StrategyD _dense;  //Dense set of elements
-        readonly StrategyS _sparse; //Map of elements to dense set indices //Should this be a bitset?
+        StrategyD _dense;  //Dense set of elements
+        StrategyS _sparse; //Map of elements to dense set indices //Should this be a bitset?
         uint _count;
+        SparseIndex _freeList;
 
         static int MAX_SIZE = (int)Math.Pow(2, 24);
+        
     }
 
     [StructLayout(LayoutKind.Explicit)]
@@ -128,7 +138,7 @@ namespace Svelto.DataStructures.Experimental
     {
         internal uint sparseIndex => _sparseIndex & 0x00FFFFFF;
         internal byte version => _version;
-        
+
         [FieldOffset(0)] readonly uint _sparseIndex;
         [FieldOffset(3)] readonly byte _version;
 
@@ -144,41 +154,34 @@ namespace Svelto.DataStructures.Experimental
     {
         internal uint denseIndex => _denseIndex & 0x00FFFFFF;
         internal byte version => _version;
-        
+
         [FieldOffset(0)] readonly uint _denseIndex;
         [FieldOffset(3)] readonly byte _version;
+        [FieldOffset(4)] readonly uint _nextFreeIndex;
+        [FieldOffset(7)] readonly byte _nextFreeVer;
 
-        public SparseIndex(uint index, byte ver)
+        public SparseIndex(uint index, byte ver):this()
         {
             _denseIndex = index;
             _version = ver;
         }
-    }
-    
-//    ValueContainer<GameObject, ManagedStrategy<GameObject>, NativeStrategy<SparseIndex>> test =
-//        new ValueContainer<GameObject, ManagedStrategy<GameObject>, NativeStrategy<SparseIndex>>(16);
-//
-//    var index = test.Add(GameObject.CreatePrimitive(PrimitiveType.Capsule));
-//    var b = test.Has(index);
-//    DBC.Check.Ensure(b == true);
-//    index =             test.Add(GameObject.CreatePrimitive(PrimitiveType.Cube));
-//    b = test.Has(index);
-//    DBC.Check.Ensure(b == true);
-//    var index2 = test.Add(GameObject.CreatePrimitive(PrimitiveType.Cylinder));
-//    b = test.Has(index2);
-//    DBC.Check.Ensure(b == true);
-//    test.Remove(index2);
-//    b = test.Has(index2);
-//    DBC.Check.Ensure(b == false);
-//    index = test.Add(GameObject.CreatePrimitive(PrimitiveType.Sphere));
-//    b = test.Has(index);
-//    DBC.Check.Ensure(b == true);
-//    b = test.Has(index2);
-//    DBC.Check.Ensure(b == false);
-//    index = test.Add(GameObject.CreatePrimitive(PrimitiveType.Cylinder));
-//    b = test.Has(index);
-//    DBC.Check.Ensure(b == true);
-//    b = test.Has(index2);
-//    DBC.Check.Ensure(b == false);
 
+        internal SparseIndex(SparseIndex index, SparseIndex nextFree)
+        {
+            _denseIndex = index.denseIndex;
+            _version = (byte)(index.version + 1);
+            _nextFreeIndex = nextFree.denseIndex;
+            _nextFreeVer = nextFree._version;
+        }
+
+        public bool IsValid()
+        {
+            return _version > 0;
+        }
+
+        public SparseIndex Next()
+        {
+            return new SparseIndex(_nextFreeIndex, _nextFreeVer);
+        }
+    }
 }

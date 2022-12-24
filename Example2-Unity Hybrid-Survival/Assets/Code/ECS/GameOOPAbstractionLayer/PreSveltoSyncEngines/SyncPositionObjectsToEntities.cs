@@ -3,10 +3,10 @@ using Svelto.ECS.Example.Survive.Transformable;
 
 namespace Svelto.ECS.Example.Survive.OOPLayer
 {
-    [Sequenced(nameof(GameObjectsEnginesNames.SyncObjectsToEntitiesEngine))]
-    public class SyncPhysicToEntitiesEngine: IQueryingEntitiesEngine, IStepEngine
+    [Sequenced(nameof(GameObjectsEnginesNames.PreSveltoUpdateSyncEngines))]
+    public class SyncPositionObjectsToEntities: IQueryingEntitiesEngine, IStepEngine
     {
-        public SyncPhysicToEntitiesEngine(GameObjectResourceManager manager)
+        public SyncPositionObjectsToEntities(GameObjectResourceManager manager)
         {
             _manager = manager;
         }
@@ -18,9 +18,8 @@ namespace Svelto.ECS.Example.Survive.OOPLayer
         public void Step()
         {
             var groups = entitiesDB
-                   .FindGroups<GameObjectEntityComponent, RotationComponent, RigidBodyComponent, PositionComponent>();
+                   .FindGroups<GameObjectEntityComponent, PositionComponent>();
 
-            groups = entitiesDB.FindGroups<GameObjectEntityComponent, PositionComponent>();
             //position only sync
             foreach (var ((entity, positions, count), _) in entitiesDB
                             .QueryEntities<GameObjectEntityComponent, PositionComponent>(groups))
@@ -31,12 +30,12 @@ namespace Svelto.ECS.Example.Survive.OOPLayer
 
                     var transform = go.transform;
 
-                    positions[i].position = transform.position ;
+                    positions[i].position = transform.position;
                 }
             }
         }
 
-        public string name => nameof(SyncPhysicToEntitiesEngine);
+        public string name => nameof(SyncPositionObjectsToEntities);
         readonly GameObjectResourceManager _manager;
     }
 }

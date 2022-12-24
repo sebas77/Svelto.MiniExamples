@@ -125,23 +125,23 @@ namespace Svelto.ECS.Example.Survive
                 unorderedEngines, orderedEngines, new WaitForSubmissionEnumerator(unityEntitySubmissionScheduler),
                 _enginesRoot, gameObjectResourceManager);
             HudLayerContext.Setup(entityStreamConsumerFactory, unorderedEngines, orderedEngines, _enginesRoot);
-
+            
 //group engines for order of execution. Ordering and Ticking is 100% user responsibility. This is just one of the possible way to achieve the result desired
-            var enginesToTick = new SurvivalUnsortedEnginesGroup(unorderedEngines);
-            enginesToTick.Add(new SortedEnginesGroup(orderedEngines)); //sorted engines run ordered, but after all the unsorted ones
+            orderedEngines.Add(new SurvivalUnsortedEnginesGroup(unorderedEngines));
+            var sortedEnginesGroup = new SortedEnginesGroup(orderedEngines);
 
 //PlayerSpawner is not an engine, it could have been, but since it doesn't have an update, it's better to be a factory
             var playerSpanwer = new PlayerFactory(gameObjectResourceManager, entityFactory);
             
             BuildGUIEntitiesFromScene(contextHolder, entityFactory);
             
-            StartTick(enginesToTick, unityEntitySubmissionScheduler, playerSpanwer);
+            StartMainLoop(sortedEnginesGroup, unityEntitySubmissionScheduler, playerSpanwer);
             
             SveltoInspector.Attach(_enginesRoot);
         }
 
         //Svelto ECS doesn't provide a ticking system, the user is responsible for it
-        async void StartTick(SurvivalUnsortedEnginesGroup enginesToTick,
+        async void StartMainLoop(SortedEnginesGroup enginesToTick,
             SimpleEntitiesSubmissionScheduler unityEntitySubmissionScheduler, PlayerFactory playerSpanwer)
         {
             await playerSpanwer.StartSpawningPlayerTask();
@@ -176,10 +176,7 @@ namespace Svelto.ECS.Example.Survive
         void BuildGUIEntitiesFromScene(UnityContext contextHolder, IEntityFactory entityFactory)
         {
             SveltoGUIHelper.Create<HUDEntityDescriptorHolder>(
-                ECSGroups.HUD,
-                contextHolder.transform,
-                entityFactory,
-                true);
+                ECSGroups.HUD, contextHolder.transform, entityFactory, true);
         }
 
         EnginesRoot _enginesRoot;

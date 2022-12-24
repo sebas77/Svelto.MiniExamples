@@ -45,7 +45,7 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\Entities\GameObjectEntityComponent.cs" />
-     <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\Engines\SyncPhysicToEntitiesEngine.cs" />
+     <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\PreSveltoSyncEngines\SyncPositionObjectsToEntities.cs" />
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\GameObjectFactory.cs" />
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\Entities\GunOOPEntityComponent.cs" />
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\GameObjectResourceManager.cs" />
@@ -53,19 +53,22 @@
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\IRayCaster.cs" />
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\Objects\PlayerShootingFX.cs" />
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\Entities\CameraOOPEntityComponent.cs" />
-     <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\Engines\SyncGunToObjectsEngine.cs" />
+     <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\PostSveltoSyncEngines\SyncGunEntitiesToObjects.cs" />
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\GAME_LAYERS.cs" />
-     <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\Engines\SyncCameraToObjectsEngine.cs" />
-     <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\Engines\SyncOOPEnginesGroup.cs" />
-     <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\Engines\SyncGameObjectsEngine.cs" />
+     <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\PostSveltoSyncEngines\SyncCameraEntitiesToObjects.cs" />
+     <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\PostSveltoSyncEngines\SyncOOPEnginesGroup.cs" />
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\OOPLayerContext.cs" />
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\EnginesNames.cs" />
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\RayCaster.cs" />
+     <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\PostSveltoSyncEngines\SyncPhysicEntitiesToObjects.cs" />
+     <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\PostSveltoSyncEngines\SyncEntitiesAnimationsToObjects.cs" />
+     <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\PostSveltoSyncEngines\SyncEntitiesPositionToObjects.cs" />
      <Folder Include="Assets\Code\ECS\GameOOPAbstractionLayer\Objects" />
      <Folder Include="Assets\Code\ECS\GameOOPAbstractionLayer\Entities" />
-     <Folder Include="Assets\Code\ECS\GameOOPAbstractionLayer\Engines" />
+     <Folder Include="Assets\Code\ECS\GameOOPAbstractionLayer\PostSveltoSyncEngines" />
      <Folder Include="Assets\Code\ECS\GameOOPAbstractionLayer" />
      <None Include="Assets\Code\ECS\GameOOPAbstractionLayer\UnityOOPAbstractionLayer.asmdef" />
+     <Folder Include="Assets\Code\ECS\GameOOPAbstractionLayer\PreSveltoSyncEngines" />
      <Reference Include="UnityEngine">
      <HintPath>C:\Program Files\Unity\2021.3.16f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
      </Reference>

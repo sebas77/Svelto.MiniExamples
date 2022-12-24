@@ -2,9 +2,9 @@
 
 namespace Svelto.ECS.Example.Survive.OOPLayer
 {
-    public class SyncCameraToObjectsEngine: IQueryingEntitiesEngine, IStepEngine
+    public class SyncCameraEntitiesToObjects: IQueryingEntitiesEngine, IStepEngine
     {
-        public SyncCameraToObjectsEngine(GameObjectResourceManager manager)
+        public SyncCameraEntitiesToObjects(GameObjectResourceManager manager)
         {
             _manager = manager;
         }
@@ -30,7 +30,7 @@ namespace Svelto.ECS.Example.Survive.OOPLayer
             }
         }
 
-        public string name => nameof(SyncGameObjectsEngine);
+        public string name => nameof(SyncCameraEntitiesToObjects);
         readonly GameObjectResourceManager _manager;
     }
 }

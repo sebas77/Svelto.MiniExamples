@@ -17,19 +17,27 @@ namespace Svelto.ECS.Example.Survive.OOPLayer
 
             IStepEngine syncEngine = null;
 
-            syncEngine = new SyncCameraToObjectsEngine(gameObjectResourceManager);
+            syncEngine = new SyncCameraEntitiesToObjects(gameObjectResourceManager);
             enginesRoot.AddEngine(syncEngine);
             syncEntitiesToObjectsGroup.Add(syncEngine);
             
-            syncEngine = new SyncGameObjectsEngine(gameObjectResourceManager);
+            syncEngine = new SyncEntitiesAnimationsToObjects(gameObjectResourceManager);
             enginesRoot.AddEngine(syncEngine);
             syncEntitiesToObjectsGroup.Add(syncEngine);
             
-            syncEngine = new SyncGunToObjectsEngine(gameObjectResourceManager);
+            syncEngine = new SyncEntitiesPositionToObjects(gameObjectResourceManager);
             enginesRoot.AddEngine(syncEngine);
             syncEntitiesToObjectsGroup.Add(syncEngine);
             
-            var syncObjectsToEntities = new SyncPhysicToEntitiesEngine(gameObjectResourceManager);
+            syncEngine = new SyncPhysicEntitiesToObjects(gameObjectResourceManager);
+            enginesRoot.AddEngine(syncEngine);
+            syncEntitiesToObjectsGroup.Add(syncEngine);
+            
+            syncEngine = new SyncGunEntitiesToObjects(gameObjectResourceManager);
+            enginesRoot.AddEngine(syncEngine);
+            syncEntitiesToObjectsGroup.Add(syncEngine);
+            
+            var syncObjectsToEntities = new SyncPositionObjectsToEntities(gameObjectResourceManager);
             enginesRoot.AddEngine(syncObjectsToEntities);
             
             orderedEngines.Add(syncEntitiesToObjectsGroup);

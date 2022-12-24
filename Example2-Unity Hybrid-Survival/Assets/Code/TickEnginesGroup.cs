@@ -14,15 +14,22 @@ namespace Svelto.ECS.Example.Survive
     {
         public string[] enginesOrder => new[]
         {
-                nameof(GameObjectsEnginesNames.SyncObjectsToEntitiesEngine),
+                nameof(GameObjectsEnginesNames.PreSveltoUpdateSyncEngines),
                 nameof(PlayerGunEnginesNames.PlayerGunShootingEngine),
                 nameof(EnemyEnginesNames.EnemyAttackEngine),
-                nameof(EnemyEnginesNames.EnemySpawnEffectOnDamage), //           nameof(DamageEnginesNames.DamageUnsortedEngines),
+                nameof(EnemyEnginesNames.EnemySpawnEffectOnDamage), 
+                //           nameof(DamageEnginesNames.DamageUnsortedEngines),
                 nameof(EnemyEnginesNames.EnemyDeathEngine),
-                nameof(GameObjectsEnginesNames.SyncOOPEnginesGroup),
                 nameof(PlayerEnginesNames.PlayerDeathEngine),
-                nameof(HUDEnginesNames.UpdateScoreEngine)
+                nameof(HUDEnginesNames.UpdateScoreEngine),
+                nameof(TickEngineNames.UnsortedEngines),
+                nameof(GameObjectsEnginesNames.PostSveltoUpdateSyncEngines),
         };
+    }
+
+    public enum TickEngineNames
+    {
+        UnsortedEngines
     }
 
     /// <summary>
@@ -36,6 +43,7 @@ namespace Svelto.ECS.Example.Survive
     /// <summary>
     /// Unsorted engines, executed as found
     /// </summary>
+    [Sequenced(nameof(TickEngineNames.UnsortedEngines))]
     class SurvivalUnsortedEnginesGroup: UnsortedEnginesGroup<IStepEngine>
     {
         public SurvivalUnsortedEnginesGroup(FasterList<IStepEngine> engines): base(engines) { }

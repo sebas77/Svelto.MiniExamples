@@ -16,7 +16,6 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Net;
 using System.Text;
 using System.Threading;
 using Svelto.DataStructures;
@@ -35,8 +34,8 @@ namespace Svelto.Utilities
 
         static string BASENAME = "outputLog";
 
-        static readonly string FOLDER = System.IO.Path.GetDirectoryName(Application.dataPath)
-          + System.IO.Path.DirectorySeparatorChar + "debuglogs";
+        static readonly string FOLDER = Path.GetDirectoryName(Application.dataPath)
+          + Path.DirectorySeparatorChar + "debuglogs";
 
         [Conditional("REDIRECT_CONSOLE")]
         internal static void Init()
@@ -44,7 +43,7 @@ namespace Svelto.Utilities
             //overwrites if commandline found
             GetFilenameFromCommandLine(ref BASENAME);
 
-            _folder = System.IO.Directory.CreateDirectory(FOLDER);
+            _folder = Directory.CreateDirectory(FOLDER);
 
             SetupLogger();
         }
@@ -69,7 +68,7 @@ namespace Svelto.Utilities
         {
             _originalConsoleOutput = System.Console.Out;
 
-            _consoleOut = System.IO.File.CreateText(GetFileNameToUse());
+            _consoleOut = File.CreateText(GetFileNameToUse());
 
             System.Console.SetOut(_consoleOut);
         }
@@ -116,7 +115,7 @@ namespace Svelto.Utilities
                     }
                     catch
                     {
-                        System.IO.File.Delete(myFile.FullName);
+                        File.Delete(myFile.FullName);
                         fileInfos = directory.GetFiles(BASENAME + "*.txt");
                     }
                 } while (nextFileId == -1 && fileInfos.Length > 0);
@@ -125,14 +124,14 @@ namespace Svelto.Utilities
             string nextFileName = GenerateName(nextFileId);
 
             //overwrite file if exists
-            System.IO.File.Delete(nextFileName);
+            File.Delete(nextFileName);
 
-            var consoleLogPath = Application.persistentDataPath + System.IO.Path.DirectorySeparatorChar + "Player-prev.log";
-            if (System.IO.File.Exists(consoleLogPath))
+            var consoleLogPath = Application.persistentDataPath + Path.DirectorySeparatorChar + "Player-prev.log";
+            if (File.Exists(consoleLogPath))
             {
                 var generateUnityLogName = GenerateNameForUnityLogCopy(nextFileId);
-                System.IO.File.Delete(generateUnityLogName);
-                System.IO.File.Copy(consoleLogPath, generateUnityLogName);
+                File.Delete(generateUnityLogName);
+                File.Copy(consoleLogPath, generateUnityLogName);
             }
 
             return nextFileName;
@@ -140,42 +139,41 @@ namespace Svelto.Utilities
 
         static string GenerateName(int i)
         {
-            return _folder.FullName + System.IO.Path.DirectorySeparatorChar + BASENAME + i + ".txt";
+            return _folder.FullName + Path.DirectorySeparatorChar + BASENAME + i + ".txt";
         }
         
         static string GenerateNameForUnityLogCopy(int i)
         {
-            return _folder.FullName + System.IO.Path.DirectorySeparatorChar + "PlayerLog" + i + ".txt";
+            return _folder.FullName + Path.DirectorySeparatorChar + "PlayerLog" + i + ".txt";
         }
-#if UNITY_2021_3_OR_NEWER
+
         public static void CompressLogsToZipAndShow(string zipName)
         {
             Close();
             
-            var consoleLogPath = Application.persistentDataPath+ System.IO.Path.DirectorySeparatorChar + "Player.log";
-            if (System.IO.File.Exists(consoleLogPath))
+            var consoleLogPath = Application.persistentDataPath+ Path.DirectorySeparatorChar + "Player.log";
+            if (File.Exists(consoleLogPath))
             {
-                var generateUnityLogName = _folder.FullName + System.IO.Path.DirectorySeparatorChar + "LastPlayerLog.txt";
-                System.IO.File.Delete(generateUnityLogName);
-                System.IO.File.Copy(consoleLogPath, generateUnityLogName);
+                var generateUnityLogName = _folder.FullName + Path.DirectorySeparatorChar + "LastPlayerLog.txt";
+                File.Delete(generateUnityLogName);
+                File.Copy(consoleLogPath, generateUnityLogName);
             }
 
             var destinationArchiveFileName =
-                Application.persistentDataPath + System.IO.Path.DirectorySeparatorChar + zipName;
+                Application.persistentDataPath + Path.DirectorySeparatorChar + zipName;
             
-            System.IO.File.Delete(destinationArchiveFileName);
+            File.Delete(destinationArchiveFileName);
 
             ZipFile.CreateFromDirectory(_folder.FullName, destinationArchiveFileName);
 
             Init();
 
-            Application.OpenURL($"file://{Application.persistentDataPath}");
+            Application.OpenURL($"file://{destinationArchiveFileName}");
         }
-#endif
 
-        static System.IO.StreamWriter _consoleOut;
-        static System.IO.TextWriter _originalConsoleOutput;
-        static System.IO.DirectoryInfo _folder;
+        static StreamWriter _consoleOut;
+        static TextWriter _originalConsoleOutput;
+        static DirectoryInfo _folder;
     }
 
     class FasterUnityLogger: ILogger
@@ -193,6 +191,7 @@ namespace Svelto.Utilities
 
         static int MAINTHREADID;
         static readonly FasterList<ErrorLogObject> _logs;
+        static bool _isPaused;
 
         static FasterUnityLogger()
         {
@@ -228,7 +227,11 @@ namespace Svelto.Utilities
 #if UNITY_2021_3_OR_NEWER
         public void CompressLogsToZipAndShow(string zipName)
         {
+            Volatile.Write(ref _isPaused, true);
+            
             FasterUnityLoggerUtility.CompressLogsToZipAndShow(zipName);
+            
+            Volatile.Write(ref _isPaused, false);
         }
 #endif  
 
@@ -372,11 +375,15 @@ namespace Svelto.Utilities
             Thread.Sleep(1000); //let's be sure that the first iteration doesn't happen right at the begin
 
             Thread.MemoryBarrier();
-            while (_quitThread == false)
+            while (Volatile.Read(ref _quitThread) == false)
             {
-                FlushToFile();
+                if (Volatile.Read(ref _isPaused) == false)
+                {
+                    FlushToFile();
+                }
 
                 Thread.Sleep(1000);
+                
             }
 
             FasterUnityLoggerUtility.Close();

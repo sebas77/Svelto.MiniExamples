@@ -2,7 +2,7 @@
 
 namespace Svelto.ECS.Example.Survive.OOPLayer
 {
-    [Sequenced(nameof(GameObjectsEnginesNames.SyncOOPEnginesGroup))]
+    [Sequenced(nameof(GameObjectsEnginesNames.PostSveltoUpdateSyncEngines))]
     public class SyncOOPEnginesGroup: UnsortedEnginesGroup<IStepEngine>
     { }
 }

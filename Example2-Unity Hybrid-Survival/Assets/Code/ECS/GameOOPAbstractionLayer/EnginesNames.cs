@@ -2,7 +2,7 @@
 {
     public enum GameObjectsEnginesNames
     {
-        SyncOOPEnginesGroup,
-        SyncObjectsToEntitiesEngine
+        PostSveltoUpdateSyncEngines,
+        PreSveltoUpdateSyncEngines
     }
 }
