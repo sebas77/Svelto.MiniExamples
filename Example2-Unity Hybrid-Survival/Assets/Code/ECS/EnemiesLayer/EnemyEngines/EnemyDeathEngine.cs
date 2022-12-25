@@ -9,7 +9,8 @@ using UnityEngine;
 namespace Svelto.ECS.Example.Survive.Enemies
 {
     [Sequenced(nameof(EnemyEnginesNames.EnemyDeathEngine))]
-    public class EnemyDeathEngine: IQueryingEntitiesEngine, IStepEngine, IReactOnSwap<EnemyEntityViewComponent>
+    public class EnemyDeathEngine: IQueryingEntitiesEngine, IStepEngine, IReactOnSwap<EnemyEntityViewComponent>,
+            IReactOnSwapEx<EnemyOOPComponent>
     {
         public EnemyDeathEngine(IEntityFunctions entityFunctions, IEntityStreamConsumerFactory consumerFactory,
             ITime time, WaitForSubmissionEnumerator waitForSubmission, GameObjectResourceManager manager)
@@ -54,9 +55,22 @@ namespace Svelto.ECS.Example.Survive.Enemies
         {
             if (DeadEnemies.Includes(egid.groupID))
             {
-                enemyView.layerComponent.layer = GAME_LAYERS.NOT_SHOOTABLE_MASK;
                 enemyView.movementComponent.navMeshEnabled = false;
                 enemyView.movementComponent.setCapsuleAsTrigger = true;
+            }
+        }
+
+        public void MovedTo((uint start, uint end) rangeOfEntities, in EntityCollection<EnemyOOPComponent> entities,
+            ExclusiveGroupStruct fromGroup, ExclusiveGroupStruct toGroup)
+        {
+            if (DeadEnemies.Includes(toGroup))
+            {
+                var (enemies, _) = entities;
+
+                for (var i = rangeOfEntities.end - 1; i >= rangeOfEntities.start; i--)
+                {
+                    enemies[i].layer = GAME_LAYERS.NOT_SHOOTABLE_MASK;
+                }
             }
         }
 

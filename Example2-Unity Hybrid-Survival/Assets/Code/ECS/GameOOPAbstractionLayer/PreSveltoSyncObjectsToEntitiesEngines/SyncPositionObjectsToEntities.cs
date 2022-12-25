@@ -3,7 +3,6 @@ using Svelto.ECS.Example.Survive.Transformable;
 
 namespace Svelto.ECS.Example.Survive.OOPLayer
 {
-    [Sequenced(nameof(GameObjectsEnginesNames.PreSveltoUpdateSyncEngines))]
     public class SyncPositionObjectsToEntities: IQueryingEntitiesEngine, IStepEngine
     {
         public SyncPositionObjectsToEntities(GameObjectResourceManager manager)

@@ -13,19 +13,30 @@ namespace Svelto.ECS.Example.Survive.OOPLayer
         public static void Setup(FasterList<IStepEngine> orderedEngines, EnginesRoot enginesRoot,
             GameObjectResourceManager gameObjectResourceManager)
         {
-            var syncEntitiesToObjectsGroup = new SyncOOPEnginesGroup();
+            var syncEntitiesToObjectsGroup = new SyncEntitiesToObjects();
+            var syncObjectsToEntitiesGroup = new SyncObjectsToEntities();
 
             IStepEngine syncEngine = null;
 
-            syncEngine = new SyncCameraEntitiesToObjects(gameObjectResourceManager);
-            enginesRoot.AddEngine(syncEngine);
-            syncEntitiesToObjectsGroup.Add(syncEngine);
             
+            //pre-svelto engines
+            syncEngine = new SyncCameraObjectsToEntities(gameObjectResourceManager);
+            enginesRoot.AddEngine(syncEngine);
+            syncObjectsToEntitiesGroup.Add(syncEngine);
+            
+            syncEngine = new SyncPositionObjectsToEntities(gameObjectResourceManager);
+            enginesRoot.AddEngine(syncEngine);
+            syncObjectsToEntitiesGroup.Add(syncEngine);
+            
+            orderedEngines.Add(syncObjectsToEntitiesGroup);
+            
+            
+            //post-svelto engines
             syncEngine = new SyncEntitiesAnimationsToObjects(gameObjectResourceManager);
             enginesRoot.AddEngine(syncEngine);
             syncEntitiesToObjectsGroup.Add(syncEngine);
             
-            syncEngine = new SyncEntitiesPositionToObjects(gameObjectResourceManager);
+            syncEngine = new SyncCameraEntitiesPositionToObject(gameObjectResourceManager);
             enginesRoot.AddEngine(syncEngine);
             syncEntitiesToObjectsGroup.Add(syncEngine);
             
@@ -37,11 +48,11 @@ namespace Svelto.ECS.Example.Survive.OOPLayer
             enginesRoot.AddEngine(syncEngine);
             syncEntitiesToObjectsGroup.Add(syncEngine);
             
-            var syncObjectsToEntities = new SyncPositionObjectsToEntities(gameObjectResourceManager);
-            enginesRoot.AddEngine(syncObjectsToEntities);
+            syncEngine = new SyncEnemiesToObjects(gameObjectResourceManager);
+            enginesRoot.AddEngine(syncEngine);
+            syncEntitiesToObjectsGroup.Add(syncEngine);
             
             orderedEngines.Add(syncEntitiesToObjectsGroup);
-            orderedEngines.Add(syncObjectsToEntities);
         }
     }
 }

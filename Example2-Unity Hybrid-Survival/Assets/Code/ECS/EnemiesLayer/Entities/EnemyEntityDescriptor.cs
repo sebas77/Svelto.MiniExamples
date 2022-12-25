@@ -13,6 +13,7 @@ namespace Svelto.ECS.Example.Survive.Enemies
             {
                 new ComponentBuilder<GameObjectEntityComponent>(),
                 new ComponentBuilder<EnemyComponent>(),
+                new ComponentBuilder<EnemyOOPComponent>(),
                 new ComponentBuilder<EnemyEntityViewComponent>(),
                 new ComponentBuilder<ScoreValueComponent>(),
                 new ComponentBuilder<EnemyAttackComponent>(),

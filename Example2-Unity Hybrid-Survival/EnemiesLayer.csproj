@@ -52,7 +52,6 @@
      <Compile Include="Assets\Code\ECS\EnemiesLayer\Entities\EnemyMovementImplementor.cs" />
      <Compile Include="Assets\Code\ECS\EnemiesLayer\Entities\EnemyComponentInterfaces.cs" />
      <Compile Include="Assets\Code\ECS\EnemiesLayer\EnemyEnginesNames.cs" />
-     <Compile Include="Assets\Code\ECS\EnemiesLayer\Entities\ILayerComponent.cs" />
      <Compile Include="Assets\Code\ECS\EnemiesLayer\EnemyLayerContext.cs" />
      <Compile Include="Assets\Code\ECS\EnemiesLayer\Entities\EnemyAttackComponent.cs" />
      <Compile Include="Assets\Code\ECS\EnemiesLayer\EnemyGroups.cs" />
