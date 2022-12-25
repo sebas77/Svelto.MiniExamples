@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.ECS.Example.Survive.Damage;
@@ -9,8 +9,7 @@ using UnityEngine;
 namespace Svelto.ECS.Example.Survive.Enemies
 {
     [Sequenced(nameof(EnemyEnginesNames.EnemyDeathEngine))]
-    public class EnemyDeathEngine: IQueryingEntitiesEngine, IStepEngine, IReactOnSwap<EnemyEntityViewComponent>,
-            IReactOnSwapEx<EnemyOOPComponent>
+    public class EnemyDeathEngine: IQueryingEntitiesEngine, IStepEngine, IReactOnSwapEx<EnemyEntityViewComponent>
     {
         public EnemyDeathEngine(IEntityFunctions entityFunctions, IEntityStreamConsumerFactory consumerFactory,
             ITime time, WaitForSubmissionEnumerator waitForSubmission, GameObjectResourceManager manager)
@@ -51,25 +50,19 @@ namespace Svelto.ECS.Example.Survive.Enemies
         /// <param name="enemyView"></param>
         /// <param name="previousGroup"></param>
         /// <param name="egid"></param>
-        public void MovedTo(ref EnemyEntityViewComponent enemyView, ExclusiveGroupStruct previousGroup, EGID egid)
-        {
-            if (DeadEnemies.Includes(egid.groupID))
-            {
-                enemyView.movementComponent.navMeshEnabled = false;
-                enemyView.movementComponent.setCapsuleAsTrigger = true;
-            }
-        }
-
-        public void MovedTo((uint start, uint end) rangeOfEntities, in EntityCollection<EnemyOOPComponent> entities,
+        public void MovedTo((uint start, uint end) rangeOfEntities, in EntityCollection<EnemyEntityViewComponent> entities,
             ExclusiveGroupStruct fromGroup, ExclusiveGroupStruct toGroup)
         {
             if (DeadEnemies.Includes(toGroup))
             {
                 var (enemies, _) = entities;
+                var (gos, _) = entitiesDB.QueryEntities<GameObjectEntityComponent>(toGroup);
 
-                for (var i = rangeOfEntities.end - 1; i >= rangeOfEntities.start; i--)
+                for (int i = (int)(rangeOfEntities.end - 1); i >= (int)rangeOfEntities.start; i--)
                 {
-                    enemies[i].layer = GAME_LAYERS.NOT_SHOOTABLE_MASK;
+                    enemies[i].movementComponent.navMeshEnabled = false;
+                    enemies[i].movementComponent.setCapsuleAsTrigger = true;
+                    gos[i].layer = GAME_LAYERS.NOT_SHOOTABLE_LAYER;
                 }
             }
         }

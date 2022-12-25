@@ -1,8 +1,8 @@
 ﻿namespace Svelto.ECS.Example.Survive.OOPLayer
 {
-    public class SyncEnemiesToObjects: IQueryingEntitiesEngine, IStepEngine
+    public class SyncEntitiesToGameObjects: IQueryingEntitiesEngine, IStepEngine
     {
-        public SyncEnemiesToObjects(GameObjectResourceManager manager)
+        public SyncEntitiesToGameObjects(GameObjectResourceManager manager)
         {
             _manager = manager;
         }
@@ -13,21 +13,21 @@
         public void Step()
         {
             //only enemies
-            var groups = entitiesDB.FindGroups<GameObjectEntityComponent, EnemyOOPComponent>();
+            var groups = entitiesDB.FindGroups<GameObjectEntityComponent>();
             
-            foreach (var ((gos, enemies, count), _) in entitiesDB
-                            .QueryEntities<GameObjectEntityComponent, EnemyOOPComponent>(groups))
+            foreach (var ((gos, count), _) in entitiesDB
+                            .QueryEntities<GameObjectEntityComponent>(groups))
             {
                 for (int i = 0; i < count; i++)
                 {
                     var go = _manager[gos[i].resourceIndex];
 
-                    go.layer = enemies[i].layer;
+                    go.layer = gos[i].layer;
                 }
             }
         }
 
-        public string name => nameof(SyncEnemiesToObjects);
+        public string name => nameof(SyncEntitiesToGameObjects);
         
         readonly GameObjectResourceManager _manager;
     }

@@ -1,5 +1,4 @@
-﻿using System;
-using Svelto.ECS.Example.Survive.Damage;
+﻿using Svelto.ECS.Example.Survive.Damage;
 
 namespace Svelto.ECS.Example.Survive.Enemies
 {

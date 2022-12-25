@@ -34,16 +34,30 @@ namespace Svelto.ECS.Example.Survive.Player
                     }
                 }
 
-                var (gunComponents, count) = entitiesDB.QueryEntities<GunComponent>(PlayerGun.Gun.Group);
-                for (int i = count - 1; i >= 0; i--)
-                    gunComponents[0].fired = Input.GetButton("Fire1");
+                var (gunComponents, _) = entitiesDB.QueryEntities<GunComponent>(PlayerGun.Gun.Group);
+                gunComponents[0].fired = Input.GetButton("Fire1");
 
                 //is it correct that a player engine iterates cameras? The answer is no: in a pure sense this
                 //engine has too many responsibilities. A camera engine should do this.
                 var (cameraComponents, camerasCount) = entitiesDB
                    .QueryEntities<CameraOOPEntityComponent>(Camera.Camera.Group);
-                for (int i = 0; i < camerasCount; i++)
-                    cameraComponents[i].camRayInput = Input.mousePosition;
+                for (int i = camerasCount - 1; i >= 0; i--)
+                {
+                    float mouseX = Input.mousePosition.x;
+                    float mouseY = Input.mousePosition.y;
+                    float screenX = Screen.width;
+                    float screenY = Screen.height;
+
+                    if (!(mouseX < 0) && !(mouseX > screenX) && !(mouseY < 0) && !(mouseY > screenY))
+                    {
+                        cameraComponents[i].camRayInput = Input.mousePosition;
+                        cameraComponents[i].inputRead = true;
+                    }
+                    else
+                    {
+                        cameraComponents[i].inputRead = false;
+                    }
+                }
             }
 
             while (true)

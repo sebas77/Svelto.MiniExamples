@@ -42,7 +42,7 @@ namespace Svelto.DataStructures.Experimental
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                DBC.Common.Check.Require(Has(index) == true, $"SparseSet - invalid index: index {index}");
+                DBC.Common.Check.Require(Has(index) == true, $"SparseSet - invalid index");
 
                 return ref _dense[index.sparseIndex];
             }

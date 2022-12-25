@@ -1,5 +1,6 @@
 using Svelto.Common;
 using Svelto.DataStructures;
+using Svelto.ECS.Example.Survive.Damage;
 using Svelto.ECS.Example.Survive.OOPLayer;
 using Svelto.ECS.Example.Survive.Player;
 using Svelto.ECS.Example.Survive.Player.Gun;
@@ -15,14 +16,14 @@ namespace Svelto.ECS.Example.Survive
         public string[] enginesOrder => new[]
         {
                 nameof(GameObjectsEnginesNames.PreSveltoUpdateSyncEngines),
+                nameof(TickEngineNames.UnsortedEngines),
                 nameof(PlayerGunEnginesNames.PlayerGunShootingEngine),
                 nameof(EnemyEnginesNames.EnemyAttackEngine),
                 nameof(EnemyEnginesNames.EnemySpawnEffectOnDamage), 
-                //           nameof(DamageEnginesNames.DamageUnsortedEngines),
+                nameof(DamageEnginesNames.DamageUnsortedEngines),
                 nameof(EnemyEnginesNames.EnemyDeathEngine),
                 nameof(PlayerEnginesNames.PlayerDeathEngine),
                 nameof(HUDEnginesNames.UpdateScoreEngine),
-                nameof(TickEngineNames.UnsortedEngines),
                 nameof(GameObjectsEnginesNames.PostSveltoUpdateSyncEngines),
         };
     }

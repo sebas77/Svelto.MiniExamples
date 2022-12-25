@@ -1,5 +1,4 @@
 using System;
-using System.Threading.Tasks;
 using Svelto.Context;
 using Svelto.DataStructures;
 using Svelto.ECS.Example.Survive.Camera;
@@ -112,14 +111,14 @@ namespace Svelto.ECS.Example.Survive
 //IStepEngines are engine that can be stepped (ticked) manually and explicitly with a Step() method
             var orderedEngines = new FasterList<IStepEngine>();
             var unorderedEngines = new FasterList<IStepEngine>();
-            
+
 //This example has been refactored to show some advanced users of Svelto.ECS in a simple scenario
 //to know more about ECS abstraction layers read: https://www.sebaslab.com/ecs-abstraction-layers-and-modules-encapsulation/
 
 //Setup all the layers engines
             OOPLayerContext.Setup(orderedEngines, _enginesRoot, gameObjectResourceManager);
-            //DamageContextLayer.DamageLayerSetup(entityStreamConsumerFactory, _enginesRoot, orderedEngines);
-            CameraLayerContext.Setup(time, unorderedEngines, _enginesRoot);
+            DamageContextLayer.DamageLayerSetup(entityStreamConsumerFactory, _enginesRoot, orderedEngines);
+            CameraLayerContext.Setup(unorderedEngines, _enginesRoot);
             PlayerLayerContext.Setup(
                 rayCaster, time, entityFunctions, entityStreamConsumerFactory, unorderedEngines, orderedEngines,
                 _enginesRoot);
@@ -128,22 +127,22 @@ namespace Svelto.ECS.Example.Survive
                 unorderedEngines, orderedEngines, new WaitForSubmissionEnumerator(unityEntitySubmissionScheduler),
                 _enginesRoot, gameObjectResourceManager);
             HudLayerContext.Setup(entityStreamConsumerFactory, unorderedEngines, orderedEngines, _enginesRoot);
-            
+
 //group engines for order of execution. Ordering and Ticking is 100% user responsibility. This is just one of the possible way to achieve the result desired
             orderedEngines.Add(new SurvivalUnsortedEnginesGroup(unorderedEngines));
             var sortedEnginesGroup = new SortedEnginesGroup(orderedEngines);
 
 //PlayerSpawner is not an engine, it could have been, but since it doesn't have an update, it's better to be a factory
             var playerSpanwer = new PlayerFactory(gameObjectResourceManager, entityFactory);
-            
+
             BuildGUIEntitiesFromScene(contextHolder, entityFactory);
-            
+
             StartMainLoop(sortedEnginesGroup, unityEntitySubmissionScheduler, playerSpanwer);
-            
+
 //Attach Svelto Inspector: for more info https://github.com/sebas77/svelto-ecs-inspector-unity
 #if DEBUG
             SveltoInspector.Attach(_enginesRoot);
-#endif            
+#endif
         }
 
         //Svelto ECS doesn't provide a ticking system, the user is responsible for it
@@ -151,7 +150,7 @@ namespace Svelto.ECS.Example.Survive
             SimpleEntitiesSubmissionScheduler unityEntitySubmissionScheduler, PlayerFactory playerSpanwer)
         {
             await playerSpanwer.StartSpawningPlayerTask();
-            
+
             RunSveltoUpdateInTheEarlyUpdate(enginesToTick, unityEntitySubmissionScheduler);
         }
 
@@ -173,8 +172,9 @@ namespace Svelto.ECS.Example.Survive
             SveltoGUIHelper.Create<HUDEntityDescriptorHolder>(
                 ECSGroups.HUD, contextHolder.transform, entityFactory, true);
         }
-        
-        void RunSveltoUpdateInTheEarlyUpdate(SortedEnginesGroup enginesToTick, SimpleEntitiesSubmissionScheduler unityEntitySubmissionScheduler)
+
+        void RunSveltoUpdateInTheEarlyUpdate(SortedEnginesGroup enginesToTick,
+            SimpleEntitiesSubmissionScheduler unityEntitySubmissionScheduler)
         {
             PlayerLoopSystem defaultLoop = PlayerLoop.GetDefaultPlayerLoop();
 
@@ -184,7 +184,7 @@ namespace Svelto.ECS.Example.Survive
             {
                 if (defaultLoop.subSystemList[i].type == typeof(EarlyUpdate))
                 {
-                    earlyUpdateIndex = i;
+                    earlyUpdateIndex = i + 3;
                     break;
                 }
             }
@@ -207,12 +207,18 @@ namespace Svelto.ECS.Example.Survive
 
             // Set the modified player loop
             PlayerLoop.SetPlayerLoop(defaultLoop);
-            
+
             void Update()
             {
-                enginesToTick.Step();
-                //The user decides when to submit the last built/removed/swapped entities. In this case we use the default behaviour to submit them every frame            
-                unityEntitySubmissionScheduler.SubmitEntities();
+                if (_enginesRoot.IsValid())
+                {
+                    //The user decides when to submit the last built/removed/swapped entities. In this case we use the default behaviour to submit them every frame            
+                    unityEntitySubmissionScheduler.SubmitEntities();
+
+                    enginesToTick.Step();
+                    
+                   // Debug.Break();
+                }
             }
         }
 

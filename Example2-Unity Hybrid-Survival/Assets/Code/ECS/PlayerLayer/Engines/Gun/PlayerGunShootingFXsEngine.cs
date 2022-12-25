@@ -27,12 +27,12 @@ namespace Svelto.ECS.Example.Survive.Player.Gun
         IEnumerator PlayerHasShot()
         {
             void SetValues(GunComponent gunComponent, out float waitTime,
-                ref GunOOPEntityComponent gunFXComponent)
+                ref GunOOPEntityComponent gunOopFXComponent)
             {
-                gunFXComponent.effectsEnabled = true;
-                gunFXComponent.lineEndPosition = gunComponent.lastTargetPosition;
+                gunOopFXComponent.effectsEnabled = true;
+                gunOopFXComponent.lineEndPosition = gunComponent.lastTargetPosition;
 
-                waitTime = gunComponent.timeBetweenBullets * gunFXComponent.effectsDisplayTime;
+                waitTime = gunComponent.timeBetweenBullets * gunOopFXComponent.effectsDisplayTime;
             }
             
             void DisableEffects(ref GunOOPEntityComponent gunOopFXComponent)

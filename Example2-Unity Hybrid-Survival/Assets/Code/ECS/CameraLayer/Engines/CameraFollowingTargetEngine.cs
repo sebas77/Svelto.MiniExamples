@@ -10,9 +10,8 @@ namespace Svelto.ECS.Example.Survive.Camera
     //Third step start to write the code and create classes/fields as needed using refactoring tools 
     public class CameraFollowingTargetEngine : IQueryingEntitiesEngine, IStepEngine
     {
-        public CameraFollowingTargetEngine(ITime time)
+        public CameraFollowingTargetEngine()
         {
-            _time   = time;
             _update = Update();
         }
 
@@ -30,8 +29,6 @@ namespace Svelto.ECS.Example.Survive.Camera
 
         IEnumerator Update()
         {
-            var smoothing = 5.0f;
-
             void TrackCameraTarget()
             {
                 var (targets, cameras, cameraPositions, count) = entitiesDB
@@ -49,10 +46,7 @@ namespace Svelto.ECS.Example.Survive.Camera
                         {
                             ref var cameraTarget = ref entitiesDB.QueryEntity<PositionComponent>(targetEGID);
 
-                            var targetCameraPos = cameraTarget.position + camera.offset;
-
-                            cameraPosition.position = Vector3.Lerp(cameraPosition.position, targetCameraPos,
-                                smoothing * _time.deltaTime);
+                            cameraPosition.position = cameraTarget.position + camera.offset;
                         }
                     }
                 }
@@ -66,7 +60,6 @@ namespace Svelto.ECS.Example.Survive.Camera
             }
         }
 
-        readonly ITime       _time;
         readonly IEnumerator _update;
     }
 }

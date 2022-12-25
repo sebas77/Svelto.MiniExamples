@@ -4,7 +4,8 @@ namespace Svelto.ECS.Example.Survive.OOPLayer
 {
     public sealed class PlayerShootingFX: MonoBehaviour
     {
-        internal Ray shootRay => new Ray(_transform.position, _transform.forward);
+        Ray shootRay => new Ray(_transform.position, _transform.forward);
+        internal Ray shootCastRay => new Ray(_transform.parent.position, _transform.forward);
         public float   effectsDisplayTime { get; } = 0.2f;
 
         public void PlayEffects(Vector3 lineEndPosition)

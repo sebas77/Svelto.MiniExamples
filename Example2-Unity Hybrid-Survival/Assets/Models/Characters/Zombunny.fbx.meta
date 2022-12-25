@@ -1,90 +1,254 @@
 fileFormatVersion: 2
 guid: be66986effd141b4992d2d78be127139
 ModelImporter:
-  serializedVersion: 22
-  fileIDToRecycleName:
-    100000: Ctrl_Grp
-    100002: Head
-    100004: HeadEnd
-    100006: Hips
-    100008: LeftEar
-    100010: LeftEarEnd
-    100012: LeftFoot
-    100014: LeftFootEnd
-    100016: LeftLeg
-    100018: LeftLowerArm
-    100020: LeftLowerArmFK
-    100022: LeftLowerArmIK
-    100024: LeftUpperArm
-    100026: LeftUpperArmFK
-    100028: LeftUpperArmIK
-    100030: LeftWrist
-    100032: LeftWristEnd
-    100034: LeftWristFK
-    100036: LeftWristIK
-    100038: RightEar
-    100040: RightEarEnd
-    100042: RightFoot
-    100044: RightFootEnd
-    100046: RightLeg
-    100048: RightLowerArm
-    100050: RightLowerArmFK
-    100052: RightLowerArmIK
-    100054: RightUpperArm
-    100056: RightUpperArmFK
-    100058: RightUpperArmIK
-    100060: RightWrist
-    100062: RightWristEnd
-    100064: RightWristFK
-    100066: RightWristIK
-    100068: Root
-    100070: Spine
-    100072: Zombunny
-    100074: //RootNode
-    400000: Ctrl_Grp
-    400002: Head
-    400004: HeadEnd
-    400006: Hips
-    400008: LeftEar
-    400010: LeftEarEnd
-    400012: LeftFoot
-    400014: LeftFootEnd
-    400016: LeftLeg
-    400018: LeftLowerArm
-    400020: LeftLowerArmFK
-    400022: LeftLowerArmIK
-    400024: LeftUpperArm
-    400026: LeftUpperArmFK
-    400028: LeftUpperArmIK
-    400030: LeftWrist
-    400032: LeftWristEnd
-    400034: LeftWristFK
-    400036: LeftWristIK
-    400038: RightEar
-    400040: RightEarEnd
-    400042: RightFoot
-    400044: RightFootEnd
-    400046: RightLeg
-    400048: RightLowerArm
-    400050: RightLowerArmFK
-    400052: RightLowerArmIK
-    400054: RightUpperArm
-    400056: RightUpperArmFK
-    400058: RightUpperArmIK
-    400060: RightWrist
-    400062: RightWristEnd
-    400064: RightWristFK
-    400066: RightWristIK
-    400068: Root
-    400070: Spine
-    400072: Zombunny
-    400074: //RootNode
-    4300000: Zombunny
-    7400000: Move
-    7400002: Idle
-    7400004: Death
-    9500000: //RootNode
-    13700000: Zombunny
+  serializedVersion: 21300
+  internalIDToNameTable:
+  - first:
+      1: 100000
+    second: Ctrl_Grp
+  - first:
+      1: 100002
+    second: Head
+  - first:
+      1: 100004
+    second: HeadEnd
+  - first:
+      1: 100006
+    second: Hips
+  - first:
+      1: 100008
+    second: LeftEar
+  - first:
+      1: 100010
+    second: LeftEarEnd
+  - first:
+      1: 100012
+    second: LeftFoot
+  - first:
+      1: 100014
+    second: LeftFootEnd
+  - first:
+      1: 100016
+    second: LeftLeg
+  - first:
+      1: 100018
+    second: LeftLowerArm
+  - first:
+      1: 100020
+    second: LeftLowerArmFK
+  - first:
+      1: 100022
+    second: LeftLowerArmIK
+  - first:
+      1: 100024
+    second: LeftUpperArm
+  - first:
+      1: 100026
+    second: LeftUpperArmFK
+  - first:
+      1: 100028
+    second: LeftUpperArmIK
+  - first:
+      1: 100030
+    second: LeftWrist
+  - first:
+      1: 100032
+    second: LeftWristEnd
+  - first:
+      1: 100034
+    second: LeftWristFK
+  - first:
+      1: 100036
+    second: LeftWristIK
+  - first:
+      1: 100038
+    second: RightEar
+  - first:
+      1: 100040
+    second: RightEarEnd
+  - first:
+      1: 100042
+    second: RightFoot
+  - first:
+      1: 100044
+    second: RightFootEnd
+  - first:
+      1: 100046
+    second: RightLeg
+  - first:
+      1: 100048
+    second: RightLowerArm
+  - first:
+      1: 100050
+    second: RightLowerArmFK
+  - first:
+      1: 100052
+    second: RightLowerArmIK
+  - first:
+      1: 100054
+    second: RightUpperArm
+  - first:
+      1: 100056
+    second: RightUpperArmFK
+  - first:
+      1: 100058
+    second: RightUpperArmIK
+  - first:
+      1: 100060
+    second: RightWrist
+  - first:
+      1: 100062
+    second: RightWristEnd
+  - first:
+      1: 100064
+    second: RightWristFK
+  - first:
+      1: 100066
+    second: RightWristIK
+  - first:
+      1: 100068
+    second: Root
+  - first:
+      1: 100070
+    second: Spine
+  - first:
+      1: 100072
+    second: Zombunny
+  - first:
+      1: 100074
+    second: //RootNode
+  - first:
+      4: 400000
+    second: Ctrl_Grp
+  - first:
+      4: 400002
+    second: Head
+  - first:
+      4: 400004
+    second: HeadEnd
+  - first:
+      4: 400006
+    second: Hips
+  - first:
+      4: 400008
+    second: LeftEar
+  - first:
+      4: 400010
+    second: LeftEarEnd
+  - first:
+      4: 400012
+    second: LeftFoot
+  - first:
+      4: 400014
+    second: LeftFootEnd
+  - first:
+      4: 400016
+    second: LeftLeg
+  - first:
+      4: 400018
+    second: LeftLowerArm
+  - first:
+      4: 400020
+    second: LeftLowerArmFK
+  - first:
+      4: 400022
+    second: LeftLowerArmIK
+  - first:
+      4: 400024
+    second: LeftUpperArm
+  - first:
+      4: 400026
+    second: LeftUpperArmFK
+  - first:
+      4: 400028
+    second: LeftUpperArmIK
+  - first:
+      4: 400030
+    second: LeftWrist
+  - first:
+      4: 400032
+    second: LeftWristEnd
+  - first:
+      4: 400034
+    second: LeftWristFK
+  - first:
+      4: 400036
+    second: LeftWristIK
+  - first:
+      4: 400038
+    second: RightEar
+  - first:
+      4: 400040
+    second: RightEarEnd
+  - first:
+      4: 400042
+    second: RightFoot
+  - first:
+      4: 400044
+    second: RightFootEnd
+  - first:
+      4: 400046
+    second: RightLeg
+  - first:
+      4: 400048
+    second: RightLowerArm
+  - first:
+      4: 400050
+    second: RightLowerArmFK
+  - first:
+      4: 400052
+    second: RightLowerArmIK
+  - first:
+      4: 400054
+    second: RightUpperArm
+  - first:
+      4: 400056
+    second: RightUpperArmFK
+  - first:
+      4: 400058
+    second: RightUpperArmIK
+  - first:
+      4: 400060
+    second: RightWrist
+  - first:
+      4: 400062
+    second: RightWristEnd
+  - first:
+      4: 400064
+    second: RightWristFK
+  - first:
+      4: 400066
+    second: RightWristIK
+  - first:
+      4: 400068
+    second: Root
+  - first:
+      4: 400070
+    second: Spine
+  - first:
+      4: 400072
+    second: Zombunny
+  - first:
+      4: 400074
+    second: //RootNode
+  - first:
+      43: 4300000
+    second: Zombunny
+  - first:
+      74: 7400000
+    second: Move
+  - first:
+      74: 7400002
+    second: Idle
+  - first:
+      74: 7400004
+    second: Death
+  - first:
+      95: 9500000
+    second: //RootNode
+  - first:
+      137: 13700000
+    second: Zombunny
   externalObjects:
   - first:
       type: UnityEngine:Material
@@ -97,7 +261,7 @@ ModelImporter:
       name: ZombunnyMaterial
     second: {fileID: 2100000, guid: 90309a9ae07af7a4baf27031c594f369, type: 2}
   materials:
-    importMaterials: 1
+    materialImportMode: 1
     materialName: 1
     materialSearch: 1
     materialLocation: 0
@@ -106,6 +270,7 @@ ModelImporter:
     bakeSimulation: 0
     resampleCurves: 1
     optimizeGameObjects: 1
+    removeConstantScaleCurves: 0
     motionNodeName: 
     rigImportErrors: 
     rigImportWarnings: 
@@ -114,6 +279,7 @@ ModelImporter:
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
     importAnimatedCustomProperties: 0
+    importConstraints: 0
     animationCompression: 1
     animationRotationError: 0.5
     animationPositionError: 0.5
@@ -125,6 +291,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Move
       takeName: Take 001
+      internalID: 0
       firstFrame: 0
       lastFrame: 30
       wrapMode: 0
@@ -229,6 +396,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Idle
       takeName: Take 001
+      internalID: 0
       firstFrame: 40
       lastFrame: 280
       wrapMode: 0
@@ -333,6 +501,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Death
       takeName: Take 001
+      internalID: 0
       firstFrame: 285
       lastFrame: 320
       wrapMode: 0
@@ -440,19 +609,33 @@ ModelImporter:
     globalScale: 0.01
     meshCompression: 0
     addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
     importVisibility: 0
     importBlendShapes: 1
     importCameras: 0
     importLights: 0
+    nodeNameCollisionStrategy: 0
+    fileIdsGeneration: 1
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
-    optimizeMeshForGPU: 1
-    keepQuads: 1
+    keepQuads: 0
     weldVertices: 1
+    bakeAxisConversion: 0
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    meshOptimizationFlags: -1
+    indexFormat: 1
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 0
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
     secondaryUVPackMargin: 4
     useFileScale: 0
   tangentSpace:
@@ -460,10 +643,13 @@ ModelImporter:
     normalImportMode: 0
     tangentImportMode: 4
     normalCalculationMode: 0
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 1
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
   importAnimation: 1
-  copyAvatar: 0
   humanDescription:
-    serializedVersion: 2
+    serializedVersion: 3
     human: []
     skeleton: []
     armTwist: 0.5
@@ -473,14 +659,18 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
+    globalScale: 0.01
     rootMotionBoneName: 
-    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
     hasTranslationDoF: 0
     hasExtraRoot: 0
     skeletonHasParents: 0
   lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 2
   humanoidOversampling: 1
+  avatarSetup: 1
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 0
+  remapMaterialsIfMaterialImportModeIsNone: 1
   additionalBone: 0
   userData: 
   assetBundleName: 

@@ -1,7 +1,6 @@
 ﻿#if NEW_C_SHARP || !UNITY_5_3_OR_NEWER
 using System;
 using Svelto.Common;
-using Svelto.DataStructures;
 
 namespace Svelto.DataStructures
 {

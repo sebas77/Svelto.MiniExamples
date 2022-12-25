@@ -9,13 +9,14 @@ namespace Svelto.ECS.Example.Survive.Player.Gun
     [Sequenced(nameof(PlayerGunEnginesNames.PlayerGunShootingEngine))]
     public class PlayerFiresGunEngine : IQueryingEntitiesEngine, IStepEngine
     {
-        public PlayerFiresGunEngine(IRayCaster rayCaster, ITime time, int shootableLayer, int shootableMask)
+        public PlayerFiresGunEngine(IRayCaster rayCaster, ITime time, int shootableLayer, int environmentMask, int enemyMask)
         {
             _rayCaster      = rayCaster;
             _time           = time;
             _shootTick      = Tick();
             _shootableLayer = shootableLayer;
-            _shootableMask  = shootableMask;
+            _environmentMask  = environmentMask;
+            _enemyMask = enemyMask;
         }
 
         public EntitiesDB entitiesDB { set; private get; }
@@ -43,19 +44,22 @@ namespace Svelto.ECS.Example.Survive.Player.Gun
             Ray shootRay = gunOopFxComponent.shootRay;
 
             //CheckHit returns the EGID of the entity linked to the gameobject hit
-            var hit = _rayCaster.CheckHit(shootRay, gunComponent.range, _shootableLayer, _shootableMask,
+            var hit = _rayCaster.CheckHit(shootRay, gunComponent.range, _shootableLayer, _environmentMask, _enemyMask,
                 out var point, out var referenceID);
 
             //invalid entity reference is a valid return from CheckHit, it means that something has been hit but it's not an entity
-            if (hit && referenceID != EntityReference.Invalid)
+            if (hit)
             {
-                var damageInfo = new DamageInfo(gunComponent.damagePerShot, point);
-
-                var instanceID = referenceID.ToEGID(entitiesDB);
+                if (referenceID != EntityReference.Invalid)
                 {
-                    entitiesDB.QueryEntity<DamageableComponent>(instanceID).damageInfo = damageInfo;
+                    var damageInfo = new DamageInfo(gunComponent.damagePerShot, point);
 
-                    entitiesDB.PublishEntityChange<DamageableComponent>(instanceID);
+                    var instanceID = referenceID.ToEGID(entitiesDB);
+                    {
+                        entitiesDB.QueryEntity<DamageableComponent>(instanceID).damageInfo = damageInfo;
+
+                        entitiesDB.PublishEntityChange<DamageableComponent>(instanceID);
+                    }
                 }
 
                 gunComponent.lastTargetPosition = point;
@@ -73,7 +77,7 @@ namespace Svelto.ECS.Example.Survive.Player.Gun
                 var (weapons, oopComponent, IDs, count) = entitiesDB
                    .QueryEntities<GunComponent, GunOOPEntityComponent>(PlayerGun.Gun.Group);
                 
-                for (var i = 0; i < count; i++)
+                for (var i = count - 1; i >= 0; i--)
                 {
                     ref GunComponent playerGunComponent = ref weapons[i];
                     playerGunComponent.timer += _time.deltaTime;
@@ -104,6 +108,7 @@ namespace Svelto.ECS.Example.Survive.Player.Gun
         readonly ITime       _time;
 
         readonly int _shootableLayer;
-        readonly int _shootableMask;
+        readonly int _environmentMask;
+        readonly int _enemyMask;
     }
 }

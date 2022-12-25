@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Svelto.DataStructures.Experimental;
@@ -34,7 +33,7 @@ namespace Svelto.ECS.Example.Survive
                             new EGID(_enemiesCreated++, AliveEnemies.BuildGroup)
                           , list);
 
-                entityReferenceHolder.reference = initializer.reference;
+                entityReferenceHolder.reference = initializer.reference.ToLong();
                 //Initialize the pure EntityStructs. This should be the preferred pattern, there is much less boiler plate
                 //too
                 initializer.Init(EnemyAttackComponent);
@@ -63,7 +62,8 @@ namespace Svelto.ECS.Example.Survive
                 initializer.Init(
                     new GameObjectEntityComponent
                     {
-                            resourceIndex = valueIndex
+                            resourceIndex = valueIndex,
+                            layer = GAME_LAYERS.ENEMY_LAYER 
                     });
             }
 
@@ -77,7 +77,7 @@ namespace Svelto.ECS.Example.Survive
 
             List<IImplementor> implementors = new List<IImplementor>();
             enemyGO.GetComponentsInChildren(implementors);
-            var egidHolderImplementor = enemyGO.AddComponent<EntityReferenceHolder>();
+            var egidHolderImplementor = enemyGO.GetComponent<EntityReferenceHolder>();
 
             InitEntity(implementors, egidHolderImplementor, enemyGO, gameObjectIndex);
         }

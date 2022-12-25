@@ -20,6 +20,10 @@ namespace Svelto.ECS.Example.Survive.OOPLayer
 
             
             //pre-svelto engines
+            syncEngine = new SyncObjectsToGuns(gameObjectResourceManager);
+            enginesRoot.AddEngine(syncEngine);
+            syncObjectsToEntitiesGroup.Add(syncEngine);
+            
             syncEngine = new SyncCameraObjectsToEntities(gameObjectResourceManager);
             enginesRoot.AddEngine(syncEngine);
             syncObjectsToEntitiesGroup.Add(syncEngine);
@@ -48,7 +52,7 @@ namespace Svelto.ECS.Example.Survive.OOPLayer
             enginesRoot.AddEngine(syncEngine);
             syncEntitiesToObjectsGroup.Add(syncEngine);
             
-            syncEngine = new SyncEnemiesToObjects(gameObjectResourceManager);
+            syncEngine = new SyncEntitiesToGameObjects(gameObjectResourceManager);
             enginesRoot.AddEngine(syncEngine);
             syncEntitiesToObjectsGroup.Add(syncEngine);
             

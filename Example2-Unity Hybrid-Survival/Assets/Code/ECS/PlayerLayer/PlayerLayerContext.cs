@@ -15,7 +15,7 @@ namespace Svelto.ECS.Example.Survive.Player
                 rayCaster,
                 time,
                 GAME_LAYERS.ENEMY_LAYER,
-                GAME_LAYERS.SHOOTABLE_MASK | GAME_LAYERS.ENEMY_MASK);
+                GAME_LAYERS.SHOOTABLE_MASK, GAME_LAYERS.ENEMY_MASK);
             var playerMovementEngine = new PlayerMovementEngine(rayCaster);
             var playerAnimationEngine = new PlayerAnimationEngine();
             var playerDeathEngine = new PlayerDeathEngine(entityFunctions, entityStreamConsumerFactory);
@@ -23,15 +23,15 @@ namespace Svelto.ECS.Example.Survive.Player
             var playerGunShootingFXsEngine = new PlayerGunShootingFXsEngine(entityStreamConsumerFactory);
 
 //Player engines
+            enginesRoot.AddEngine(playerInputEngine);
             enginesRoot.AddEngine(playerMovementEngine);
             enginesRoot.AddEngine(playerAnimationEngine);
             enginesRoot.AddEngine(playerShootingEngine);
-            enginesRoot.AddEngine(playerInputEngine);
             enginesRoot.AddEngine(playerGunShootingFXsEngine);
             enginesRoot.AddEngine(playerDeathEngine);
     
-            unorderedEngines.Add(playerMovementEngine);
             unorderedEngines.Add(playerInputEngine);
+            unorderedEngines.Add(playerMovementEngine);
             unorderedEngines.Add(playerGunShootingFXsEngine);
             unorderedEngines.Add(playerAnimationEngine);
 

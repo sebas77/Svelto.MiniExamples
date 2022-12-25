@@ -110,6 +110,11 @@ namespace Svelto.ECS
             GC.SuppressFinalize(this);
         }
 
+        public bool IsValid()
+        {
+            return _isDisposed == false;
+        }
+        
         public void AddEngine(IEngine engine)
         {
             var type = engine.GetType();
@@ -220,11 +225,6 @@ namespace Svelto.ECS
 
         void Dispose(bool disposing)
         {
-            _isDisposing = disposing;
-
-            if (disposing == false)
-                return;
-
             using (var profiler = new PlatformProfiler("Final Dispose"))
             {
                 //Note: The engines are disposed before the the remove callback to give the chance to behave
@@ -236,6 +236,7 @@ namespace Svelto.ECS
                     {
                         if (engine is IDisposingEngine dengine)
                             dengine.isDisposing = true;
+                        
                         engine.Dispose();
                     }
                     catch (Exception e)
@@ -296,6 +297,8 @@ namespace Svelto.ECS
                 _entityStreams.Dispose();
                 scheduler.Dispose();
             }
+            
+            _isDisposed = true;
         }
 
         void NotifyReactiveEnginesOnSubmission()
@@ -375,7 +378,6 @@ namespace Svelto.ECS
 
         const int MAX_SUBMISSION_ITERATIONS = 10;
 
-        internal bool _isDisposing;
         readonly FasterList<IDisposable> _disposableEngines;
         readonly FasterList<IEngine> _enginesSet;
         readonly HashSet<Type> _enginesTypeSet;
@@ -401,6 +403,7 @@ namespace Svelto.ECS
             _reactiveEnginesDispose;
 
         readonly FasterList<IReactOnSubmission> _reactiveEnginesSubmission;
+        bool _isDisposed;
     }
 
     public enum EnginesReadyOption

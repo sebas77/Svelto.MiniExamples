@@ -255,8 +255,6 @@ namespace Svelto.ECS
             return groupsPerComponent.ContainsKey(TypeRefWrapper<T1>.wrapper);
         }
 
-        public bool IsDisposing => _enginesRoot._isDisposing;
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         bool SafeQueryEntityDictionary<T>
         (out ITypeSafeDictionary typeSafeDictionary

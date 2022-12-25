@@ -1,6 +1,4 @@
-﻿using Svelto.Common;
-
-namespace Svelto.ECS.Example.Survive.OOPLayer
+﻿namespace Svelto.ECS.Example.Survive.OOPLayer
 {
     public class SyncCameraObjectsToEntities: IQueryingEntitiesEngine, IStepEngine
     {
@@ -25,7 +23,8 @@ namespace Svelto.ECS.Example.Survive.OOPLayer
                     var go = _manager[entity[i].resourceIndex];
                     var camera = go.GetComponent<UnityEngine.Camera>();
 
-                    cameras[i].camRay = camera.ScreenPointToRay(cameras[i].camRayInput);
+                    if (cameras[i].inputRead == true)
+                        cameras[i].camRay = camera.ScreenPointToRay(cameras[i].camRayInput);
                 }
             }
         }

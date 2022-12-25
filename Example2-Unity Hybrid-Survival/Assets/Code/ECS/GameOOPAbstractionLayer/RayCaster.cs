@@ -1,29 +1,36 @@
-using Svelto.ECS.Extensions.Unity;
 using UnityEngine;
 
 namespace Svelto.ECS.Example.Survive.OOPLayer
 {
     public class RayCaster : IRayCaster
     {
-        public bool CheckHit(in Ray ray, float range, int layer, int mask, out Vector3 point, out EntityReference instanceID)
+        public bool CheckHit(in Ray ray, float range, int layer, int mask, int enemyMask, out Vector3 point,
+            out EntityReference instanceID)
         {
-            if (Physics.Raycast(ray, out var shootHit, range, mask))
+            if (Physics.Raycast(ray, out var enemyShootHit, range, enemyMask))
             {
-                point = shootHit.point;
-                if (shootHit.collider != null)
+                if (enemyShootHit.collider != null)
                 {
-                    var colliderGameObject = shootHit.collider.gameObject;
+                    var colliderGameObject = enemyShootHit.collider.gameObject;
 
                     if (colliderGameObject.layer == layer)
                     {
                         var component = colliderGameObject.GetComponent<EntityReferenceHolder>();
                         if (component != null)
                         {
-                            instanceID = component.reference;
+                            instanceID = new EntityReference(component.reference);
+                            point = enemyShootHit.point;
                             return true;
                         }
                     }
-                
+                }
+            }
+            else
+            if (Physics.Raycast(ray, out var shootHit, range, mask))
+            {
+                if (shootHit.collider != null)
+                {
+                    point = shootHit.point;
                     instanceID = default;
                     return true;
                 }

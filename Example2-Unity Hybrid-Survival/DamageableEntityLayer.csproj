@@ -44,21 +44,25 @@
     <Analyzer Include="C:\PRGDIR\Svelto\Svelto.Miniexamples\Example2-Unity Hybrid-Survival\Assets\AkroGame.ECS.Analyzer.dll" />
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\Engines\DamageEnginesNames.cs" />
      <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\DamageContextLayer.cs" />
-     <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\DamageableEntityDescriptor.cs" />
-     <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\DispatchKilledEntitiesEngine.cs" />
-     <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\DamageSoundEntityViewComponent.cs" />
-     <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\ScoreValueEntityComponent.cs" />
-     <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\DeathComponent.cs" />
-     <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\HealthComponent.cs" />
+     <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\Entities\DamageableEntityDescriptor.cs" />
+     <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\Engines\DispatchKilledEntitiesEngine.cs" />
+     <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\Entities\DamageSoundEntityViewComponent.cs" />
+     <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\Entities\ScoreValueEntityComponent.cs" />
+     <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\Entities\DeathComponent.cs" />
+     <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\Entities\HealthComponent.cs" />
      <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\Groups.cs" />
-     <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\DamageSoundEngine.cs" />
-     <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\DamageInfo.cs" />
-     <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\DamageableComponent.cs" />
-     <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\ApplyDamageToDamageableEntitiesEngine.cs" />
-     <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\DamageSoundEntityComponent.cs" />
+     <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\Engines\DamageSoundEngine.cs" />
+     <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\Entities\DamageInfo.cs" />
+     <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\Entities\DamageableComponent.cs" />
+     <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\Engines\ApplyDamageToDamageableEntitiesEngine.cs" />
+     <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\Entities\DamageSoundEntityComponent.cs" />
+     <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\Engines\DamageUnsortedEngines.cs" />
      <None Include="Assets\Code\ECS\DamageableEntitiesLayer\DamageableEntityLayer.asmdef" />
+     <Folder Include="Assets\Code\ECS\DamageableEntitiesLayer\Engines" />
      <Folder Include="Assets\Code\ECS\DamageableEntitiesLayer" />
+     <Folder Include="Assets\Code\ECS\DamageableEntitiesLayer\Entities" />
      <Reference Include="UnityEngine">
      <HintPath>C:\Program Files\Unity\2021.3.16f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
      </Reference>

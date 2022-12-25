@@ -1,8 +1,8 @@
 ﻿namespace Svelto.ECS.Example.Survive.OOPLayer
 {
-    public class SyncGunEntitiesToObjects: IQueryingEntitiesEngine, IStepEngine
+    public class SyncObjectsToGuns: IQueryingEntitiesEngine, IStepEngine
     {
-        public SyncGunEntitiesToObjects(GameObjectResourceManager manager)
+        public SyncObjectsToGuns(GameObjectResourceManager manager)
         {
             _manager = manager;
         }
@@ -16,7 +16,7 @@
             var groups = entitiesDB.FindGroups<GameObjectEntityComponent, GunOOPEntityComponent>();
 
             foreach (var ((entity, guns, count), _) in entitiesDB
-                        .QueryEntities<GameObjectEntityComponent, GunOOPEntityComponent>(groups))
+                            .QueryEntities<GameObjectEntityComponent, GunOOPEntityComponent>(groups))
             {
                 for (int i = 0; i < count; i++)
                 {
@@ -24,17 +24,8 @@
 
                     var go = _manager[entity[i].resourceIndex];
                     var psfx = go.GetComponent<PlayerShootingFX>();
-
-                    var effectState = gunOopEntityComponent.GetStateAndReset();
-                    if (effectState == PlayState.start)
-                    {
-                        psfx.PlayEffects(gunOopEntityComponent.lineEndPosition);
-                    }
-                    else 
-                    if (effectState == PlayState.stop)
-                    {
-                        psfx.StopEffects();
-                    }
+                    gunOopEntityComponent.shootRay = psfx.shootCastRay;
+                    gunOopEntityComponent.effectsDisplayTime = psfx.effectsDisplayTime;
                 }
             }
         }

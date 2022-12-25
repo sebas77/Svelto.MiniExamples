@@ -1,20 +1,16 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using Task = System.Threading.Tasks.Task;
 
 namespace Svelto.ECS.Example.Survive.Enemies
 {
     public class EnemySpawnerEngine: IQueryingEntitiesEngine, IReactOnSwap<EnemyEntityViewComponent>, IStepEngine
     {
         const int SECONDS_BETWEEN_SPAWNS = 1;
-        const int NUMBER_OF_ENEMIES_TO_SPAWN = 12;
+        const int NUMBER_OF_ENEMIES_TO_SPAWN = 1;
 
-        public EnemySpawnerEngine(EnemyFactory enemyFactory, IEntityFunctions entityFunctions)
+        public EnemySpawnerEngine(EnemyFactory enemyFactory)
         {
             _enemyFactory = enemyFactory;
             _numberOfEnemyToSpawn = NUMBER_OF_ENEMIES_TO_SPAWN;

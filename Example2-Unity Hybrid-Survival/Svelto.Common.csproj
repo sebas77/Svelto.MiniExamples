@@ -127,9 +127,9 @@
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Sentinel\SentinelNativeStrategy.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Dictionaries\SveltoDictionary.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\Utilities\NetFXCoreWrappers.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.common\ObjectPool\IObjectPool.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\HashHelpers.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\Sequencer\Sequence.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.common\ObjectPool\IObjectPool.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Arrays\FasterListExtension.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\Utilities\Console.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\Utilities\ReaderWriterLockSlimEx.cs" />

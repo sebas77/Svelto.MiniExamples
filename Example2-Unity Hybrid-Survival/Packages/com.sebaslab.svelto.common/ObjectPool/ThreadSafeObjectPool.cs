@@ -36,7 +36,7 @@ namespace Svelto.ObjectPool
         public async Task Preallocate(int pool, int size, Func<Task<T>> onFirstUse)
         {
             for (int i = size - 1; i >= 0; --i)
-                Preallocate(pool, onFirstUse);
+                await Preallocate(pool, onFirstUse);
         }
 
         /// <summary>

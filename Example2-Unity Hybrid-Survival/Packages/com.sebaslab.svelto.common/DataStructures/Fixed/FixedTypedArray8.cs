@@ -1,5 +1,4 @@
 ﻿#if NEW_C_SHARP || !UNITY_5_3_OR_NEWER
-using System;
 using System.Runtime.CompilerServices;
 
 //todo needs to be unit tested

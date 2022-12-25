@@ -1,5 +1,4 @@
-﻿using Svelto.Common;
-using Svelto.ECS.Example.Survive.Transformable;
+﻿using Svelto.ECS.Example.Survive.Transformable;
 
 namespace Svelto.ECS.Example.Survive.OOPLayer
 {
@@ -17,11 +16,11 @@ namespace Svelto.ECS.Example.Survive.OOPLayer
         public void Step()
         {
             var groups = entitiesDB
-                   .FindGroups<GameObjectEntityComponent, PositionComponent>();
+                   .FindGroups<GameObjectEntityComponent, PositionComponent, RotationComponent>();
 
             //position only sync
-            foreach (var ((entity, positions, count), _) in entitiesDB
-                            .QueryEntities<GameObjectEntityComponent, PositionComponent>(groups))
+            foreach (var ((entity, positions, rotations, count), _) in entitiesDB
+                            .QueryEntities<GameObjectEntityComponent, PositionComponent, RotationComponent>(groups))
             {
                 for (int i = 0; i < count; i++)
                 {
@@ -30,6 +29,7 @@ namespace Svelto.ECS.Example.Survive.OOPLayer
                     var transform = go.transform;
 
                     positions[i].position = transform.position;
+                    rotations[i].rotation = transform.rotation;
                 }
             }
         }
