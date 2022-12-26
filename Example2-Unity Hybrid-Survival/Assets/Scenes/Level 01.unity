@@ -2645,7 +2645,6 @@ GameObject:
   - component: {fileID: 1139190135}
   - component: {fileID: 1139190137}
   - component: {fileID: 1139190138}
-  - component: {fileID: 1139190136}
   m_Layer: 5
   m_Name: HUDCanvas
   m_TagString: Untagged
@@ -2728,18 +2727,6 @@ CanvasGroup:
   m_Interactable: 0
   m_BlocksRaycasts: 0
   m_IgnoreParentGroups: 0
---- !u!114 &1139190136
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1139190131}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bcced41f6cb14ade8691a6d5f1ad33e0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!95 &1139190137
 Animator:
   serializedVersion: 5

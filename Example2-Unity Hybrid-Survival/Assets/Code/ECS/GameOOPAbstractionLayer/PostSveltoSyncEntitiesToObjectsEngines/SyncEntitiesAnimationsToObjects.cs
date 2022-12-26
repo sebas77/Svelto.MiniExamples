@@ -10,8 +10,8 @@ namespace Svelto.ECS.Example.Survive.OOPLayer
         }
 
         public void Ready() { }
-
         public EntitiesDB entitiesDB { get; set; }
+        
         public void Step()
         {
             var groups = entitiesDB.FindGroups<GameObjectEntityComponent, AnimationComponent>();

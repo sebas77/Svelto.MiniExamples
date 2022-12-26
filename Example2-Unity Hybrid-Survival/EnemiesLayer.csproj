@@ -61,8 +61,8 @@
      <Compile Include="Assets\Code\ECS\EnemiesLayer\Entities\EnemyEntityDescriptor.cs" />
      <Compile Include="Assets\Code\ECS\EnemiesLayer\Entities\EnemyTriggerImplementor.cs" />
      <Compile Include="Assets\Code\ECS\EnemiesLayer\EnemyEngines\EnemyDeathEngine.cs" />
-     <Compile Include="Assets\Code\ECS\EnemiesLayer\EnemyEngines\EnemySpawnEffectOnDamageEngine.cs" />
      <Compile Include="Assets\Code\ECS\EnemiesLayer\EnemyEngines\EnemyAnimations.cs" />
+     <Compile Include="Assets\Code\ECS\EnemiesLayer\EnemyEngines\EnemySpawnEffectOnDamageEngine.cs" />
      <None Include="Assets\Code\ECS\EnemiesLayer\EnemiesLayer.asmdef" />
      <Folder Include="Assets\Code\ECS\EnemiesLayer\EnemyEngines" />
      <Folder Include="Assets\Code\ECS\EnemiesLayer" />

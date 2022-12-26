@@ -63,6 +63,7 @@
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\PostSveltoSyncEntitiesToObjectsEngines\SyncEntitiesPositionToObjects.cs" />
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\PreSveltoSyncObjectsToEntitiesEngines\SyncObjectsToEntities.cs" />
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\PostSveltoSyncEntitiesToObjectsEngines\SyncEntitiesToGameObjects.cs" />
+     <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\Entities\AnimationState.cs" />
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\OOPLayerContext.cs" />
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\Objects\AudioImplementor.cs" />
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\PostSveltoSyncEntitiesToObjectsEngines\SyncEntitiesToObjects.cs" />
@@ -70,7 +71,6 @@
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\Entities\DamageSoundEntityComponent.cs" />
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\RayCaster.cs" />
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\PostSveltoSyncEntitiesToObjectsEngines\SyncEntitiesAudioToObject.cs" />
-     <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\Entities\AnimationState.cs" />
      <Folder Include="Assets\Code\ECS\GameOOPAbstractionLayer\Objects" />
      <Folder Include="Assets\Code\ECS\GameOOPAbstractionLayer\Entities" />
      <Folder Include="Assets\Code\ECS\GameOOPAbstractionLayer\PostSveltoSyncEntitiesToObjectsEngines" />

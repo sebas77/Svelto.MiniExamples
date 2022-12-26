@@ -185,7 +185,7 @@ namespace Svelto.ECS.Example.Survive
             {
                 if (defaultLoop.subSystemList[i].type == typeof(EarlyUpdate))
                 {
-                    earlyUpdateIndex = i + 3;
+                    earlyUpdateIndex = i + 1;
                     break;
                 }
             }
