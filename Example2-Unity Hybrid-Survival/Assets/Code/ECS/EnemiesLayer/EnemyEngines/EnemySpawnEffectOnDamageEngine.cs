@@ -1,6 +1,9 @@
 using System.Collections;
 using Svelto.Common;
 using Svelto.ECS.Example.Survive.Damage;
+using Svelto.ECS.Example.Survive.OOPLayer;
+using UnityEngine;
+using AudioType = Svelto.ECS.Example.Survive.Damage.AudioType;
 
 namespace Svelto.ECS.Example.Survive.Enemies
 {
@@ -28,6 +31,8 @@ namespace Svelto.ECS.Example.Survive.Enemies
         {
             void CheckDamageEnemy(EGID egid, DamageableComponent component)
             {
+                entitiesDB.QueryEntity<DamageSoundComponent>(egid).playOneShot =
+                        (int)AudioType.damage;
                 ref var enemyEntityViewsStructs = ref entitiesDB.QueryEntity<EnemyEntityViewComponent>(egid);
 
                 enemyEntityViewsStructs.vfxComponent.position = component.damageInfo.damagePoint;
@@ -41,7 +46,9 @@ namespace Svelto.ECS.Example.Survive.Enemies
                     //publisher/consumer pattern will be replaces with better patterns in future for these cases.
                     //The problem is obvious, DeathComponent is abstract and could have came from the player
                     if (EnemiesGroup.Includes(egid.groupID))
+                    {
                         CheckDamageEnemy(egid, component);
+                    }
                 }
 
                 yield return null;

@@ -1,6 +1,7 @@
 using System.Collections;
 using Svelto.ECS.Example.Survive.HUD;
 using Svelto.ECS.Example.Survive.OOPLayer;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace Svelto.ECS.Example.Survive
@@ -31,8 +32,8 @@ namespace Svelto.ECS.Example.Survive
             while (_waitForSeconds.MoveNext())
                 yield return null;
 
-            var guiEntityView = entitiesDB.QueryUniqueEntity<HUDEntityViewComponent>(ECSGroups.GUICanvas);
-            guiEntityView.HUDAnimator.playAnimation = "GameOver";
+            var guiEntityView = entitiesDB.QueryUniqueEntity<AnimationComponent>(ECSGroups.GUICanvas);
+            guiEntityView.animationState = new AnimationState(HUDAnimations.Die);
 
             _waitForSeconds.Reset(2);
             while (_waitForSeconds.MoveNext())
@@ -53,5 +54,10 @@ namespace Svelto.ECS.Example.Survive
         readonly IEntityStreamConsumerFactory _consumerFactory;
         readonly IEnumerator _restartLevelAfterFewSeconds;
         bool _execute;
+    }
+    
+    public static class HUDAnimations
+    {
+        public static int Die =  Animator.StringToHash("GameOver");
     }
 }

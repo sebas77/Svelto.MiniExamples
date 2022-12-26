@@ -44,12 +44,7 @@
     <Analyzer Include="C:\PRGDIR\Svelto\Svelto.Miniexamples\Example2-Unity Hybrid-Survival\Assets\AkroGame.ECS.Analyzer.dll" />
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Code\ECS\AnimationLayer\IAnimationComponent.cs" />
-     <Compile Include="Assets\Code\ECS\AnimationLayer\AnimationComponent.cs" />
-     <Compile Include="Assets\Code\ECS\AnimationLayer\AnimatorImplementor.cs" />
-     <Compile Include="Assets\Code\ECS\AnimationLayer\AnimationState.cs" />
-     <None Include="Assets\Code\ECS\AnimationLayer\AnimationLayer.asmdef" />
-     <Folder Include="Assets\Code\ECS\AnimationLayer" />
+     <Folder Include="Assets\Code\ECS" />
      <Reference Include="UnityEngine">
      <HintPath>C:\Program Files\Unity\2021.3.16f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
      </Reference>

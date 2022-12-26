@@ -128,7 +128,9 @@ namespace Svelto.ECS
             try
             {
                 if (engine is IReactOnAdd viewEngineAdd)
+#pragma warning disable CS0612
                     CheckReactEngineComponents(typeof(IReactOnAdd<>), viewEngineAdd, _reactiveEnginesAdd, type.Name);
+#pragma warning restore CS0612
 
                 if (engine is IReactOnAddEx viewEngineAddEx)
                     CheckReactEngineComponents(
@@ -136,7 +138,9 @@ namespace Svelto.ECS
 
                 if (engine is IReactOnRemove viewEngineRemove)
                     CheckReactEngineComponents(
+#pragma warning disable CS0612
                         typeof(IReactOnRemove<>), viewEngineRemove, _reactiveEnginesRemove, type.Name);
+#pragma warning restore CS0612
 
                 if (engine is IReactOnRemoveEx viewEngineRemoveEx)
                     CheckReactEngineComponents(
@@ -147,7 +151,9 @@ namespace Svelto.ECS
                         typeof(IReactOnDispose<>), viewEngineDispose, _reactiveEnginesDispose, type.Name);
 
                 if (engine is IReactOnSwap viewEngineSwap)
+#pragma warning disable CS0612
                     CheckReactEngineComponents(typeof(IReactOnSwap<>), viewEngineSwap, _reactiveEnginesSwap, type.Name);
+#pragma warning restore CS0612
 
                 if (engine is IReactOnSwapEx viewEngineSwapEx)
                     CheckReactEngineComponents(

@@ -19,7 +19,6 @@ GameObject:
   - component: {fileID: 114491744935877456}
   - component: {fileID: 114213345132320286}
   - component: {fileID: 114235789861668310}
-  - component: {fileID: 114658106183730128}
   - component: {fileID: 2977599449143377670}
   m_Layer: 10
   m_Name: Hellephant
@@ -263,8 +262,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9496655af362413bb65ca481e25470c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damageClip: {fileID: 8300000, guid: fce027b40770a44298a6f5a4233bfb04, type: 3}
-  deathClip: {fileID: 8300000, guid: 8c615fd0429f34edf85539d70279360d, type: 3}
+  clips:
+  - {fileID: 8300000, guid: 8c615fd0429f34edf85539d70279360d, type: 3}
+  - {fileID: 8300000, guid: fce027b40770a44298a6f5a4233bfb04, type: 3}
 --- !u!114 &114235789861668310
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -278,18 +278,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   particle: {fileID: 19800002}
---- !u!114 &114658106183730128
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 100000}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bcced41f6cb14ade8691a6d5f1ad33e0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &2977599449143377670
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -302,6 +290,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ae5aecc336a32949b179f098eceac82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  reference: 0
 --- !u!1 &100002
 GameObject:
   m_ObjectHideFlags: 0

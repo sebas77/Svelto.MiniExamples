@@ -8,10 +8,8 @@ namespace Svelto.ECS.Example.Survive.Player
     {
         public EntitiesDB entitiesDB { get; set; }
 
-        public void Ready()
-        {
-        }
-
+        public void Ready() { }
+        
         public PlayerDeathEngine(IEntityFunctions dbFunctions, IEntityStreamConsumerFactory consumerFactory)
         {
             _DBFunctions = dbFunctions;

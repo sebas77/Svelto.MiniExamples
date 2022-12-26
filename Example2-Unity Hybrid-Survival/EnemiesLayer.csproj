@@ -62,6 +62,7 @@
      <Compile Include="Assets\Code\ECS\EnemiesLayer\Entities\EnemyTriggerImplementor.cs" />
      <Compile Include="Assets\Code\ECS\EnemiesLayer\EnemyEngines\EnemyDeathEngine.cs" />
      <Compile Include="Assets\Code\ECS\EnemiesLayer\EnemyEngines\EnemySpawnEffectOnDamageEngine.cs" />
+     <Compile Include="Assets\Code\ECS\EnemiesLayer\EnemyEngines\EnemyAnimations.cs" />
      <None Include="Assets\Code\ECS\EnemiesLayer\EnemiesLayer.asmdef" />
      <Folder Include="Assets\Code\ECS\EnemiesLayer\EnemyEngines" />
      <Folder Include="Assets\Code\ECS\EnemiesLayer" />
@@ -726,10 +727,6 @@
     <ProjectReference Include="DamageableEntityLayer.csproj">
       <Project>{aeea405b-755d-b192-f746-16b655660ec3}</Project>
       <Name>DamageableEntityLayer</Name>
-    </ProjectReference>
-    <ProjectReference Include="AnimationLayer.csproj">
-      <Project>{59e9f197-bda3-ff91-2f6b-e150b462fed8}</Project>
-      <Name>AnimationLayer</Name>
     </ProjectReference>
     <ProjectReference Include="Unity.Addressables.csproj">
       <Project>{b7e76152-ddc0-c4f5-b60d-2bcd0f21c24e}</Project>

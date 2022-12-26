@@ -4,7 +4,6 @@ namespace Svelto.ECS.Example.Survive.HUD
 {
     public struct HUDEntityViewComponent : IEntityViewComponent
     {
-        public IAnimationComponent    HUDAnimator;
         public IDamageHUDComponent    damageImageComponent;
         public IHealthSliderComponent healthSliderComponent;
         public IScoreComponent        scoreComponent;

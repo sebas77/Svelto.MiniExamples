@@ -50,6 +50,7 @@
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\Entities\GunOOPEntityComponent.cs" />
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\GameObjectResourceManager.cs" />
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\PreSveltoSyncObjectsToEntitiesEngines\SyncObjectsToGuns.cs" />
+     <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\Entities\AnimationComponent.cs" />
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\Objects\EntityReferenceHolder.cs" />
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\PostSveltoSyncEntitiesToObjectsEngines\SyncPhysicEntitiesToObjects.cs" />
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\IRayCaster.cs" />
@@ -63,9 +64,13 @@
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\PreSveltoSyncObjectsToEntitiesEngines\SyncObjectsToEntities.cs" />
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\PostSveltoSyncEntitiesToObjectsEngines\SyncEntitiesToGameObjects.cs" />
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\OOPLayerContext.cs" />
+     <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\Objects\AudioImplementor.cs" />
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\PostSveltoSyncEntitiesToObjectsEngines\SyncEntitiesToObjects.cs" />
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\EnginesNames.cs" />
+     <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\Entities\DamageSoundEntityComponent.cs" />
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\RayCaster.cs" />
+     <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\PostSveltoSyncEntitiesToObjectsEngines\SyncEntitiesAudioToObject.cs" />
+     <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\Entities\AnimationState.cs" />
      <Folder Include="Assets\Code\ECS\GameOOPAbstractionLayer\Objects" />
      <Folder Include="Assets\Code\ECS\GameOOPAbstractionLayer\Entities" />
      <Folder Include="Assets\Code\ECS\GameOOPAbstractionLayer\PostSveltoSyncEntitiesToObjectsEngines" />
@@ -732,10 +737,6 @@
     <ProjectReference Include="TransformableLayer.csproj">
       <Project>{18457d9e-b04e-0cec-b1cc-2289d7294499}</Project>
       <Name>TransformableLayer</Name>
-    </ProjectReference>
-    <ProjectReference Include="AnimationLayer.csproj">
-      <Project>{59e9f197-bda3-ff91-2f6b-e150b462fed8}</Project>
-      <Name>AnimationLayer</Name>
     </ProjectReference>
     <ProjectReference Include="UnityEditor.UI.csproj">
       <Project>{071fa4f6-95c0-6054-c479-b9199d4dc847}</Project>

@@ -105,7 +105,6 @@ GameObject:
   - component: {fileID: 114583534575790542}
   - component: {fileID: 114436949135912762}
   - component: {fileID: 114986459234672174}
-  - component: {fileID: 114771632556479968}
   - component: {fileID: 3584454323582676682}
   m_Layer: 10
   m_Name: ZomBunny
@@ -349,8 +348,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9496655af362413bb65ca481e25470c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damageClip: {fileID: 8300000, guid: 02e6208ec76314158a9f548f51fe9f11, type: 3}
-  deathClip: {fileID: 8300000, guid: 1d3bfb9269f136947bf8ac164cace1ff, type: 3}
+  clips:
+  - {fileID: 8300000, guid: 1d3bfb9269f136947bf8ac164cace1ff, type: 3}
+  - {fileID: 8300000, guid: 02e6208ec76314158a9f548f51fe9f11, type: 3}
 --- !u!114 &114986459234672174
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -364,18 +364,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   particle: {fileID: 19800000}
---- !u!114 &114771632556479968
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 100002}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bcced41f6cb14ade8691a6d5f1ad33e0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &3584454323582676682
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -56,6 +56,10 @@ namespace Svelto.ECS.Example.Survive.OOPLayer
             enginesRoot.AddEngine(syncEngine);
             syncEntitiesToObjectsGroup.Add(syncEngine);
             
+            syncEngine = new SyncEntitiesAudioToObject(gameObjectResourceManager);
+            enginesRoot.AddEngine(syncEngine);
+            syncEntitiesToObjectsGroup.Add(syncEngine);
+            
             orderedEngines.Add(syncEntitiesToObjectsGroup);
         }
     }

@@ -24,6 +24,11 @@ namespace Svelto.ECS
 
             DBC.ECS.Check.Ensure(id < _globalId, "Invalid group ID deserialiased");
         }
+        
+        public override bool Equals(object obj)
+        {
+            throw new NotSupportedException();
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override int GetHashCode()

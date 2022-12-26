@@ -13,7 +13,5 @@ namespace Svelto.ECS.Example.Survive.Enemies
         public IEnemyMovementComponent movementComponent;
         public IEnemyVFXComponent      vfxComponent;
         public IEnemyTriggerComponent  targetTriggerComponent;
-
-        public IAnimationComponent    animationComponent;
     }
 }

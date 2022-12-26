@@ -31,15 +31,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.ScriptableBuildPipeli
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlayerEntityLayer", "PlayerEntityLayer.csproj", "{305cd92c-d135-5769-0803-174343592e6c}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnimationLayer", "AnimationLayer.csproj", "{59e9f197-bda3-ff91-2f6b-e150b462fed8}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CameraLayer", "CameraLayer.csproj", "{244bd38c-fe73-9b87-5070-1d7b3f94730c}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "Assembly-CSharp.csproj", "{272ab51e-72fe-3806-4fb0-62df1b348d48}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TransformableLayer", "TransformableLayer.csproj", "{18457d9e-b04e-0cec-b1cc-2289d7294499}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AudioLayer", "AudioLayer.csproj", "{b0248dd3-7f6e-ab2b-974b-6eb71fa3bce7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AkroGame.ECS.WebSocketWrapper", "AkroGame.ECS.WebSocketWrapper.csproj", "{74fe11bd-7e89-b1b1-d00d-f8a864be6545}"
 EndProject
@@ -128,16 +124,12 @@ Global
 		{5e050525-d3f2-914c-47b3-34d5dba0d53b}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{305cd92c-d135-5769-0803-174343592e6c}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{305cd92c-d135-5769-0803-174343592e6c}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{59e9f197-bda3-ff91-2f6b-e150b462fed8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{59e9f197-bda3-ff91-2f6b-e150b462fed8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{244bd38c-fe73-9b87-5070-1d7b3f94730c}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{244bd38c-fe73-9b87-5070-1d7b3f94730c}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{272ab51e-72fe-3806-4fb0-62df1b348d48}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{272ab51e-72fe-3806-4fb0-62df1b348d48}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{18457d9e-b04e-0cec-b1cc-2289d7294499}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{18457d9e-b04e-0cec-b1cc-2289d7294499}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{b0248dd3-7f6e-ab2b-974b-6eb71fa3bce7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{b0248dd3-7f6e-ab2b-974b-6eb71fa3bce7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{74fe11bd-7e89-b1b1-d00d-f8a864be6545}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{74fe11bd-7e89-b1b1-d00d-f8a864be6545}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{fc3e0f5a-ff0e-0a6d-b67a-f24cfb2a602b}.Debug|Any CPU.ActiveCfg = Debug|Any CPU

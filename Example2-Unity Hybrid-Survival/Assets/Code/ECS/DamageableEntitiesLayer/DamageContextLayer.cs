@@ -10,14 +10,12 @@ namespace Svelto.ECS.Example.Survive.Damage
             //damage engines
             var applyDamageEngine = new ApplyDamageToDamageableEntitiesEngine(entityStreamConsumerFactory);
             var deathEngine = new DispatchKilledEntitiesEngine();
-            var damageSoundEngine = new DamageSoundEngine(entityStreamConsumerFactory);
 
             enginesRoot.AddEngine(applyDamageEngine);
             enginesRoot.AddEngine(deathEngine);
-            enginesRoot.AddEngine(damageSoundEngine);
 
             var unsortedDamageEngines = new DamageUnsortedEngines(
-                new FasterList<IStepEngine>(applyDamageEngine, damageSoundEngine, deathEngine));
+                new FasterList<IStepEngine>(applyDamageEngine, deathEngine));
 
             orderedEngines.Add(unsortedDamageEngines);
         }

@@ -16,6 +16,7 @@ namespace Svelto.ECS.Example.Survive.Enemies
                 new ComponentBuilder<EnemyEntityViewComponent>(),
                 new ComponentBuilder<ScoreValueComponent>(),
                 new ComponentBuilder<EnemyAttackComponent>(),
+                new ComponentBuilder<AnimationComponent>(),
             });
         }
     }

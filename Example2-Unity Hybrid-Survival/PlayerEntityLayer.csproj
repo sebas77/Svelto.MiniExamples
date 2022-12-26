@@ -717,10 +717,6 @@
       <Project>{8d2eb115-c2e2-3719-ca04-08d3c302a5a1}</Project>
       <Name>Svelto.ECS</Name>
     </ProjectReference>
-    <ProjectReference Include="AnimationLayer.csproj">
-      <Project>{59e9f197-bda3-ff91-2f6b-e150b462fed8}</Project>
-      <Name>AnimationLayer</Name>
-    </ProjectReference>
     <ProjectReference Include="CameraLayer.csproj">
       <Project>{244bd38c-fe73-9b87-5070-1d7b3f94730c}</Project>
       <Name>CameraLayer</Name>

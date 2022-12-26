@@ -3,7 +3,8 @@
     "references": [
         "Svelto.ECS",
         "Svelto.Common",
-        "AudioLayer"
+        "AudioLayer",
+        "UnityOOPAbstractionLayer"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

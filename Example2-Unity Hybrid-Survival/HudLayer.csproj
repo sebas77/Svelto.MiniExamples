@@ -718,10 +718,6 @@
       <Project>{305cd92c-d135-5769-0803-174343592e6c}</Project>
       <Name>PlayerEntityLayer</Name>
     </ProjectReference>
-    <ProjectReference Include="AnimationLayer.csproj">
-      <Project>{59e9f197-bda3-ff91-2f6b-e150b462fed8}</Project>
-      <Name>AnimationLayer</Name>
-    </ProjectReference>
     <ProjectReference Include="DamageableEntityLayer.csproj">
       <Project>{aeea405b-755d-b192-f746-16b655660ec3}</Project>
       <Name>DamageableEntityLayer</Name>

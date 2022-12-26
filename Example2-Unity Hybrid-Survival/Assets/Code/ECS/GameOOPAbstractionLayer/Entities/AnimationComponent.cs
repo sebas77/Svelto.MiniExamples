@@ -1,4 +1,4 @@
-﻿namespace Svelto.ECS.Example.Survive.Player
+﻿namespace Svelto.ECS.Example.Survive.OOPLayer
 {
     public struct AnimationComponent : IEntityComponent
     {

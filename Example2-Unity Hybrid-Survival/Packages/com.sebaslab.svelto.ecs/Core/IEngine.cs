@@ -74,7 +74,7 @@ namespace Svelto.ECS
 
     public interface IReactOnAddEx<T> : IReactOnAddEx where T : struct, _IInternalEntityComponent
     {
-        void Add((uint start, uint end) rangeOfEntities, in EntityCollection<T> collection,
+        void Add((uint start, uint end) rangeOfEntities, in EntityCollection<T> entities,
             ExclusiveGroupStruct groupID);
     }
 
@@ -94,7 +94,7 @@ namespace Svelto.ECS
 
     public interface IReactOnRemoveEx<T> : IReactOnRemoveEx where T : struct, _IInternalEntityComponent
     {
-        void Remove((uint start, uint end) rangeOfEntities, in EntityCollection<T> collection,
+        void Remove((uint start, uint end) rangeOfEntities, in EntityCollection<T> entities,
             ExclusiveGroupStruct groupID);
     }
 
@@ -129,7 +129,7 @@ namespace Svelto.ECS
     /// <typeparam name="T"></typeparam>
     public interface IReactOnSwapEx<T> : IReactOnSwapEx where T : struct, _IInternalEntityComponent
     {
-        void MovedTo((uint start, uint end) rangeOfEntities, in EntityCollection<T> collection,
+        void MovedTo((uint start, uint end) rangeOfEntities, in EntityCollection<T> entities,
             ExclusiveGroupStruct fromGroup, ExclusiveGroupStruct toGroup);
     }
 

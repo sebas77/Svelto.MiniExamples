@@ -104,6 +104,9 @@ namespace Svelto.ECS
             return ref entitiesDb.QueryEntity<T>(new EGID(id, group));
         }
 
+        /// <summary>
+        /// Expects that only one entity of type T exists in the group 
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ref T QueryUniqueEntity<T>
             (this EntitiesDB entitiesDb, ExclusiveGroupStruct group) where T : unmanaged, IEntityComponent

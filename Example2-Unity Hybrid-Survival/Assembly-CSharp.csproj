@@ -898,10 +898,6 @@
       <Project>{4acf9cc6-6765-a5db-89c1-c202f09fdf16}</Project>
       <Name>UnityOOPAbstractionLayer</Name>
     </ProjectReference>
-    <ProjectReference Include="AudioLayer.csproj">
-      <Project>{b0248dd3-7f6e-ab2b-974b-6eb71fa3bce7}</Project>
-      <Name>AudioLayer</Name>
-    </ProjectReference>
     <ProjectReference Include="CameraLayer.csproj">
       <Project>{244bd38c-fe73-9b87-5070-1d7b3f94730c}</Project>
       <Name>CameraLayer</Name>
@@ -941,10 +937,6 @@
     <ProjectReference Include="Unity.SysrootPackage.Editor.csproj">
       <Project>{d9a7d8a0-8f9e-1bcb-7579-d17993648fbc}</Project>
       <Name>Unity.SysrootPackage.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="AnimationLayer.csproj">
-      <Project>{59e9f197-bda3-ff91-2f6b-e150b462fed8}</Project>
-      <Name>AnimationLayer</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

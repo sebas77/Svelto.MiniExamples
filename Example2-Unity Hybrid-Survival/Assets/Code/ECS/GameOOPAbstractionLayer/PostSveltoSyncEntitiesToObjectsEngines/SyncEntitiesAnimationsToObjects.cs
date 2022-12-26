@@ -1,6 +1,4 @@
-﻿using Svelto.DataStructures;
-using Svelto.ECS.Example.Survive.Player;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Svelto.ECS.Example.Survive.OOPLayer
 {
@@ -23,13 +21,17 @@ namespace Svelto.ECS.Example.Survive.OOPLayer
             {
                 for (int i = 0; i < count; i++)
                 {
-                    var go = _manager[entity[i].resourceIndex];
-
-                    //could probably do with a check if the state actually changed
-                    var animator = go.GetComponent<Animator>();
-
                     ref var animationState = ref animations[i].animationState;
-                    animator.SetBool(animationState.animationID, animationState.state);
+
+                    if (animationState.animationID != 0)
+                    {
+                        var go = _manager[entity[i].resourceIndex];
+
+                        //could probably do with a check if the state actually changed
+                        var animator = go.GetComponent<Animator>();
+
+                        animator.SetBool(animationState.animationID, animationState.state);
+                    }
                 }
             }
         }

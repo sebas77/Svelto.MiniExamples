@@ -5,6 +5,7 @@ using Svelto.ECS.Example.Survive.Damage;
 using Svelto.ECS.Example.Survive.OOPLayer;
 using Svelto.ECS.Example.Survive.Transformable;
 using UnityEngine;
+using AudioType = Svelto.ECS.Example.Survive.Damage.AudioType;
 
 namespace Svelto.ECS.Example.Survive.Enemies
 {
@@ -84,9 +85,10 @@ namespace Svelto.ECS.Example.Survive.Enemies
 
         IEnumerator PlayDeathSequence(EGID egid)
         {
-            var enemyView = entitiesDB.QueryEntity<EnemyEntityViewComponent>(egid);
-            enemyView.animationComponent.playAnimation = "Dead";
-
+            entitiesDB.QueryEntity<AnimationComponent>(egid).animationState = new AnimationState((int)EnemyAnimations.Die);
+            
+            entitiesDB.QueryEntity<DamageSoundComponent>(egid).playOneShot = (int)AudioType.death;
+            
             //Any build/swap/remove do not happen immediately, but at specific sync points
             //swapping group because we don't want any engine to pick up this entity while it's animating for death
             _entityFunctions.SwapEntityGroup<EnemyEntityDescriptor>(egid, DeadEnemiesGroup.BuildGroup);

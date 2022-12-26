@@ -48,17 +48,15 @@
      <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\DamageContextLayer.cs" />
      <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\Entities\DamageableEntityDescriptor.cs" />
      <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\Engines\DispatchKilledEntitiesEngine.cs" />
-     <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\Entities\DamageSoundEntityViewComponent.cs" />
      <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\Entities\ScoreValueEntityComponent.cs" />
      <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\Entities\DeathComponent.cs" />
      <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\Entities\HealthComponent.cs" />
      <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\Groups.cs" />
-     <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\Engines\DamageSoundEngine.cs" />
      <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\Entities\DamageInfo.cs" />
      <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\Entities\DamageableComponent.cs" />
      <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\Engines\ApplyDamageToDamageableEntitiesEngine.cs" />
-     <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\Entities\DamageSoundEntityComponent.cs" />
      <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\Engines\DamageUnsortedEngines.cs" />
+     <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\AudioType.cs" />
      <None Include="Assets\Code\ECS\DamageableEntitiesLayer\DamageableEntityLayer.asmdef" />
      <Folder Include="Assets\Code\ECS\DamageableEntitiesLayer\Engines" />
      <Folder Include="Assets\Code\ECS\DamageableEntitiesLayer" />
@@ -712,9 +710,9 @@
       <Project>{53ca5d34-0f9e-ae64-6d32-8d74a6f2e9d4}</Project>
       <Name>Svelto.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="AudioLayer.csproj">
-      <Project>{b0248dd3-7f6e-ab2b-974b-6eb71fa3bce7}</Project>
-      <Name>AudioLayer</Name>
+    <ProjectReference Include="UnityOOPAbstractionLayer.csproj">
+      <Project>{4acf9cc6-6765-a5db-89c1-c202f09fdf16}</Project>
+      <Name>UnityOOPAbstractionLayer</Name>
     </ProjectReference>
     <ProjectReference Include="UnityEditor.UI.csproj">
       <Project>{071fa4f6-95c0-6054-c479-b9199d4dc847}</Project>
