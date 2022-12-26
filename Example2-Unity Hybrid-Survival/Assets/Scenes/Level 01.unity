@@ -1027,7 +1027,7 @@ GameObject:
   m_Component:
   - component: {fileID: 387010665}
   - component: {fileID: 387010666}
-  m_Layer: 8
+  m_Layer: 9
   m_Name: LevelExtent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4941,7 +4941,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2046443845}
   - component: {fileID: 2046443846}
-  m_Layer: 8
+  m_Layer: 9
   m_Name: LevelExtent
   m_TagString: Untagged
   m_Icon: {fileID: 0}

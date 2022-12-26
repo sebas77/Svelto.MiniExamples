@@ -4,6 +4,7 @@ using Svelto.DataStructures.Experimental;
 using Svelto.ECS.Example.Survive.Damage;
 using Svelto.ECS.Example.Survive.Enemies;
 using Svelto.ECS.Example.Survive.OOPLayer;
+using Svelto.ECS.Example.Survive.Transformable;
 using Svelto.ECS.Hybrid;
 using UnityEngine;
 
@@ -22,7 +23,7 @@ namespace Svelto.ECS.Example.Survive
             await _gameObjectResourceManager.Preallocate(enemySpawnData.enemyPrefab, (int)enemySpawnData.targetType, numberOfEnemiesToSpawn);
         }
 
-        public async Task Fetch(EnemySpawnData enemySpawnData, EnemyAttackComponent EnemyAttackComponent)
+        public async Task Fetch(EnemySpawnData enemySpawnData, JSonEnemyAttackData enemyAttackComponent)
         {
             void InitEntity(List<IImplementor> list, EntityReferenceHolder entityReferenceHolder, GameObject enemyGo, ValueIndex valueIndex)
             {
@@ -30,13 +31,18 @@ namespace Svelto.ECS.Example.Survive
                 //to index the entity in the Svelto database. However I want in this demo how to not rely on it.
                 EntityInitializer initializer =
                         _entityFactory.BuildEntity<EnemyEntityDescriptor>(
-                            new EGID(_enemiesCreated++, AliveEnemies.BuildGroup)
-                          , list);
+                            new EGID(_enemiesCreated++, EnemiesGroup.BuildGroup), list);
 
                 entityReferenceHolder.reference = initializer.reference.ToLong();
                 //Initialize the pure EntityStructs. This should be the preferred pattern, there is much less boiler plate
                 //too
-                initializer.Init(EnemyAttackComponent);
+                //In this example every kind of enemy generates the same list of components
+                //therefore I always use the same EntityDescriptor.
+                initializer.Init(new EnemyAttackComponent
+                {
+                        attackDamage = enemyAttackComponent.enemyAttackData.attackDamage,
+                        timeBetweenAttack = enemyAttackComponent.enemyAttackData.timeBetweenAttacks
+                });
                 initializer.Init(
                     new HealthComponent
                     {
@@ -52,19 +58,22 @@ namespace Svelto.ECS.Example.Survive
                     {
                             enemyType = enemySpawnData.targetType
                     });
-
-                var transform = enemyGo.transform;
-                var spawnPoint = enemySpawnData.spawnPoint;
-
-                enemyGo.SetActive(true);
-                transform.position = spawnPoint;
-
                 initializer.Init(
                     new GameObjectEntityComponent
                     {
                             resourceIndex = valueIndex,
                             layer = GAME_LAYERS.ENEMY_LAYER 
                     });
+                initializer.Init(
+                    new PositionComponent()
+                    {
+                            position = enemySpawnData.spawnPoint
+                    });
+
+                enemyGo.SetActive(true);
+                var implt = enemyGo.GetComponent<EnemyMovementImplementor>();
+                implt.navMeshEnabled = true;
+                implt.setCapsuleAsTrigger = false;
             }
 
             var build = await _gameObjectResourceManager.Reuse(enemySpawnData.enemyPrefab, (int)enemySpawnData.targetType);

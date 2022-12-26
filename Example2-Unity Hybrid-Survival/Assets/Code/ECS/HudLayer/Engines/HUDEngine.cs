@@ -63,7 +63,7 @@ namespace Svelto.ECS.Example.Survive.HUD
                 while (_consumerHealth.TryDequeue(out var health, out var egid))
                 {
                     //this is a design mistake as this engine shouldn't be aware of the Player
-                    if (Svelto.ECS.Example.Survive.Player.Player.Includes(egid.groupID))
+                    if (Svelto.ECS.Example.Survive.Player.PlayerGroup.Includes(egid.groupID))
                     {
                         //An engine should never assume how many entities will be used, so we iterate over all the
                         //HUDEntityViews even if we know there is just one

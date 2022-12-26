@@ -31,7 +31,7 @@ namespace Svelto.ECS.Example.Survive.Player
                 //Exploit everywhere the power of deconstruct to tuples. Every query entities can be deconstruct
                 //to what you are going to use directly
                 foreach (var ((playersInput, rbs, count), _) in entitiesDB
-                            .QueryEntities<PlayerInputDataComponent, RigidBodyComponent>(Player.Groups))
+                            .QueryEntities<PlayerInputDataComponent, RigidBodyComponent>(PlayerGroup.Groups))
                 {
                     for (int i = 0; i < count; i++)
                     {
@@ -41,7 +41,7 @@ namespace Svelto.ECS.Example.Survive.Player
                 
                 foreach (var ((rotations, cameraReference, pos, count), _) in entitiesDB
                             .QueryEntities<RotationComponent, CameraReferenceComponent,
-                                 PositionComponent>(Player.Groups))
+                                 PositionComponent>(PlayerGroup.Groups))
                 {
                     for (int i = 0; i < count; i++)
                     {

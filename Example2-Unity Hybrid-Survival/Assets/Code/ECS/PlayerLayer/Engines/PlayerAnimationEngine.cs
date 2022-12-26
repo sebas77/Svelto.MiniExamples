@@ -1,9 +1,8 @@
-using Svelto.ECS.Example.Survive.OOPLayer;
 using Svelto.ECS.Example.Survive.Transformable;
 
 namespace Svelto.ECS.Example.Survive.Player
 {
-    public class PlayerAnimationEngine: IQueryingEntitiesEngine, IStepEngine, IReactOnRemoveEx<GameObjectEntityComponent>
+    public class PlayerAnimationEngine: IQueryingEntitiesEngine, IStepEngine, IReactOnRemoveEx<PlayerInputDataComponent>
     {
         public EntitiesDB entitiesDB { get; set; }
 
@@ -18,7 +17,7 @@ namespace Svelto.ECS.Example.Survive.Player
             //then go over asd and ask Rider or VS to deconstruct the variable,  now it should look like
             //foreach (var ((buffer1, buffer2, count), exclusiveGroupStruct) in entitiesDB.QueryEntities<PlayerInputDataComponent, PlayerEntityComponent>(Player.Groups))
             foreach (var ((animation, playersInput, count), _) in entitiesDB
-               .QueryEntities<AnimationComponent, PlayerInputDataComponent>(Player.Groups))
+               .QueryEntities<AnimationComponent, PlayerInputDataComponent>(PlayerGroup.Groups))
             {
                 for (var i = 0; i < count; i++)
                 {
@@ -43,7 +42,7 @@ namespace Svelto.ECS.Example.Survive.Player
         /// <param name="collection"></param>
         /// <param name="groupID"></param>
         public void Remove((uint start, uint end) rangeOfEntities,
-            in EntityCollection<GameObjectEntityComponent> collection, ExclusiveGroupStruct groupID)
+            in EntityCollection<PlayerInputDataComponent> collection, ExclusiveGroupStruct groupID)
         {
             var (animations, rbs, _) = entitiesDB.QueryEntities<AnimationComponent, RigidBodyComponent>(groupID);
             

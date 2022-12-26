@@ -89,10 +89,10 @@ namespace Svelto.ECS.Example.Survive
 //the SimpleEntitiesSubmissionScheduler is the scheduler that is used by the EnginesRoot to know
 //when to submit the entities. Custom ones can be created for special cases. This is the simplest default and it must
 //be ticked explicitly.
-            var unityEntitySubmissionScheduler = new SimpleEntitiesSubmissionScheduler();
+            var entitySubmissionScheduler = new SimpleEntitiesSubmissionScheduler();
 //The Engines Root is the core of Svelto.ECS. You shouldn't inject the EngineRoot,
 //therefore the composition root class must hold a reference or it will be garbage collected.
-            _enginesRoot = new EnginesRoot(unityEntitySubmissionScheduler);
+            _enginesRoot = new EnginesRoot(entitySubmissionScheduler);
 //The EntityFactory can be injected inside factories (or engine acting as factories) to build new entities
 //dynamically
             var entityFactory = _enginesRoot.GenerateEntityFactory();
@@ -124,12 +124,13 @@ namespace Svelto.ECS.Example.Survive
                 _enginesRoot);
             EnemyLayerContext.EnemyLayerSetup(
                 entityFactory, entityStreamConsumerFactory, time, entityFunctions,
-                unorderedEngines, orderedEngines, new WaitForSubmissionEnumerator(unityEntitySubmissionScheduler),
+                unorderedEngines, orderedEngines, new WaitForSubmissionEnumerator(entitySubmissionScheduler),
                 _enginesRoot, gameObjectResourceManager);
             HudLayerContext.Setup(entityStreamConsumerFactory, unorderedEngines, orderedEngines, _enginesRoot);
 
 //group engines for order of execution. Ordering and Ticking is 100% user responsibility. This is just one of the possible way to achieve the result desired
             orderedEngines.Add(new SurvivalUnsortedEnginesGroup(unorderedEngines));
+            orderedEngines.Add(new TickEngine(entitySubmissionScheduler));
             var sortedEnginesGroup = new SortedEnginesGroup(orderedEngines);
 
 //PlayerSpawner is not an engine, it could have been, but since it doesn't have an update, it's better to be a factory
@@ -137,7 +138,7 @@ namespace Svelto.ECS.Example.Survive
 
             BuildGUIEntitiesFromScene(contextHolder, entityFactory);
 
-            StartMainLoop(sortedEnginesGroup, unityEntitySubmissionScheduler, playerSpanwer);
+            StartMainLoop(sortedEnginesGroup, entitySubmissionScheduler, playerSpanwer);
 
 //Attach Svelto Inspector: for more info https://github.com/sebas77/svelto-ecs-inspector-unity
 #if DEBUG
@@ -212,12 +213,7 @@ namespace Svelto.ECS.Example.Survive
             {
                 if (_enginesRoot.IsValid())
                 {
-                    //The user decides when to submit the last built/removed/swapped entities. In this case we use the default behaviour to submit them every frame            
-                    unityEntitySubmissionScheduler.SubmitEntities();
-
                     enginesToTick.Step();
-                    
-                   // Debug.Break();
                 }
             }
         }

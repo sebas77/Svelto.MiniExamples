@@ -18,7 +18,7 @@ namespace Svelto.ECS.Example.Survive.Enemies
                     //If there were more than one player, this must be smarter, for example choose the target
                     //according the distance
                     foreach (var ((enemies, enemiesCount), _) in entitiesDB.QueryEntities<EnemyEntityViewComponent>(
-                        AliveEnemies.Groups))
+                        EnemiesGroup.Groups))
                     {
                         //using always the first target because in this case I know there can be only one, but if 
                         //there were more, I could use different strategies, like choose the closest. This is 

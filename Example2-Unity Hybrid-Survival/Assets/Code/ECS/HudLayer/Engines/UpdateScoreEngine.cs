@@ -36,7 +36,7 @@ namespace Svelto.ECS.Example.Survive.HUD
                     //of Death either. The scoring system and what cause the score to change must be decoupled
                     //on the other hand, it would be also wrong to let the death/enemy engines be aware of what
                     //event causes a score change.
-                    if (egid.groupID.FoundIn(AliveEnemies.Groups))
+                    if (egid.groupID.FoundIn(EnemiesGroup.Groups))
                     {
                         var playerTargets = entitiesDB.QueryEntitiesAndIndex<ScoreValueComponent>(egid, out var index);
 

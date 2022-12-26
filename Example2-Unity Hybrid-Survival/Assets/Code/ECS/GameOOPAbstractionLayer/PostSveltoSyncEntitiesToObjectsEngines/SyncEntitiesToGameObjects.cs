@@ -15,14 +15,15 @@
             //only enemies
             var groups = entitiesDB.FindGroups<GameObjectEntityComponent>();
             
-            foreach (var ((gos, count), _) in entitiesDB
+            foreach (var ((gos, count), currentGroup) in entitiesDB
                             .QueryEntities<GameObjectEntityComponent>(groups))
             {
-                for (int i = 0; i < count; i++)
+                for (int i = count - 1; i >= 0; i--)
                 {
                     var go = _manager[gos[i].resourceIndex];
 
-                    go.layer = gos[i].layer;
+                    if (go.layer != gos[i].layer)
+                        go.layer = gos[i].layer;
                 }
             }
         }

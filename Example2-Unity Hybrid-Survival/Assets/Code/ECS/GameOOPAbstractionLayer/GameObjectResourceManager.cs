@@ -43,7 +43,9 @@ namespace Svelto.ECS.Example.Survive.OOPLayer
         
         public void Recycle(ValueIndex indextoRecycle, int pool)
         {
-            _resourcePool.Recycle(this[indextoRecycle], pool);
+            GameObject gameObject = this[indextoRecycle];
+            gameObject.SetActive(false);
+            _resourcePool.Recycle(gameObject, pool);
         }
         
         /// <summary>

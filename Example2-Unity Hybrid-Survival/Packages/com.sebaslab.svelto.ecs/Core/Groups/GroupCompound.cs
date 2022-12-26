@@ -32,9 +32,7 @@ namespace Svelto.ECS
             if (Interlocked.CompareExchange(ref isInitializing, 1, 0) == 0 &&
                 GroupCompoundInitializer.skipStaticCompoundConstructorsWith4Tags.Value == false)
             {
-                var
-                    group =
-                        new ExclusiveGroup(); //todo: it's a bit of a waste to create a class here even if this is a static constructor
+                var group = new ExclusiveGroup(GroupTag<G1>.bitmask | GroupTag<G2>.bitmask | GroupTag<G3>.bitmask | GroupTag<G4>.bitmask);
 
                 _Groups = new FasterList<ExclusiveGroupStruct>(1);
                 _Groups.Add(group);
@@ -168,9 +166,7 @@ namespace Svelto.ECS
             if (Interlocked.CompareExchange(ref isInitializing, 1, 0) == 0 &&
                 GroupCompoundInitializer.skipStaticCompoundConstructorsWith3Tags.Value == false)
             {
-                var
-                    group =
-                        new ExclusiveGroup(); //todo: it's a bit of a waste to create a class here even if this is a static constructor
+                var group = new ExclusiveGroup(GroupTag<G1>.bitmask | GroupTag<G2>.bitmask | GroupTag<G3>.bitmask);
 
                 _Groups = new FasterList<ExclusiveGroupStruct>(1);
                 _Groups.Add(group);
@@ -253,9 +249,7 @@ namespace Svelto.ECS
             if (Interlocked.CompareExchange(ref isInitializing, 1, 0) == 0 &&
                 GroupCompoundInitializer.skipStaticCompoundConstructorsWith2Tags.Value == false)
             {
-                var
-                    group =
-                        new ExclusiveGroup(); //todo: it's a bit of a waste to create a class here even if this is a static constructor
+                var group = new ExclusiveGroup(GroupTag<G1>.bitmask | GroupTag<G2>.bitmask); 
 
                 _Groups = new FasterList<ExclusiveGroupStruct>(1);
                 _Groups.Add(group);
@@ -270,9 +264,10 @@ namespace Svelto.ECS
                 _GroupsHashSet = new HashSet<ExclusiveGroupStruct>(_Groups.ToArrayFast(out _));
 
                 GroupCompoundInitializer.skipStaticCompoundConstructorsWith2Tags.Value = true;
-                GroupCompound<G2, G1>._Groups                                          = _Groups;
+                GroupCompound<G2, G1>._Groups = _Groups;
                 GroupCompoundInitializer.skipStaticCompoundConstructorsWith2Tags.Value = false;
-                GroupCompound<G2, G1>._GroupsHashSet                                   = _GroupsHashSet;
+                
+                GroupCompound<G2, G1>._GroupsHashSet = _GroupsHashSet;
 
                 //every abstract group preemptively adds this group, it may or may not be empty in future
                 GroupTag<G1>.Add(group);
@@ -323,7 +318,17 @@ namespace Svelto.ECS
         {
             if (Interlocked.CompareExchange(ref isInitializing, 1, 0) == 0)
             {
-                var group = new ExclusiveGroup();
+                //Allow to call GroupTag static constructors like
+//                public class Dead: GroupTag<Dead>
+//                {
+//                    static Dead()
+//                    {
+//                        bitmask = ExclusiveGroupBitmask.DISABLED_BIT;
+//                    }
+//                };
+                System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(T).TypeHandle);
+                
+                var group = new ExclusiveGroup(bitmask);
                 _Groups.Add(group);
 
 #if DEBUG && !PROFILE_SVELTO
@@ -375,5 +380,6 @@ namespace Svelto.ECS
 
         //we are changing this with Interlocked, so it cannot be readonly
         static int isInitializing;
+        protected internal static ExclusiveGroupBitmask bitmask;
     }
 }

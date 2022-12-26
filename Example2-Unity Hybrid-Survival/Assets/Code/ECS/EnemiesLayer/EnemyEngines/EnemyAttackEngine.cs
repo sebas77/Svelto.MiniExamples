@@ -72,7 +72,7 @@ namespace Svelto.ECS.Example.Survive.Enemies
         public void Step()
         {
             foreach (var ((enemiesAttackData, enemiesCount), _) in entitiesDB.QueryEntities<EnemyAttackComponent>(
-                AliveEnemies.Groups))
+                EnemiesGroup.Groups))
             {
                 for (var enemyIndex = 0; enemyIndex < enemiesCount; enemyIndex++)
                 {

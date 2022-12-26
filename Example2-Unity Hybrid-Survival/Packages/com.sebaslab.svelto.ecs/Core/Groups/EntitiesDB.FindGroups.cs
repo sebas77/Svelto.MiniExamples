@@ -7,7 +7,7 @@ namespace Svelto.ECS
 {
     public partial class EntitiesDB
     {
-        public LocalFasterReadOnlyList<ExclusiveGroupStruct> FindGroups<T1>() where T1 : _IInternalEntityComponent
+        public LocalFasterReadOnlyList<ExclusiveGroupStruct> FindGroups<T1>(bool ignoreDisabledBit = false) where T1 : _IInternalEntityComponent
         {
             FasterList<ExclusiveGroupStruct> result = localgroups.Value.groupArray;
             result.Clear();
@@ -22,16 +22,15 @@ namespace Svelto.ECS
             for (int j = 0; j < result1Count; j++)
             {
                 var group = fasterDictionaryNodes1[j].key;
-                if (group.IsEnabled())
-                {
-                    result.Add(group);
-                }
+                if (ignoreDisabledBit == false && group.IsEnabled() == false) continue;
+                
+                result.Add(group);
             }
 
             return result;
         }
 
-        public LocalFasterReadOnlyList<ExclusiveGroupStruct> FindGroups<T1, T2>()
+        public LocalFasterReadOnlyList<ExclusiveGroupStruct> FindGroups<T1, T2>(bool ignoreDisabledBit = false)
             where T1 : _IInternalEntityComponent where T2 : _IInternalEntityComponent
         {
             FasterList<ExclusiveGroupStruct> result = localgroups.Value.groupArray;
@@ -53,7 +52,7 @@ namespace Svelto.ECS
             for (int i = 0; i < result1Count; i++)
             {
                 var groupID = fasterDictionaryNodes1[i].key;
-                if (!groupID.IsEnabled()) continue;
+                if (ignoreDisabledBit == false && groupID.IsEnabled() == false) continue;
 
                 for (int j = 0; j < result2Count; j++)
                 {
@@ -82,7 +81,7 @@ namespace Svelto.ECS
         /// <typeparam name="T2"></typeparam>
         /// <typeparam name="T3"></typeparam>
         /// <returns></returns>
-        public LocalFasterReadOnlyList<ExclusiveGroupStruct> FindGroups<T1, T2, T3>()
+        public LocalFasterReadOnlyList<ExclusiveGroupStruct> FindGroups<T1, T2, T3>(bool ignoreDisabledBit = false)
             where T1 : _IInternalEntityComponent where T2 : _IInternalEntityComponent where T3 : _IInternalEntityComponent
         {
             FasterList<FasterDictionary<ExclusiveGroupStruct, ITypeSafeDictionary>> localArray =
@@ -114,10 +113,9 @@ namespace Svelto.ECS
 
             foreach (var value in localArray[startIndex])
             {
-                if (value.key.IsEnabled())
-                {
-                    localGroups.Add(value.key, value.key);
-                }
+                if (ignoreDisabledBit == false && value.key.IsEnabled() == false) continue;
+                
+                localGroups.Add(value.key, value.key);
             }
 
             var groupData = localArray[++startIndex % 3];
@@ -132,7 +130,7 @@ namespace Svelto.ECS
                                                                    , (uint) localGroups.count);
         }
 
-        public LocalFasterReadOnlyList<ExclusiveGroupStruct> FindGroups<T1, T2, T3, T4>()
+        public LocalFasterReadOnlyList<ExclusiveGroupStruct> FindGroups<T1, T2, T3, T4>(bool ignoreDisabledBit = false)
             where T1 : _IInternalEntityComponent
             where T2 : _IInternalEntityComponent
             where T3 : _IInternalEntityComponent
@@ -173,10 +171,8 @@ namespace Svelto.ECS
 
             foreach (var value in localArray[startIndex])
             {
-                if (value.key.IsEnabled())
-                {
-                    localGroups.Add(value.key, value.key);
-                }
+                if (ignoreDisabledBit == false && value.key.IsEnabled() == false) continue;
+                localGroups.Add(value.key, value.key);
             }
 
             var groupData = localArray[++startIndex & 3]; //&3 == %4

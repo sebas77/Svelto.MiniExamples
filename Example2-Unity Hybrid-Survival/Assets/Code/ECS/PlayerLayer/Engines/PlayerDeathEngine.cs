@@ -22,7 +22,7 @@ namespace Svelto.ECS.Example.Survive.Player
         {
             while (_consumer.TryDequeue(out _, out EGID id))
             {
-                if (id.groupID.FoundIn(Player.Groups))
+                if (id.groupID.FoundIn(PlayerGroup.Groups))
                 {
                     //remove the player entity so the player engines will stop processing it 
                     _DBFunctions.RemoveEntity<PlayerEntityDescriptor>(id);

@@ -8,7 +8,7 @@ namespace Svelto.ECS.Example.Survive.Enemies
     public class EnemySpawnerEngine: IQueryingEntitiesEngine, IReactOnSwap<EnemyEntityViewComponent>, IStepEngine
     {
         const int SECONDS_BETWEEN_SPAWNS = 1;
-        const int NUMBER_OF_ENEMIES_TO_SPAWN = 1;
+        const int NUMBER_OF_ENEMIES_TO_SPAWN = 12;
 
         public EnemySpawnerEngine(EnemyFactory enemyFactory)
         {
@@ -24,7 +24,7 @@ namespace Svelto.ECS.Example.Survive.Enemies
         public void MovedTo(ref EnemyEntityViewComponent entityComponent, ExclusiveGroupStruct previousGroup, EGID egid)
         {
             //is the enemy dead?
-            if (egid.groupID.FoundIn(DeadEnemies.Groups))
+            if (egid.groupID.FoundIn(DeadEnemiesGroup.Groups))
             {
                 _numberOfEnemyToSpawn++;
             }
@@ -41,21 +41,13 @@ namespace Svelto.ECS.Example.Survive.Enemies
             while (true)
             {
                 //cycle around the enemies to spawn and check if it can be spawned
-                for (var i = enemiestoSpawn.Length - 1; i >= 0 && _numberOfEnemyToSpawn > 0; --i)
+                for (var i = spawningTimes.Length - 1; i >= 0 && _numberOfEnemyToSpawn > 0; --i)
                 {
                     if (spawningTimes[i] <= 0.0f)
                     {
                         var spawnData = enemiestoSpawn[i];
 
-                        //In this example every kind of enemy generates the same list of components
-                        //therefore I always use the same EntityDescriptor.
-                        var EnemyAttackComponent = new EnemyAttackComponent
-                        {
-                                attackDamage = enemyAttackData[i].enemyAttackData.attackDamage,
-                                timeBetweenAttack = enemyAttackData[i].enemyAttackData.timeBetweenAttacks
-                        };
-
-                        var task = _enemyFactory.Fetch(spawnData.enemySpawnData, EnemyAttackComponent);
+                        var task = _enemyFactory.Fetch(spawnData.enemySpawnData, enemyAttackData[i]);
                         while (task.GetAwaiter().IsCompleted == false)
                             yield return null;
 
@@ -87,7 +79,7 @@ namespace Svelto.ECS.Example.Survive.Enemies
                 var spawningTimes = new float[enemiestoSpawn.Length];
 
                 //prebuild gameobjects to avoid spikes. For each enemy type
-                for (var i = enemiestoSpawn.Length - 1; i >= 0; --i)
+                for (var i = spawningTimes.Length - 1; i >= 0; --i)
                 {
                     var spawnData = enemiestoSpawn[i];
 

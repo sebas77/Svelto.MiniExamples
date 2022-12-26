@@ -1,9 +1,11 @@
+using System;
 using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.ECS.Example.Survive.Damage;
 using Svelto.ECS.Example.Survive.OOPLayer;
 using Svelto.ECS.Example.Survive.Player;
 using Svelto.ECS.Example.Survive.Player.Gun;
+using Svelto.ECS.Schedulers;
 
 namespace Svelto.ECS.Example.Survive
 {
@@ -24,13 +26,15 @@ namespace Svelto.ECS.Example.Survive
                 nameof(EnemyEnginesNames.EnemyDeathEngine),
                 nameof(PlayerEnginesNames.PlayerDeathEngine),
                 nameof(HUDEnginesNames.UpdateScoreEngine),
+                nameof(TickEngineNames.SubmissionEngine),
                 nameof(GameObjectsEnginesNames.PostSveltoUpdateSyncEngines),
         };
     }
 
     public enum TickEngineNames
     {
-        UnsortedEngines
+        UnsortedEngines,
+        SubmissionEngine
     }
 
     /// <summary>
@@ -48,5 +52,34 @@ namespace Svelto.ECS.Example.Survive
     class SurvivalUnsortedEnginesGroup: UnsortedEnginesGroup<IStepEngine>
     {
         public SurvivalUnsortedEnginesGroup(FasterList<IStepEngine> engines): base(engines) { }
+    }
+    
+    [Sequenced(nameof(TickEngineNames.SubmissionEngine))]
+    //When SyncEngines are used, it may be tricky to sync the values properly. The expectation for each frame is:
+    //entities are sync with objects value
+    //svelto engines run
+    //objects are sync with entities value
+    //unity stuff run
+    //however for this to be correct, the complete sequence must be
+    //entities are sync with objects value
+    //svelto engines run
+    //entities are submitted
+    //objects are sync with entities value
+    //unity stuff run
+    class TickEngine: IStepEngine
+    {
+        public TickEngine(SimpleEntitiesSubmissionScheduler entitySubmissionScheduler)
+        {
+            _scheduler = entitySubmissionScheduler;
+        }
+
+        public void Step()
+        {
+            _scheduler.SubmitEntities();
+        }
+
+        public string name => nameof(TickEngine);
+        
+        readonly SimpleEntitiesSubmissionScheduler _scheduler;
     }
 }

@@ -16,8 +16,7 @@ namespace Svelto.ECS.Example.Survive.OOPLayer
         public EntitiesDB entitiesDB { get; set; }
         public void Step()
         {
-            LocalFasterReadOnlyList<ExclusiveGroupStruct> groups;
-            groups = entitiesDB.FindGroups<GameObjectEntityComponent, AnimationComponent>();
+            var groups = entitiesDB.FindGroups<GameObjectEntityComponent, AnimationComponent>();
             //animation sync
             foreach (var ((entity, animations, count), _) in entitiesDB
                             .QueryEntities<GameObjectEntityComponent, AnimationComponent>(groups))
@@ -26,8 +25,8 @@ namespace Svelto.ECS.Example.Survive.OOPLayer
                 {
                     var go = _manager[entity[i].resourceIndex];
 
-                    var animator =
-                            go.GetComponent<Animator>(); //could probably do with a check if the state actually changed
+                    //could probably do with a check if the state actually changed
+                    var animator = go.GetComponent<Animator>();
 
                     ref var animationState = ref animations[i].animationState;
                     animator.SetBool(animationState.animationID, animationState.state);

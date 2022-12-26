@@ -23,7 +23,7 @@ namespace Svelto.ECS.Example.Survive.Player
                 //although this game has just one player, iterating like this is a svelto pattern that works on
                 //0, 1 or N entities
                 foreach (var ((playerComponents, _), _) in
-                         entitiesDB.QueryEntities<PlayerInputDataComponent>(Player.Groups))
+                         entitiesDB.QueryEntities<PlayerInputDataComponent>(PlayerGroup.Groups))
                 {
                     //of course in this example we can assume we have just one player
                     {
@@ -34,8 +34,9 @@ namespace Svelto.ECS.Example.Survive.Player
                     }
                 }
 
-                var (gunComponents, _) = entitiesDB.QueryEntities<GunComponent>(PlayerGun.Gun.Group);
-                gunComponents[0].fired = Input.GetButton("Fire1");
+                var (gunComponents, count) = entitiesDB.QueryEntities<GunComponent>(PlayerGun.Gun.Group);
+                for (int i = count - 1; i >= 0; i--)
+                    gunComponents[i].fired = Input.GetButton("Fire1");
 
                 //is it correct that a player engine iterates cameras? The answer is no: in a pure sense this
                 //engine has too many responsibilities. A camera engine should do this.

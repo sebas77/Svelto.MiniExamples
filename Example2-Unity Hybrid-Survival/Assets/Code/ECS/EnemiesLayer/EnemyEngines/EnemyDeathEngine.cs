@@ -9,7 +9,8 @@ using UnityEngine;
 namespace Svelto.ECS.Example.Survive.Enemies
 {
     [Sequenced(nameof(EnemyEnginesNames.EnemyDeathEngine))]
-    public class EnemyDeathEngine: IQueryingEntitiesEngine, IStepEngine, IReactOnSwapEx<EnemyEntityViewComponent>
+    public class EnemyDeathEngine: IQueryingEntitiesEngine, IStepEngine, IReactOnSwapEx<EnemyEntityViewComponent>,
+            IReactOnRemoveEx<EnemyComponent>
     {
         public EnemyDeathEngine(IEntityFunctions entityFunctions, IEntityStreamConsumerFactory consumerFactory,
             ITime time, WaitForSubmissionEnumerator waitForSubmission, GameObjectResourceManager manager)
@@ -33,7 +34,7 @@ namespace Svelto.ECS.Example.Survive.Enemies
             {
                 //publisher/consumer pattern will be replaces with better patterns in future for these cases.
                 //The problem is obvious, DeathComponent is abstract and could have came from the player
-                if (AliveEnemies.Includes(enemyID.groupID))
+                if (EnemiesGroup.Includes(enemyID.groupID))
                     _animations.Add(PlayDeathSequence(enemyID));
             }
 
@@ -44,16 +45,30 @@ namespace Svelto.ECS.Example.Survive.Enemies
 
         public string name => nameof(EnemyDeathEngine);
 
+        public void Remove((uint start, uint end) rangeOfEntities, in EntityCollection<EnemyComponent> entities,
+            ExclusiveGroupStruct groupID)
+        {
+            if (DeadEnemiesGroup.Includes(groupID))
+            {
+                var (enemies, _) = entities;
+                var (gos, _) = entitiesDB.QueryEntities<GameObjectEntityComponent>(groupID);
+
+                for (int i = (int)(rangeOfEntities.end - 1); i >= (int)rangeOfEntities.start; i--)
+                {
+                    //recycle the gameobject
+                    _manager.Recycle(gos[i].resourceIndex, (int)enemies[i].enemyType);
+                }
+            }
+        }
+
         /// <summary>
         /// One of the available form of communication in Svelto.ECS: React On Swap allow to do what it says
         /// </summary>
-        /// <param name="enemyView"></param>
-        /// <param name="previousGroup"></param>
-        /// <param name="egid"></param>
-        public void MovedTo((uint start, uint end) rangeOfEntities, in EntityCollection<EnemyEntityViewComponent> entities,
+        public void MovedTo((uint start, uint end) rangeOfEntities,
+            in EntityCollection<EnemyEntityViewComponent> entities,
             ExclusiveGroupStruct fromGroup, ExclusiveGroupStruct toGroup)
         {
-            if (DeadEnemies.Includes(toGroup))
+            if (DeadEnemiesGroup.Includes(toGroup))
             {
                 var (enemies, _) = entities;
                 var (gos, _) = entitiesDB.QueryEntities<GameObjectEntityComponent>(toGroup);
@@ -70,34 +85,33 @@ namespace Svelto.ECS.Example.Survive.Enemies
         IEnumerator PlayDeathSequence(EGID egid)
         {
             var enemyView = entitiesDB.QueryEntity<EnemyEntityViewComponent>(egid);
-            var enemyPos = entitiesDB.QueryEntity<PositionComponent>(egid);
-
             enemyView.animationComponent.playAnimation = "Dead";
-
-            var goComponent = entitiesDB.QueryEntity<GameObjectEntityComponent>(egid);
 
             //Any build/swap/remove do not happen immediately, but at specific sync points
             //swapping group because we don't want any engine to pick up this entity while it's animating for death
-            _entityFunctions.SwapEntityGroup<EnemyEntityDescriptor>(egid, DeadEnemies.BuildGroup);
+            _entityFunctions.SwapEntityGroup<EnemyEntityDescriptor>(egid, DeadEnemiesGroup.BuildGroup);
 
             //wait for the swap to happen
             while (_waitForSubmission.MoveNext())
                 yield return null;
 
-            var wait = new WaitForSecondsEnumerator(2);
+            var wait = new WaitForSecondsEnumerator(1);
 
+            //new egid after the swap
+            var newEgid = new EGID(egid.entityID, DeadEnemiesGroup.BuildGroup);
+            
+            //sinking for 2 seconds
             while (wait.MoveNext())
             {
-                enemyPos.position += -Vector3.up * 1.2f * _time.deltaTime;
+                //I cannot assume that the database doesn't change while the enemy sinks, so I have to query every frame 
+                entitiesDB.QueryEntity<PositionComponent>(newEgid).position += -Vector3.up * 1.2f * _time.deltaTime;
 
                 yield return null;
             }
 
-            //new egid after the swap
-            var entityGid = new EGID(egid.entityID, DeadEnemies.BuildGroup);
-            var enemyType = entitiesDB.QueryEntity<EnemyComponent>(entityGid).enemyType;
-
-            _manager.Recycle(goComponent.resourceIndex, (int)enemyType);
+            //Note: possibly this should stay in the enemyFactory:
+            //is now possible to delete the entity from the database
+            _entityFunctions.RemoveEntity<EnemyEntityDescriptor>(newEgid);
         }
 
         readonly IEntityFunctions _entityFunctions;

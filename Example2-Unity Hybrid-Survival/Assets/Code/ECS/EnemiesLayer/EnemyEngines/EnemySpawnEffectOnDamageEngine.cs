@@ -24,7 +24,7 @@ namespace Svelto.ECS.Example.Survive.Enemies
 
         public void Ready() { }
 
-        IEnumerator SpawnEffectOnDamage()
+        IEnumerator SpawnEffectOnDamage() //todo 
         {
             void CheckDamageEnemy(EGID egid, DamageableComponent component)
             {
@@ -40,7 +40,7 @@ namespace Svelto.ECS.Example.Survive.Enemies
                 {
                     //publisher/consumer pattern will be replaces with better patterns in future for these cases.
                     //The problem is obvious, DeathComponent is abstract and could have came from the player
-                    if (AliveEnemies.Includes(egid.groupID))
+                    if (EnemiesGroup.Includes(egid.groupID))
                         CheckDamageEnemy(egid, component);
                 }
 

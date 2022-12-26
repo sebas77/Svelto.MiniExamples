@@ -3,7 +3,7 @@ using Svelto.ECS.Example.Survive.Enemies;
 
 namespace Svelto.ECS.Example.Survive.Player
 {
-    public class PlayerTag : GroupTag<PlayerTag> { };
+    public class Player : GroupTag<Player> { };
     
     //in this cased a GroupCompound is used to identify entities that are players and can be damaged
     //the DamageableTag is a shared adjective between entity descriptors and can be used to query all
@@ -13,5 +13,5 @@ namespace Svelto.ECS.Example.Survive.Player
     //The player is also an enemy target. The tag is provided by the EnemyLayer (thus more abstract than the player one)
     //however GroupCompound supports up to 4 tags only, so if they are not enough filters could be used
     //i.e.: the enemy layers could have worked just with filters and player added in the enemy target filter
-    public class Player : GroupCompound<PlayerTag, DamageableTag, EnemyTarget> { };
+    public class PlayerGroup : GroupCompound<Player, Damageable, EnemyTarget> { };
 }
