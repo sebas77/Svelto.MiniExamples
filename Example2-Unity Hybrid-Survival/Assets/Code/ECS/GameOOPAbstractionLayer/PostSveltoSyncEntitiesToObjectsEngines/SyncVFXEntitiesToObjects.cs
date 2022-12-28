@@ -28,7 +28,7 @@ namespace Svelto.ECS.Example.Survive.OOPLayer
                         var go = _manager[entity[i].resourceIndex];
 
                         //could probably do with a check if the state actually changed
-                        var vfx = go.GetComponent<EnemyVFXImplementor>();
+                        var vfx = go.GetComponent<EntityVFX>();
 
                         vfx.play(vfxEventReference.position);
 

@@ -143,7 +143,7 @@ namespace Svelto.ECS.Example.Survive
 
 //Attach Svelto Inspector: for more info https://github.com/sebas77/svelto-ecs-inspector-unity
 #if DEBUG
-            SveltoInspector.Attach(_enginesRoot);
+       //     SveltoInspector.Attach(_enginesRoot);
 #endif
         }
 

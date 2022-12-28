@@ -32,6 +32,8 @@ namespace Svelto.ECS.Example.Survive.OOPLayer
             enginesRoot.AddEngine(syncEngine);
             syncObjectsToEntitiesGroup.Add(syncEngine);
             
+            enginesRoot.AddEngine(new SyncCollisionsToEntities(gameObjectResourceManager)); //does not step
+            
             orderedEngines.Add(syncObjectsToEntitiesGroup);
             
             
@@ -61,6 +63,10 @@ namespace Svelto.ECS.Example.Survive.OOPLayer
             syncEntitiesToObjectsGroup.Add(syncEngine);
             
             syncEngine = new SyncVFXEntitiesToObjects(gameObjectResourceManager);
+            enginesRoot.AddEngine(syncEngine);
+            syncEntitiesToObjectsGroup.Add(syncEngine);
+            
+            syncEngine = new SyncNavToObjects(gameObjectResourceManager);
             enginesRoot.AddEngine(syncEngine);
             syncEntitiesToObjectsGroup.Add(syncEngine);
             

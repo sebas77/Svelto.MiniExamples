@@ -5,7 +5,7 @@ using UnityEngine.AddressableAssets;
 
 namespace Svelto.ECS.Example.Survive.Enemies
 {
-    public class EnemySpawnerEngine: IQueryingEntitiesEngine, IReactOnSwap<EnemyEntityViewComponent>, IStepEngine
+    public class EnemySpawnerEngine: IQueryingEntitiesEngine, IStepEngine, IReactOnRemoveEx<EnemyComponent>
     {
         const int SECONDS_BETWEEN_SPAWNS = 1;
         const int NUMBER_OF_ENEMIES_TO_SPAWN = 12;
@@ -20,14 +20,11 @@ namespace Svelto.ECS.Example.Survive.Enemies
         public void Ready() { _intervaledTick = IntervaledTick(); }
         public void Step() { _intervaledTick.MoveNext(); }
         public string name => nameof(EnemySpawnerEngine);
-
-        public void MovedTo(ref EnemyEntityViewComponent entityComponent, ExclusiveGroupStruct previousGroup, EGID egid)
+        
+        public void Remove((uint start, uint end) rangeOfEntities, in EntityCollection<EnemyComponent> entities, ExclusiveGroupStruct groupID)
         {
-            //is the enemy dead?
-            if (egid.groupID.FoundIn(DeadEnemiesGroup.Groups))
-            {
-                _numberOfEnemyToSpawn++;
-            }
+            if (groupID.FoundIn(DeadEnemiesGroup.Groups))
+                _numberOfEnemyToSpawn += (int)rangeOfEntities.end - (int)rangeOfEntities.start;
         }
 
         IEnumerator IntervaledTick()

@@ -1,6 +1,5 @@
 ﻿using Svelto.ECS.Example.Survive.Damage;
 using Svelto.ECS.Example.Survive.OOPLayer;
-using Svelto.ECS.Example.Survive.Transformable;
 
 namespace Svelto.ECS.Example.Survive.Enemies
 {
@@ -13,11 +12,12 @@ namespace Svelto.ECS.Example.Survive.Enemies
             {
                 new ComponentBuilder<GameObjectEntityComponent>(),
                 new ComponentBuilder<EnemyComponent>(),
-                new ComponentBuilder<EnemyEntityViewComponent>(),
+                new ComponentBuilder<NavMeshComponent>(),
                 new ComponentBuilder<ScoreValueComponent>(),
                 new ComponentBuilder<EnemyAttackComponent>(),
                 new ComponentBuilder<AnimationComponent>(),
-                new ComponentBuilder<VFXComponent>()
+                new ComponentBuilder<VFXComponent>(),
+                new ComponentBuilder<CollisionComponent>()
             });
         }
     }

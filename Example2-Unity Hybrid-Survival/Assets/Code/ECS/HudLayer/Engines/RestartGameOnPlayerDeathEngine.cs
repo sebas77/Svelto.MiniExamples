@@ -1,5 +1,4 @@
 using System.Collections;
-using Svelto.ECS.Example.Survive.HUD;
 using Svelto.ECS.Example.Survive.OOPLayer;
 using UnityEngine;
 using UnityEngine.SceneManagement;

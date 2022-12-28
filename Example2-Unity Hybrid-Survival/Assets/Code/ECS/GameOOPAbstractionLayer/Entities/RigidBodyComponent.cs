@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Svelto.ECS.Example.Survive.Transformable
+namespace Svelto.ECS.Example.Survive.OOPLayer
 {
     public struct RigidBodyComponent: IEntityComponent
     {

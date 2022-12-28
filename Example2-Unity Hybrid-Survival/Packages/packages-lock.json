@@ -23,13 +23,6 @@
         "com.sebaslab.svelto.common": "3.3.2"
       }
     },
-    "com.sebaslab.svelto.ecs.inspector": {
-      "version": "git@github.com:sebas77/svelto-ecs-inspector-unity.git",
-      "depth": 0,
-      "source": "git",
-      "dependencies": {},
-      "hash": "8d4fed8ab71eb979f82a9e61e3adddd74e8d29b7"
-    },
     "com.unity.addressables": {
       "version": "1.19.19",
       "depth": 0,

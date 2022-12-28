@@ -1,4 +1,4 @@
-﻿namespace Svelto.ECS.Example.Survive.Transformable
+﻿namespace Svelto.ECS.Example.Survive.OOPLayer
 {
     public class TransformableEntityDescriptor:GenericEntityDescriptor<PositionComponent, RotationComponent>
     {

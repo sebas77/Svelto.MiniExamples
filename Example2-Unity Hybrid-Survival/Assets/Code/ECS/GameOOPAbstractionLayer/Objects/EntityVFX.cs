@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Svelto.ECS.Example.Survive.OOPLayer
 {
-    public class EnemyVFXImplementor : MonoBehaviour
+    public class EntityVFX : MonoBehaviour
     {
         public ParticleSystem particle; // Reference to the particle system that plays when the enemy is damaged.
 

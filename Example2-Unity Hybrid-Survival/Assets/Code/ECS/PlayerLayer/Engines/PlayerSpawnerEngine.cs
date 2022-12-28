@@ -5,7 +5,7 @@ using Svelto.ECS.Example.Survive.Camera;
 using Svelto.ECS.Example.Survive.Damage;
 using Svelto.ECS.Example.Survive.OOPLayer;
 using Svelto.ECS.Example.Survive.Player.Gun;
-using Svelto.ECS.Example.Survive.Transformable;
+
 
 namespace Svelto.ECS.Example.Survive.Player
 {

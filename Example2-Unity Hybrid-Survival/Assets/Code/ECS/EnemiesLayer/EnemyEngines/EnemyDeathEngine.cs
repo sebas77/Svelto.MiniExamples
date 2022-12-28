@@ -3,14 +3,14 @@ using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.ECS.Example.Survive.Damage;
 using Svelto.ECS.Example.Survive.OOPLayer;
-using Svelto.ECS.Example.Survive.Transformable;
+
 using UnityEngine;
 using AudioType = Svelto.ECS.Example.Survive.Damage.AudioType;
 
 namespace Svelto.ECS.Example.Survive.Enemies
 {
     [Sequenced(nameof(EnemyEnginesNames.EnemyDeathEngine))]
-    public class EnemyDeathEngine: IQueryingEntitiesEngine, IStepEngine, IReactOnSwapEx<EnemyEntityViewComponent>,
+    public class EnemyDeathEngine: IQueryingEntitiesEngine, IStepEngine, IReactOnSwapEx<EnemyComponent>,
             IReactOnRemoveEx<EnemyComponent>
     {
         public EnemyDeathEngine(IEntityFunctions entityFunctions, IEntityStreamConsumerFactory consumerFactory,
@@ -66,18 +66,17 @@ namespace Svelto.ECS.Example.Survive.Enemies
         /// One of the available form of communication in Svelto.ECS: React On Swap allow to do what it says
         /// </summary>
         public void MovedTo((uint start, uint end) rangeOfEntities,
-            in EntityCollection<EnemyEntityViewComponent> entities,
+            in EntityCollection<EnemyComponent> entities,
             ExclusiveGroupStruct fromGroup, ExclusiveGroupStruct toGroup)
         {
             if (DeadEnemiesGroup.Includes(toGroup))
             {
-                var (enemies, _) = entities;
-                var (gos, _) = entitiesDB.QueryEntities<GameObjectEntityComponent>(toGroup);
+                var (gos, navs, _) = entitiesDB.QueryEntities<GameObjectEntityComponent, NavMeshComponent>(toGroup);
 
                 for (int i = (int)(rangeOfEntities.end - 1); i >= (int)rangeOfEntities.start; i--)
                 {
-                    enemies[i].movementComponent.navMeshEnabled = false;
-                    enemies[i].movementComponent.setCapsuleAsTrigger = true;
+                    navs[i].navMeshEnabled = false;
+                    navs[i].setCapsuleAsTrigger = true;
                     gos[i].layer = GAME_LAYERS.NOT_SHOOTABLE_LAYER;
                 }
             }

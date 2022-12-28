@@ -1,4 +1,4 @@
-﻿using Svelto.ECS.Example.Survive.Transformable;
+﻿
 using UnityEngine;
 
 namespace Svelto.ECS.Example.Survive.OOPLayer
