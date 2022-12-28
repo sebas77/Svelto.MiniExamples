@@ -12,7 +12,8 @@ Warning: these examples may use using unofficial versions of Svelto that you won
 
 ![Image](https://github.com/sebas77/Svelto.MiniExamples/blob/master/Example1-DoofusesMustEat/2020-12-22%2016-05-22.gif)
 
-Object-less pure ECS example that shows the basics of Svelto.ECS and Svelto.Tasks.
+Object-less pure ECS example that shows the basics of Svelto.ECS. 
+Attention this demo is presented in multiple versions thanks to its flexibility.
 
 Article:
 
