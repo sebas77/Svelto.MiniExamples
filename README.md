@@ -37,20 +37,17 @@ Goals of the **Stride example** are to:
 
 ![Image](https://github.com/sebas77/GithubWikiImages/blob/master/gif_animation_002.gif)
 
-**Warning**: I am in the process of completely rewriting this example. I cannot reccomend the use of imlpementors and the subs/publisher, so I am rewriting the demo to not use either of those. This will take some time. Check the Doofuses GameObject examples for better ways to integrate Svelto.ECS and GameObjects
-
 Basic integration with Unity GameObjects and Monobehaviours.
 
 Goal of this example: 
 
-* show the integration with OOP platforms (Unity in this case) throught the use of Entity View Components and Implementors.
+* show the integration with OOP platforms (Unity in this case) throught the use of OOP abstraction layers.
 * *Test WebGL support*
 
 I used the Survival Shooter Unity Demo to show how an ECS framework could work inside Unity. I am not sure about the license of this demo, so use it only for learning purposes.
-Most of the source code has been rewritten to work with Svelto.ECS framework. The Survival Demo is tested with the latest version of Unity, so I cannot guarantee that it always works, but it should work with all the versions from 5.3 and above.
+Most of the source code has been rewritten to work with Svelto.ECS framework. The Survival Demo is tested with the latest version of Unity, so I cannot guarantee that it always works.
 
-* Note: This demo shows just one way to abstract OOP code, it is not _THE WAY_. Other strategies are in fact listed in the Example 6. 
-* Note: The purposes of this demo is NOT to show how to write fast code. In fact most of the solutions you will find in this demo are not optimal at all. Svelto ECS is used only to wrap high level code as all the low level functionalities are executed through standard gameobjects.
+* Note: The purposes of this demo is NOT to show how to write fast code. In fact most of the solutions you will find in this demo may not be optimal. Svelto ECS is used only to wrap high level code as all the low level functionalities are executed through standard gameobjects.
 
 ## ~~Example 3: GUI and Service Layer (Hybrid ECS for GUI)~~
 
