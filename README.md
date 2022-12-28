@@ -18,19 +18,19 @@ Article:
 
 http://www.sebaslab.com/svelto-mini-examples-doofuses-must-eat/
 
-Goals of the **Pure ECS** example are to: 
+### Goals of the **Pure ECS** example are to: 
 * intoduce to the concept of entity descriptors, entity structs and groups. 
 * Show the integration with UnityECS, shows the use of Svelto.Tasks 2.0 (alpha state) 
 * show the integration with Unity Jobs and Burst (using Svelto.ECS 3.0)
 * test Full jobified/burstified code with Svelto ECS 3.0
 * test integration with IL2CPP
 
-Goals of the **GameObjects** example are to: 
+### Goals of the **GameObjects** example are to: 
 * show how the OOP abtraction layer works (https://www.sebaslab.com/oop-abstraction-layer-in-a-ecs-centric-application/)
 * show how the resource managers work to interface objects and entities 
 * show that even with OOP interfacing, ECS helps to achieve high performance
 
-Goals of the **Stride example** are to: 
+### Goals of the **Stride example** are to: 
 * show a complex integration with an engine different than Unity (Stride Engine)
   
 ## Example 2: The classic Survival demo (Hybrid ECS)
