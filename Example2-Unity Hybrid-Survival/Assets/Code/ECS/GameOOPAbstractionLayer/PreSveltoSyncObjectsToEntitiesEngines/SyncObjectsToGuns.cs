@@ -30,7 +30,7 @@
             }
         }
 
-        public string name => nameof(SyncGunEntitiesToObjects);
+        public string name => nameof(SyncObjectsToGuns);
         readonly GameObjectResourceManager _manager;
     }
 }

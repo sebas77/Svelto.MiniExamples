@@ -53,8 +53,6 @@ namespace Svelto.ECS.Example.Survive.Enemies
         {
             entitiesDB.QueryEntity<DamageableComponent>(otherEntityID).damageInfo =
                 new DamageInfo(attackDamage, Vector3.zero);
-
-            entitiesDB.PublishEntityChange<DamageableComponent>(otherEntityID);
         }
 
         public string name => nameof(EnemyAttackEngine);

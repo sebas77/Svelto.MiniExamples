@@ -12,7 +12,6 @@ namespace Svelto.ECS.Example.Survive.Enemies
         public EnemySpawnEffectOnDamageEngine(IEntityStreamConsumerFactory consumerFactory)
         {
             //this consumer will process only changes from DamageableComponent published from the EnemiesGroup
-            _consumerHealth = consumerFactory.GenerateConsumer<DamageableComponent>("EnemyAnimationEngine", 15);
             _checkForEnemyDamage = SpawnEffectOnDamage();
         }
 
@@ -20,40 +19,53 @@ namespace Svelto.ECS.Example.Survive.Enemies
         {
             _checkForEnemyDamage.MoveNext();
         }
+
         public string name => nameof(EnemySpawnEffectOnDamageEngine);
 
         public EntitiesDB entitiesDB { set; private get; }
 
-        public void Ready() { }
-
-        IEnumerator SpawnEffectOnDamage() 
+        public void Ready()
         {
-            void CheckDamageEnemy(EGID egid, DamageableComponent component)
-            {
-                entitiesDB.QueryEntity<DamageSoundComponent>(egid).playOneShot =
-                        (int)AudioType.damage;
-                ref var enemyEntityViewsStructs = ref entitiesDB.QueryEntity<VFXComponent>(egid);
+            _sveltoFilters = entitiesDB.GetFilters();
+        }
 
-                enemyEntityViewsStructs.vfxEvent = new VFXEvent(component.damageInfo.damagePoint);
-            }
-
+        IEnumerator SpawnEffectOnDamage()
+        {
             while (true)
             {
-                while (_consumerHealth.TryDequeue(out var component, out var egid))
-                {
-                    //publisher/consumer pattern will be replaces with better patterns in future for these cases.
-                    //The problem is obvious, DeathComponent is abstract and could have came from the player
-                    if (EnemiesGroup.Includes(egid.groupID))
-                    {
-                        CheckDamageEnemy(egid, component);
-                    }
-                }
+                RefHelper();
 
                 yield return null;
             }
+
+            void RefHelper()
+            {
+                var deadEntitiesFilter =
+                        _sveltoFilters.GetTransientFilter<HealthComponent>(FilterIDs.damagedEntitiesFilter);
+
+                foreach (var (filteredIndices, group) in deadEntitiesFilter)
+                {
+                    if (EnemiesGroup.Includes(group)) //is it an enemy?
+                    {
+                        var (damage, vfx, sound, _) =
+                                entitiesDB.QueryEntities<DamageableComponent, VFXComponent, DamageSoundComponent>(
+                                    group);
+
+                        var indicesCount = filteredIndices.count;
+                        for (int i = 0; i < indicesCount; i++)
+                        {
+                            var filteredIndex = filteredIndices[i];
+                            
+                            sound[filteredIndex].playOneShot = (int)AudioType.damage;
+
+                            vfx[filteredIndex].vfxEvent = new VFXEvent(damage[filteredIndex].damageInfo.damagePoint);
+                        }
+                    }
+                }
+            }
         }
 
-        readonly IEnumerator          _checkForEnemyDamage;
-        Consumer<DamageableComponent> _consumerHealth;
+        readonly IEnumerator _checkForEnemyDamage;
+        EntitiesDB.SveltoFilters _sveltoFilters;
     }
 }

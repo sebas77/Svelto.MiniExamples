@@ -206,6 +206,8 @@
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\EnginesRoot.DoubleBufferedEntitiesToAdd.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\EnginesRoot.Entities.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\EnginesGroup\UnsortedEnginesGroup.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Filters\FilterContextID.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Filters\CombinedFilterID.cs" />
      <Folder Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\DOTS\Jobs" />
      <Folder Include="Packages\com.sebaslab.svelto.ecs\DataStructures" />
      <Folder Include="Packages\com.sebaslab.svelto.ecs\Core\Filters" />

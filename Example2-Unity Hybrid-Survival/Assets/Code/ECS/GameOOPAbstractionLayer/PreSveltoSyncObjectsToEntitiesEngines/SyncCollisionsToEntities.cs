@@ -34,7 +34,7 @@ namespace Svelto.ECS.Example.Survive.OOPLayer
             entitiesDB.QueryEntity<CollisionComponent>(sender.ToEGID(entitiesDB)).entityInRange = collisionData;
         }
 
-        public string name => nameof(SyncEntitiesAnimationsToObjects);
+        public string name => nameof(SyncCollisionsToEntities);
 
         readonly GameObjectResourceManager _manager;
         readonly Action<EntityReference, CollisionData> _onCollidedWithTarget;

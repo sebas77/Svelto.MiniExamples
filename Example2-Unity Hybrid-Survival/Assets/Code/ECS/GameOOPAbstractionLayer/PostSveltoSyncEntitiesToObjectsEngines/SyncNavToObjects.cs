@@ -27,14 +27,15 @@
 
                     var navMesh = go.GetComponent<NavMeshBehaviour>();
 
-                    navMesh.navMeshDestination = navs[i].navMeshDestination;
                     navMesh.setCapsuleAsTrigger = navs[i].setCapsuleAsTrigger;
                     navMesh.navMeshEnabled = navs[i].navMeshEnabled;
+                    if (navs[i].navMeshEnabled)
+                        navMesh.navMeshDestination = navs[i].navMeshDestination;
                 }
             }
         }
 
-        public string name => nameof(SyncEntitiesPositionToObjects);
+        public string name => nameof(SyncNavToObjects);
 
         readonly GameObjectResourceManager _manager;
     }

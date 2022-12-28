@@ -45,7 +45,6 @@
      <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\DamageContextLayer.cs" />
      <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\Entities\DamageableEntityDescriptor.cs" />
      <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\Engines\DispatchKilledEntitiesEngine.cs" />
-     <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\AudioType.cs" />
      <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\Entities\ScoreValueEntityComponent.cs" />
      <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\Entities\DeathComponent.cs" />
      <Compile Include="Assets\Code\ECS\DamageableEntitiesLayer\Entities\HealthComponent.cs" />

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
@@ -33,15 +33,22 @@ namespace Svelto.ECS
     {
         public static readonly SharedStaticWrapper<int, ComponentID<T>> id;
 
-#if UNITY_BURST 
+#if UNITY_BURST     
         [Unity.Burst.BurstDiscard] 
         //SharedStatic values must be initialized from not burstified code
 #endif
-        public static void Init()
+        //todo: any reason to not do this? If I don't, I cannot Create filters in ready functions and
+        //I have to remove the CreateFilter method
+        static ComponentID()
         {
             id.Data = Interlocked.Increment(ref BurstCompatibleCounter.counter);
-
+            
             DBC.ECS.Check.Ensure(id.Data < ushort.MaxValue, "too many types registered, HOW :)");
+        }
+
+        public static void Init()
+        {
+            
         }
     }
 

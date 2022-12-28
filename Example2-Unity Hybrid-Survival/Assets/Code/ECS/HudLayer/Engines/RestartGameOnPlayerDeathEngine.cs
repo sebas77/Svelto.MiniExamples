@@ -50,7 +50,6 @@ namespace Svelto.ECS.Example.Survive
         public string name => nameof(RestartGameOnPlayerDeathEngine);
 
         readonly IEntityFunctions _DBFunctions;
-        readonly IEntityStreamConsumerFactory _consumerFactory;
         readonly IEnumerator _restartLevelAfterFewSeconds;
         bool _execute;
     }

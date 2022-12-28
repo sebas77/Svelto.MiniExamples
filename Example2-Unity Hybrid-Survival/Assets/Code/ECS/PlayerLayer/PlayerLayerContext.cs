@@ -18,7 +18,7 @@ namespace Svelto.ECS.Example.Survive.Player
                 GAME_LAYERS.SHOOTABLE_MASK, GAME_LAYERS.ENEMY_MASK);
             var playerMovementEngine = new PlayerMovementEngine(rayCaster);
             var playerAnimationEngine = new PlayerAnimationEngine();
-            var playerDeathEngine = new PlayerDeathEngine(entityFunctions, entityStreamConsumerFactory);
+            var playerDeathEngine = new PlayerDeathEngine(entityFunctions);
             var playerInputEngine = new PlayerInputEngine();
             var playerGunShootingFXsEngine = new PlayerGunShootingFXsEngine(entityStreamConsumerFactory);
 

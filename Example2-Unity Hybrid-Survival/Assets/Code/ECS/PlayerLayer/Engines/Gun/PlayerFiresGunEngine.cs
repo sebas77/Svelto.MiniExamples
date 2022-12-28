@@ -57,8 +57,6 @@ namespace Svelto.ECS.Example.Survive.Player.Gun
                     var instanceID = referenceID.ToEGID(entitiesDB);
                     {
                         entitiesDB.QueryEntity<DamageableComponent>(instanceID).damageInfo = damageInfo;
-
-                        entitiesDB.PublishEntityChange<DamageableComponent>(instanceID);
                     }
                 }
 

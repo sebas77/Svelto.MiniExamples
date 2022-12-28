@@ -13,30 +13,43 @@ namespace Svelto.ECS.Example.Survive.Enemies
     public class EnemyDeathEngine: IQueryingEntitiesEngine, IStepEngine, IReactOnSwapEx<EnemyComponent>,
             IReactOnRemoveEx<EnemyComponent>
     {
-        public EnemyDeathEngine(IEntityFunctions entityFunctions, IEntityStreamConsumerFactory consumerFactory,
+        public EnemyDeathEngine(IEntityFunctions entityFunctions,
             ITime time, WaitForSubmissionEnumerator waitForSubmission, GameObjectResourceManager manager)
         {
             _entityFunctions = entityFunctions;
-            _consumerFactory = consumerFactory;
             _time = time;
             _waitForSubmission = waitForSubmission;
             _manager = manager;
             _animations = new FasterList<IEnumerator>();
-            _consumer = _consumerFactory.GenerateConsumer<DeathComponent>("EnemyDeathEngine", 10);
         }
 
         public EntitiesDB entitiesDB { get; set; }
 
-        public void Ready() { }
+        public void Ready()
+        {
+            _sveltoFilters = entitiesDB.GetFilters();
+        }
 
         public void Step()
         {
-            while (_consumer.TryDequeue(out _, out EGID enemyID))
+            var deadEntitiesFilter = _sveltoFilters.GetTransientFilter<HealthComponent>(FilterIDs.deadEntitiesFilter);
+
+            foreach (var (filteredIndices, group) in deadEntitiesFilter)
             {
-                //publisher/consumer pattern will be replaces with better patterns in future for these cases.
-                //The problem is obvious, DeathComponent is abstract and could have came from the player
-                if (EnemiesGroup.Includes(enemyID.groupID))
-                    _animations.Add(PlayDeathSequence(enemyID));
+                if (EnemiesGroup.Includes(group)) //is it an enemy?
+                {
+                    var (animation, sound, entityIDs, _) = entitiesDB.QueryEntities<AnimationComponent, DamageSoundComponent>(group);
+                    var indicesCount = filteredIndices.count;
+                    for (int i = 0; i < indicesCount; i++)
+                    {
+                        var filteredIndex = filteredIndices[i];
+                        
+                        animation[filteredIndex].animationState = new AnimationState((int)EnemyAnimations.Die);
+                        sound[filteredIndex].playOneShot = (int)AudioType.death;
+
+                        _animations.Add(PlayDeathSequence(new EGID(entityIDs[filteredIndex], group)));
+                    }
+                }
             }
 
             for (uint i = 0; i < _animations.count; i++)
@@ -84,10 +97,6 @@ namespace Svelto.ECS.Example.Survive.Enemies
 
         IEnumerator PlayDeathSequence(EGID egid)
         {
-            entitiesDB.QueryEntity<AnimationComponent>(egid).animationState = new AnimationState((int)EnemyAnimations.Die);
-            
-            entitiesDB.QueryEntity<DamageSoundComponent>(egid).playOneShot = (int)AudioType.death;
-            
             //Any build/swap/remove do not happen immediately, but at specific sync points
             //swapping group because we don't want any engine to pick up this entity while it's animating for death
             _entityFunctions.SwapEntityGroup<EnemyEntityDescriptor>(egid, DeadEnemiesGroup.BuildGroup);
@@ -116,11 +125,10 @@ namespace Svelto.ECS.Example.Survive.Enemies
         }
 
         readonly IEntityFunctions _entityFunctions;
-        readonly IEntityStreamConsumerFactory _consumerFactory;
         readonly ITime _time;
-        Consumer<DeathComponent> _consumer;
         readonly WaitForSubmissionEnumerator _waitForSubmission;
         readonly GameObjectResourceManager _manager;
         readonly FasterList<IEnumerator> _animations;
+        EntitiesDB.SveltoFilters _sveltoFilters;
     }
 }

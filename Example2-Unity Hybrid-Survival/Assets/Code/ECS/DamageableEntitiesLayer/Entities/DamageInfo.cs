@@ -4,7 +4,7 @@ namespace Svelto.ECS.Example.Survive.Damage
 {
     public struct DamageInfo
     {
-        public readonly int     damageToApply;
+        internal int     damageToApply;
         public Vector3 damagePoint { get; }
 
         public DamageInfo(int damage, Vector3 point) : this()

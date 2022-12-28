@@ -36,15 +36,15 @@ namespace Svelto.ECS
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Add(EGID egid, uint toIndex)
+        public bool Add(EGID egid, uint indexInArray)
         {
-            return GetOrCreateGroupFilter(egid.groupID).Add(egid.entityID, toIndex);
+            return GetOrCreateGroupFilter(egid.groupID).Add(egid.entityID, indexInArray);
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Add(uint entityID, ExclusiveGroupStruct groupId, uint index)
+        public void Add(uint entityID, ExclusiveGroupStruct groupId, uint indexInArray)
         {
-            Add(new EGID(entityID, groupId), index);
+            Add(new EGID(entityID, groupId), indexInArray);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

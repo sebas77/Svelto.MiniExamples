@@ -143,8 +143,8 @@
      <Compile Include="Library\PackageCache\com.unity.addressables@1.19.19\Editor\Build\SceneManagerState.cs" />
      <Compile Include="Library\PackageCache\com.unity.addressables@1.19.19\Editor\Diagnostics\ResourceProfilerWindow.cs" />
      <Compile Include="Library\PackageCache\com.unity.addressables@1.19.19\Editor\Build\MonoScriptBundleNaming.cs" />
-     <Compile Include="Library\PackageCache\com.unity.addressables@1.19.19\Editor\Build\BuildPipelineTasks\AddHashToBundleNameTask.cs" />
      <Compile Include="Library\PackageCache\com.unity.addressables@1.19.19\Editor\Build\AnalyzeRules\CheckResourcesDupeDependencies.cs" />
+     <Compile Include="Library\PackageCache\com.unity.addressables@1.19.19\Editor\Build\BuildPipelineTasks\AddHashToBundleNameTask.cs" />
      <Compile Include="Library\PackageCache\com.unity.addressables@1.19.19\Editor\GUI\BuildProfileSettingsEditor.cs" />
      <Compile Include="Library\PackageCache\com.unity.addressables@1.19.19\Editor\Diagnostics\GUI\EventListView.cs" />
      <Compile Include="Library\PackageCache\com.unity.addressables@1.19.19\Editor\GUI\AddressablesGUIUtility.cs" />

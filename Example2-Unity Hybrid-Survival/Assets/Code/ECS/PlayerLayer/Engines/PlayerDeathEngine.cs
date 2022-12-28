@@ -1,5 +1,4 @@
 using Svelto.Common;
-using Svelto.ECS.Example.Survive.Damage;
 
 namespace Svelto.ECS.Example.Survive.Player
 {
@@ -10,29 +9,26 @@ namespace Svelto.ECS.Example.Survive.Player
 
         public void Ready() { }
         
-        public PlayerDeathEngine(IEntityFunctions dbFunctions, IEntityStreamConsumerFactory consumerFactory)
+        public PlayerDeathEngine(IEntityFunctions dbFunctions)
         {
             _DBFunctions = dbFunctions;
-            _consumer    = consumerFactory.GenerateConsumer<DeathComponent>("PlayerDeathEngine", 1);
         }
 
         public void Step()
         {
-            while (_consumer.TryDequeue(out _, out EGID id))
-            {
-                if (id.groupID.FoundIn(PlayerGroup.Groups))
-                {
-                    //remove the player entity so the player engines will stop processing it 
-                    _DBFunctions.RemoveEntity<PlayerEntityDescriptor>(id);
-                    _DBFunctions.RemoveEntity<PlayerGunEntityDescriptor>(entitiesDB
-                       .QueryEntity<WeaponComponent>(id).weapon.ToEGID(entitiesDB));
-                }
-            }
+//            {
+//                if (id.groupID.FoundIn(PlayerGroup.Groups))
+//                {
+//                    //remove the player entity so the player engines will stop processing it 
+//                    _DBFunctions.RemoveEntity<PlayerEntityDescriptor>(id);
+//                    _DBFunctions.RemoveEntity<PlayerGunEntityDescriptor>(entitiesDB
+//                       .QueryEntity<WeaponComponent>(id).weapon.ToEGID(entitiesDB));
+//                }
+//            }
         }
 
         public string name => nameof(PlayerDeathEngine);
 
         readonly IEntityFunctions _DBFunctions;
-        Consumer<DeathComponent>  _consumer;
     }
 }

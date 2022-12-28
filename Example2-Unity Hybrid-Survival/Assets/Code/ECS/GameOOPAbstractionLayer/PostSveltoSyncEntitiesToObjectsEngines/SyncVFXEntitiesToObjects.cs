@@ -38,7 +38,7 @@ namespace Svelto.ECS.Example.Survive.OOPLayer
             }
         }
 
-        public string name => nameof(SyncEntitiesAnimationsToObjects);
+        public string name => nameof(SyncVFXEntitiesToObjects);
 
         readonly GameObjectResourceManager _manager;
     }

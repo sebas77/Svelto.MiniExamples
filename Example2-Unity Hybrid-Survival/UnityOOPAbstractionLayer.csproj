@@ -44,13 +44,16 @@
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\Entities\GameObjectEntityComponent.cs" />
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\PreSveltoSyncObjectsToEntitiesEngines\SyncPositionObjectsToEntities.cs" />
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\GameObjectFactory.cs" />
+     <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\Objects\CollisionData.cs" />
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\Objects\EntityVFX.cs" />
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\Entities\GunOOPEntityComponent.cs" />
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\Entities\VFXEvent.cs" />
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\GameObjectResourceManager.cs" />
+     <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\PostSveltoSyncEntitiesToObjectsEngines\SyncNavToObjects.cs" />
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\PreSveltoSyncObjectsToEntitiesEngines\SyncObjectsToGuns.cs" />
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\Entities\AnimationComponent.cs" />
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\Objects\EntityReferenceHolder.cs" />
+     <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\Entities\CollisionComponent.cs" />
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\PostSveltoSyncEntitiesToObjectsEngines\SyncPhysicEntitiesToObjects.cs" />
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\Objects\NavMeshBehaviour.cs" />
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\Entities\TransformableEntityDescriptor.cs" />
@@ -70,6 +73,7 @@
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\PostSveltoSyncEntitiesToObjectsEngines\SyncEntitiesToGameObjects.cs" />
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\Entities\PositionComponent.cs" />
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\Entities\AnimationState.cs" />
+     <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\Entities\NavMeshComponent.cs" />
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\OOPLayerContext.cs" />
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\Objects\ObjectTrigger.cs" />
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\Objects\AudioImplementor.cs" />
@@ -79,11 +83,7 @@
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\Entities\DamageSoundEntityComponent.cs" />
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\RayCaster.cs" />
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\PostSveltoSyncEntitiesToObjectsEngines\SyncEntitiesAudioToObject.cs" />
-     <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\Objects\CollisionData.cs" />
-     <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\PreSveltoSyncObjectsToEntitiesEngines\SyncEnemiesCollisionsToEntities.cs" />
-     <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\Entities\CollisionComponent.cs" />
-     <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\Entities\NavMeshComponent.cs" />
-     <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\PostSveltoSyncEntitiesToObjectsEngines\SyncNavToObjects.cs" />
+     <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\PreSveltoSyncObjectsToEntitiesEngines\SyncCollisionsToEntities.cs" />
      <Folder Include="Assets\Code\ECS\GameOOPAbstractionLayer\Objects" />
      <Folder Include="Assets\Code\ECS\GameOOPAbstractionLayer\Entities" />
      <Folder Include="Assets\Code\ECS\GameOOPAbstractionLayer\PostSveltoSyncEntitiesToObjectsEngines" />

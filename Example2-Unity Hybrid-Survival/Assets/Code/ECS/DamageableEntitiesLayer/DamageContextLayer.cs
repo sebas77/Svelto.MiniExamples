@@ -8,7 +8,7 @@ namespace Svelto.ECS.Example.Survive.Damage
             EnginesRoot enginesRoot, FasterList<IStepEngine> orderedEngines)
         {
             //damage engines
-            var applyDamageEngine = new ApplyDamageToDamageableEntitiesEngine(entityStreamConsumerFactory);
+            var applyDamageEngine = new ApplyDamageToDamageableEntitiesEngine();
             var deathEngine = new DispatchKilledEntitiesEngine();
 
             enginesRoot.AddEngine(applyDamageEngine);

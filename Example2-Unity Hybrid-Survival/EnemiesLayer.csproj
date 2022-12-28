@@ -44,6 +44,7 @@
      <Compile Include="Assets\Code\ECS\EnemiesLayer\EnemyEngines\EnemyChangeAnimationOnPlayerDeathEngine.cs" />
      <Compile Include="Assets\Code\ECS\EnemiesLayer\Entities\EnemyComponent.cs" />
      <Compile Include="Assets\Code\ECS\EnemiesLayer\EnemyEngines\EnemyMovementEngine.cs" />
+     <Compile Include="Assets\Code\ECS\EnemiesLayer\AudioType.cs" />
      <Compile Include="Assets\Code\ECS\EnemiesLayer\EnemyEnginesNames.cs" />
      <Compile Include="Assets\Code\ECS\EnemiesLayer\EnemyLayerContext.cs" />
      <Compile Include="Assets\Code\ECS\EnemiesLayer\Entities\EnemyAttackComponent.cs" />
