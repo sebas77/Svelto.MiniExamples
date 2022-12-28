@@ -85,7 +85,7 @@ Basic Platform Agnostic Svelto.ECS 3.0 example
 * Fist integration wraps gameobjects through the use of EntityViewComponents like seen in MiniExamples 2 Survival. **Attention** EntityViewComponents and Implementors are NOT reccomended to use over the second approach.
 * Second integration shows a more efficent approach, where pure ECS is used as much as possible and engines objects are synched only as late as possible.
 
-## Example 7: Awkward foundation for a possible defense game built with the magnificent engine that Stride is
+## Example 7: Awkward foundation for a possible defense game built with the awesome engine that Stride is
 
 * Goal: showing Svelto working with Stride Engine (svelto can work with any engine that supports c# natively)
 * Goal: showing how to use EntityReferences to transform hierarchies
