@@ -33,7 +33,7 @@ namespace Svelto.ECS.Example.Survive
                         _entityFactory.BuildEntity<EnemyEntityDescriptor>(
                             new EGID(_enemiesCreated++, EnemiesGroup.BuildGroup), list);
 
-                entityReferenceHolder.reference = initializer.reference.ToLong();
+                entityReferenceHolder.reference = initializer.reference.ToULong();
                 //Initialize the pure EntityStructs. This should be the preferred pattern, there is much less boiler plate
                 //too
                 //In this example every kind of enemy generates the same list of components

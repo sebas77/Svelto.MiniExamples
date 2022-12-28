@@ -260,22 +260,16 @@ namespace Svelto.Common
             static OptimalAlignment() { alignment = (uint) (Environment.Is64BitProcess ? 16 : 8); }
         }
 #endif
-        static class CachedSize<T> where T : struct
-        {
-            public static readonly uint cachedSize        = (uint) Unsafe.SizeOf<T>();
-            public static readonly uint cachedSizeAligned = Align4(cachedSize);
-        }
-
         //THIS MUST STAY INT. THE REASON WHY EVERYTHING IS INT AND NOT UINT IS BECAUSE YOU CAN END UP
         //DOING SUBTRACT OPERATION EXPECTING TO BE < 0 AND THEY WON'T BE
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int SizeOf<T>() where T : struct { return (int) CachedSize<T>.cachedSize; }
-        
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int SizeOf<T>(in T value) where T : struct { return (int) CachedSize<T>.cachedSize; }
+        public static int SizeOf<T>() where T : struct { return (int) Unsafe.SizeOf<T>(); }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int SizeOfAligned<T>() where T : struct { return (int) CachedSize<T>.cachedSizeAligned; }
+        public static int SizeOf<T>(in T value) where T : struct { return (int) Unsafe.SizeOf<T>(); }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int SizeOfAligned<T>() where T : struct { return (int) Align4((uint)Unsafe.SizeOf<T>()); }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void CopyStructureToPtr<T>(ref T buffer, IntPtr bufferPtr) where T : struct

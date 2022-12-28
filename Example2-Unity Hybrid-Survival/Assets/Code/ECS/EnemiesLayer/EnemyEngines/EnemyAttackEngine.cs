@@ -74,7 +74,7 @@ namespace Svelto.ECS.Example.Survive.Enemies
             foreach (var ((enemiesAttackData, enemiesCount), _) in entitiesDB.QueryEntities<EnemyAttackComponent>(
                 EnemiesGroup.Groups))
             {
-                for (var enemyIndex = 0; enemyIndex < enemiesCount; enemyIndex++)
+                for (var enemyIndex = enemiesCount - 1; enemyIndex >= 0; enemyIndex--)
                 {
                     ref var enemyAttackComponent = ref enemiesAttackData[enemyIndex];
                     ref var enemyCollisionData   = ref enemyAttackComponent.entityInRange;

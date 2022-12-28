@@ -44,13 +44,7 @@
     <Analyzer Include="C:\PRGDIR\Svelto\Svelto.Miniexamples\Example2-Unity Hybrid-Survival\Assets\AkroGame.ECS.Analyzer.dll" />
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Code\ECS\TransformationLayer\TransformableEntityDescriptor.cs" />
-     <Compile Include="Assets\Code\ECS\TransformationLayer\RBEntityDescriptor.cs" />
-     <Compile Include="Assets\Code\ECS\TransformationLayer\RotationComponent.cs" />
-     <Compile Include="Assets\Code\ECS\TransformationLayer\PositionComponent.cs" />
-     <Compile Include="Assets\Code\ECS\TransformationLayer\RigidBodyComponent.cs" />
-     <Folder Include="Assets\Code\ECS\TransformationLayer" />
-     <None Include="Assets\Code\ECS\TransformationLayer\TransformableLayer.asmdef" />
+     <Folder Include="Assets\Code\ECS" />
      <Reference Include="UnityEngine">
      <HintPath>C:\Program Files\Unity\2021.3.16f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
      </Reference>

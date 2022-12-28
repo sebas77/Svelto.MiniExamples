@@ -17,7 +17,7 @@ namespace Svelto.ECS
         static EnginesRoot()
         {
             GroupHashMap.Init();
-            SharedDictonary.Init();
+            //SharedDictonary.Init();
             SerializationDescriptorMap.Init();
 
             _swapEntities = SwapEntities;

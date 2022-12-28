@@ -1,4 +1,5 @@
-﻿using Svelto.DataStructures;
+﻿using Svelto.Common;
+using Svelto.DataStructures;
 using Svelto.ECS.Internal;
 
 namespace Svelto.ECS
@@ -19,7 +20,7 @@ namespace Svelto.ECS
         public void Init<T>(T initializer) where T : struct, _IInternalEntityComponent
         {
             if (_group.TryGetValue(
-                    new RefWrapperType(ComponentBuilder<T>.ENTITY_COMPONENT_TYPE),
+                    new RefWrapperType(TypeCache<T>.type),
                     out var typeSafeDictionary) == false)
                 return;
 
@@ -33,11 +34,11 @@ namespace Svelto.ECS
                 dictionary.GetDirectValueByRef(findElementIndex) = initializer;
         }
 
-        public ref T GetOrAdd<T>() where T : struct, _IInternalEntityComponent
+        internal ref T GetOrAdd<T>() where T : unmanaged, IEntityComponent
         {
             ref var entityDictionary = ref _group.GetOrAdd(
                 new RefWrapperType(ComponentBuilder<T>.ENTITY_COMPONENT_TYPE),
-                TypeSafeDictionaryFactory<T>.Create);
+                () => new UnmanagedTypeSafeDictionary<T>(1));
             var dictionary = (ITypeSafeDictionary<T>)entityDictionary;
 
             return ref dictionary.GetOrAdd(_ID.entityID);
@@ -45,14 +46,14 @@ namespace Svelto.ECS
 
         public ref T Get<T>() where T : struct, _IInternalEntityComponent
         {
-            return ref (_group[new RefWrapperType(ComponentBuilder<T>.ENTITY_COMPONENT_TYPE)] as ITypeSafeDictionary<T>)
+            return ref (_group[new RefWrapperType(TypeCache<T>.type)] as ITypeSafeDictionary<T>)
                .GetValueByRef(_ID.entityID);
         }
 
         public bool Has<T>() where T : struct, _IInternalEntityComponent
         {
             if (_group.TryGetValue(
-                    new RefWrapperType(ComponentBuilder<T>.ENTITY_COMPONENT_TYPE),
+                    new RefWrapperType(TypeCache<T>.type),
                     out var typeSafeDictionary))
             {
                 var dictionary = (ITypeSafeDictionary<T>)typeSafeDictionary;

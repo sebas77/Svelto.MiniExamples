@@ -11,7 +11,7 @@ namespace Svelto.ECS.Example.Survive.Enemies
     public struct EnemyEntityViewComponent : IEntityViewComponent
     {
         public IEnemyMovementComponent movementComponent;
-        public IEnemyVFXComponent      vfxComponent;
         public IEnemyTriggerComponent  targetTriggerComponent;
+        
     }
 }

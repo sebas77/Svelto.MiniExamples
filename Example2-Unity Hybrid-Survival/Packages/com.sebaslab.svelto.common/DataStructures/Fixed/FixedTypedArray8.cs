@@ -6,8 +6,10 @@ public struct FixedTypedArray8<T> where T : unmanaged
 {
     static readonly int Length = 8;
 
+#pragma warning disable CS0169
     FixedTypedArray4<T> foursA;
     FixedTypedArray4<T> foursB;
+#pragma warning restore CS0169    
 
     public int length => Length;
 

@@ -7,11 +7,8 @@
         "Utility",
         "UnityOOPAbstractionLayer",
         "DamageableEntityLayer",
-        "AnimationLayer",
         "Unity.Addressables",
-        "Unity.ResourceManager",
-        "TransformableLayer",
-        ""
+        "Unity.ResourceManager"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -49,6 +49,7 @@ namespace Svelto.ECS.Example.Survive
         public MainCompositionRoot()
         {
             QualitySettings.vSyncCount = 1;
+            Application.targetFrameRate = 60;
         }
 
         public void OnContextCreated<T>(T contextHolder) { }

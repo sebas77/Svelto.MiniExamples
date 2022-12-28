@@ -4,8 +4,7 @@
         "Svelto.Common",
         "Svelto.ECS",
         "UnityOOPAbstractionLayer",
-        "Utility",
-        "TransformableLayer"
+        "Utility"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

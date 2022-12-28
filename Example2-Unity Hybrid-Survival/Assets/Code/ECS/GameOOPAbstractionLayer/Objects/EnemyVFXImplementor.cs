@@ -1,9 +1,8 @@
-using Svelto.ECS.Hybrid;
 using UnityEngine;
 
-namespace Svelto.ECS.Example.Survive.Enemies
+namespace Svelto.ECS.Example.Survive.OOPLayer
 {
-    public class EnemyVFXImplementor : MonoBehaviour, IImplementor, IEnemyVFXComponent
+    public class EnemyVFXImplementor : MonoBehaviour
     {
         public ParticleSystem particle; // Reference to the particle system that plays when the enemy is damaged.
 
@@ -15,15 +14,11 @@ namespace Svelto.ECS.Example.Survive.Enemies
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="value"></param>
-        public bool play
+        public void play(in Vector3 position)
         {
-            set
-            {
-                if (value) particle.Play();
-            }
+            particle.transform.position = position;
+            particle.Play();
         }
-
-        public Vector3 position { set => particle.transform.position = value; }
 
         void Awake() { particle = GetComponentInChildren<ParticleSystem>(); }
     }

@@ -72,7 +72,7 @@ namespace Svelto.ECS
             return entitiesDB.TryGetEGID(this, out egid);
         }
 
-        public ulong ToLong()
+        public ulong ToULong()
         {
             return _GID;
         }

@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
+#pragma warning disable CS0660, CS0661
 
 namespace Svelto.ECS
 {
@@ -25,11 +26,6 @@ namespace Svelto.ECS
             DBC.ECS.Check.Ensure(id < _globalId, "Invalid group ID deserialiased");
         }
         
-        public override bool Equals(object obj)
-        {
-            throw new NotSupportedException();
-        }
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override int GetHashCode()
         {

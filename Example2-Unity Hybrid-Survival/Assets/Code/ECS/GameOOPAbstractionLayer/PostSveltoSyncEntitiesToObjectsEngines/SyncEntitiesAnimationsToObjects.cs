@@ -16,8 +16,10 @@ namespace Svelto.ECS.Example.Survive.OOPLayer
         {
             var groups = entitiesDB.FindGroups<GameObjectEntityComponent, AnimationComponent>();
             //animation sync
-            foreach (var ((entity, animations, count), _) in entitiesDB
-                            .QueryEntities<GameObjectEntityComponent, AnimationComponent>(groups))
+            GroupsEnumerable<GameObjectEntityComponent, AnimationComponent> groupsEnumerable = entitiesDB
+                   .QueryEntities<GameObjectEntityComponent, AnimationComponent>(groups);
+            
+            foreach (var ((entity, animations, count), _) in groupsEnumerable)
             {
                 for (int i = 0; i < count; i++)
                 {

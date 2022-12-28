@@ -65,22 +65,17 @@ namespace Svelto.DataStructures
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Write<T>(Span<byte> ptr, in T str, int size) where T : struct
         {
-            unsafe
-            {
 #if DEBUG && !PROFILE_SVELTO
-                if (_writeCursor + size > capacity)
-                    throw new Exception("no writing authorized");
-                if (size > Unsafe.SizeOf<T>())
-                    throw new Exception("size is bigger than struct");
+            if (_writeCursor + size > capacity)
+                throw new Exception("no writing authorized");
+            if (size > Unsafe.SizeOf<T>())
+                throw new Exception("size is bigger than struct");
 #endif
-                var pptr = Unsafe.AsPointer(ref Unsafe.As<T, byte>(ref Unsafe.AsRef(str)));
-            
-                Unsafe.CopyBlock(
-                    ref Unsafe.Add(ref MemoryMarshal.GetReference(ptr), _writeCursor),
-                    ref Unsafe.As<T, byte>(ref Unsafe.AsRef(str)), (uint)size);
+            Unsafe.CopyBlock(
+                ref Unsafe.Add(ref MemoryMarshal.GetReference(ptr), _writeCursor),
+                ref Unsafe.As<T, byte>(ref Unsafe.AsRef(str)), (uint)size);
 
-                _writeCursor += size;
-            }
+            _writeCursor += size;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -98,8 +93,8 @@ namespace Svelto.DataStructures
                     throw new Exception("no writing authorized");
 #endif
 
-                var asPointer = Unsafe.AsPointer(ref Unsafe.Add(ref MemoryMarshal.GetReference(ptr), _writeCursor));
-                Span<T> destination = new Span<T>(asPointer, space / singleSizeOf);
+                Span<T> destination = new Span<T>(
+                    (void*)Unsafe.Add(ref MemoryMarshal.GetReference(ptr), _writeCursor), space / singleSizeOf);
                 valueSpan.CopyTo(destination);
 
                 _writeCursor += sizeOf;

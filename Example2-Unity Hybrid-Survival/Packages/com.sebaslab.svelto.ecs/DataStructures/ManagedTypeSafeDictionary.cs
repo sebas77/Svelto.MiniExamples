@@ -6,14 +6,9 @@ using Svelto.DataStructures;
 
 namespace Svelto.ECS.Internal
 {
-    public sealed class ManagedTypeSafeDictionary<TValue> : ITypeSafeDictionary<TValue>
+    sealed class ManagedTypeSafeDictionary<TValue> : ITypeSafeDictionary<TValue>
         where TValue : struct, _IInternalEntityComponent
     {
-        static readonly Type _type = typeof(TValue);
-#if SLOW_SVELTO_SUBMISSION
-        static readonly bool _hasEgid = typeof(INeedEGID).IsAssignableFrom(_type);
-        static readonly bool _hasReference = typeof(INeedEntityReference).IsAssignableFrom(_type);
-#endif
         static readonly ThreadLocal<IEntityIDs> cachedEntityIDM =
             new ThreadLocal<IEntityIDs>(() => new ManagedEntityIDs());
 
@@ -23,7 +18,7 @@ namespace Svelto.ECS.Internal
                 new SveltoDictionary<uint, TValue, ManagedStrategy<SveltoDictionaryNode<uint>>, ManagedStrategy<TValue>,
                     ManagedStrategy<int>>(size, Allocator.Managed);
         }
-
+        
         public IEntityIDs entityIDs
         {
             get
@@ -98,7 +93,7 @@ namespace Svelto.ECS.Internal
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ITypeSafeDictionary Create()
         {
-            return TypeSafeDictionaryFactory<TValue>.Create(1);
+            return new ManagedTypeSafeDictionary<TValue>(1);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

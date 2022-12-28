@@ -39,10 +39,4 @@ namespace Svelto.ECS.Example.Survive.Enemies
             }
         }
     }
-
-    public interface IEnemyVFXComponent
-    {
-        Vector3 position { set; }
-        bool play { set; }
-    }
 }

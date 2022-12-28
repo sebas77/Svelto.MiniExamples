@@ -150,5 +150,12 @@ namespace Svelto.ECS
             array = default;
             return false;
         }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static AllGroupsEnumerable<T1> QueryEntities<T1>(this EntitiesDB db)
+                where T1 :unmanaged, IEntityComponent
+        {
+            return new AllGroupsEnumerable<T1>(db);
+        }
     }
 }

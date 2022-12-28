@@ -69,6 +69,7 @@ namespace Svelto.ECS.Example.Survive.Player
                 });
 
             var playerResource = _gameObjectResourceManager[playerID];
+            playerResource.GetComponent<EntityReferenceHolder>().reference = playerInitializer.reference.ToULong();
             playerInitializer.Init(
                 new PositionComponent()
                 {

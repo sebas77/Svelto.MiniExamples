@@ -2,7 +2,6 @@ using System.Collections;
 using Svelto.Common;
 using Svelto.ECS.Example.Survive.Damage;
 using Svelto.ECS.Example.Survive.OOPLayer;
-using UnityEngine;
 using AudioType = Svelto.ECS.Example.Survive.Damage.AudioType;
 
 namespace Svelto.ECS.Example.Survive.Enemies
@@ -27,16 +26,15 @@ namespace Svelto.ECS.Example.Survive.Enemies
 
         public void Ready() { }
 
-        IEnumerator SpawnEffectOnDamage() //todo 
+        IEnumerator SpawnEffectOnDamage() 
         {
             void CheckDamageEnemy(EGID egid, DamageableComponent component)
             {
                 entitiesDB.QueryEntity<DamageSoundComponent>(egid).playOneShot =
                         (int)AudioType.damage;
-                ref var enemyEntityViewsStructs = ref entitiesDB.QueryEntity<EnemyEntityViewComponent>(egid);
+                ref var enemyEntityViewsStructs = ref entitiesDB.QueryEntity<VFXComponent>(egid);
 
-                enemyEntityViewsStructs.vfxComponent.position = component.damageInfo.damagePoint;
-                enemyEntityViewsStructs.vfxComponent.play     = true;
+                enemyEntityViewsStructs.vfxEvent = new VFXEvent(component.damageInfo.damagePoint);
             }
 
             while (true)

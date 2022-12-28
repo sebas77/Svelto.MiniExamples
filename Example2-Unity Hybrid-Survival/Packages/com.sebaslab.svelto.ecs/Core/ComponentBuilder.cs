@@ -71,7 +71,7 @@ namespace Svelto.ECS
 #endif
             ComponentID<T>.Init();
             ENTITY_COMPONENT_NAME = ENTITY_COMPONENT_TYPE.ToString();
-            IS_UNMANAGED = TypeType.isUnmanaged<T>(); //attention this is important as it serves as warm up for Type<T>
+            IS_UNMANAGED = TypeCache<T>.isUnmanaged; //attention this is important as it serves as warm up for Type<T>
 #if UNITY_NATIVE
             if (IS_UNMANAGED)
                 EntityComponentIDMap.Register<T>(new Filler<T>());
@@ -86,7 +86,7 @@ namespace Svelto.ECS
             else
             {
                 if (ENTITY_COMPONENT_TYPE != ComponentBuilderUtilities.ENTITY_INFO_COMPONENT &&
-                    ENTITY_COMPONENT_TYPE.IsUnmanagedEx() == false)
+                    TypeCache<T>.isUnmanaged == false)
                     throw new Exception(
                         $"Entity Component check failed, unexpected struct type (must be unmanaged) {ENTITY_COMPONENT_TYPE}");
             }
