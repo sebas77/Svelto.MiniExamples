@@ -141,6 +141,7 @@
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Serialization\EnginesRoot.GenericEntitySerialization.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Serialization\ISerializationData.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\INeedEGID.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Filters\FilterContextID.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\DOTS\UECS\ISveltoOnDOTSSubmission.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\EntityViewUtility.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\DataStructures\TypeSafeDictionaryMethods.cs" />
@@ -163,6 +164,7 @@
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Native\EntityNativeDBExtensions.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Native\NativeEntityFactory.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\EnginesRoot.Engines.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Filters\CombinedFilterID.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\BT.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Serialization\SerializableComponentBuilder.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\INeedEntityReference.cs" />
@@ -206,8 +208,6 @@
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\EnginesRoot.DoubleBufferedEntitiesToAdd.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\EnginesRoot.Entities.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\EnginesGroup\UnsortedEnginesGroup.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Filters\FilterContextID.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Filters\CombinedFilterID.cs" />
      <Folder Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\DOTS\Jobs" />
      <Folder Include="Packages\com.sebaslab.svelto.ecs\DataStructures" />
      <Folder Include="Packages\com.sebaslab.svelto.ecs\Core\Filters" />
