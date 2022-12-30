@@ -3,7 +3,6 @@
 #endif
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 #if NETFX_CORE
 using Windows.System.Diagnostics;
 #else
@@ -16,7 +15,7 @@ using Svelto.Utilities;
 
 namespace Svelto
 {
-    public static class Console
+    public static partial class Console
     {
         static readonly ThreadLocal<StringBuilder> _threadSafeStrings;
         static readonly FasterList<ILogger>        _loggers;
@@ -47,6 +46,8 @@ namespace Svelto
             }
         }
 
+        public static int StackDepth = 3;
+
         public static void AddLogger(ILogger log)
         {
             _loggers.Add(log);
@@ -63,12 +64,6 @@ namespace Svelto
         public static void LogDebug(string txt)
         {
             InternalLog(txt, LogType.LogDebug);
-        }
-
-        [Conditional("DEBUG")]
-        public static void LogDebug<T>(string txt, T extradebug)
-        {
-            InternalLog(txt.FastConcat(extradebug.ToString()), LogType.LogDebug);
         }
 
         [Conditional("DEBUG")]
@@ -105,11 +100,12 @@ namespace Svelto
             string toPrint = "-!!!!!!-> ";
 
             Exception tracingE = exception;
+            int level = 0;
             while (tracingE.InnerException != null)
             {
                 tracingE = tracingE.InnerException;
 
-                InternalLog("-!!!!!!-> ", LogType.Error, true, tracingE);
+                InternalLog($"-!!!!!!->Internal Exception - Level [{level++}] ", LogType.Exception, false, tracingE);
             }
 
             if (message != null)
@@ -120,7 +116,7 @@ namespace Svelto
 
                 toPrint = builder.ToString();
             }
-
+ 
             //the goal of this is to show the stack from the real error
             InternalLog(toPrint, LogType.Exception, true, exception, extraData);
         }
@@ -136,64 +132,6 @@ namespace Svelto
             InternalLog(toPrint, LogType.Warning);
         }
 
-        public static void LogStackTrace(string str, StackTrace stack)
-        {
-            var builder = _stringBuilder;
-            builder.Length = 0;
-
-            _stringBuilder.Append(str).Append("\n");
-
-            for (var index1 = 0; index1 < stack.FrameCount; ++index1)
-            {
-                FormatStack(stack.GetFrame(index1), builder);
-            }
-
-            var toPrint = builder.ToString();
-
-            InternalLog(toPrint, LogType.Error, false);
-        }
-
-        static void FormatStack(StackFrame frame, StringBuilder sb)
-        {
-            MethodBase mb = frame.GetMethod();
-            if (mb == null)
-                return;
-
-            Type classType = mb.DeclaringType;
-            if (classType == null)
-                return;
-
-            // Add namespace.classname:MethodName
-            String ns = classType.Namespace;
-            if (!string.IsNullOrEmpty(ns))
-            {
-                sb.Append(ns);
-                sb.Append(".");
-            }
-
-            sb.Append(classType.Name);
-            sb.Append(":");
-            sb.Append(mb.Name);
-            sb.Append("(");
-
-            // Add parameters
-            int             j           = 0;
-            ParameterInfo[] pi          = mb.GetParameters();
-            bool            fFirstParam = true;
-            while (j < pi.Length)
-            {
-                if (fFirstParam == false)
-                    sb.Append(", ");
-                else
-                    fFirstParam = false;
-
-                sb.Append(pi[j].ParameterType.Name);
-                j++;
-            }
-
-            sb.AppendLine(")");
-        }
-
         public static void SetLogger(ILogger log)
         {
             log.OnLoggerAdded();
@@ -207,9 +145,11 @@ namespace Svelto
         /// </summary>
         /// <param name="txt"></param>
         /// <param name="type"></param>
-        /// <param name="b"></param>
+        /// <param name="showLogStack"></param>
         /// <param name="e"></param>
         /// <param name="extraData"></param>
+        /// <param name="externalException"></param>
+        /// <param name="b"></param>
         static void InternalLog(string txt, LogType type, bool showLogStack = true, Exception e = null,
             Dictionary<string, string> extraData = null)
         {
@@ -217,6 +157,11 @@ namespace Svelto
             {
                 _loggers[i].Log(txt, type, showLogStack, e, extraData);
             }
+        }
+
+        public static void CompressLogsToZipAndShow(string zipName)
+        {
+            _loggers[0]?.CompressLogsToZipAndShow(zipName);
         }
     }
 }

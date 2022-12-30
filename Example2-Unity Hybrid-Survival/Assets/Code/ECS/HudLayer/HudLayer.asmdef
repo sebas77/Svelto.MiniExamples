@@ -1,0 +1,22 @@
+{
+    "name": "HudLayer",
+    "references": [
+        "Svelto.Common",
+        "Svelto.ECS",
+        "EnemiesLayer",
+        "PlayerEntityLayer",
+        "AnimationLayer",
+        "DamageableEntityLayer",
+        "Utility",
+        "UnityOOPAbstractionLayer"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

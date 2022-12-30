@@ -8,7 +8,7 @@ using Svelto.ECS.Hybrid;
 namespace Svelto.ECS.Internal
 {
     public sealed class ManagedTypeSafeDictionary<TValue> : ITypeSafeDictionary<TValue>
-        where TValue : struct, IBaseEntityComponent
+        where TValue : struct, _IInternalEntityComponent
     {
         static readonly Type _type = typeof(TValue);
 #if SLOW_SVELTO_SUBMISSION

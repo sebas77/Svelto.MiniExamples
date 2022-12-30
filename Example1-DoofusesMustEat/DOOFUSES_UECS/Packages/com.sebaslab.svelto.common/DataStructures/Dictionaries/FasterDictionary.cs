@@ -110,9 +110,9 @@ namespace Svelto.DataStructures
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void FastClear()
+        public void Recycle()
         {
-            _dictionary.FastClear();
+            _dictionary.Recycle();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -195,6 +195,12 @@ namespace Svelto.DataStructures
         public bool Remove(TKey key)
         {
             return _dictionary.Remove(key);
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Remove(TKey key, out TValue val)
+        {
+            return _dictionary.Remove(key, out _, out val);
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -3,19 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace Svelto.Common
+namespace Svelto.Common.Internal
 {
-    public static class UnmanagedTypeExtensions
+    internal static class UnmanagedTypeExtensions
     {
-        static readonly Dictionary<Type, bool> cachedTypes =
-            new Dictionary<Type, bool>();
-
-        public static bool IsUnmanagedEx(this Type t)
+        //System.Runtime.CompilerServices.RuntimeHelpers.IsReferenceOrContainsReferences<T> doesn't exist in dotnet
+        //it's something just for mono!
+        internal static bool IsUnmanagedEx(this Type t)
         {
             var result = false;
-            
-            if (cachedTypes.ContainsKey(t))
-                return cachedTypes[t];
             
             if (t.IsPrimitive || t.IsPointer || t.IsEnum)
                 result = true;
@@ -36,7 +32,7 @@ namespace Svelto.Common
                                      BindingFlags.NonPublic | BindingFlags.Instance)
                           .All(x => IsUnmanagedEx(x.FieldType));
 
-            cachedTypes.Add(t, result);
+            
             return result;
         }
     }

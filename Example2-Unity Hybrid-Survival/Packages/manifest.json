@@ -1,14 +1,17 @@
 {
   "dependencies": {
+    "com.james-frowen.simplewebtransport": "1.3.2",
     "com.sebaslab.svelto.common": "com.sebaslab.svelto.common",
     "com.sebaslab.svelto.ecs": "com.sebaslab.svelto.ecs",
-    "com.unity.addressables": "1.18.19",
-    "com.unity.ide.rider": "3.0.12",
-    "com.unity.ide.visualstudio": "2.0.14",
-    "com.unity.mathematics": "1.2.5",
-    "com.unity.nuget.newtonsoft-json": "2.0.0",
+    "com.unity.addressables": "1.19.19",
+    "com.unity.ide.rider": "3.0.17",
+    "com.unity.ide.visualstudio": "2.0.17",
+    "com.unity.mathematics": "1.2.6",
+    "com.unity.nuget.newtonsoft-json": "3.0.2",
+    "com.unity.scriptablebuildpipeline": "1.20.2",
     "com.unity.toolchain.win-x86_64-linux-x86_64": "1.0.0",
     "com.unity.ugui": "1.0.0",
+    "org.nuget.system.runtime.compilerservices.unsafe": "6.0.0",
     "com.unity.modules.ai": "1.0.0",
     "com.unity.modules.androidjni": "1.0.0",
     "com.unity.modules.animation": "1.0.0",
@@ -49,7 +52,8 @@
         "org.nuget.system.buffers",
         "org.nuget.system.memory",
         "org.nuget.system.numerics.vectors",
-        "org.nuget.system.runtime.compilerservices.unsafe"
+        "org.nuget.system.runtime.compilerservices.unsafe",
+        "com.james-frowen"
       ]
     }
   ]

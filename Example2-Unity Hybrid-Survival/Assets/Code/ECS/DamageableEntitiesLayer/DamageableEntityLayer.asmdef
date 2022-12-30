@@ -1,0 +1,17 @@
+{
+    "name": "DamageableEntityLayer",
+    "references": [
+        "Svelto.ECS",
+        "Svelto.Common",
+        "UnityOOPAbstractionLayer"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

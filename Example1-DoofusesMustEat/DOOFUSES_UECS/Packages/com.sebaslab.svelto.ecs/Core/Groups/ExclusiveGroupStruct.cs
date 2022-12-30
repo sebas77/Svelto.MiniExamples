@@ -146,7 +146,7 @@ namespace Svelto.ECS
             _idInternal = groupID;
         }
         
-        ExclusiveGroupStruct(uint groupID, byte bytemask):this()
+        internal ExclusiveGroupStruct(uint groupID, byte bytemask):this()
         {
 #if DEBUG && !PROFILE_SVELTO          
             if (groupID >= 0xFFFFFF)

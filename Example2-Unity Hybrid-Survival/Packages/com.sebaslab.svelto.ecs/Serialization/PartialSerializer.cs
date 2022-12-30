@@ -2,6 +2,7 @@ using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using Svelto.DataStructures;
+using Svelto.ECS.Internal;
 using Attribute = System.Attribute;
 
 namespace Svelto.ECS.Serialization
@@ -11,7 +12,7 @@ namespace Svelto.ECS.Serialization
     {}
 
     public class PartialSerializer<T> : IComponentSerializer<T>
-        where T : unmanaged, IBaseEntityComponent
+        where T : unmanaged, _IInternalEntityComponent
     {
         static PartialSerializer()
         {
@@ -94,7 +95,7 @@ namespace Svelto.ECS.Serialization
             return true;
         }
 
-        public uint size => totalSize;
+        public int size => (int)totalSize;
 
         static readonly FasterList<(uint, uint)> offsets = new FasterList<(uint, uint)>();
         static readonly uint totalSize;

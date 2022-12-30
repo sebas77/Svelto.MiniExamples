@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Svelto.DataStructures;
 
-namespace Svelto.Common.DataStructures
+namespace Svelto.DataStructures
 {
     public class ThreadSafeQueue<T>
     {

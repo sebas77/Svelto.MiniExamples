@@ -27,6 +27,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 400006}
   m_RootOrder: 0
@@ -111,6 +112,7 @@ Transform:
   m_LocalRotation: {x: 0.44829786, y: 0.44829786, z: -0.5468355, w: 0.5468355}
   m_LocalPosition: {x: 0.42256805, y: 0.2720632, z: -0.17690624}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 400006}
   m_RootOrder: 1
@@ -182,7 +184,7 @@ GameObject:
   - component: {fileID: 8200000}
   - component: {fileID: 12000000}
   - component: {fileID: 10800000}
-  - component: {fileID: 114053729304777816}
+  - component: {fileID: 6724605239418667519}
   m_Layer: 0
   m_Name: GunBarrelEnd
   m_TagString: Untagged
@@ -200,6 +202,7 @@ Transform:
   m_LocalRotation: {x: 0.000000026684324, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.42256805, y: 0.3097692, z: 0.74614936}
   m_LocalScale: {x: 0.99999994, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 400006}
   m_RootOrder: 2
@@ -247,6 +250,7 @@ ParticleSystemRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_RenderMode: 0
+  m_MeshDistribution: 0
   m_SortMode: 0
   m_MinParticleSize: 0
   m_MaxParticleSize: 1
@@ -270,6 +274,10 @@ ParticleSystemRenderer:
   m_Mesh1: {fileID: 0}
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
+  m_MeshWeighting: 1
+  m_MeshWeighting1: 1
+  m_MeshWeighting2: 1
+  m_MeshWeighting3: 1
   m_MaskInteraction: 0
 --- !u!198 &19800000
 ParticleSystem:
@@ -5323,7 +5331,7 @@ Light:
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
---- !u!114 &114053729304777816
+--- !u!114 &6724605239418667519
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -5332,7 +5340,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 100004}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0d697df0b6a7be5429467c0b0efe31c2, type: 3}
+  m_Script: {fileID: 11500000, guid: a42764964b67428c938fd47741f7b37c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &100006
@@ -5348,9 +5356,8 @@ GameObject:
   - component: {fileID: 5400000}
   - component: {fileID: 13600000}
   - component: {fileID: 8200002}
-  - component: {fileID: 114444016794603990}
-  - component: {fileID: 114064602781519324}
-  - component: {fileID: 114063668210203424}
+  - component: {fileID: 9043047789356588440}
+  - component: {fileID: 6962908024108221387}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -5368,6 +5375,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0.3826835, z: 0, w: 0.92387956}
   m_LocalPosition: {x: -0.38890883, y: 0, z: -0.7424621}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 400000}
   - {fileID: 400002}
@@ -5377,7 +5385,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &9500000
 Animator:
-  serializedVersion: 3
+  serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -5390,10 +5398,11 @@ Animator:
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
   m_WarningMessage: 
   m_HasTransformHierarchy: 0
   m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
+  m_KeepAnimatorStateOnDisable: 0
 --- !u!54 &5400000
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -5520,19 +5529,7 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
---- !u!114 &114444016794603990
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 100006}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a641744aeaf1d14458cfa7135ac4f19e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &114064602781519324
+--- !u!114 &9043047789356588440
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -5544,9 +5541,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9496655af362413bb65ca481e25470c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damageClip: {fileID: 8300000, guid: 9922a12f34d0a084aab32de985459723, type: 3}
-  deathClip: {fileID: 8300000, guid: d36a393bca4582043982db9089e1694f, type: 3}
---- !u!114 &114063668210203424
+  clips:
+  - {fileID: 8300000, guid: d36a393bca4582043982db9089e1694f, type: 3}
+  - {fileID: 8300000, guid: 9922a12f34d0a084aab32de985459723, type: 3}
+--- !u!114 &6962908024108221387
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -5555,6 +5553,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 100006}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bcced41f6cb14ade8691a6d5f1ad33e0, type: 3}
+  m_Script: {fileID: 11500000, guid: 3ae5aecc336a32949b179f098eceac82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  reference: 0

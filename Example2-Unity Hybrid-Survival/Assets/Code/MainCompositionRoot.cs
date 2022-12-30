@@ -1,16 +1,17 @@
+using System;
 using Svelto.Context;
 using Svelto.DataStructures;
 using Svelto.ECS.Example.Survive.Camera;
-using Svelto.ECS.Example.Survive.Characters;
+using Svelto.ECS.Example.Survive.Damage;
 using Svelto.ECS.Example.Survive.Enemies;
 using Svelto.ECS.Example.Survive.Player;
-using Svelto.ECS.Example.Survive.Player.Gun;
-using Svelto.ECS.Example.Survive.Sounds;
 using Svelto.ECS.Example.Survive.HUD;
-using Svelto.ECS.Example.Survive.ResourceManager;
+using Svelto.ECS.Example.Survive.OOPLayer;
 using Svelto.ECS.Extensions.Unity;
-using Svelto.ECS.Schedulers.Unity;
+using Svelto.ECS.Schedulers;
 using UnityEngine;
+using UnityEngine.LowLevel;
+using UnityEngine.PlayerLoop;
 
 //Note on this example:
 //When developing with svelto the user would need to plan a bit what entities need to be used and
@@ -43,13 +44,12 @@ namespace Svelto.ECS.Example.Survive
     ///     it's helpful to use in an environment where a Context is not present, like in Unity.
     ///     It's a bootstrap! (check MainContext.cs)
     /// </summary>
-    public class MainCompositionRoot : ICompositionRoot
+    public class MainCompositionRoot: ICompositionRoot
     {
-        EnginesRoot _enginesRoot;
-
         public MainCompositionRoot()
         {
             QualitySettings.vSyncCount = 1;
+            Application.targetFrameRate = 60;
         }
 
         public void OnContextCreated<T>(T contextHolder) { }
@@ -79,7 +79,7 @@ namespace Svelto.ECS.Example.Survive
         ///     you are forced to mix your ECS code with OOP code because of external libraries or platforms. These special
         ///     "Hybrid" component can hold only interfaces
         ///     - Implementors:
-        ///     The EntityViewComponent exposed interfaces must be implemented by Implementors that are actually the
+        ///     The EntityComponent exposed interfaces must be implemented by Implementors that are actually the
         ///     Objects you need to wrap.
         ///     - EntityDescriptors:
         ///     Gives a way to formalise your Entity, it also defines the components that must
@@ -87,149 +87,138 @@ namespace Svelto.ECS.Example.Survive
         /// </summary>
         void CompositionRoot(UnityContext contextHolder)
         {
-            //the UnitySumbmissionEntityViewScheduler is the scheduler that is used by the EnginesRoot to know
-            //when to submit the entities. Custom ones can be created for special cases.
-            var unityEntitySubmissionScheduler = new UnityEntitiesSubmissionScheduler("survival");
-            //The Engines Root is the core of Svelto.ECS. You shouldn't inject the EngineRoot,
-            //therefore the composition root class must hold a reference or it will be garbage collected.
-            _enginesRoot = new EnginesRoot(unityEntitySubmissionScheduler);
-            //The EntityFactory can be injected inside factories (or engine acting as factories) to build new entities
-            //dynamically
+//the SimpleEntitiesSubmissionScheduler is the scheduler that is used by the EnginesRoot to know
+//when to submit the entities. Custom ones can be created for special cases. This is the simplest default and it must
+//be ticked explicitly.
+            var entitySubmissionScheduler = new SimpleEntitiesSubmissionScheduler();
+//The Engines Root is the core of Svelto.ECS. You shouldn't inject the EngineRoot,
+//therefore the composition root class must hold a reference or it will be garbage collected.
+            _enginesRoot = new EnginesRoot(entitySubmissionScheduler);
+//The EntityFactory can be injected inside factories (or engine acting as factories) to build new entities
+//dynamically
             var entityFactory = _enginesRoot.GenerateEntityFactory();
-            //The entity functions is a set of utility operations on Entities, including removing an entity. I couldn't
-            //find a better name so far.
-            var entityFunctions             = _enginesRoot.GenerateEntityFunctions();
+//The entity functions is a set of utility operations on Entities, including removing an entity. I couldn't
+//find a better name so far.
+            var entityFunctions = _enginesRoot.GenerateEntityFunctions();
             var entityStreamConsumerFactory = _enginesRoot.GenerateConsumerFactory();
 
-            //wrap non testable unity static classes, so that can be mocked if needed (or implementation can change in general, without changing the interface).
+//wrap non testable unity static classes, so that can be mocked if needed (or implementation can change in general, without changing the interface).
             IRayCaster rayCaster = new RayCaster();
-            ITime      time      = new Time();
-            //GameObjectFactory allows to create GameObjects without using the Static method GameObject.Instantiate.
-            //While it seems a complication it's important to keep the engines testable and not coupled with hard
-            //dependencies
-            var gameObjectFactory = new GameObjectFactory();
+            ITime time = new Time();
+//GameObjectFactory allows to create GameObjects without using the Static method GameObject.Instantiate.
+//While it seems a complication it's important to keep the engines testable and not coupled with hard
+//dependencies
+            var gameObjectResourceManager = new GameObjectResourceManager();
+//IStepEngines are engine that can be stepped (ticked) manually and explicitly with a Step() method
+            var orderedEngines = new FasterList<IStepEngine>();
+            var unorderedEngines = new FasterList<IStepEngine>();
 
-            //Player related engines. ALL the dependencies must be solved at this point through constructor injection.
-            var playerShootingEngine       = new PlayerGunShootingEngine(rayCaster, time);
-            var playerMovementEngine       = new PlayerMovementEngine(rayCaster);
-            var playerAnimationEngine      = new PlayerAnimationEngine();
-            var playerDeathEngine          = new PlayerDeathEngine(entityFunctions, entityStreamConsumerFactory);
-            var playerInputEngine          = new PlayerInputEngine();
-            var playerGunShootingFXsEngine = new PlayerGunShootingFXsEngine(entityStreamConsumerFactory);
-            //Spawner engines are factories engines that can build entities
-            var playerSpawnerEngine      = new PlayerSpawnerEngine(gameObjectFactory, entityFactory);
-            var restartGameOnPlayerDeath = new RestartGameOnPlayerDeathEngine();
+//This example has been refactored to show some advanced users of Svelto.ECS in a simple scenario
+//to know more about ECS abstraction layers read: https://www.sebaslab.com/ecs-abstraction-layers-and-modules-encapsulation/
 
-            //Player engines
-            _enginesRoot.AddEngine(playerMovementEngine);
-            _enginesRoot.AddEngine(playerAnimationEngine);
-            _enginesRoot.AddEngine(playerShootingEngine);
-            _enginesRoot.AddEngine(playerInputEngine);
-            _enginesRoot.AddEngine(playerGunShootingFXsEngine);
-            _enginesRoot.AddEngine(playerDeathEngine);
-            _enginesRoot.AddEngine(playerSpawnerEngine);
-            _enginesRoot.AddEngine(restartGameOnPlayerDeath);
+//Setup all the layers engines
+            OOPLayerContext.Setup(orderedEngines, _enginesRoot, gameObjectResourceManager);
+            DamageContextLayer.DamageLayerSetup(entityStreamConsumerFactory, _enginesRoot, orderedEngines);
+            CameraLayerContext.Setup(unorderedEngines, _enginesRoot);
+            PlayerLayerContext.Setup(
+                rayCaster, time, entityFunctions, entityStreamConsumerFactory, unorderedEngines, orderedEngines,
+                _enginesRoot);
+            EnemyLayerContext.EnemyLayerSetup(
+                entityFactory, entityStreamConsumerFactory, time, entityFunctions,
+                unorderedEngines, orderedEngines, new WaitForSubmissionEnumerator(entitySubmissionScheduler),
+                _enginesRoot, gameObjectResourceManager);
+            HudLayerContext.Setup(orderedEngines, _enginesRoot);
 
-            //Factory is one of the few OOP patterns that work very well with ECS. Its use is highly encouraged
-            var enemyFactory = new EnemyFactory(gameObjectFactory, entityFactory);
-            //Enemy related engines
-            var enemyAnimationEngine = new EnemyChangeAnimationOnPlayerDeathEngine();
-            var enemyDamageFXEngine  = new EnemySpawnEffectOnDamageEngine(entityStreamConsumerFactory);
-            var enemyAttackEngine    = new EnemyAttackEngine(time);
-            var enemyMovementEngine  = new EnemyMovementEngine();
-            //Spawner engines are factories engines that can build entities
-            var enemySpawnerEngine = new EnemySpawnerEngine(enemyFactory, entityFunctions);
-            var enemyDeathEngine = new EnemyDeathEngine(entityFunctions, entityStreamConsumerFactory, time
-                                                      , new WaitForSubmissionEnumerator(
-                                                            unityEntitySubmissionScheduler));
+//group engines for order of execution. Ordering and Ticking is 100% user responsibility. This is just one of the possible way to achieve the result desired
+            orderedEngines.Add(new SurvivalUnsortedEnginesGroup(unorderedEngines));
+            orderedEngines.Add(new TickEngine(entitySubmissionScheduler));
+            var sortedEnginesGroup = new SortedEnginesGroup(orderedEngines);
 
-            //enemy engines
-            _enginesRoot.AddEngine(enemySpawnerEngine);
-            _enginesRoot.AddEngine(enemyAttackEngine);
-            _enginesRoot.AddEngine(enemyMovementEngine);
-            _enginesRoot.AddEngine(enemyAnimationEngine);
-            _enginesRoot.AddEngine(enemyDeathEngine);
-            _enginesRoot.AddEngine(enemyDamageFXEngine);
-
-            //abstract engines
-            var applyDamageEngine        = new ApplyDamageToDamageableEntitiesEngine(entityStreamConsumerFactory);
-            var cameraFollowTargetEngine = new CameraFollowingTargetEngine(time);
-            var deathEngine              = new DispatchKilledEntitiesEngine();
-
-            //abstract engines (don't need to know the entity type)
-            _enginesRoot.AddEngine(applyDamageEngine);
-            _enginesRoot.AddEngine(deathEngine);
-            _enginesRoot.AddEngine(cameraFollowTargetEngine);
-
-            //hud and sound engines
-            var hudEngine         = new HUDEngine(entityStreamConsumerFactory);
-            var damageSoundEngine = new DamageSoundEngine(entityStreamConsumerFactory);
-            var scoreEngine       = new UpdateScoreEngine(entityStreamConsumerFactory);
-
-            //other engines
-            _enginesRoot.AddEngine(damageSoundEngine);
-            _enginesRoot.AddEngine(hudEngine);
-            _enginesRoot.AddEngine(scoreEngine);
-
-            var unsortedEngines = new SurvivalUnsortedEnginesGroup(new FasterList<IStepEngine>(
-                                                                       new IStepEngine[]
-                                                                       {
-                                                                           playerMovementEngine
-                                                                         , playerInputEngine
-                                                                         , playerGunShootingFXsEngine
-                                                                         , playerSpawnerEngine
-                                                                         , playerAnimationEngine
-                                                                         , enemySpawnerEngine
-                                                                         , enemyMovementEngine
-                                                                         , cameraFollowTargetEngine
-                                                                         , hudEngine
-                                                                         , restartGameOnPlayerDeath
-                                                                       }));
-
-            var unsortedDamageEngines = new DamageUnsortedEngines(new FasterList<IStepEngine>(
-                                                                      new IStepEngine[]
-                                                                      {
-                                                                          applyDamageEngine
-                                                                        , damageSoundEngine
-                                                                        , deathEngine
-                                                                      }));
-
-            //Svelto ECS doesn't provide a tick system, hence it doesn't provide a solution to solve the order of execution
-            //However it provides some option if you want to use them like the SortedEnginesGroup.
-            _enginesRoot.AddEngine(new TickEnginesGroup(new FasterList<IStepEngine>(new IStepEngine[]
-            {
-                unsortedEngines
-              , playerShootingEngine
-              , enemyDamageFXEngine
-              , enemyAttackEngine
-              , unsortedDamageEngines
-              , playerDeathEngine
-              , enemyDeathEngine
-              , scoreEngine
-            })));
+//PlayerSpawner is not an engine, it could have been, but since it doesn't have an update, it's better to be a factory
+            var playerSpanwer = new PlayerFactory(gameObjectResourceManager, entityFactory);
 
             BuildGUIEntitiesFromScene(contextHolder, entityFactory);
+
+            StartMainLoop(sortedEnginesGroup, entitySubmissionScheduler, playerSpanwer);
+
+//Attach Svelto Inspector: for more info https://github.com/sebas77/svelto-ecs-inspector-unity
+#if DEBUG
+       //     SveltoInspector.Attach(_enginesRoot);
+#endif
         }
 
-        /// <summary>
-        /// An EntityDescriptorHolder is a special Svelto.ECS hybrid class dedicated to the unity platform. Once attached to a gameobject
-        /// it automatically retrieves implementors from the hierarchy.
-        ///     This pattern is usually useful for guis where complex hierarchy of gameobjects are necessary, but
-        /// otherwise you should always create entities in factories. In the mini examples repository is possible
-        ///     to find a more advanced GUI example
-        /// The gui of this project is ultra simple and is all managed by one entity only. This way won't do
-        /// for a complex GUI.
-        /// Note that creating an entity to manage a complex gui like this, is OK only for such a simple scenario
-        /// otherwise a widget-like design should be adopted.
-        ///
-        /// UPDATE: NOTE -> SveltoGUIHelper is now deprecated. You shouldn't attempt to handle GUIs with Entities
-        /// 
-        /// </summary>
-        /// <param name="contextHolder"></param>
+        //Svelto ECS doesn't provide a ticking system, the user is responsible for it
+        async void StartMainLoop(SortedEnginesGroup enginesToTick,
+            SimpleEntitiesSubmissionScheduler unityEntitySubmissionScheduler, PlayerFactory playerSpanwer)
+        {
+            await playerSpanwer.StartSpawningPlayerTask();
+
+            RunSveltoUpdateInTheEarlyUpdate(enginesToTick, unityEntitySubmissionScheduler);
+        }
+
         void BuildGUIEntitiesFromScene(UnityContext contextHolder, IEntityFactory entityFactory)
         {
-            SveltoGUIHelper.Create<HudEntityDescriptorHolder>(ECSGroups.HUD, contextHolder.transform, entityFactory
-                                                            , true);
+            /// An EntityDescriptorHolder is a special Svelto.ECS hybrid class dedicated to the unity platform.
+            /// Once attached to a gameobject it automatically retrieves implementors from the hierarchy.
+            /// This pattern is usually useful for guis where complex hierarchy of gameobjects are necessary, but
+            /// otherwise you should always create entities in factories. 
+            /// The gui of this project is ultra simple and is all managed by one entity only. This way won't do
+            /// for a complex GUI.
+            /// Note that creating an entity to manage a complex gui like this, is OK only for such a simple scenario
+            /// otherwise a widget-like design should be adopted.
+            ///
+            /// UPDATE: NOTE -> SveltoGUIHelper is now deprecated. Managing GUIs with Entities is not recommended
+            /// it's best to use a proper GUI framework and sync models with entity components in sync engines
+            /// Building from EntityDescriptorHolders is also sort of unnecessary too (as in there could be better
+            /// ways to achieve the same result)
+            SveltoGUIHelper.Create<HUDEntityDescriptorHolder>(
+                ECSGroups.HUD, contextHolder.transform, entityFactory, true);
         }
+
+        void RunSveltoUpdateInTheEarlyUpdate(SortedEnginesGroup enginesToTick,
+            SimpleEntitiesSubmissionScheduler unityEntitySubmissionScheduler)
+        {
+            PlayerLoopSystem defaultLoop = PlayerLoop.GetDefaultPlayerLoop();
+
+            // Find the position of the early update in the default loop
+            int earlyUpdateIndex = -1;
+            for (int i = 0; i < defaultLoop.subSystemList.Length; i++)
+            {
+                if (defaultLoop.subSystemList[i].type == typeof(EarlyUpdate))
+                {
+                    earlyUpdateIndex = i + 1;
+                    break;
+                }
+            }
+
+            // Insert a custom update before the early update
+            if (earlyUpdateIndex >= 0)
+            {
+                PlayerLoopSystem[] newSubSystemList = new PlayerLoopSystem[defaultLoop.subSystemList.Length + 1];
+                Array.Copy(defaultLoop.subSystemList, newSubSystemList, earlyUpdateIndex);
+                newSubSystemList[earlyUpdateIndex] = new PlayerLoopSystem
+                {
+                        type = typeof(MainCompositionRoot),
+                        updateDelegate = Update
+                };
+                Array.Copy(
+                    defaultLoop.subSystemList, earlyUpdateIndex, newSubSystemList, earlyUpdateIndex + 1,
+                    defaultLoop.subSystemList.Length - earlyUpdateIndex);
+                defaultLoop.subSystemList = newSubSystemList;
+            }
+
+            // Set the modified player loop
+            PlayerLoop.SetPlayerLoop(defaultLoop);
+
+            void Update()
+            {
+                if (_enginesRoot.IsValid())
+                {
+                    enginesToTick.Step();
+                }
+            }
+        }
+
+        EnginesRoot _enginesRoot;
     }
 }

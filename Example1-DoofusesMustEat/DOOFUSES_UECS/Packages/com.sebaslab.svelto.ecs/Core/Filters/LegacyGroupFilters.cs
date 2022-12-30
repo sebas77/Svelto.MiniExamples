@@ -69,7 +69,7 @@ namespace Svelto.ECS
             foreach (var filter in _legacyFilters)
                 filter.value.Dispose();
 
-            _legacyFilters.FastClear();
+            _legacyFilters.Clear();
         }
 
         internal ref LegacyFilterGroup CreateOrGetFilter(int filterID)

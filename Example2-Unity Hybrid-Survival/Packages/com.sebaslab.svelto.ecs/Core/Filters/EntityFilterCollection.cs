@@ -2,6 +2,7 @@
 using System.Runtime.CompilerServices;
 using Svelto.Common;
 using Svelto.DataStructures.Native;
+using Svelto.ECS.Internal;
 using Svelto.ECS.Native;
 
 namespace Svelto.ECS
@@ -22,28 +23,28 @@ namespace Svelto.ECS
         public EntityFilterIterator GetEnumerator()  => new EntityFilterIterator(this);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Add<T>(EGID egid, NativeEGIDMapper<T> mmap) where T : unmanaged, IBaseEntityComponent
+        public bool Add<T>(EGID egid, NativeEGIDMapper<T> mmap) where T : unmanaged, _IInternalEntityComponent
         {
             DBC.ECS.Check.Require(mmap.groupID == egid.groupID, "not compatible NativeEgidMapper used");
 
             return Add(egid, mmap.GetIndex(egid.entityID));
         }
 
-        public bool Add<T>(EGID egid, NativeEGIDMultiMapper<T> mmap) where T : unmanaged, IBaseEntityComponent
+        public bool Add<T>(EGID egid, NativeEGIDMultiMapper<T> mmap) where T : unmanaged, _IInternalEntityComponent
         {
             return Add(egid, mmap.GetIndex(egid));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Add(EGID egid, uint toIndex)
+        public bool Add(EGID egid, uint indexInArray)
         {
-            return GetOrCreateGroupFilter(egid.groupID).Add(egid.entityID, toIndex);
+            return GetOrCreateGroupFilter(egid.groupID).Add(egid.entityID, indexInArray);
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Add(uint entityID, ExclusiveGroupStruct groupId, uint index)
+        public void Add(uint entityID, ExclusiveGroupStruct groupId, uint indexInArray)
         {
-            Add(new EGID(entityID, groupId), index);
+            Add(new EGID(entityID, groupId), indexInArray);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -183,7 +184,7 @@ namespace Svelto.ECS
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             internal void Clear()
             {
-                _entityIDToDenseIndex.FastClear();
+                _entityIDToDenseIndex.Clear();
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -1,8 +1,9 @@
+using Svelto.ECS.Internal;
 #if DEBUG && !PROFILE_SVELTO
 #endif
 namespace Svelto.ECS.Serialization
 {
-    public interface IComponentSerializer<T> where T : unmanaged, IBaseEntityComponent
+    public interface IComponentSerializer<T> where T : unmanaged, _IInternalEntityComponent
     {
         bool Serialize(in T value, ISerializationData serializationData);
         bool Deserialize(ref T value, ISerializationData serializationData);

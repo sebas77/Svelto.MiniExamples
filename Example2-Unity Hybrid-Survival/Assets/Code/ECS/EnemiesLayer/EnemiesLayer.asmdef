@@ -1,0 +1,22 @@
+{
+    "name": "EnemiesLayer",
+    "rootNamespace": "",
+    "references": [
+        "Svelto.Common",
+        "Svelto.ECS",
+        "Utility",
+        "UnityOOPAbstractionLayer",
+        "DamageableEntityLayer",
+        "Unity.Addressables",
+        "Unity.ResourceManager"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -1,0 +1,18 @@
+{
+    "name": "CameraLayer",
+    "references": [
+        "Svelto.Common",
+        "Svelto.ECS",
+        "UnityOOPAbstractionLayer",
+        "Utility"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

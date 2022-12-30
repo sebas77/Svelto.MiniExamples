@@ -11,7 +11,6 @@ namespace Svelto.ECS.ComputeSharp
         static readonly Type ENTITY_COMPONENT_TYPE;
 
         static readonly T    DEFAULT_IT;
-        static readonly bool IS_UNMANAGED;
 
         static ComputeComponentBuilder()
         {
@@ -20,7 +19,6 @@ namespace Svelto.ECS.ComputeSharp
 
             ComponentID<T>.Init();
             ENTITY_COMPONENT_TYPE.ToString();
-            IS_UNMANAGED = TypeType.isUnmanaged<T>(); //attention this is important as it serves as warm up for Type<T>
 
             ComponentBuilderUtilities.CheckFields(ENTITY_COMPONENT_TYPE, false);
         }
@@ -35,7 +33,7 @@ namespace Svelto.ECS.ComputeSharp
             _initializer = initializer;
         }
 
-        public bool isUnmanaged => IS_UNMANAGED;
+        public bool isUnmanaged => true;
 
         public void BuildEntityAndAddToList(ITypeSafeDictionary dictionary, EGID egid, IEnumerable<object> implementors)
         {

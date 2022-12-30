@@ -18,7 +18,7 @@ namespace Svelto.ECS.Internal
        , ExclusiveGroupStruct toGroupID) where Strategy1 : struct, IBufferStrategy<SveltoDictionaryNode<uint>>
                                          where Strategy2 : struct, IBufferStrategy<TValue>
                                          where Strategy3 : struct, IBufferStrategy<int>
-                                         where TValue : struct, IBaseEntityComponent
+                                         where TValue : struct, _IInternalEntityComponent
         {
             foreach (var tuple in fromDictionary)
             {
@@ -57,7 +57,7 @@ namespace Svelto.ECS.Internal
        , in PlatformProfiler sampler) where Strategy1 : struct, IBufferStrategy<SveltoDictionaryNode<uint>>
                                       where Strategy2 : struct, IBufferStrategy<TValue>
                                       where Strategy3 : struct, IBufferStrategy<int>
-                                      where TValue : struct, IBaseEntityComponent
+                                      where TValue : struct, _IInternalEntityComponent
         {
             if (entitycomponentenginesdb.TryGetValue(new RefWrapperType(TypeCache<TValue>.type)
                                                    , out var entityComponentsEngines))
@@ -99,7 +99,7 @@ namespace Svelto.ECS.Internal
             where Strategy1 : struct, IBufferStrategy<SveltoDictionaryNode<uint>>
             where Strategy2 : struct, IBufferStrategy<TValue>
             where Strategy3 : struct, IBufferStrategy<int>
-            where TValue : struct, IBaseEntityComponent
+            where TValue : struct, _IInternalEntityComponent
         {
             if (allEngines.TryGetValue(new RefWrapperType(TypeCache<TValue>.type), out var entityComponentsEngines)
              == false)
@@ -137,7 +137,7 @@ namespace Svelto.ECS.Internal
             where Strategy1 : struct, IBufferStrategy<SveltoDictionaryNode<uint>>
             where Strategy2 : struct, IBufferStrategy<TValue>
             where Strategy3 : struct, IBufferStrategy<int>
-            where TValue : struct, IBaseEntityComponent
+            where TValue : struct, _IInternalEntityComponent
         {
             if (reactiveenginesremove.TryGetValue(new RefWrapperType(TypeCache<TValue>.type)
                                                 , out var entityComponentsEngines))
@@ -184,7 +184,7 @@ namespace Svelto.ECS.Internal
             where Strategy1 : struct, IBufferStrategy<SveltoDictionaryNode<uint>>
             where Strategy2 : struct, IBufferStrategy<TValue>
             where Strategy3 : struct, IBufferStrategy<int>
-            where TValue : struct, IBaseEntityComponent
+            where TValue : struct, _IInternalEntityComponent
         {
             if (reactiveenginesremove.TryGetValue(new RefWrapperType(TypeCache<TValue>.type)
                                                 , out var reactiveEnginesRemovePerType))
@@ -250,7 +250,7 @@ namespace Svelto.ECS.Internal
             where Strategy1 : struct, IBufferStrategy<SveltoDictionaryNode<uint>>
             where Strategy2 : struct, IBufferStrategy<TValue>
             where Strategy3 : struct, IBufferStrategy<int>
-            where TValue : struct, IBaseEntityComponent
+            where TValue : struct, _IInternalEntityComponent
         {
             if (reactiveenginesswap.count == 0)
                 return;
@@ -295,7 +295,7 @@ namespace Svelto.ECS.Internal
             where Strategy1 : struct, IBufferStrategy<SveltoDictionaryNode<uint>>
             where Strategy2 : struct, IBufferStrategy<TValue>
             where Strategy3 : struct, IBufferStrategy<int>
-            where TValue : struct, IBaseEntityComponent
+            where TValue : struct, _IInternalEntityComponent
         {
             //get all the engines linked to TValue
             if (!reactiveenginesswap.TryGetValue(new RefWrapperType(TypeCache<TValue>.type)
@@ -361,7 +361,7 @@ namespace Svelto.ECS.Internal
             where Strategy1 : struct, IBufferStrategy<SveltoDictionaryNode<uint>>
             where Strategy2 : struct, IBufferStrategy<TValue>
             where Strategy3 : struct, IBufferStrategy<int>
-            where TValue : struct, IBaseEntityComponent
+            where TValue : struct, _IInternalEntityComponent
         {
             var iterations = infostoprocess.count;
 
@@ -409,7 +409,7 @@ namespace Svelto.ECS.Internal
             where Strategy1 : struct, IBufferStrategy<SveltoDictionaryNode<uint>>
             where Strategy2 : struct, IBufferStrategy<TValue>
             where Strategy3 : struct, IBufferStrategy<int>
-            where TValue : struct, IBaseEntityComponent
+            where TValue : struct, _IInternalEntityComponent
         {
             var iterations = infostoprocess.count;
 
@@ -457,7 +457,7 @@ namespace Svelto.ECS.Internal
         (FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<IReactOnAddEx>>> fasterDictionary
        , ExclusiveGroupStruct groupId, (uint, uint) valueTuple, IEntityIDs entityids
        , ITypeSafeDictionary<TValue> typeSafeDictionary, PlatformProfiler profiler)
-            where TValue : struct, IBaseEntityComponent
+            where TValue : struct, _IInternalEntityComponent
         {
             //get all the engines linked to TValue
             if (!fasterDictionary.TryGetValue(new RefWrapperType(TypeCache<TValue>.type)
@@ -489,7 +489,7 @@ namespace Svelto.ECS.Internal
         (FasterList<ReactEngineContainer<IReactOnSwapEx>> fasterList, ExclusiveGroupStruct fromGroup
        , ExclusiveGroupStruct toGroup, IEntityIDs entityids, ITypeSafeDictionary<TValue> typeSafeDictionary
        , (uint, uint) rangeofsubmittedentitiesindicies, PlatformProfiler sampler)
-            where TValue : struct, IBaseEntityComponent
+            where TValue : struct, _IInternalEntityComponent
         {
             for (var i = 0; i < fasterList.count; i++)
                 try
@@ -515,7 +515,7 @@ namespace Svelto.ECS.Internal
         public static void ExecuteEnginesRemoveCallbacksFast<TValue>
         (FasterList<ReactEngineContainer<IReactOnRemoveEx>> fasterList, ExclusiveGroupStruct exclusiveGroupStruct
        , (uint, uint) valueTuple, IEntityIDs entityids, ITypeSafeDictionary<TValue> typeSafeDictionary
-       , PlatformProfiler sampler) where TValue : struct, IBaseEntityComponent
+       , PlatformProfiler sampler) where TValue : struct, _IInternalEntityComponent
         {
             for (var i = 0; i < fasterList.count; i++)
                 try

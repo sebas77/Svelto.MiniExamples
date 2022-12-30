@@ -1,9 +1,10 @@
 using System;
+using Svelto.ECS.Internal;
 
 namespace Svelto.ECS.Serialization
 {
     public class ComposedComponentSerializer<T, X, Y> : IComponentSerializer<T>
-        where T : unmanaged, IBaseEntityComponent where X : class, IComponentSerializer<T>, new()
+        where T : unmanaged, _IInternalEntityComponent where X : class, IComponentSerializer<T>, new()
         where Y : class, IComponentSerializer<T>, new()
     {
         public ComposedComponentSerializer()
@@ -17,7 +18,7 @@ namespace Svelto.ECS.Serialization
         {
             foreach (IComponentSerializer<T> s in _serializers)
             {
-                serializationData.data.IncrementCountBy(s.size);
+                serializationData.data.IncrementCountBy((uint)s.size);
                 if (s.SerializeSafe(value, serializationData))
                     return true;
             }
@@ -36,7 +37,7 @@ namespace Svelto.ECS.Serialization
             throw new Exception($"ComposedComponentSerializer for {typeof(T)} did not deserialize any data!");
         }
 
-        public   uint                      size => 0;
+        public   int                      size => 0;
         readonly IComponentSerializer<T>[] _serializers;
     }
 }

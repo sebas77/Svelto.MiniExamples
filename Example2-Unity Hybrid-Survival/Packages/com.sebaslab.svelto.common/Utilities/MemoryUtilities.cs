@@ -80,7 +80,7 @@ namespace Svelto.Common
 
     public static class MemoryUtilities
     {
-        public static IntPtr Alloc(uint newCapacityInBytes, Allocator allocator, bool clear = true)
+        public static IntPtr NativeAlloc(uint newCapacityInBytes, Allocator allocator, bool clear = true)
         {
             var signedCapacity = (int) SignedCapacity(newCapacityInBytes);
             IntPtr newPointer = IntPtr.Zero;
@@ -105,7 +105,7 @@ namespace Svelto.Common
             return signedPointer;
         }
 
-        public static IntPtr Realloc
+        public static IntPtr NativeRealloc
         (IntPtr realBuffer, uint newCapacityInBytes, Allocator allocator, uint numberOfElementsToCopyInBytes
        , bool copy = true, bool memClear = true)
         {
@@ -113,7 +113,7 @@ namespace Svelto.Common
             {
                 //Alloc returns the correct Signed Pointer already
                 //if copy == true, memclear is optimised, otherwise memclear if set to true
-                var signedPointer = Alloc(newCapacityInBytes, allocator, copy == false && memClear == true);
+                var signedPointer = NativeAlloc(newCapacityInBytes, allocator, copy == false && memClear == true);
 
                 //Copy only the real data
                 if (copy && numberOfElementsToCopyInBytes > 0)
@@ -133,20 +133,20 @@ namespace Svelto.Common
                 }
 
                 //Free unsigns the pointer itself
-                Free(realBuffer, allocator);
+                NativeFree(realBuffer, allocator);
                 return signedPointer;
             }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static IntPtr Alloc<T>(uint newCapacity, Allocator allocator, bool clear = true) where T : struct
+        public static IntPtr NativeAlloc<T>(uint newCapacity, Allocator allocator, bool clear = true) where T : struct
         {
             var newCapacityInBytes = (uint) (SizeOf<T>() * newCapacity);
 
-            return Alloc(newCapacityInBytes, allocator, clear);
+            return NativeAlloc(newCapacityInBytes, allocator, clear);
         }
 
-        public static IntPtr Realloc<T>
+        public static IntPtr NativeRealloc<T>
         (IntPtr realBuffer, uint newCapacity, Allocator allocator, uint numberOfElementsToCopy, bool copy = true
        , bool memClear = true) where T : struct
         {
@@ -154,11 +154,11 @@ namespace Svelto.Common
             var newCapacityInBytes            = (uint) (sizeOf * newCapacity);
             var numberOfElementsToCopyInBytes = (uint) (sizeOf * numberOfElementsToCopy);
 
-            return Realloc(realBuffer, newCapacityInBytes, allocator, numberOfElementsToCopyInBytes, copy, memClear);
+            return NativeRealloc(realBuffer, newCapacityInBytes, allocator, numberOfElementsToCopyInBytes, copy, memClear);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Free(IntPtr ptr, Allocator allocator)
+        public static void NativeFree(IntPtr ptr, Allocator allocator)
         {
             ptr = CheckAndReturnPointerToFree(ptr);
 
@@ -260,19 +260,16 @@ namespace Svelto.Common
             static OptimalAlignment() { alignment = (uint) (Environment.Is64BitProcess ? 16 : 8); }
         }
 #endif
-        static class CachedSize<T> where T : struct
-        {
-            public static readonly uint cachedSize        = (uint) Unsafe.SizeOf<T>();
-            public static readonly uint cachedSizeAligned = Align4(cachedSize);
-        }
-
         //THIS MUST STAY INT. THE REASON WHY EVERYTHING IS INT AND NOT UINT IS BECAUSE YOU CAN END UP
         //DOING SUBTRACT OPERATION EXPECTING TO BE < 0 AND THEY WON'T BE
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int SizeOf<T>() where T : struct { return (int) CachedSize<T>.cachedSize; }
+        public static int SizeOf<T>() where T : struct { return (int) Unsafe.SizeOf<T>(); }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int SizeOfAligned<T>() where T : struct { return (int) CachedSize<T>.cachedSizeAligned; }
+        public static int SizeOf<T>(in T value) where T : struct { return (int) Unsafe.SizeOf<T>(); }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int SizeOfAligned<T>() where T : struct { return (int) Align4((uint)Unsafe.SizeOf<T>()); }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void CopyStructureToPtr<T>(ref T buffer, IntPtr bufferPtr) where T : struct

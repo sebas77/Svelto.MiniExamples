@@ -45,27 +45,29 @@ namespace Svelto.ECS
                                      || typeOfExclusiveGroupStruct.IsAssignableFrom(field.FieldType) 
                                      || typeOfExclusiveBuildGroup.IsAssignableFrom(field.FieldType)))
                                 {
-                                    uint groupID;
+                                    uint groupIDAndBitMask;
 
                                     if (typeOfExclusiveGroup.IsAssignableFrom(field.FieldType))
                                     {
                                         var group = (ExclusiveGroup)field.GetValue(null);
-                                        groupID = ((ExclusiveGroupStruct)@group).id;
+                                        groupIDAndBitMask = ((ExclusiveGroupStruct)@group).ToIDAndBitmask();
                                     }
                                     else
                                     if (typeOfExclusiveGroupStruct.IsAssignableFrom(field.FieldType))
                                     {
                                         var group = (ExclusiveGroupStruct)field.GetValue(null);
-                                        groupID = @group.id;
+                                        groupIDAndBitMask = @group.ToIDAndBitmask();
                                     }
                                     else
                                     {
                                         var group = (ExclusiveBuildGroup)field.GetValue(null);
-                                        groupID = ((ExclusiveGroupStruct)@group).id;
+                                        groupIDAndBitMask = ((ExclusiveGroupStruct)@group).ToIDAndBitmask();
                                     }
 
                                     {
-                                        ExclusiveGroupStruct group = new ExclusiveGroupStruct(groupID);
+                                        var                  bitMask = (byte) (groupIDAndBitMask >> 24);
+                                        var                  groupID = groupIDAndBitMask & 0xFFFFFF;
+                                        ExclusiveGroupStruct group   = new ExclusiveGroupStruct(groupID, bitMask);
 #if DEBUG && !PROFILE_SVELTO
                                         if (GroupNamesMap.idToName.ContainsKey(@group) == false)
                                             GroupNamesMap.idToName[@group] =

@@ -29,7 +29,7 @@ namespace Svelto.ECS
         public static int counter;        
     }
     
-    public class ComponentID<T> where T : struct, IBaseEntityComponent
+    public class ComponentID<T> where T : struct, _IInternalEntityComponent
     {
         public static readonly SharedStaticWrapper<int, ComponentID<T>> id;
 
@@ -45,7 +45,7 @@ namespace Svelto.ECS
         }
     }
 
-    public class ComponentBuilder<T> : IComponentBuilder where T : struct, IBaseEntityComponent
+    public class ComponentBuilder<T> : IComponentBuilder where T : struct, _IInternalEntityComponent
     {
         internal static readonly Type ENTITY_COMPONENT_TYPE;
         internal static readonly bool IS_ENTITY_VIEW_COMPONENT;
@@ -104,7 +104,7 @@ namespace Svelto.ECS
 
         public bool isUnmanaged => IS_UNMANAGED;
 
-        static ThreadLocal<EntityViewComponentCache> _localCache = new ThreadLocal<EntityViewComponentCache>(() => new EntityViewComponentCache());
+        static readonly ThreadLocal<EntityViewComponentCache> _localCache = new ThreadLocal<EntityViewComponentCache>(() => new EntityViewComponentCache());
 
         public void BuildEntityAndAddToList(ITypeSafeDictionary dictionary, EGID egid, IEnumerable<object> implementors)
         {
