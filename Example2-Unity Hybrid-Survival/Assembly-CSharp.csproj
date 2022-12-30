@@ -53,7 +53,6 @@
      <None Include="Library\PackageCache\com.unity.modules.cloth@1.0.0\package.json" />
      <Folder Include="Assets\AddressableAssetsData\AssetGroupTemplates" />
      <Folder Include="Library\PackageCache\com.unity.modules.imgui@1.0.0" />
-     <None Include="Assets\AddressableAssetsData\link.xml" />
      <None Include="Library\PackageCache\com.unity.modules.unitywebrequesttexture@1.0.0\package.json" />
      <None Include="Library\PackageCache\com.unity.modules.ai@1.0.0\package.json" />
      <Folder Include="Library\PackageCache\com.unity.modules.animation@1.0.0" />

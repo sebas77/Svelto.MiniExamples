@@ -35,7 +35,7 @@ namespace Svelto.ECS.Example.Survive.OOPLayer
                 if (entity != null)
                     _onCollidedWithTarget(
                         new EntityReference(_reference.reference),
-                        new CollisionData(new EntityReference(entity.reference), true));
+                        new CollisionData(new EntityReference(entity.reference), false));
             }
         }
 
