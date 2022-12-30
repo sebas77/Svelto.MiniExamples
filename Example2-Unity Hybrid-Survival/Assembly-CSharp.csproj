@@ -41,9 +41,9 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
-     <Compile Include="Assets\Code\MainCompositionRoot.cs" />
-     <Compile Include="Assets\Code\MainContext.cs" />
-     <Compile Include="Assets\Code\TickEnginesGroup.cs" />
+     <Compile Include="Assets\Code\ECS\MainCompositionRoot.cs" />
+     <Compile Include="Assets\Code\ECS\MainContext.cs" />
+     <Compile Include="Assets\Code\ECS\TickEnginesGroup.cs" />
      <Folder Include="Assets" />
      <None Include="Library\PackageCache\com.unity.modules.subsystems@1.0.0\package.json" />
      <None Include="Library\PackageCache\com.unity.modules.jsonserialize@1.0.0\package.json" />
