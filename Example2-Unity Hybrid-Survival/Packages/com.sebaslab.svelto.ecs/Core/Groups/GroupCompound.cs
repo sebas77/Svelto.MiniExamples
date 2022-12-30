@@ -280,6 +280,7 @@ namespace Svelto.ECS
 
         public static ExclusiveBuildGroup BuildGroup => new ExclusiveBuildGroup(_Groups[0]);
 
+        //TODO there is an overlap between this method and ExclusiveGroupExtensions FoundIn
         public static bool Includes(ExclusiveGroupStruct group)
         {
             DBC.ECS.Check.Require(group != ExclusiveGroupStruct.Invalid, "invalid group passed");

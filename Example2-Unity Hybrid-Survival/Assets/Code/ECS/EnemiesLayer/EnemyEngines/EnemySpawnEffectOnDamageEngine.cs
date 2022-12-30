@@ -40,20 +40,22 @@ namespace Svelto.ECS.Example.Survive.Enemies
 
             void RefHelper()
             {
-                var deadEntitiesFilter =
+                var damagedEntitiesFilter =
                         _sveltoFilters.GetTransientFilter<HealthComponent>(FilterIDs.damagedEntitiesFilter);
 
-                foreach (var (filteredIndices, group) in deadEntitiesFilter)
+                //iterate the subset of entities that are damaged
+                foreach (var (filteredIndices, group) in damagedEntitiesFilter)
                 {
-                    if (EnemiesGroup.Includes(group)) //is it an enemy?
+                    if (EnemyAliveGroup.Includes(group)) //is it an enemy?
                     {
                         var (damage, vfx, sound, _) =
-                                entitiesDB.QueryEntities<DamageableComponent, VFXComponent, DamageSoundComponent>(
+                                entitiesDB.QueryEntities<DamageableComponent, VFXComponent, SoundComponent>(
                                     group);
 
                         var indicesCount = filteredIndices.count;
                         for (int i = 0; i < indicesCount; i++)
                         {
+                            //remember: filters work with double indexing
                             var filteredIndex = filteredIndices[i];
                             
                             sound[filteredIndex].playOneShot = (int)AudioType.damage;

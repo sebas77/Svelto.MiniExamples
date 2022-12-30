@@ -7,6 +7,7 @@ namespace Svelto.ECS.Example.Survive.HUD
         float speed      { get; }
         Color flashColor { get; }
         Color imageColor { set; get; }
+        AnimationState animationState { set; }
     }
 
     public interface IHealthSliderComponent

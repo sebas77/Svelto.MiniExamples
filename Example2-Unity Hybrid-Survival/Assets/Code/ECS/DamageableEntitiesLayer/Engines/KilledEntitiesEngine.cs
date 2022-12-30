@@ -6,7 +6,7 @@
     /// happening may not have to happen in the same code. This engine is also taking the responsibility of deciding
     /// if the entity must die or not and will communicate it through the use of the Publisher/Consumer pattern.
     /// </summary>
-    public class  DispatchKilledEntitiesEngine : IQueryingEntitiesEngine, IStepEngine
+    public class KilledEntitiesEngine : IQueryingEntitiesEngine, IStepEngine
     {
         EntitiesDB.SveltoFilters _sveltoFilters;
 
@@ -40,6 +40,6 @@
             }
         }
 
-        public string name => nameof(DispatchKilledEntitiesEngine);
+        public string name => nameof(KilledEntitiesEngine);
     }
 }

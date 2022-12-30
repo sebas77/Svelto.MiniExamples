@@ -23,7 +23,7 @@ namespace Svelto.ECS.Example.Survive.Player
                 //although this game has just one player, iterating like this is a svelto pattern that works on
                 //0, 1 or N entities
                 foreach (var ((playerComponents, _), _) in
-                         entitiesDB.QueryEntities<PlayerInputDataComponent>(PlayerGroup.Groups))
+                         entitiesDB.QueryEntities<PlayerInputDataComponent>(PlayerAliveGroup.Groups))
                 {
                     //of course in this example we can assume we have just one player
                     {

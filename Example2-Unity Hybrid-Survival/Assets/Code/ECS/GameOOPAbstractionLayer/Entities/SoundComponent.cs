@@ -1,6 +1,6 @@
 namespace Svelto.ECS.Example.Survive.OOPLayer
 {
-    public struct DamageSoundComponent : IEntityComponent
+    public struct SoundComponent : IEntityComponent
     {
         public int playOneShot; 
     }

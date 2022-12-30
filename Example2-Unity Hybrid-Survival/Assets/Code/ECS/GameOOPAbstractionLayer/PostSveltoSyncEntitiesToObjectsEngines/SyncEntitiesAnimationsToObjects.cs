@@ -25,7 +25,7 @@ namespace Svelto.ECS.Example.Survive.OOPLayer
                 {
                     ref var animationState = ref animations[i].animationState;
 
-                    if (animationState.animationID != 0)
+                    if (animationState.hasBeenSet == true)
                     {
                         var go = _manager[entity[i].resourceIndex];
 
@@ -33,6 +33,8 @@ namespace Svelto.ECS.Example.Survive.OOPLayer
                         var animator = go.GetComponent<Animator>();
 
                         animator.SetBool(animationState.animationID, animationState.state);
+
+                        animationState.hasBeenSet = false;
                     }
                 }
             }

@@ -1,7 +1,6 @@
 ﻿using Svelto.DataStructures;
-using Svelto.ECS.Example.Survive.HUD;
 
-namespace Svelto.ECS.Example.Survive
+namespace Svelto.ECS.Example.Survive.HUD
 {
     public static class HudLayerContext
     {
@@ -9,21 +8,21 @@ namespace Svelto.ECS.Example.Survive
         /// HudLayer is the only layer in this example that will interface with gameobject using the Svelto Implementors
         /// technique. Which is fine for simple GUI like ths one.
         /// </summary>
-        public static void Setup(IEntityStreamConsumerFactory entityStreamConsumerFactory,
-            FasterList<IStepEngine> unorderedEngines, FasterList<IStepEngine> orderedEngines, EnginesRoot enginesRoot)
+        public static void Setup(FasterList<IStepEngine> orderedEngines, EnginesRoot enginesRoot)
         {
             //hud engines
-            var hudEngine = new HUDEngine(entityStreamConsumerFactory);
-            var scoreEngine = new UpdateScoreEngine(entityStreamConsumerFactory);
+            var hudEngine = new HUDEngine();
+            var scoreEngine = new UpdateScoreEngine();
             var restartGameOnPlayerDeath = new RestartGameOnPlayerDeathEngine();
 
             enginesRoot.AddEngine(hudEngine);
             enginesRoot.AddEngine(scoreEngine);
+            enginesRoot.AddEngine(restartGameOnPlayerDeath);
 
-            unorderedEngines.Add(hudEngine);
-            orderedEngines.Add(scoreEngine);
+            var unsortedDamageEngines = new HUDEngines(
+                new FasterList<IStepEngine>(hudEngine, scoreEngine, restartGameOnPlayerDeath));
             
-            unorderedEngines.Add(restartGameOnPlayerDeath);
+            orderedEngines.Add(unsortedDamageEngines);
         }
     }
 }

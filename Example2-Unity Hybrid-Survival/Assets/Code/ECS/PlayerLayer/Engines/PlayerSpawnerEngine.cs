@@ -46,7 +46,7 @@ namespace Svelto.ECS.Example.Survive.Player
             //ECSGroups.Player is the group where the entity player will be built. I usually expect a 
             //group for entity descriptor. It is the safest way to go, but advanced users may decide to use different
             //groups layout if needed.
-            playerInitializer = _entityFactory.BuildEntity<PlayerEntityDescriptor>(0, PlayerGroup.BuildGroup);
+            playerInitializer = _entityFactory.BuildEntity<PlayerEntityDescriptor>(0, PlayerAliveGroup.BuildGroup);
 
             //BuildEntity returns an initializer that can be used to initialise all the entity components generated
             //by the entity descriptor. In this case I am initializing just the Health.

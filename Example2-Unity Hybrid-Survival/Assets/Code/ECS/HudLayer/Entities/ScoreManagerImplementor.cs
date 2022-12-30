@@ -1,9 +1,8 @@
-using Svelto.ECS.Example.Survive.HUD;
 using Svelto.ECS.Hybrid;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Svelto.ECS.Example.Survive.Implementors.HUD
+namespace Svelto.ECS.Example.Survive.HUD
 {
     public class ScoreManagerImplementor : MonoBehaviour, IImplementor, IScoreComponent
     {

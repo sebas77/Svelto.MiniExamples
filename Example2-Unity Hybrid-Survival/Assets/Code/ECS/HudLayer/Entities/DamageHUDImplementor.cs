@@ -1,9 +1,8 @@
-using Svelto.ECS.Example.Survive.HUD;
 using Svelto.ECS.Hybrid;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Svelto.ECS.Example.Survive.Implementors.HUD
+namespace Svelto.ECS.Example.Survive.HUD
 {
     public class DamageHUDImplementor : MonoBehaviour, IImplementor, IDamageHUDComponent
     {
@@ -15,8 +14,18 @@ namespace Svelto.ECS.Example.Survive.Implementors.HUD
 
         public Color imageColor { get => _image.color; set => _image.color = value; }
 
-        void  Awake() { _image = GetComponent<Image>(); }
+        public AnimationState animationState
+        {
+            set => _animator.SetBool(HUDAnimations.GameOver, true);
+        }
+
+        void Awake()
+        {
+            _animator = transform.parent.GetComponent< Animator>(); //this should be in a separate implementor, but at this point I couldn't be bothered
+            _image = GetComponent<Image>();
+        }
         
         Image _image;
+        Animator _animator;
     }
 }

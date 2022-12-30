@@ -36,9 +36,9 @@ namespace Svelto.ECS.Example.Survive.Enemies
 
             foreach (var (filteredIndices, group) in deadEntitiesFilter)
             {
-                if (EnemiesGroup.Includes(group)) //is it an enemy?
+                if (EnemyAliveGroup.Includes(group)) //is it an enemy?
                 {
-                    var (animation, sound, entityIDs, _) = entitiesDB.QueryEntities<AnimationComponent, DamageSoundComponent>(group);
+                    var (animation, sound, entityIDs, _) = entitiesDB.QueryEntities<AnimationComponent, SoundComponent>(group);
                     var indicesCount = filteredIndices.count;
                     for (int i = 0; i < indicesCount; i++)
                     {
@@ -62,7 +62,7 @@ namespace Svelto.ECS.Example.Survive.Enemies
         public void Remove((uint start, uint end) rangeOfEntities, in EntityCollection<EnemyComponent> entities,
             ExclusiveGroupStruct groupID)
         {
-            if (DeadEnemiesGroup.Includes(groupID))
+            if (EnemyDeadGroup.Includes(groupID)) //is a dead enemy?
             {
                 var (enemies, _) = entities;
                 var (gos, _) = entitiesDB.QueryEntities<GameObjectEntityComponent>(groupID);
@@ -82,7 +82,7 @@ namespace Svelto.ECS.Example.Survive.Enemies
             in EntityCollection<EnemyComponent> entities,
             ExclusiveGroupStruct fromGroup, ExclusiveGroupStruct toGroup)
         {
-            if (DeadEnemiesGroup.Includes(toGroup))
+            if (EnemyDeadGroup.Includes(toGroup)) //is an enemy just killed?
             {
                 var (gos, navs, _) = entitiesDB.QueryEntities<GameObjectEntityComponent, NavMeshComponent>(toGroup);
 
@@ -99,7 +99,7 @@ namespace Svelto.ECS.Example.Survive.Enemies
         {
             //Any build/swap/remove do not happen immediately, but at specific sync points
             //swapping group because we don't want any engine to pick up this entity while it's animating for death
-            _entityFunctions.SwapEntityGroup<EnemyEntityDescriptor>(egid, DeadEnemiesGroup.BuildGroup);
+            _entityFunctions.SwapEntityGroup<EnemyEntityDescriptor>(egid, EnemyDeadGroup.BuildGroup);
 
             //wait for the swap to happen
             while (_waitForSubmission.MoveNext())
@@ -108,7 +108,7 @@ namespace Svelto.ECS.Example.Survive.Enemies
             var wait = new WaitForSecondsEnumerator(1);
 
             //new egid after the swap
-            var newEgid = new EGID(egid.entityID, DeadEnemiesGroup.BuildGroup);
+            var newEgid = new EGID(egid.entityID, EnemyDeadGroup.BuildGroup);
             
             //sinking for 2 seconds
             while (wait.MoveNext())

@@ -3,7 +3,7 @@ using Svelto.ECS.Example.Survive.OOPLayer;
 
 namespace Svelto.ECS.Example.Survive.Enemies
 {
-    public class EnemyMovementEngine : IQueryingEntitiesEngine, IStepEngine
+    public class EnemyMovementEngine: IQueryingEntitiesEngine, IStepEngine
     {
         public EntitiesDB entitiesDB { set; private get; }
 
@@ -13,12 +13,16 @@ namespace Svelto.ECS.Example.Survive.Enemies
         {
             void RefHelper()
             {
-                foreach (var ((targetsPosition, _), _) in entitiesDB.QueryEntities<PositionComponent>(EnemyTarget.Groups))
+                //note I am exploring the EnemyTarget tag to get the players without knowing anything from the player layer
+                //enemyTarget tag is in fact provided by this layer and used by the player layer to identify 
+                //player entities as enemy targets
+                foreach (var ((targetsPosition, _), _) in entitiesDB.QueryEntities<PositionComponent>(
+                             EnemyTarget.Groups))
                 {
                     //If there were more than one player, this must be smarter, for example choose the target
                     //according the distance
                     foreach (var ((enemies, enemiesCount), _) in entitiesDB.QueryEntities<NavMeshComponent>(
-                        EnemiesGroup.Groups))
+                                 EnemyAliveGroup.Groups))
                     {
                         //using always the first target because in this case I know there can be only one, but if 
                         //there were more, I could use different strategies, like choose the closest. This is 
@@ -37,8 +41,8 @@ namespace Svelto.ECS.Example.Survive.Enemies
             }
         }
 
-        public void   Step() { _tick.MoveNext(); }
-        public string name   => nameof(EnemyMovementEngine);
+        public void Step() { _tick.MoveNext(); }
+        public string name => nameof(EnemyMovementEngine);
 
         IEnumerator _tick;
     }

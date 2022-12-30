@@ -59,6 +59,7 @@
      <Compile Include="Assets\Code\ECS\PlayerLayer\Entities\PlayerInputDataComponent.cs" />
      <Compile Include="Assets\Code\ECS\PlayerLayer\Entities\PlayerEntityDescriptor.cs" />
      <Compile Include="Assets\Code\ECS\PlayerLayer\Entities\Gun\PlayerGunEntityDescriptor.cs" />
+     <Compile Include="Assets\Code\ECS\PlayerLayer\Engines\PlayerDamagedEngine.cs" />
      <Folder Include="Assets\Code\ECS\PlayerLayer\Engines" />
      <Folder Include="Assets\Code\ECS\PlayerLayer" />
      <Folder Include="Assets\Code\ECS\PlayerLayer\Entities\Gun" />

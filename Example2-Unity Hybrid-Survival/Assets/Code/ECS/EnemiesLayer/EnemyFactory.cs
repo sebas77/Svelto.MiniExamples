@@ -31,7 +31,7 @@ namespace Svelto.ECS.Example.Survive
                 //to index the entity in the Svelto database. However I want in this demo how to not rely on it.
                 EntityInitializer initializer =
                         _entityFactory.BuildEntity<EnemyEntityDescriptor>(
-                            new EGID(_enemiesCreated++, EnemiesGroup.BuildGroup));
+                            new EGID(_enemiesCreated++, EnemyAliveGroup.BuildGroup));
 
                 entityReferenceHolder.reference = initializer.reference.ToULong();
                 //Initialize the pure EntityStructs. This should be the preferred pattern, there is much less boiler plate

@@ -2,6 +2,7 @@
 {
     public enum PlayerEnginesNames
     {
-        PlayerDeathEngine
+        PlayerDeathEngine,
+        PlayerDamagedEngine
     }
 }

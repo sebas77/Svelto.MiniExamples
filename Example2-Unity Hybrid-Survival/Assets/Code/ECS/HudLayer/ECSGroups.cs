@@ -1,5 +1,5 @@
 
-namespace Svelto.ECS.Example.Survive
+namespace Svelto.ECS.Example.Survive.HUD
 {
     /// <summary>
     ///     The list of Exclusive Groups used to build Entities.

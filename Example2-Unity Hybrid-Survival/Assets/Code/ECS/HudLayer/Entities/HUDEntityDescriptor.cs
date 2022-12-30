@@ -2,7 +2,7 @@
 
 namespace Svelto.ECS.Example.Survive.HUD
 {
-    public class HUDEntityDescriptor : GenericEntityDescriptor<HUDEntityViewComponent, AnimationComponent>
+    public class HUDEntityDescriptor : GenericEntityDescriptor<HUDEntityViewComponent>
     {
     }
 }

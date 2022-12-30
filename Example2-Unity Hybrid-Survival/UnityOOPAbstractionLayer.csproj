@@ -80,7 +80,7 @@
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\PostSveltoSyncEntitiesToObjectsEngines\SyncEntitiesToObjects.cs" />
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\EnginesNames.cs" />
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\Entities\RigidBodyComponent.cs" />
-     <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\Entities\DamageSoundEntityComponent.cs" />
+     <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\Entities\SoundComponent.cs" />
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\RayCaster.cs" />
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\PostSveltoSyncEntitiesToObjectsEngines\SyncEntitiesAudioToObject.cs" />
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\PreSveltoSyncObjectsToEntitiesEngines\SyncCollisionsToEntities.cs" />

@@ -12,10 +12,10 @@
         public EntitiesDB entitiesDB { get; set; }
         public void Step()
         {
-            var groups = entitiesDB.FindGroups<GameObjectEntityComponent, DamageSoundComponent>();
+            var groups = entitiesDB.FindGroups<GameObjectEntityComponent, SoundComponent>();
             //animation sync
             foreach (var ((entity, audios, count), _) in entitiesDB
-                            .QueryEntities<GameObjectEntityComponent, DamageSoundComponent>(groups))
+                            .QueryEntities<GameObjectEntityComponent, SoundComponent>(groups))
             {
                 for (int i = 0; i < count; i++)
                 {

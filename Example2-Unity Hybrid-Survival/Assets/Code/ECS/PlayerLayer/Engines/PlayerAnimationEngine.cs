@@ -18,7 +18,7 @@ namespace Svelto.ECS.Example.Survive.Player
             //then go over asd and ask Rider or VS to deconstruct the variable,  now it should look like
             //foreach (var ((buffer1, buffer2, count), exclusiveGroupStruct) in entitiesDB.QueryEntities<PlayerInputDataComponent, PlayerEntityComponent>(Player.Groups))
             foreach (var ((animation, playersInput, count), _) in entitiesDB
-               .QueryEntities<AnimationComponent, PlayerInputDataComponent>(PlayerGroup.Groups))
+               .QueryEntities<AnimationComponent, PlayerInputDataComponent>(PlayerAliveGroup.Groups))
             {
                 for (var i = 0; i < count; i++)
                 {
@@ -28,7 +28,10 @@ namespace Svelto.ECS.Example.Survive.Player
                     var walking = input.x != 0f || input.z != 0f;
 
                     // Tell the animator whether or not the player is walking (if it's not walking is idling)
-                    animation[i].animationState = new AnimationState(PlayerAnimations.IsWalking, walking);
+                    var animationState = new AnimationState(PlayerAnimations.IsWalking, walking);
+
+                    if (!animation[i].animationState.Equals(animationState))
+                        animation[i].animationState = animationState;
                 }
             }
         }

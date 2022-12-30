@@ -1,12 +1,13 @@
 using System.Collections;
+using Svelto.ECS.Example.Survive.Damage;
 using Svelto.ECS.Example.Survive.OOPLayer;
-using UnityEngine;
+using Svelto.ECS.Example.Survive.Player;
 using UnityEngine.SceneManagement;
 
-namespace Svelto.ECS.Example.Survive
+namespace Svelto.ECS.Example.Survive.HUD
 {
-    public class RestartGameOnPlayerDeathEngine: IQueryingEntitiesEngine,
-        IReactOnAddAndRemove<GameObjectEntityComponent>, IStepEngine
+    public class RestartGameOnPlayerDeathEngine: IQueryingEntitiesEngine, IReactOnSwapEx<GameObjectEntityComponent>,
+            IStepEngine
     {
         public RestartGameOnPlayerDeathEngine()
         {
@@ -15,24 +16,26 @@ namespace Svelto.ECS.Example.Survive
 
         public EntitiesDB entitiesDB { get; set; }
 
-        public void Add(ref GameObjectEntityComponent entityComponent, EGID egid) { }
-
-        public void Remove(ref GameObjectEntityComponent entityComponent, EGID egid)
-        {
-            _execute = true;
-        }
-
         public void Ready() { }
+
+        public void MovedTo((uint start, uint end) rangeOfEntities, in EntityCollection<GameObjectEntityComponent> entities, ExclusiveGroupStruct fromGroup,
+            ExclusiveGroupStruct toGroup)
+        {
+            if (PlayerAliveGroup.Includes(fromGroup) && Dead.Includes(toGroup)) //were the entities swapped EntityTargets and just died?
+            {
+                _execute = true;
+            }
+        }
 
         IEnumerator RestartLevelAfterFewSeconds()
         {
-            WaitForSecondsEnumerator _waitForSeconds = new WaitForSecondsEnumerator(5);
+            WaitForSecondsEnumerator _waitForSeconds = new WaitForSecondsEnumerator(2);
 
             while (_waitForSeconds.MoveNext())
                 yield return null;
 
-            var guiEntityView = entitiesDB.QueryUniqueEntity<AnimationComponent>(ECSGroups.GUICanvas);
-            guiEntityView.animationState = new AnimationState(HUDAnimations.Die);
+            var guiEntityView = entitiesDB.QueryUniqueEntity<HUDEntityViewComponent>(ECSGroups.GUICanvas);
+            guiEntityView.damageHUDComponent.animationState = new AnimationState(HUDAnimations.GameOver);
 
             _waitForSeconds.Reset(2);
             while (_waitForSeconds.MoveNext())
@@ -52,10 +55,5 @@ namespace Svelto.ECS.Example.Survive
         readonly IEntityFunctions _DBFunctions;
         readonly IEnumerator _restartLevelAfterFewSeconds;
         bool _execute;
-    }
-    
-    public static class HUDAnimations
-    {
-        public static int Die =  Animator.StringToHash("GameOver");
     }
 }

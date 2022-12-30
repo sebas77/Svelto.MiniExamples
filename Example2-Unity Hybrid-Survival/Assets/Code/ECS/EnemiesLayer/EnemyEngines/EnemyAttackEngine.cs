@@ -20,14 +20,17 @@ namespace Svelto.ECS.Example.Survive.Enemies
 
         public void Step()
         {
-            foreach (var ((enemiesAttackData, collision, enemiesCount), _) in entitiesDB.QueryEntities<EnemyAttackComponent, CollisionComponent>(
-                EnemiesGroup.Groups))
+            //get all the entities with EnemyAttack and Collision Components that are in any Enemies Group
+            foreach (var ((enemiesAttackData, collision, enemiesCount), _) in entitiesDB
+                            .QueryEntities<EnemyAttackComponent, CollisionComponent>(
+                                 EnemyAliveGroup.Groups))
             {
                 for (var enemyIndex = enemiesCount - 1; enemyIndex >= 0; enemyIndex--)
                 {
                     ref var enemyAttackComponent = ref enemiesAttackData[enemyIndex];
                     ref CollisionData collisionData   = ref collision[enemyIndex].entityInRange;
 
+                    //a collision was previously registered
                     if (collisionData.collides == true)
                     {
                         enemyAttackComponent.timer += _time.deltaTime;

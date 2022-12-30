@@ -9,7 +9,7 @@ namespace Svelto.ECS.Example.Survive.Damage
         {
             //damage engines
             var applyDamageEngine = new ApplyDamageToDamageableEntitiesEngine();
-            var deathEngine = new DispatchKilledEntitiesEngine();
+            var deathEngine = new KilledEntitiesEngine();
 
             enginesRoot.AddEngine(applyDamageEngine);
             enginesRoot.AddEngine(deathEngine);

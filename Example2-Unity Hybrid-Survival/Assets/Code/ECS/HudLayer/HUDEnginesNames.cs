@@ -1,7 +1,7 @@
-﻿namespace Svelto.ECS.Example.Survive
+﻿namespace Svelto.ECS.Example.Survive.HUD
 {
     public enum HUDEnginesNames
     {
-       UpdateScoreEngine
+       HUDEngines
     }
 }

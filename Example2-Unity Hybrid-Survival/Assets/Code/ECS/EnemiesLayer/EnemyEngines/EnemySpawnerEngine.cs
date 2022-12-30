@@ -20,10 +20,11 @@ namespace Svelto.ECS.Example.Survive.Enemies
         public void Ready() { _intervaledTick = IntervaledTick(); }
         public void Step() { _intervaledTick.MoveNext(); }
         public string name => nameof(EnemySpawnerEngine);
-        
-        public void Remove((uint start, uint end) rangeOfEntities, in EntityCollection<EnemyComponent> entities, ExclusiveGroupStruct groupID)
+
+        public void Remove((uint start, uint end) rangeOfEntities, in EntityCollection<EnemyComponent> entities,
+            ExclusiveGroupStruct groupID)
         {
-            if (groupID.FoundIn(DeadEnemiesGroup.Groups))
+            if (groupID.FoundIn(EnemyDeadGroup.Groups))
                 _numberOfEnemyToSpawn += (int)rangeOfEntities.end - (int)rangeOfEntities.start;
         }
 

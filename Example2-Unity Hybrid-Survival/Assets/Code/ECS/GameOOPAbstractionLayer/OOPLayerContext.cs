@@ -17,7 +17,6 @@ namespace Svelto.ECS.Example.Survive.OOPLayer
             var syncObjectsToEntitiesGroup = new SyncObjectsToEntities();
 
             IStepEngine syncEngine = null;
-
             
             //pre-svelto engines
             syncEngine = new SyncObjectsToGuns(gameObjectResourceManager);

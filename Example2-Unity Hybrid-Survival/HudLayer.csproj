@@ -54,6 +54,8 @@
      <Compile Include="Assets\Code\ECS\HudLayer\ECSGroups.cs" />
      <Compile Include="Assets\Code\ECS\HudLayer\Entities\HUDEntityDescriptorHolder.cs" />
      <Compile Include="Assets\Code\ECS\HudLayer\Engines\RestartGameOnPlayerDeathEngine.cs" />
+     <Compile Include="Assets\Code\ECS\HudLayer\Engines\HUDEngines.cs" />
+     <Compile Include="Assets\Code\ECS\HudLayer\HUDAnimations.cs" />
      <None Include="Assets\Code\ECS\HudLayer\HudLayer.asmdef" />
      <Folder Include="Assets\Code\ECS\HudLayer\Engines" />
      <Folder Include="Assets\Code\ECS\HudLayer" />

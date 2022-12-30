@@ -22,14 +22,15 @@ namespace Svelto.ECS.Example.Survive.Enemies
             var enemySpawnerEngine = new EnemySpawnerEngine(enemyFactory);
             var enemyDeathEngine = new EnemyDeathEngine(entityFunctions,
                 time, waitForSubmissionEnumerator, gameObjectResourceManager);
+            var enemyTargetDeadEngine = new EnemyChangeAnimationOnTargetDeathEngine();
 
 //enemy engines
             enginesRoot.AddEngine(enemySpawnerEngine);
             enginesRoot.AddEngine(enemyAttackEngine);
             enginesRoot.AddEngine(enemyMovementEngine);
-            //enginesRoot.AddEngine(enemyAnimationEngine);
             enginesRoot.AddEngine(enemyDeathEngine);
             enginesRoot.AddEngine(enemyDamageFXEngine);
+            enginesRoot.AddEngine(enemyTargetDeadEngine);
 
             unorderedEngines.Add(enemySpawnerEngine);
             unorderedEngines.Add(enemyMovementEngine);

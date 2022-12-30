@@ -2,6 +2,7 @@ using System;
 using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.ECS.Example.Survive.Damage;
+using Svelto.ECS.Example.Survive.HUD;
 using Svelto.ECS.Example.Survive.OOPLayer;
 using Svelto.ECS.Example.Survive.Player;
 using Svelto.ECS.Example.Survive.Player.Gun;
@@ -24,10 +25,18 @@ namespace Svelto.ECS.Example.Survive
                 nameof(DamageEnginesNames.DamageUnsortedEngines),
                 nameof(EnemyEnginesNames.EnemySpawnEffectOnDamage), 
                 nameof(EnemyEnginesNames.EnemyDeathEngine),
+                nameof(PlayerEnginesNames.PlayerDamagedEngine),
                 nameof(PlayerEnginesNames.PlayerDeathEngine),
-                nameof(HUDEnginesNames.UpdateScoreEngine),
+                nameof(HUDEnginesNames.HUDEngines),
+                //SubmissionEngine awkward note: enemies spawned on this frame won't synchronise to the gameobjects
+                //if they are not submitted before PostSveltoUpdate is called. A solution to the problem could be to
+                //react on add so the synchronization happens during the submission, but this would mean to have two
+                //sync points: one every frame and one on creation
+                //on the other hand, entities removed this frame won't be synchronised, so if sounds play on death
+                //they won't be played because the entities are already removed. Again this could be solved with
+                //a react on remove.
                 nameof(TickEngineNames.SubmissionEngine),
-                nameof(GameObjectsEnginesNames.PostSveltoUpdateSyncEngines),
+                nameof(GameObjectsEnginesNames.PostSveltoUpdateSyncEngines), 
         };
     }
 
