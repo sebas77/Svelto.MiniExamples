@@ -6,16 +6,17 @@ using UnityEngine;
 
 namespace Svelto.ECS.Example.Survive.Player.Gun
 {
-    [Sequenced(nameof(PlayerGunEnginesNames.PlayerGunShootingEngine))]
-    public class PlayerFiresGunEngine : IQueryingEntitiesEngine, IStepEngine
+    [Sequenced(nameof(PlayerGunEnginesNames.PlayerFiresGunEngine))]
+    public class PlayerFiresGunEngine: IQueryingEntitiesEngine, IStepEngine
     {
-        public PlayerFiresGunEngine(IRayCaster rayCaster, ITime time, int shootableLayer, int environmentMask, int enemyMask)
+        public PlayerFiresGunEngine(IRayCaster rayCaster, ITime time, int shootableLayer, int environmentMask,
+            int enemyMask)
         {
-            _rayCaster      = rayCaster;
-            _time           = time;
-            _shootTick      = Tick();
+            _rayCaster = rayCaster;
+            _time = time;
+            _shootTick = Tick();
             _shootableLayer = shootableLayer;
-            _environmentMask  = environmentMask;
+            _environmentMask = environmentMask;
             _enemyMask = enemyMask;
         }
 
@@ -35,16 +36,13 @@ namespace Svelto.ECS.Example.Survive.Player.Gun
         /// </summary>
         /// <param name="gunComponent"></param>
         /// <param name="gunOopFxComponent"></param>
-        /// <param name="gunFxComponentID"></param>
-        void Shoot(ref GunComponent gunComponent, in GunOOPEntityComponent gunOopFxComponent,
-            EGID gunFxComponentID)
+        void Shoot(ref GunComponent gunComponent, ref GunOOPEntityComponent gunOopFxComponent)
         {
-            gunComponent.timer = 0;
-
             Ray shootRay = gunOopFxComponent.shootRay;
 
             //CheckHit returns the EGID of the entity linked to the gameobject hit
-            var hit = _rayCaster.CheckHit(shootRay, gunComponent.range, _shootableLayer, _environmentMask, _enemyMask,
+            var hit = _rayCaster.CheckHit(
+                shootRay, gunComponent.range, _shootableLayer, _environmentMask, _enemyMask,
                 out var point, out var referenceID);
 
             //invalid entity reference is a valid return from CheckHit, it means that something has been hit but it's not an entity
@@ -60,36 +58,31 @@ namespace Svelto.ECS.Example.Survive.Player.Gun
                     }
                 }
 
-                gunComponent.lastTargetPosition = point;
+                gunOopFxComponent.lineEndPosition = point;
             }
             else
-                gunComponent.lastTargetPosition = shootRay.origin + shootRay.direction * gunComponent.range;
-
-            entitiesDB.PublishEntityChange<GunComponent>(gunFxComponentID);
+                gunOopFxComponent.lineEndPosition = shootRay.origin + shootRay.direction * gunComponent.range;
         }
-        
+
         IEnumerator Tick()
         {
-            void Shoot()
-            {
-                var (weapons, oopComponent, IDs, count) = entitiesDB
-                   .QueryEntities<GunComponent, GunOOPEntityComponent>(PlayerGun.Gun.Group);
-                
-                for (var i = count - 1; i >= 0; i--)
-                {
-                    ref GunComponent playerGunComponent = ref weapons[i];
-                    playerGunComponent.timer += _time.deltaTime;
-
-                    if (playerGunComponent.fired && playerGunComponent.timer >= playerGunComponent.timeBetweenBullets)
-                    {
-                        this.Shoot(ref playerGunComponent, oopComponent[i], new EGID(IDs[i], PlayerGun.Gun.Group));
-                    }
-                }
-            }
-
             while (true)
             {
-                Shoot();
+                var (weapons, gunOOPcomponent, count) = entitiesDB
+                       .QueryEntities<GunComponent, GunOOPEntityComponent>(PlayerGun.Gun.Group);
+
+                for (int i = count - 1; i >= 0; i--)
+                {
+                    weapons[i].timer += _time.deltaTime;
+
+                    if (weapons[i].fired && weapons[i].timer >= weapons[i].timeBetweenBullets)
+                    {
+                        weapons[i].timer = 0;
+                        
+                        Shoot(ref weapons[i], ref gunOOPcomponent[i]);
+                        gunOOPcomponent[i].effectsEnabledForTime = weapons[i].timeBetweenBullets * 0.2f;
+                    }
+                }
 
                 yield return null;
             }
@@ -103,7 +96,7 @@ namespace Svelto.ECS.Example.Survive.Player.Gun
         readonly IRayCaster _rayCaster;
 
         readonly IEnumerator _shootTick;
-        readonly ITime       _time;
+        readonly ITime _time;
 
         readonly int _shootableLayer;
         readonly int _environmentMask;

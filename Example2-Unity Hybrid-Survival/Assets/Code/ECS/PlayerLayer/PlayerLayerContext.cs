@@ -6,8 +6,7 @@ namespace Svelto.ECS.Example.Survive.Player
 {
     public static class PlayerLayerContext
     {
-        public static void Setup(IRayCaster rayCaster, ITime time, IEntityFunctions entityFunctions,
-            IEntityStreamConsumerFactory entityStreamConsumerFactory, FasterList<IStepEngine> unorderedEngines,
+        public static void Setup(IRayCaster rayCaster, ITime time, IEntityFunctions entityFunctions, FasterList<IStepEngine> unorderedEngines,
             FasterList<IStepEngine> orderedEngines, EnginesRoot enginesRoot)
         {
             //Player related engines. ALL the dependencies must be solved at this point through constructor injection.
@@ -20,7 +19,6 @@ namespace Svelto.ECS.Example.Survive.Player
             var playerAnimationEngine = new PlayerAnimationEngine();
             var playerDeathEngine = new PlayerDeathEngine(entityFunctions);
             var playerInputEngine = new PlayerInputEngine();
-            var playerGunShootingFXsEngine = new PlayerGunShootingFXsEngine(entityStreamConsumerFactory);
             var PlayerDamagedEngine = new PlayerDamagedEngine();
 
 //Player engines
@@ -28,13 +26,11 @@ namespace Svelto.ECS.Example.Survive.Player
             enginesRoot.AddEngine(playerMovementEngine);
             enginesRoot.AddEngine(playerAnimationEngine);
             enginesRoot.AddEngine(playerShootingEngine);
-            enginesRoot.AddEngine(playerGunShootingFXsEngine);
             enginesRoot.AddEngine(playerDeathEngine);
             enginesRoot.AddEngine(PlayerDamagedEngine);
     
             unorderedEngines.Add(playerInputEngine);
             unorderedEngines.Add(playerMovementEngine);
-            unorderedEngines.Add(playerGunShootingFXsEngine);
             unorderedEngines.Add(playerAnimationEngine);
 
             orderedEngines.Add(playerShootingEngine);

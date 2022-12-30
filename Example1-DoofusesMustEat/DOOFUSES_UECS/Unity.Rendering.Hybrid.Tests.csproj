@@ -41,16 +41,16 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
-     <Folder Include="Library\PackageCache\com.unity.rendering.hybrid@0.50.0-preview.24\Unity.Rendering.Hybrid.Tests" />
-     <None Include="Library\PackageCache\com.unity.rendering.hybrid@0.50.0-preview.24\Unity.Rendering.Hybrid.Tests\Unity.Rendering.Hybrid.Tests.asmdef" />
+     <Folder Include="Library\PackageCache\com.unity.rendering.hybrid@0.51.1-preview.21\Unity.Rendering.Hybrid.Tests" />
+     <None Include="Library\PackageCache\com.unity.rendering.hybrid@0.51.1-preview.21\Unity.Rendering.Hybrid.Tests\Unity.Rendering.Hybrid.Tests.asmdef" />
      <Reference Include="UnityEngine">
-     <HintPath>C:\Program Files\Unity\2020.3.42f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
+     <HintPath>C:\Program Files\Unity\2020.3.43f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
      </Reference>
      <Reference Include="UnityEngine.CoreModule">
-     <HintPath>C:\Program Files\Unity\2020.3.42f1\Editor\Data\Managed\UnityEngine\UnityEngine.CoreModule.dll</HintPath>
+     <HintPath>C:\Program Files\Unity\2020.3.43f1\Editor\Data\Managed\UnityEngine\UnityEngine.CoreModule.dll</HintPath>
      </Reference>
      <Reference Include="UnityEditor">
-     <HintPath>C:\Program Files\Unity\2020.3.42f1\Editor\Data\Managed\UnityEngine\UnityEditor.dll</HintPath>
+     <HintPath>C:\Program Files\Unity\2020.3.43f1\Editor\Data\Managed\UnityEngine\UnityEditor.dll</HintPath>
      </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

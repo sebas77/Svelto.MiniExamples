@@ -25,7 +25,6 @@
                     var go = _manager[entity[i].resourceIndex];
                     var psfx = go.GetComponent<PlayerShootingFX>();
                     gunOopEntityComponent.shootRay = psfx.shootCastRay;
-                    gunOopEntityComponent.effectsDisplayTime = psfx.effectsDisplayTime;
                 }
             }
         }

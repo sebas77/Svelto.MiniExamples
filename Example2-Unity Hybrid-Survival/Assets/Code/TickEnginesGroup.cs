@@ -1,4 +1,3 @@
-using System;
 using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.ECS.Example.Survive.Damage;
@@ -13,6 +12,17 @@ namespace Svelto.ECS.Example.Survive
     /// <summary>
     /// This struct is necessary to specify the order of execution of the engines by their type.
     /// As you can see from this example, this allow to fetch engines types from other assemblies
+    /// When SyncEngines are used, it may be tricky to sync the values properly. The expectation for each frame is:
+    /// entities are sync with objects value
+    /// svelto engines run
+    /// objects are sync with entities value
+    /// unity stuff run
+    /// however for this to be correct, the complete sequence must be
+    /// entities are sync with objects value
+    /// svelto engines run
+    /// entities are submitted
+    /// objects are sync with entities value
+    /// unity stuff run
     /// </summary>
     public struct SortedTickedEnginesOrder: ISequenceOrder
     {
@@ -20,7 +30,7 @@ namespace Svelto.ECS.Example.Survive
         {
                 nameof(GameObjectsEnginesNames.PreSveltoUpdateSyncEngines),
                 nameof(TickEngineNames.UnsortedEngines),
-                nameof(PlayerGunEnginesNames.PlayerGunShootingEngine),
+                nameof(PlayerGunEnginesNames.PlayerFiresGunEngine),
                 nameof(EnemyEnginesNames.EnemyAttackEngine),
                 nameof(DamageEnginesNames.DamageUnsortedEngines),
                 nameof(EnemyEnginesNames.EnemySpawnEffectOnDamage), 
@@ -64,17 +74,6 @@ namespace Svelto.ECS.Example.Survive
     }
     
     [Sequenced(nameof(TickEngineNames.SubmissionEngine))]
-    //When SyncEngines are used, it may be tricky to sync the values properly. The expectation for each frame is:
-    //entities are sync with objects value
-    //svelto engines run
-    //objects are sync with entities value
-    //unity stuff run
-    //however for this to be correct, the complete sequence must be
-    //entities are sync with objects value
-    //svelto engines run
-    //entities are submitted
-    //objects are sync with entities value
-    //unity stuff run
     class TickEngine: IStepEngine
     {
         public TickEngine(SimpleEntitiesSubmissionScheduler entitySubmissionScheduler)

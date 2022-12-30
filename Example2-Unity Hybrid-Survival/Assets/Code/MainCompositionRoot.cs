@@ -28,11 +28,6 @@ using UnityEngine.PlayerLoop;
 //Once the first entity descriptors are designed, it becomes simpler to start build these entities and
 //write the engines for their behaviours.
 
-//Note: this demo relies heavily on the publisher/consumer pattern. Engines can iterate quickly over entities
-//but when they react on entity changes, iterating all the entities can be a waste. Relying too much on the
-//publisher/consumer can have some drawbacks, so with Svelto.ECS 3.0 filters can be used instead. This doesn't
-//mean that filters are better than the publisher/consumer model. Each tool must be used wisely.
-
 //Main is the Application Composition Root. A Composition Root is the where all the dependencies are 
 //created and injected (I talk a lot about this in my articles) A composition root belongs to the Context, but
 //a context can have more than a composition root. For example a factory is a composition root.
@@ -75,7 +70,7 @@ namespace Svelto.ECS.Example.Survive
         ///     - IEntityComponent:
         ///     It's an Entity Component which can be used with Pure ECS
         ///     - IEntityViewComponent:
-        ///     structs implementing this are used to wrap Objects that come from OOP libraries. You will never use it unless
+        ///     components implementing this are used to wrap Objects that come from OOP libraries. You will never use it unless
         ///     you are forced to mix your ECS code with OOP code because of external libraries or platforms. These special
         ///     "Hybrid" component can hold only interfaces
         ///     - Implementors:
@@ -84,23 +79,25 @@ namespace Svelto.ECS.Example.Survive
         ///     - EntityDescriptors:
         ///     Gives a way to formalise your Entity, it also defines the components that must
         ///     be generated once the Entity is built
+        /// !!Note that both IEntityViewComponent and implementors, while still supported, must be used only
+        /// in advanced scenarios and are not recommended to be used by newcomers. This example use the
+        /// OOP abstraction layer method to interact with objects and only use implementors for the UI.
+        ///  https://www.sebaslab.com/oop-abstraction-layer-in-a-ecs-centric-application/
         /// </summary>
         void CompositionRoot(UnityContext contextHolder)
         {
-//the SimpleEntitiesSubmissionScheduler is the scheduler that is used by the EnginesRoot to know
-//when to submit the entities. Custom ones can be created for special cases. This is the simplest default and it must
+//the SimpleEntitiesSubmissionScheduler is the scheduler to know when to submit the new entities to the database.
+//Custom ones can be created for special cases. This is the simplest default and it must
 //be ticked explicitly.
             var entitySubmissionScheduler = new SimpleEntitiesSubmissionScheduler();
 //The Engines Root is the core of Svelto.ECS. You shouldn't inject the EngineRoot,
 //therefore the composition root class must hold a reference or it will be garbage collected.
             _enginesRoot = new EnginesRoot(entitySubmissionScheduler);
-//The EntityFactory can be injected inside factories (or engine acting as factories) to build new entities
+//The EntityFactory can be injected inside factories (or engines acting as factories) to build new entities
 //dynamically
             var entityFactory = _enginesRoot.GenerateEntityFactory();
-//The entity functions is a set of utility operations on Entities, including removing an entity. I couldn't
-//find a better name so far.
+//The entity functions are a set of utility operations on Entities, including removing an entity. 
             var entityFunctions = _enginesRoot.GenerateEntityFunctions();
-            var entityStreamConsumerFactory = _enginesRoot.GenerateConsumerFactory();
 
 //wrap non testable unity static classes, so that can be mocked if needed (or implementation can change in general, without changing the interface).
             IRayCaster rayCaster = new RayCaster();
@@ -118,13 +115,13 @@ namespace Svelto.ECS.Example.Survive
 
 //Setup all the layers engines
             OOPLayerContext.Setup(orderedEngines, _enginesRoot, gameObjectResourceManager);
-            DamageContextLayer.DamageLayerSetup(entityStreamConsumerFactory, _enginesRoot, orderedEngines);
+            DamageContextLayer.DamageLayerSetup(_enginesRoot, orderedEngines);
             CameraLayerContext.Setup(unorderedEngines, _enginesRoot);
             PlayerLayerContext.Setup(
-                rayCaster, time, entityFunctions, entityStreamConsumerFactory, unorderedEngines, orderedEngines,
+                rayCaster, time, entityFunctions, unorderedEngines, orderedEngines,
                 _enginesRoot);
             EnemyLayerContext.EnemyLayerSetup(
-                entityFactory, entityStreamConsumerFactory, time, entityFunctions,
+                entityFactory, time, entityFunctions,
                 unorderedEngines, orderedEngines, new WaitForSubmissionEnumerator(entitySubmissionScheduler),
                 _enginesRoot, gameObjectResourceManager);
             HudLayerContext.Setup(orderedEngines, _enginesRoot);

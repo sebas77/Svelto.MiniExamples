@@ -5,8 +5,7 @@ namespace Svelto.ECS.Example.Survive.Enemies
 {
     public static class EnemyLayerContext
     {
-        public static void EnemyLayerSetup(IEntityFactory entityFactory,
-            IEntityStreamConsumerFactory entityStreamConsumerFactory, ITime time, IEntityFunctions entityFunctions,
+        public static void EnemyLayerSetup(IEntityFactory entityFactory, ITime time, IEntityFunctions entityFunctions,
             FasterList<IStepEngine> unorderedEngines, FasterList<IStepEngine> orderedEngines,
             WaitForSubmissionEnumerator waitForSubmissionEnumerator, EnginesRoot enginesRoot,
             GameObjectResourceManager gameObjectResourceManager)
@@ -15,7 +14,7 @@ namespace Svelto.ECS.Example.Survive.Enemies
             var enemyFactory = new EnemyFactory(entityFactory, gameObjectResourceManager);
 //Enemy related engines
             //var enemyAnimationEngine = new EnemyChangeAnimationOnPlayerDeathEngine();
-            var enemyDamageFXEngine = new EnemySpawnEffectOnDamageEngine(entityStreamConsumerFactory);
+            var enemyDamageFXEngine = new EnemySpawnEffectOnDamageEngine();
             var enemyAttackEngine = new EnemyAttackEngine(time);
             var enemyMovementEngine = new EnemyMovementEngine();
 //Spawner engines are factories engines that can build entities

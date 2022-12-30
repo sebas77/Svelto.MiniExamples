@@ -1,4 +1,6 @@
-﻿namespace Svelto.ECS.Example.Survive.OOPLayer
+﻿using UnityEngine;
+
+namespace Svelto.ECS.Example.Survive.OOPLayer
 {
     public class SyncGunEntitiesToObjects: IQueryingEntitiesEngine, IStepEngine
     {
@@ -26,14 +28,19 @@
                     var psfx = go.GetComponent<PlayerShootingFX>();
 
                     var effectState = gunOopEntityComponent.GetStateAndReset();
-                    if (effectState == PlayState.start)
+                    switch (effectState)
                     {
-                        psfx.PlayEffects(gunOopEntityComponent.lineEndPosition);
-                    }
-                    else 
-                    if (effectState == PlayState.stop)
-                    {
-                        psfx.StopEffects();
+                        case PlayState.start:
+                            psfx.PlayEffects(gunOopEntityComponent.lineEndPosition);
+                            break;
+                        case PlayState.stop:
+                            psfx.StopEffects();
+                            break;
+                        case PlayState.play:
+                            gunOopEntityComponent.effectsEnabledForTime -= Time.deltaTime;
+                            if (gunOopEntityComponent.effectsEnabledForTime <= 0)
+                                gunOopEntityComponent.effectsEnabled = false;
+                            break;
                     }
                 }
             }

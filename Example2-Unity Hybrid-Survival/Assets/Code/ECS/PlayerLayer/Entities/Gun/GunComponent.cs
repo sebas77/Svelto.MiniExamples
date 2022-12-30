@@ -8,7 +8,6 @@ namespace Svelto.ECS.Example.Survive.Player.Gun
         public float   range;
         public int     damagePerShot;
         public float   timer;
-        public Vector3 lastTargetPosition;
 
         public bool fired;
     }

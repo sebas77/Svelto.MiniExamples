@@ -2,6 +2,6 @@
 {
     public enum PlayerGunEnginesNames
     {
-        PlayerGunShootingEngine
+        PlayerFiresGunEngine
     }
 }

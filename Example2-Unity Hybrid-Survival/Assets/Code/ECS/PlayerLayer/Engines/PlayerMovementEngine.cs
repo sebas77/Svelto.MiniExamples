@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Svelto.ECS.Example.Survive.Player
 {
-    public class PlayerMovementEngine : IQueryingEntitiesEngine, IStepEngine
+    public class PlayerMovementEngine : IQueryingEntitiesEngine, IStepEngine, IReactOnSwapEx<RigidBodyComponent>
     {
         const float camRayLength = 100f; // The length of the ray from the camera into the scene.
 
@@ -23,6 +23,20 @@ namespace Svelto.ECS.Example.Survive.Player
         public void Step() => _tick.MoveNext();
 
         public string name => nameof(PlayerMovementEngine);
+        
+        public void MovedTo((uint start, uint end) rangeOfEntities, in EntityCollection<RigidBodyComponent> entities, ExclusiveGroupStruct fromGroup,
+            ExclusiveGroupStruct toGroup)
+        {
+            if (toGroup == PlayerDeadGroup.BuildGroup)
+            {
+                var (buffer, _) = entities;
+
+                for (int i = (int)rangeOfEntities.start; i < rangeOfEntities.end; i++)
+                {
+                    buffer[i].velocity = default;
+                }
+            }
+        }
 
         IEnumerator Tick()
         {

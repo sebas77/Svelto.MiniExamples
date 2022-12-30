@@ -9,7 +9,7 @@ namespace Svelto.ECS.Example.Survive.Enemies
     [Sequenced(nameof(EnemyEnginesNames.EnemySpawnEffectOnDamage))]
     public class EnemySpawnEffectOnDamageEngine: IQueryingEntitiesEngine, IStepEngine
     {
-        public EnemySpawnEffectOnDamageEngine(IEntityStreamConsumerFactory consumerFactory)
+        public EnemySpawnEffectOnDamageEngine()
         {
             //this consumer will process only changes from DamageableComponent published from the EnemiesGroup
             _checkForEnemyDamage = SpawnEffectOnDamage();

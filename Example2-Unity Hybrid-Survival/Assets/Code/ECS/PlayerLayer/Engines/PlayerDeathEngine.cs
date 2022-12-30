@@ -32,7 +32,7 @@ namespace Svelto.ECS.Example.Survive.Player
 
                     for (int i = 0; i < filteredIndices.count; i++)
                     {
-                        anim[filteredIndices[i]].animationState = new AnimationState((int)PlayerAnimations.Die);
+                        anim[filteredIndices[i]].animationState = new AnimationState(PlayerAnimations.Die);
                         sounds[filteredIndices[i]].playOneShot = (int)AudioType.death;
                         
                         var egid = new EGID(ids[filteredIndices[i]], group);

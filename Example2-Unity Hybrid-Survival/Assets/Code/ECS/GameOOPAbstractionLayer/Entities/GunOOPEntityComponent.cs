@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace Svelto.ECS.Example.Survive.OOPLayer
@@ -5,11 +6,10 @@ namespace Svelto.ECS.Example.Survive.OOPLayer
     public struct GunOOPEntityComponent : IEntityComponent
     {
         public Ray shootRay { get; internal set; }
-        public float effectsDisplayTime { get; internal set; }
 
         public Vector3 lineEndPosition;
         
-        public bool effectsEnabled
+        internal bool effectsEnabled
         {
             set
             {
@@ -37,6 +37,19 @@ namespace Svelto.ECS.Example.Survive.OOPLayer
 
         bool _play;
         bool _playChanged;
+        float _effectsEnabledForTime;
+
+        public float effectsEnabledForTime
+        {
+            set
+            {
+                if (_effectsEnabledForTime <= 0)
+                    effectsEnabled = true;
+                
+                _effectsEnabledForTime = value;
+            }
+            internal readonly get { return _effectsEnabledForTime; }
+        }
     }
 
     enum PlayState

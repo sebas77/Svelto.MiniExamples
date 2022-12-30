@@ -12,10 +12,9 @@
         public EntitiesDB entitiesDB { get; set; }
         public void Step()
         {
-            //only enemies
             var groups = entitiesDB.FindGroups<GameObjectEntityComponent>();
             
-            foreach (var ((gos, count), currentGroup) in entitiesDB
+            foreach (var ((gos, count), _) in entitiesDB
                             .QueryEntities<GameObjectEntityComponent>(groups))
             {
                 for (int i = count - 1; i >= 0; i--)
