@@ -12,25 +12,26 @@ Warning: these examples may use using unofficial versions of Svelto that you won
 
 ![Image](https://github.com/sebas77/Svelto.MiniExamples/blob/master/Example1-DoofusesMustEat/2020-12-22%2016-05-22.gif)
 
-Object-less pure ECS example that shows the basics of Svelto.ECS and Svelto.Tasks.
+Object-less pure ECS example that shows the basics of Svelto.ECS. 
+Attention this demo is presented in multiple versions thanks to its flexibility.
 
 Article:
 
 http://www.sebaslab.com/svelto-mini-examples-doofuses-must-eat/
 
-Goals of the **Pure ECS** example are to: 
+### Goals of the **Pure ECS** example are to: 
 * intoduce to the concept of entity descriptors, entity structs and groups. 
 * Show the integration with UnityECS, shows the use of Svelto.Tasks 2.0 (alpha state) 
 * show the integration with Unity Jobs and Burst (using Svelto.ECS 3.0)
 * test Full jobified/burstified code with Svelto ECS 3.0
 * test integration with IL2CPP
 
-Goals of the **GameObjects** example are to: 
+### Goals of the **GameObjects** example are to: 
 * show how the OOP abtraction layer works (https://www.sebaslab.com/oop-abstraction-layer-in-a-ecs-centric-application/)
 * show how the resource managers work to interface objects and entities 
 * show that even with OOP interfacing, ECS helps to achieve high performance
 
-Goals of the **Stride example** are to: 
+### Goals of the **Stride example** are to: 
 * show a complex integration with an engine different than Unity (Stride Engine)
   
 ## Example 2: The classic Survival demo (Hybrid ECS)
@@ -85,7 +86,7 @@ Basic Platform Agnostic Svelto.ECS 3.0 example
 * Fist integration wraps gameobjects through the use of EntityViewComponents like seen in MiniExamples 2 Survival. **Attention** EntityViewComponents and Implementors are NOT reccomended to use over the second approach.
 * Second integration shows a more efficent approach, where pure ECS is used as much as possible and engines objects are synched only as late as possible.
 
-## Example 7: Awkward foundation for a possible defense game built with the magnificent engine that Stride is
+## Example 7: Awkward foundation for a possible defense game built with the awesome engine that Stride is
 
 * Goal: showing Svelto working with Stride Engine (svelto can work with any engine that supports c# natively)
 * Goal: showing how to use EntityReferences to transform hierarchies
