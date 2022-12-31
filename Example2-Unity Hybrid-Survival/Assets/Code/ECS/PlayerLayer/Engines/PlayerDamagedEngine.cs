@@ -17,7 +17,7 @@ namespace Svelto.ECS.Example.Survive.Player
         public void Step()
         {
             var damagedEntitiesFilter =
-                    _sveltoFilters.GetTransientFilter<HealthComponent>(FilterIDs.damagedEntitiesFilter);
+                    _sveltoFilters.GetTransientFilter<HealthComponent>(FilterIDs.DamagedEntitiesFilter);
 
             foreach (var (filteredIndices, group) in damagedEntitiesFilter)
             {

@@ -35,7 +35,7 @@ namespace Svelto.ECS.Example.Survive.HUD
             void RefHelper()
             {
                 var deaddEntitiesFilter =
-                        _sveltoFilters.GetTransientFilter<HealthComponent>(FilterIDs.deadEntitiesFilter);
+                        _sveltoFilters.GetTransientFilter<HealthComponent>(FilterIDs.DeadEntitiesFilter);
 
                 //iterate the subset of entities that are killed on this frame
                 foreach (var (filteredIndices, group) in deaddEntitiesFilter)

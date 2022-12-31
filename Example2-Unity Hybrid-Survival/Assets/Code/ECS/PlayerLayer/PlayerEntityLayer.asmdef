@@ -1,18 +1,14 @@
 {
     "name": "PlayerEntityLayer",
+    "rootNamespace": "",
     "references": [
         "Svelto.Common",
         "Svelto.ECS",
-        "AnimationLayer",
-        "DamageableEntityLayers",
         "CameraLayer",
         "UnityOOPAbstractionLayer",
-        "PlayerGunLayer",
         "Utility",
         "DamageableEntityLayer",
-        "TransformableLayer",
-        "EnemiesLayer",
-        "CameraOOPAbstractionLayer"
+        "EnemiesLayer"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

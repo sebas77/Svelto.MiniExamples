@@ -32,7 +32,7 @@ namespace Svelto.ECS.Example.Survive.Enemies
 
         public void Step()
         {
-            var deadEntitiesFilter = _sveltoFilters.GetTransientFilter<HealthComponent>(FilterIDs.deadEntitiesFilter);
+            var deadEntitiesFilter = _sveltoFilters.GetTransientFilter<HealthComponent>(FilterIDs.DeadEntitiesFilter);
 
             foreach (var (filteredIndices, group) in deadEntitiesFilter)
             {

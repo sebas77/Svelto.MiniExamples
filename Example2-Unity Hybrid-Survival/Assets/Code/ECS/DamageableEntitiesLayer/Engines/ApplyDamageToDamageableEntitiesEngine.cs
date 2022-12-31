@@ -2,8 +2,8 @@ namespace Svelto.ECS.Example.Survive.Damage
 {
     /// <summary>
     ///     The responsibility of this engine is to apply the damage to any damageable entity. The behaviour can
-    ///     be in common with any entity as multiple parameters could be added to differentiate outcome between
-    ///     entities through data. 
+    ///     be in common with any entity as multiple component parameters could be added to differentiate the outcome
+    ///     between entities through data. 
     ///     In my articles I introduce the concept of layered design, where several layers of abstractions can
     ///     co-exist. Every abstracted layer can be seen as a "framework" for the more specialized layers.
     ///     This would be part of an hypothetical "damageable entities" framework that could be distributed
@@ -11,13 +11,16 @@ namespace Svelto.ECS.Example.Survive.Damage
     /// </summary>
     public class ApplyDamageToDamageableEntitiesEngine: IQueryingEntitiesEngine, IStepEngine
     {
+        public EntitiesDB entitiesDB { set; private get; }
+        
         public void Ready()
         {
             _sveltoFilters = entitiesDB.GetFilters();
-            _sveltoFilters.CreateTransientFilter<HealthComponent>(FilterIDs.damagedEntitiesFilter);
+            //Create two transient filters, transient filters are automatically cleaned during each entity
+            //submission phase
+            _sveltoFilters.CreateTransientFilter<HealthComponent>(FilterIDs.DamagedEntitiesFilter);
+            _sveltoFilters.CreateTransientFilter<HealthComponent>(FilterIDs.DeadEntitiesFilter);
         }
-
-        public EntitiesDB entitiesDB { set; private get; }
 
         public void Step()
         {
@@ -28,11 +31,11 @@ namespace Svelto.ECS.Example.Survive.Damage
             //dynamically using filters, which can be mixed with group compounds
             //filters are a great replacement to events to create subset of entities in a given state
             var damagedEntitiesfilter = _sveltoFilters
-                   .GetTransientFilter<HealthComponent>(FilterIDs.damagedEntitiesFilter);
-
-            ///This layer provide the "Damageable" tag and expect that damagable entities are found in a compound
+                   .GetTransientFilter<HealthComponent>(FilterIDs.DamagedEntitiesFilter);
+            
+            ///This layer provide the "Damageable" tag and expects that damagable entities are found in a compound
             ///using this tag. Note that if I was expecting to have hundreds of entities, I would not have resorted
-            ///to a complete iteration and if checks. Either I would have used another filter or used a Damaged
+            ///to a complete iteration with if checks. Either I would have used another filter or used a "Damaged"
             ///tag compound 
             foreach (var ((entities, health, entityIDs, count), currentGroup) in entitiesDB
                             .QueryEntities<DamageableComponent, HealthComponent>(Damageable.Groups))
@@ -49,7 +52,26 @@ namespace Svelto.ECS.Example.Survive.Damage
                 for (int i = 0; i < count; i++)
                 {
                     health[i].currentHealth -= entities[i].damageInfo.damageToApply;
+                    
                     entities[i].damageInfo.damageToApply = 0; //reset instead to do a if may help with vectorization
+                }
+            }
+            
+            //select dead entities from damaged ones
+            var deadEntitiesFilter = _sveltoFilters.GetTransientFilter<HealthComponent>(FilterIDs.DeadEntitiesFilter);
+            foreach (var (filteredIndices, group) in damagedEntitiesfilter)
+            {
+                var (health, entityIDs, _) = entitiesDB.QueryEntities<HealthComponent>(group);
+
+                var indicesCount = filteredIndices.count;
+                for (int i = 0; i < indicesCount; ++i)
+                //filters subset groups using double indexing. It's VERY important to use the double indexing and not i directly
+                {
+                    var filteredIndex = filteredIndices[i];
+                    if (health[filteredIndex].currentHealth <= 0)
+                    {
+                        deadEntitiesFilter.Add(new EGID(entityIDs[filteredIndex], group), (uint)filteredIndex);
+                    }
                 }
             }
         }

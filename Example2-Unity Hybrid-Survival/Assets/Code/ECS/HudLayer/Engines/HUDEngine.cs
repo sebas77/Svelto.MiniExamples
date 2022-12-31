@@ -65,7 +65,7 @@ namespace Svelto.ECS.Example.Survive.HUD
             while (true)
             {
                 var damagedEntitiesFilter =
-                        _sveltoFilters.GetTransientFilter<HealthComponent>(FilterIDs.damagedEntitiesFilter);
+                        _sveltoFilters.GetTransientFilter<HealthComponent>(FilterIDs.DamagedEntitiesFilter);
                 var guiEntityView = entitiesDB.QueryUniqueEntity<HUDEntityViewComponent>(ECSGroups.GUICanvas);
 
                 RefHelper(damagedEntitiesFilter, guiEntityView);

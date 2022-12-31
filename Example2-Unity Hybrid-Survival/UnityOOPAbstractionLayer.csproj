@@ -56,7 +56,6 @@
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\Entities\CollisionComponent.cs" />
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\PostSveltoSyncEntitiesToObjectsEngines\SyncPhysicEntitiesToObjects.cs" />
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\Objects\NavMeshBehaviour.cs" />
-     <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\Entities\TransformableEntityDescriptor.cs" />
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\IRayCaster.cs" />
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\Objects\PlayerShootingFX.cs" />
      <Compile Include="Assets\Code\ECS\GameOOPAbstractionLayer\Entities\CameraOOPEntityComponent.cs" />

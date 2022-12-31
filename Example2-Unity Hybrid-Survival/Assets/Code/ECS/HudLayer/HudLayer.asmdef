@@ -1,11 +1,11 @@
 {
     "name": "HudLayer",
+    "rootNamespace": "",
     "references": [
         "Svelto.Common",
         "Svelto.ECS",
         "EnemiesLayer",
         "PlayerEntityLayer",
-        "AnimationLayer",
         "DamageableEntityLayer",
         "Utility",
         "UnityOOPAbstractionLayer"

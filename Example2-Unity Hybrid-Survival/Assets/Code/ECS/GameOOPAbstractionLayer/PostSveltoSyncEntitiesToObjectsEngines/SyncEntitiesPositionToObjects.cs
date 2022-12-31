@@ -17,7 +17,6 @@ namespace Svelto.ECS.Example.Survive.OOPLayer
         public EntitiesDB entitiesDB { get; set; }
         public void Step()
         {
-            //only cameras
             var groups = entitiesDB.FindGroups<GameObjectEntityComponent, PositionComponent>();
             //position only sync
             foreach (var ((entity, positions, count), _) in entitiesDB

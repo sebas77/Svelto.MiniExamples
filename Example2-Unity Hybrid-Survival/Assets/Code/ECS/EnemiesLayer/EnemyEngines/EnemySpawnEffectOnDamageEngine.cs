@@ -41,7 +41,7 @@ namespace Svelto.ECS.Example.Survive.Enemies
             void RefHelper()
             {
                 var damagedEntitiesFilter =
-                        _sveltoFilters.GetTransientFilter<HealthComponent>(FilterIDs.damagedEntitiesFilter);
+                        _sveltoFilters.GetTransientFilter<HealthComponent>(FilterIDs.DamagedEntitiesFilter);
 
                 //iterate the subset of entities that are damaged
                 foreach (var (filteredIndices, group) in damagedEntitiesFilter)

@@ -15,10 +15,11 @@ namespace Svelto.ECS.Example.Survive.OOPLayer
         public EntitiesDB entitiesDB { get; set; }
         public void Step()
         {
+            //Find all the subsets of entities that contains all the following components
             var groups = entitiesDB
                    .FindGroups<GameObjectEntityComponent, RotationComponent, RigidBodyComponent, PositionComponent>();
 
-            //RB sync
+            //Iterating these entities and sync the values
             foreach (var ((entity, rotation, rbs, count), _) in entitiesDB
                             .QueryEntities<GameObjectEntityComponent, RotationComponent, RigidBodyComponent>(groups))
             {
@@ -26,18 +27,12 @@ namespace Svelto.ECS.Example.Survive.OOPLayer
                 {
                     var go = _manager[entity[i].resourceIndex];
 
+                    var transform = go.transform;
                     var rb = go.GetComponent<Rigidbody>(); //in a real project I'd cached this
 
                     rb.velocity = rbs[i].velocity;
                     rb.isKinematic = rbs[i].isKinematic;
-                }
-
-                for (int i = 0; i < count; i++)
-                {
-                    var go = _manager[entity[i].resourceIndex];
-
-                    var transform = go.transform;
-
+                    
                     transform.rotation = rotation[i].rotation;
                 }
             }
