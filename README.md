@@ -40,6 +40,8 @@ http://www.sebaslab.com/svelto-mini-examples-doofuses-must-eat/
 
 Basic integration with Unity GameObjects and Monobehaviours.
 
+main article: https://www.sebaslab.com/the-new-svelto-ecs-survival-mini-example/
+
 Goal of this example: 
 
 * show the integration with OOP platforms (Unity in this case) throught the use of OOP abstraction layers.
