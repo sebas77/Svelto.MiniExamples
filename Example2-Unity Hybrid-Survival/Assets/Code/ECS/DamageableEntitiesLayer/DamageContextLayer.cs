@@ -4,7 +4,7 @@ namespace Svelto.ECS.Example.Survive.Damage
 {
     public static class DamageContextLayer
     {
-        public static void DamageLayerSetup(EnginesRoot enginesRoot, FasterList<IStepEngine> orderedEngines)
+        public static void Setup(EnginesRoot enginesRoot, FasterList<IStepEngine> orderedEngines)
         {
             //damage engines
             var applyDamageEngine = new ApplyDamageToDamageableEntitiesEngine();

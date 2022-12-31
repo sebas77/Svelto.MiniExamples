@@ -115,13 +115,11 @@ namespace Svelto.ECS.Example.Survive
 
 //Setup all the layers engines
             OOPLayerContext.Setup(orderedEngines, _enginesRoot, gameObjectResourceManager);
-            DamageContextLayer.DamageLayerSetup(_enginesRoot, orderedEngines);
+            DamageContextLayer.Setup(_enginesRoot, orderedEngines);
             CameraLayerContext.Setup(unorderedEngines, _enginesRoot);
-            PlayerLayerContext.Setup(
-                rayCaster, time, entityFunctions, unorderedEngines, orderedEngines,
+            PlayerLayerContext.Setup(rayCaster, time, entityFunctions, unorderedEngines, orderedEngines,
                 _enginesRoot);
-            EnemyLayerContext.EnemyLayerSetup(
-                entityFactory, time, entityFunctions,
+            EnemyLayerContext.Setup(entityFactory, time, entityFunctions,
                 unorderedEngines, orderedEngines, new WaitForSubmissionEnumerator(entitySubmissionScheduler),
                 _enginesRoot, gameObjectResourceManager);
             HudLayerContext.Setup(orderedEngines, _enginesRoot);

@@ -5,7 +5,7 @@ namespace Svelto.ECS.Example.Survive.Enemies
 {
     public static class EnemyLayerContext
     {
-        public static void EnemyLayerSetup(IEntityFactory entityFactory, ITime time, IEntityFunctions entityFunctions,
+        public static void Setup(IEntityFactory entityFactory, ITime time, IEntityFunctions entityFunctions,
             FasterList<IStepEngine> unorderedEngines, FasterList<IStepEngine> orderedEngines,
             WaitForSubmissionEnumerator waitForSubmissionEnumerator, EnginesRoot enginesRoot,
             GameObjectResourceManager gameObjectResourceManager)
