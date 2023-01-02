@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
@@ -33,14 +33,21 @@ namespace Svelto.ECS
     {
         public static readonly SharedStaticWrapper<int, ComponentID<T>> id;
 
-#if UNITY_BURST 
+        //todo: any reason to not do this? If I don't, I cannot Create filters in ready functions and
+        //I have to remove the CreateFilter method
+        static ComponentID()
+        {
+            Init();
+        }
+
+#if UNITY_BURST     
         [Unity.Burst.BurstDiscard] 
         //SharedStatic values must be initialized from not burstified code
 #endif
-        public static void Init()
+        static void Init()
         {
             id.Data = Interlocked.Increment(ref BurstCompatibleCounter.counter);
-
+            
             DBC.ECS.Check.Ensure(id.Data < ushort.MaxValue, "too many types registered, HOW :)");
         }
     }
@@ -69,9 +76,8 @@ namespace Svelto.ECS
             
             SetEGIDWithoutBoxing<T>.Warmup();
 #endif
-            ComponentID<T>.Init();
             ENTITY_COMPONENT_NAME = ENTITY_COMPONENT_TYPE.ToString();
-            IS_UNMANAGED = TypeType.isUnmanaged<T>(); //attention this is important as it serves as warm up for Type<T>
+            IS_UNMANAGED = TypeCache<T>.isUnmanaged; //attention this is important as it serves as warm up for Type<T>
 #if UNITY_NATIVE
             if (IS_UNMANAGED)
                 EntityComponentIDMap.Register<T>(new Filler<T>());
@@ -86,7 +92,7 @@ namespace Svelto.ECS
             else
             {
                 if (ENTITY_COMPONENT_TYPE != ComponentBuilderUtilities.ENTITY_INFO_COMPONENT &&
-                    ENTITY_COMPONENT_TYPE.IsUnmanagedEx() == false)
+                    TypeCache<T>.isUnmanaged == false)
                     throw new Exception(
                         $"Entity Component check failed, unexpected struct type (must be unmanaged) {ENTITY_COMPONENT_TYPE}");
             }

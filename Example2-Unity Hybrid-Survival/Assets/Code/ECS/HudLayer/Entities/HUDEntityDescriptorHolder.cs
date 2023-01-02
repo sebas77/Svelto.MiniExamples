@@ -1,4 +1,4 @@
-﻿using Svelto.ECS.Extensions.Unity;
+﻿using Svelto.ECS.Hybrid.Unity;
 using UnityEngine;
 
 namespace Svelto.ECS.Example.Survive.HUD

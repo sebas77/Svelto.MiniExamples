@@ -33,22 +33,22 @@ namespace Svelto.ECS
     {
         public static readonly SharedStaticWrapper<int, ComponentID<T>> id;
 
-#if UNITY_BURST     
-        [Unity.Burst.BurstDiscard] 
-        //SharedStatic values must be initialized from not burstified code
-#endif
         //todo: any reason to not do this? If I don't, I cannot Create filters in ready functions and
         //I have to remove the CreateFilter method
         static ComponentID()
         {
+            Init();
+        }
+
+#if UNITY_BURST     
+        [Unity.Burst.BurstDiscard] 
+        //SharedStatic values must be initialized from not burstified code
+#endif
+        static void Init()
+        {
             id.Data = Interlocked.Increment(ref BurstCompatibleCounter.counter);
             
             DBC.ECS.Check.Ensure(id.Data < ushort.MaxValue, "too many types registered, HOW :)");
-        }
-
-        public static void Init()
-        {
-            
         }
     }
 
@@ -76,7 +76,6 @@ namespace Svelto.ECS
             
             SetEGIDWithoutBoxing<T>.Warmup();
 #endif
-            ComponentID<T>.Init();
             ENTITY_COMPONENT_NAME = ENTITY_COMPONENT_TYPE.ToString();
             IS_UNMANAGED = TypeCache<T>.isUnmanaged; //attention this is important as it serves as warm up for Type<T>
 #if UNITY_NATIVE

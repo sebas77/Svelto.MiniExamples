@@ -25,10 +25,10 @@ namespace Svelto.ECS.Example.Survive.OOPLayer
             {
                 for (int i = 0; i < count; i++)
                 {
-                    var go = _manager[entity[i].resourceIndex];
+                    var go = _manager[entity[i].resourceIndex]; //fetch the object from the manager
 
                     var transform = go.transform;
-                    var rb = go.GetComponent<Rigidbody>(); //in a real project I'd cached this
+                    var rb = go.GetComponent<Rigidbody>(); //in a real project I'd have cached this
 
                     rb.velocity = rbs[i].velocity;
                     rb.isKinematic = rbs[i].isKinematic;

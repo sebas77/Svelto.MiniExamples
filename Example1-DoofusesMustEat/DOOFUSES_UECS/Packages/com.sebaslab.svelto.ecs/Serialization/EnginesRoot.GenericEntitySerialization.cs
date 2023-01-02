@@ -90,7 +90,7 @@ namespace Svelto.ECS
             /// <returns></returns>
             public T DeserializeEntityComponent<T>(ISerializationData serializationData,
                 ISerializableEntityDescriptor entityDescriptor, int serializationType)
-                where T : unmanaged, _IInternalEntityComponent
+                where T : unmanaged, IEntityComponent
             {
                 var readPos         = serializationData.dataPos;
                 T   entityComponent = default;
@@ -104,7 +104,7 @@ namespace Svelto.ECS
                         break;
                     }
                     else
-                        serializationData.dataPos += serializableEntityBuilder.Size(serializationType);
+                        serializationData.dataPos += (uint)serializableEntityBuilder.Size(serializationType);
                 }
 
                 serializationData.dataPos = readPos;
@@ -170,7 +170,7 @@ namespace Svelto.ECS
 
                 foreach (var serializableEntityBuilder in entityDescriptor.componentsToSerialize)
                 {
-                    componentSizeTotal += serializableEntityBuilder.Size(serializationType);
+                    componentSizeTotal += (uint)serializableEntityBuilder.Size(serializationType);
                 }
 
                 //When constructing an SerializableEntityHeader the data position of the serializationData is incremented by the size of the header.

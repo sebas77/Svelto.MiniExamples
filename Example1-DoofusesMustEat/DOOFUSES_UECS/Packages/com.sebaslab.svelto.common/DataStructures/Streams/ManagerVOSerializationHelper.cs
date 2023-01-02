@@ -1,6 +1,6 @@
 ﻿#if NEW_C_SHARP || !UNITY_5_3_OR_NEWER
 using System;
-using Svelto.DataStructures;
+using Svelto.Common;
 
 namespace Svelto.DataStructures
 {
@@ -27,7 +27,12 @@ namespace Svelto.DataStructures
         {
             if (elements.count > 0)
             {
-                var serializationSize = elements.count * elements[0].SerializationSize();
+                int serializationSize = 0;
+                foreach (ref T element in elements)
+                {
+                    serializationSize += element.SerializationSize(); //size can change if T has dynamic buffers inside
+                }
+
                 return serializationSize;
             }
 

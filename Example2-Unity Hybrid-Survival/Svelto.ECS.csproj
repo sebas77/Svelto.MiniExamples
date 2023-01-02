@@ -41,13 +41,11 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
-     <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\DOTS\UECS\JobifiedSveltoEngines.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Serialization\SerializableEntityComponent.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\DataStructures\TypeSafeDictionaryException.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\IDisposingEngine.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Groups\ExclusiveGroupBitmask.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\ECSResources\ECSResourceManager.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\DOTS\UECS\SveltoOnDOTSHandleCreationEngine.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\IEntityFunctions.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\EntityDescriptor\GenericEntityDescriptor.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\EntityFactory.cs" />
@@ -89,13 +87,9 @@
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\ComponentBuilder.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\EntityReference\EntityReference.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Filters\Legacy\EntitiesDB.LegacyFilters.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\DOTS\UECS\EntityCommandBufferForSvelto.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Serialization\DefaultSerializerUtils.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\DOTS\UECS\SyncSveltoToDOTSGroup.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Serialization\DefaultVersioningFactory.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\EntityReference\EnginesRoot.LocatorMap.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\DOTS\UECS\SveltoOnDOTSEntitiesSubmissionGroup.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\DOTS\UECS\SveltoOnDOTSHandleLifeTimeEngine.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Hybrid\IEntityViewComponent.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\EntityReference\EntityReferenceMapElement.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Svelto\EntityCollectionExtension.cs" />
@@ -107,7 +101,6 @@
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Serialization\DoNotSerializeAttribute.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\EntityDescriptor\IEntityDescriptor.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\EntityCollection.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\DOTS\UECS\DOTSSveltoEGID.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\EntitySubmitOperation.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Streams\EntityStream.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\DOTS\Jobs\UnityJobExtensions.cs" />
@@ -123,6 +116,7 @@
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Serialization\ISerializableEntityDescriptor.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Groups\ExclusiveGroupStruct.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\GameObjects\ListToPopupDrawer.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Svelto\EntitiesDBFiltersExtension.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Filters\NativeEntityFilterCollection.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Filters\Legacy\LegacyFilterGroup.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\DataStructures\ManagedTypeSafeDictionary.cs" />
@@ -142,7 +136,6 @@
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Serialization\ISerializationData.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\INeedEGID.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Filters\FilterContextID.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\DOTS\UECS\ISveltoOnDOTSSubmission.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\EntityViewUtility.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\DataStructures\TypeSafeDictionaryMethods.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\DataStructures\EntityIDs\IEntityIDs.cs" />
@@ -152,13 +145,11 @@
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Svelto\EGIDMultiMapper.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Streams\GenericentityStreamConsumerFactory.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\EntityInitializer.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\DOTS\UECS\SveltoOnDOTSEnginesGroup.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\EGID.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\GlobalTypeID.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\SetEGIDWithoutBoxing.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Filters\EntitiesDB.Filters.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\ProcessorCount.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\DOTS\UECS\SyncDOTSToSveltoGroup.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\EnginesRoot.GenericEntityFactory.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\EntityDescriptor\ExtendibleEntityDescriptor.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Native\EntityNativeDBExtensions.cs" />
@@ -228,7 +219,6 @@
      <Folder Include="Packages\com.sebaslab.svelto.ecs" />
      <Folder Include="Packages\com.sebaslab.svelto.ecs\DataStructures\EntityIDs" />
      <Folder Include="Packages\com.sebaslab.svelto.ecs\Dispatcher" />
-     <Folder Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\DOTS\UECS" />
      <Folder Include="Packages\com.sebaslab.svelto.ecs\Core\Streams" />
      <Folder Include="Packages\com.sebaslab.svelto.ecs\Serialization" />
      <None Include="Packages\com.sebaslab.svelto.ecs\package.json" />

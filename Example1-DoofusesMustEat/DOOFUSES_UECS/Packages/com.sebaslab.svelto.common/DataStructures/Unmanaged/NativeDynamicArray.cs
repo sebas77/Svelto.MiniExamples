@@ -273,7 +273,7 @@ namespace Svelto.DataStructures
                 uint size       = (uint)(count * structSize);
 
 #if ENABLE_DEBUG_CHECKS
-                using (_threadSentinel.TestThreadSafety())
+           //     using (_threadSentinel.TestThreadSafety())
                 {
 #endif
                     _list->SetCountTo((uint)size);
@@ -507,7 +507,7 @@ namespace Svelto.DataStructures
         int _hashType;
 #endif
         
-        Sentinel _threadSentinel;
+        Sentinel _threadSentinel; //A sentinel field must never be readonly and must always use the ENABLE_DEBUG_CHECKS. Using may prevent inline
 
         Allocator _allocator;
     }

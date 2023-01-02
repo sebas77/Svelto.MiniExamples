@@ -899,6 +899,10 @@
       <Project>{7a573d4a-d782-95ae-d4ec-cc8dd9df7288}</Project>
       <Name>Unity.Mathematics</Name>
     </ProjectReference>
+    <ProjectReference Include="Svelto.ECS.SveltoOnDOTS.csproj">
+      <Project>{35e2b238-15b1-ef6b-585e-e87176ed08d6}</Project>
+      <Name>Svelto.ECS.SveltoOnDOTS</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

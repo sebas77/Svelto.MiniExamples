@@ -4,11 +4,11 @@
     "references": [
         "Svelto.Common",
         "Svelto.ECS",
-        "EnemiesLayer",
-        "PlayerEntityLayer",
         "DamageableEntityLayer",
         "Utility",
-        "UnityOOPAbstractionLayer"
+        "UnityOOPAbstractionLayer",
+        "PlayerEntityLayer",
+        "EnemiesLayer"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

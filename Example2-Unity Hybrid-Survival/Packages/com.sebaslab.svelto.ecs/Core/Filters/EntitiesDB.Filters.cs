@@ -105,7 +105,7 @@ namespace Svelto.ECS
             /// <typeparam name="T"></typeparam>
             /// <returns></returns>
 #if UNITY_BURST && UNITY_COLLECTIONS
-            [Unity.Collections.NotBurstCompatible]  //not burst compatible because of  TypeRefWrapper<T>.wrapper;
+            [Unity.Burst.BurstDiscard]  //not burst compatible because of  TypeRefWrapper<T>.wrapper;
 #endif
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public ref EntityFilterCollection GetOrCreatePersistentFilter<T>(int filterID,
@@ -115,7 +115,7 @@ namespace Svelto.ECS
                 return ref GetOrCreatePersistentFilter<T>(new CombinedFilterID(filterID, filterContextId));
             }
 #if UNITY_BURST && UNITY_COLLECTIONS
-            [Unity.Collections.NotBurstCompatible] //not burst compatible because of  TypeRefWrapper<T>.wrapper;
+            [Unity.Burst.BurstDiscard] //not burst compatible because of  TypeRefWrapper<T>.wrapper;
 #endif
             public ref EntityFilterCollection GetOrCreatePersistentFilter<T>(CombinedFilterID filterID)
                     where T : unmanaged, _IInternalEntityComponent
@@ -273,7 +273,7 @@ namespace Svelto.ECS
             {
                 var combineFilterIDs = Internal_FilterHelper.CombineFilterIDs<T>(filterID);
 #if DEBUG && !PROFILE_SVELTO
-                if (_transientEntityFilters.TryFindIndex(combineFilterIDs, out var index))
+                if (_transientEntityFilters.TryFindIndex(combineFilterIDs, out _))
                     throw new Exception($"filter already exists {TypeCache<T>.name}");
 #endif
                 var filterCollection = new EntityFilterCollection(filterID);

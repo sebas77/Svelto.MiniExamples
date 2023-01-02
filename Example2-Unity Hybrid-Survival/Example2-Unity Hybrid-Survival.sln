@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.ECS", "Svelto.ECS.csproj", "{8d2eb115-c2e2-3719-ca04-08d3c302a5a1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.ECS.SveltoOnDOTS", "Svelto.ECS.SveltoOnDOTS.csproj", "{35e2b238-15b1-ef6b-585e-e87176ed08d6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnityOOPAbstractionLayer", "UnityOOPAbstractionLayer.csproj", "{4acf9cc6-6765-a5db-89c1-c202f09fdf16}"
 EndProject
@@ -12,6 +12,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.Mathematics", "Unity.Mathematics.csproj", "{7a573d4a-d782-95ae-d4ec-cc8dd9df7288}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleWebTransport", "SimpleWebTransport.csproj", "{8753cb05-0dfa-dabb-f698-0b35ce443f0e}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.ECS", "Svelto.ECS.csproj", "{8d2eb115-c2e2-3719-ca04-08d3c302a5a1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.Common", "Svelto.Common.csproj", "{53ca5d34-0f9e-ae64-6d32-8d74a6f2e9d4}"
 EndProject
@@ -90,8 +92,8 @@ Global
 		Debug|Any CPU = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{8d2eb115-c2e2-3719-ca04-08d3c302a5a1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8d2eb115-c2e2-3719-ca04-08d3c302a5a1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35e2b238-15b1-ef6b-585e-e87176ed08d6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35e2b238-15b1-ef6b-585e-e87176ed08d6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4acf9cc6-6765-a5db-89c1-c202f09fdf16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4acf9cc6-6765-a5db-89c1-c202f09fdf16}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0430568b-37f1-a040-1d86-266034325e5f}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -102,6 +104,8 @@ Global
 		{7a573d4a-d782-95ae-d4ec-cc8dd9df7288}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8753cb05-0dfa-dabb-f698-0b35ce443f0e}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8753cb05-0dfa-dabb-f698-0b35ce443f0e}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8d2eb115-c2e2-3719-ca04-08d3c302a5a1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8d2eb115-c2e2-3719-ca04-08d3c302a5a1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{53ca5d34-0f9e-ae64-6d32-8d74a6f2e9d4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{53ca5d34-0f9e-ae64-6d32-8d74a6f2e9d4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{305cd92c-d135-5769-0803-174343592e6c}.Debug|Any CPU.ActiveCfg = Debug|Any CPU

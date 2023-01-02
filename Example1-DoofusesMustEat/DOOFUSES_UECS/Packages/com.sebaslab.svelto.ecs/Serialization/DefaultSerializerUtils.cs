@@ -1,5 +1,4 @@
 using System;
-using Svelto.ECS;
 using Svelto.ECS.Internal;
 
 public static class DefaultSerializerUtils

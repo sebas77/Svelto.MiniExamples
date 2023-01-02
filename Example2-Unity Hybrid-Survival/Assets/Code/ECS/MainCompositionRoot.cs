@@ -134,7 +134,7 @@ namespace Svelto.ECS.Example.Survive
 
             BuildGUIEntitiesFromScene(contextHolder, entityFactory);
 
-            StartMainLoop(sortedEnginesGroup, entitySubmissionScheduler, playerSpanwer);
+            StartMainLoop(sortedEnginesGroup, playerSpanwer);
 
 //Attach Svelto Inspector: for more info https://github.com/sebas77/svelto-ecs-inspector-unity
 #if DEBUG
@@ -143,12 +143,11 @@ namespace Svelto.ECS.Example.Survive
         }
 
         //Svelto ECS doesn't provide a ticking system, the user is responsible for it
-        async void StartMainLoop(SortedEnginesGroup enginesToTick,
-            SimpleEntitiesSubmissionScheduler unityEntitySubmissionScheduler, PlayerFactory playerSpanwer)
+        async void StartMainLoop(SortedEnginesGroup enginesToTick, PlayerFactory playerSpanwer)
         {
             await playerSpanwer.StartSpawningPlayerTask();
 
-            RunSveltoUpdateInTheEarlyUpdate(enginesToTick, unityEntitySubmissionScheduler);
+            RunSveltoUpdateInTheEarlyUpdate(enginesToTick);
         }
 
         void BuildGUIEntitiesFromScene(UnityContext contextHolder, IEntityFactory entityFactory)
@@ -170,8 +169,7 @@ namespace Svelto.ECS.Example.Survive
                 ECSGroups.HUD, contextHolder.transform, entityFactory, true);
         }
 
-        void RunSveltoUpdateInTheEarlyUpdate(SortedEnginesGroup enginesToTick,
-            SimpleEntitiesSubmissionScheduler unityEntitySubmissionScheduler)
+        void RunSveltoUpdateInTheEarlyUpdate(SortedEnginesGroup enginesToTick)
         {
             PlayerLoopSystem defaultLoop = PlayerLoop.GetDefaultPlayerLoop();
 

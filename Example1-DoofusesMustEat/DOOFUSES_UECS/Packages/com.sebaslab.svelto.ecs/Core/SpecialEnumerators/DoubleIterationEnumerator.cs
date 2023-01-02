@@ -91,12 +91,12 @@ namespace Svelto.ECS
             int                                 _indexB;
         }
 
-        public ref struct ValueRef
+        public readonly ref struct ValueRef
         {
-            public readonly GroupsEnumerable<T1>.RefCurrent _current;
-            public readonly int                             _indexA;
-            public readonly GroupsEnumerable<T1>.RefCurrent _refCurrent;
-            public readonly int                             _indexB;
+            readonly GroupsEnumerable<T1>.RefCurrent _current;
+            readonly int                             _indexA;
+            readonly GroupsEnumerable<T1>.RefCurrent _refCurrent;
+            readonly int                             _indexB;
 
             public ValueRef
             (GroupsEnumerable<T1>.RefCurrent current, int indexA, GroupsEnumerable<T1>.RefCurrent refCurrent
@@ -223,7 +223,7 @@ namespace Svelto.ECS
             int                                     _indexB;
         }
 
-        public ref struct ValueRef
+        public readonly ref struct ValueRef
         {
             public readonly GroupsEnumerable<T1, T2>.RefCurrent _current;
             public readonly int                                 _indexA;
@@ -362,12 +362,12 @@ namespace Svelto.ECS
             int                                         _indexB;
         }
 
-        public ref struct ValueRef
+        public readonly ref struct  ValueRef
         {
-            public readonly GroupsEnumerable<T1, T2, T3>.RefCurrent _current;
-            public readonly int                                     _indexA;
-            public readonly GroupsEnumerable<T1, T2, T3>.RefCurrent _refCurrent;
-            public readonly int                                     _indexB;
+            readonly GroupsEnumerable<T1, T2, T3>.RefCurrent _current;
+            readonly int                                     _indexA;
+            readonly GroupsEnumerable<T1, T2, T3>.RefCurrent _refCurrent;
+            readonly int                                     _indexB;
 
             public ValueRef
             (GroupsEnumerable<T1, T2, T3>.RefCurrent current, int indexA

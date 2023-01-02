@@ -688,14 +688,6 @@
       <Project>{8d2eb115-c2e2-3719-ca04-08d3c302a5a1}</Project>
       <Name>Svelto.ECS</Name>
     </ProjectReference>
-    <ProjectReference Include="EnemiesLayer.csproj">
-      <Project>{5ab236e2-05ce-c020-ed35-80dc1c78838f}</Project>
-      <Name>EnemiesLayer</Name>
-    </ProjectReference>
-    <ProjectReference Include="PlayerEntityLayer.csproj">
-      <Project>{305cd92c-d135-5769-0803-174343592e6c}</Project>
-      <Name>PlayerEntityLayer</Name>
-    </ProjectReference>
     <ProjectReference Include="DamageableEntityLayer.csproj">
       <Project>{aeea405b-755d-b192-f746-16b655660ec3}</Project>
       <Name>DamageableEntityLayer</Name>
@@ -707,6 +699,14 @@
     <ProjectReference Include="UnityOOPAbstractionLayer.csproj">
       <Project>{4acf9cc6-6765-a5db-89c1-c202f09fdf16}</Project>
       <Name>UnityOOPAbstractionLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="PlayerEntityLayer.csproj">
+      <Project>{305cd92c-d135-5769-0803-174343592e6c}</Project>
+      <Name>PlayerEntityLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="EnemiesLayer.csproj">
+      <Project>{5ab236e2-05ce-c020-ed35-80dc1c78838f}</Project>
+      <Name>EnemiesLayer</Name>
     </ProjectReference>
     <ProjectReference Include="UnityEditor.UI.csproj">
       <Project>{071fa4f6-95c0-6054-c479-b9199d4dc847}</Project>

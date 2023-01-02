@@ -37,8 +37,7 @@ namespace Svelto.ECS.Example.Survive.Damage
             ///using this tag. Note that if I was expecting to have hundreds of entities, I would not have resorted
             ///to a complete iteration with if checks. Either I would have used another filter or used a "Damaged"
             ///tag compound 
-            foreach (var ((entities, health, entityIDs, count), currentGroup) in entitiesDB
-                            .QueryEntities<DamageableComponent, HealthComponent>(Damageable.Groups))
+            foreach (var ((entities, health, entityIDs, count), currentGroup) in entitiesDB.QueryEntities<DamageableComponent, HealthComponent>(Damageable.Groups))
             {
                 for (int i = 0; i < count; i++)
                 {

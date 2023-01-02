@@ -6,6 +6,7 @@ using Svelto.DataStructures;
 using Svelto.ECS.Native;
 using Svelto.ECS.Schedulers;
 using Unity.Entities;
+using Unity.Mathematics;
 using Unity.Jobs;
 using Allocator = Unity.Collections.Allocator;
 
@@ -148,7 +149,7 @@ namespace Svelto.ECS.SveltoOnDOTS
             _cachedList.Clear();
 
             //note with DOTS 0.17 unfortunately this allocates a lot :(
-            EntityManager.GetAllUniqueSharedComponentData(_cachedList);
+            EntityManager.GetAllUniqueSharedComponentsManaged(_cachedList);
 
             Dependency = JobHandle.CombineDependencies(Dependency, combinedHandle);
 

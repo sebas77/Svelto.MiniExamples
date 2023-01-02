@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿#if SVELTO_LEGACY_FILTERS
+using System.Runtime.CompilerServices;
 using Svelto.Common;
 using Svelto.DataStructures.Native;
 using Svelto.DataStructures;
@@ -210,3 +211,4 @@ namespace Svelto.ECS
         internal readonly int                  _ID;
     }
 }
+#endif

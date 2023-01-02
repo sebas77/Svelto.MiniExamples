@@ -21,6 +21,11 @@ namespace Svelto.DataStructures
         {
             return new ByteArraySegment<T>(list);
         }
+        
+        public static implicit operator ReadOnlySpan<T>(in ByteArraySegment<T> list)
+        {
+            return list.Span;
+        }
 
         public Span<T> Span
         {

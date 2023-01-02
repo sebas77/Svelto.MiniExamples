@@ -204,7 +204,7 @@ namespace Svelto.DataStructures
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Clear()
         {
-            if (TypeCache<T>.type.isUnmanaged())
+            if (TypeCache<T>.isUnmanaged)
             {
             }
             else

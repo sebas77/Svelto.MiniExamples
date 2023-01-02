@@ -1,5 +1,8 @@
 #if UNITY_5_3_OR_NEWER || UNITY_5
 
+#if UNITY_EDITOR
+#define ISEDITOR
+#endif
 //#define DEBUG_FASTER
 
 #if UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX || UNITY_STANDALONE_LINUX || DEBUG_FASTER
@@ -10,7 +13,9 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using Svelto.DataStructures;
@@ -25,10 +30,12 @@ namespace Svelto.Utilities
     static class FasterUnityLoggerUtility
     {
         const string CUSTOM_NAME_FLAG = "-customLogName";
-        const int    CYCLE_SIZE       = 10;
+        const int CYCLE_SIZE = 10;
 
         static string BASENAME = "outputLog";
-        static readonly string FOLDER = System.IO.Path.GetDirectoryName(Application.dataPath)+ System.IO.Path.DirectorySeparatorChar+"debuglogs";
+
+        static readonly string FOLDER = Path.GetDirectoryName(Application.dataPath)
+          + Path.DirectorySeparatorChar + "debuglogs";
 
         [Conditional("REDIRECT_CONSOLE")]
         internal static void Init()
@@ -36,7 +43,7 @@ namespace Svelto.Utilities
             //overwrites if commandline found
             GetFilenameFromCommandLine(ref BASENAME);
 
-            _folder = System.IO.Directory.CreateDirectory(FOLDER);
+            _folder = Directory.CreateDirectory(FOLDER);
 
             SetupLogger();
         }
@@ -61,15 +68,15 @@ namespace Svelto.Utilities
         {
             _originalConsoleOutput = System.Console.Out;
 
-            _consoleOut = System.IO.File.CreateText(GetFileNameToUse());
+            _consoleOut = File.CreateText(GetFileNameToUse());
 
             System.Console.SetOut(_consoleOut);
         }
 
         static void GetFilenameFromCommandLine(ref string fileName)
         {
-            bool     foundFlag = false;
-            string[] args      = Environment.GetCommandLineArgs();
+            bool foundFlag = false;
+            string[] args = Environment.GetCommandLineArgs();
             for (int iArg = 0; iArg < args.Length; ++iArg)
             {
                 if (foundFlag)
@@ -85,49 +92,91 @@ namespace Svelto.Utilities
 
         static string GetFileNameToUse()
         {
-            int i = 0;
-            for (; i < CYCLE_SIZE + 1; ++i)
+            var directory = new DirectoryInfo(_folder.FullName);
+
+            var fileInfos = directory.GetFiles(BASENAME + "*.txt");
+
+            int nextFileId = 0;
+            if (fileInfos.Length > 0)
             {
-                if (System.IO.File.Exists(GenerateName(i)) == false)
-                    break;
+                nextFileId = -1;
+                do
+                {
+                    var myFile = fileInfos
+                           .OrderByDescending(f => f.LastWriteTime)
+                           .First();
+                    try
+                    {
+                        string index = new String(myFile.Name.Where(Char.IsDigit).ToArray());
+
+                        var i = int.Parse(index);
+                        
+                        nextFileId = (i + 1) % CYCLE_SIZE;
+                    }
+                    catch
+                    {
+                        File.Delete(myFile.FullName);
+                        fileInfos = directory.GetFiles(BASENAME + "*.txt");
+                    }
+                } while (nextFileId == -1 && fileInfos.Length > 0);
             }
 
-            int    nextFileId   = (i + 1) % (CYCLE_SIZE + 1);
             string nextFileName = GenerateName(nextFileId);
 
-            //use the fact that the file doesn't exist to determine which file to write in the cycle
-            if (System.IO.File.Exists(nextFileName))
-                System.IO.File.Delete(nextFileName);
+            //overwrite file if exists
+            File.Delete(nextFileName);
 
-            return GenerateName(i);
+            var consoleLogPath = Application.persistentDataPath + Path.DirectorySeparatorChar + "Player-prev.log";
+            if (File.Exists(consoleLogPath))
+            {
+                var generateUnityLogName = GenerateNameForUnityLogCopy(nextFileId);
+                File.Delete(generateUnityLogName);
+                File.Copy(consoleLogPath, generateUnityLogName);
+            }
+
+            return nextFileName;
         }
 
         static string GenerateName(int i)
         {
-            return _folder.FullName + System.IO.Path.DirectorySeparatorChar + BASENAME + i + ".txt";
+            return _folder.FullName + Path.DirectorySeparatorChar + BASENAME + i + ".txt";
         }
         
+        static string GenerateNameForUnityLogCopy(int i)
+        {
+            return _folder.FullName + Path.DirectorySeparatorChar + "PlayerLog" + i + ".txt";
+        }
+
         public static void CompressLogsToZipAndShow(string zipName)
         {
             Close();
             
-            var destinationArchiveFileName = Application.persistentDataPath+System.IO.Path.DirectorySeparatorChar + zipName;
-            if (System.IO.File.Exists(destinationArchiveFileName))
-                System.IO.File.Delete(destinationArchiveFileName);
+            var consoleLogPath = Application.persistentDataPath+ Path.DirectorySeparatorChar + "Player.log";
+            if (File.Exists(consoleLogPath))
+            {
+                var generateUnityLogName = _folder.FullName + Path.DirectorySeparatorChar + "LastPlayerLog.txt";
+                File.Delete(generateUnityLogName);
+                File.Copy(consoleLogPath, generateUnityLogName);
+            }
+
+            var destinationArchiveFileName =
+                Application.persistentDataPath + Path.DirectorySeparatorChar + zipName;
             
+            File.Delete(destinationArchiveFileName);
+
             ZipFile.CreateFromDirectory(_folder.FullName, destinationArchiveFileName);
-            
+
             Init();
-            
-            Application.OpenURL($"file://{Application.persistentDataPath}");
+
+            Application.OpenURL($"file://{destinationArchiveFileName}");
         }
-        
-        static System.IO.StreamWriter _consoleOut;
-        static System.IO.TextWriter   _originalConsoleOutput;
-        static System.IO.DirectoryInfo _folder;
+
+        static StreamWriter _consoleOut;
+        static TextWriter _originalConsoleOutput;
+        static DirectoryInfo _folder;
     }
 
-    class FasterUnityLogger : ILogger
+    class FasterUnityLogger: ILogger
     {
         const uint SEED = 8938176;
 
@@ -135,30 +184,34 @@ namespace Svelto.Utilities
 
         static readonly ThreadSafeDictionary<uint, ErrorLogObject> _batchedErrorLogs;
 
-        static readonly IComparer<ErrorLogObject>       _comparison;
+        static readonly IComparer<ErrorLogObject> _comparison;
         static readonly ConcurrentQueue<ErrorLogObject> _notBatchedQueue;
 
         static readonly Thread _lowPrioThread;
 
-        static          int                        MAINTHREADID;
+        static int MAINTHREADID;
         static readonly FasterList<ErrorLogObject> _logs;
+        static bool _isPaused;
 
         static FasterUnityLogger()
         {
             FasterUnityLoggerUtility.Init();
             Console.batchLog = true;
-            
+
             var gameObject = new GameObject("FastMonoLogger");
             gameObject.AddComponent<FastMonoLogger>();
             GameObject.DontDestroyOnLoad(gameObject);
 
-            _comparison       = new ErrorComparer();
+            _comparison = new ErrorComparer();
             _batchedErrorLogs = new ThreadSafeDictionary<uint, ErrorLogObject>();
             _notBatchedQueue = new ConcurrentQueue<ErrorLogObject>();
 
             _logs = new FasterList<ErrorLogObject>(_batchedErrorLogs.count + _notBatchedQueue.Count);
 
-            _lowPrioThread          = new Thread(StartQueue) { IsBackground = true };
+            _lowPrioThread = new Thread(StartQueue)
+            {
+                IsBackground = true
+            };
             _lowPrioThread.Priority = ThreadPriority.BelowNormal;
             _lowPrioThread.Start();
         }
@@ -166,19 +219,21 @@ namespace Svelto.Utilities
         public void OnLoggerAdded()
         {
             MAINTHREADID = Environment.CurrentManagedThreadId;
-
-            Application.SetStackTraceLogType(UnityEngine.LogType.Warning, StackTraceLogType.None);
-            Application.SetStackTraceLogType(UnityEngine.LogType.Assert, StackTraceLogType.None);
-            Application.SetStackTraceLogType(UnityEngine.LogType.Error, StackTraceLogType.None);
-            Application.SetStackTraceLogType(UnityEngine.LogType.Log, StackTraceLogType.None);
+            
+            //FasterLog doesn't use Unity Debug Log so we don't need to disable the stack
 
             Debug.Log("Svelto Fast Unity Logger added");
         }
-
+#if UNITY_2021_3_OR_NEWER
         public void CompressLogsToZipAndShow(string zipName)
         {
+            Volatile.Write(ref _isPaused, true);
+            
             FasterUnityLoggerUtility.CompressLogsToZipAndShow(zipName);
+            
+            Volatile.Write(ref _isPaused, false);
         }
+#endif  
 
         public void Log(string txt, LogType type = LogType.Log, bool showLogStack = true, Exception e = null,
             Dictionary<string, string> data = null)
@@ -201,7 +256,7 @@ namespace Svelto.Utilities
             StackTrace stack = null;
             if (showLogStack)
             {
-#if UNITY_EDITOR
+#if ISEDITOR
                 stack = new StackTrace(Console.StackDepth, true);
 #else
                 if (type == LogType.Error || type == LogType.Exception)
@@ -210,7 +265,7 @@ namespace Svelto.Utilities
             }
             else
             {
-#if UNITY_EDITOR
+#if ISEDITOR
                 stack = new StackTrace(Console.StackDepth, false);
 #else
                 if (type == LogType.Error || type == LogType.Exception)
@@ -222,8 +277,8 @@ namespace Svelto.Utilities
             {
                 //todo: why am I not enqueuing here too and batching in another thread?
                 var stackString = stack == null ? string.Empty : stack.GetFrame(0).ToString();
-                var strArray    = Encoding.UTF8.GetBytes(txt.FastConcat(stackString));
-                var logHash     = Murmur3.MurmurHash3_x86_32(strArray, SEED);
+                var strArray = Encoding.UTF8.GetBytes(txt.FastConcat(stackString));
+                var logHash = Murmur3.MurmurHash3_x86_32(strArray, SEED);
 
                 //todo: this can be optimized
                 if (_batchedErrorLogs.ContainsKey(logHash))
@@ -232,20 +287,12 @@ namespace Svelto.Utilities
                 }
                 else
                 {
-#if !UNITY_EDITOR
-                    if (type == LogType.Error) stack = new StackTrace(Console.StackDepth, true);
-#endif
-
                     _batchedErrorLogs[logHash] =
                         new ErrorLogObject(txt, stack, type, e, frame, showLogStack, dataString);
                 }
             }
             else
             {
-#if !UNITY_EDITOR
-                    if (type == LogType.Error) stack = new StackTrace(Console.StackDepth, true);
-#endif
-
                 _notBatchedQueue.Enqueue(new ErrorLogObject(txt, stack, type, e, frame, showLogStack, dataString, 0));
             }
         }
@@ -277,12 +324,14 @@ namespace Svelto.Utilities
                 var instance = _logs[i];
                 var intCount = instance.count;
 
-                var log = ConsoleUtilityForUnity.LogFormatter(instance.msg, instance.logType, instance.showStack,
+                var log = ConsoleUtilityForUnity.LogFormatter(
+                    instance.msg, instance.logType, instance.showStack,
                     instance.exception, instance.frame, instance.dataString, instance.stackT);
 
                 if (intCount > 1)
                 {
-                    log = ReplaceFirstOccurrence(log, "thread: ",
+                    log = ReplaceFirstOccurrence(
+                        log, "thread: ",
                         "Hit count: ".FastConcat(intCount).FastConcat(" thread: "));
                     LOG(log, instance.logType);
                 }
@@ -293,14 +342,14 @@ namespace Svelto.Utilities
 
         static string ReplaceFirstOccurrence(string Source, string Find, string Replace)
         {
-            int    Place  = Source.IndexOf(Find);
+            int Place = Source.IndexOf(Find);
             string result = Source.Remove(Place, Find.Length).Insert(Place, Replace);
             return result;
         }
 
         static void LOG(string str, LogType instanceLOGType)
         {
-#if !UNITY_EDITOR
+#if !ISEDITOR
             str = System.Text.RegularExpressions.Regex.Replace(str, "</?[a-z](?:[^>\"']|\"[^\"]*\"|'[^']*')*>", "");
             System.Console.Write(str);
 #else
@@ -326,12 +375,17 @@ namespace Svelto.Utilities
             Thread.Sleep(1000); //let's be sure that the first iteration doesn't happen right at the begin
 
             Thread.MemoryBarrier();
-            while (_quitThread == false)
+            while (Volatile.Read(ref _quitThread) == false)
             {
-                FlushToFile();
+                if (Volatile.Read(ref _isPaused) == false)
+                {
+                    FlushToFile();
+                }
 
                 Thread.Sleep(1000);
+                
             }
+
             FasterUnityLoggerUtility.Close();
         }
 
@@ -342,7 +396,7 @@ namespace Svelto.Utilities
             FasterUnityLoggerUtility.ForceFlush();
         }
 
-        class FastMonoLogger : MonoBehaviour
+        class FastMonoLogger: MonoBehaviour
         {
             void Awake()
             {
@@ -352,7 +406,7 @@ namespace Svelto.Utilities
             void OnDestroy()
             {
                 SceneManager.sceneLoaded -= FlushLogger;
-                
+
                 Volatile.Write(ref _quitThread, true);
 
                 FlushToFile();
@@ -364,7 +418,7 @@ namespace Svelto.Utilities
             }
         }
 
-        class ErrorComparer : IComparer<ErrorLogObject>
+        class ErrorComparer: IComparer<ErrorLogObject>
         {
             public int Compare(ErrorLogObject x, ErrorLogObject y)
             {
@@ -378,20 +432,20 @@ namespace Svelto.Utilities
 
             public string msg { get; }
 
-            public          StackTrace stackT { get; }
-            public readonly Exception  exception;
+            public StackTrace stackT { get; }
+            public readonly Exception exception;
 
             public ErrorLogObject(string msg, StackTrace stack, LogType logType, Exception exc, string frm, bool sstack,
                 string dataString, ushort initialCount = 1)
             {
-                count           = initialCount;
-                this.msg        = msg;
-                index           = Interlocked.Increment(ref errorIndex);
-                exception       = exc;
-                frame           = frm;
-                stackT          = stack;
-                this.logType    = logType;
-                showStack       = sstack;
+                count = initialCount;
+                this.msg = msg;
+                index = Interlocked.Increment(ref errorIndex);
+                exception = exc;
+                frame = frm;
+                stackT = stack;
+                this.logType = logType;
+                showStack = sstack;
                 this.dataString = dataString;
             }
 
@@ -399,23 +453,23 @@ namespace Svelto.Utilities
             {
                 count = obj.count;
                 count++;
-                msg        = obj.msg;
-                stackT     = obj.stackT;
-                index      = obj.index;
-                exception  = obj.exception;
-                frame      = obj.frame;
-                stackT     = obj.stackT;
-                logType    = obj.logType;
-                showStack  = obj.showStack;
+                msg = obj.msg;
+                stackT = obj.stackT;
+                index = obj.index;
+                exception = obj.exception;
+                frame = obj.frame;
+                stackT = obj.stackT;
+                logType = obj.logType;
+                showStack = obj.showStack;
                 dataString = obj.dataString;
             }
 
-            public readonly int     index;
-            public readonly ushort  count;
+            public readonly int index;
+            public readonly ushort count;
             public readonly LogType logType;
-            public readonly bool    showStack;
-            public readonly string  frame;
-            public readonly string  dataString;
+            public readonly bool showStack;
+            public readonly string frame;
+            public readonly string dataString;
         }
 
         public static void Init()
