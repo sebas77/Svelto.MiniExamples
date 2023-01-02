@@ -9,6 +9,7 @@ namespace Svelto.ECS
         {
             _thisSubmissionInfo.Init();
             _lastSubmittedInfo.Init();
+            _builder = Builder;
         }
 
         public void QueueRemoveGroupOperation(ExclusiveBuildGroup groupID, string caller)
@@ -47,8 +48,7 @@ namespace Svelto.ECS
             //todo: limit the number of dictionaries that can be cached 
             //recycle or create dictionaries of components per group
             var swappedComponentsPerType = _thisSubmissionInfo._currentSwapEntitiesOperations.RecycleOrAdd(
-                fromID.groupID
-              , () => new FasterDictionary<RefWrapperType, //add case
+                fromID.groupID, () => new FasterDictionary<RefWrapperType, //add case
                         FasterDictionary<ExclusiveGroupStruct, FasterList<(uint, uint, string)>>>()
                , (ref FasterDictionary<RefWrapperType, //recycle case (called at first recycle)
                         FasterDictionary<ExclusiveGroupStruct, FasterList<(uint, uint, string)>>> recycled) =>
@@ -58,15 +58,18 @@ namespace Svelto.ECS
                 swappedComponentsPerType
                     //recycle or create dictionaries per component type
                    .RecycleOrAdd(new RefWrapperType(operation.GetEntityComponentType())
-                               , () => new FasterDictionary<ExclusiveGroupStruct, FasterList<(uint, uint, string)>>()
-                                ,
-                                 (ref FasterDictionary<ExclusiveGroupStruct, FasterList<(uint, uint, string)>>
+                               , _builder, (ref FasterDictionary<ExclusiveGroupStruct, FasterList<(uint, uint, string)>>
                                      target) => target.Clear())
                     //recycle or create list of entities to swap
                    .RecycleOrAdd(toID.groupID, () => new FasterList<(uint, uint, string)>()
                                , (ref FasterList<(uint, uint, string)> target) => target.Clear())
                     //add entity to swap
                    .Add((fromID.entityID, toID.entityID, caller));
+        }
+
+        FasterDictionary<ExclusiveGroupStruct, FasterList<(uint, uint, string)>> Builder()
+        {
+            return new FasterDictionary<ExclusiveGroupStruct, FasterList<(uint, uint, string)>>();
         }
 
         public bool AnyOperationQueued()
@@ -178,5 +181,6 @@ namespace Svelto.ECS
         Info _lastSubmittedInfo;
 
         Info _thisSubmissionInfo;
+        Func<FasterDictionary<ExclusiveGroupStruct, FasterList<(uint, uint, string)>>> _builder;
     }
 }

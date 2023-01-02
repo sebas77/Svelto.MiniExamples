@@ -1,3 +1,7 @@
+//#if !UNITY_ECS_100
+#define SLOW_SVELTO_ECB //Using EntityManager directly is much faster than using ECB because of the shared components
+//#endif
+
 using Svelto.DataStructures;
 using Svelto.ECS.Internal;
 using Svelto.ECS.SveltoOnDOTS;
@@ -15,36 +19,38 @@ namespace Svelto.ECS.MiniExamples.Example1C
     /// I need to rely on
     /// </summary>
     ///
-//    public class SpawnUnityEntityOnSveltoEntityEngine : SveltoOnDOTSHandleCreationEngine,
-//        IReactOnAddEx<SpawnPointEntityComponent>, IQueryingEntitiesEngine
-//    {
-//        public void Add((uint start, uint end) rangeOfEntities,
-//            in EntityCollection<SpawnPointEntityComponent> collection, ExclusiveGroupStruct groupID)
-//        {
-//            var (buffer, entityIDs, _) = collection;
-//
-//            for (uint i = rangeOfEntities.start; i < rangeOfEntities.end; i++)
-//            {
-//                ref var entityComponent = ref buffer[i];
-//                Entity dotsEntity =
-//                    CreateDOTSEntityOnSvelto(entityComponent.prefabEntity, new EGID(entityIDs[i], groupID), true);
-//                
-//                if (entityComponent.isSpecial)
-//                    ECB.AddComponent<SpecialBlue>(dotsEntity);
-//                
-//                ECB.SetComponent(dotsEntity, new Translation
-//                {
-//                    Value = entityComponent.spawnPosition
-//                });
-//            }
-//        }
-//
-//        public override string name => nameof(SpawnUnityEntityOnSveltoEntityEngine);
-//        public void Ready() {
-//        }
-//
-//        public EntitiesDB entitiesDB { get; set; }
-//    }
+#if SLOW_SVELTO_ECB     
+    public class SpawnUnityEntityOnSveltoEntityEngine : SveltoOnDOTSHandleCreationEngine,
+        IReactOnAddEx<SpawnPointEntityComponent>, IQueryingEntitiesEngine
+    {
+        public void Add((uint start, uint end) rangeOfEntities,
+            in EntityCollection<SpawnPointEntityComponent> collection, ExclusiveGroupStruct groupID)
+        {
+            var (buffer, entityIDs, _) = collection;
+
+            for (uint i = rangeOfEntities.start; i < rangeOfEntities.end; i++)
+            {
+                ref var entityComponent = ref buffer[i];
+                Entity dotsEntity =
+                    CreateDOTSEntityOnSvelto(entityComponent.prefabEntity, new EGID(entityIDs[i], groupID), true);
+                
+                if (entityComponent.isSpecial)
+                    ECB.AddComponent<SpecialBlue>(dotsEntity);
+                
+                ECB.SetComponent(dotsEntity, new Translation
+                {
+                    Value = entityComponent.spawnPosition
+                });
+            }
+        }
+
+        public override string name => nameof(SpawnUnityEntityOnSveltoEntityEngine);
+        public void Ready() {
+        }
+
+        public EntitiesDB entitiesDB { get; set; }
+    }
+#else    
     public class SpawnUnityEntityOnSveltoEntityEngine: SveltoOnDOTSHandleCreationEngine,
             IReactOnAddEx<SpawnPointEntityComponent>, IQueryingEntitiesEngine
     {
@@ -103,4 +109,5 @@ namespace Svelto.ECS.MiniExamples.Example1C
             }
         }
     }
+#endif
 }

@@ -1,7 +1,7 @@
 ﻿#if UNITY_ECS
-#if !UNITY_ECS_100
+//#if !UNITY_ECS_100
 #define SLOW_SVELTO_ECB //Using EntityManager directly is much faster than using ECB because of the shared components
-#endif
+//#endif
 using System;
 using System.Runtime.CompilerServices;
 using Unity.Entities;

@@ -152,12 +152,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0b5be9de2644110ad087d2765208deb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prefabs:
-  - {fileID: 682977448313023505, guid: 6d80b0b086e44d641b502b3befeec1c4, type: 3}
-  - {fileID: 682977448313023505, guid: 49d75f82cfe317143b6afeca07f10c3f, type: 3}
-  - {fileID: 682977448313023505, guid: 3c07b514dd3c4dd29c90a6a979eaa3a4, type: 3}
-  - {fileID: 6904254650914295564, guid: 7fbcb9f44df18d241891f1a29d3fdd5c, type: 3}
-  - {fileID: 6904254650914295564, guid: 4ca4653724e65b54f9ee725cffca73ad, type: 3}
+  prefab1: {fileID: 682977448313023505, guid: 6d80b0b086e44d641b502b3befeec1c4, type: 3}
+  prefab2: {fileID: 682977448313023505, guid: 49d75f82cfe317143b6afeca07f10c3f, type: 3}
+  prefab3: {fileID: 682977448313023505, guid: 3c07b514dd3c4dd29c90a6a979eaa3a4, type: 3}
+  prefab4: {fileID: 6904254650914295564, guid: 4ca4653724e65b54f9ee725cffca73ad, type: 3}
+  prefab5: {fileID: 6904254650914295564, guid: 7fbcb9f44df18d241891f1a29d3fdd5c, type: 3}
 --- !u!4 &531668738
 Transform:
   m_ObjectHideFlags: 0
