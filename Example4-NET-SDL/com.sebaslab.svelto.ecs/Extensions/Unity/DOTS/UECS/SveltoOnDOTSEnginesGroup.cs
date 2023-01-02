@@ -25,16 +25,17 @@ namespace Svelto.ECS.SveltoOnDOTS
     /// Synchronizations engines to be executed (DOTS ECS To Svelto)
     /// </summary>
     [Sequenced(nameof(JobifiedSveltoEngines.SveltoOnDOTS))]
-    public class SveltoOnDOTSEnginesGroup : IJobifiedEngine
+    public class SveltoOnDOTSEnginesGroup: IJobifiedEngine
     {
         public SveltoOnDOTSEnginesGroup(EnginesRoot enginesRoot)
         {
-            DBC.ECS.Check.Require(enginesRoot.scheduler is SimpleEntitiesSubmissionScheduler
-                                , "The Engines root must use a EntitiesSubmissionScheduler scheduler implementation");
+            DBC.ECS.Check.Require(
+                enginesRoot.scheduler is SimpleEntitiesSubmissionScheduler
+              , "The Engines root must use a EntitiesSubmissionScheduler scheduler implementation");
 
             CreateUnityECSWorldForSvelto(enginesRoot.scheduler as SimpleEntitiesSubmissionScheduler, enginesRoot);
         }
-
+         
         public World world { get; private set; }
 
         public JobHandle Execute(JobHandle inputDeps)
@@ -59,7 +60,7 @@ namespace Svelto.ECS.SveltoOnDOTS
         public void AddSveltoToDOTSEngine(SyncSveltoToDOTSEngine engine)
         {
             //it's a Svelto Engine/DOTS ECS SystemBase so it must be added in the DOTS ECS world AND svelto enginesRoot
-            world.AddSystem(engine);
+            world.AddSystemManaged(engine);
             _enginesRoot.AddEngine(engine);
 
             _syncSveltoToDotsGroup.Add(engine);
@@ -68,20 +69,20 @@ namespace Svelto.ECS.SveltoOnDOTS
         public void AddDOTSToSveltoEngine(SyncDOTSToSveltoEngine engine)
         {
             //it's a Svelto Engine/DOTS ECS SystemBase so it must be added in the DOTS ECS world AND svelto enginesRoot
-            world.AddSystem(engine);
+            world.AddSystemManaged(engine);
             _enginesRoot.AddEngine(engine);
 
             _syncDotsToSveltoGroup.Add(engine);
         }
-        
+
         public void AddDOTSSubmissionEngine(SveltoOnDOTSHandleCreationEngine submissionEngine)
         {
             _sveltoDotsEntitiesSubmissionGroup.Add(submissionEngine);
-            
+
             if (submissionEngine is IEngine enginesRootEngine)
                 _enginesRoot.AddEngine(enginesRootEngine);
         }
-        
+
         public void Dispose()
         {
             world.Dispose();
@@ -100,7 +101,7 @@ namespace Svelto.ECS.SveltoOnDOTS
             _sveltoDotsEntitiesSubmissionGroup = new SveltoOnDOTSEntitiesSubmissionGroup(scheduler, enginesRoot);
             //This is the group that handles the DOTS ECS sync systems that copy the svelto entities values to DOTS ECS entities
             enginesRoot.AddEngine(_sveltoDotsEntitiesSubmissionGroup);
-            world.AddSystem(_sveltoDotsEntitiesSubmissionGroup);
+            world.AddSystemManaged(_sveltoDotsEntitiesSubmissionGroup);
             _syncSveltoToDotsGroup = new SyncSveltoToDOTSGroup();
             enginesRoot.AddEngine(_syncSveltoToDotsGroup);
             _syncDotsToSveltoGroup = new SyncDOTSToSveltoGroup();
@@ -115,8 +116,8 @@ namespace Svelto.ECS.SveltoOnDOTS
         EnginesRoot _enginesRoot;
 
         SveltoOnDOTSEntitiesSubmissionGroup _sveltoDotsEntitiesSubmissionGroup;
-        SyncSveltoToDOTSGroup             _syncSveltoToDotsGroup;
-        SyncDOTSToSveltoGroup             _syncDotsToSveltoGroup;
+        SyncSveltoToDOTSGroup _syncSveltoToDotsGroup;
+        SyncDOTSToSveltoGroup _syncDotsToSveltoGroup;
     }
 }
 #endif

@@ -78,7 +78,9 @@ namespace Svelto.ECS.Internal
                         for (var j = 0; j < entityComponentsEngines.count; j++)
                             using (sampler.Sample(entityComponentsEngines[j].name))
                             {
+#pragma warning disable CS0612
                                 ((IReactOnAdd<TValue>)entityComponentsEngines[j].engine).Add(ref entity, egid);
+#pragma warning restore CS0612
                             }
                     }
                     catch (Exception e)
@@ -158,7 +160,9 @@ namespace Svelto.ECS.Internal
                         for (var j = 0; j < entityComponentsEngines.count; j++)
                             using (profiler.Sample(entityComponentsEngines[j].name))
                             {
+#pragma warning disable CS0612
                                 ((IReactOnRemove<TValue>)entityComponentsEngines[j].engine).Remove(ref entity, egid);
+#pragma warning restore CS0612
                             }
                     }
                     catch
@@ -201,7 +205,9 @@ namespace Svelto.ECS.Internal
 
                             using (sampler.Sample(reactiveEnginesRemovePerType[i].name))
                             {
+#pragma warning disable CS0612
                                 ((IReactOnRemove<TValue>)reactiveEnginesRemovePerType[i].engine).Remove(
+#pragma warning restore CS0612
                                     ref entity, egid);
                             }
                         }
@@ -268,7 +274,9 @@ namespace Svelto.ECS.Internal
                     for (var j = 0; j < reactiveenginesswap.count; j++)
                         using (sampler.Sample(reactiveenginesswap[j].name))
                         {
+#pragma warning disable CS0612
                             ((IReactOnSwap<TValue>)reactiveenginesswap[j].engine).MovedTo(
+#pragma warning restore CS0612
                                 ref entityComponent, fromgroup, newEgid);
                         }
                 }
@@ -314,7 +322,9 @@ namespace Svelto.ECS.Internal
 
                         using (sampler.Sample(reactiveEnginesSwapPerType[i].name))
                         {
+#pragma warning disable CS0612
                             ((IReactOnSwap<TValue>)reactiveEnginesSwapPerType[i].engine).MovedTo(
+#pragma warning restore CS0612
                                 ref entityComponent, fromgroup, newEgid);
                         }
                     }

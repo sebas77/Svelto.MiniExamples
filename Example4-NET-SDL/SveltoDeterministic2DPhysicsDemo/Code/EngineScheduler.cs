@@ -1,21 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using FixedMaths;
 using Svelto.ECS.Schedulers;
 
 namespace MiniExamples.DeterministicPhysicDemo
 {
-    public class EngineScheduler : IEngineScheduler
+    public class EngineScheduler: IEngineScheduler
     {
-        public EngineScheduler
-            (IEngineSchedulerReporter reporter, SimpleEntitiesSubmissionScheduler submissionScheduler)
+        public EngineScheduler(IEngineSchedulerReporter reporter, SimpleEntitiesSubmissionScheduler submissionScheduler)
         {
-            _reporter                = reporter;
-            _submissionScheduler     = submissionScheduler;
+            _reporter = reporter;
+            _submissionScheduler = submissionScheduler;
             _scheduledPhysicsEngines = new List<IScheduledPhysicsEngine>();
             _scheduledGraphicsEngine = new List<IScheduledGraphicsEngine>();
-            _stopwatch               = Stopwatch.StartNew();
+            _stopwatch = Stopwatch.StartNew();
         }
 
         public void ExecuteGraphics(FixedPoint delta)
@@ -54,10 +52,10 @@ namespace MiniExamples.DeterministicPhysicDemo
             _scheduledPhysicsEngines.Add(scheduled);
         }
 
-        readonly IEngineSchedulerReporter                   _reporter;
-        readonly SimpleEntitiesSubmissionScheduler  _submissionScheduler;
-        readonly List<IScheduledGraphicsEngine>             _scheduledGraphicsEngine;
-        readonly List<IScheduledPhysicsEngine>              _scheduledPhysicsEngines;
-        readonly Stopwatch                                  _stopwatch;
+        readonly IEngineSchedulerReporter _reporter;
+        readonly SimpleEntitiesSubmissionScheduler _submissionScheduler;
+        readonly List<IScheduledGraphicsEngine> _scheduledGraphicsEngine;
+        readonly List<IScheduledPhysicsEngine> _scheduledPhysicsEngines;
+        readonly Stopwatch _stopwatch;
     }
 }

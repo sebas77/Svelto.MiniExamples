@@ -2,7 +2,7 @@
 {
     public static class EgidFactory
     {
-        private static uint _lastEgid = 0;
+        static uint _lastEgid = 0;
 
         public static uint GetNextId()
         {

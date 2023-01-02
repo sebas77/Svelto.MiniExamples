@@ -14,7 +14,7 @@
 // #if DEBUG && !PROFILE_SVELTO
 //         static SentinelNativeStrategy()
 //         {
-//             if (TypeType.isUnmanaged<T>() == false)
+//             if (TypeCache<T>.isUnmanaged == false)
 //                 throw new DBC.Common.PreconditionException("Only unmanaged data can be stored natively");
 //         }
 // #endif

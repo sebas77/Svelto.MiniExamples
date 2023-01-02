@@ -19,36 +19,25 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.Builders
             {
                 case ColliderType.Box:
                     if (_isKinematic)
+                        //Svelto code to create entities. Initializer is used to initialise components
                         initializer = entityFactory.BuildEntity<RigidBodyWithBoxColliderDescriptor>(
                             EgidFactory.GetNextId(), GameGroups.KinematicRigidBodyWithBoxColliders.BuildGroup);
                     else
                         initializer = entityFactory.BuildEntity<RigidBodyWithBoxColliderDescriptor>(
                             EgidFactory.GetNextId(), GameGroups.DynamicRigidBodyWithBoxColliders.BuildGroup);
                     break;
-                case ColliderType.Circle:
-                    if (_isKinematic)
-                        initializer = entityFactory.BuildEntity<RigidBodyWithCircleColliderDescriptor>(
-                            EgidFactory.GetNextId(), GameGroups.KinematicRigidBodyWithCircleColliders.BuildGroup);
-                    else
-                        initializer = entityFactory.BuildEntity<RigidBodyWithCircleColliderDescriptor>(
-                            EgidFactory.GetNextId(), GameGroups.DynamicRigidBodyWithCircleColliders.BuildGroup);
-                    break;
                 default:
                     throw new ArgumentOutOfRangeException($"Unknown {_colliderType}");
             }
 
+            //initialise components before they are submitted
             initializer.Init(new TransformEntityComponent(_position, _position));
-            initializer.Init(new RigidbodyEntityComponent(_speed, _direction, FixedPointVector2.Zero, FixedPoint.Zero
-                                                        , _restitution, _mass, _isKinematic));
+            initializer.Init(new RigidbodyEntityComponent(_speed, _direction, FixedPointVector2.Zero, _restitution));
 
             switch (_colliderType)
             {
                 case ColliderType.Box:
                     initializer.Init(new BoxColliderEntityComponent(_boxColliderSize, _boxColliderCentre));
-                    break;
-
-                case ColliderType.Circle:
-                    initializer.Init(new CircleColliderEntityComponent(_circleColliderRadius, _circleColliderCentre));
                     break;
 
                 default:
@@ -60,33 +49,22 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.Builders
         {
             return new RigidBodyWithColliderBuilder()
             {
-                _boxColliderCentre    = FixedPointVector2.Zero
-              , _boxColliderSize      = FixedPointVector2.Zero
-              , _circleColliderCentre = FixedPointVector2.Zero
-              , _circleColliderRadius = FixedPoint.Zero
-              , _colliderType         = ColliderType.Box
-              , _direction            = FixedPointVector2.Zero
-              , _mass                 = FixedPoint.One
-              , _position             = FixedPointVector2.Zero
-              , _restitution          = FixedPoint.One
-              , _speed                = FixedPoint.Zero
+                    _boxColliderCentre = FixedPointVector2.Zero,
+                    _boxColliderSize = FixedPointVector2.Zero,
+                    _colliderType = ColliderType.Box,
+                    _direction = FixedPointVector2.Zero,
+                    _mass = FixedPoint.One,
+                    _position = FixedPointVector2.Zero,
+                    _restitution = FixedPoint.One,
+                    _speed = FixedPoint.Zero
             };
         }
 
         public RigidBodyWithColliderBuilder SetBoxCollider(FixedPointVector2 size, FixedPointVector2? centre = null)
         {
-            _boxColliderSize   = size;
+            _boxColliderSize = size;
             _boxColliderCentre = centre ?? FixedPointVector2.Zero;
-            _colliderType      = ColliderType.Box;
-
-            return this;
-        }
-
-        public RigidBodyWithColliderBuilder SetCircleCollider(FixedPoint radius, FixedPointVector2? centre = null)
-        {
-            _circleColliderRadius = radius;
-            _circleColliderCentre = centre ?? FixedPointVector2.Zero;
-            _colliderType         = ColliderType.Circle;
+            _colliderType = ColliderType.Box;
 
             return this;
         }
@@ -94,12 +72,6 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.Builders
         public RigidBodyWithColliderBuilder SetDirection(FixedPointVector2 value)
         {
             _direction = value;
-            return this;
-        }
-
-        public RigidBodyWithColliderBuilder SetMass(FixedPoint value)
-        {
-            _mass = value;
             return this;
         }
 
@@ -115,28 +87,20 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.Builders
             return this;
         }
 
-        public RigidBodyWithColliderBuilder SetRestitution(FixedPoint value)
-        {
-            _restitution = value;
-            return this;
-        }
-
         public RigidBodyWithColliderBuilder SetSpeed(FixedPoint value)
         {
             _speed = value;
             return this;
         }
 
-        FixedPointVector2 _boxColliderCentre   ;
-        FixedPointVector2 _boxColliderSize     ;
-        FixedPointVector2 _circleColliderCentre;
-        FixedPoint        _circleColliderRadius;
-        ColliderType      _colliderType        ;
-        FixedPointVector2 _direction           ;
-        FixedPoint        _mass                ;
-        FixedPointVector2 _position            ;
-        FixedPoint        _restitution         ;
-        FixedPoint        _speed               ;
+        FixedPointVector2 _boxColliderCentre;
+        FixedPointVector2 _boxColliderSize;
+        ColliderType _colliderType;
+        FixedPointVector2 _direction;
+        FixedPoint _mass;
+        FixedPointVector2 _position;
+        FixedPoint _restitution;
+        FixedPoint _speed;
 
         bool _isKinematic;
     }
@@ -144,6 +108,5 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.Builders
     public enum ColliderType
     {
         Box
-      , Circle
     }
 }

@@ -13,15 +13,16 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.Engines
                 for (var i = 0; i < count; i++)
                 {
                     ref var rigidbody = ref rigidbodies[i];
-
-                    ref var position = ref transforms[i].Position;
+                    ref var transformEntityComponent = ref transforms[i];
+                    
+                    ref var position = ref transformEntityComponent.Position;
 
                     var velocity       = rigidbody.Direction * rigidbody.Speed;
                     var targetPosition = position + velocity / delta;
 
-                    transforms[i].Position                = targetPosition;
-                    transforms[i].PositionLastPhysicsTick = position;
-                    transforms[i].HasMidPoint             = false;
+                    transformEntityComponent.Position                = targetPosition;
+                    transformEntityComponent.PositionLastPhysicsTick = position;
+                    transformEntityComponent.HasMidPoint             = false;
 
                     rigidbody.Velocity = velocity;
                 }

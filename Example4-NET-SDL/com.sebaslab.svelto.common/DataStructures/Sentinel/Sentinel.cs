@@ -6,6 +6,7 @@ using System;
 namespace Svelto.DataStructures
 {
 #if ENABLE_THREAD_SAFE_CHECKS
+//A sentinel field must never be readonly and must always use the ENABLE_DEBUG_CHECKS
     public struct Sentinel
     {
 #if UNITY_COLLECTIONS || UNITY_JOBS || UNITY_BURST
@@ -102,6 +103,7 @@ namespace Svelto.DataStructures
         }
     }
 #else
+    //A sentinel field must never be readonly and must always use the ENABLE_DEBUG_CHECKS. Using may prevent inline
     public struct Sentinel
     {
         public Sentinel(IntPtr ptr, uint readFlag)

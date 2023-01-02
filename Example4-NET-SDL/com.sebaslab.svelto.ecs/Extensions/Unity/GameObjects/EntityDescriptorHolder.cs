@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Svelto.ECS.Hybrid;
 using UnityEngine;
 
-namespace Svelto.ECS.Extensions.Unity
+namespace Svelto.ECS.Hybrid.Unity
 {
     public class ListToPopupAttribute : PropertyAttribute
     {

@@ -10,23 +10,12 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.EntityComponents
         public FixedPointVector2 PositionMidPoint;
         public bool              HasMidPoint;
 
-        public new string ToString() { return Position.ToString(); }
-
         public TransformEntityComponent(in FixedPointVector2 position, in FixedPointVector2 positionLastPhysicsTick)
         {
             Position                = position;
             PositionLastPhysicsTick = positionLastPhysicsTick;
             PositionMidPoint        = default;
             HasMidPoint             = false;
-        }
-        
-        public TransformEntityComponent(in FixedPointVector2 position, in FixedPointVector2 positionLastPhysicsTick
-                                      , in FixedPointVector2 positionMidPoint)
-        {
-            Position                = position;
-            PositionLastPhysicsTick = positionLastPhysicsTick;
-            PositionMidPoint        = positionMidPoint;
-            HasMidPoint             = true;
         }
     }
 

@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Svelto.ECS;
-using Svelto.ECS.Extensions.Unity;
+using Svelto.ECS.Hybrid;
+using Svelto.ECS.Hybrid.Unity;
 using UnityEditor;
 using UnityEngine;
 

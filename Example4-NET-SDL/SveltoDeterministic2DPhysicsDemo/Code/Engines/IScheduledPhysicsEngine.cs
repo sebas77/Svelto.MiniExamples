@@ -1,5 +1,4 @@
-﻿using System;
-using FixedMaths;
+﻿using FixedMaths;
 
 namespace MiniExamples.DeterministicPhysicDemo
 {

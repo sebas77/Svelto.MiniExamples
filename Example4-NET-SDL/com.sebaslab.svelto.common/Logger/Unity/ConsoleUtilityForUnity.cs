@@ -12,9 +12,9 @@ namespace Svelto.Utilities
     public static class ConsoleUtilityForUnity
     {
         static readonly ThreadLocal<StringBuilder> stringBuilder;
-        static readonly string                     projectFolder;
-        static readonly int                        MAX_NUMBER_OF_STACK_LINES = 15;
-        
+        static readonly string projectFolder;
+        static readonly int MAX_NUMBER_OF_STACK_LINES = 15;
+
         static ConsoleUtilityForUnity()
         {
             StringBuilder ValueFactory() => new StringBuilder();
@@ -36,7 +36,7 @@ namespace Svelto.Utilities
                     stack = (showLogStack ? ExtractFormattedStackTrace(stackTrace) : string.Empty);
 
                     return ($"{frame} <b><color=teal> ".FastConcat(txt, " </color></b> ", Environment.NewLine, stack)
-                       .FastConcat(Environment.NewLine, dataString));
+                           .FastConcat(Environment.NewLine, dataString));
 #else
                     return ($"{frame} ".FastConcat(txt).FastConcat(Environment.NewLine, dataString));
 #endif
@@ -47,8 +47,8 @@ namespace Svelto.Utilities
                     stack = (showLogStack ? ExtractFormattedStackTrace(stackTrace) : string.Empty);
 
                     stack = ($"{frame} <b><color=yellow> ".FastConcat(txt, " </color></b> ", Environment.NewLine, stack)
-                       .FastConcat(Environment.NewLine, dataString));
-                    
+                           .FastConcat(Environment.NewLine, dataString));
+
                     return stack;
 #else
                     return "";
@@ -60,7 +60,7 @@ namespace Svelto.Utilities
                     stack = (showLogStack ? ExtractFormattedStackTrace(stackTrace) : string.Empty);
 
                     stack = ($"{frame} <b><color=orange> ".FastConcat(txt, " </color></b> ", Environment.NewLine, stack)
-                       .FastConcat(Environment.NewLine, dataString));
+                           .FastConcat(Environment.NewLine, dataString));
 
                     return stack;
 #else
@@ -72,17 +72,19 @@ namespace Svelto.Utilities
                 {
                     if (e != null)
                     {
-                        txt   = txt.FastConcat(" ", e.Message);
+                        txt = txt.FastConcat(" ", e.ToString());
                         var trace = new StackTrace(e, true);
-                        stack = showLogStack ? ExtractFormattedStackTrace(trace, stackTrace) : ExtractFormattedStackTrace(trace);
+                        stack = showLogStack
+                                ? ExtractFormattedStackTrace(trace, stackTrace)
+                                : ExtractFormattedStackTrace(trace);
                     }
                     else
                         stack = showLogStack ? ExtractFormattedStackTrace(stackTrace) : string.Empty;
 
 #if UNITY_EDITOR
                     stack = ($"{frame} ".FastConcat(txt, " ", Environment.NewLine, stack)
-                       .FastConcat(Environment.NewLine, dataString));
-                    
+                           .FastConcat(Environment.NewLine, dataString));
+
                     return stack;
 #else
                    return($"{frame} "
@@ -116,8 +118,8 @@ namespace Svelto.Utilities
         static string ExtractFormattedStackTrace(StackTrace stackTrace, StackTrace stackTrace1)
         {
             return ExtractFormattedStackTrace(stackTrace)
-               .FastConcat(Environment.NewLine, "---------------", Environment.NewLine)
-               .FastConcat(ExtractFormattedStackTrace(stackTrace1));
+                   .FastConcat("---------------", Environment.NewLine)
+                   .FastConcat(ExtractFormattedStackTrace(stackTrace1));
         }
 
         static void PrintStack(StackTrace stackTrace, StringBuilder builder)
@@ -154,9 +156,9 @@ namespace Svelto.Utilities
             sb.Append("(");
 
             // Add parameters
-            int             j           = 0;
-            ParameterInfo[] pi          = mb.GetParameters();
-            bool            fFirstParam = true;
+            int j = 0;
+            ParameterInfo[] pi = mb.GetParameters();
+            bool fFirstParam = true;
             while (j < pi.Length)
             {
                 if (fFirstParam == false)
@@ -176,10 +178,11 @@ namespace Svelto.Utilities
             if (path != null)
             {
                 bool shouldStripLineNumbers = (classType.Name == "Debug" && classType.Namespace == "UnityEngine") ||
-                    (classType.Name == "Logger" && classType.Namespace == "UnityEngine") ||
-                    (classType.Name == "DebugLogHandler" && classType.Namespace == "UnityEngine") ||
-                    (classType.Name == "Assert" && classType.Namespace == "UnityEngine.Assertions") ||
-                    (mb.Name == "print" && classType.Name == "MonoBehaviour" && classType.Namespace == "UnityEngine");
+                        (classType.Name == "Logger" && classType.Namespace == "UnityEngine") ||
+                        (classType.Name == "DebugLogHandler" && classType.Namespace == "UnityEngine") ||
+                        (classType.Name == "Assert" && classType.Namespace == "UnityEngine.Assertions") ||
+                        (mb.Name == "print" && classType.Name == "MonoBehaviour"
+                         && classType.Namespace == "UnityEngine");
 
                 if (!shouldStripLineNumbers)
                 {
@@ -221,7 +224,7 @@ namespace Svelto.Utilities
                 catch
                 {
                     return
-                        new StringBuilder(); //this is just to handle finalizer that could be called after the _threadSafeStrings is finalized. So pretty rare
+                            new StringBuilder(); //this is just to handle finalizer that could be called after the _threadSafeStrings is finalized. So pretty rare
                 }
             }
         }

@@ -1,3 +1,4 @@
+using System;
 using Svelto.ECS.Internal;
 
 namespace Svelto.ECS.Internal
@@ -65,6 +66,7 @@ namespace Svelto.ECS
     /// Interface to mark an Engine as reacting on entities added
     /// </summary>
     /// <typeparam name="T"></typeparam>
+    [Obsolete]
     public interface IReactOnAdd<T> : IReactOnAdd where T : _IInternalEntityComponent
     {
         void Add(ref T entityComponent, EGID egid);
@@ -72,7 +74,7 @@ namespace Svelto.ECS
 
     public interface IReactOnAddEx<T> : IReactOnAddEx where T : struct, _IInternalEntityComponent
     {
-        void Add((uint start, uint end) rangeOfEntities, in EntityCollection<T> collection,
+        void Add((uint start, uint end) rangeOfEntities, in EntityCollection<T> entities,
             ExclusiveGroupStruct groupID);
     }
 
@@ -80,6 +82,7 @@ namespace Svelto.ECS
     /// Interface to mark an Engine as reacting on entities removed
     /// </summary>
     /// <typeparam name="T"></typeparam>
+    [Obsolete]
     public interface IReactOnRemove<T> : IReactOnRemove where T : _IInternalEntityComponent
     {
         void Remove(ref T entityComponent, EGID egid);
@@ -91,10 +94,11 @@ namespace Svelto.ECS
 
     public interface IReactOnRemoveEx<T> : IReactOnRemoveEx where T : struct, _IInternalEntityComponent
     {
-        void Remove((uint start, uint end) rangeOfEntities, in EntityCollection<T> collection,
+        void Remove((uint start, uint end) rangeOfEntities, in EntityCollection<T> entities,
             ExclusiveGroupStruct groupID);
     }
 
+    [Obsolete]
     public interface IReactOnAddAndRemove<T> : IReactOnAdd<T>, IReactOnRemove<T> where T : _IInternalEntityComponent
     {
     }
@@ -113,14 +117,19 @@ namespace Svelto.ECS
     /// Interface to mark an Engine as reacting to entities swapping group
     /// </summary>
     /// <typeparam name="T"></typeparam>
+    [Obsolete]
     public interface IReactOnSwap<T> : IReactOnSwap where T : _IInternalEntityComponent
     {
         void MovedTo(ref T entityComponent, ExclusiveGroupStruct previousGroup, EGID egid);
     }
 
+    /// <summary>
+    /// All the entities have been already submitted in the database (swapped) when this callback is triggered
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public interface IReactOnSwapEx<T> : IReactOnSwapEx where T : struct, _IInternalEntityComponent
     {
-        void MovedTo((uint start, uint end) rangeOfEntities, in EntityCollection<T> collection,
+        void MovedTo((uint start, uint end) rangeOfEntities, in EntityCollection<T> entities,
             ExclusiveGroupStruct fromGroup, ExclusiveGroupStruct toGroup);
     }
 

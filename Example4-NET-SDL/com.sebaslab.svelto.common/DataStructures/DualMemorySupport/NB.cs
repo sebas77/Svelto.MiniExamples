@@ -56,7 +56,7 @@ namespace Svelto.DataStructures
         static NB()
         {
 #if ENABLE_DEBUG_CHECKS            
-            if (TypeType.isUnmanaged<T>() == false)
+            if (TypeCache<T>.isUnmanaged == false)
                 throw new Exception("NativeBuffer (NB) supports only unmanaged types");
 #endif            
         }
@@ -112,7 +112,7 @@ namespace Svelto.DataStructures
 #endif
                //     using (_threadSentinel.TestThreadSafety())
                     {
-                        return ref Unsafe.AsRef<T>((void*)(_ptr + (int)index * SIZE));
+                        return ref Unsafe.AsRef<T>((void*)(_ptr + (int)index * MemoryUtilities.SizeOf<T>()));
                     }
                 }
             }
@@ -131,7 +131,7 @@ namespace Svelto.DataStructures
 #endif
   //                  using (_threadSentinel.TestThreadSafety())
                     {
-                        return  ref Unsafe.AsRef<T>((void*)(_ptr + index * SIZE));
+                        return ref Unsafe.AsRef<T>((void*)(_ptr + index * MemoryUtilities.SizeOf<T>()));
                     }
                 }
             }
@@ -175,7 +175,5 @@ namespace Svelto.DataStructures
                 throw new NotImplementedException();
             }
         }
-        
-        static readonly int SIZE = MemoryUtilities.SizeOf<T>();
     }
 }

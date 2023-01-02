@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using Svelto.Common;
 using Svelto.Utilities;
@@ -664,10 +665,7 @@ namespace Svelto.DataStructures
             for (int i = count - 1; i >= 0; i--)
             {
                 var tKey = unsafeKeys[i].key;
-                if (otherDicKeys.ContainsKey(tKey) == false)
-                {
-                    this.Remove(tKey);
-                }
+                if (otherDicKeys.ContainsKey(tKey) == false) Remove(tKey);
             }
         }
 
@@ -680,10 +678,7 @@ namespace Svelto.DataStructures
             for (int i = count - 1; i >= 0; i--)
             {
                 var tKey = unsafeKeys[i].key;
-                if (otherDicKeys.ContainsKey(tKey) == true)
-                {
-                    this.Remove(tKey);
-                }
+                if (otherDicKeys.ContainsKey(tKey) == true) Remove(tKey);
             }
         }
 
@@ -835,7 +830,7 @@ namespace Svelto.DataStructures
         where TBucketStrategy : struct, IBufferStrategy<int>
     {
         public SveltoDictionaryKeyValueEnumerator(
-            SveltoDictionary<TKey, TValue, TKeyStrategy, TValueStrategy, TBucketStrategy> dic): this()
+            in SveltoDictionary<TKey, TValue, TKeyStrategy, TValueStrategy, TBucketStrategy> dic): this()
         {
             _dic = dic;
             _index = -1;
@@ -893,7 +888,7 @@ namespace Svelto.DataStructures
         where TValueStrategy : struct,
         IBufferStrategy<TValue>
     {
-        public KeyValuePairFast(TKey keys, TValueStrategy dicValues, int index)
+        public KeyValuePairFast(in TKey keys, in TValueStrategy dicValues, int index)
         {
             _dicValues = dicValues;
             _index = index;
@@ -911,7 +906,7 @@ namespace Svelto.DataStructures
     public sealed class KeyValuePairFastDebugProxy<TKey, TValue, TValueStrategy> where TKey : struct, IEquatable<TKey>
         where TValueStrategy : struct, IBufferStrategy<TValue>
     {
-        public KeyValuePairFastDebugProxy(KeyValuePairFast<TKey, TValue, TValueStrategy> keyValue)
+        public KeyValuePairFastDebugProxy(in KeyValuePairFast<TKey, TValue, TValueStrategy> keyValue)
         {
             this._keyValue = keyValue;
         }
