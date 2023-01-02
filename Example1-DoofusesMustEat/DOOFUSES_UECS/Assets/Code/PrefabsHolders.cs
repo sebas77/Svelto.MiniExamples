@@ -3,30 +3,30 @@ using UnityEngine;
 
 namespace Svelto.ECS.MiniExamples.Example1C
 {
-    public class PrefabsHolders: MonoBehaviour
+    public class PrefabsHolder: MonoBehaviour
     {
-        public GameObject prefab1;
-        public GameObject prefab2;
-        public GameObject prefab3;
-        public GameObject prefab4;
-        public GameObject prefab5;
+        public GameObject BlueDoofus;
+        public GameObject RedDoofus;
+        public GameObject SpecialDoofus;
+        public GameObject RedFood;
+        public GameObject BlueFood;
         
-        public class MyBaker: Baker<PrefabsHolders>
+        public class MyBaker: Baker<PrefabsHolder>
         {
-            public override void Bake(PrefabsHolders authoring)
+            public override void Bake(PrefabsHolder authoring)
             {
-                AddComponent(new MyComponent
+                AddComponent(new PrefabsComponents
                 {
-                        BlueDoofus = GetEntity(authoring.prefab1),
-                        RedDoofus = GetEntity(authoring.prefab2),
-                        SpecialDoofus = GetEntity(authoring.prefab3),
-                        RedFood = GetEntity(authoring.prefab4),
-                        BlueFood = GetEntity(authoring.prefab5),
+                        BlueDoofus = GetEntity(authoring.BlueDoofus),
+                        RedDoofus = GetEntity(authoring.RedDoofus),
+                        SpecialDoofus = GetEntity(authoring.SpecialDoofus),
+                        RedFood = GetEntity(authoring.RedFood),
+                        BlueFood = GetEntity(authoring.BlueFood),
                 } );
             }
         }
         
-        public struct MyComponent : IComponentData
+        public struct PrefabsComponents : IComponentData
         {
             public Entity BlueDoofus;
             public Entity RedDoofus;

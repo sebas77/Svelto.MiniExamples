@@ -1,3 +1,5 @@
+#error This demo is experimental and still in progress. DO NOT USE
+
 using System;
 using Stride.Core.Mathematics;
 using Stride.Engine;

@@ -1,5 +1,8 @@
-#error I am in the process to update this demo to DOTS 1.0, It will take some time. If you are interested in checking an older version, please check the GIT history anything from a0495c7af07ef7248c06d6f326e4f75d2578df06 and before will work with DOTS 0.51. This demo won't work as expected at the moment. 
+//#error I am in the process to update this demo to DOTS 1.0, It will take some time. If you are interested in checking an older version, please check the GIT history anything from a0495c7af07ef7248c06d6f326e4f75d2578df06 and before will work with DOTS 0.51. This demo won't work as expected at the moment.
 
+#if !UNITY_DISABLE_AUTOMATIC_SYSTEM_BOOTSTRAP
+#error this demo takes completely over the DOTS initialization and ticking. UNITY_DISABLE_AUTOMATIC_SYSTEM_BOOTSTRAP must be enabled
+#endif
 
 using System.Threading.Tasks;
 using Svelto.Context;
@@ -8,7 +11,11 @@ using Svelto.ECS.Schedulers;
 using Svelto.ECS.SveltoOnDOTS;
 using Unity.Collections;
 using Unity.Entities;
+using Unity.Entities.Serialization;
+using Unity.Scenes;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using Hash128 = Unity.Entities.Hash128;
 
 namespace Svelto.ECS.MiniExamples.Example1C
 {
@@ -31,42 +38,46 @@ namespace Svelto.ECS.MiniExamples.Example1C
 
         public void OnContextDestroyed(bool isInitialized)
         {
-            try
-            {
-                _sveltoOverDotsEnginesGroupEnginesGroup.Dispose();
-                _enginesRoot.Dispose();
-                _mainLoop.Dispose();
-                _simpleSubmitScheduler.Dispose();
-            }
-            catch { }
+            _sveltoOverDotsEnginesGroupEnginesGroup.Dispose();
+            _enginesRoot.Dispose();
+            _mainLoop.Dispose();
+            _simpleSubmitScheduler.Dispose();
         }
 
         async Task ComposeEnginesRoot()
         {
-            await Task.Delay(1000);
-
             var entityFactory = _enginesRoot.GenerateEntityFactory();
             var entityFunctions = _enginesRoot.GenerateEntityFunctions();
-
-            var defaultWorld = World.DefaultGameObjectInjectionWorld;
 
             _sveltoOverDotsEnginesGroupEnginesGroup = new SveltoOnDOTSEnginesGroup(_enginesRoot);
             _enginesToTick.Add(_sveltoOverDotsEnginesGroupEnginesGroup);
 
-            _sveltoOverDotsEnginesGroupEnginesGroup.world.EntityManager.CopyAndReplaceEntitiesFrom(
-                defaultWorld.EntityManager);
-            
-            defaultWorld.Dispose();
+            var customWorld = _sveltoOverDotsEnginesGroupEnginesGroup.world;
+            customWorld.Update();
+            var sceneGuid = SceneSystem.GetSceneGUID(
+                ref customWorld.Unmanaged.GetExistingSystemState<SceneSystem>(),
+                "Assets/Scene/CombiningBehaviours/Prefabs.unity");
+            var sceneGuid2 = new Hash128("52b77c03e0aae864286b8f57b3216c18");
+            var sceneEntity = SceneSystem.LoadSceneAsync(
+                customWorld.Unmanaged,
+                new EntitySceneReference(
+                    sceneGuid2, 0));
+
+            while (SceneSystem.IsSceneLoaded(customWorld.Unmanaged, sceneEntity)
+                == false)
+            {
+                customWorld.Update();
+                await Task.Yield();
+            }
 
             LoadAssetAndCreatePrefabs(
                 out var redFoodPrefab
               , out var blueFootPrefab, out var redDoofusPrefab, out var blueDoofusPrefab,
-                out var specialBlueDoofusPrefab, _sveltoOverDotsEnginesGroupEnginesGroup.world.EntityManager);
+                out var specialBlueDoofusPrefab, customWorld.EntityManager);
 
             AddSveltoEngineToTick(
                 new SpawningDoofusEngine(redDoofusPrefab, blueDoofusPrefab, specialBlueDoofusPrefab, entityFactory));
             AddSveltoEngineToTick(new SpawnFoodOnClickEngine(redFoodPrefab, blueFootPrefab, entityFactory));
-
             AddSveltoEngineToTick(new ConsumingFoodEngine(entityFunctions));
             AddSveltoEngineToTick(new LookingForFoodDoofusesEngine(entityFunctions));
             AddSveltoEngineToTick(new VelocityToPositionDoofusesEngine());
@@ -84,14 +95,11 @@ namespace Svelto.ECS.MiniExamples.Example1C
             out Entity redDoofusPrefab, out Entity blueDoofusPrefab, out Entity specialBlueDoofusPrefab,
             EntityManager worldEntityManager)
         {
-            var query = worldEntityManager.CreateEntityQuery(
-                typeof(PrefabsHolders.MyComponent)
-            );
-            
-            NativeArray<PrefabsHolders.MyComponent> renderBounds = query.ToComponentDataArray<PrefabsHolders.MyComponent>( Unity.Collections.Allocator.Temp );
-            PrefabsHolders.MyComponent[] renderBoundsArray = renderBounds.ToArray();
-            
-            var component = renderBoundsArray[0];
+            var query = worldEntityManager.CreateEntityQuery(typeof(PrefabsHolder.PrefabsComponents));
+
+            var prefabHolder = query.ToComponentDataArray<PrefabsHolder.PrefabsComponents>(Allocator.Temp);
+
+            var component = prefabHolder[0];
 
             redFoodPrefab = component.RedFood;
             blueFoodPrefab = component.BlueFood;

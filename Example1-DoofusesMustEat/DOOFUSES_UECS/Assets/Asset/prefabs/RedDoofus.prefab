@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 682977448313023510}
   - component: {fileID: 682977448313023511}
   m_Layer: 0
-  m_Name: Capsule
+  m_Name: RedDoofus
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
