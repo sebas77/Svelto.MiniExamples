@@ -9,6 +9,8 @@ namespace MiniExamples.DeterministicPhysicDemo.Physics.Engines
     {
         public void Execute(in FixedPoint delta)
         {
+            //DoubleEntitiesEnumerator is a very special iterator of svelto.ECS with a niche use: 
+            //to iterate a group of entities against themselves with complexity n*(n+1)/2 (skips already tested couples)
             var dynamicEntities = new DoubleEntitiesEnumerator<TransformEntityComponent, RigidbodyEntityComponent, BoxColliderEntityComponent>(
                 entitiesDB.QueryEntities<TransformEntityComponent, RigidbodyEntityComponent, BoxColliderEntityComponent>(
                     GameGroups.DynamicRigidBodyWithBoxColliders.Groups));

@@ -3,7 +3,6 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using Svelto.Common;
 using Svelto.DataStructures;
-using Svelto.ECS.Hybrid;
 
 namespace Svelto.ECS.Internal
 {

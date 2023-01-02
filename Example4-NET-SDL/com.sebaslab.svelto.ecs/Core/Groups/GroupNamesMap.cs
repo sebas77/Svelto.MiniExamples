@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Svelto.ECS;
 
 static class GroupNamesMap
