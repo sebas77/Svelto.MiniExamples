@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
-using Svelto.DataStructures;
+using Svelto.Common;
 
-namespace Svelto.Common.DataStructures
+namespace Svelto.DataStructures
 {
     /// <summary>
     /// internal structure just for the sake of creating the sentinel dictionary

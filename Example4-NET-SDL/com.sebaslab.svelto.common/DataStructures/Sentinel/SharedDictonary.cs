@@ -1,4 +1,6 @@
-﻿namespace Svelto.Common.DataStructures
+﻿using Svelto.Common;
+
+namespace Svelto.DataStructures
 {
     public class SharedDictonary
     {

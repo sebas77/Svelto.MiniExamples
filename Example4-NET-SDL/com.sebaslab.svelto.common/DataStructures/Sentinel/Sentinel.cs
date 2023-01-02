@@ -3,7 +3,7 @@
 #endif
 using System;
 
-namespace Svelto.Common.DataStructures
+namespace Svelto.DataStructures
 {
 #if ENABLE_THREAD_SAFE_CHECKS
     public struct Sentinel

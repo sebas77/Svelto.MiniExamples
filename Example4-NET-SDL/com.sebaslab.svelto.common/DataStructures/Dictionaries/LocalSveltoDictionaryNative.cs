@@ -48,9 +48,6 @@ namespace Svelto.DataStructures.Native
         public void Clear() { _dictionary.Clear(); }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void FastClear() { _dictionary.FastClear(); }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool ContainsKey(TKey key) { return _dictionary.ContainsKey(key); }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

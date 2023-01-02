@@ -1,6 +1,8 @@
+using Svelto.ECS.Internal;
+
 namespace Svelto.ECS
 {
-    struct EntityInfoComponent: IBaseEntityComponent
+    struct EntityInfoComponent: _IInternalEntityComponent
     {
         public IComponentBuilder[] componentsToBuild;
     }

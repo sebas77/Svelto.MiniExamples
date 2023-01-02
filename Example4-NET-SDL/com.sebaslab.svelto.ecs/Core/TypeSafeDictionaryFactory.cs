@@ -4,7 +4,7 @@ using Svelto.ECS.Internal;
 
 namespace Svelto.ECS
 {
-    static class TypeSafeDictionaryFactory<T> where T : struct, IBaseEntityComponent
+    static class TypeSafeDictionaryFactory<T> where T : struct, _IInternalEntityComponent
     {
         static readonly bool isUnmanaged = typeof(T).IsUnmanagedEx()
                                         && typeof(IEntityViewComponent).IsAssignableFrom(typeof(T)) == false;

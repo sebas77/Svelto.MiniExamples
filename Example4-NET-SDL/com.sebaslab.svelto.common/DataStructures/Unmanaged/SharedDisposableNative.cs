@@ -2,7 +2,7 @@ using System;
 using System.Runtime.CompilerServices;
 using Svelto.Common;
 
-namespace Svelto.ECS.DataStructures
+namespace Svelto.DataStructures
 {
     public struct SharedDisposableNative<T> : IDisposable where T : unmanaged, IDisposable
     {
@@ -15,7 +15,7 @@ namespace Svelto.ECS.DataStructures
         {
             unsafe
             {
-                ptr = MemoryUtilities.Alloc<T>(1, Allocator.Persistent);
+                ptr = MemoryUtilities.NativeAlloc<T>(1, Allocator.Persistent);
                 Unsafe.Write((void*)ptr, value);
             }
         }
@@ -26,7 +26,7 @@ namespace Svelto.ECS.DataStructures
             {
                 Unsafe.AsRef<T>((void*)ptr).Dispose();
                 
-                MemoryUtilities.Free((IntPtr)ptr, Allocator.Persistent);
+                MemoryUtilities.NativeFree((IntPtr)ptr, Allocator.Persistent);
                 ptr = IntPtr.Zero;
             }
         }
@@ -37,7 +37,7 @@ namespace Svelto.ECS.DataStructures
             {
                 unsafe
                 {
-                    DBC.ECS.Check.Require(ptr != null, "SharedNative has not been initialized");
+                    DBC.Common.Check.Require(ptr != null, "SharedNative has not been initialized");
 
                     return ref Unsafe.AsRef<T>((void*)ptr);
                 }

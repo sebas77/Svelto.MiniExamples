@@ -2,7 +2,7 @@ using System;
 using System.Runtime.CompilerServices;
 using Svelto.Common;
 
-namespace Svelto.ECS.DataStructures
+namespace Svelto.DataStructures
 {
     //Necessary to be sure that the user won't pass random values
     public struct UnsafeArrayIndex
@@ -196,7 +196,7 @@ namespace Svelto.ECS.DataStructures
                 newCapacity += MemoryUtilities.Pad4(newCapacity);
 
                 byte* newPointer = null;
-                newPointer = (byte*) MemoryUtilities.Alloc(newCapacity, allocator);
+                newPointer = (byte*) MemoryUtilities.NativeAlloc(newCapacity, allocator);
 
                 //copy wrapped content if there is any
                 var currentSize = _writeIndex - _readIndex;
@@ -235,7 +235,7 @@ namespace Svelto.ECS.DataStructures
                 }
 
                 if (ptr != null)
-                    MemoryUtilities.Free((IntPtr) ptr, allocator);
+                    MemoryUtilities.NativeFree((IntPtr) ptr, allocator);
 
                 ptr      = newPointer;
                 capacity = newCapacity;
@@ -251,7 +251,7 @@ namespace Svelto.ECS.DataStructures
             unsafe
             {
                 if (ptr != null)
-                    MemoryUtilities.Free((IntPtr) ptr, allocator);
+                    MemoryUtilities.NativeFree((IntPtr) ptr, allocator);
 
                 ptr         = null;
                 _writeIndex = 0;

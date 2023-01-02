@@ -3,7 +3,7 @@ using System;
 using DBC.ECS;
 using Svelto.Common;
 using Svelto.DataStructures;
-using Svelto.ECS.DataStructures;
+using Svelto.DataStructures;
 using Svelto.ECS.Internal;
 using Svelto.ECS.Native;
 
@@ -17,8 +17,10 @@ namespace Svelto.ECS
             //todo: remove operation array and store entity descriptor hash in the return value
             //todo I maybe able to provide a  _nativeSwap.SwapEntity<entityDescriptor>
             //todo make this work with base descriptors too
+            var descriptorComponentsToRemove = EntityDescriptorTemplate<T>.descriptor.componentsToBuild;
+            
             _nativeRemoveOperations.Add(new NativeOperationRemove(
-                                            EntityDescriptorTemplate<T>.descriptor.componentsToBuild, TypeCache<T>.type
+                                            descriptorComponentsToRemove, TypeCache<T>.type
                                           , memberName));
 
             return new NativeEntityRemove(_nativeRemoveOperationQueue, _nativeRemoveOperations.count - 1);
@@ -162,7 +164,6 @@ namespace Svelto.ECS
         FasterList<NativeOperationSwap>   _nativeSwapOperations;
         FasterList<NativeOperationBuild>  _nativeAddOperations;
 
-        //todo: I very likely don't need to create one for each native entity factory, the same can be reused
         readonly AtomicNativeBags _nativeAddOperationQueue;
         readonly AtomicNativeBags _nativeRemoveOperationQueue;
         readonly AtomicNativeBags _nativeSwapOperationQueue;

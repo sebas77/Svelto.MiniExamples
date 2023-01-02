@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 using Svelto.DataStructures;
+using Svelto.ECS.Internal;
 using Svelto.ECS.Serialization;
 
 namespace Svelto.ECS
@@ -89,7 +90,7 @@ namespace Svelto.ECS
             /// <returns></returns>
             public T DeserializeEntityComponent<T>(ISerializationData serializationData,
                 ISerializableEntityDescriptor entityDescriptor, int serializationType)
-                where T : unmanaged, IBaseEntityComponent
+                where T : unmanaged, _IInternalEntityComponent
             {
                 var readPos         = serializationData.dataPos;
                 T   entityComponent = default;

@@ -5,10 +5,8 @@
 using System;
 using System.Runtime.CompilerServices;
 using Svelto.Common;
-using Svelto.Common.DataStructures;
-using Allocator = Svelto.Common.Allocator;
 
-namespace Svelto.ECS.DataStructures
+namespace Svelto.DataStructures
 {
     public struct NativeDynamicArray : IDisposable
     {
@@ -87,7 +85,7 @@ namespace Svelto.ECS.DataStructures
 #else
                 NativeDynamicArray rtnStruc = default;
 #endif
-                UnsafeArray* listData = (UnsafeArray*)MemoryUtilities.Alloc<UnsafeArray>(1, allocator);
+                UnsafeArray* listData = (UnsafeArray*)MemoryUtilities.NativeAlloc<UnsafeArray>(1, allocator);
 
                 //clear to nullify the pointers
                 //MemoryUtilities.MemClear((IntPtr) listData, structSize);
@@ -171,7 +169,7 @@ namespace Svelto.ECS.DataStructures
             {
 #endif
                 _list->Dispose(_allocator);
-                MemoryUtilities.Free((IntPtr)_list, _allocator);
+                MemoryUtilities.NativeFree((IntPtr)_list, _allocator);
                 
 #if ENABLE_DEBUG_CHECKS
             }
@@ -348,7 +346,7 @@ namespace Svelto.ECS.DataStructures
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void FastClear()
+        public void Clear()
         {
             unsafe
             {
@@ -508,9 +506,9 @@ namespace Svelto.ECS.DataStructures
 #if DEBUG && !PROFILE_SVELTO
         int _hashType;
 #endif
-        
+#if ENABLE_DEBUG_CHECKS       
         Sentinel _threadSentinel;
-
+#endif
         Allocator _allocator;
     }
 }

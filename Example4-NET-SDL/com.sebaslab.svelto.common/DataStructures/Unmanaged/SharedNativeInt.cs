@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using Svelto.Common;
 
-namespace Svelto.ECS.DataStructures
+namespace Svelto.DataStructures
 {
     public struct SharedNativeInt: IDisposable
     {
@@ -18,7 +18,7 @@ namespace Svelto.ECS.DataStructures
             unsafe
             {
                 _allocator = allocator;
-                data       = (int*) MemoryUtilities.Alloc(sizeof(int), allocator);
+                data       = (int*) MemoryUtilities.NativeAlloc(sizeof(int), allocator);
             }
         }
 
@@ -28,7 +28,7 @@ namespace Svelto.ECS.DataStructures
             {
                 var current = new SharedNativeInt();
                 current._allocator    = allocator;
-                current.data  = (int*) MemoryUtilities.Alloc(sizeof(int), allocator);
+                current.data  = (int*) MemoryUtilities.NativeAlloc(sizeof(int), allocator);
                 *current.data = t;
 
                 return current;
@@ -53,7 +53,7 @@ namespace Svelto.ECS.DataStructures
             {
                 if (data != null)
                 {
-                    MemoryUtilities.Free((IntPtr) data, _allocator);
+                    MemoryUtilities.NativeFree((IntPtr) data, _allocator);
                     data = null;
                 }
             }
