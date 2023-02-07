@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Code/CombiningBehaviours.unity
+    path: Assets/Scene/CombiningBehaviours.unity
     guid: 61d25b2685a298a4bbd39ac960d7fda6
+  - enabled: 1
+    path: Assets/Scene/CombiningBehaviours/Prefabs.unity
+    guid: 52b77c03e0aae864286b8f57b3216c18
   m_configObjects: {}

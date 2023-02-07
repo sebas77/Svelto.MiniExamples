@@ -41,16 +41,16 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
-     <Folder Include="Library\PackageCache\com.unity.burst@1.8.2\Tests\Editor" />
-     <None Include="Library\PackageCache\com.unity.burst@1.8.2\Tests\Editor\Unity.Burst.Editor.Tests.asmdef" />
+     <Folder Include="Library\PackageCache\com.unity.burst@1.8.3\Tests\Editor" />
+     <None Include="Library\PackageCache\com.unity.burst@1.8.3\Tests\Editor\Unity.Burst.Editor.Tests.asmdef" />
      <Reference Include="UnityEngine">
-     <HintPath>C:\Program Files\Unity\2022.2.1f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
+     <HintPath>C:\Program Files\Unity\2022.2.5f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
      </Reference>
      <Reference Include="UnityEngine.CoreModule">
-     <HintPath>C:\Program Files\Unity\2022.2.1f1\Editor\Data\Managed\UnityEngine\UnityEngine.CoreModule.dll</HintPath>
+     <HintPath>C:\Program Files\Unity\2022.2.5f1\Editor\Data\Managed\UnityEngine\UnityEngine.CoreModule.dll</HintPath>
      </Reference>
      <Reference Include="UnityEditor">
-     <HintPath>C:\Program Files\Unity\2022.2.1f1\Editor\Data\Managed\UnityEngine\UnityEditor.dll</HintPath>
+     <HintPath>C:\Program Files\Unity\2022.2.5f1\Editor\Data\Managed\UnityEngine\UnityEditor.dll</HintPath>
      </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

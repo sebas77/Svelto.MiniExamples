@@ -53,13 +53,13 @@
      <Folder Include="Library\PackageCache\com.unity.serialization@3.0.0-pre.1\Tests\Runtime\Unity.Serialization.Tests\Json" />
      <Folder Include="Library\PackageCache\com.unity.serialization@3.0.0-pre.1\Tests\Runtime\Unity.Serialization.Tests\Types" />
      <Reference Include="UnityEngine">
-     <HintPath>C:\Program Files\Unity\2022.2.1f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
+     <HintPath>C:\Program Files\Unity\2022.2.5f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
      </Reference>
      <Reference Include="UnityEngine.CoreModule">
-     <HintPath>C:\Program Files\Unity\2022.2.1f1\Editor\Data\Managed\UnityEngine\UnityEngine.CoreModule.dll</HintPath>
+     <HintPath>C:\Program Files\Unity\2022.2.5f1\Editor\Data\Managed\UnityEngine\UnityEngine.CoreModule.dll</HintPath>
      </Reference>
      <Reference Include="UnityEditor">
-     <HintPath>C:\Program Files\Unity\2022.2.1f1\Editor\Data\Managed\UnityEngine\UnityEditor.dll</HintPath>
+     <HintPath>C:\Program Files\Unity\2022.2.5f1\Editor\Data\Managed\UnityEngine\UnityEditor.dll</HintPath>
      </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

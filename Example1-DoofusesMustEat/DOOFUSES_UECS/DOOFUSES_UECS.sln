@@ -77,8 +77,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.Pool.Debugger", "Sve
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.RenderPipeline.Universal.ShaderLibrary", "Unity.RenderPipeline.Universal.ShaderLibrary.csproj", "{0b7373ab-7456-5341-357f-d24ed981ad72}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.ECS.SveltoOnDOTS", "Svelto.ECS.SveltoOnDOTS.csproj", "{8a403a84-68fe-400f-a384-66e8e4890020}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.Entities.Build", "Unity.Entities.Build.csproj", "{69c95b1a-749d-d2ad-bd06-180c05f72377}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.Burst.Editor", "Unity.Burst.Editor.csproj", "{6c10d133-77ad-5b60-b187-792982c778d2}"
@@ -233,6 +231,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.Burst.Tests", "Unity.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.Scenes.PerformanceTests", "Unity.Scenes.PerformanceTests.csproj", "{769cac98-0d19-0d13-18fb-b4991f1db231}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OverloadedFunctionPointers", "OverloadedFunctionPointers.csproj", "{586fa8c3-212c-d8c0-f782-90b04667ec16}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -314,8 +314,6 @@ Global
 		{da3f4180-b034-126d-1975-7784fb7a5988}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0b7373ab-7456-5341-357f-d24ed981ad72}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0b7373ab-7456-5341-357f-d24ed981ad72}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8a403a84-68fe-400f-a384-66e8e4890020}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8a403a84-68fe-400f-a384-66e8e4890020}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{69c95b1a-749d-d2ad-bd06-180c05f72377}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{69c95b1a-749d-d2ad-bd06-180c05f72377}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6c10d133-77ad-5b60-b187-792982c778d2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -470,6 +468,8 @@ Global
 		{36876114-f5d9-c3c4-75fb-b241424699c7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{769cac98-0d19-0d13-18fb-b4991f1db231}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{769cac98-0d19-0d13-18fb-b4991f1db231}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{586fa8c3-212c-d8c0-f782-90b04667ec16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{586fa8c3-212c-d8c0-f782-90b04667ec16}.Debug|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
