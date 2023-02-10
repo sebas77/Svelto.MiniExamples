@@ -1,7 +1,7 @@
 using Svelto.ECS.EntityComponents;
 using Svelto.ECS.SveltoOnDOTS;
 
-namespace Svelto.ECS.MiniExamples.Example1C
+namespace Svelto.ECS.MiniExamples.DoofusesDOTS
 {
     class DoofusEntityDescriptor: IEntityDescriptor
     {

@@ -3,7 +3,8 @@ using System;
 using Svelto.ECS.SveltoOnDOTS;
 using Unity.Jobs;
 
-namespace Svelto.ECS.SveltoOnDOTS
+//note can't change namespace, too late for old projects
+namespace Svelto.ECS
 {
     public static class UnityJobExtensions
     {

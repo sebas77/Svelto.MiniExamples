@@ -149,7 +149,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 87730165}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b5be9de2644110ad087d2765208deb, type: 3}
+  m_Script: {fileID: 11500000, guid: 3bb12a58413b1a74fbbeb08c38808959, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   BlueDoofus: {fileID: 682977448313023505, guid: 6d80b0b086e44d641b502b3befeec1c4,

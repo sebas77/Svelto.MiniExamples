@@ -11,6 +11,7 @@ namespace Svelto.Utilities
     {
         public static uint processorNumber => (uint)Environment.ProcessorCount;
         public static string currentThreadName => Thread.CurrentThread.Name;
+        public static int currentThreadId => Thread.CurrentThread.ManagedThreadId;
         /// <summary>
         /// The main difference between Yield and Sleep(0) is that Yield doesn't allow a switch of context
         /// that is the core is given to a thread that is already running on that core. Sleep(0) may cause

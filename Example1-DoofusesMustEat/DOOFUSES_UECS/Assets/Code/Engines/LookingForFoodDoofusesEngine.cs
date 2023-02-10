@@ -10,7 +10,7 @@ using Unity.Collections.LowLevel.Unsafe;
 using Unity.Jobs;
 using Unity.Mathematics;
 
-namespace Svelto.ECS.MiniExamples.Example1C
+namespace Svelto.ECS.MiniExamples.DoofusesDOTS
 {
     [Sequenced(nameof(DoofusesEngineNames.LookingForFoodDoofusesEngine))]
     public class LookingForFoodDoofusesEngine : IQueryingEntitiesEngine, IJobifiedEngine

@@ -5,7 +5,7 @@ using Svelto.ECS.SveltoOnDOTS;
 using Unity.Burst;
 using Unity.Jobs;
 
-namespace Svelto.ECS.MiniExamples.Example1C
+namespace Svelto.ECS.MiniExamples.DoofusesDOTS
 {
     /// <summary>
     /// Now that the blue doofuses entities have been submitted, we fetch them to add them to filters according

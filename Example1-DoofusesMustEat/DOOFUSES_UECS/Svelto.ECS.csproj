@@ -182,7 +182,6 @@
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Native\UnityNativeEntityDBExtensions.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Svelto\ExclusiveGroupExtensions.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Native\EnginesRoot.NativeOperation.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\EntitySubmitOperation.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\DOTS\Jobs\DisposeJob.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Serialization\SerializingEnginesRoot.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\AllowMultipleAttribute.cs" />
@@ -229,6 +228,7 @@
      <Folder Include="Packages\com.sebaslab.svelto.ecs\Extensions\Svelto\Legacy" />
      <Folder Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\DOTS" />
      <Folder Include="Packages\com.sebaslab.svelto.ecs\Core\EnginesGroup" />
+     <Folder Include="Packages\com.sebaslab.svelto.ecs\Core\SpecialEnumerators" />
      <Folder Include="Packages\com.sebaslab.svelto.ecs\Extensions\Native" />
      <Folder Include="Packages\com.sebaslab.svelto.ecs\Core\Hybrid" />
      <Folder Include="Packages\com.sebaslab.svelto.ecs\Core" />

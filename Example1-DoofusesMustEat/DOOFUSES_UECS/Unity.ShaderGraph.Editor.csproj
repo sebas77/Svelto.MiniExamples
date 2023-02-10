@@ -445,8 +445,8 @@
      <Compile Include="Library\PackageCache\com.unity.shadergraph@14.0.6\Editor\Data\Nodes\Input\Scene\ScreenNode.cs" />
      <Compile Include="Library\PackageCache\com.unity.shadergraph@14.0.6\Editor\Importers\ShaderGraphAssetPostProcessor.cs" />
      <Compile Include="Library\PackageCache\com.unity.shadergraph@14.0.6\Editor\Generation\Targets\BuiltIn\Editor\ShaderPreprocessor.cs" />
-     <Compile Include="Library\PackageCache\com.unity.shadergraph@14.0.6\Editor\Drawing\Views\MaterialNodeView.cs" />
      <Compile Include="Library\PackageCache\com.unity.shadergraph@14.0.6\Editor\Data\Graphs\ShaderDropdown.cs" />
+     <Compile Include="Library\PackageCache\com.unity.shadergraph@14.0.6\Editor\Drawing\Views\MaterialNodeView.cs" />
      <Compile Include="Library\PackageCache\com.unity.shadergraph@14.0.6\Editor\Data\Actions\GraphViewActions.cs" />
      <Compile Include="Library\PackageCache\com.unity.shadergraph@14.0.6\Editor\Importers\ShaderGraphImporter.cs" />
      <Compile Include="Library\PackageCache\com.unity.shadergraph@14.0.6\Editor\Data\Nodes\Math\Trigonometry\RadiansToDegreesNode.cs" />
@@ -554,11 +554,11 @@
      <Compile Include="Library\PackageCache\com.unity.shadergraph@14.0.6\Editor\Generation\Descriptors\StructDescriptor.cs" />
      <Compile Include="Library\PackageCache\com.unity.shadergraph@14.0.6\Editor\Data\Graphs\Matrix4ShaderProperty.cs" />
      <Compile Include="Library\PackageCache\com.unity.shadergraph@14.0.6\Editor\Data\Nodes\Utility\Logic\AllNode.cs" />
+     <Compile Include="Library\PackageCache\com.unity.shadergraph@14.0.6\Editor\Data\Nodes\Utility\CustomFunctionNode.cs" />
      <Compile Include="Library\PackageCache\com.unity.shadergraph@14.0.6\Editor\Data\Nodes\UV\ParallaxOcclusionMappingNode.cs" />
      <Compile Include="Library\PackageCache\com.unity.shadergraph@14.0.6\Editor\Data\Nodes\Artistic\Adjustment\ChannelMixerNode.cs" />
      <Compile Include="Library\PackageCache\com.unity.shadergraph@14.0.6\Editor\Data\Nodes\Input\Geometry\ViewDirectionNode.cs" />
      <Compile Include="Library\PackageCache\com.unity.shadergraph@14.0.6\Editor\Data\Nodes\Input\PBR\DielectricSpecularNode.cs" />
-     <Compile Include="Library\PackageCache\com.unity.shadergraph@14.0.6\Editor\Data\Nodes\Utility\CustomFunctionNode.cs" />
      <Compile Include="Library\PackageCache\com.unity.shadergraph@14.0.6\Editor\Data\Util\SlotValueTypeUtil.cs" />
      <Compile Include="Library\PackageCache\com.unity.shadergraph@14.0.6\Editor\Drawing\MaterialGraphEditWindow.cs" />
      <Compile Include="Library\PackageCache\com.unity.shadergraph@14.0.6\Editor\Data\Nodes\Math\Trigonometry\SineNode.cs" />

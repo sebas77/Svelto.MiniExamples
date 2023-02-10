@@ -16,10 +16,11 @@ namespace Svelto.DataStructures
         public T Read<T>() where T : unmanaged => _sveltoStream.Read<T>(ToSpan());
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public T Read<T>(in T str) where T : unmanaged => _sveltoStream.Read<T>(ToSpan());
+        public T Read<T>(in T item) where T : unmanaged => _sveltoStream.Read<T>(ToSpan());
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Read<T>(ref T str, int size) where T:struct => _sveltoStream.Read(ref str, ToSpan(), size);
+        //T can contain managed elements, it's up to the user to be sure that the right data is read
+        public void UnsafeRead<T>(ref T item, int size) where T:struct => _sveltoStream.UnsafeRead(ref item, ToSpan(), size);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Write<T>(in T value) where T : unmanaged => _sveltoStream.Write(ToSpan(), value);

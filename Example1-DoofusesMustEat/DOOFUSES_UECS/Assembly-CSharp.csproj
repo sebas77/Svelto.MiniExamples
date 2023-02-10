@@ -63,9 +63,9 @@
      <Compile Include="Assets\Tayx\Graphy - Ultimate Stats Monitor\Scripts\Ram\G_RamManager.cs" />
      <Compile Include="Assets\Tayx\Graphy - Ultimate Stats Monitor\Scripts\Audio\G_AudioText.cs" />
      <Compile Include="Assets\Tayx\Graphy - Ultimate Stats Monitor\Scripts\Ram\G_RamMonitor.cs" />
-     <Compile Include="Assets\Code\Descriptors\DoofusEntityDescriptor.cs" />
      <Compile Include="Assets\Tayx\Graphy - Ultimate Stats Monitor\Scripts\Util\G_Singleton.cs" />
      <Compile Include="Assets\Tayx\Graphy - Ultimate Stats Monitor\Scripts\Fps\G_FpsManager.cs" />
+     <Compile Include="Assets\Code\PrefabsHolders.cs" />
      <Compile Include="Assets\Code\Components\EntityComponents\VelocityEntityStruct.cs" />
      <Compile Include="Assets\Code\SveltoCompositionRoot.cs" />
      <Compile Include="Assets\Tayx\Graphy - Ultimate Stats Monitor\Scripts\GraphyManager.cs" />
@@ -81,7 +81,6 @@
      <Compile Include="Assets\Code\Components\EntityComponents\PositionEntityStruct.cs" />
      <Compile Include="Assets\Code\Utilities\FreeFlyCamera.cs" />
      <Compile Include="Assets\Tayx\Graphy - Ultimate Stats Monitor\Scripts\Audio\G_AudioMonitor.cs" />
-     <Compile Include="Assets\Code\Engines\DOTSSveltoEngines\DoofusesDOTSHandleLifeTimeEngine.cs" />
      <Compile Include="Assets\Tayx\Graphy - Ultimate Stats Monitor\Scripts\Audio\G_AudioGraph.cs" />
      <Compile Include="Assets\Tayx\Graphy - Ultimate Stats Monitor\Scripts\Ram\G_RamGraph.cs" />
      <Compile Include="Assets\Tayx\Graphy - Ultimate Stats Monitor\Scene\Customization Scripts\ForceSliderToMultipleOf3.cs" />
@@ -96,15 +95,14 @@
      <Compile Include="Assets\Code\MainLoop.cs" />
      <Compile Include="Assets\Tayx\Graphy - Ultimate Stats Monitor\Scripts\Util\G_FloatString.cs" />
      <Compile Include="Assets\Tayx\Graphy - Ultimate Stats Monitor\Scene\Customization Scripts\CustomizeGraphy.cs" />
+     <Compile Include="Assets\Code\FoodEntityDescriptor.cs" />
      <Compile Include="Assets\Tayx\Graphy - Ultimate Stats Monitor\Scripts\Fps\G_FpsMonitor.cs" />
      <Compile Include="Assets\Code\Engines\DOTSSveltoEngines\RenderingUECSDataSynchronizationEngine.cs" />
-     <Compile Include="Assets\Code\Descriptors\FoodEntityDescriptor.cs" />
-     <Compile Include="Assets\Code\Baking\PrefabsHolders.cs" />
-     <Compile Include="Assets\Code\Components\DOTSComponents\DoofusesDOTSComponent.cs" />
      <Compile Include="Assets\Code\Engines\VelocityToPositionDoofusesEngine.cs" />
      <Compile Include="Assets\Tayx\Graphy - Ultimate Stats Monitor\Scripts\Util\G_ExtensionMethods.cs" />
      <Compile Include="Assets\Code\Engines\ConsumingFoodEngine.cs" />
      <Compile Include="Assets\Code\Engines\SpawnFoodOnClickEngine.cs" />
+     <Compile Include="Assets\Code\DoofusEntityDescriptor.cs" />
      <Compile Include="Assets\Tayx\Graphy - Ultimate Stats Monitor\Scripts\Advanced\G_AdvancedData.cs" />
      <Compile Include="Assets\Code\Components\DOTSComponents\DOTSComponents.cs" />
      <Compile Include="Assets\Tayx\Graphy - Ultimate Stats Monitor\Scripts\Fps\G_FpsGraph.cs" />
@@ -156,6 +154,7 @@
      <None Include="Library\PackageCache\com.unity.entities@1.0.0-pre.15\Editor Default Resources\uss\Journaling\entities-journaling-details-entity_light.uss" />
      <None Include="Library\PackageCache\com.unity.entities@1.0.0-pre.15\Editor Default Resources\uss\PieChart.uss" />
      <None Include="Library\PackageCache\com.unity.collections@2.1.0-pre.2\Unity.Collections.LowLevel.ILSupport\README.txt" />
+     <None Include="Assets\Asset\link.xml" />
      <Folder Include="Library\PackageCache\com.unity.modules.animation@1.0.0" />
      <Folder Include="Library\PackageCache\com.unity.sysroot@1.0.0\Tests" />
      <None Include="Library\PackageCache\com.unity.ugui@1.0.0\package.json" />
@@ -172,6 +171,7 @@
      <Folder Include="Library\PackageCache\com.unity.entities@1.0.0-pre.15\Editor Default Resources\icons\light\Query" />
      <Folder Include="Library\PackageCache\com.unity.ide.rider@3.0.18\Rider" />
      <None Include="Library\PackageCache\com.unity.entities@1.0.0-pre.15\Editor Default Resources\Unity.Entities.UI\uss\two-pane-split-view.uss" />
+     <Folder Include="Assets\Resources" />
      <None Include="Library\PackageCache\com.unity.entities@1.0.0-pre.15\Editor Default Resources\uxml\ProfilerModules\memory-profiler-left-pane.uxml" />
      <Folder Include="Assets\Tayx\Graphy - Ultimate Stats Monitor\Scene\Customization Scripts" />
      <None Include="Library\PackageCache\com.unity.entities@1.0.0-pre.15\Editor Default Resources\Unity.Entities.UI\uss\add-collection-item.uss" />
@@ -349,6 +349,7 @@
      <Folder Include="Library\PackageCache\com.unity.modules.subsystems@1.0.0" />
      <Folder Include="Library\PackageCache\com.unity.entities@1.0.0-pre.15\Editor Default Resources\icons\light\Aspect" />
      <None Include="Library\PackageCache\com.unity.ide.rider@3.0.18\package.json" />
+     <None Include="Assets\Resources\PerformanceTestRunInfo.json" />
      <Folder Include="Library\PackageCache\com.unity.entities@1.0.0-pre.15\Editor Default Resources" />
      <None Include="Library\PackageCache\com.unity.entities@1.0.0-pre.15\Editor Default Resources\uxml\Common\system-list-view.uxml" />
      <Folder Include="Library\PackageCache\com.unity.entities@1.0.0-pre.15\Editor Default Resources\uss\ActiveBuildConfiguration" />

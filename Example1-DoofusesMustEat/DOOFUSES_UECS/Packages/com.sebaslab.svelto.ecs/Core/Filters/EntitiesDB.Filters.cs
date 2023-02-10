@@ -115,7 +115,7 @@ namespace Svelto.ECS
                 return ref GetOrCreatePersistentFilter<T>(new CombinedFilterID(filterID, filterContextId));
             }
 #if UNITY_BURST && UNITY_COLLECTIONS
-            [Unity.Burst.BurstDiscard] //not burst compatible because of  TypeRefWrapper<T>.wrapper;
+            [Unity.Burst.BurstDiscard] //not burst compatible because of  TypeRefWrapper<T>.wrapper and GetOrAdd callback;
 #endif
             public ref EntityFilterCollection GetOrCreatePersistentFilter<T>(CombinedFilterID filterID)
                     where T : unmanaged, _IInternalEntityComponent
@@ -132,11 +132,14 @@ namespace Svelto.ECS
 
                 var lastIndex = _persistentEntityFilters.count - 1;
 
-                _indicesOfPersistentFiltersUsedByThisComponent.GetOrAdd(
-                    new NativeRefWrapperType(typeRef),
-                    () => new NativeDynamicArrayCast<int>(1, Svelto.Common.Allocator.Persistent)).Add(lastIndex);
+                _indicesOfPersistentFiltersUsedByThisComponent.GetOrAdd(new NativeRefWrapperType(typeRef), _builder).Add(lastIndex);
 
                 return ref _persistentEntityFilters.GetDirectValueByRef((uint)lastIndex);
+            }
+
+            static NativeDynamicArrayCast<int> Builder()
+            {
+                return new NativeDynamicArrayCast<int>(1, Allocator.Persistent);
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -372,6 +375,7 @@ namespace Svelto.ECS
                     _indicesOfPersistentFiltersUsedByThisComponent;
 
             readonly SharedSveltoDictionaryNative<long, EntityFilterCollection> _transientEntityFilters;
+            static readonly Func<NativeDynamicArrayCast<int>> _builder = Builder;
         }
     }
 }

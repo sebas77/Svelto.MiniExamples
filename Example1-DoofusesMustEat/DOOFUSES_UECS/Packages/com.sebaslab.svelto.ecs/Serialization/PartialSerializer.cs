@@ -95,7 +95,7 @@ namespace Svelto.ECS.Serialization
             return true;
         }
 
-        public int size => (int)totalSize;
+        public uint size => totalSize;
 
         static readonly FasterList<(uint, uint)> offsets = new FasterList<(uint, uint)>();
         static readonly uint totalSize;

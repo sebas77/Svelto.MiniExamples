@@ -5,7 +5,7 @@ using Unity.Jobs;
 using UnityEditor;
 using UnityEngine;
 
-namespace Svelto.ECS.MiniExamples.Example1C
+namespace Svelto.ECS.MiniExamples.DoofusesDOTS
 {
 #if UNITY_EDITOR
     class MyCustomBuildProcessor : UnityEditor.Build.IPreprocessBuildWithReport
@@ -49,7 +49,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
         JobHandle                                    _job;
     }
 
-    internal class TickerComponent:MonoBehaviour
+    class TickerComponent:MonoBehaviour
     {
         public Action callBack;
 

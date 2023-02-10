@@ -12,7 +12,7 @@ using Unity.Mathematics;
 using UnityEngine;
 using Random = Unity.Mathematics.Random;
 
-namespace Svelto.ECS.MiniExamples.Example1C
+namespace Svelto.ECS.MiniExamples.DoofusesDOTS
 {
     [Sequenced(nameof(DoofusesEngineNames.PlaceFoodOnClickEngine))]
     public class SpawnFoodOnClickEngine : IQueryingEntitiesEngine, IJobifiedEngine

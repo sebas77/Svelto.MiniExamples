@@ -21,6 +21,7 @@ namespace Svelto.Utilities
 
             stringBuilder = new ThreadLocal<StringBuilder>(ValueFactory);
             projectFolder = Application.dataPath.Replace("Assets", "");
+            defaultLogHandler = Debug.unityLogger.logHandler;
         }
 
         public static string LogFormatter(string txt, LogType type, bool showLogStack, Exception e, string frame,
@@ -126,10 +127,14 @@ namespace Svelto.Utilities
         {
             var frameCount = Math.Min((int)MAX_NUMBER_OF_STACK_LINES, stackTrace.FrameCount);
 
-            for (var index1 = 0; index1 < frameCount; ++index1)
+            try
             {
-                FormatStack(stackTrace.GetFrame(index1), builder);
+                for (var index1 = 0; index1 < frameCount; ++index1)
+                {
+                    FormatStack(stackTrace.GetFrame(index1), builder);
+                }
             }
+            catch { }
         }
 
         static void FormatStack(StackFrame frame, StringBuilder sb)
@@ -223,13 +228,12 @@ namespace Svelto.Utilities
                 }
                 catch
                 {
-                    return
-                            new StringBuilder(); //this is just to handle finalizer that could be called after the _threadSafeStrings is finalized. So pretty rare
+                    return new StringBuilder(); //this is just to handle finalizer that could be called after the _threadSafeStrings is finalized. So pretty rare
                 }
             }
         }
 
-        public static ILogHandler defaultLogHandler = Debug.unityLogger.logHandler;
+        public static ILogHandler defaultLogHandler;
     }
 }
 #endif

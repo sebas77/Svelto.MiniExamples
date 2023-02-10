@@ -283,7 +283,7 @@ namespace Svelto.ECS.Internal
         }
 
         /// <summary>
-        ///     Execute all the engine IReactOnDispose for eahc component registered in the DB when it's disposed of
+        ///     Execute all the engine IReactOnDispose for each component registered in the DB when it's disposed of
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ExecuteEnginesDisposeCallbacks_Group

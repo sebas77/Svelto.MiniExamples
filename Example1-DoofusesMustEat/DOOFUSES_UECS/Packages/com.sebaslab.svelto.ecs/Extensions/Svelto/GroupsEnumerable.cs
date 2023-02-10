@@ -6,7 +6,6 @@ namespace Svelto.ECS
     /// <summary>
     ///     NOTE THESE ENUMERABLES EXIST TO AVOID BOILERPLATE CODE AS THEY SKIP 0 SIZED GROUPS
     ///     However if the normal pattern with the double foreach is used, this is not necessary
-    ///     Note: atm cannot be ref structs because they are returned in a valuetuple
     /// </summary>
     /// <typeparam name="T1"></typeparam>
     /// <typeparam name="T2"></typeparam>

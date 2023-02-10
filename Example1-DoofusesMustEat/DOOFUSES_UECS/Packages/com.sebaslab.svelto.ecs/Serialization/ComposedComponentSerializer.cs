@@ -37,7 +37,7 @@ namespace Svelto.ECS.Serialization
             throw new Exception($"ComposedComponentSerializer for {typeof(T)} did not deserialize any data!");
         }
 
-        public   int                      size => 0;
+        public   uint                      size => 0;
         readonly IComponentSerializer<T>[] _serializers;
     }
 }

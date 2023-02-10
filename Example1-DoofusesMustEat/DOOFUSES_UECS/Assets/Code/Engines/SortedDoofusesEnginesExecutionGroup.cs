@@ -2,7 +2,7 @@ using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.ECS.SveltoOnDOTS;
 
-namespace Svelto.ECS.MiniExamples.Example1C
+namespace Svelto.ECS.MiniExamples.DoofusesDOTS
 {
     ///it's important to note that the names of the engines used in the ISequenceOrder, do NOT need to come from the
     /// same enum. This will allow the user to declare enums in their own assemblies. 
@@ -22,8 +22,8 @@ namespace Svelto.ECS.MiniExamples.Example1C
     {
         public string[] enginesOrder => new[]
         {
-            nameof(DoofusesEngineNames.SpawningDoofusEngine)
-          , nameof(DoofusesEngineNames.PlaceFoodOnClickEngine)
+            nameof(DoofusesEngineNames.SpawningDoofusEngine),
+            nameof(DoofusesEngineNames.PlaceFoodOnClickEngine)
           , nameof(DoofusesEngineNames.LookingForFoodDoofusesEngine)
           , nameof(DoofusesEngineNames.ConsumingFoodEngine)
           , nameof(DoofusesEngineNames.VelocityToPositionDoofusesEngine)

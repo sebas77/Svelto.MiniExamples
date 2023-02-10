@@ -133,8 +133,7 @@ namespace Svelto.ECS
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            internal void UpdateAllGroupReferenceLocators(ExclusiveGroupStruct fromGroupId,
-                ExclusiveGroupStruct toGroupId)
+            internal void UpdateAllGroupReferenceLocators(ExclusiveGroupStruct fromGroupId, ExclusiveGroupStruct toGroupId)
             {
                 if (_egidToReferenceMap.TryGetValue(fromGroupId, out var groupMap) == false)
                     return;

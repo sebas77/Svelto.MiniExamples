@@ -1,15 +1,12 @@
-//#if !UNITY_ECS_100
-#define SLOW_SVELTO_ECB //Using EntityManager directly is much faster than using ECB because of the shared components
-//#endif
-
 using Svelto.DataStructures;
 using Svelto.ECS.Internal;
 using Svelto.ECS.SveltoOnDOTS;
+using Unity.Burst;
 using Unity.Entities;
 using Unity.Jobs;
 using Unity.Transforms;
 
-namespace Svelto.ECS.MiniExamples.Example1C
+namespace Svelto.ECS.MiniExamples.DoofusesDOTS
 {
     /// <summary>
     /// In a Svelto<->UECS scenario, is common to have UECS entity created on creation of Svelto ones. Same for
@@ -18,39 +15,6 @@ namespace Svelto.ECS.MiniExamples.Example1C
     /// but at the moment (Entities 0.17) ECB performance is really bad when ShareComponents are used, which
     /// I need to rely on
     /// </summary>
-    ///
-#if SLOW_SVELTO_ECB     
-    public class SpawnUnityEntityOnSveltoEntityEngine : SveltoOnDOTSHandleCreationEngine,
-        IReactOnAddEx<SpawnPointEntityComponent>, IQueryingEntitiesEngine
-    {
-        public void Add((uint start, uint end) rangeOfEntities,
-            in EntityCollection<SpawnPointEntityComponent> collection, ExclusiveGroupStruct groupID)
-        {
-            var (buffer, entityIDs, _) = collection;
-
-            for (uint i = rangeOfEntities.start; i < rangeOfEntities.end; i++)
-            {
-                ref var entityComponent = ref buffer[i];
-                Entity dotsEntity =
-                    CreateDOTSEntityOnSvelto(entityComponent.prefabEntity, new EGID(entityIDs[i], groupID), true);
-                
-                if (entityComponent.isSpecial)
-                    ECB.AddComponent<SpecialBlue>(dotsEntity);
-                
-                ECB.SetComponent(dotsEntity, new Translation
-                {
-                    Value = entityComponent.spawnPosition
-                });
-            }
-        }
-
-        public override string name => nameof(SpawnUnityEntityOnSveltoEntityEngine);
-        public void Ready() {
-        }
-
-        public EntitiesDB entitiesDB { get; set; }
-    }
-#else    
     public class SpawnUnityEntityOnSveltoEntityEngine: SveltoOnDOTSHandleCreationEngine,
             IReactOnAddEx<SpawnPointEntityComponent>, IQueryingEntitiesEngine
     {
@@ -69,6 +33,7 @@ namespace Svelto.ECS.MiniExamples.Example1C
 
         public EntitiesDB entitiesDB { get; set; }
 
+        [BurstCompile]
         readonly struct SpawnJob: IJobParallelFor
         {
             readonly NativeEntityIDs _entityIDs;
@@ -95,12 +60,9 @@ namespace Svelto.ECS.MiniExamples.Example1C
                 ref var spawnComponent = ref _spawnPoints[index];
 
                 var dotsEntity = EntityCommandBufferForSvelto.CreateDOTSEntityOnSvelto(
-                    index, _ECB,
-                    spawnComponent.prefabEntity, new EGID(entity, _groupID), true);
+                    index, _ECB, spawnComponent.prefabEntity, new EGID(entity, _groupID), true);
 
-                if (spawnComponent.isSpecial)
-                    _ECB.AddComponent<SpecialBlue>(index, dotsEntity);
-
+                //setting the initial DOTS translation, necessary for the food since the food entities do not sync translation
                 _ECB.SetComponent(
                     index, dotsEntity, new Translation
                     {
@@ -109,5 +71,4 @@ namespace Svelto.ECS.MiniExamples.Example1C
             }
         }
     }
-#endif
 }

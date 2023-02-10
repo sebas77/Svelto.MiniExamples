@@ -4,7 +4,7 @@ namespace Svelto.ECS.Serialization
 {
     public class DontSerialize<T> : IComponentSerializer<T> where T : unmanaged, _IInternalEntityComponent
     {
-        public int size => 0;
+        public uint size => 0;
 
         public bool Serialize(in T value, ISerializationData serializationData)
         {

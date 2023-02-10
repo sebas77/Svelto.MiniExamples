@@ -7,15 +7,15 @@ namespace Svelto.ECS.SveltoOnDOTS
         EntityCommandBufferForSvelto entityCommandBuffer { set; }
     }
 
-    public class SveltoOnDOTSHandleLifeTimeEngine<DOTSEntityComponent> : ISveltoOnDOTSHandleLifeTimeEngine,
-        IReactOnRemove<DOTSEntityComponent>,
-        IReactOnSwapEx<DOTSEntityComponent> where DOTSEntityComponent : unmanaged, IEntityComponentForDOTS
+    /// <summary>
+    /// Automatic Svelto Group -> DOTS archetype synchronization when necessary
+    /// </summary>
+    /// <typeparam name="DOTSEntityComponent"></typeparam>
+    public class SveltoOnDOTSHandleLifeTimeEngine<DOTSEntityComponent>: ISveltoOnDOTSHandleLifeTimeEngine,
+            IReactOnRemoveEx<DOTSEntityComponent>,
+            IReactOnSwapEx<DOTSEntityComponent>
+            where DOTSEntityComponent : unmanaged, IEntityComponentForDOTS
     {
-        public void Remove(ref DOTSEntityComponent entityComponent, EGID egid)
-        {
-            ECB.DestroyEntity(entityComponent.dotsEntity);
-        }
-
         EntityCommandBufferForSvelto ECB { get; set; }
 
         public EntityCommandBufferForSvelto entityCommandBuffer
@@ -23,11 +23,25 @@ namespace Svelto.ECS.SveltoOnDOTS
             set => ECB = value;
         }
 
+        public void Remove((uint start, uint end) rangeOfEntities, in EntityCollection<DOTSEntityComponent> collection, ExclusiveGroupStruct groupID)
+        {
+            var (entities, _) = collection;
+
+            //todo this could be burstified
+            for (uint i = rangeOfEntities.start; i < rangeOfEntities.end; i++)
+            {
+                ref var entityComponent = ref entities[i];
+
+                ECB.DestroyEntity(entityComponent.dotsEntity);
+            }
+        }
+
         public void MovedTo((uint start, uint end) rangeOfEntities, in EntityCollection<DOTSEntityComponent> collection,
             ExclusiveGroupStruct _, ExclusiveGroupStruct toGroup)
         {
             var (entities, entityIDs, _) = collection;
 
+            //todo this could be burstified
             for (uint i = rangeOfEntities.start; i < rangeOfEntities.end; i++)
             {
                 ref var entityComponent = ref entities[i];

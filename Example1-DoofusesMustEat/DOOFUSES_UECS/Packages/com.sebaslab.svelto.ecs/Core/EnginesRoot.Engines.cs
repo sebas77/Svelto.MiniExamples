@@ -390,23 +390,12 @@ namespace Svelto.ECS
         readonly EnginesReadyOption _enginesWaitForReady;
 
         readonly FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<IReactOnAdd>>> _reactiveEnginesAdd;
-
-        readonly FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<IReactOnAddEx>>>
-            _reactiveEnginesAddEx;
-
-        readonly FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<IReactOnRemove>>>
-            _reactiveEnginesRemove;
-
-        readonly FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<IReactOnRemoveEx>>>
-            _reactiveEnginesRemoveEx;
-
+        readonly FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<IReactOnAddEx>>> _reactiveEnginesAddEx;
+        readonly FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<IReactOnRemove>>> _reactiveEnginesRemove;
+        readonly FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<IReactOnRemoveEx>>> _reactiveEnginesRemoveEx;
         readonly FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<IReactOnSwap>>> _reactiveEnginesSwap;
-
-        readonly FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<IReactOnSwapEx>>>
-            _reactiveEnginesSwapEx;
-
-        readonly FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<IReactOnDispose>>>
-            _reactiveEnginesDispose;
+        readonly FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<IReactOnSwapEx>>> _reactiveEnginesSwapEx;
+        readonly FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<IReactOnDispose>>> _reactiveEnginesDispose;
 
         readonly FasterList<IReactOnSubmission> _reactiveEnginesSubmission;
         bool _isDisposed;

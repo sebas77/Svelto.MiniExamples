@@ -1,4 +1,5 @@
 using System;
+using System.Drawing;
 using Svelto.Common;
 using Svelto.ECS.Internal;
 
@@ -15,6 +16,8 @@ namespace Svelto.ECS.Serialization
     public class SerializableComponentBuilder<T>: ComponentBuilder<T>, ISerializableComponentBuilder
             where T : unmanaged, IEntityComponent
     {
+        public static uint SIZE => (uint)MemoryUtilities.SizeOf<T>();
+        
         public void Serialize(uint entityID, ITypeSafeDictionary dictionary, ISerializationData serializationData
           , int serializationType)
         {
@@ -61,7 +64,7 @@ namespace Svelto.ECS.Serialization
 
         public int Size(int serializationType)
         {
-            return _serializers[(int)serializationType].size;
+            return (int)_serializers[(int)serializationType].size;
         }
 
         public void Deserialize(ISerializationData serializationData, ref T entityComponent, int serializationType)

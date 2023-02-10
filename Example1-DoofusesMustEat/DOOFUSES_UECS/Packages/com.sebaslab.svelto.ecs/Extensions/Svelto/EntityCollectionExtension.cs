@@ -331,7 +331,7 @@ namespace Svelto.ECS
             buffer1 = (NB<T1>)ec.buffer1._buffer;
             buffer2 = (MB<T2>)ec.buffer2._buffer;
             count = (int)ec.count;
-            entityIDs = (ManagedEntityIDs)ec.buffer1._entityIDs;
+            entityIDs = (ManagedEntityIDs)ec.buffer2._entityIDs;
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

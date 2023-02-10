@@ -10,22 +10,22 @@ using Unity.Jobs;
 using Unity.Mathematics;
 using Random = Unity.Mathematics.Random;
 
-namespace Svelto.ECS.MiniExamples.Example1C
+namespace Svelto.ECS.MiniExamples.DoofusesDOTS
 {
     [Sequenced(nameof(DoofusesEngineNames.SpawningDoofusEngine))]
-    public class SpawningDoofusEngine : IQueryingEntitiesEngine, IJobifiedEngine
+    public class SpawningDoofusEngine: IQueryingEntitiesEngine, IJobifiedEngine
     {
         public SpawningDoofusEngine(Entity redCapsule, Entity blueCapsule, Entity specialBlueCapsule,
             IEntityFactory factory)
         {
-            _redCapsule         = redCapsule;
-            _blueCapsule        = blueCapsule;
+            _redCapsule = redCapsule;
+            _blueCapsule = blueCapsule;
             _specialBlueCapsule = specialBlueCapsule;
-            _factory            = factory.ToNative<DoofusEntityDescriptor>(nameof(SpawningDoofusEngine));
+            _factory = factory.ToNative<DoofusEntityDescriptor>(nameof(SpawningDoofusEngine));
         }
 
         public EntitiesDB entitiesDB { get; set; }
-        public string     name       => nameof(SpawningDoofusEngine);
+        public string name => nameof(SpawningDoofusEngine);
 
         public void Ready() { }
 
@@ -42,52 +42,55 @@ namespace Svelto.ECS.MiniExamples.Example1C
 
             var spawnRed = new SpawningJob()
             {
-                _group   = GameGroups.RED_DOOFUSES_NOT_EATING.BuildGroup,
+                _group = GameGroups.RED_DOOFUSES_NOT_EATING.BuildGroup,
                 _factory = _factory,
-                _entity  = _redCapsule,
-                _random  = new Random(1234567)
+                _entity = _redCapsule,
+                _random = new Random(1234567)
             }.ScheduleParallel(MaxNumberOfDoofuses, _jobHandle);
 
             //Adding the complexity of the special blue capsule to show how to use filters to handle different
             //entity states in the same group.
-            ExclusiveBuildGroup exclusiveBuildGroup = GameGroups.BLUE_DOOFUSES_NOT_EATING.BuildGroup;
-
-            if (exclusiveBuildGroup.isInvalid)
-                throw new Exception();
+            ExclusiveBuildGroup blueDoofusesNotEating = GameGroups.BLUE_DOOFUSES_NOT_EATING.BuildGroup;
 
             var spawnBlue = new SpawningJob()
             {
-                _group         = exclusiveBuildGroup,
-                _factory       = _factory,
-                _entity        = _blueCapsule,
-                _specialEntity = _specialBlueCapsule,
-                _random        = new Random(7654321),
-                _useFilters    = true
-            }.ScheduleParallel(MaxNumberOfDoofuses, _jobHandle);
+                _group = blueDoofusesNotEating,
+                _factory = _factory,
+                _entity = _blueCapsule,
+                _random = new Random(7654321),
+            }.ScheduleParallel(MaxNumberOfDoofuses / 2, _jobHandle);
+
+            var spawnspecialBlue = new SpawningJob()
+            {
+                _group = blueDoofusesNotEating,
+                _factory = _factory,
+                _entity = _specialBlueCapsule,
+                _random = new Random(7651),
+                _useFilters = true //is special blue
+            }.ScheduleParallel(MaxNumberOfDoofuses / 2, _jobHandle);
 
             //Yeah this shouldn't be solved like this, but I keep it in this way for simplicity sake 
             _done = true;
 
-            return JobHandle.CombineDependencies(spawnBlue, spawnRed);
+            return JobHandle.CombineDependencies(spawnBlue, spawnRed, spawnspecialBlue);
         }
 
         readonly NativeEntityFactory _factory;
-        readonly Entity              _redCapsule, _blueCapsule, _specialBlueCapsule;
+        readonly Entity _redCapsule, _blueCapsule, _specialBlueCapsule;
 
         const int MaxNumberOfDoofuses = 10000;
 
         bool _done;
 
         [BurstCompile]
-        struct SpawningJob : IJobParallelFor
+        struct SpawningJob: IJobParallelFor
         {
             internal NativeEntityFactory _factory;
-            internal Entity              _entity;
+            internal Entity _entity;
             internal ExclusiveBuildGroup _group;
-            internal Random              _random;
+            internal Random _random;
 
-            internal Entity _specialEntity;
-            internal bool   _useFilters;
+            internal bool _useFilters;
 
 #pragma warning disable 649
             //thread index is necessary to build entity in parallel in Svelto ECS
@@ -102,21 +105,18 @@ namespace Svelto.ECS.MiniExamples.Example1C
                 };
 
                 //this special component is used to ReactOnAdd and create DOTS entities on Svelto entities
-                var isSpecial = (index & 3) == 0;
-
-                var useFilters = isSpecial && _useFilters;
-                var createDOTSEntityOnSveltoComponent = new SpawnPointEntityComponent(useFilters,
-                    useFilters ? _specialEntity : _entity, positionEntityComponent.position);
+                var createDOTSEntityOnSveltoComponent = new SpawnPointEntityComponent(_useFilters, _entity, positionEntityComponent.position);
 
                 var egid = new EGID((uint)index, _group);
                 var init = _factory.BuildEntity(egid, _threadIndex);
 
                 init.Init(createDOTSEntityOnSveltoComponent);
                 init.Init(positionEntityComponent);
-                init.Init(new SpeedEntityComponent
-                {
-                    speed = _random.NextFloat(0.1f, 1.0f)
-                });
+                init.Init(
+                    new SpeedEntityComponent
+                    {
+                        speed = _random.NextFloat(0.1f, 1.0f)
+                    });
             }
         }
     }

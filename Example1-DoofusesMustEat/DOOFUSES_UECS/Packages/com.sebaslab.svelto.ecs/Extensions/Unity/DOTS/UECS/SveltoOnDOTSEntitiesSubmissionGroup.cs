@@ -6,7 +6,6 @@ using Svelto.DataStructures;
 using Svelto.ECS.Native;
 using Svelto.ECS.Schedulers;
 using Unity.Entities;
-using Unity.Mathematics;
 using Unity.Jobs;
 using Allocator = Unity.Collections.Allocator;
 
@@ -31,15 +30,15 @@ namespace Svelto.ECS.SveltoOnDOTS
     ///     all the DOTS ECS entities created that need Svelto information will be processed
     /// </summary>
     [DisableAutoCreation]
-    public sealed partial class SveltoOnDOTSEntitiesSubmissionGroup : SystemBase, IQueryingEntitiesEngine,
-        ISveltoOnDOTSSubmission
+    public sealed partial class SveltoOnDOTSEntitiesSubmissionGroup: SystemBase, IQueryingEntitiesEngine,
+            ISveltoOnDOTSSubmission
     {
         public SveltoOnDOTSEntitiesSubmissionGroup(SimpleEntitiesSubmissionScheduler submissionScheduler,
             EnginesRoot enginesRoot)
         {
-            _submissionScheduler               = submissionScheduler;
-            _submissionEngines                 = new FasterList<SveltoOnDOTSHandleCreationEngine>();
-            _cachedList                        = new List<DOTSEntityToSetup>();
+            _submissionScheduler = submissionScheduler;
+            _submissionEngines = new FasterList<SveltoOnDOTSHandleCreationEngine>();
+            _cachedList = new List<DOTSEntityToSetup>();
             _sveltoOnDotsHandleLifeTimeEngines = new FasterList<ISveltoOnDOTSHandleLifeTimeEngine>();
 
             var defaultSveltoOnDotsHandleLifeTimeEngine = new SveltoOnDOTSHandleLifeTimeEngine<DOTSEntityComponent>();
@@ -83,7 +82,7 @@ namespace Svelto.ECS.SveltoOnDOTS
 
         public void Add(SveltoOnDOTSHandleCreationEngine engine)
         {
-           // Console.LogDebug($"Add Submission Engine {engine} to the DOTS world {_ECBSystem.World.Name}");
+            // Console.LogDebug($"Add Submission Engine {engine} to the DOTS world {_ECBSystem.World.Name}");
 
             //this is temporary enabled because of engines that needs EntityManagers for the wrong reasons.
             _submissionEngines.Add(engine);
@@ -93,43 +92,56 @@ namespace Svelto.ECS.SveltoOnDOTS
 
         public void Add(ISveltoOnDOTSHandleLifeTimeEngine engine)
         {
-         //   Console.LogDebug($"Add Submission Engine {engine} to the DOTS world {_ECBSystem.World.Name}");
+            //   Console.LogDebug($"Add Submission Engine {engine} to the DOTS world {_ECBSystem.World.Name}");
 
             _sveltoOnDotsHandleLifeTimeEngines.Add(engine);
         }
-        
+
         void PreSubmissionPhase(ref JobHandle jobHandle, PlatformProfiler profiler)
         {
-            using (profiler.Sample("Complete All Pending Jobs")) jobHandle.Complete(); //sync-point
-            
+            using (profiler.Sample("Complete All Pending Jobs"))
+            {
+                jobHandle.Complete(); //sync-point
+#if UNITY_ECS_100
+                EntityManager.CompleteAllTrackedJobs();
+#else
+                EntityManager.CompleteAllJobs();
+#endif
+            }
+
             _entityCommandBuffer = new EntityCommandBuffer((Allocator)Common.Allocator.TempJob);
-            
+
             foreach (var system in _submissionEngines)
                 system.entityCommandBuffer =
-                    new EntityCommandBufferForSvelto(_entityCommandBuffer, World.EntityManager);
+                        new EntityCommandBufferForSvelto(_entityCommandBuffer, World.EntityManager);
 
             foreach (var system in _sveltoOnDotsHandleLifeTimeEngines)
                 system.entityCommandBuffer =
-                    new EntityCommandBufferForSvelto(_entityCommandBuffer, World.EntityManager);
+                        new EntityCommandBufferForSvelto(_entityCommandBuffer, World.EntityManager);
         }
 
         void AfterSubmissionPhase(PlatformProfiler profiler)
         {
             JobHandle combinedHandle = default;
-            for (var i = 0; i < _submissionEngines.count; i++)
-            {
-                try
-                {
-                    combinedHandle = JobHandle.CombineDependencies(combinedHandle, _submissionEngines[i].OnUpdate());
-                }
-                catch (Exception e)
-                {
-                    Console.LogException(e, _submissionEngines[i].name);
 
-                    throw;
+            using (profiler.Sample("Run submission engines"))
+            {
+                for (var i = 0; i < _submissionEngines.count; i++)
+                {
+                    try
+                    {
+                        combinedHandle = JobHandle.CombineDependencies(combinedHandle, _submissionEngines[i].OnUpdate());
+                    }
+                    catch (Exception e)
+                    {
+                        Console.LogException(e, _submissionEngines[i].name);
+
+                        throw;
+                    }
                 }
             }
 
+            //MUST flush all the entities before converting the pending ones
             using (profiler.Sample("Playback Command Buffer"))
             {
                 _entityCommandBuffer.Playback(EntityManager);
@@ -137,61 +149,67 @@ namespace Svelto.ECS.SveltoOnDOTS
             }
 
             using (profiler.Sample("ConvertPendingEntities"))
-                ConvertPendingEntities(combinedHandle);
+                ConvertPendingEntities(combinedHandle,profiler);
         }
 
         //Note: when this is called, the CommandBuffer is flushed so the not temporary DOTS entity ID will be used
-        void ConvertPendingEntities(JobHandle combinedHandle)
+        void ConvertPendingEntities(JobHandle combinedHandle, PlatformProfiler profiler)
         {
             var entityCommandBuffer = new EntityCommandBuffer((Allocator)Common.Allocator.TempJob);
-            var cmd                 = entityCommandBuffer.AsParallelWriter();
+            var cmd = entityCommandBuffer.AsParallelWriter();
 
             _cachedList.Clear();
 
-            //note with DOTS 0.17 unfortunately this allocates a lot :(
+#if UNITY_ECS_100
             EntityManager.GetAllUniqueSharedComponentsManaged(_cachedList);
-
+#else
+            EntityManager.GetAllUniqueSharedComponentData(_cachedList);
+#endif
             Dependency = JobHandle.CombineDependencies(Dependency, combinedHandle);
 
+            //note if this is slow, the whole loop should be burstified instead (and move away from ForEach)
             for (int i = 0; i < _cachedList.Count; i++)
             {
                 var dotsEntityToSetup = _cachedList[i];
+
+                //Note: for some reason GetAllUniqueSharedComponentData returns DOTSEntityToSetup with valid values
+                //that are not used anymore by any entity. Something to keep an eye on if fixed on future versions
+                //of DOTS (this was with DOTS 0.17)
                 if (dotsEntityToSetup.@group == ExclusiveGroupStruct.Invalid) continue;
 
                 var mapper = entitiesDB.QueryNativeMappedEntities<DOTSEntityComponent>(dotsEntityToSetup.@group);
 
-                //Note: for some reason GetAllUniqueSharedComponentData returns DOTSEntityToSetup with valid values
-                //that are not used anymore by any entity. Something to keep an eye on if fixed on future versions
-                //of DOTS
-
-                Entities.ForEach((Entity entity, int entityInQueryIndex, in DOTSSveltoEGID egid) =>
-                {
-                    mapper.Entity(egid.egid.entityID).dotsEntity = entity;
-                    cmd.RemoveComponent<DOTSEntityToSetup>(entityInQueryIndex, entity);
-                }).WithSharedComponentFilter(dotsEntityToSetup).ScheduleParallel();
+                Entities.ForEach(
+                    (Entity entity, int entityInQueryIndex, in DOTSSveltoEGID egid) =>
+                    {
+                        mapper.Entity(egid.egid.entityID).dotsEntity = entity;
+                        cmd.RemoveComponent<DOTSEntityToSetup>(entityInQueryIndex, entity);
+                    }).WithSharedComponentFilter(dotsEntityToSetup).ScheduleParallel();
             }
 
             Dependency.Complete();
 
-            entityCommandBuffer.Playback(EntityManager);
-            entityCommandBuffer.Dispose();
+            using (profiler.Sample("ConvertPendingEntities"))
+            {
+                entityCommandBuffer.Playback(EntityManager);
+
+                entityCommandBuffer.Dispose();
+            }
         }
 
-        protected override void OnCreate()
-        {
-        }
+        protected override void OnCreate() { }
 
         protected override void OnUpdate()
         {
             throw new NotSupportedException("if this is called something broke the original design");
         }
-        
-        readonly FasterList<SveltoOnDOTSHandleCreationEngine>  _submissionEngines;
+
+        readonly FasterList<SveltoOnDOTSHandleCreationEngine> _submissionEngines;
         readonly FasterList<ISveltoOnDOTSHandleLifeTimeEngine> _sveltoOnDotsHandleLifeTimeEngines;
 
         readonly SimpleEntitiesSubmissionScheduler _submissionScheduler;
-        readonly List<DOTSEntityToSetup>           _cachedList;
-        EntityCommandBuffer                        _entityCommandBuffer;
+        readonly List<DOTSEntityToSetup> _cachedList;
+        EntityCommandBuffer _entityCommandBuffer;
     }
 }
 #endif
