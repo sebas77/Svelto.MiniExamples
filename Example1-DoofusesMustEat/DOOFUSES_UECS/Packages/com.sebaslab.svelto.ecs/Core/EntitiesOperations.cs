@@ -64,8 +64,10 @@ namespace Svelto.ECS
             var swappedComponentsPerType = _thisSubmissionInfo._currentSwapEntitiesOperations.RecycleOrAdd(
                 fromID.groupID, _newGroupsDictionaryWithCaller, _recycleGroupDictionaryWithCaller);
 
-            foreach (var operation in componentBuilders)
+            var componentBuildersLength = componentBuilders.Length - 1;
+            for (var index = componentBuildersLength; index >= 0; index--)
             {
+                var operation = componentBuilders[index];
                 swappedComponentsPerType //recycle or create dictionaries per component type
                        .RecycleOrAdd(new RefWrapperType(operation.GetEntityComponentType()), _newGroupDictionary, _actionRef)
                         //recycle or create list of entities to swap

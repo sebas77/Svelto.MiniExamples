@@ -9,7 +9,6 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
         {
             new ComponentBuilder<PositionEntityComponent>()
           , new ComponentBuilder<DOTSEntityComponent>()
-          , new ComponentBuilder<SpawnPointEntityComponent>()
           , new ComponentBuilder<VelocityEntityComponent>()
           , new ComponentBuilder<SpeedEntityComponent>()
           , new ComponentBuilder<MealInfoComponent>()

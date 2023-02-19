@@ -1,89 +1,45 @@
-﻿#if UNITY_ECS
-#if !UNITY_ECS_100
-#define OLD_DOTS //Using EntityManager directly is much faster than using ECB because of the shared components
-#endif
+#if UNITY_ECS
 using System;
 using System.Runtime.CompilerServices;
+using Unity.Burst;
+using Unity.Collections;
 using Unity.Entities;
 
 namespace Svelto.ECS.SveltoOnDOTS
 {
-    public readonly struct EntityCommandBufferForSvelto
+    public readonly struct DOTSBatchedOperationsForSvelto
     {
-        internal EntityCommandBufferForSvelto(EntityCommandBuffer value, EntityManager manager)
+        internal DOTSBatchedOperationsForSvelto(EntityManager manager)
         {
-            _ECB      = value;
             _EManager = manager;
         }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Entity CreatePureDOTSEntity(EntityArchetype jointArchetype)
+        
+        public EntityArchetype CreateArchetype(params ComponentType[] types)
         {
-#if OLD_DOTS
-            return _EManager.CreateEntity(jointArchetype);
-#else
-            return _ECB.CreateEntity(jointArchetype);
-#endif
+            return _EManager.CreateArchetype(types);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetComponent<T>(Entity e, in T component) where T : unmanaged, IComponentData
         {
-#if OLD_DOTS
-            _EManager.SetComponentData<T>(e, component);
-#else
-            _ECB.SetComponent(e, component);
-#endif
+            _EManager.SetComponentData(e, component);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetSharedComponent<T>(Entity e, in T component) where T : unmanaged, ISharedComponentData
         {
-#if OLD_DOTS
-            _EManager.SetSharedComponentData<T>(e, component);
-#else
-            _ECB.SetSharedComponent(e, component);
-#endif
+            _EManager.SetSharedComponent(e, component);
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Entity CreateDOTSEntityOnSvelto(int sortKey, EntityCommandBuffer.ParallelWriter writer,
-            Entity entityComponentPrefabEntity, EGID egid, bool mustHandleDOTSEntityLifeTime)
+        internal Entity CreateDOTSEntityOnSvelto(Entity prefabEntity, ExclusiveGroupStruct groupID, EntityReference reference)
         {
-#if !OLD_DOTS
-            Entity dotsEntity = writer.Instantiate(sortKey, entityComponentPrefabEntity);
-
-            //SharedComponentData can be used to group the DOTS ECS entities exactly like the Svelto ones
-            writer.AddSharedComponent(sortKey, dotsEntity, new DOTSSveltoGroupID(egid.groupID));
-            writer.AddComponent(sortKey, dotsEntity, new DOTSSveltoEGID(egid));
-            if (mustHandleDOTSEntityLifeTime)
-                writer.AddSharedComponent(sortKey, dotsEntity, new DOTSEntityToSetup(egid.groupID));
-
-            return dotsEntity;
-#endif
-            throw new NotSupportedException();
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal Entity CreateDOTSEntityOnSvelto(Entity prefabEntity, EGID egid, bool mustHandleDOTSEntityLifeTime)
-        {
-#if OLD_DOTS
             Entity dotsEntity = _EManager.Instantiate(prefabEntity);
-            
-            //SharedComponentData can be used to group the DOTS ECS entities exactly like the Svelto ones
-            _EManager.AddSharedComponentData(dotsEntity, new DOTSSveltoGroupID(egid.groupID));
-            _EManager.AddComponentData(dotsEntity, new DOTSSveltoEGID(egid));
-            if (mustHandleDOTSEntityLifeTime)
-                _EManager.AddSharedComponentData(dotsEntity, new DOTSEntityToSetup(egid.groupID));
-#else
-            Entity dotsEntity = _ECB.Instantiate(prefabEntity);
 
             //SharedComponentData can be used to group the DOTS ECS entities exactly like the Svelto ones
-            _ECB.AddSharedComponent(dotsEntity, new DOTSSveltoGroupID(egid.groupID));
-            _ECB.AddComponent(dotsEntity, new DOTSSveltoEGID(egid));
-            if (mustHandleDOTSEntityLifeTime)
-                _ECB.AddSharedComponent(dotsEntity, new DOTSEntityToSetup(egid.groupID));
-#endif
+            _EManager.AddSharedComponent(dotsEntity, new DOTSSveltoGroupID(groupID));
+            _EManager.AddComponent<DOTSSveltoReference>(dotsEntity);
+            _EManager.SetComponentData(dotsEntity, new DOTSSveltoReference(reference));
 
             return dotsEntity;
         }
@@ -96,26 +52,15 @@ namespace Svelto.ECS.SveltoOnDOTS
         /// <param name="egid"></param>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal Entity CreateDOTSEntityOnSvelto(EntityArchetype archetype, EGID egid, bool mustHandleDOTSEntityLifeTime)
+        internal Entity CreateDOTSEntityOnSvelto(EntityArchetype archetype, ExclusiveGroupStruct groupID, EntityReference reference)
         {
-#if OLD_DOTS
             Entity dotsEntity = _EManager.CreateEntity(archetype);
+
+            //SharedComponentData can be used to group the DOTS ECS entities exactly like the Svelto ones
+            _EManager.AddSharedComponent(dotsEntity, new DOTSSveltoGroupID(groupID));
+            _EManager.AddComponent<DOTSSveltoReference>(dotsEntity);
+            _EManager.SetComponentData(dotsEntity, new DOTSSveltoReference(reference));
             
-            //SharedComponentData can be used to group the DOTS ECS entities exactly like the Svelto ones
-            _EManager.AddSharedComponentData(dotsEntity, new DOTSSveltoGroupID(egid.groupID));
-            _EManager.AddComponentData(dotsEntity, new DOTSSveltoEGID(egid));
-            if (mustHandleDOTSEntityLifeTime)
-                _EManager.AddSharedComponentData(dotsEntity, new DOTSEntityToSetup(egid.groupID));
-#else
-            Entity dotsEntity = _ECB.CreateEntity(archetype);
-
-            //SharedComponentData can be used to group the DOTS ECS entities exactly like the Svelto ones
-            _ECB.AddSharedComponent(dotsEntity, new DOTSSveltoGroupID(egid.groupID));
-            _ECB.AddComponent(dotsEntity, new DOTSSveltoEGID(egid));
-            if (mustHandleDOTSEntityLifeTime)
-                _ECB.AddSharedComponent(dotsEntity, new DOTSEntityToSetup(egid.groupID));
-#endif
-
             return dotsEntity;
         }
 
@@ -129,97 +74,69 @@ namespace Svelto.ECS.SveltoOnDOTS
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal Entity CreateDOTSEntity(EntityArchetype archetype)
         {
-#if OLD_DOTS
             return _EManager.CreateEntity(archetype);
-#else
-            return _ECB.CreateEntity(archetype);
-#endif
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Entity CreateDOTSEntity(int sortKey, EntityCommandBuffer.ParallelWriter writer,
-            Entity entityComponentPrefabEntity)
-        {
-#if !OLD_DOTS
-            Entity dotsEntity = writer.Instantiate(sortKey, entityComponentPrefabEntity);
-
-            return dotsEntity;
-#endif
-            throw new NotSupportedException();
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DestroyEntity(Entity e)
         {
-#if OLD_DOTS
             _EManager.DestroyEntity(e);
-#else
-            _ECB.DestroyEntity(e);
-#endif
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void RemoveComponent<T>(Entity dotsEntity)
         {
-#if OLD_DOTS
             _EManager.RemoveComponent<T>(dotsEntity);
-#else
-            _ECB.RemoveComponent<T>(dotsEntity);
-#endif
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void AddComponent<T>(Entity dotsEntity) where T : unmanaged, IComponentData
         {
-#if OLD_DOTS
             _EManager.AddComponent<T>(dotsEntity);
-#else
-            _ECB.AddComponent<T>(dotsEntity);
-#endif
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void AddComponent<T>(Entity dotsEntity, in T component) where T : unmanaged, IComponentData
         {
-#if OLD_DOTS
-            _EManager.AddComponentData(dotsEntity, component);
-#else
-            _ECB.AddComponent(dotsEntity, component);
-#endif
+            _EManager.AddComponent<T>(dotsEntity);
+            _EManager.SetComponentData(dotsEntity, component);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void AddSharedComponent<T>(Entity dotsEntity, in T component) where T : unmanaged, ISharedComponentData
         {
-#if OLD_DOTS
-            _EManager.AddSharedComponentData(dotsEntity, component);
-#else
-            _ECB.AddSharedComponent(dotsEntity, component);
-#endif
+            _EManager.AddSharedComponent(dotsEntity, component);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void AddBuffer<T>(Entity dotsEntity) where T : unmanaged, IBufferElementData
         {
-#if OLD_DOTS
             _EManager.AddBuffer<T>(dotsEntity);
-#else
-            _ECB.AddBuffer<T>(dotsEntity);
-#endif
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public EntityCommandBuffer.ParallelWriter AsParallelWriter()
+        public void SetSharedComponentBatched<SharedComponentData>(NativeArray<Entity> nativeArray, SharedComponentData SCD)
+                where SharedComponentData : unmanaged, ISharedComponentData
         {
-#if OLD_DOTS
-            throw new System.Exception();
-#else
-            return _ECB.AsParallelWriter();
-#endif
+            //does this need to be wrapped in a burst pointer func?
+            _EManager.SetSharedComponent(nativeArray, SCD);
         }
-
         
-        readonly EntityCommandBuffer _ECB;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public NativeArray<Entity> CreateDOTSEntityOnSveltoBatched(Entity dotsEntity, int range, ExclusiveGroupStruct groupID, Allocator allocator)
+        {
+            var nativeArray = _EManager.Instantiate(dotsEntity, range, allocator);
+            _EManager.AddSharedComponent(nativeArray, new DOTSSveltoGroupID(groupID));
+            _EManager.AddComponent<DOTSSveltoReference>(nativeArray);
+                return nativeArray;
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void DestroyEntitiesBatched(NativeArray<Entity> nativeArray)
+        {
+            _EManager.DestroyEntity(nativeArray);
+        }
+        
         readonly EntityManager       _EManager;
     }
 }

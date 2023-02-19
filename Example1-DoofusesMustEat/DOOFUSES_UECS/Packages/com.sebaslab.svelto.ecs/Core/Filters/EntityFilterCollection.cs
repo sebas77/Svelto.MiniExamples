@@ -150,6 +150,7 @@ namespace Svelto.ECS
             public bool Add(uint entityId, uint entityIndex)
             {
                 //TODO: when sentinels are finished, we need to add AsWriter here
+                //cannot write in parallel
                 return _entityIDToDenseIndex.TryAdd(entityId, entityIndex, out _);
             }
 

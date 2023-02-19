@@ -1,6 +1,6 @@
 {
     "TestSuite": "",
-    "Date": 1676048029390,
+    "Date": 1676847642239,
     "Player": {
         "Development": false,
         "ScreenWidth": 0,
@@ -17,7 +17,7 @@
         "AnisotropicFiltering": "",
         "BlendWeights": "",
         "GraphicsApi": "",
-        "ScriptingBackend": "IL2CPP",
+        "ScriptingBackend": "Mono2x",
         "AndroidTargetSdkVersion": "AndroidApiLevelAuto",
         "AndroidBuildSystem": "Gradle",
         "BuildTarget": "StandaloneWindows64",
@@ -33,12 +33,13 @@
         "SystemMemorySizeMB": 0
     },
     "Editor": {
-        "Version": "2022.2.5f1",
+        "Version": "2022.2.7f1",
         "Branch": "2022.2/staging",
-        "Changeset": "551d45108343",
-        "Date": 1674629641
+        "Changeset": "8331acaee5d3",
+        "Date": 1675818388
     },
     "Dependencies": [
+        "com.needle.selective-profiling@1.0.1-pre.1",
         "com.sebaslab.svelto.common@3.3.2",
         "com.sebaslab.svelto.ecs@3.4.0",
         "com.unity.burst@1.8.3",
@@ -48,7 +49,7 @@
         "com.unity.ide.visualstudio@2.0.17",
         "com.unity.nuget.newtonsoft-json@3.0.2",
         "com.unity.render-pipelines.universal@14.0.6",
-        "com.unity.scriptablebuildpipeline@1.21.1",
+        "com.unity.scriptablebuildpipeline@1.21.3",
         "com.unity.toolchain.win-x86_64-linux-x86_64@1.0.0",
         "com.unity.modules.ai@1.0.0",
         "com.unity.modules.androidjni@1.0.0",

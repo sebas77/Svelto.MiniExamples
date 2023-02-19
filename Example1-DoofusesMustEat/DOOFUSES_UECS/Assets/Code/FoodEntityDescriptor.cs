@@ -3,8 +3,7 @@ using Svelto.ECS.SveltoOnDOTS;
 
 namespace Svelto.ECS.MiniExamples.DoofusesDOTS
 {
-    public class FoodEntityDescriptor : GenericEntityDescriptor<PositionEntityComponent, SpawnPointEntityComponent,
-        DOTSEntityComponent>
+    public class FoodEntityDescriptor : GenericEntityDescriptor<PositionEntityComponent, DOTSEntityComponent>
     {
     }
 }

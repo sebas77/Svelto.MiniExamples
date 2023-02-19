@@ -12,7 +12,6 @@ using Svelto.ECS.SveltoOnDOTS;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Entities.Serialization;
-using Unity.Rendering;
 using Unity.Scenes;
 using UnityEngine;
 using Hash128 = Unity.Entities.Hash128;
@@ -69,8 +68,7 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
             AddSveltoEngineToTick(new VelocityToPositionDoofusesEngine());
 
             //Svelto engines that runs 
-            _sveltoOverDotsEnginesGroupEnginesGroup.AddDOTSSubmissionEngine(new SpawnUnityEntityOnSveltoEntityEngine());
-            _sveltoOverDotsEnginesGroupEnginesGroup.AddDOTSSubmissionEngine(new SetFiltersOnBlueDoofusesSpawnedEngine());
+            _sveltoOverDotsEnginesGroupEnginesGroup.AddSveltoOnDOTSSubmissionEngine(new SpawnUnityEntityOnSveltoEntityEngine());
             _sveltoOverDotsEnginesGroupEnginesGroup.AddSveltoToDOTSEngine(new RenderingDOTSDataSynchronizationEngine());
 
             _mainLoop = new MainLoop(_enginesToTick);
@@ -103,7 +101,7 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
             _enginesRoot.AddEngine(engine);
             _enginesToTick.Add(engine);
         }
-
+        
         EnginesRoot _enginesRoot;
         readonly FasterList<IJobifiedEngine> _enginesToTick = new FasterList<IJobifiedEngine>();
         SimpleEntitiesSubmissionScheduler _simpleSubmitScheduler;

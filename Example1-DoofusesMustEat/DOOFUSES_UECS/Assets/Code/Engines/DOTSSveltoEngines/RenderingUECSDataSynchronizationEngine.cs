@@ -13,6 +13,7 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
 
         public void Ready() { }
 
+        //add a not about the fact it's not synchronising food
         protected override void OnSveltoUpdate()
         {
             var sveltoFilters = entitiesDB.GetFilters();
@@ -30,39 +31,39 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
             
             //when it's time to sync, I have two options, iterate the svelto entities first or iterate the
             //UECS entities first. 
-            foreach (var (filterIndices, group) in blueFilters)
-            {
-                var (positions, _) = entitiesDB.QueryEntities<PositionEntityComponent>(@group);
-            
-                //All the blue doofuses are the same under the Svelto point of view, so they can be considered a pool and the order
-                //or 1:1 relations ship doesn't count
-                Entities.WithNone<SpecialBluePrefab>().ForEach((int entityInQueryIndex, ref Translation translation) =>
-                    {
-                        ref readonly var positionEntityComponent = ref positions[filterIndices[entityInQueryIndex]];
-            
-                        translation.Value = positionEntityComponent.position;
-                    })
-                    //In order to fetch the unity entities from the same group of the svelto entities we will set 
-                    //the group as a filter. The data is set in such a way each group handles a different prefab
-                    //but what if I want one group to handle multiple prefabs? Filters allow solving the issue as I can
-                    //sub group Svelto groups through them.
-                   .WithSharedComponentFilter(new DOTSSveltoGroupID(@group)).ScheduleParallel();
-            }
-            
-            EntityFilterCollection specialBlueFilters = sveltoFilters
-               .GetOrCreatePersistentFilter<PositionEntityComponent>(GameFilters.SPECIAL_BLUE_DOOFUSES_MESHES);
-            
-            foreach (var (filterIndices, group) in specialBlueFilters)
-            {
-                var (positions, _) = entitiesDB.QueryEntities<PositionEntityComponent>(@group);
-
-                Entities.WithAny<SpecialBluePrefab>().ForEach((int entityInQueryIndex, ref Translation translation) =>
-                    {
-                        ref readonly var positionEntityComponent = ref positions[filterIndices[entityInQueryIndex]];
-            
-                        translation.Value = positionEntityComponent.position;
-                    }).WithSharedComponentFilter(new DOTSSveltoGroupID(@group)).ScheduleParallel();
-            }
+//            foreach (var (filterIndices, group) in blueFilters)
+//            {
+//                var (positions, _) = entitiesDB.QueryEntities<PositionEntityComponent>(@group);
+//            
+//                //All the blue doofuses are the same under the Svelto point of view, so they can be considered a pool and the order
+//                //or 1:1 relations ship doesn't count
+//                Entities.WithNone<SpecialBluePrefab>().ForEach((int entityInQueryIndex, ref Translation translation) =>
+//                    {
+//                        ref readonly var positionEntityComponent = ref positions[filterIndices[entityInQueryIndex]];
+//            
+//                        translation.Value = positionEntityComponent.position;
+//                    })
+//                    //In order to fetch the unity entities from the same group of the svelto entities we will set 
+//                    //the group as a filter. The data is set in such a way each group handles a different prefab
+//                    //but what if I want one group to handle multiple prefabs? Filters allow solving the issue as I can
+//                    //sub group Svelto groups through them.
+//                   .WithSharedComponentFilter(new DOTSSveltoGroupID(@group)).ScheduleParallel();
+//            }
+//            
+//            EntityFilterCollection specialBlueFilters = sveltoFilters
+//               .GetOrCreatePersistentFilter<PositionEntityComponent>(GameFilters.SPECIAL_BLUE_DOOFUSES_MESHES);
+//            
+//            foreach (var (filterIndices, group) in specialBlueFilters)
+//            {
+//                var (positions, _) = entitiesDB.QueryEntities<PositionEntityComponent>(@group);
+//
+//                Entities.WithAny<SpecialBluePrefab>().ForEach((int entityInQueryIndex, ref Translation translation) =>
+//                    {
+//                        ref readonly var positionEntityComponent = ref positions[filterIndices[entityInQueryIndex]];
+//            
+//                        translation.Value = positionEntityComponent.position;
+//                    }).WithSharedComponentFilter(new DOTSSveltoGroupID(@group)).ScheduleParallel();
+//            }
             
             foreach (var ((positions, _), group) in entitiesDB.QueryEntities<PositionEntityComponent>(GameGroups
                         .RED.Groups))

@@ -197,6 +197,9 @@ namespace Svelto.DataStructures.Native
         }
 
 #if UNITY_COLLECTIONS || UNITY_JOBS || UNITY_BURST
+#if UNITY_BURST
+        [Unity.Burst.NoAlias]
+#endif
         [Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction]
 #endif
         IntPtr _sharedDictionary;

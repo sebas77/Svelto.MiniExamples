@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System;
+using System.Runtime.CompilerServices;
 using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.DataStructures.Native;
@@ -161,6 +162,14 @@ namespace Svelto.ECS
 
                 return EntityReference.Invalid;
             }
+            
+            public SharedSveltoDictionaryNative<uint, EntityReference> GetEntityReferenceMap(ExclusiveGroupStruct groupID)
+            {
+                if (_egidToReferenceMap.TryGetValue(groupID, out var groupMap) == false)
+                    throw new ECSException("reference group map not found");
+
+                return groupMap;
+            }
 
             public bool TryGetEGID(EntityReference reference, out EGID egid)
             {
@@ -231,7 +240,7 @@ namespace Svelto.ECS
             //than a dictionary for groups. It could be a good case to implement a 4k chunk based sparseset
             
             SharedSveltoDictionaryNative<ExclusiveGroupStruct, SharedSveltoDictionaryNative<uint, EntityReference>>
-                _egidToReferenceMap; 
+                _egidToReferenceMap;
         }
 
         EntityReferenceMap entityLocator => _entityLocator;

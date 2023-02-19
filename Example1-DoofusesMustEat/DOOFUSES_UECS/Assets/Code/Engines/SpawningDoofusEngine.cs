@@ -1,6 +1,6 @@
-using System;
 using Svelto.Common;
 using Svelto.ECS.EntityComponents;
+using Svelto.ECS.Internal;
 using Svelto.ECS.Native;
 using Svelto.ECS.SveltoOnDOTS;
 using Unity.Burst;
@@ -40,39 +40,65 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
             if (_done == true)
                 return _jobHandle;
 
+            ExclusiveBuildGroup blueDoofusesNotEating = GameGroups.BLUE_DOOFUSES_NOT_EATING.BuildGroup;
+
+            EntitiesDB.SveltoFilters sveltoNativeFilters = entitiesDB.GetFilters();
+
+            //We know that if the entity is created in the BLUE_DOOFUSES_NOT_EATING group, 
+            //SpawnPointEntityComponent and PositionEntityComponent elements will be aligned
+            //and indexable with the same index.
+            var specialBlueFilters = sveltoNativeFilters.GetOrCreatePersistentFilter<PositionEntityComponent>(
+                GameFilters.SPECIAL_BLUE_DOOFUSES_MESHES);
+            var blueFilters = sveltoNativeFilters.GetOrCreatePersistentFilter<PositionEntityComponent>(GameFilters.BLUE_DOOFUSES_MESHES);
+
+            var specialBlueFilter = specialBlueFilters.GetOrCreateGroupFilter(blueDoofusesNotEating);
+            var blueFilter = blueFilters.GetOrCreateGroupFilter(blueDoofusesNotEating);
+
             var spawnRed = new SpawningJob()
             {
                 _group = GameGroups.RED_DOOFUSES_NOT_EATING.BuildGroup,
                 _factory = _factory,
-                _entity = _redCapsule,
+                _prefabID = _redCapsule,
                 _random = new Random(1234567)
             }.ScheduleParallel(MaxNumberOfDoofuses, _jobHandle);
 
             //Adding the complexity of the special blue capsule to show how to use filters to handle different
             //entity states in the same group.
-            ExclusiveBuildGroup blueDoofusesNotEating = GameGroups.BLUE_DOOFUSES_NOT_EATING.BuildGroup;
 
-            var spawnBlue = new SpawningJob()
-            {
-                _group = blueDoofusesNotEating,
-                _factory = _factory,
-                _entity = _blueCapsule,
-                _random = new Random(7654321),
-            }.ScheduleParallel(MaxNumberOfDoofuses / 2, _jobHandle);
+//            var spawnBlue = new SpawningJob()
+//            {
+//                _group = blueDoofusesNotEating,
+//                _factory = _factory,
+//                _prefabID = _blueCapsule,
+//                _random = new Random(7654321),
+//            }.ScheduleParallel(MaxNumberOfDoofuses / 2, _jobHandle);
 
-            var spawnspecialBlue = new SpawningJob()
-            {
-                _group = blueDoofusesNotEating,
-                _factory = _factory,
-                _entity = _specialBlueCapsule,
-                _random = new Random(7651),
-                _useFilters = true //is special blue
-            }.ScheduleParallel(MaxNumberOfDoofuses / 2, _jobHandle);
+//            spawnBlue = new SetFiltersJob()
+//            {
+//                filter = blueFilter,
+//                entityIDs = _factory,
+//                start = _blueCapsule,
+//            }.Schedule(MaxNumberOfDoofuses / 2, spawnBlue);
+
+//            var spawnSpecialBlue = new SpawningJob()
+//            {
+//                _group = blueDoofusesNotEating,
+//                _factory = _factory,
+//                _prefabID = _specialBlueCapsule,
+//                _random = new Random(7651),
+//            }.ScheduleParallel(MaxNumberOfDoofuses / 2, _jobHandle);
+
+//            spawnSpecialBlue = new SetFiltersJob()
+//            {
+//                filter = specialBlueFilter,
+//                entityIDs = _factory,
+//                start = _blueCapsule,
+//            }.Schedule(MaxNumberOfDoofuses / 2, spawnBlue);
 
             //Yeah this shouldn't be solved like this, but I keep it in this way for simplicity sake 
             _done = true;
 
-            return JobHandle.CombineDependencies(spawnBlue, spawnRed, spawnspecialBlue);
+            return JobHandle.CombineDependencies(default, spawnRed, default);
         }
 
         readonly NativeEntityFactory _factory;
@@ -82,15 +108,30 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
 
         bool _done;
 
+//        [BurstCompile]
+//        struct SetFiltersJob: IJob
+//        {
+//            public EntityFilterCollection.GroupFilters filter;
+//            public NativeEntityIDs entityIDs;
+//            public uint start;
+//
+//            public void Execute()
+//            {
+//                index = (int)(index + start);
+//
+//                //This filter already know the group, so it needs only the entityID, plus the position
+//                //of the entity in the array.
+//                filter.Add(entityIDs[index], (uint)index);
+//            }
+//        }
+
         [BurstCompile]
         struct SpawningJob: IJobParallelFor
         {
             internal NativeEntityFactory _factory;
-            internal Entity _entity;
+            internal Entity _prefabID;
             internal ExclusiveBuildGroup _group;
             internal Random _random;
-
-            internal bool _useFilters;
 
 #pragma warning disable 649
             //thread index is necessary to build entity in parallel in Svelto ECS
@@ -99,19 +140,15 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
 
             public void Execute(int index)
             {
-                var positionEntityComponent = new PositionEntityComponent
-                {
-                    position = new float3(_random.NextFloat(0.0f, 40.0f), 0, _random.NextFloat(0.0f, 40.0f))
-                };
-
-                //this special component is used to ReactOnAdd and create DOTS entities on Svelto entities
-                var createDOTSEntityOnSveltoComponent = new SpawnPointEntityComponent(_useFilters, _entity, positionEntityComponent.position);
-
                 var egid = new EGID((uint)index, _group);
                 var init = _factory.BuildEntity(egid, _threadIndex);
 
-                init.Init(createDOTSEntityOnSveltoComponent);
-                init.Init(positionEntityComponent);
+                init.Init(new DOTSEntityComponent(_prefabID));
+                init.Init(
+                    new PositionEntityComponent
+                    {
+                        position = new float3(_random.NextFloat(0.0f, 40.0f), 0, _random.NextFloat(0.0f, 40.0f))
+                    });
                 init.Init(
                     new SpeedEntityComponent
                     {

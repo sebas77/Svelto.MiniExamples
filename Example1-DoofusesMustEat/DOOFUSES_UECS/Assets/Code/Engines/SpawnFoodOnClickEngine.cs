@@ -137,15 +137,13 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
 
                 //BuildEntity returns an EntityInitialized that is used to set the default values of the
                 //entity that will be built.
-                var init = _entityFactory.BuildEntity(new EGID((uint) (_foodPlaced + index), _exclusiveBuildGroup)
-                                                    , _threadIndex);
+                var init = _entityFactory.BuildEntity(new EGID((uint) (_foodPlaced + index), _exclusiveBuildGroup), _threadIndex);
 
+                init.Init(new DOTSEntityComponent(_prefabID));
                 init.Init(new PositionEntityComponent
                 {
                     position = newposition
                 });
-                //these structs are used for ReactOnAdd callback to create unity Entities later
-                init.Init(new SpawnPointEntityComponent(false, _prefabID, newposition));
             }
         }
     }

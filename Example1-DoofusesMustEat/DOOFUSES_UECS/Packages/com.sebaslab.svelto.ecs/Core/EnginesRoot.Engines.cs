@@ -65,6 +65,7 @@ namespace Svelto.ECS
                 new FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<IReactOnDispose>>>();
 
             _reactiveEnginesSubmission = new FasterList<IReactOnSubmission>();
+            _reactiveEnginesSubmissionStarted = new FasterList<IReactOnSubmissionStarted>();
             _enginesSet = new FasterList<IEngine>();
             _enginesTypeSet = new HashSet<Type>();
             _disposableEngines = new FasterList<IDisposable>();
@@ -161,6 +162,9 @@ namespace Svelto.ECS
 
                 if (engine is IReactOnSubmission submissionEngine)
                     _reactiveEnginesSubmission.Add(submissionEngine);
+                
+                if (engine is IReactOnSubmissionStarted submissionEngineStarted)
+                    _reactiveEnginesSubmissionStarted.Add(submissionEngineStarted);
 
                 _enginesTypeSet.Add(refWrapper);
                 _enginesSet.Add(engine);
@@ -295,6 +299,7 @@ namespace Svelto.ECS
                 _reactiveEnginesRemove.Clear();
                 _reactiveEnginesDispose.Clear();
                 _reactiveEnginesSubmission.Clear();
+                _reactiveEnginesSubmissionStarted.Clear();
 
                 _groupedEntityToAdd.Dispose();
 
@@ -313,6 +318,13 @@ namespace Svelto.ECS
             for (var i = 0; i < enginesCount; i++)
                 _reactiveEnginesSubmission[i].EntitiesSubmitted();
         }
+        
+        void NotifyReactiveEnginesOnSubmissionStarted()
+        {
+            var enginesCount = _reactiveEnginesSubmissionStarted.count;
+            for (var i = 0; i < enginesCount; i++)
+                _reactiveEnginesSubmissionStarted[i].EntitiesSubmissionStarting();
+        }
 
         public readonly struct EntitiesSubmitter
         {
@@ -330,6 +342,7 @@ namespace Svelto.ECS
 
                 if (entitiesSubmissionScheduler.paused == false)
                 {
+                    enginesRootTarget.NotifyReactiveEnginesOnSubmissionStarted();
                     Check.Require(
                         entitiesSubmissionScheduler.isRunning == false,
                         "A submission started while the previous one was still flushing");
@@ -398,6 +411,7 @@ namespace Svelto.ECS
         readonly FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<IReactOnDispose>>> _reactiveEnginesDispose;
 
         readonly FasterList<IReactOnSubmission> _reactiveEnginesSubmission;
+        readonly FasterList<IReactOnSubmissionStarted> _reactiveEnginesSubmissionStarted;
         bool _isDisposed;
     }
 
