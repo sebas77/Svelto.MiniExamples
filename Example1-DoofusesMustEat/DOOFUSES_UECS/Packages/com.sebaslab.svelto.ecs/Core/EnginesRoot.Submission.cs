@@ -192,20 +192,20 @@ namespace Svelto.ECS
                         foreach (var groupedEntitiesToSwap in entitiesToSwap.value)
                         {
                             var componentType = groupedEntitiesToSwap.key;
-                            ITypeSafeDictionary fromComponentsDictionary = fromGroupDictionary[componentType];
+                            ITypeSafeDictionary fromComponentsDictionaryDB = fromGroupDictionary[componentType];
 
                             //get the subset of togroups that come from from group
                             foreach (var entitiesInfoToSwap in groupedEntitiesToSwap.value)
                             {
                                 ExclusiveGroupStruct toGroup = entitiesInfoToSwap.key;
-                                ITypeSafeDictionary toComponentsDictionary = enginesRoot.GetOrAddTypeSafeDictionary(
+                                ITypeSafeDictionary toComponentsDictionaryDB = enginesRoot.GetOrAddTypeSafeDictionary(
                                     toGroup,
                                     enginesRoot.GetOrAddDBGroup(toGroup),
                                     componentType,
-                                    fromComponentsDictionary);
+                                    fromComponentsDictionaryDB);
 
                                 DBC.ECS.Check.Assert(
-                                    toComponentsDictionary != null,
+                                    toComponentsDictionaryDB != null,
                                     "something went wrong with the creation of dictionaries");
 
                                 //this list represents the set of entities that come from fromGroup and need
@@ -213,30 +213,30 @@ namespace Svelto.ECS
                                 FasterList<(uint, uint, string)> fromEntityToEntityIDs = entitiesInfoToSwap.value;
 
                                 //ensure that to dictionary has enough room to store the new entities
-                                toComponentsDictionary.EnsureCapacity(
-                                    (uint)(toComponentsDictionary.count + (uint)fromEntityToEntityIDs.count));
+                                toComponentsDictionaryDB.EnsureCapacity(
+                                    (uint)(toComponentsDictionaryDB.count + (uint)fromEntityToEntityIDs.count));
 
                                 //fortunately swap means that entities are added at the end of each destination
                                 //dictionary list, so we can just iterate the list using the indices ranges added in the
                                 //_cachedIndices
                                 enginesRoot._cachedRangeOfSubmittedIndices.Add(
-                                    ((uint, uint))(toComponentsDictionary.count,
-                                        toComponentsDictionary.count + fromEntityToEntityIDs.count));
+                                    ((uint, uint))(toComponentsDictionaryDB.count,
+                                        toComponentsDictionaryDB.count + fromEntityToEntityIDs.count));
 
                                 enginesRoot._transientEntityIDsLeftAndAffectedByRemoval.Clear();
 
-                                fromComponentsDictionary.SwapEntitiesBetweenDictionaries(
+                                fromComponentsDictionaryDB.SwapEntitiesBetweenDictionaries(
                                     fromEntityToEntityIDs,
                                     fromGroup,
                                     toGroup,
-                                    toComponentsDictionary,
+                                    toComponentsDictionaryDB,
                                     enginesRoot._transientEntityIDsLeftAndAffectedByRemoval);
 
                                 //important: this must happen after the entities are swapped in the database
                                 enginesRoot.SwapEntityBetweenPersistentFilters(
                                     fromEntityToEntityIDs,
-                                    fromComponentsDictionary,
-                                    toComponentsDictionary,
+                                    fromComponentsDictionaryDB,
+                                    toComponentsDictionaryDB,
                                     fromGroup,
                                     toGroup,
                                     componentType,

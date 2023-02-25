@@ -21,7 +21,7 @@ namespace Svelto.ECS
             _clearList = ClearList;
             _newGroupsDictionaryWithCaller = NewGroupsDictionaryWithCaller;
             _recycleGroupDictionaryWithCaller = RecycleGroupDictionaryWithCaller;
-            _actionRef = Recycler;
+            _recycleDicitionaryWithCaller = RecycleDicitionaryWithCaller;
             _newListWithCaller = NewListWithCaller;
             _clearListWithCaller = ClearListWithCaller;
         }
@@ -37,7 +37,6 @@ namespace Svelto.ECS
             
             //todo: limit the number of dictionaries that can be cached 
             //recycle or create dictionaries of components per group
-            //TODO study this again: why dictionary could be added on remove?
             var removedComponentsPerType = _thisSubmissionInfo._currentRemoveEntitiesOperations.RecycleOrAdd(
                 entityEgid.groupID, _newGroupsDictionary, _recycleDictionary);
 
@@ -61,15 +60,19 @@ namespace Svelto.ECS
 
             //todo: limit the number of dictionaries that can be cached 
             //recycle or create dictionaries of components per group
+            
+            //Get the dictionary that holds the entities that are swapping from fromID
             var swappedComponentsPerType = _thisSubmissionInfo._currentSwapEntitiesOperations.RecycleOrAdd(
                 fromID.groupID, _newGroupsDictionaryWithCaller, _recycleGroupDictionaryWithCaller);
 
             var componentBuildersLength = componentBuilders.Length - 1;
             for (var index = componentBuildersLength; index >= 0; index--)
             {
-                var operation = componentBuilders[index];
+                 var operation = componentBuilders[index];
+                 
+                 //Get the dictionary for each component that holds the list of entities to swap
                 swappedComponentsPerType //recycle or create dictionaries per component type
-                       .RecycleOrAdd(new RefWrapperType(operation.GetEntityComponentType()), _newGroupDictionary, _actionRef)
+                       .RecycleOrAdd(new RefWrapperType(operation.GetEntityComponentType()), _newGroupDictionary, _recycleDicitionaryWithCaller)
                         //recycle or create list of entities to swap
                        .RecycleOrAdd(toID.groupID, _newListWithCaller, _clearListWithCaller)
                         //add entity to swap
@@ -84,10 +87,10 @@ namespace Svelto.ECS
         }
 
         public void ExecuteRemoveAndSwappingOperations(Action<FasterDictionary<ExclusiveGroupStruct, FasterDictionary<RefWrapperType,
-                 FasterDictionary<ExclusiveGroupStruct, FasterList<(uint, uint, string)>>>>, FasterList<(EGID, EGID)>,
-             EnginesRoot> swapEntities, Action<FasterDictionary<ExclusiveGroupStruct, FasterDictionary<RefWrapperType, FasterList<(uint, string)>>>,
-             FasterList<EGID>, EnginesRoot> removeEntities, Action<ExclusiveGroupStruct, EnginesRoot> removeGroup
-       , Action<ExclusiveGroupStruct, ExclusiveGroupStruct, EnginesRoot> swapGroup, EnginesRoot enginesRoot)
+            FasterDictionary<ExclusiveGroupStruct, FasterList<(uint, uint, string)>>>>, FasterList<(EGID, EGID)>,
+            EnginesRoot> swapEntities, Action<FasterDictionary<ExclusiveGroupStruct, FasterDictionary<RefWrapperType, FasterList<(uint, string)>>>,
+            FasterList<EGID>, EnginesRoot> removeEntities, Action<ExclusiveGroupStruct, EnginesRoot> removeGroup, 
+            Action<ExclusiveGroupStruct, ExclusiveGroupStruct, EnginesRoot> swapGroup, EnginesRoot enginesRoot)
         {
             (_thisSubmissionInfo, _lastSubmittedInfo) = (_lastSubmittedInfo, _thisSubmissionInfo);
 
@@ -154,7 +157,7 @@ namespace Svelto.ECS
             target.Clear();
         }
 
-        void Recycler(ref FasterDictionary<ExclusiveGroupStruct, FasterList<(uint, uint, string)>> target)
+        void RecycleDicitionaryWithCaller(ref FasterDictionary<ExclusiveGroupStruct, FasterList<(uint, uint, string)>> target)
         {
             target.Recycle();
         }
@@ -244,7 +247,7 @@ namespace Svelto.ECS
         readonly ActionRef<FasterList<(uint, string)>> _clearList;
         readonly Func<FasterDictionary<RefWrapperType, FasterDictionary<ExclusiveGroupStruct, FasterList<(uint, uint, string)>>>> _newGroupsDictionaryWithCaller;
         readonly ActionRef<FasterDictionary<RefWrapperType, FasterDictionary<ExclusiveGroupStruct, FasterList<(uint, uint, string)>>>> _recycleGroupDictionaryWithCaller;
-        readonly ActionRef<FasterDictionary<ExclusiveGroupStruct, FasterList<(uint, uint, string)>>> _actionRef;
+        readonly ActionRef<FasterDictionary<ExclusiveGroupStruct, FasterList<(uint, uint, string)>>> _recycleDicitionaryWithCaller;
         readonly Func<FasterList<(uint, uint, string)>> _newListWithCaller;
         readonly ActionRef<FasterList<(uint, uint, string)>> _clearListWithCaller;
     }

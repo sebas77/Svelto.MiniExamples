@@ -663,7 +663,7 @@ PlayerSettings:
   webGLMemoryGeometricGrowthCap: 96
   webGLPowerPreference: 2
   scriptingDefineSymbols:
-    Standalone: ENABLE_TRANSFORM_V1;UNITY_DISABLE_AUTOMATIC_SYSTEM_BOOTSTRAP_RUNTIME_WORLD;PROFILE_SVELTO;ENABLE_PLATFORM_PROFILER
+    Standalone: ENABLE_TRANSFORM_V1;UNITY_DISABLE_AUTOMATIC_SYSTEM_BOOTSTRAP_RUNTIME_WORLD;ENABLE_PLATFORM_PROFILER;PROFILE_SVELTO
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend:

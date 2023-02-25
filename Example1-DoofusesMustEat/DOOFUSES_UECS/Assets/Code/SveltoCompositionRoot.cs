@@ -1,9 +1,3 @@
-//#error I am in the process to update this demo to DOTS 1.0, It will take some time. If you are interested in checking an older version, please check the GIT history anything from a0495c7af07ef7248c06d6f326e4f75d2578df06 and before will work with DOTS 0.51. This demo won't work as expected at the moment.
-
-#if !UNITY_DISABLE_AUTOMATIC_SYSTEM_BOOTSTRAP_RUNTIME_WORLD
-#error this demo takes completely over the DOTS initialization and ticking. UNITY_DISABLE_AUTOMATIC_SYSTEM_BOOTSTRAP must be enabled
-#endif
-
 using System.Threading.Tasks;
 using Svelto.Context;
 using Svelto.DataStructures;
@@ -12,6 +6,7 @@ using Svelto.ECS.SveltoOnDOTS;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Entities.Serialization;
+using Unity.Jobs.LowLevel.Unsafe;
 using Unity.Scenes;
 using UnityEngine;
 using Hash128 = Unity.Entities.Hash128;
@@ -32,6 +27,8 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
 
         public void OnContextInitialized<T>(T contextHolder)
         {
+            JobsUtility.JobDebuggerEnabled = true;
+            
 #pragma warning disable CS4014
             ComposeEnginesRoot();
 #pragma warning restore CS4014
@@ -68,8 +65,8 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
             AddSveltoEngineToTick(new VelocityToPositionDoofusesEngine());
 
             //Svelto engines that runs 
-            _sveltoOverDotsEnginesGroupEnginesGroup.AddSveltoOnDOTSSubmissionEngine(new SpawnUnityEntityOnSveltoEntityEngine());
             _sveltoOverDotsEnginesGroupEnginesGroup.AddSveltoToDOTSEngine(new RenderingDOTSDataSynchronizationEngine());
+            _sveltoOverDotsEnginesGroupEnginesGroup.AddSveltoOnDOTSSubmissionEngine(new SpawnUnityEntityOnSveltoEntityEngine());
 
             _mainLoop = new MainLoop(_enginesToTick);
             _mainLoop.Run();
@@ -99,6 +96,7 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
         void AddSveltoEngineToTick(IJobifiedEngine engine)
         {
             _enginesRoot.AddEngine(engine);
+            
             _enginesToTick.Add(engine);
         }
         
@@ -109,3 +107,83 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
         MainLoop _mainLoop;
     }
 }
+
+//[BurstCompile]
+//    unsafe struct GatherEntitiesJob : IJobChunk
+//    {
+//        [NativeDisableParallelForRestriction] public TypelessUnsafeList OutputList;
+//        [ReadOnly] public EntityTypeHandle EntityTypeHandle;
+//        [ReadOnly] [DeallocateOnJobCompletion] public NativeArray<int> ChunkBaseEntityIndices;
+//
+//        public void Execute(in ArchetypeChunk chunk, int unfilteredChunkIndex, bool useEnabledMask, in v128 chunkEnabledMask)
+//        {
+//            int baseEntityIndexInQuery= ChunkBaseEntityIndices[unfilteredChunkIndex];
+//            Entity* dstEntities = (Entity*)OutputList.Ptr + baseEntityIndexInQuery;
+//            Entity* srcEntities = chunk.GetEntityDataPtrRO(EntityTypeHandle);
+//            int chunkEntityCount = chunk.Count;
+//            int copyCount = useEnabledMask ? EnabledBitUtility.countbits(chunkEnabledMask) : chunkEntityCount;
+//#if ENABLE_UNITY_COLLECTIONS_CHECKS || UNITY_DOTS_DEBUG
+//            Entity* dstEnd = (Entity*)OutputList.Ptr + OutputList.Capacity;
+//            if (dstEntities + copyCount > dstEnd)
+//            {
+//                // ERROR: this means there were more entities to copy than we were expecting, and we're about to
+//                // write off the end of the output list.
+//                throw new InvalidOperationException($"Internal error: detected buffer overrun in {nameof(GatherEntitiesJob)}");
+//            }
+//#endif
+//            if (useEnabledMask)
+//            {
+//                v128 maskCopy = chunkEnabledMask;
+//                int rangeStart = 0;
+//                int rangeEnd = 0;
+//                int numCopied = 0;
+//                while (EnabledBitUtility.GetNextRange(ref maskCopy, ref rangeStart, ref rangeEnd))
+//                {
+//                    int rangeCount = rangeEnd - rangeStart;
+//                    UnsafeUtility.MemCpy(dstEntities+numCopied, srcEntities+rangeStart, rangeCount * sizeof(Entity));
+//                    numCopied += rangeCount;
+//                }
+//            }
+//            else
+//            {
+//                UnsafeUtility.MemCpy(dstEntities, srcEntities, chunk.Count * sizeof(Entity));
+//            }
+//            Interlocked.Add(ref *(OutputList.Length), copyCount);
+//        }
+
+//#include <iostream>
+//#include <vector>
+//#include <bitset>
+//#include <immintrin.h>
+//
+//int main() {
+//    // Create an array of 16 integers for demonstration purposes
+//    std::vector<int> arr(16);
+//    for (int i = 0; i < arr.size(); i++) {
+//        arr[i] = i;
+//    }
+//
+//    // Create a bitset representing the subset of even indices
+//    std::bitset<16> subset;
+//    for (int i = 0; i < subset.size(); i += 2) {
+//        subset.set(i);
+//    }
+//
+//    // Vectorize the subset iteration using SSE instructions
+//    __m128i subset_vec = _mm_set_epi16(subset.to_ulong(), 0, 0, 0, 0, 0, 0, 0);
+//    for (int i = 0; i < arr.size(); i += 8) {
+//        __m128i arr_vec = _mm_loadu_si128((__m128i*)(arr.data() + i));
+//        __m128i result = _mm_and_si128(subset_vec, arr_vec);
+//        int subset_arr[8];
+//        _mm_storeu_si128((__m128i*)subset_arr, result);
+//        for (int j = 0; j < 8; j++) {
+//            if (subset_arr[j]) {
+//                int elem = arr[i + j];
+//                // do something with the element
+//                std::cout << elem << " ";
+//            }
+//        }
+//    }
+//    // Output: 0 2 4 6 8 10 12 14
+//    return 0;
+//}

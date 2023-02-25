@@ -20,29 +20,31 @@ MonoBehaviour:
   CollapseHierarchyNesting: 0
   CollapseNoImpactSamples: 0
   ColorPerformanceImpact: 1
-  DeepProfiling: 0
-  MaxDepth: 1
+  DeepProfiling: 1
+  MaxDepth: 5
   DeepProfileMaxLevel: -1
   DebugLog: 0
   PinnedMethods: []
   Methods:
   - Enabled: 1
     Assembly: Svelto.ECS, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    Type: Svelto.ECS.EnginesRoot
-    Method: Void SwapEntities(Svelto.DataStructures.FasterDictionary`2[Svelto.ECS.ExclusiveGroupStruct,Svelto.DataStructures.FasterDictionary`2[Svelto.DataStructures.RefWrapperType,Svelto.DataStructures.FasterDictionary`2[Svelto.ECS.ExclusiveGroupStruct,Svelto.DataStructures.FasterList`1[System.ValueTuple`3[System.UInt32,System.UInt32,System.String]]]]],
-      Svelto.DataStructures.FasterList`1[System.ValueTuple`2[Svelto.ECS.EGID,Svelto.ECS.EGID]],
-      Svelto.ECS.EnginesRoot)
+    Type: Svelto.ECS.EntitiesOperations
+    Method: Svelto.DataStructures.FasterDictionary`2[Svelto.ECS.ExclusiveGroupStruct,Svelto.DataStructures.FasterList`1[System.ValueTuple`3[System.UInt32,System.UInt32,System.String]]]
+      NewGroupDictionary()
   - Enabled: 1
     Assembly: Svelto.ECS, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
     Type: Svelto.ECS.EntitiesOperations
-    Method: Void ExecuteRemoveAndSwappingOperations(System.Action`3[Svelto.DataStructures.FasterDictionary`2[Svelto.ECS.ExclusiveGroupStruct,Svelto.DataStructures.FasterDictionary`2[Svelto.DataStructures.RefWrapperType,Svelto.DataStructures.FasterDictionary`2[Svelto.ECS.ExclusiveGroupStruct,Svelto.DataStructures.FasterList`1[System.ValueTuple`3[System.UInt32,System.UInt32,System.String]]]]],Svelto.DataStructures.FasterList`1[System.ValueTuple`2[Svelto.ECS.EGID,Svelto.ECS.EGID]],Svelto.ECS.EnginesRoot],
-      System.Action`3[Svelto.DataStructures.FasterDictionary`2[Svelto.ECS.ExclusiveGroupStruct,Svelto.DataStructures.FasterDictionary`2[Svelto.DataStructures.RefWrapperType,Svelto.DataStructures.FasterList`1[System.ValueTuple`2[System.UInt32,System.String]]]],Svelto.DataStructures.FasterList`1[Svelto.ECS.EGID],Svelto.ECS.EnginesRoot],
-      System.Action`2[Svelto.ECS.ExclusiveGroupStruct,Svelto.ECS.EnginesRoot], System.Action`3[Svelto.ECS.ExclusiveGroupStruct,Svelto.ECS.ExclusiveGroupStruct,Svelto.ECS.EnginesRoot],
-      Svelto.ECS.EnginesRoot)
+    Method: Void QueueSwapOperation(Svelto.ECS.EGID, Svelto.ECS.EGID, Svelto.ECS.IComponentBuilder[],
+      System.String)
   - Enabled: 1
     Assembly: Svelto.ECS, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
     Type: Svelto.ECS.EnginesRoot
-    Method: Void SingleSubmission(Svelto.Common.PlatformProfiler)
+    Method: Void QueueSwapEntityOperation(Svelto.ECS.EGID, Svelto.ECS.EGID, Svelto.ECS.IComponentBuilder[],
+      System.String)
+  - Enabled: 1
+    Assembly: Svelto.ECS, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    Type: Svelto.ECS.EnginesRoot
+    Method: Void FlushNativeOperations(Svelto.Common.PlatformProfiler ByRef)
   - Enabled: 1
     Assembly: Svelto.ECS, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
     Type: Svelto.ECS.Schedulers.SimpleEntitiesSubmissionScheduler
@@ -63,20 +65,3 @@ MonoBehaviour:
     Assembly: Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
     Type: Svelto.ECS.MiniExamples.DoofusesDOTS.TickerComponent
     Method: Void Update()
-  - Enabled: 1
-    Assembly: Svelto.Common, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    Type: Svelto.Common.MemoryUtilities
-    Method: IntPtr NativeAlloc(UInt32, Svelto.Common.Allocator, Boolean)
-  - Enabled: 1
-    Assembly: Svelto.Common, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    Type: Svelto.Common.MemoryUtilities
-    Method: IntPtr NativeRealloc(IntPtr, UInt32, Svelto.Common.Allocator, UInt32,
-      Boolean, Boolean)
-  - Enabled: 1
-    Assembly: Svelto.ECS, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    Type: Svelto.ECS.EnginesRoot
-    Method: Void FlushNativeOperations(Svelto.Common.PlatformProfiler ByRef)
-  - Enabled: 1
-    Assembly: Svelto.ECS, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    Type: Svelto.ECS.EnginesRoot
-    Method: Void AddEntities(Svelto.Common.PlatformProfiler)

@@ -1,141 +1,91 @@
+#if !UNITY_DISABLE_AUTOMATIC_SYSTEM_BOOTSTRAP_RUNTIME_WORLD
+#error SveltoOnDOTS required the user to take over the DOTS world control and explicitly create it. UNITY_DISABLE_AUTOMATIC_SYSTEM_BOOTSTRAP must be defined
+#endif
+
 #if UNITY_ECS
 using System;
-using System.Collections.Generic;
 using Svelto.Common;
 using Svelto.DataStructures;
-using Svelto.ECS.Native;
 using Svelto.ECS.Schedulers;
-using Unity.Collections;
+using Unity.Collections.LowLevel.Unsafe;
 using Unity.Entities;
 using Unity.Jobs;
-using Allocator = Unity.Collections.Allocator;
 
 namespace Svelto.ECS.SveltoOnDOTS
 {
     /// <summary>
-    ///     SveltoDOTS ECSEntitiesSubmissionGroup expand the _submissionScheduler responsibility to integrate the
-    ///     submission of Svelto entities with the submission of DOTS ECS entities using EntityCommandBuffer.
+    ///     SveltoDOTS ECSEntitiesSubmissionGroup extends the _submissionScheduler responsibility to integrate the
+    ///     submission of Svelto entities with the submission of DOTS ECS entities using DOTSOperationsForSvelto.
     ///     As there is just one submissionScheduler per enginesRoot, there should be only one SveltoDOTS
-    ///     ECSEntitiesSubmissionGroup
-    ///     per engines group. It's expected use is showed in the class SveltoOnDOTS ECSEnginesGroup which should be used
-    ///     instead of using this class directly.
-    ///     Groups DOTS ECS/Svelto SystemBase engines that creates DOTS ECS entities.
+    ///     ECSEntitiesSubmissionGroup.
+    ///     initialise DOTS ECS/Svelto systems/engines that handles DOTS ECS entities structural changes.
     ///     Flow:
     ///     Complete all the jobs used as input dependencies (this is a sync point)
-    ///     Create the new frame Command Buffer to use
     ///     Svelto entities are submitted
     ///     Svelto Add and remove callback are called
-    ///     ECB is injected in all the registered engines
-    ///     all the OnUpdate of the registered engines/systems are called
-    ///     the DOTS ECS command buffer is flushed
-    ///     all the DOTS ECS entities created that need Svelto information will be processed
+    ///     ISveltoOnDOTSStructuralEngine can use DOTSOperationsForSvelto in their add/remove/moove callbacks
     /// </summary>
     [DisableAutoCreation]
-    public sealed partial class SveltoOnDOTSEntitiesSubmissionGroup: SystemBase, IQueryingEntitiesEngine,
-            ISveltoOnDOTSSubmission
+    public sealed partial class SveltoOnDOTSEntitiesSubmissionGroup: SystemBase, IQueryingEntitiesEngine, ISveltoOnDOTSSubmission
     {
         public SveltoOnDOTSEntitiesSubmissionGroup(SimpleEntitiesSubmissionScheduler submissionScheduler)
         {
             _submissionScheduler = submissionScheduler;
-            _submissionEngines = new FasterList<SveltoOnDOTSHandleStructuralChangesEngine>();
+            _submissionEngines = new FasterList<ISveltoOnDOTSStructuralEngine>();
         }
 
         public EntitiesDB entitiesDB { get; set; }
 
         public void Ready() { }
 
-        //Right, when you record a command outside of a job using the regular ECB, you don't pass it a sort key.
-        //We instead use a constant for the main thread that is actually set to Int32.MaxValue. Where as the commands
-        //that are recording from jobs with the ParallelWriter, get a lower value sort key from the job. Because we
-        //playback the commands in order based on this sort key, the ParallelWriter commands end up happening before
-        //the main thread commands. This is where your error is coming from because the Instantiate command happens at
-        //the end because it's sort key is Int32.MaxValue.
-        //We don't recommend mixing the main thread and ParallelWriter commands in a single ECB for this reason.
         public void SubmitEntities(JobHandle jobHandle)
         {
-            if (_submissionScheduler.paused == true)
+            if (_submissionScheduler.paused == true || World.EntityManager == default)
                 return;
 
             using (var profiler = new PlatformProfiler("SveltoDOTSEntitiesSubmissionGroup"))
             {
-                using (profiler.Sample("PreSubmissionPhase"))
+                using (profiler.Sample("Complete All Pending Jobs"))
                 {
-                    PreSubmissionPhase(ref jobHandle, profiler);
+                    jobHandle.Complete(); //sync-point
+                    EntityManager.CompleteAllTrackedJobs();
                 }
 
                 //Submit Svelto Entities, calls Add/Remove/MoveTo that can be used by the DOTS ECSSubmissionEngines
                 _submissionScheduler.SubmitEntities();
 
-                using (profiler.Sample("AfterSubmissionPhase"))
-                {
-                    AfterSubmissionPhase(profiler);
-                }
+                _dotsOperationsForSvelto.Complete();
             }
         }
 
-        public void Add(SveltoOnDOTSHandleStructuralChangesEngine engine)
+        public void Add(ISveltoOnDOTSStructuralEngine engine)
         {
-            // Console.LogDebug($"Add Submission Engine {engine} to the DOTS world {_ECBSystem.World.Name}");
-
-            //this is temporary enabled because of engines that needs EntityManagers for the wrong reasons.
             _submissionEngines.Add(engine);
-            engine.OnCreate();
-        }
-
-        void PreSubmissionPhase(ref JobHandle jobHandle, PlatformProfiler profiler)
-        {
-            using (profiler.Sample("Complete All Pending Jobs"))
-            {
-                jobHandle.Complete(); //sync-point
-                EntityManager.CompleteAllTrackedJobs();
-            }
-
-            foreach (var system in _submissionEngines)
-            {
-                system.DOTSOperations = new DOTSBatchedOperationsForSvelto(World.EntityManager);
-            }
-        }
-
-        void AfterSubmissionPhase(PlatformProfiler profiler)
-        {
-            JobHandle combinedHandle = default;
-
-            using (profiler.Sample("Run submission engines"))
-            {
-                for (var i = 0; i < _submissionEngines.count; i++)
-                {
-                    try
-                    {
-                        combinedHandle = JobHandle.CombineDependencies(combinedHandle, _submissionEngines[i].OnPostSubmission());
-                    }
-                    catch (Exception e)
-                    {
-                        Console.LogException(e, _submissionEngines[i].name);
-
-                        throw;
-                    }
-                }
-            }
-            
-            combinedHandle.Complete();
-            
-            for (var i = 0; i < _submissionEngines.count; i++)
-            {
-                try
-                {
-                   _submissionEngines[i].CleanUp();
-                }
-                catch (Exception e)
-                {
-                    Console.LogException(e, _submissionEngines[i].name);
-
-                    throw;
-                }
-            }
+            if (World != null)
+                engine.DOTSOperations = _dotsOperationsForSvelto;
         }
 
         protected override void OnCreate()
         {
+            unsafe
+            {
+                _jobHandle = (JobHandle*) MemoryUtilities.NativeAlloc((uint)MemoryUtilities.SizeOf<JobHandle>(), Allocator.Persistent);
+                _dotsOperationsForSvelto = new DOTSOperationsForSvelto(World.EntityManager, _jobHandle);
+            
+                //initialise engines field while world was null
+                foreach (var engine in _submissionEngines)
+                    engine.DOTSOperations = _dotsOperationsForSvelto;
+            }
+        }
+
+        protected override void OnDestroy()
+        {
+            unsafe
+            {
+                base.OnDestroy();
+            
+                MemoryUtilities.NativeFree((IntPtr)_jobHandle, Allocator.Persistent);
+            }
         }
 
         protected override void OnUpdate()
@@ -143,9 +93,10 @@ namespace Svelto.ECS.SveltoOnDOTS
             throw new NotSupportedException("if this is called something broke the original design");
         }
 
-        readonly FasterList<SveltoOnDOTSHandleStructuralChangesEngine> _submissionEngines;
-
+        readonly FasterList<ISveltoOnDOTSStructuralEngine> _submissionEngines;
         readonly SimpleEntitiesSubmissionScheduler _submissionScheduler;
+        DOTSOperationsForSvelto _dotsOperationsForSvelto;
+        unsafe JobHandle* _jobHandle;
     }
 }
 #endif

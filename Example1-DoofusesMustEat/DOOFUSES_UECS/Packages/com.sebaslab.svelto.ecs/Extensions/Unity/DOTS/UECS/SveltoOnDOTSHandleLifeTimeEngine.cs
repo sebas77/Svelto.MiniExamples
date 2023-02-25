@@ -9,22 +9,22 @@ namespace Svelto.ECS.SveltoOnDOTS
     /// Automatic Svelto Group -> DOTS archetype synchronization when necessary
     /// </summary>
     /// <typeparam name="DOTSEntityComponent"></typeparam>
-    class SveltoOnDOTSHandleLifeTimeEngine<DOTSEntityComponent>: SveltoOnDOTSHandleStructuralChangesEngine, IReactOnRemoveEx<DOTSEntityComponent>, IReactOnSwapEx<DOTSEntityComponent>
-            where DOTSEntityComponent : unmanaged, IEntityComponentForDOTS
+    class SveltoOnDOTSHandleLifeTimeEngine<DOTSEntityComponent>: ISveltoOnDOTSStructuralEngine, IReactOnRemoveEx<DOTSEntityComponent>,
+            IReactOnSwapEx<DOTSEntityComponent> where DOTSEntityComponent : unmanaged, IEntityComponentForDOTS
     {
         public void Remove((uint start, uint end) rangeOfEntities, in EntityCollection<DOTSEntityComponent> entities, ExclusiveGroupStruct groupID)
         {
             var (buffer, _) = entities;
 
             var nativeArray = new NativeArray<Entity>((int)(rangeOfEntities.end - rangeOfEntities.start), Allocator.Temp);
-            
+
             //todo this could be burstified or memcpied
             int counter = 0;
             for (uint i = rangeOfEntities.start; i < rangeOfEntities.end; i++)
             {
                 nativeArray[counter++] = buffer[i].dotsEntity;
             }
-            
+
             DOTSOperations.DestroyEntitiesBatched(nativeArray);
         }
 
@@ -34,18 +34,19 @@ namespace Svelto.ECS.SveltoOnDOTS
             var (buffer, _) = entities;
 
             var nativeArray = new NativeArray<Entity>((int)(rangeOfEntities.end - rangeOfEntities.start), Allocator.Temp);
-            
+
             //todo this could be burstified or memcpied
             int counter = 0;
             for (uint i = rangeOfEntities.start; i < rangeOfEntities.end; i++)
             {
                 nativeArray[counter++] = buffer[i].dotsEntity;
             }
-            
+
             DOTSOperations.SetSharedComponentBatched(nativeArray, new DOTSSveltoGroupID(toGroup));
         }
 
-        public override string name => nameof(SveltoOnDOTSHandleLifeTimeEngine<DOTSEntityComponent>);
+        public DOTSOperationsForSvelto DOTSOperations { get; set; }
+        public string name => nameof(SveltoOnDOTSHandleLifeTimeEngine<DOTSEntityComponent>);
     }
 }
 #endif

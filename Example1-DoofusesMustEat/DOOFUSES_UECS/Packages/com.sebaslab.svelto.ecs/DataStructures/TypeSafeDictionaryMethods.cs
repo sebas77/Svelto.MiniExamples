@@ -465,7 +465,7 @@ namespace Svelto.ECS.Internal
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ExecuteEnginesAddEntityCallbacksFast<TValue>
         (FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<IReactOnAddEx>>> fasterDictionary
-       , ExclusiveGroupStruct groupId, (uint, uint) valueTuple, IEntityIDs entityids
+       , ExclusiveGroupStruct groupId, (uint, uint) rangeTuple, IEntityIDs entityids
        , ITypeSafeDictionary<TValue> typeSafeDictionary, PlatformProfiler profiler)
             where TValue : struct, _IInternalEntityComponent
         {
@@ -480,7 +480,7 @@ namespace Svelto.ECS.Internal
                     using (profiler.Sample(entityComponentsEngines[i].name))
                     {
                         ((IReactOnAddEx<TValue>)entityComponentsEngines[i].engine).Add(
-                            valueTuple
+                            rangeTuple
                           , new EntityCollection<TValue>(typeSafeDictionary.GetValues(out var count), entityids, count)
                           , groupId);
                     }

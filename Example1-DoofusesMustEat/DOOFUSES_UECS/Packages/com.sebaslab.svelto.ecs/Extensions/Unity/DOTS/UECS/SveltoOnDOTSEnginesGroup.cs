@@ -76,7 +76,7 @@ namespace Svelto.ECS.SveltoOnDOTS
             _syncDotsToSveltoGroup.Add(engine);
         }
 
-        public void AddSveltoOnDOTSSubmissionEngine(SveltoOnDOTSHandleStructuralChangesEngine submissionEngine)
+        public void AddSveltoOnDOTSSubmissionEngine(ISveltoOnDOTSStructuralEngine submissionEngine)
         {
             _sveltoDotsEntitiesSubmissionGroup.Add(submissionEngine);
 

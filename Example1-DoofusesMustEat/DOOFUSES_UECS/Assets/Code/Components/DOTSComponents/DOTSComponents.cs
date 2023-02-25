@@ -2,6 +2,6 @@
 
 namespace Svelto.ECS.MiniExamples.DoofusesDOTS
 {
-    public struct SpecialBluePrefab : IComponentData
+    public struct SpecialBluePrefab : IComponentData, IEnableableComponent
     { }
 }

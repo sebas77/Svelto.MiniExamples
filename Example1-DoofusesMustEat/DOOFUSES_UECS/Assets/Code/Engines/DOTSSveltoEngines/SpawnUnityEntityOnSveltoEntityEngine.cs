@@ -1,8 +1,6 @@
 using Svelto.Common;
 using Svelto.DataStructures;
-using Svelto.DataStructures.Native;
 using Svelto.ECS.EntityComponents;
-using Svelto.ECS.Internal;
 using Svelto.ECS.SveltoOnDOTS;
 using Unity.Burst;
 using Unity.Collections;
@@ -14,83 +12,61 @@ using Allocator = Unity.Collections.Allocator;
 namespace Svelto.ECS.MiniExamples.DoofusesDOTS
 {
     /// <summary>
-    /// In a Svelto<->UECS scenario, is common to have DOTS ECS entity built on creation of Svelto ones.
+    /// In a Svelto<->DOTS ECS scenario, is common to have DOTS ECS entities built on creation of Svelto ones.
+    /// These engines are usually specialised and must implement ISveltoOnDOTSStructuralEngine
+    /// to give to the user the tools necessary to spawn DOTS entities.
     /// todo note on destruction and moveto
+    /// todo need to simplify this
     /// </summary>
-    public class SpawnUnityEntityOnSveltoEntityEngine: SveltoOnDOTSHandleStructuralChangesEngine,
+    public class SpawnUnityEntityOnSveltoEntityEngine: ISveltoOnDOTSStructuralEngine,
             IReactOnAddEx<DOTSEntityComponent>, IQueryingEntitiesEngine
     {
-        public override string name => nameof(SpawnUnityEntityOnSveltoEntityEngine);
+        public DOTSOperationsForSvelto DOTSOperations { get; set; }
+
+        public string name => nameof(SpawnUnityEntityOnSveltoEntityEngine);
 
         public void Ready() { }
 
         public EntitiesDB entitiesDB { get; set; }
-        
+
+        //Collect all the DOTSEntityComponent entities submitted this frame and create a DOTS entity for each of them
         public void Add((uint start, uint end) rangeOfEntities,
             in EntityCollection<DOTSEntityComponent> entities, ExclusiveGroupStruct groupID)
         {
-            var (buffer, ids, _) = entities;
+            var (sveltoOnDOTSEntities, _) = entities;
             var (positions, _) = entitiesDB.QueryEntities<PositionEntityComponent>(groupID);
 
+            SyncDOTSPosition job = default;
             job.spawnPoints = positions;
-            job.DOSTEntityComponents = buffer;
-            job.ids = ids;
             job.sveltoStartIndex = rangeOfEntities.start;
-            job.entityReferenceMap = entitiesDB.GetEntityReferenceMap(groupID);
+            job.entityManager = DOTSOperations;
 
             using (new PlatformProfiler("CreateDOTSEntityOnSveltoBatched"))
             {
-                var sveltoOnDOTSEntities = DOTSOperations.CreateDOTSEntityOnSveltoBatched(
-                    buffer[0].dotsEntity, (int)(rangeOfEntities.end - rangeOfEntities.start), groupID, Allocator.TempJob);
+                //Standard way to create DOTS entities from a Svelto ones. The returning job must be completed by the end of the frame
+                var DOTSEntities = DOTSOperations.CreateDOTSEntityOnSveltoBatched(
+                    sveltoOnDOTSEntities[0].dotsEntity, rangeOfEntities, groupID, sveltoOnDOTSEntities);
 
-                job.createdEntities = sveltoOnDOTSEntities;
+                job.createdEntities = DOTSEntities;
             }
+            
+            var jobHandle = job.ScheduleParallel(job.createdEntities.Length, default);
+            DOTSOperations.AddJobToComplete(jobHandle);
         }
-
-        protected override JobHandle OnPostSubmission()
-        {
-            if (job.createdEntities.IsCreated)
-            {
-                job.entityManager = DOTSOperations;
-
-                return job.ScheduleParallel(job.createdEntities.Length, default);
-            }
-
-            return default;
-        }
-
-        protected override void CleanUp()
-        {
-            if (job.createdEntities.IsCreated)
-                job.createdEntities.Dispose();
-        }
-
-        SpawnJob job;
 
         [BurstCompile]
-        struct SpawnJob: IJobParallelFor
+        struct SyncDOTSPosition: IJobParallelFor
         {
             public NB<PositionEntityComponent> spawnPoints;
             public uint sveltoStartIndex;
             [ReadOnly] public NativeArray<Entity> createdEntities;
-            [NativeDisableParallelForRestriction] public DOTSBatchedOperationsForSvelto entityManager;
-            public NativeEntityIDs ids;
-            public SharedSveltoDictionaryNative<uint, EntityReference> entityReferenceMap;
-            public NB<DOTSEntityComponent> DOSTEntityComponents;
+            [NativeDisableParallelForRestriction] public DOTSOperationsForSvelto entityManager;
 
             public void Execute(int currentIndex)
             {
                 int index = (int)(sveltoStartIndex + currentIndex);
                 var dotsEntity = createdEntities[currentIndex];
-                
-                DOSTEntityComponents[index].dotsEntity = dotsEntity;
 
-                entityManager.SetComponent(
-                    dotsEntity, new DOTSSveltoReference
-                    {
-                        entityReference = entityReferenceMap[ids[index]]
-                    });
-                
                 ref PositionEntityComponent spawnComponent = ref spawnPoints[index];
 
                 entityManager.SetComponent(
