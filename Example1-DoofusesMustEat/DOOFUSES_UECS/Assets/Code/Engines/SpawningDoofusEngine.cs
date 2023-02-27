@@ -98,12 +98,12 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
                     uint specialBlueDoofusesCount = (uint)Mathf.FloorToInt((rangeOfEntities.end - rangeOfEntities.start) / 4.0f);
 
                     //part of the blue stays normal blue
-                    DOTSOperations.CreateDOTSEntityOnSveltoBatched(_blueCapsule, (0, blueDoofusesCount), groupID, sveltoOnDOTSEntities);
+                    DOTSOperations.CreateDOTSEntityFromSveltoBatched(_blueCapsule, (0, blueDoofusesCount), groupID, sveltoOnDOTSEntities);
 
                     if (specialBlueDoofusesCount > 0)
                     {
                         //the other part of the blue becomes special blue
-                        DOTSOperations.CreateDOTSEntityOnSveltoBatched(
+                        DOTSOperations.CreateDOTSEntityFromSveltoBatched(
                             _specialBlueCapsule, (blueDoofusesCount, blueDoofusesCount + specialBlueDoofusesCount), groupID, sveltoOnDOTSEntities);
                     }
 
@@ -129,7 +129,7 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
                 else
                 {
                     //Standard way to create DOTS entities from a Svelto ones. The returning job must be completed by the end of the frame
-                    DOTSOperations.CreateDOTSEntityOnSveltoBatched(_redCapsule, rangeOfEntities, groupID, sveltoOnDOTSEntities);
+                    DOTSOperations.CreateDOTSEntityFromSveltoBatched(_redCapsule, rangeOfEntities, groupID, sveltoOnDOTSEntities);
                 }
             }
         }

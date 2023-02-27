@@ -37,7 +37,7 @@ namespace Svelto.ECS.SveltoOnDOTS
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal Entity CreateDOTSEntityOnSvelto(Entity prefabEntity, ExclusiveGroupStruct groupID, EntityReference reference)
+        internal Entity CreateDOTSEntityFromSvelto(Entity prefabEntity, ExclusiveGroupStruct groupID, EntityReference reference)
         {
             Entity dotsEntity = _EManager.Instantiate(prefabEntity);
 
@@ -57,7 +57,7 @@ namespace Svelto.ECS.SveltoOnDOTS
         /// <param name="egid"></param>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal Entity CreateDOTSEntityOnSvelto(EntityArchetype archetype, ExclusiveGroupStruct groupID, EntityReference reference)
+        internal Entity CreateDOTSEntityFromSvelto(EntityArchetype archetype, ExclusiveGroupStruct groupID, EntityReference reference)
         {
             Entity dotsEntity = _EManager.CreateEntity(archetype);
 
@@ -133,7 +133,7 @@ namespace Svelto.ECS.SveltoOnDOTS
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public NativeArray<Entity> CreateDOTSEntityOnSveltoBatched(Entity prefab, (uint rangeStart, uint rangeEnd) range,
+        public NativeArray<Entity> CreateDOTSEntityFromSveltoBatched(Entity prefab, (uint rangeStart, uint rangeEnd) range,
             ExclusiveGroupStruct groupID, NB<DOTSEntityComponent> DOSTEntityComponents)
         {
             unsafe
