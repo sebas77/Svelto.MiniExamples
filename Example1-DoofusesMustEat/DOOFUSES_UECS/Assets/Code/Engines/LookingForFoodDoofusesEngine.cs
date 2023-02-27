@@ -56,7 +56,7 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
             //query all the available food
             var availableFoodComponents = entitiesDB.QueryEntities<PositionEntityComponent>(groupsWithAvailableFood).GetEnumerator();
             //query all the doofuses that are not eating
-            var availableDoofusesComponents = entitiesDB.QueryEntities<MealInfoComponent>(groupsWithAvailableDoofuses).GetEnumerator();
+            var availableDoofusesComponents = entitiesDB.QueryEntities<MealTargetComponent>(groupsWithAvailableDoofuses).GetEnumerator();
 
             while (availableFoodComponents.MoveNext() && availableDoofusesComponents.MoveNext())
             {
@@ -76,8 +76,8 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
                           , _nativeFoodSwap     = _nativeFoodSwap
                           , _doofuseEatingGroup = eatingDoofusesGroup
                           , _eatenFoodGroup     = eatenFoodGroup
-                          , _fromFoodGroup      =currentFoodGroup
-                          , _fromDoofusesGroup  =currentDoofusesGroup
+                          , _fromFoodGroup      = currentFoodGroup
+                          , _fromDoofusesGroup  = currentDoofusesGroup
                         }.ScheduleParallel(eatingDoofuses, inputDeps));
                     }
                 }
@@ -97,7 +97,7 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
             [ReadOnly] public NativeEntityIDs _food;
             [ReadOnly] public NativeEntityIDs _doofusesIDs;
 
-            [WriteOnly] public NB<MealInfoComponent> doofuses;
+            [WriteOnly] public NB<MealTargetComponent> doofuses;
 
             public NativeEntitySwap _nativeDoofusesSwap;
             public NativeEntitySwap _nativeFoodSwap;

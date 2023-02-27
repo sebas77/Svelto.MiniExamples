@@ -11,11 +11,11 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
           , new ComponentBuilder<DOTSEntityComponent>()
           , new ComponentBuilder<VelocityEntityComponent>()
           , new ComponentBuilder<SpeedEntityComponent>()
-          , new ComponentBuilder<MealInfoComponent>()
+          , new ComponentBuilder<MealTargetComponent>()
         };
     }
 
-    public struct MealInfoComponent : IEntityComponent
+    public struct MealTargetComponent : IEntityComponent
     {
         public EGID targetMeal;
     }

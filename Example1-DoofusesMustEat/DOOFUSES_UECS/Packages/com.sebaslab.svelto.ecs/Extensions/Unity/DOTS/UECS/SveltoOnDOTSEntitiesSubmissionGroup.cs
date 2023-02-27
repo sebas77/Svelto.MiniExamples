@@ -54,6 +54,9 @@ namespace Svelto.ECS.SveltoOnDOTS
                 //Submit Svelto Entities, calls Add/Remove/MoveTo that can be used by the DOTS ECSSubmissionEngines
                 _submissionScheduler.SubmitEntities();
 
+                foreach (var engine in _submissionEngines)
+                    engine.OnPostSubmission();
+
                 _dotsOperationsForSvelto.Complete();
             }
         }

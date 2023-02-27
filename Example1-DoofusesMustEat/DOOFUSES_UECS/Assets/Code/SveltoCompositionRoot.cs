@@ -54,9 +54,6 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
             var (redFoodPrefab, blueFoodPrefab, redDoofusPrefab, blueDoofusPrefab, specialBlueDoofusPrefab) =
                     await LoadAssetAndCreatePrefabs(_sveltoOverDotsEnginesGroupEnginesGroup.world);
 
-            EntityManager worldEntityManager = _sveltoOverDotsEnginesGroupEnginesGroup.world.EntityManager;
-            worldEntityManager.AddComponent<SpecialBluePrefab>(specialBlueDoofusPrefab);
-
             //Standard Svelto Engines
             AddSveltoEngineToTick(new SpawningDoofusEngine(redDoofusPrefab, blueDoofusPrefab, specialBlueDoofusPrefab, entityFactory));
             AddSveltoEngineToTick(new SpawnFoodOnClickEngine(redFoodPrefab, blueFoodPrefab, entityFactory));
@@ -64,10 +61,9 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
             AddSveltoEngineToTick(new LookingForFoodDoofusesEngine(entityFunctions));
             AddSveltoEngineToTick(new VelocityToPositionDoofusesEngine());
 
-            //Svelto engines that runs 
-            _sveltoOverDotsEnginesGroupEnginesGroup.AddSveltoToDOTSEngine(new RenderingDOTSDataSynchronizationEngine());
-            _sveltoOverDotsEnginesGroupEnginesGroup.AddSveltoOnDOTSSubmissionEngine(new SpawnUnityEntityOnSveltoEntityEngine());
-
+            //SveltoOnDOTS sync engine 
+            _sveltoOverDotsEnginesGroupEnginesGroup.AddSveltoToDOTSSyncEngine(new RenderingDOTSPositionSyncEngine());
+            
             _mainLoop = new MainLoop(_enginesToTick);
             _mainLoop.Run();
         }
@@ -89,15 +85,20 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
             var prefabHolder = query.ToComponentDataArray<PrefabsComponents>(Allocator.Temp);
 
             var component = prefabHolder[0];
+            //add the DOTS special blue IEnableable component so that we can filter them later for the sync of the positions
+            worldEntityManager.AddComponent<SpecialBluePrefab>(component.SpecialDoofus);
 
             return (component.RedFood, component.BlueFood, component.RedDoofus, component.BlueDoofus, component.SpecialDoofus);
         }
 
         void AddSveltoEngineToTick(IJobifiedEngine engine)
         {
-            _enginesRoot.AddEngine(engine);
-            
             _enginesToTick.Add(engine);
+            
+            if (engine is ISveltoOnDOTSStructuralEngine structuralEngine)
+                _sveltoOverDotsEnginesGroupEnginesGroup.AddSveltoOnDOTSSubmissionEngine(structuralEngine);
+            else
+                _enginesRoot.AddEngine(engine);
         }
         
         EnginesRoot _enginesRoot;

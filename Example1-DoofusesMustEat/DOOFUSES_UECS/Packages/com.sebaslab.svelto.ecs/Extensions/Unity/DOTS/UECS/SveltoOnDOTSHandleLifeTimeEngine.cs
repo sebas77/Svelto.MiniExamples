@@ -21,9 +21,7 @@ namespace Svelto.ECS.SveltoOnDOTS
             //todo this could be burstified or memcpied
             int counter = 0;
             for (uint i = rangeOfEntities.start; i < rangeOfEntities.end; i++)
-            {
                 nativeArray[counter++] = buffer[i].dotsEntity;
-            }
 
             DOTSOperations.DestroyEntitiesBatched(nativeArray);
         }
@@ -38,12 +36,12 @@ namespace Svelto.ECS.SveltoOnDOTS
             //todo this could be burstified or memcpied
             int counter = 0;
             for (uint i = rangeOfEntities.start; i < rangeOfEntities.end; i++)
-            {
                 nativeArray[counter++] = buffer[i].dotsEntity;
-            }
 
             DOTSOperations.SetSharedComponentBatched(nativeArray, new DOTSSveltoGroupID(toGroup));
         }
+        
+        public void OnPostSubmission() { }
 
         public DOTSOperationsForSvelto DOTSOperations { get; set; }
         public string name => nameof(SveltoOnDOTSHandleLifeTimeEngine<DOTSEntityComponent>);

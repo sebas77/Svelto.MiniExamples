@@ -136,6 +136,28 @@ namespace Svelto.ECS
 
                 return ref _persistentEntityFilters.GetDirectValueByRef((uint)lastIndex);
             }
+#if UNITY_BURST && UNITY_COLLECTIONS
+            [Unity.Burst.BurstDiscard] //not burst compatible because of  TypeRefWrapper<T>.wrapper and GetOrAdd callback;
+#endif         
+            public ref EntityFilterCollection CreatePersistentFilter<T>(CombinedFilterID filterID)
+                    where T : unmanaged, _IInternalEntityComponent
+            {
+                long combineFilterIDs = Internal_FilterHelper.CombineFilterIDs<T>(filterID);
+
+                if (_persistentEntityFilters.TryFindIndex(combineFilterIDs, out var index) == true)
+                    throw new ECSException("filter already exists");
+
+                var typeRef = TypeRefWrapper<T>.wrapper;
+                var filterCollection = new EntityFilterCollection(filterID);
+
+                _persistentEntityFilters.Add(combineFilterIDs, filterCollection);
+
+                var lastIndex = _persistentEntityFilters.count - 1;
+
+                _indicesOfPersistentFiltersUsedByThisComponent.GetOrAdd(new NativeRefWrapperType(typeRef), _builder).Add(lastIndex);
+
+                return ref _persistentEntityFilters.GetDirectValueByRef((uint)lastIndex);
+            }
 
             static NativeDynamicArrayCast<int> Builder()
             {
@@ -158,7 +180,7 @@ namespace Svelto.ECS
                 if (_persistentEntityFilters.TryFindIndex(combineFilterIDs, out var index) == true)
                     return ref _persistentEntityFilters.GetDirectValueByRef(index);
 
-                throw new Exception("filter not found");
+                throw new ECSException("filter not found");
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -188,7 +210,7 @@ namespace Svelto.ECS
                         _indicesOfPersistentFiltersUsedByThisComponent.GetDirectValueByRef(index),
                         _persistentEntityFilters);
 
-                throw new Exception($"no filters associated with the type {TypeCache<T>.name}");
+                throw new ECSException($"no filters associated with the type {TypeCache<T>.name}");
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -200,7 +222,7 @@ namespace Svelto.ECS
                         _indicesOfPersistentFiltersUsedByThisComponent.GetDirectValueByRef(index),
                         _persistentEntityFilters, filterContextId);
 
-                throw new Exception($"no filters associated with the type {TypeCache<T>.name}");
+                throw new ECSException($"no filters associated with the type {TypeCache<T>.name}");
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -268,7 +290,7 @@ namespace Svelto.ECS
                     return ref _transientEntityFilters.GetDirectValueByRef(index);
                 }
                 
-                throw new Exception($"no filters associated with the type {TypeCache<T>.name}");
+                throw new ECSException($"no filters associated with the type {TypeCache<T>.name}");
             }
             
             public void CreateTransientFilter<T>(CombinedFilterID filterID)
@@ -277,7 +299,7 @@ namespace Svelto.ECS
                 var combineFilterIDs = Internal_FilterHelper.CombineFilterIDs<T>(filterID);
 #if DEBUG && !PROFILE_SVELTO
                 if (_transientEntityFilters.TryFindIndex(combineFilterIDs, out _))
-                    throw new Exception($"filter already exists {TypeCache<T>.name}");
+                    throw new ECSException($"filter already exists {TypeCache<T>.name}");
 #endif
                 var filterCollection = new EntityFilterCollection(filterID);
 

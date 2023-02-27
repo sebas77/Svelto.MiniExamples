@@ -10,7 +10,7 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
     /// Sync SveltoTODOTS engines are also DOTS ECS systems and MUST BE added explicitly using SveltoOnDOTS methods 
     /// </summary>
     [DisableAutoCreation]
-    public partial class RenderingDOTSDataSynchronizationEngine: SyncSveltoToDOTSEngine, IQueryingEntitiesEngine
+    public partial class RenderingDOTSPositionSyncEngine: SyncSveltoToDOTSEngine, IQueryingEntitiesEngine
     {
         public EntitiesDB entitiesDB { get; set; }
 
@@ -23,7 +23,7 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
 
             //find all the filters where BLUE_DOFFUSES are found. Blue DOOFUSES are found in a set with a material being blue
             EntityFilterCollection blueFilters = sveltoFilters
-                   .GetOrCreatePersistentFilter<PositionEntityComponent>(GameFilters.BLUE_DOOFUSES_MESHES);
+                   .GetPersistentFilter<PositionEntityComponent>(GameFilters.BLUE_DOOFUSES_MESHES);
 
             //TODO rewrite this comment, explain that SpecialBlue can be used here since this is a specialised engine
             //there are usually two ways to sync Svelto entities with DOTS ECS entities
@@ -55,7 +55,7 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
             }
 
             EntityFilterCollection specialBlueFilters = sveltoFilters
-                   .GetOrCreatePersistentFilter<PositionEntityComponent>(GameFilters.SPECIAL_BLUE_DOOFUSES_MESHES);
+                   .GetPersistentFilter<PositionEntityComponent>(GameFilters.SPECIAL_BLUE_DOOFUSES_MESHES);
 
             foreach (var (filterIndices, group) in specialBlueFilters)
             {
@@ -85,6 +85,6 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
             }
         }
 
-        public override string name => nameof(RenderingDOTSDataSynchronizationEngine);
+        public override string name => nameof(RenderingDOTSPositionSyncEngine);
     }
 }

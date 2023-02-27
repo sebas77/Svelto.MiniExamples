@@ -1,21 +1,24 @@
 using System;
 using System.Collections;
 using Svelto.Common;
+using Svelto.DataStructures;
 using Svelto.ECS.EntityComponents;
 using Svelto.ECS.Native;
 using Svelto.ECS.SveltoOnDOTS;
 using Unity.Burst;
+using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 using Unity.Entities;
 using Unity.Jobs;
 using Unity.Mathematics;
+using Unity.Transforms;
 using UnityEngine;
 using Random = Unity.Mathematics.Random;
 
 namespace Svelto.ECS.MiniExamples.DoofusesDOTS
 {
     [Sequenced(nameof(DoofusesEngineNames.PlaceFoodOnClickEngine))]
-    public class SpawnFoodOnClickEngine: ISveltoOnDOTSStructuralEngine, IQueryingEntitiesEngine, IJobifiedEngine
+    public class SpawnFoodOnClickEngine: ISveltoOnDOTSStructuralEngine, IQueryingEntitiesEngine, IJobifiedEngine,  IReactOnAddEx<DOTSEntityComponent>
     {
         const int MaxMeals = 500;
 
@@ -27,7 +30,7 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
             _bluefood = bluefood;
         }
 
-        DOTSOperationsForSvelto ISveltoOnDOTSStructuralEngine.DOTSOperations { get; set; }
+        public DOTSOperationsForSvelto DOTSOperations { get; set; }
         public string name => nameof(SpawnFoodOnClickEngine);
 
         IEnumerator CheckClick()
@@ -47,14 +50,14 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
                         if (Input.GetMouseButton(0))
                         {
                             _inputDeps =
-                                    new PlaceFood(
+                                    new SpawnFoodJob(
                                         position, _entityFactory, GameGroups.RED_FOOD_NOT_EATEN.BuildGroup
                                       , _redfood, _foodPlaced).ScheduleParallel(MaxMeals, _inputDeps);
                         }
                         else
                         {
                             _inputDeps =
-                                    new PlaceFood(
+                                    new SpawnFoodJob(
                                         position, _entityFactory, GameGroups.BLUE_FOOD_NOT_EATEN.BuildGroup
                                       , _bluefood, _foodPlaced).ScheduleParallel(MaxMeals, _inputDeps);
                         }
@@ -77,7 +80,40 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
         {
             _taskRunner = CheckClick();
         }
+        
+        //Collect all the FOOD Svelto DOTSEntityComponents submitted this frame and create a DOTS entity for each of them
+        //We also initialise the DOTS position after the entities are created
+        public void Add((uint start, uint end) rangeOfEntities,
+            in EntityCollection<DOTSEntityComponent> entities, ExclusiveGroupStruct groupID)
+        {
+            if (GameGroups.FOOD.Includes(groupID) == true)
+            {
+                var (sveltoOnDOTSEntities, _) = entities;
+                var (positions, _) = entitiesDB.QueryEntities<PositionEntityComponent>(groupID);
 
+                InitDOTSFoodPositionJob job = default;
+                job.spawnPoints = positions;
+                job.sveltoStartIndex = rangeOfEntities.start;
+                job.entityManager = DOTSOperations;
+
+                using (new PlatformProfiler("CreateDOTSEntityOnSveltoBatched"))
+                {
+                    //Standard way to create DOTS entities from a Svelto ones. The returning job must be completed by the end of the frame
+                    var DOTSEntities = DOTSOperations.CreateDOTSEntityOnSveltoBatched(
+                        sveltoOnDOTSEntities[0].dotsEntity, rangeOfEntities, groupID, sveltoOnDOTSEntities);
+
+                    job.createdEntities = DOTSEntities;
+                }
+
+                var jobHandle = job.ScheduleParallel(job.createdEntities.Length, default);
+                DOTSOperations.AddJobToComplete(jobHandle);
+            }
+        }
+        
+        public void OnPostSubmission()
+        {
+        }
+        
         /// <summary>
         /// Beware of this engine. Reading directly the input like I am doing in this class is a bad practice
         /// The input should always be read in separate input specialised classes and translated in pure ECS values,
@@ -110,7 +146,7 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
         JobHandle _inputDeps;
 
         [BurstCompile]
-        struct PlaceFood: IJobParallelFor
+        struct SpawnFoodJob: IJobParallelFor
         {
             readonly Vector3 _position;
             readonly NativeEntityFactory _entityFactory;
@@ -120,7 +156,7 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
             Random _random;
             [NativeSetThreadIndex] readonly int _threadIndex;
 
-            public PlaceFood(Vector3 position, NativeEntityFactory factory, ExclusiveBuildGroup exclusiveBuildGroup, Entity prefabID
+            public SpawnFoodJob(Vector3 position, NativeEntityFactory factory, ExclusiveBuildGroup exclusiveBuildGroup, Entity prefabID
               , uint foodPlaced): this()
             {
                 _position = position;
@@ -146,6 +182,33 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
                     new PositionEntityComponent
                     {
                         position = newposition
+                    });
+            }
+        }
+
+        /// <summary>
+        /// Set position of the DOTS entities after they have been created. This because food doesn't move and so a sync engine for food
+        /// doesn't run. This is a very specific case, in general you should use a sync engine to set the position of the DOTS entities
+        /// </summary>
+        [BurstCompile]
+        struct InitDOTSFoodPositionJob: IJobParallelFor
+        {
+            public NB<PositionEntityComponent> spawnPoints;
+            public uint sveltoStartIndex;
+            [ReadOnly] public NativeArray<Entity> createdEntities;
+            [NativeDisableParallelForRestriction] public DOTSOperationsForSvelto entityManager;
+
+            public void Execute(int currentIndex)
+            {
+                int index = (int)(sveltoStartIndex + currentIndex);
+                var dotsEntity = createdEntities[currentIndex];
+
+                ref PositionEntityComponent spawnComponent = ref spawnPoints[index];
+
+                entityManager.SetComponent(
+                    dotsEntity, new Translation()
+                    {
+                        Value = spawnComponent.position
                     });
             }
         }

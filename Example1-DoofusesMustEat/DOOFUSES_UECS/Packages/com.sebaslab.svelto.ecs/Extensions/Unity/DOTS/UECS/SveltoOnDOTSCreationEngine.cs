@@ -1,5 +1,3 @@
-using Unity.Jobs;
-
 #if UNITY_ECS
 namespace Svelto.ECS.SveltoOnDOTS
 {
@@ -9,9 +7,11 @@ namespace Svelto.ECS.SveltoOnDOTS
     /// </summary>
     public interface ISveltoOnDOTSStructuralEngine
     {
-        public DOTSOperationsForSvelto DOTSOperations { get; set; }
+        DOTSOperationsForSvelto DOTSOperations { get; set; }
 
-        public string name { get; }
+        string name { get; }
+        
+        void OnPostSubmission();
     }
 }
 #endif

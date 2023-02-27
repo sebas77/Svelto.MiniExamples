@@ -57,7 +57,7 @@ namespace Svelto.ECS.SveltoOnDOTS
 
         public string name => nameof(SveltoOnDOTSEnginesGroup);
 
-        public void AddSveltoToDOTSEngine(SyncSveltoToDOTSEngine engine)
+        public void AddSveltoToDOTSSyncEngine(SyncSveltoToDOTSEngine engine)
         {
             //it's a Svelto Engine/DOTS ECS SystemBase so it must be added in the DOTS ECS world AND svelto enginesRoot
             world.AddSystemManaged(engine);
@@ -67,7 +67,7 @@ namespace Svelto.ECS.SveltoOnDOTS
             _syncSveltoToDotsGroup.Add(engine);
         }
 
-        public void AddDOTSToSveltoEngine(SyncDOTSToSveltoEngine engine)
+        public void AddDOTSToSveltoSyncEngine(SyncDOTSToSveltoEngine engine)
         {
             //it's a Svelto Engine/DOTS ECS SystemBase so it must be added in the DOTS ECS world AND svelto enginesRoot
             world.AddSystemManaged(engine);

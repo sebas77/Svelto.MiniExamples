@@ -127,6 +127,12 @@ namespace Svelto.ECS.SveltoOnDOTS
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void AddComponentBatched<T>(NativeArray<Entity> DOTSEntities)
+        {
+            _EManager.AddComponent<T>(DOTSEntities);
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public NativeArray<Entity> CreateDOTSEntityOnSveltoBatched(Entity prefab, (uint rangeStart, uint rangeEnd) range,
             ExclusiveGroupStruct groupID, NB<DOTSEntityComponent> DOSTEntityComponents)
         {
@@ -189,7 +195,7 @@ namespace Svelto.ECS.SveltoOnDOTS
         }
         
         [BurstCompile]
-        public struct SetDOTSEntityComponents: IJobParallelFor
+        struct SetDOTSEntityComponents: IJobParallelFor
         {
             public uint sveltoStartIndex;
             [ReadOnly] public NativeArray<Entity> createdEntities;
@@ -205,7 +211,7 @@ namespace Svelto.ECS.SveltoOnDOTS
         }
         
         [BurstCompile]
-        public struct SetDOTSEntityComponentsSmall: IJobFor
+        struct SetDOTSEntityComponentsSmall: IJobFor
         {
             public uint sveltoStartIndex;
             [ReadOnly] public NativeArray<Entity> createdEntities;

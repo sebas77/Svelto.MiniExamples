@@ -11,6 +11,8 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
         public class EATING : GroupTag<EATING> { }
         public class NOTEATING : GroupTag<NOTEATING> { }
         
+        public class NOTEATEN : GroupTag<NOTEATEN> { }
+        
         //GroupCompounds enable Entities to be grouped by States and Adjectives. GroupCompounds are a simple way to handle Groups of entities separated not
         //only by their entity type but also by their current state. To switch state is enough to switch
         //group using the GroupCompound buildgroup. This is how Svelto fills the gap of the lack to dynamically Add/Remove components 
@@ -30,12 +32,13 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
         public class RED_DOOFUSES_EATING : GroupCompound<DOOFUSES, RED, EATING> { };
         public class RED_DOOFUSES_NOT_EATING :  GroupCompound<DOOFUSES, RED, NOTEATING> { };
         public class RED_FOOD_EATEN : GroupCompound<FOOD, RED, EATING> { };
-        public class RED_FOOD_NOT_EATEN : GroupCompound<FOOD, RED, NOTEATING> { };
+        public class RED_FOOD_NOT_EATEN : GroupCompound<FOOD, RED, NOTEATEN> { };
         
         public class BLUE_DOOFUSES_EATING : GroupCompound<DOOFUSES, BLUE, EATING> { };
         public class BLUE_DOOFUSES_NOT_EATING :  GroupCompound<DOOFUSES, BLUE, NOTEATING> { };
         public class BLUE_FOOD_EATEN : GroupCompound<FOOD, BLUE, EATING> { };
-        public class BLUE_FOOD_NOT_EATEN : GroupCompound<FOOD, BLUE, NOTEATING> { };
+        public class BLUE_FOOD_NOT_EATEN : GroupCompound<FOOD, BLUE, NOTEATEN> { };
+        public class BLUE_DOOFUSES : GroupCompound<DOOFUSES, BLUE> { };
 
         public class DOOFUSES_EATING : GroupCompound<DOOFUSES, EATING> { };
     }

@@ -51,7 +51,7 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
             //against all the doofuses
             JobHandle deps = inputDeps;
             foreach (var (doofusesBuffer, fromGroup) in entitiesDB
-                            .QueryEntities<PositionEntityComponent, VelocityEntityComponent, MealInfoComponent>(doofusesEatingGroups))
+                            .QueryEntities<PositionEntityComponent, VelocityEntityComponent, MealTargetComponent>(doofusesEatingGroups))
             {
                 var (buffer1, buffer2, buffer3, entityIds, count) = doofusesBuffer;
 
@@ -76,7 +76,7 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
     [BurstCompile]
     public readonly struct ConsumingFoodJob: IJobParallelFor
     {
-        readonly BT<NB<PositionEntityComponent>, NB<VelocityEntityComponent>, NB<MealInfoComponent>> _doofuses;
+        readonly BT<NB<PositionEntityComponent>, NB<VelocityEntityComponent>, NB<MealTargetComponent>> _doofuses;
 
         readonly NativeEntityIDs _entityIds;
 
@@ -88,7 +88,7 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
         [NativeSetThreadIndex] readonly int _threadIndex;
         readonly ExclusiveBuildGroup _doofuseMealLockedGroup;
 
-        public ConsumingFoodJob(in BT<NB<PositionEntityComponent>, NB<VelocityEntityComponent>, NB<MealInfoComponent>> doofuses,
+        public ConsumingFoodJob(in BT<NB<PositionEntityComponent>, NB<VelocityEntityComponent>, NB<MealTargetComponent>> doofuses,
             in NativeEntityIDs entityIds, in NativeEGIDMultiMapper<PositionEntityComponent> foodPositionMapper,
             in NativeEntitySwap swap, in NativeEntityRemove nativeRemove,
             ExclusiveGroupStruct fromGroup, ExclusiveBuildGroup doofuseMealLockedGroup): this()
