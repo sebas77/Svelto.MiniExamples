@@ -17,12 +17,12 @@ Attention this demo is presented in multiple versions thanks to its flexibility.
 
 Article:
 
-http://www.sebaslab.com/svelto-mini-examples-doofuses-must-eat/
+http://www.sebaslab.com/svelto-mini-examples-doofuses-must-eat/ (obsolete now, new article incoming)
 
 ### Goals of the **Pure ECS** example are to: 
 * intoduce to the concept of entity descriptors, entity structs and groups. 
-* Show the integration with UnityECS, shows the use of Svelto.Tasks 2.0 (alpha state) 
-* show the integration with Unity Jobs and Burst (using Svelto.ECS 3.0)
+* Show the integration with DOTS ECS, shows the use of Svelto.Tasks 2.0 (alpha state) 
+* show the integration with DOTS Jobs and Burst (using Svelto.ECS 3.0)
 * test Full jobified/burstified code with Svelto ECS 3.0
 * test integration with IL2CPP
 
