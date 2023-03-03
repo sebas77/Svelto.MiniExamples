@@ -38,7 +38,12 @@ namespace Svelto.Utilities
         public void OnLoggerAdded()
         {
         }
-        
+
+        public void CompressLogsToZipAndShow(string zipName)
+        {
+            
+        }
+
         public static void SystemLog(string txt)
         {
             System.Console.WriteLine(txt);

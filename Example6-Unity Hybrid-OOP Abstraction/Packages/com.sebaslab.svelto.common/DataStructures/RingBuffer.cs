@@ -13,8 +13,8 @@ namespace Svelto.DataStructures
     {
         readonly T[]        _entries;
         readonly int        _modMask;
-        Volatile.PaddedLong _consumerCursor = new Volatile.PaddedLong();
-        Volatile.PaddedLong _producerCursor = new Volatile.PaddedLong();
+        VolatileHelper.PaddedLong _consumerCursor = new VolatileHelper.PaddedLong();
+        VolatileHelper.PaddedLong _producerCursor = new VolatileHelper.PaddedLong();
 
 #if DEBUG && !PROFILE_SVELTO
         readonly string _name;
@@ -158,7 +158,7 @@ namespace Svelto.DataStructures
         {}
     }
 
-    static class Volatile
+    static class VolatileHelper
     {
         public struct PaddedLong
         {

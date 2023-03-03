@@ -27,28 +27,17 @@ namespace Svelto.DataStructures
         }
     }
 #else
-//ATTENTION THIS IS NOT A REAL IMPLEMENTATION, WEBGL DOES NOT SUPPORT MULTITHREADING
+    //NO MT IN WEBGL
     public struct ReaderWriterLockSlimEx
     {
-        public void EnterReadLock() { ThrowOnMoreThanOne(ref _readLock); }
-        public void ExitReadLock()  { ReleaseLock(ref _readLock); }
+        public void EnterReadLock() {  }
+        public void ExitReadLock()  {  }
         
-        public void EnterUpgradableReadLock() { ThrowOnMoreThanOne(ref _upgradableReadLock); }
-        public void ExitUpgradableReadLock()  { ReleaseLock(ref _upgradableReadLock); }
-        public void EnterWriteLock()          { ThrowOnMoreThanOne(ref _writeLock); }
-        public void ExitWriteLock()           { ReleaseLock(ref _writeLock); }
+        public void EnterUpgradableReadLock() {  }
+        public void ExitUpgradableReadLock()  { }
+        public void EnterWriteLock()          { }
+        public void ExitWriteLock()           {; }
         
-        void ThrowOnMoreThanOne(ref int readLock)
-        {
-            if (_readLock++ > 0) throw new System.Exception("RecursiveLock not supported");
-        }
-
-        void ReleaseLock(ref int readLock) { --readLock; }
-
-        int _readLock;
-        int _upgradableReadLock;
-        int _writeLock;
-
         public static ReaderWriterLockSlimEx Create() { return new ReaderWriterLockSlimEx(); }
     }
 #endif
