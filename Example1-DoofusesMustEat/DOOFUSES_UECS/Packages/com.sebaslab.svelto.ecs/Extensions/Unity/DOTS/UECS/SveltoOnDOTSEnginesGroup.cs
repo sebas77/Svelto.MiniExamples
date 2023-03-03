@@ -8,8 +8,7 @@ namespace Svelto.ECS.SveltoOnDOTS
 {
     /// <summary>
     /// This is a high level class to abstract the complexity of creating a Svelto ECS application that interacts
-    /// with DOTS ECS. However this is designed to make it work almost out of the box, but it should be eventually
-    /// substituted by project customized code.
+    /// with DOTS ECS. 
     /// This is a JobifiedEngine and as such it expect to be ticked. Normally it must be executed in a
     /// SortedEnginesGroup as step that happens after the Svelto jobified engines run.
     ///
@@ -20,7 +19,7 @@ namespace Svelto.ECS.SveltoOnDOTS
     /// Synchronizations engines to be executed (Svelto to DOTS ECS)
     /// Submission of Entities to be executed
     /// Svelto Add/Remove callbacks to be called
-    /// ISubmissionEngines to be executed
+    /// ISveltoOnDOTSStructuralEngine to be executed
     /// DOTS ECS engines to executed
     /// Synchronizations engines to be executed (DOTS ECS To Svelto)
     /// </summary>
@@ -35,7 +34,10 @@ namespace Svelto.ECS.SveltoOnDOTS
 
             CreateUnityECSWorldForSvelto(enginesRoot.scheduler as SimpleEntitiesSubmissionScheduler, enginesRoot);
         }
-         
+        
+        /// <summary>
+        /// for the user to add pure DOTS ECS SystemBase/ISystem systems to the DOTS ECS world
+        /// </summary>
         public World world { get; private set; }
 
         public JobHandle Execute(JobHandle inputDeps)

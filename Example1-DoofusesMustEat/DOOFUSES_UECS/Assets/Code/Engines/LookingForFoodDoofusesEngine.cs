@@ -94,10 +94,10 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
         [BurstCompile]
         struct LookingForFoodDoofusesJob : IJobParallelFor
         {
-            [ReadOnly] public NativeEntityIDs _food;
-            [ReadOnly] public NativeEntityIDs _doofusesIDs;
+            public NativeEntityIDs _food;
+            public NativeEntityIDs _doofusesIDs;
 
-            [WriteOnly] public NB<MealTargetComponent> doofuses;
+            public NB<MealTargetComponent> doofuses;
 
             public NativeEntitySwap _nativeDoofusesSwap;
             public NativeEntitySwap _nativeFoodSwap;

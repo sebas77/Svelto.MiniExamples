@@ -14,6 +14,12 @@ using Random = Unity.Mathematics.Random;
 
 namespace Svelto.ECS.MiniExamples.DoofusesDOTS
 {
+    /// <summary>
+    /// This is a SveltoOnDOTS structural engine. It can be used to create Svelto entities and DOTS entities
+    /// It could have been split in two engines, so indeed it has a double responsibility. In fact it is not entirely necessary
+    /// to build svelto entities and DOTS entities in the same engine.
+    /// DOTS entities can be build by a ISveltoOnDOTSStructuralEngine during the Add callbacks (this is the expected pattern)
+    /// </summary>
     [Sequenced(nameof(DoofusesEngineNames.SpawningDoofusEngine))]
     public class SpawningDoofusEngine: ISveltoOnDOTSStructuralEngine, IQueryingEntitiesEngine, IJobifiedEngine, IReactOnAddEx<DOTSEntityComponent>
     {
@@ -39,7 +45,7 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
             //Create filter with ID SPECIAL_BLUE_DOOFUSES_MESHES linked to the component PositionEntityComponent
             var specialBlueFilters = sveltoNativeFilters.CreatePersistentFilter<PositionEntityComponent>(GameFilters.SPECIAL_BLUE_DOOFUSES_MESHES);
             var blueFilters = sveltoNativeFilters.CreatePersistentFilter<PositionEntityComponent>(GameFilters.BLUE_DOOFUSES_MESHES);
-            
+
             //Create a group filter with ID BLUE_DOOFUSES_NOT_EATING linked to the group GameGroups.BLUE_DOOFUSES_NOT_EATING
             //now it is possible to iterate only on the filtered entities that are part of the group
             _specialBlueFilter = specialBlueFilters.CreateGroupFilter(GameGroups.BLUE_DOOFUSES_NOT_EATING.BuildGroup);
@@ -64,14 +70,14 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
                 _group = GameGroups.RED_DOOFUSES_NOT_EATING.BuildGroup,
                 _factory = _factory,
                 _random = new Random(1234567)
-            }.ScheduleParallel(MaxNumberOfDoofuses, _jobHandle);
+            }.Schedule(MaxNumberOfDoofuses, _jobHandle);
 
             var spawnBlue = new SpawningJob()
             {
                 _group = blueDoofusesNotEating,
                 _factory = _factory,
                 _random = new Random(7654321),
-            }.ScheduleParallel(MaxNumberOfDoofuses, _jobHandle);
+            }.Schedule(MaxNumberOfDoofuses, _jobHandle);
 
             //Yeah this shouldn't be solved like this, but I keep it in this way for simplicity sake 
             _done = true;
@@ -98,14 +104,20 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
                     uint specialBlueDoofusesCount = (uint)Mathf.FloorToInt((rangeOfEntities.end - rangeOfEntities.start) / 4.0f);
 
                     //part of the blue stays normal blue
-                    DOTSOperations.CreateDOTSEntityFromSveltoBatched(_blueCapsule, (0, blueDoofusesCount), groupID, sveltoOnDOTSEntities);
+                    DOTSOperations.CreateDOTSEntityFromSveltoBatched(
+                        _blueCapsule, (0, blueDoofusesCount), groupID, sveltoOnDOTSEntities, entitiesDB.GetEntityReferenceMap(groupID), entityIDs,
+                        out var creationJobHandleBlue);
 
+                    JobHandle creationJobHandleSpecialBlue = default;
                     if (specialBlueDoofusesCount > 0)
                     {
                         //the other part of the blue becomes special blue
                         DOTSOperations.CreateDOTSEntityFromSveltoBatched(
-                            _specialBlueCapsule, (blueDoofusesCount, blueDoofusesCount + specialBlueDoofusesCount), groupID, sveltoOnDOTSEntities);
+                            _specialBlueCapsule, (blueDoofusesCount, blueDoofusesCount + specialBlueDoofusesCount), groupID, sveltoOnDOTSEntities,
+                            entitiesDB.GetEntityReferenceMap(groupID), entityIDs, out creationJobHandleSpecialBlue);
                     }
+                    
+                    var combined = JobHandle.CombineDependencies(creationJobHandleBlue, creationJobHandleSpecialBlue);
 
                     //Put the svelto blue doofuses in the blue svelto filter
                     DOTSOperations.AddJobToComplete(
@@ -114,7 +126,7 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
                             filter = _blueFilter,
                             length = blueDoofusesCount,
                             entityIDs = entityIDs
-                        }.Schedule());
+                        }.Schedule(combined));
 
                     //Put the svelto blue doofuses in the special blue svelto filter
                     DOTSOperations.AddJobToComplete(
@@ -124,12 +136,14 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
                             start = blueDoofusesCount,
                             length = specialBlueDoofusesCount,
                             entityIDs = entityIDs
-                        }.Schedule());
+                        }.Schedule(combined));
                 }
                 else
                 {
                     //Standard way to create DOTS entities from a Svelto ones. The returning job must be completed by the end of the frame
-                    DOTSOperations.CreateDOTSEntityFromSveltoBatched(_redCapsule, rangeOfEntities, groupID, sveltoOnDOTSEntities);
+                    DOTSOperations.CreateDOTSEntityFromSveltoBatched(
+                        _redCapsule, rangeOfEntities, groupID, sveltoOnDOTSEntities, entitiesDB.GetEntityReferenceMap(groupID), entityIDs,
+                        out _);
                 }
             }
         }
@@ -166,7 +180,7 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
         }
 
         [BurstCompile]
-        struct SpawningJob: IJobParallelFor
+        struct SpawningJob: IJobFor
         {
             internal NativeEntityFactory _factory;
             internal ExclusiveBuildGroup _group;

@@ -13,6 +13,9 @@ using Hash128 = Unity.Entities.Hash128;
 
 namespace Svelto.ECS.MiniExamples.DoofusesDOTS
 {
+    /// <summary>
+    /// This is a standard Svelto Composition Root, the DOTS bit will come later
+    /// </summary>
     public class SveltoCompositionRoot: ICompositionRoot
     {
         public void OnContextCreated<T>(T contextHolder)
@@ -21,7 +24,9 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
 
+            //create the standard sheduler
             _simpleSubmitScheduler = new SimpleEntitiesSubmissionScheduler();
+            //create the standard engines root
             _enginesRoot = new EnginesRoot(_simpleSubmitScheduler);
         }
 
@@ -36,7 +41,7 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
 
         public void OnContextDestroyed(bool isInitialized)
         {
-            _sveltoOverDotsEnginesGroupEnginesGroup.Dispose();
+            _sveltoOverDotsEnginesGroup.Dispose();
             _enginesRoot.Dispose();
             _mainLoop?.Dispose();
             _simpleSubmitScheduler.Dispose();
@@ -47,23 +52,48 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
             var entityFactory = _enginesRoot.GenerateEntityFactory();
             var entityFunctions = _enginesRoot.GenerateEntityFunctions();
 
-            //SveltoOnDOTSEnginesGroup is the DOTS Wrapper to facilitate Svelto <-> DOTS integration
-            _sveltoOverDotsEnginesGroupEnginesGroup = new SveltoOnDOTSEnginesGroup(_enginesRoot);
-            _enginesToTick.Add(_sveltoOverDotsEnginesGroupEnginesGroup);
+            //The core of SveltoOnDOTS. SveltoOnDOTSEnginesGroup is the DOTS Wrapper to facilitate Svelto <-> DOTS integration
+            //fundamentally is a Svelto engine container about all the SveltoOnDOTS engines. these engines are:
+            //1) ISveltoOnDOTSStructuralEngine: these engines are used to create DOTS entities over Svelto entities
+            //2) SyncSveltoToDOTSEngine: these engines DOTS SystemBase engines and are used to sync Svelto data to DOTS data
+            //3) SyncDOTSToSveltoEngine: these engines DOTS SystemBase engines and are used to sync DOTS data to Svelto data
+            //4) pure DOTS SystemBase/ISystem engines: these engines are used to perform DOTS only logic
+            
+            _sveltoOverDotsEnginesGroup = new SveltoOnDOTSEnginesGroup(_enginesRoot);
+            _enginesToTick.Add(_sveltoOverDotsEnginesGroup);
 
             var (redFoodPrefab, blueFoodPrefab, redDoofusPrefab, blueDoofusPrefab, specialBlueDoofusPrefab) =
-                    await LoadAssetAndCreatePrefabs(_sveltoOverDotsEnginesGroupEnginesGroup.world);
+                    await LoadAssetAndCreatePrefabs(_sveltoOverDotsEnginesGroup.world);
 
             //Standard Svelto Engines
-            AddSveltoEngineToTick(new SpawningDoofusEngine(redDoofusPrefab, blueDoofusPrefab, specialBlueDoofusPrefab, entityFactory));
-            AddSveltoEngineToTick(new SpawnFoodOnClickEngine(redFoodPrefab, blueFoodPrefab, entityFactory));
             AddSveltoEngineToTick(new ConsumingFoodEngine(entityFunctions));
             AddSveltoEngineToTick(new LookingForFoodDoofusesEngine(entityFunctions));
             AddSveltoEngineToTick(new VelocityToPositionDoofusesEngine());
-
-            //SveltoOnDOTS sync engine 
-            _sveltoOverDotsEnginesGroupEnginesGroup.AddSveltoToDOTSSyncEngine(new RenderingDOTSPositionSyncEngine());
             
+            //SveltoOnDots structural engines these are added through
+            //sveltoOverDotsEnginesGroupEnginesGroup.AddSveltoOnDOTSSubmissionEngine(structuralEngine);
+            AddSveltoEngineToTick(new SpawningDoofusEngine(redDoofusPrefab, blueDoofusPrefab, specialBlueDoofusPrefab, entityFactory));
+            AddSveltoEngineToTick(new SpawnFoodOnClickEngine(redFoodPrefab, blueFoodPrefab, entityFactory));
+
+            //SveltoOnDOTS sync engines these are added through
+            //sveltoOverDotsEnginesGroupEnginesGroup.AddSveltoToDOTSSyncEngine(syncEngine); or
+            //sveltoOverDotsEnginesGroupEnginesGroup.AddDOTSToSveltoSyncEngine(syncEngine);
+            //depending on the direction of the sync
+            _sveltoOverDotsEnginesGroup.AddSveltoToDOTSSyncEngine(new RenderingDOTSPositionSyncEngine());
+            
+            //being _sveltoOverDotsEnginesGroup an engine group, it will tick all the engines added to it (structural and sync)
+            //it will also run the DOTS ECS systems linked to the DOTS World created by the SveltoOnDOTSEnginesGroup
+            //it is expected to be ticked too, so normally it's found inside a SortedEnginesGroup
+            //A standard SveltoOOnDOTS frame runs like
+            // Svelto (GameLogic) Engines Run first (thanks to the SortedEnginesGroup, it's basically user choice)
+            // Then this Engine is ticked, causing:
+            // All the Jobs to be completed (it's a sync point)
+            // Synchronizations engines to be executed (Svelto to DOTS ECS)
+            // Submission of Entities to be executed
+            // Svelto Add/Remove callbacks to be called
+            // ISveltoOnDOTSStructuralEngine to be executed
+            /// DOTS ECS engines to executed
+            /// Synchronizations engines to be executed (DOTS ECS To Svelto)
             _mainLoop = new MainLoop(_enginesToTick);
             _mainLoop.Run();
         }
@@ -96,7 +126,7 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
             _enginesToTick.Add(engine);
             
             if (engine is ISveltoOnDOTSStructuralEngine structuralEngine)
-                _sveltoOverDotsEnginesGroupEnginesGroup.AddSveltoOnDOTSSubmissionEngine(structuralEngine);
+                _sveltoOverDotsEnginesGroup.AddSveltoOnDOTSSubmissionEngine(structuralEngine);
             else
                 _enginesRoot.AddEngine(engine);
         }
@@ -104,7 +134,7 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
         EnginesRoot _enginesRoot;
         readonly FasterList<IJobifiedEngine> _enginesToTick = new FasterList<IJobifiedEngine>();
         SimpleEntitiesSubmissionScheduler _simpleSubmitScheduler;
-        SveltoOnDOTSEnginesGroup _sveltoOverDotsEnginesGroupEnginesGroup;
+        SveltoOnDOTSEnginesGroup _sveltoOverDotsEnginesGroup;
         MainLoop _mainLoop;
     }
 }

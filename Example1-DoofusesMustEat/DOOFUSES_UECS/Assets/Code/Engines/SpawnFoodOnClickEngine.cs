@@ -17,6 +17,12 @@ using Random = Unity.Mathematics.Random;
 
 namespace Svelto.ECS.MiniExamples.DoofusesDOTS
 {
+    /// <summary>
+    /// This is a SveltoOnDOTS structural engine. It can be used to create Svelto entities and DOTS entities
+    /// It could have been split in two engines, so indeed it has a double responsibility. In fact it is not entirely necessary
+    /// to build svelto entities and DOTS entities in the same engine.
+    /// DOTS entities can be build by a ISveltoOnDOTSStructuralEngine during the Add callbacks (this is the expected pattern)
+    /// </summary>
     [Sequenced(nameof(DoofusesEngineNames.PlaceFoodOnClickEngine))]
     public class SpawnFoodOnClickEngine: ISveltoOnDOTSStructuralEngine, IQueryingEntitiesEngine, IJobifiedEngine,  IReactOnAddEx<DOTSEntityComponent>
     {
@@ -98,15 +104,18 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
 
                 using (new PlatformProfiler("CreateDOTSEntityOnSveltoBatched"))
                 {
-                    //Standard way to create DOTS entities from a Svelto ones. The returning job must be completed by the end of the frame
+                    //Standard way (SveltoOnDOTS pattern) to create DOTS entities from a Svelto ones. The returning job must be completed by the end of the frame
                     var DOTSEntities = DOTSOperations.CreateDOTSEntityFromSveltoBatched(
                         sveltoOnDOTSEntities[0].dotsEntity, rangeOfEntities, groupID, sveltoOnDOTSEntities);
 
                     job.createdEntities = DOTSEntities;
+                    
+                    //run custom job to initialise the DOTS position
+                    var jobHandle = job.ScheduleParallel(job.createdEntities.Length, default);
+                    
+                    //don't forget to add the job to the list of jobs to complete at the end of the frame
+                    DOTSOperations.AddJobToComplete(jobHandle);
                 }
-
-                var jobHandle = job.ScheduleParallel(job.createdEntities.Length, default);
-                DOTSOperations.AddJobToComplete(jobHandle);
             }
         }
         
@@ -114,19 +123,6 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
         {
         }
         
-        /// <summary>
-        /// Beware of this engine. Reading directly the input like I am doing in this class is a bad practice
-        /// The input should always be read in separate input specialised classes and translated in pure ECS values,
-        /// for example in actions. For Jobified engines this is even more important.
-        /// It is not possible to mix jobified code with not jobified code without taking care of the dependencies.
-        /// Completing a job passed as dependency is also a very bad practice.
-        /// However if the job is not completed, race conditions are very likely to occur. Svelto.ECS is not thread safe
-        /// and in this specific case building entities would cause a race condition of entities are built
-        /// in jobified engines too.
-        /// In this case I solved the problem using the NativeEntityFactory which is by design thread safe.
-        /// </summary>
-        /// <param name="inputDeps"></param>
-        /// <returns></returns>
         public JobHandle Execute(JobHandle inputDeps)
         {
             _inputDeps = inputDeps;

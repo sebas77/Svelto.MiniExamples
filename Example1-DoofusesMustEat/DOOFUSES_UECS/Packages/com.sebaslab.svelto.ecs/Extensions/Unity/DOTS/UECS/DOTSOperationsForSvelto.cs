@@ -18,24 +18,26 @@ namespace Svelto.ECS.SveltoOnDOTS
             _EManager = manager;
             _jobHandle = jobHandle;
         }
-        
+
         public EntityArchetype CreateArchetype(params ComponentType[] types)
         {
             return _EManager.CreateArchetype(types);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void SetComponent<T>(Entity e, in T component) where T : unmanaged, IComponentData
+        public void SetComponent<T>(Entity e, in T component)
+                where T : unmanaged, IComponentData
         {
             _EManager.SetComponentData(e, component);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void SetSharedComponent<T>(Entity e, in T component) where T : unmanaged, ISharedComponentData
+        public void SetSharedComponent<T>(Entity e, in T component)
+                where T : unmanaged, ISharedComponentData
         {
             _EManager.SetSharedComponent(e, component);
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal Entity CreateDOTSEntityFromSvelto(Entity prefabEntity, ExclusiveGroupStruct groupID, EntityReference reference)
         {
@@ -65,7 +67,7 @@ namespace Svelto.ECS.SveltoOnDOTS
             _EManager.AddSharedComponent(dotsEntity, new DOTSSveltoGroupID(groupID));
             _EManager.AddComponent<DOTSSveltoReference>(dotsEntity);
             _EManager.SetComponentData(dotsEntity, new DOTSSveltoReference(reference));
-            
+
             return dotsEntity;
         }
 
@@ -81,7 +83,7 @@ namespace Svelto.ECS.SveltoOnDOTS
         {
             return _EManager.CreateEntity(archetype);
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DestroyEntity(Entity e)
         {
@@ -95,26 +97,30 @@ namespace Svelto.ECS.SveltoOnDOTS
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void AddComponent<T>(Entity dotsEntity) where T : unmanaged, IComponentData
+        public void AddComponent<T>(Entity dotsEntity)
+                where T : unmanaged, IComponentData
         {
             _EManager.AddComponent<T>(dotsEntity);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void AddComponent<T>(Entity dotsEntity, in T component) where T : unmanaged, IComponentData
+        public void AddComponent<T>(Entity dotsEntity, in T component)
+                where T : unmanaged, IComponentData
         {
             _EManager.AddComponent<T>(dotsEntity);
             _EManager.SetComponentData(dotsEntity, component);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void AddSharedComponent<T>(Entity dotsEntity, in T component) where T : unmanaged, ISharedComponentData
+        public void AddSharedComponent<T>(Entity dotsEntity, in T component)
+                where T : unmanaged, ISharedComponentData
         {
             _EManager.AddSharedComponent(dotsEntity, component);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void AddBuffer<T>(Entity dotsEntity) where T : unmanaged, IBufferElementData
+        public void AddBuffer<T>(Entity dotsEntity)
+                where T : unmanaged, IBufferElementData
         {
             _EManager.AddBuffer<T>(dotsEntity);
         }
@@ -125,13 +131,13 @@ namespace Svelto.ECS.SveltoOnDOTS
         {
             _EManager.SetSharedComponent(nativeArray, SCD);
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void AddComponentBatched<T>(NativeArray<Entity> DOTSEntities)
         {
             _EManager.AddComponent<T>(DOTSEntities);
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public NativeArray<Entity> CreateDOTSEntityFromSveltoBatched(Entity prefab, (uint rangeStart, uint rangeEnd) range,
             ExclusiveGroupStruct groupID, NB<DOTSEntityComponent> DOSTEntityComponents)
@@ -139,37 +145,49 @@ namespace Svelto.ECS.SveltoOnDOTS
             unsafe
             {
                 _jobHandle->Complete();
-            
+
                 var count = (int)(range.rangeEnd - range.rangeStart);
                 var nativeArray = _EManager.Instantiate(prefab, count, _EManager.World.UpdateAllocator.ToAllocator);
                 _EManager.AddSharedComponent(nativeArray, new DOTSSveltoGroupID(groupID));
-                
-                //todo should this be optional?
-                _EManager.AddComponent<DOTSSveltoReference>(nativeArray);
-            
-                if (count > 64)
+
+                var setDOTSEntityComponentsJob = new SetDOTSEntityComponents
                 {
-                    var setDOTSEntityComponents = new SetDOTSEntityComponents
-                    {
-                        sveltoStartIndex = range.rangeStart, createdEntities = nativeArray, DOSTEntityComponents = DOSTEntityComponents
-                    };
-                    *_jobHandle = JobHandle.CombineDependencies(*_jobHandle, setDOTSEntityComponents.ScheduleParallel(count, default));
-                }
-                else
-                {
-                    var setDOTSEntityComponents = new SetDOTSEntityComponentsSmall
-                    {
-                        sveltoStartIndex = range.rangeStart, createdEntities = nativeArray, DOSTEntityComponents = DOSTEntityComponents
-                    };
-                    *_jobHandle = JobHandle.CombineDependencies(*_jobHandle, setDOTSEntityComponents.Schedule(count, default));
-                }
-                
-                //todo add svelto references jobs
-            
+                    sveltoStartIndex = range.rangeStart,
+                    createdEntities = nativeArray,
+                    DOSTEntityComponents = DOSTEntityComponents
+                };
+                *_jobHandle = JobHandle.CombineDependencies(*_jobHandle, setDOTSEntityComponentsJob.ScheduleParallel(count, default));
+
                 return nativeArray;
             }
         }
-        
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public NativeArray<Entity> CreateDOTSEntityFromSveltoBatched(Entity prefab, (uint rangeStart, uint rangeEnd) range,
+            ExclusiveGroupStruct groupID, NB<DOTSEntityComponent> DOSTEntityComponents,
+            SharedSveltoDictionaryNative<uint, EntityReference> referenceMap, NativeEntityIDs sveltoIds, out JobHandle creationJob)
+        {
+            var nativeArray = CreateDOTSEntityFromSveltoBatched(prefab, range, groupID, DOSTEntityComponents);
+            unsafe
+            {
+                var count = (int)(range.rangeEnd - range.rangeStart);
+                
+                _EManager.AddComponent<DOTSSveltoReference>(nativeArray);
+
+                var SetDOTSSveltoReferenceJob = new SetDOTSSveltoReference
+                {
+                    sveltoStartIndex = range.rangeStart,
+                    createdEntities = nativeArray,
+                    entityManager = _EManager,
+                    ids = sveltoIds,
+                    entityReferenceMap = referenceMap,
+                };
+                creationJob = *_jobHandle = JobHandle.CombineDependencies(*_jobHandle, SetDOTSSveltoReferenceJob.ScheduleParallel(count, default));
+
+                return nativeArray;
+            }
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void AddJobToComplete(JobHandle jobHandle)
         {
@@ -178,13 +196,13 @@ namespace Svelto.ECS.SveltoOnDOTS
                 *_jobHandle = JobHandle.CombineDependencies(*_jobHandle, jobHandle);
             }
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DestroyEntitiesBatched(NativeArray<Entity> nativeArray)
         {
             _EManager.DestroyEntity(nativeArray);
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Complete()
         {
@@ -193,7 +211,7 @@ namespace Svelto.ECS.SveltoOnDOTS
                 _jobHandle->Complete();
             }
         }
-        
+
         [BurstCompile]
         struct SetDOTSEntityComponents: IJobParallelFor
         {
@@ -205,73 +223,35 @@ namespace Svelto.ECS.SveltoOnDOTS
             {
                 int index = (int)(sveltoStartIndex + currentIndex);
                 var dotsEntity = createdEntities[currentIndex];
-                
-                DOSTEntityComponents[index].dotsEntity = dotsEntity;
-            }
-        }
-        
-        [BurstCompile]
-        struct SetDOTSEntityComponentsSmall: IJobFor
-        {
-            public uint sveltoStartIndex;
-            [ReadOnly] public NativeArray<Entity> createdEntities;
-            public NB<DOTSEntityComponent> DOSTEntityComponents;
 
-            public void Execute(int currentIndex)
-            {
-                int index = (int)(sveltoStartIndex + currentIndex);
-                var dotsEntity = createdEntities[currentIndex];
-                
                 DOSTEntityComponents[index].dotsEntity = dotsEntity;
             }
         }
-        
+
         [BurstCompile]
         public struct SetDOTSSveltoReference: IJobParallelFor
         {
             public uint sveltoStartIndex;
             [ReadOnly] public NativeArray<Entity> createdEntities;
-            [NativeDisableParallelForRestriction] public DOTSOperationsForSvelto entityManager;
+            [NativeDisableParallelForRestriction] public EntityManager entityManager;
             public NativeEntityIDs ids;
             public SharedSveltoDictionaryNative<uint, EntityReference> entityReferenceMap;
-      
+
             public void Execute(int currentIndex)
             {
                 int index = (int)(sveltoStartIndex + currentIndex);
                 var dotsEntity = createdEntities[currentIndex];
-                
-                entityManager.SetComponent(
+
+                entityManager.SetComponentData(
                     dotsEntity, new DOTSSveltoReference
                     {
                         entityReference = entityReferenceMap[ids[index]]
                     });
             }
         }
-        
-        [BurstCompile]
-        public struct SetDOTSSveltoReferenceSmall: IJobFor
-        {
-            public uint sveltoStartIndex;
-            [ReadOnly] public NativeArray<Entity> createdEntities;
-            public DOTSOperationsForSvelto entityManager;
-            public NativeEntityIDs ids;
-            public SharedSveltoDictionaryNative<uint, EntityReference> entityReferenceMap;
-      
-            public void Execute(int currentIndex)
-            {
-                int index = (int)(sveltoStartIndex + currentIndex);
-                var dotsEntity = createdEntities[currentIndex];
-                
-                entityManager.SetComponent(
-                    dotsEntity, new DOTSSveltoReference
-                    {
-                        entityReference = entityReferenceMap[ids[index]]
-                    });
-            }
-        }
-        
-        readonly EntityManager       _EManager;
-        [NativeDisableUnsafePtrRestriction] readonly unsafe JobHandle * _jobHandle;
+
+        readonly EntityManager _EManager;
+        [NativeDisableUnsafePtrRestriction] readonly unsafe JobHandle* _jobHandle;
     }
 }
 #endif
