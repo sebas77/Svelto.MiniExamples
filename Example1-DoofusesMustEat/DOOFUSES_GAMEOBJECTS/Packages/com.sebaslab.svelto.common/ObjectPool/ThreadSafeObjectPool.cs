@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Concurrent;
-using Svelto.Common.DataStructures;
+using System.Threading.Tasks;
 using Svelto.DataStructures;
 #if DEBUG && !PROFILE_SVELTO
 using System.Collections.Generic;
 #endif
-
 
 namespace Svelto.ObjectPool
 {
@@ -23,14 +22,104 @@ namespace Svelto.ObjectPool
 #endif
         }
 
-        public ThreadSafeObjectPool(Func<T> onFirstUse) : base()
+        public ThreadSafeObjectPool(Func<T> objectFactoryFunc) : base()
         {
-            _onFirstUse = onFirstUse;
+            _objectFactoryFunc = objectFactoryFunc;
         }
 
-        protected virtual void OnDispose()
+        public void Preallocate(int pool, int size, Func<T> onFirstUse)
         {
+            for (int i = size - 1; i >= 0; --i)
+                Preallocate(pool, onFirstUse);
         }
+        
+        public async Task Preallocate(int pool, int size, Func<Task<T>> onFirstUse)
+        {
+            for (int i = size - 1; i >= 0; --i)
+                await Preallocate(pool, onFirstUse);
+        }
+
+        /// <summary>
+        /// Create Or Reuse
+        /// </summary>
+        public T Use(int pool, Func<T> onFirstUse)
+        {
+            return CreateOrReuse(pool, onFirstUse);
+        }
+        
+        /// <summary>
+        /// Create Or Reuse
+        /// </summary>
+        public async Task<T> Use(int pool, Func<Task<T>> onFirstUse)
+        {
+            return await CreateOrReuse(pool, onFirstUse);
+        }
+
+        /// <summary>
+        /// Create Or Reuse
+        /// </summary>
+        public T Use(Func<T> onFirstUse)
+        {
+            return CreateOrReuse(0, onFirstUse);
+        }
+
+        /// <summary>
+        /// Create Or Reuse
+        /// </summary>
+        public T Use(int pool)
+        {
+            DBC.Common.Check.Require(_objectFactoryFunc != null, "You need to pass a function to create the object");
+
+            return CreateOrReuse(pool, _objectFactoryFunc);
+        }
+
+        /// <summary>
+        /// Create Or Reuse
+        /// </summary>
+        public T Use()
+        {
+            DBC.Common.Check.Require(_objectFactoryFunc != null, "You need to pass a function to create the object");
+
+            return CreateOrReuse(0, _objectFactoryFunc);
+        }
+        
+        /// <summary>
+        /// Reuse if recycled
+        /// </summary>
+        public bool TryReuse(int pool, out T obj)
+        {
+            obj = null;
+
+            ThreadSafeStack<T> localPool = ReturnValidPool(_recycledPools, pool);
+
+            while (IsNull(obj) == true && localPool.count > 0)
+                localPool.TryPop(out obj);
+
+            if (IsNull(obj) == false)
+            {
+#if DEBUG && !PROFILE_SVELTO
+                _alreadyRecycled.TryRemove(obj, out _);
+#endif
+                _objectsReused++;
+
+                return true;
+            }
+
+            return false;
+        }
+        
+        public virtual void Recycle(T go, int pool)
+        {
+            InternalRecycle(go, pool);
+        }
+
+        public virtual void Recycle(T go)
+        {
+            InternalRecycle(go, 0);
+        }
+        
+        protected virtual void OnDispose()
+        { }
 
         public void Dispose()
         {
@@ -59,46 +148,6 @@ namespace Svelto.ObjectPool
         public void Clear()
         {
             _recycledPools.Clear();
-        }
-
-        public virtual void Recycle(T go, int pool)
-        {
-            InternalRecycle(go, pool);
-        }
-
-        public virtual void Recycle(T go)
-        {
-            InternalRecycle(go, 0);
-        }
-
-        public void Preallocate(int pool, int size, Func<T> onFirstUse)
-        {
-            for (int i = size - 1; i >= 0; --i)
-                Create(pool, onFirstUse);
-        }
-
-        public T Use(int pool, Func<T> onFirstUse)
-        {
-            return ReuseInstance(pool, onFirstUse);
-        }
-
-        public T Use(Func<T> onFirstUse)
-        {
-            return ReuseInstance(0, onFirstUse);
-        }
-
-        public T Use(int pool)
-        {
-            DBC.Common.Check.Require(_onFirstUse != null, "You need to pass a function to create the object");
-
-            return ReuseInstance(pool, _onFirstUse);
-        }
-
-        public T Use()
-        {
-            DBC.Common.Check.Require(_onFirstUse != null, "You need to pass a function to create the object");
-
-            return ReuseInstance(0, _onFirstUse);
         }
 
         public int GetNumberOfObjectsCreatedSinceLastTime()
@@ -160,7 +209,7 @@ namespace Svelto.ObjectPool
         }
 #endif
 
-        protected T Create(int pool, Func<T> onFirstInit)
+        protected T Preallocate(int pool, Func<T> onFirstInit)
         {
             var localPool = ReturnValidPool(_recycledPools, pool);
 
@@ -170,7 +219,18 @@ namespace Svelto.ObjectPool
 
             return go;
         }
+        
+        protected async Task<T> Preallocate(int pool, Func<Task<T>> onFirstInit)
+        {
+            var localPool = ReturnValidPool(_recycledPools, pool);
 
+            var go = await onFirstInit();
+
+            localPool.Push(go);
+
+            return go;
+        }
+        
         void InternalRecycle(T obj, int pool)
         {
             if (_disposed)
@@ -194,47 +254,49 @@ namespace Svelto.ObjectPool
             return localPool;
         }
 
-        T ReuseInstance(int pool, Func<T> onFirstInit)
+        T CreateOrReuse(int pool, Func<T> onFirstInit)
         {
-            T obj = null;
-
-            ThreadSafeStack<T> localPool = ReturnValidPool(_recycledPools, pool);
-
-            while (IsNull(obj) == true && localPool.count > 0)
-                localPool.TryPop(out obj);
-
-            if (IsNull(obj) == true)
+            if (TryReuse(pool, out T ret) == false)
             {
-                obj = onFirstInit();
+                ret = onFirstInit();
 
                 _objectsCreated++;
             }
-            else
+
+             //var localUsedPool = ReturnValidPool(_recycledPools, pool);
+             //localUsedPool.Push(obj);
+
+            return ret;
+        }
+        
+        async Task<T> CreateOrReuse(int pool, Func<Task<T>> onFirstInit)
+        {
+            if (TryReuse(pool, out T ret) == false)
             {
-#if DEBUG && !PROFILE_SVELTO
-                _alreadyRecycled.TryRemove(obj, out _);
-#endif
-                _objectsReused++;
+                ret = await onFirstInit();
+
+                _objectsCreated++;
             }
 
-            // ConcurrentStack<T> localUsedPool = ReturnValidPool(_usedPools, pool);
-            // localUsedPool.Push(obj);
+            // var localUsedPool = ReturnValidPool(_recycledPools, pool);
+             //localUsedPool.Push(obj);
 
-            return obj;
+            return ret;
         }
 
-        static bool IsNull(object aObj)
+        static bool IsNull(object aObj) //keep otherwise won't work with stupid stuff like unity GO do with equality
         {
-            return aObj == null || aObj.Equals(null);
+            return aObj is null;
         }
 
         protected readonly ThreadSafeDictionary<int, ThreadSafeStack<T>> _recycledPools =
             new ThreadSafeDictionary<int, ThreadSafeStack<T>>();
-
-        // readonly ConcurrentDictionary<int, ConcurrentStack<T>> _usedPools =
-        //     new ConcurrentDictionary<int, ConcurrentStack<T>>();
         
-        readonly Func<T> _onFirstUse;
+        //to recycle everything
+        //protected readonly ConcurrentDictionary<int, ConcurrentStack<T>> _usedPools =
+          //      new ConcurrentDictionary<int, ConcurrentStack<T>>();
+
+        readonly Func<T> _objectFactoryFunc;
 #if DEBUG && !PROFILE_SVELTO
         readonly ConcurrentDictionary<T, bool> _alreadyRecycled = new ConcurrentDictionary<T, bool>();
 #endif

@@ -6,7 +6,6 @@ using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Svelto.Common;
-using Svelto.Common.DataStructures;
 
 namespace Svelto.DataStructures
 {
@@ -57,7 +56,7 @@ namespace Svelto.DataStructures
         static NB()
         {
 #if ENABLE_DEBUG_CHECKS            
-            if (TypeType.isUnmanaged<T>() == false)
+            if (TypeCache<T>.isUnmanaged == false)
                 throw new Exception("NativeBuffer (NB) supports only unmanaged types");
 #endif            
         }
@@ -70,7 +69,7 @@ namespace Svelto.DataStructures
 
         public void CopyTo(uint sourceStartIndex, T[] destination, uint destinationStartIndex, uint count)
         {
-            using (_threadSentinel.TestThreadSafety())
+        //    using (_threadSentinel.TestThreadSafety())
             {
                 for (int i = 0; i < count; i++)
                 {
@@ -80,7 +79,7 @@ namespace Svelto.DataStructures
         }
         public void Clear()
         {
-            using (_threadSentinel.TestThreadSafety())
+          //  using (_threadSentinel.TestThreadSafety())
             {
                 MemoryUtilities.MemClear<T>(_ptr, _capacity);
             }
@@ -111,10 +110,9 @@ namespace Svelto.DataStructures
                     if (index >= _capacity)
                         throw new Exception($"NativeBuffer - out of bound access: index {index} - capacity {capacity}");
 #endif
-                    using (_threadSentinel.TestThreadSafety())
+               //     using (_threadSentinel.TestThreadSafety())
                     {
-                        ref var asRef = ref Unsafe.AsRef<T>((void*)(_ptr + (int)index * SIZE));
-                        return ref asRef;
+                        return ref Unsafe.AsRef<T>((void*)(_ptr + (int)index * MemoryUtilities.SizeOf<T>()));
                     }
                 }
             }
@@ -131,10 +129,9 @@ namespace Svelto.DataStructures
                     if (index < 0 || index >= _capacity)
                         throw new Exception($"NativeBuffer - out of bound access: index {index} - capacity {capacity}");
 #endif
-                    using (_threadSentinel.TestThreadSafety())
+  //                  using (_threadSentinel.TestThreadSafety())
                     {
-                        ref var asRef = ref Unsafe.AsRef<T>((void*)(_ptr + index * SIZE));
-                        return ref asRef;
+                        return ref Unsafe.AsRef<T>((void*)(_ptr + index * MemoryUtilities.SizeOf<T>()));
                     }
                 }
             }
@@ -150,7 +147,7 @@ namespace Svelto.DataStructures
 #endif
         readonly IntPtr _ptr;
         
-        readonly Sentinel _threadSentinel;
+//        readonly Sentinel _threadSentinel;
 
         //Todo: this logic is not completed yet, WIP
         public NBParallelReader AsReader()
@@ -178,7 +175,5 @@ namespace Svelto.DataStructures
                 throw new NotImplementedException();
             }
         }
-        
-        static readonly int SIZE = MemoryUtilities.SizeOf<T>();
     }
 }

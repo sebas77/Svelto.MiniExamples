@@ -1,6 +1,5 @@
 using Svelto.Common;
 using Svelto.DataStructures;
-using Svelto.ECS.Extensions.Unity;
 using Svelto.ECS.Internal;
 using Svelto.ECS.Miniexamples.Doofuses.GameObjectsLayer;
 using Svelto.ECS.Native;
@@ -9,7 +8,6 @@ using Unity.Burst;
 using Unity.Collections.LowLevel.Unsafe;
 using Unity.Jobs;
 using Unity.Mathematics;
-using UnityEngine;
 
 namespace Svelto.ECS.Miniexamples.Doofuses.Gameobjects
 {
