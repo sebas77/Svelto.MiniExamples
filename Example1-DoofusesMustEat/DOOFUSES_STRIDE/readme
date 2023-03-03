@@ -1,3 +1,7 @@
-Open the project DoofusesStride.sln
+Goals of the Stride example are to:
+
+show a complex integration with an engine different than Unity (Stride Engine)
+
+Open the project DoofusesStride.sln with your c# IDE (.net must be installed)
 
 run it.
