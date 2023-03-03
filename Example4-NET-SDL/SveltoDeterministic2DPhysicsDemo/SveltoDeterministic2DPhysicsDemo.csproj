@@ -1,0 +1,49 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net7.0</TargetFramework>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <LangVersion>9</LangVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\FixedMath\FixedMath.csproj" />
+        <ProjectReference Include="..\SDL\SDL.csproj" />
+        <ProjectReference Include="..\svelto\com.sebaslab.svelto.common\Svelto.Common.csproj" />
+        <ProjectReference Include="..\svelto\com.sebaslab.svelto.ecs\Svelto.ECS.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Content Include="FixedMaths\ProcessedTableData\*">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+
+        <None Include="$(ProjectDir)..\Vendor\SDL2.dll">
+            <Link>SDL2.dll</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <Visible>False</Visible>
+        </None>
+        <None Include="$(ProjectDir)..\Vendor\libfreetype-6.dll">
+            <Link>libfreetype-6.dll</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <Visible>False</Visible>
+        </None>
+        <None Include="$(ProjectDir)..\Vendor\SDL2_ttf.dll">
+            <Link>SDL2_ttf.dll</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <Visible>False</Visible>
+        </None>
+        <None Include="$(ProjectDir)..\Vendor\zlib1.dll">
+            <Link>zlib1.dll</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <Visible>False</Visible>
+        </None>
+        <None Include="$(ProjectDir)..\Vendor\open-sans\OpenSans-Light.ttf">
+            <Link>OpenSans-Light.ttf</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <Visible>False</Visible>
+        </None>
+    </ItemGroup>
+
+</Project>
