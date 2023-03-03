@@ -3,7 +3,8 @@ using System;
 using Svelto.ECS.SveltoOnDOTS;
 using Unity.Jobs;
 
-namespace Svelto.ECS.SveltoOnDOTS
+//note can't change namespace, too late for old projects
+namespace Svelto.ECS
 {
     public static class UnityJobExtensions
     {
@@ -44,7 +45,7 @@ namespace Svelto.ECS.SveltoOnDOTS
             <JOB>(this JOB job, int iterations, JobHandle inputDeps, JobHandle combinedDeps) where JOB: struct, IJobParallelFor
         {
             if (iterations == 0)
-                return inputDeps;
+                return combinedDeps;
 
             var innerloopBatchCount = ProcessorCount.BatchSize((uint)iterations);
             var jobDeps = job.Schedule(iterations, innerloopBatchCount, inputDeps);
@@ -62,6 +63,9 @@ namespace Svelto.ECS.SveltoOnDOTS
         public static JobHandle ScheduleAndCombine
             <JOB>(this JOB job, int arrayLength, JobHandle inputDeps, JobHandle combinedDeps) where JOB : struct, IJobFor
         {
+            if (arrayLength == 0)
+                return combinedDeps;
+            
             var jobDeps = job.Schedule(arrayLength, inputDeps);
             return JobHandle.CombineDependencies(combinedDeps, jobDeps);
         }

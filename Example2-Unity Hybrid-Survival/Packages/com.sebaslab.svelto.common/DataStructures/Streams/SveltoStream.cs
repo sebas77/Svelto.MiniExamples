@@ -18,22 +18,22 @@ namespace Svelto.DataStructures
         public int space => capacity - _writeCursor;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ref T Read<T>(in Span<byte> ptr) where T : unmanaged
+        public ref T Read<T>(in Span<byte> source) where T : unmanaged
         {
-            int sizeOf = MemoryUtilities.SizeOf<T>();
+            int elementSize = MemoryUtilities.SizeOf<T>();
             int readCursor = _readCursor;
 
 #if DEBUG && !PROFILE_SVELTO
-            if (readCursor + sizeOf > capacity)
+            if (readCursor + elementSize > capacity)
                 throw new Exception("no reading authorized");
 #endif
-            _readCursor += sizeOf;
+            _readCursor += elementSize;
 
-            return ref Unsafe.As<byte, T>(ref Unsafe.Add(ref MemoryMarshal.GetReference(ptr), readCursor));
+            return ref Unsafe.As<byte, T>(ref Unsafe.Add(ref MemoryMarshal.GetReference(source), readCursor));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Read<T>(ref T str, Span<byte> ptr, int size) where T : struct
+        public void UnsafeRead<T>(ref T item, Span<byte> source, int size) where T : struct
         {
 #if DEBUG && !PROFILE_SVELTO
             if (_readCursor + size > capacity)
@@ -41,29 +41,30 @@ namespace Svelto.DataStructures
             if (size > Unsafe.SizeOf<T>())
                 throw new Exception("size is bigger than struct");
 #endif
-            Unsafe.CopyBlock(
-                ref Unsafe.As<T, byte>(ref str),
-                ref Unsafe.Add(ref MemoryMarshal.GetReference(ptr), _readCursor), (uint)size);
+            Unsafe.CopyBlockUnaligned(
+                ref Unsafe.As<T, byte>(ref item),
+                ref Unsafe.Add(ref MemoryMarshal.GetReference(source), _readCursor), 
+                (uint)size); //size is not the size of T
             
             _readCursor += size;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Write<T>(in Span<byte> ptr, in T value) where T : unmanaged
+        public void Write<T>(in Span<byte> destinationSpan, in T value) where T : unmanaged
         {
-            int sizeOf = MemoryUtilities.SizeOf<T>();
+            int elementSize = MemoryUtilities.SizeOf<T>();
 
 #if DEBUG && !PROFILE_SVELTO
-            if (_writeCursor + sizeOf > capacity)
+            if (_writeCursor + elementSize > capacity)
                 throw new Exception("no writing authorized");
 #endif
-            Unsafe.As<byte, T>(ref Unsafe.Add(ref MemoryMarshal.GetReference(ptr), _writeCursor)) = value;
+            Unsafe.As<byte, T>(ref Unsafe.Add(ref MemoryMarshal.GetReference(destinationSpan), _writeCursor)) = value;
 
-            _writeCursor += sizeOf;
+            _writeCursor += elementSize;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Write<T>(Span<byte> ptr, in T str, int size) where T : struct
+        public void UnsafeWrite<T>(Span<byte> destinationSpan, in T item, int size) where T : struct
         {
 #if DEBUG && !PROFILE_SVELTO
             if (_writeCursor + size > capacity)
@@ -71,34 +72,33 @@ namespace Svelto.DataStructures
             if (size > Unsafe.SizeOf<T>())
                 throw new Exception("size is bigger than struct");
 #endif
-            Unsafe.CopyBlock(
-                ref Unsafe.Add(ref MemoryMarshal.GetReference(ptr), _writeCursor),
-                ref Unsafe.As<T, byte>(ref Unsafe.AsRef(str)), (uint)size);
+            //T can contain managed elements, it's up to the user to be sure that the right data is written
+            //I cannot use span for this reason
+            Unsafe.CopyBlockUnaligned(
+                ref Unsafe.Add(ref MemoryMarshal.GetReference(destinationSpan), _writeCursor),
+                ref Unsafe.As<T, byte>(ref Unsafe.AsRef(item)), (uint)size);
 
             _writeCursor += size;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WriteSpan<T>(in Span<byte> ptr, in Span<T> valueSpan) where T : unmanaged
+        public void WriteSpan<T>(in Span<byte> destinationSpan, in Span<T> valueSpan) where T : unmanaged
         {
-            unsafe
-            {
-                int singleSizeOf = MemoryUtilities.SizeOf<T>();
-                int sizeOf = singleSizeOf * valueSpan.Length;
+            int elementSize = MemoryUtilities.SizeOf<T>();
+            int spanBytesToSerialise = elementSize * valueSpan.Length;
 
-                Write(ptr, sizeOf);
+            //serialise the length of the span in bytes
+            Write(destinationSpan, spanBytesToSerialise);
 
 #if DEBUG && !PROFILE_SVELTO
-                if (space < sizeOf)
-                    throw new Exception("no writing authorized");
+            if (space < spanBytesToSerialise)
+                throw new Exception("no writing authorized");
 #endif
+            //create a local span of the destination from the right offset. 
+            var destination = destinationSpan.Slice(_writeCursor, spanBytesToSerialise);
+            valueSpan.CopyTo(MemoryMarshal.Cast<byte, T>(destination));
 
-                Span<T> destination = new Span<T>(
-                    (void*)Unsafe.Add(ref MemoryMarshal.GetReference(ptr), _writeCursor), space / singleSizeOf);
-                valueSpan.CopyTo(destination);
-
-                _writeCursor += sizeOf;
-            }
+            _writeCursor += spanBytesToSerialise;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

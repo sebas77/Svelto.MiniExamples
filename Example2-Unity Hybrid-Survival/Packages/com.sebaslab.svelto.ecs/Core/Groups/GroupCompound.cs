@@ -40,7 +40,7 @@ namespace Svelto.ECS
                 _Groups = new FasterList<ExclusiveGroupStruct>(1);
                 _Groups.Add(group);
 
-#if DEBUG && !PROFILE_SVELTO
+#if DEBUG
                 var name =
                         $"Compound: {typeof(G1).Name}-{typeof(G2).Name}-{typeof(G3).Name}-{typeof(G4).Name} ID {(uint)group.id}";
                 GroupNamesMap.idToName[group] = name;
@@ -180,7 +180,7 @@ namespace Svelto.ECS
                 _Groups = new FasterList<ExclusiveGroupStruct>(1);
                 _Groups.Add(group);
 
-#if DEBUG && !PROFILE_SVELTO
+#if DEBUG
                 var name = $"Compound: {typeof(G1).Name}-{typeof(G2).Name}-{typeof(G3).Name} ID {(uint)group.id}";
                 GroupNamesMap.idToName[group] = name;
 #endif
@@ -269,7 +269,7 @@ namespace Svelto.ECS
                 _Groups = new FasterList<ExclusiveGroupStruct>(1);
                 _Groups.Add(group);
 
-#if DEBUG && !PROFILE_SVELTO
+#if DEBUG
                 GroupNamesMap.idToName[group] = $"Compound: {typeof(G1).Name}-{typeof(G2).Name} ID {group.id}";
 #endif
                 //The hashname is independent from the actual group ID. this is fundamental because it is want
@@ -349,14 +349,15 @@ namespace Svelto.ECS
                 var group = new ExclusiveGroup(bitmask);
                 _Groups.Add(group);
 
-#if DEBUG && !PROFILE_SVELTO
+#if DEBUG
                 var typeInfo = typeof(T);
                 var name = $"Compound: {typeInfo.Name} ID {(uint)group.id}";
-
+#if !PROFILE_SVELTO
                 var typeInfoBaseType = typeInfo.BaseType;
                 if (typeInfoBaseType.GenericTypeArguments[0] !=
                     typeInfo) //todo: this should shield from using a pattern different than public class GROUP_NAME : GroupTag<GROUP_NAME> {} however I am not sure it's working
                     throw new ECSException("Invalid Group Tag declared");
+#endif
 
                 GroupNamesMap.idToName[group] = name;
 #endif

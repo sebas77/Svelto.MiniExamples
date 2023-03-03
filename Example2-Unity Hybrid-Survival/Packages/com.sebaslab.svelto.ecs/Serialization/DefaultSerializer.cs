@@ -22,7 +22,7 @@ namespace Svelto.ECS.Serialization
 #endif
         }
 
-        public int size => MemoryUtilities.SizeOf<T>();
+        public uint size => (uint)MemoryUtilities.SizeOf<T>();
 
         public bool Serialize(in T value, ISerializationData serializationData)
         {

@@ -204,14 +204,9 @@ namespace Svelto.DataStructures
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Clear()
         {
-            if (TypeCache<T>.isUnmanaged)
-            {
-            }
-            else
-            {
+            if (TypeCache<T>.isUnmanaged == false) 
                 Array.Clear(_buffer, 0, _buffer.Length);
-            }
-            
+
             _count = 0;
         }
 

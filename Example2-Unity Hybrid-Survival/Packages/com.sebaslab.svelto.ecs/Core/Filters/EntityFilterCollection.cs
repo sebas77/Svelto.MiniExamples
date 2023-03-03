@@ -36,15 +36,15 @@ namespace Svelto.ECS
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Add(EGID egid, uint indexInArray)
+        public bool Add(EGID egid, uint indexInComponentArray)
         {
-            return GetOrCreateGroupFilter(egid.groupID).Add(egid.entityID, indexInArray);
+            return GetOrCreateGroupFilter(egid.groupID).Add(egid.entityID, indexInComponentArray);
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Add(uint entityID, ExclusiveGroupStruct groupId, uint indexInArray)
+        public void Add(uint entityID, ExclusiveGroupStruct groupId, uint indexInComponentArray)
         {
-            Add(new EGID(entityID, groupId), indexInArray);
+            Add(new EGID(entityID, groupId), indexInComponentArray);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -85,6 +85,20 @@ namespace Svelto.ECS
             }
 
             return groupFilter;
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public GroupFilters CreateGroupFilter(ExclusiveBuildGroup group)
+        {
+            if (_filtersPerGroup.TryGetValue(group, out var groupFilter) == false)
+            {
+                groupFilter = new GroupFilters(group);
+                _filtersPerGroup.Add(group, groupFilter);
+                
+                return groupFilter;
+            }
+
+            throw new ECSException("group already linked to filter {group}");
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -147,10 +161,11 @@ namespace Svelto.ECS
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public bool Add(uint entityId, uint entityIndex)
+            public bool Add(uint entityId, uint indexInComponentArray)
             {
                 //TODO: when sentinels are finished, we need to add AsWriter here
-                return _entityIDToDenseIndex.TryAdd(entityId, entityIndex, out _);
+                //cannot write in parallel
+                return _entityIDToDenseIndex.TryAdd(entityId, indexInComponentArray, out _);
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -140,4 +140,9 @@ namespace Svelto.ECS
     {
         void EntitiesSubmitted();
     }
+    
+    public interface IReactOnSubmissionStarted : IReactEngine
+    {
+        void EntitiesSubmissionStarting();
+    }
 }

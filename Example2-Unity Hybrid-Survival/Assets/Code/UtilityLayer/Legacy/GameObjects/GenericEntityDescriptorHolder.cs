@@ -2,7 +2,7 @@
 using Svelto.ECS.Hybrid;
 using UnityEngine;
 
-namespace Svelto.ECS.Hybrid.Unity
+namespace Svelto.ECS.Extensions.Unity
 {
     public abstract class GenericEntityDescriptorHolder<T>: MonoBehaviour, IEntityDescriptorHolder
             where T: IEntityDescriptor, new()

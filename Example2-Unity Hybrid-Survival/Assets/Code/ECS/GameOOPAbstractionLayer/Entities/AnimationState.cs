@@ -19,10 +19,5 @@ namespace Svelto.ECS.Example.Survive
         {
             return animationID == other.animationID && state == other.state;
         }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(animationID, state);
-        }
     }
 }

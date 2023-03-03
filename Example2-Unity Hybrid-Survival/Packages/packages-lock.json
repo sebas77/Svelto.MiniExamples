@@ -20,7 +20,7 @@
       "depth": 0,
       "source": "embedded",
       "dependencies": {
-        "com.sebaslab.svelto.common": "3.3.2"
+        "com.sebaslab.svelto.common": "3.4.0"
       }
     },
     "com.unity.addressables": {
@@ -45,7 +45,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.ide.rider": {
-      "version": "3.0.17",
+      "version": "3.0.18",
       "depth": 0,
       "source": "registry",
       "dependencies": {
