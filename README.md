@@ -8,18 +8,19 @@ These examples use the last beta version of unity available at the moment of the
 
 Warning: these examples may use using unofficial versions of Svelto that you won't find on the main repository until officially released.
 
-## Example 1: Doofuses Must Eat (Pure ECS/GameObject versions/Stride version)
+## Example 1: Doofuses Must Eat (SveltoOnDOTS version/GameObject versions/Stride version)
 
 ![Image](https://github.com/sebas77/Svelto.MiniExamples/blob/master/Example1-DoofusesMustEat/2020-12-22%2016-05-22.gif)
 
 Object-less pure ECS example that shows the basics of Svelto.ECS. 
-Attention this demo is presented in multiple versions thanks to its flexibility.
+
+Attention this demo is presented in multiple versions thanks to its flexibility. **this demo is for advanced users, other demo are less overwhelming**
 
 Article:
 
 http://www.sebaslab.com/svelto-mini-examples-doofuses-must-eat/ (obsolete now, new article incoming)
 
-### Goals of the **Pure ECS** example are to: 
+### Goals of the **SveltoOnDOTS** example are to: 
 * intoduce to the concept of entity descriptors, entity structs and groups. 
 * Show the integration with DOTS ECS, shows the use of Svelto.Tasks 2.0 (alpha state) 
 * show the integration with DOTS Jobs and Burst (using Svelto.ECS 3.0)
