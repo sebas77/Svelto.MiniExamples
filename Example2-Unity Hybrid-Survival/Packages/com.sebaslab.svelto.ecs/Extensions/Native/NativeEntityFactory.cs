@@ -1,4 +1,5 @@
 #if UNITY_NATIVE
+using System.Runtime.CompilerServices;
 using Svelto.DataStructures;
 
 namespace Svelto.ECS.Native
@@ -25,10 +26,11 @@ namespace Svelto.ECS.Native
         /// <param name="exclusiveBuildGroup"></param>
         /// <param name="threadIndex"></param>
         /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public NativeEntityInitializer BuildEntity(uint eindex, ExclusiveBuildGroup exclusiveBuildGroup, int threadIndex)
         {
             EntityReference reference = _entityLocator.ClaimReference();
-            NativeBag bagPerEntityPerThread = _addOperationQueue.GetBuffer(threadIndex + 1);
+            NativeBag bagPerEntityPerThread = _addOperationQueue.GetBag(threadIndex + 1);
 
             bagPerEntityPerThread.Enqueue(
                 _operationIndex); //each native operation is stored in an array, each request to perform a native operation in a queue. _index is the index of the operation in the array that will be dequeued later 
@@ -43,6 +45,7 @@ namespace Svelto.ECS.Native
             return new NativeEntityInitializer(bagPerEntityPerThread, index, reference);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public NativeEntityInitializer BuildEntity(EGID egid, int threadIndex)
         {
             return BuildEntity(egid.entityID, egid.groupID, threadIndex);

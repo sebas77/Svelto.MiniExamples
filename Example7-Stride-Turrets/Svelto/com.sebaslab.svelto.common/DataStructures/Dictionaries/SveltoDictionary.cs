@@ -183,7 +183,7 @@ namespace Svelto.DataStructures
             _freeValueCellIndex = 0;
 
             //Buckets cannot be FastCleared because it's important that the values are reset to 0
-            _buckets.MemClear();
+            _buckets.Clear();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -195,10 +195,10 @@ namespace Svelto.DataStructures
             _freeValueCellIndex = 0;
 
             //Buckets cannot be FastCleared because it's important that the values are reset to 0
-            _buckets.MemClear();
+            _buckets.Clear();
 
-            _values.Clear();
-            _valuesInfo.Clear();
+            _values.FastClear();
+            _valuesInfo.FastClear();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

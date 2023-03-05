@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.Rider.Editor", "Unity
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.VisualStudio.Editor", "Unity.VisualStudio.Editor.csproj", "{5759520d-61dd-8968-b1c9-b99d559c0378}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.Pool.Debugger", "Svelto.Pool.Debugger.csproj", "{dcb8f6e9-cccb-8501-3faf-7eb0229b9849}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -46,6 +48,8 @@ Global
 		{2176cabb-de1d-cd87-d6f5-7e4090eae81d}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5759520d-61dd-8968-b1c9-b99d559c0378}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5759520d-61dd-8968-b1c9-b99d559c0378}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{dcb8f6e9-cccb-8501-3faf-7eb0229b9849}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{dcb8f6e9-cccb-8501-3faf-7eb0229b9849}.Debug|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

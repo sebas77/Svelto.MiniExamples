@@ -55,7 +55,7 @@ namespace Svelto.ECS
                 //todo, I don't like that this scans all the queues even if they are empty
                 for (int i = 0; i < removeBuffersCount; i++)
                 {
-                    ref var buffer = ref _nativeRemoveOperationQueue.GetBuffer(i);
+                    ref var buffer = ref _nativeRemoveOperationQueue.GetBag(i);
 
                     while (buffer.IsEmpty() == false)
                     {
@@ -79,7 +79,7 @@ namespace Svelto.ECS
                 var swapBuffersCount = _nativeSwapOperationQueue.count;
                 for (int i = 0; i < swapBuffersCount; i++)
                 {
-                    ref var buffer = ref _nativeSwapOperationQueue.GetBuffer(i);
+                    ref var buffer = ref _nativeSwapOperationQueue.GetBag(i);
 
                     while (buffer.IsEmpty() == false)
                     {
@@ -106,7 +106,7 @@ namespace Svelto.ECS
                 var addBuffersCount = _nativeAddOperationQueue.count;
                 for (int i = 0; i < addBuffersCount; i++)
                 {
-                    ref var buffer = ref _nativeAddOperationQueue.GetBuffer(i);
+                    ref var buffer = ref _nativeAddOperationQueue.GetBag(i);
                     //todo: I don't like to iterate a constant number of buffer and skip the empty ones
                     while (buffer.IsEmpty() == false)
                     {

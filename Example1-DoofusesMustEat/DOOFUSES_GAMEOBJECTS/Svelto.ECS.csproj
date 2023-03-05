@@ -87,7 +87,6 @@
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Svelto\GroupsEnumerable.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Serialization\ISerializableEntityDescriptor.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Groups\ExclusiveGroupStruct.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\GameObjects\ListToPopupDrawer.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\DataStructures\ManagedTypeSafeDictionary.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Serialization\IDeserializationFactory.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Native\EnginesRoot.NativeOperation.cs" />
@@ -95,7 +94,6 @@
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Serialization\ISerializableComponentBuilder.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Serialization\SerializingEnginesRoot.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Serialization\ComposedComponentSerializer.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\GameObjects\EntityDescriptorHolder.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\EnginesGroup\SortedEnginesGroup.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\INeedEGID.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\DOTS\UECS\ISveltoOnDOTSSubmission.cs" />
@@ -143,7 +141,6 @@
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\EntityNotFoundException.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\EnginesGroup\IStepEngine.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Native\NativeEntitySwap.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\GameObjects\GenericEntityDescriptorHolder.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\EntityDescriptor\DynamicEntityDescriptor.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Groups\QueryGroups.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\_IInternalEntityComponent.cs" />

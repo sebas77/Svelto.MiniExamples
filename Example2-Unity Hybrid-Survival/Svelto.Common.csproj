@@ -59,7 +59,6 @@
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Arrays\ThreadSafeFasterList.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\DualMemorySupport\MB.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Fixed\FixedTypedArray16.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Sentinel\SharedDictonary.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\ObjectPool\Unity\GameObjectPool.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Dictionaries\ThreadSafeDictionary.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\Utilities\SharedStaticWrapper.cs" />
@@ -85,13 +84,11 @@
      <Compile Include="Packages\com.sebaslab.svelto.common\Utilities\DataToString.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\Logger\Unity\DefaultUnityLogger.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Unmanaged\Internal\UnsafeArray.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Sentinel\SharedDictionaryStruct.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\Logger\Unity\ConsoleUtilityForUnity.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Arrays\FasterList.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Dictionaries\FasterDictionary.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Sentinel\Sentinel.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\Command\ICommand.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Sentinel\SentinelNB.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Unmanaged\NativeDynamicArrayCast.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\ObjectPool\Unity\PoolDebugger.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\Utilities\ActionRef.cs" />
@@ -121,7 +118,6 @@
      <Compile Include="Packages\com.sebaslab.svelto.common\Utilities\ThreadUtility.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\ObjectPool\ThreadSafeObjectPool.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\Context\Extensions\Unity\UnityContext.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Sentinel\SentinelNativeStrategy.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Dictionaries\SveltoDictionary.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\Utilities\NetFXCoreWrappers.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\HashHelpers.cs" />

@@ -101,9 +101,9 @@ namespace Svelto.DataStructures.Native
 
         public bool isValid => _realBuffer.isValid;
 
-        public void Clear() {}
+        public void FastClear() {}
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void MemClear() => _realBuffer.Clear();
+        public void Clear() => _realBuffer.Clear();
 
         public ref T this[uint index]
         {

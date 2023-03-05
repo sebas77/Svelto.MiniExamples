@@ -15,7 +15,7 @@ namespace Svelto.DataStructures
         IntPtr AsBytesPointer();
         void   SerialiseFrom(IntPtr bytesPointer);
         void   Clear();
-        void   MemClear();
+        void   FastClear();
         
         ref T this[uint index] { get ; }
         ref T this[int index] { get ; }

@@ -637,6 +637,10 @@
       <Project>{511bb390-f53b-fb33-de33-6e6a0383b051}</Project>
       <Name>WithEntityViewComponent</Name>
     </ProjectReference>
+    <ProjectReference Include="Svelto.Pool.Debugger.csproj">
+      <Project>{dcb8f6e9-cccb-8501-3faf-7eb0229b9849}</Project>
+      <Name>Svelto.Pool.Debugger</Name>
+    </ProjectReference>
     <ProjectReference Include="Svelto.Common.csproj">
       <Project>{0c7f8a75-109c-9962-5f1c-6194f043216a}</Project>
       <Name>Svelto.Common</Name>

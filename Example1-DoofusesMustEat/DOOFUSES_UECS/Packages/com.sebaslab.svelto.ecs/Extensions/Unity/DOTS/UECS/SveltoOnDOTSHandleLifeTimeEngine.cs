@@ -1,7 +1,6 @@
-﻿using Unity.Collections;
+﻿#if UNITY_ECS
+using Unity.Collections;
 using Unity.Entities;
-
-#if UNITY_ECS
 
 namespace Svelto.ECS.SveltoOnDOTS
 {

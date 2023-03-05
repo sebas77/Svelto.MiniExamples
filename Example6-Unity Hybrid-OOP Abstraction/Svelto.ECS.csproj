@@ -192,8 +192,8 @@
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Filters\CombinedFilterID.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\BT.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\EntityDescriptorTemplate.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\EntityDescriptor\DynamicEntityDescriptor.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\Filters\Legacy\LegacyFilterGroup.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\EntityDescriptor\DynamicEntityDescriptor.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\EnginesRoot.Entities.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\DataStructures\ManagedTypeSafeDictionary.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Serialization\IDeserializationFactory.cs" />

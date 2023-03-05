@@ -1,8 +1,7 @@
+#if UNITY_ECS
 #if !UNITY_DISABLE_AUTOMATIC_SYSTEM_BOOTSTRAP_RUNTIME_WORLD
 #error SveltoOnDOTS required the user to take over the DOTS world control and explicitly create it. UNITY_DISABLE_AUTOMATIC_SYSTEM_BOOTSTRAP must be defined
 #endif
-
-#if UNITY_ECS
 using System;
 using Svelto.Common;
 using Svelto.DataStructures;

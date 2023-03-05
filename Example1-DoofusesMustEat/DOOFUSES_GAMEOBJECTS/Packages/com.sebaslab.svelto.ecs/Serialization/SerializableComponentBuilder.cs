@@ -1,5 +1,4 @@
 using System;
-using System.Drawing;
 using Svelto.Common;
 using Svelto.ECS.Internal;
 

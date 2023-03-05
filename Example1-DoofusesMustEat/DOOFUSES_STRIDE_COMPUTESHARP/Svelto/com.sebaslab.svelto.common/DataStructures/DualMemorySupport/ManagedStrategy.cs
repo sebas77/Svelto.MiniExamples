@@ -26,16 +26,27 @@ namespace Svelto.DataStructures
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Alloc(uint size, Allocator allocator, bool clear)
+#if (NEW_C_SHARP && !UNITY_5_3_OR_NEWER) //this is still not supported by Unity
+        [SkipLocalsInit]
+#endif
+        public void Alloc(uint size, Allocator allocator, bool memClear)
         {
             var b =  default(MB<T>);
-            b.Set(new T[size]);
+            var array = new T[size];
+#if (NEW_C_SHARP && !UNITY_5_3_OR_NEWER)
+            if (memClear)
+                Array.Clear(array, 0, array.Length);
+#endif
+            b.Set(array);
             _realBuffer = b;
             _buffer     = _realBuffer;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Resize(uint newSize, bool copyContent = true)
+#if (NEW_C_SHARP && !UNITY_5_3_OR_NEWER) //this is still not supported by Unity
+        [SkipLocalsInit]
+#endif
+        public void Resize(uint newSize, bool copyContent = true, bool memClear = true)
         {
             if (newSize != capacity)
             {
@@ -44,7 +55,11 @@ namespace Svelto.DataStructures
                     Array.Resize(ref realBuffer, (int) newSize);
                 else
                     realBuffer = new T[newSize];
-
+                
+#if (NEW_C_SHARP && !UNITY_5_3_OR_NEWER) //this is still not supported by Unity
+            if (memClear)
+                Array.Clear(realBuffer, 0, realBuffer.Length);
+#endif                
                 var b = default(MB<T>);
                 b.Set(realBuffer);
                 _realBuffer = b;
@@ -99,7 +114,16 @@ namespace Svelto.DataStructures
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Clear() { _realBuffer.Clear(); }
+        public void FastClear()
+        {
+            if (TypeCache<T>.isUnmanaged == false)
+                _realBuffer.Clear();
+        }
+        
+        public void Clear()
+        {
+            _realBuffer.Clear();
+        }
 
         public ref T this[uint index]
         {

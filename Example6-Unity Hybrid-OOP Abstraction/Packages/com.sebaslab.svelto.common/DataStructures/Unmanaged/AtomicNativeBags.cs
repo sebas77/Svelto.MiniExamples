@@ -33,7 +33,7 @@ namespace Svelto.DataStructures
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly ref NativeBag GetBuffer(int index)
+        public readonly ref NativeBag GetBag(int index)
         {
 #if DEBUG            
             if (_data == null)
@@ -52,7 +52,7 @@ namespace Svelto.DataStructures
             
             for (int i = 0; i < _threadsCount; i++)
             {
-                GetBuffer(i).Dispose();
+                GetBag(i).Dispose();
             }
             MemoryUtilities.NativeFree((IntPtr) _data, _allocator);
             _data = null;
@@ -67,7 +67,7 @@ namespace Svelto.DataStructures
             
             for (int i = 0; i < _threadsCount; i++)
             {
-                GetBuffer(i).Clear();
+                GetBag(i).Clear();
             }
         }
         

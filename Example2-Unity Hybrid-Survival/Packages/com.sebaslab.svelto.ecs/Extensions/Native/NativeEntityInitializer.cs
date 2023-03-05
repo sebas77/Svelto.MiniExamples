@@ -1,4 +1,5 @@
 #if UNITY_NATIVE //at the moment I am still considering NativeOperations useful only for Unity
+using System.Runtime.CompilerServices;
 using Svelto.DataStructures;
 
 namespace Svelto.ECS.Native
@@ -16,17 +17,19 @@ namespace Svelto.ECS.Native
             _reference = reference;
         }
 
-        public void Init<T>(in T component)
-                where T : unmanaged, IEntityComponent
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ref T Init<T>(in T component) where T : unmanaged, IEntityComponent
         {
-            uint id = EntityComponentID<T>.ID.Data;
+            uint componentID = EntityComponentID<T>.ID.Data;
 
             _unsafeBuffer.AccessReserved<uint>(_componentsToInitializeCounterRef)++; //increase the number of components that have been initialised by the user
 
             //Since NativeEntityInitializer is a ref struct, it guarantees that I am enqueueing components of the
             //last entity built
-            _unsafeBuffer.Enqueue(id);
-            _unsafeBuffer.Enqueue(component);
+            _unsafeBuffer.Enqueue(componentID); //to know what component it's being stored
+            _unsafeBuffer.ReserveEnqueue<T>(out var index) = component;
+
+            return ref _unsafeBuffer.AccessReserved<T>(index);
         }
 
         public EntityReference reference => _reference;
