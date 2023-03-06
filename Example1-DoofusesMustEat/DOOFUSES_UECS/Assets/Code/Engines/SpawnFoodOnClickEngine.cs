@@ -94,7 +94,7 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
         {
             if (GameGroups.FOOD.Includes(groupID) == true)
             {
-                var (sveltoOnDOTSEntities, _) = entities;
+                var (sveltoOnDOTSEntities, ids, _) = entities;
                 var (positions, _) = entitiesDB.QueryEntities<PositionEntityComponent>(groupID);
 
                 InitDOTSFoodPositionJob job = default;
@@ -105,20 +105,23 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
                 using (new PlatformProfiler("CreateDOTSEntityOnSveltoBatched"))
                 {
                     //Standard way (SveltoOnDOTS pattern) to create DOTS entities from a Svelto ones. The returning job must be completed by the end of the frame
-                    var DOTSEntities = DOTSOperations.CreateDOTSEntityFromSveltoBatched(
-                        sveltoOnDOTSEntities[0].dotsEntity, rangeOfEntities, groupID, sveltoOnDOTSEntities);
+                    var DOTSEntities = DOTSOperations.CreateDOTSEntityFromSveltoBatched(sveltoOnDOTSEntities[0].dotsEntity, rangeOfEntities, groupID, sveltoOnDOTSEntities, ids, out var jobHandle);
 
                     job.createdEntities = DOTSEntities;
                     
                     //run custom job to initialise the DOTS position
-                    var jobHandle = job.ScheduleParallel(job.createdEntities.Length, default);
+                    jobHandle = job.ScheduleParallel(job.createdEntities.Length, jobHandle);
                     
                     //don't forget to add the job to the list of jobs to complete at the end of the frame
                     DOTSOperations.AddJobToComplete(jobHandle);
                 }
             }
         }
-        
+
+        public void OnOperationsReady()
+        {
+        }
+
         public void OnPostSubmission()
         {
         }

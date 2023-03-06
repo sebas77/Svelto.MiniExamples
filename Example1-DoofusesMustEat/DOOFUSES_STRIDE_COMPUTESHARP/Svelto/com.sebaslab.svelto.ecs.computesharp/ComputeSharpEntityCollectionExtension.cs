@@ -3,7 +3,7 @@ using Svelto.ECS.Internal;
 
 namespace Svelto.ECS
 {
-    public interface IEntityComputeSharpComponent : IBaseEntityComponent { }
+    public interface IEntityComputeSharpComponent : _IInternalEntityComponent { }
 
     public static class ComputeSharpEntityCollectionExtension
     {

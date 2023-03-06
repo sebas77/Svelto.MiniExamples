@@ -1,4 +1,4 @@
-# Changelog
+# Svelto.Common Changelog
 All notable changes to this project will be documented in this file. Changes are listed in random order of importance.
 
 ## [3.4.0] - 03-2023

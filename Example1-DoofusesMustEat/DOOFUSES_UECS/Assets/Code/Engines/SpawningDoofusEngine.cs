@@ -105,7 +105,7 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
 
                     //part of the blue stays normal blue
                     DOTSOperations.CreateDOTSEntityFromSveltoBatched(
-                        _blueCapsule, (0, blueDoofusesCount), groupID, sveltoOnDOTSEntities, entitiesDB.GetEntityReferenceMap(groupID), entityIDs,
+                        _blueCapsule, (0, blueDoofusesCount), groupID, sveltoOnDOTSEntities, entityIDs,
                         out var creationJobHandleBlue);
 
                     JobHandle creationJobHandleSpecialBlue = default;
@@ -113,8 +113,7 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
                     {
                         //the other part of the blue becomes special blue
                         DOTSOperations.CreateDOTSEntityFromSveltoBatched(
-                            _specialBlueCapsule, (blueDoofusesCount, blueDoofusesCount + specialBlueDoofusesCount), groupID, sveltoOnDOTSEntities,
-                            entitiesDB.GetEntityReferenceMap(groupID), entityIDs, out creationJobHandleSpecialBlue);
+                            _specialBlueCapsule, (blueDoofusesCount, blueDoofusesCount + specialBlueDoofusesCount), groupID, sveltoOnDOTSEntities, entityIDs, out creationJobHandleSpecialBlue);
                     }
                     
                     var combined = JobHandle.CombineDependencies(creationJobHandleBlue, creationJobHandleSpecialBlue);
@@ -142,10 +141,14 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
                 {
                     //Standard way to create DOTS entities from a Svelto ones. The returning job must be completed by the end of the frame
                     DOTSOperations.CreateDOTSEntityFromSveltoBatched(
-                        _redCapsule, rangeOfEntities, groupID, sveltoOnDOTSEntities, entitiesDB.GetEntityReferenceMap(groupID), entityIDs,
+                        _redCapsule, rangeOfEntities, groupID, sveltoOnDOTSEntities, entityIDs,
                         out _);
                 }
             }
+        }
+
+        public void OnOperationsReady()
+        {
         }
 
         public void OnPostSubmission() { }
