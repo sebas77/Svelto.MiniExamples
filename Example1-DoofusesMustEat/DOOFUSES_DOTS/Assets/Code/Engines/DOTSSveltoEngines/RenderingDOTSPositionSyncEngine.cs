@@ -25,8 +25,10 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
             EntityFilterCollection blueFilters = sveltoFilters
                    .GetPersistentFilter<PositionEntityComponent>(GameFilters.BLUE_DOOFUSES_MESHES);
 
-            //TODO rewrite this comment, explain that SpecialBlue can be used here since this is a specialised engine
-            //there are usually two ways to sync Svelto entities with DOTS ECS entities
+            //sync engines are usually semi specialised engines. They can get quite abstract using FindGroup, or they can be semi-abstract
+            //using GroupCompounds like in this example
+            //Being this engine semi-abstract, it knows about SpecialBluePrefab and can use the tag to filter DOTS ECS entities
+
             //In some cases, like for the rendering, the 1:1 relationship is not necessary, hence DOTS ECS entities
             //just become a pool of entities to fetch and assign values to. Of course we need to be sure that the
             //entities are compatible, that's why we group the DOTS ECS entities like with do with the Svelto ones, using

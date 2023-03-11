@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace Svelto.Common.Internal
 {
-    internal static class UnmanagedTypeExtensions
+    static class UnmanagedTypeExtensions
     {
         //System.Runtime.CompilerServices.RuntimeHelpers.IsReferenceOrContainsReferences<T> doesn't exist in dotnet
         //it's something just for mono!

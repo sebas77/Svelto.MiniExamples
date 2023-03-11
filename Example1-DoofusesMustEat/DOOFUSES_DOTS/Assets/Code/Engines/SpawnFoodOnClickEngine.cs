@@ -104,7 +104,7 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
 
                 using (new PlatformProfiler("CreateDOTSEntityOnSveltoBatched"))
                 {
-                    //Standard way (SveltoOnDOTS pattern) to create DOTS entities from a Svelto ones. The returning job must be completed by the end of the frame
+                    //Standard way (SveltoOnDOTS pattern) to create DOTS entities from a Svelto ones. The returning job can be used as job dependency
                     var DOTSEntities = DOTSOperations.CreateDOTSEntityFromSveltoBatched(sveltoOnDOTSEntities[0].dotsEntity, rangeOfEntities, groupID, sveltoOnDOTSEntities, ids, out var jobHandle);
 
                     job.createdEntities = DOTSEntities;
