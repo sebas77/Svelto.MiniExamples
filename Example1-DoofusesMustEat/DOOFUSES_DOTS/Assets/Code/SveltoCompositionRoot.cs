@@ -41,7 +41,7 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
 
         public void OnContextDestroyed(bool isInitialized)
         {
-            _sveltoOverDotsEnginesGroup.Dispose();
+            _sveltoOnDotsEnginesGroup.Dispose();
             _enginesRoot.Dispose();
             _mainLoop?.Dispose();
             _simpleSubmitScheduler.Dispose();
@@ -59,11 +59,11 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
             //3) SyncDOTSToSveltoEngine: these engines DOTS SystemBase engines and are used to sync DOTS data to Svelto data
             //4) pure DOTS SystemBase/ISystem engines: these engines are used to perform DOTS only logic
             
-            _sveltoOverDotsEnginesGroup = new SveltoOnDOTSEnginesGroup(_enginesRoot);
-            _enginesToTick.Add(_sveltoOverDotsEnginesGroup);
+            _sveltoOnDotsEnginesGroup = new SveltoOnDOTSEnginesGroup(_enginesRoot);
+            _enginesToTick.Add(_sveltoOnDotsEnginesGroup);
 
             var (redFoodPrefab, blueFoodPrefab, redDoofusPrefab, blueDoofusPrefab, specialBlueDoofusPrefab) =
-                    await LoadAssetAndCreatePrefabs(_sveltoOverDotsEnginesGroup.world);
+                    await LoadAssetAndCreatePrefabs(_sveltoOnDotsEnginesGroup.world);
 
             //Standard Svelto Engines
             AddSveltoEngineToTick(new ConsumingFoodEngine(entityFunctions));
@@ -71,17 +71,17 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
             AddSveltoEngineToTick(new VelocityToPositionDoofusesEngine());
             
             //SveltoOnDots structural engines these are added through
-            //sveltoOverDotsEnginesGroupEnginesGroup.AddSveltoOnDOTSSubmissionEngine(structuralEngine);
+            //sveltoOnDotsEnginesGroupEnginesGroup.AddSveltoOnDOTSSubmissionEngine(structuralEngine);
             AddSveltoEngineToTick(new SpawningDoofusEngine(redDoofusPrefab, blueDoofusPrefab, specialBlueDoofusPrefab, entityFactory));
             AddSveltoEngineToTick(new SpawnFoodOnClickEngine(redFoodPrefab, blueFoodPrefab, entityFactory));
 
             //SveltoOnDOTS sync engines these are added through
-            //sveltoOverDotsEnginesGroupEnginesGroup.AddSveltoToDOTSSyncEngine(syncEngine); or
-            //sveltoOverDotsEnginesGroupEnginesGroup.AddDOTSToSveltoSyncEngine(syncEngine);
+            //sveltoOnDotsEnginesGroupEnginesGroup.AddSveltoToDOTSSyncEngine(syncEngine); or
+            //sveltoOnDotsEnginesGroupEnginesGroup.AddDOTSToSveltoSyncEngine(syncEngine);
             //depending on the direction of the sync
-            _sveltoOverDotsEnginesGroup.AddSveltoToDOTSSyncEngine(new RenderingDOTSPositionSyncEngine());
+            _sveltoOnDotsEnginesGroup.AddSveltoToDOTSSyncEngine(new RenderingDOTSPositionSyncEngine());
             
-            //being _sveltoOverDotsEnginesGroup an engine group, it will tick all the engines added to it (structural and sync)
+            //being _sveltoOnDotsEnginesGroup an engine group, it will tick all the engines added to it (structural and sync)
             //it will also run the DOTS ECS systems linked to the DOTS World created by the SveltoOnDOTSEnginesGroup
             //it is expected to be ticked too, so normally it's found inside a SortedEnginesGroup
             //A standard SveltoOOnDOTS frame runs like
@@ -126,7 +126,7 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
             _enginesToTick.Add(engine);
             
             if (engine is ISveltoOnDOTSStructuralEngine structuralEngine)
-                _sveltoOverDotsEnginesGroup.AddSveltoOnDOTSSubmissionEngine(structuralEngine);
+                _sveltoOnDotsEnginesGroup.AddSveltoOnDOTSSubmissionEngine(structuralEngine);
             else
                 _enginesRoot.AddEngine(engine);
         }
@@ -134,7 +134,7 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
         EnginesRoot _enginesRoot;
         readonly FasterList<IJobifiedEngine> _enginesToTick = new FasterList<IJobifiedEngine>();
         SimpleEntitiesSubmissionScheduler _simpleSubmitScheduler;
-        SveltoOnDOTSEnginesGroup _sveltoOverDotsEnginesGroup;
+        SveltoOnDOTSEnginesGroup _sveltoOnDotsEnginesGroup;
         MainLoop _mainLoop;
     }
 }
