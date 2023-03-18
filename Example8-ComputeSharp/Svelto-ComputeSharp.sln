@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.Common", "Svelto\com.sebaslab.svelto.common\Svelto.Common.csproj", "{4E8EE453-7F64-499A-9084-A522C8673BE9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.ECS", "Svelto\com.sebaslab.svelto.ecs\Svelto.ECS.csproj", "{216E8637-CFF9-4A92-8858-A52B15CDE0C0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.ECS.ComputeSharp", "Svelto\com.sebaslab.svelto.ecs.computesharp\Svelto.ECS.ComputeSharp.csproj", "{F0CE18E2-768B-4107-B6AD-2030015BE643}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComputeSharpDemo", "ComputeSharpDemo\ComputeSharpDemo.csproj", "{2BA39B57-FD0F-420F-9321-65B8344F3D84}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4E8EE453-7F64-499A-9084-A522C8673BE9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E8EE453-7F64-499A-9084-A522C8673BE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E8EE453-7F64-499A-9084-A522C8673BE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E8EE453-7F64-499A-9084-A522C8673BE9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{216E8637-CFF9-4A92-8858-A52B15CDE0C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{216E8637-CFF9-4A92-8858-A52B15CDE0C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{216E8637-CFF9-4A92-8858-A52B15CDE0C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{216E8637-CFF9-4A92-8858-A52B15CDE0C0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F0CE18E2-768B-4107-B6AD-2030015BE643}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F0CE18E2-768B-4107-B6AD-2030015BE643}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F0CE18E2-768B-4107-B6AD-2030015BE643}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F0CE18E2-768B-4107-B6AD-2030015BE643}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2BA39B57-FD0F-420F-9321-65B8344F3D84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2BA39B57-FD0F-420F-9321-65B8344F3D84}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2BA39B57-FD0F-420F-9321-65B8344F3D84}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2BA39B57-FD0F-420F-9321-65B8344F3D84}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

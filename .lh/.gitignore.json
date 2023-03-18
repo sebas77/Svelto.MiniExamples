@@ -1,0 +1,22 @@
+{
+    "sourceFile": ".gitignore",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 1,
+            "patches": [
+                {
+                    "date": 1679178040945,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1679178065775,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,44 +1,17 @@\n+bin/\r\n Library/\r\n Temp/\r\n .idea/\r\n JetBrains\r\n JetBrains.*\r\n obj/\r\n Recordings/\r\n+Logs/\r\n+UserSettings/\r\n+Build/\r\n *.user\r\n-Example2-Survival/webgl/\r\n-Example2-Survival/Build/\r\n-Example2-Survival/Packages/packages-lock.json\r\n-Example2-Unity Hybrid-Survival/Build/\r\n-Example4-NET-SDL/SDL/bin/\r\n-Example4-NET-SDL/FixedMath/bin/\r\n-Example4-NET-SDL/SveltoDeterministic2DPhysicsDemo/bin/\r\n-Example4-NET-SDL/com.sebaslab.svelto.ecs@3.1.0/bin/\r\n-Example2-Unity Hybrid-Survival/UserSettings/\r\n Example4-NET-SDL/**/*.meta\r\n Example5-NET-Vanilla/**/*.meta\r\n Example7-Stride-Turrets/**/*.meta\r\n-Example2-Unity Hybrid-Survival/Logs/\r\n-Example6-Unity Hybrid-OOP Abstraction/UserSettings/\r\n-Example6-Unity Hybrid-OOP Abstraction/Logs/\r\n-Example1-DoofusesMustEat/DOOFUSES_DOTS/IL2CPP/\r\n-Example1-DoofusesMustEat/DOOFUSES_GAMEOBJECTS/UserSettings/\r\n-Example1-DoofusesMustEat/DOOFUSES_GAMEOBJECTS/Logs/\r\n-Example1-DoofusesMustEat/DOOFUSES_DOTS/UserSettings/\r\n-Example1-DoofusesMustEat/DOOFUSES_DOTS/Logs/\r\n-Example5-Net-Vanilla/Svelto.ECS.Example/bin/\r\n-Example4-NET-SDL/com.sebaslab.svelto.ecs/bin/\r\n-Example1-DoofusesMustEat/DOOFUSES_DOTS/Mono/\r\n-Example1-DoofusesMustEat/DOOFUSES_GAMEOBJECTS/IL2CPP/\r\n-Example2-Unity Hybrid-Survival/IL2CPP/\r\n-Example1-DoofusesMustEat/DOOFUSES_GAMEOBJECTS/IL2CPPProject/\r\n-Example2-Unity Hybrid-Survival/WEBGL/\r\n-Example1-DoofusesMustEat/DOOFUSES_UECS/Build/\r\n-Example1-DoofusesMustEat/DOOFUSES_GAMEOBJECTS/Build/\r\n-Example5-Net-HelloWorld/Svelto.ECS.Example/bin/\r\n-Example3-Unity Hybrid-GUI/Logs/\r\n-Example2-Unity Hybrid-Survival/WEBGL_CLIENT/\r\n-\r\n-Example1-DoofusesMustEat/DOOFUSES_GAMEOBJECTS/client/\r\n-\r\n-Example8-ComputeSharp/ComputeSharpDemo/bin/Debug/net7.0/\r\n+packages-lock.json\r\n+Example8-ComputeSharp/ComputeSharpDemo/bin/Debug/net7.0/\n\\ No newline at end of file\n"
+                }
+            ],
+            "date": 1679178040945,
+            "name": "Commit-0",
+            "content": "bin/\r\nLibrary/\r\nTemp/\r\n.idea/\r\nJetBrains\r\nJetBrains.*\r\nobj/\r\nRecordings/\r\nLogs/\r\nUserSettings/\r\nBuild/\r\n*.user\r\nExample4-NET-SDL/**/*.meta\r\nExample5-NET-Vanilla/**/*.meta\r\nExample7-Stride-Turrets/**/*.meta\r\npackages-lock.json\r\n"
+        }
+    ]
+}
