@@ -44,6 +44,7 @@ public class ComputeSharpEntityDescriptor: IEntityDescriptor
     };
 }
 
+[StructLayout(LayoutKind.Auto, Pack = 32)]
 public struct PositionComponent: IEntityComputeSharpComponent
 {
     public Vector3 position;
@@ -62,9 +63,12 @@ public class TestComputeShaderEngine: IQueryingEntitiesEngine, IStepEngine
     
     public EntitiesDB entitiesDB { get; set; }
     
-    //Problem 1: I need something like unity compute buffer begin write end write
-    //Problem 2: I want to run the shader async
+    //Is there something like Unity GraphicBuffer Lock
+    //how to run shaders async?
     //Note: do I want to read back from the shader or I want the components always to be handled inside shaders?
+    //can interop with other engines like stride?
+    //can I have the same buffer readonly in a shader and write in another shader?
+    //what is the best way to do a resize?
 
     public void Step()
     {

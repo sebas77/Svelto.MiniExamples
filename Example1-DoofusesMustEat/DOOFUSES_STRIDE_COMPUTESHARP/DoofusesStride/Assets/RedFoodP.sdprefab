@@ -1,0 +1,27 @@
+!PrefabAsset
+Id: 67f6f036-7a03-471e-8ea5-c48e76c39e0c
+SerializedVersion: {Stride: 3.1.0.1}
+Tags: []
+Hierarchy:
+    RootParts:
+        - ref!! c2d8f848-ad01-4401-882a-657488327995
+    Parts:
+        -   Entity:
+                Id: c2d8f848-ad01-4401-882a-657488327995
+                Name: RedFoodM
+                Components:
+                    f18587fdd6298f38185420ad72ed5798: !TransformComponent
+                        Id: fa077ece-6165-4b6a-a367-b617d9926c9b
+                        Position: {X: 36.73741, Y: 0.0, Z: 93.103134}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    acc092a279c756e8d9696b2ccb8ea7db: !ModelComponent
+                        Id: 7f6ceaaf-3154-44ec-a8db-a29d3fdc301a
+                        Model: cfdc1c19-d6dd-4b64-87e4-f40c1c4d583d:FoodM
+                        Materials:
+                            9bcf2f5bb3b82a5bf1364dc7adbd82e5~0: aacd607f-d6d2-4123-8d8d-571430bd6a84:RedFood
+                    5a4140950a7f49dc2ddbaddfe5992c19: !InstancingComponent
+                        Id: ab85c910-d34e-4b42-a174-3999679598d9
+                        Type: !InstancingUserArray
+                            ModelTransformUsage: PreMultiply

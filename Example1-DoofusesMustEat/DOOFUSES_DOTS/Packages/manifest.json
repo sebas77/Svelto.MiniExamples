@@ -11,7 +11,7 @@
     "com.unity.nuget.newtonsoft-json": "3.0.2",
     "com.unity.render-pipelines.universal": "14.0.6",
     "com.unity.scriptablebuildpipeline": "1.21.3",
-    "com.unity.toolchain.win-x86_64-linux-x86_64": "1.0.0",
+    "com.unity.toolchain.win-x86_64-linux-x86_64": "2.0.4",
     "com.unity.modules.ai": "1.0.0",
     "com.unity.modules.androidjni": "1.0.0",
     "com.unity.modules.animation": "1.0.0",
