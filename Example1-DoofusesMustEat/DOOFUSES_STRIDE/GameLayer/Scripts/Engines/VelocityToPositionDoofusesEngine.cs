@@ -1,15 +1,13 @@
+using Stride.Core.Mathematics;
 using Svelto.Common;
-using Svelto.DataStructures;
 using Svelto.ECS.EntityComponents;
 
-namespace Svelto.ECS.MiniExamples.Doofuses.Stride
+namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample
 {
     [Sequenced(nameof(DoofusesEngineNames.VelocityToPositionDoofusesEngine))]
-    public class VelocityToPositionDoofusesEngine : IQueryingEntitiesEngine, IUpdateEngine
+    public class VelocityToPositionDoofusesEngine: IQueryingEntitiesEngine, IUpdateEngine
     {
-        public void Ready()
-        {
-        }
+        public void Ready() { }
 
         public EntitiesDB entitiesDB { get; set; }
 
@@ -18,40 +16,30 @@ namespace Svelto.ECS.MiniExamples.Doofuses.Stride
         public void Step(in float deltaTime)
         {
             var doofusesEntityGroups =
-                entitiesDB.QueryEntities<PositionComponent, VelocityEntityComponent, SpeedEntityComponent>(
-                    GameGroups.DOOFUSES_EATING.Groups);
+                    entitiesDB.QueryEntities<PositionComponent, VelocityComponent, SpeedComponent>(
+                        GameGroups.DOOFUSES_EATING.Groups);
 
-            foreach (var (doofuses, _) in doofusesEntityGroups)
+            foreach (var ((positions, velocities, speeds, count), _) in doofusesEntityGroups)
             {
-                var (buffer1, buffer2, buffer3, count) = doofuses;
-                new ComputePostionFromVelocityJob((buffer1, buffer2, buffer3, count), deltaTime).Execute();
-            }
-        }
-
-        readonly struct ComputePostionFromVelocityJob
-        {
-            public ComputePostionFromVelocityJob(
-                BT<NB<PositionComponent>, NB<VelocityEntityComponent>, NB<SpeedEntityComponent>> doofuses,
-                float deltaTime)
-            {
-                _doofuses  = doofuses;
-                _deltaTime = deltaTime;
-            }
-
-            public void Execute()
-            {
-                for (int index = 0; index < _doofuses.count; index++)
+                for (int index = 0; index < count; index++)
                 {
-                    ref var velocity = ref _doofuses.buffer2[index].velocity;
+                    float distance = deltaTime * speeds[index].speed;
+                    var velocity = velocities[index].velocity;
 
-                    var deltaPos = velocity * (_deltaTime * _doofuses.buffer3[index].speed);
-                    
-                    _doofuses.buffer1[index].position += deltaPos;
+                    Vector3 position = default;
+                    position.X = velocity.X * distance;
+                    position.Y = velocity.Y * distance;
+                    position.Z = velocity.Z * distance;
+
+                    var result = positions[index].position;
+
+                    result.X += position.X;
+                    result.Y += position.Y;
+                    result.Z += position.Z;
+
+                    positions[index].position = result;
                 }
             }
-
-            readonly float                                                                            _deltaTime;
-            readonly BT<NB<PositionComponent>, NB<VelocityEntityComponent>, NB<SpeedEntityComponent>> _doofuses;
         }
     }
 }

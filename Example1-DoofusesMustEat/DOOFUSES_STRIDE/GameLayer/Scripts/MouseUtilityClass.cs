@@ -2,7 +2,7 @@ using Stride.Core.Mathematics;
 using Stride.Engine;
 using Stride.Physics;
 
-namespace Svelto.ECS.MiniExamples.Doofuses.Stride
+namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample
 {
     public static class MouseUtilityClass
     {

@@ -3,10 +3,10 @@ using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.ECS.Internal;
 
-namespace Svelto.ECS.MiniExamples.Doofuses.Stride
+namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample
 {
     [Sequenced(nameof(DoofusesEngineNames.LookingForFoodDoofusesEngine))]
-    public class LookingForFoodDoofusesEngine : IQueryingEntitiesEngine, IUpdateEngine
+    public class LookingForFoodDoofusesEngine: IQueryingEntitiesEngine, IUpdateEngine
     {
         public void Ready() { }
 
@@ -20,25 +20,26 @@ namespace Svelto.ECS.MiniExamples.Doofuses.Stride
         public void Step(in float _param)
         {
             //Iterate NOEATING RED doofuses to look for RED food and MOVE them to EATING state if food is found
-            CreateJobForDoofusesAndFood(GameGroups.RED_FOOD_NOT_EATEN.Groups
-                                      , GameGroups.RED_DOOFUSES_NOT_EATING.Groups
-                                      , GameGroups.RED_DOOFUSES_EATING.BuildGroup
-                                      , GameGroups.RED_FOOD_EATEN.BuildGroup);
+            CreateJobForDoofusesAndFood(
+                GameGroups.RED_FOOD_NOT_EATEN.Groups
+              , GameGroups.RED_DOOFUSES_NOT_EATING.Groups
+              , GameGroups.RED_DOOFUSES_EATING.BuildGroup
+              , GameGroups.RED_FOOD_EATEN.BuildGroup);
 
             //Iterate NOEATING BLUE doofuses to look for BLUE food and MOVE them to EATING state if food is found
-            CreateJobForDoofusesAndFood(GameGroups.BLUE_FOOD_NOT_EATEN.Groups
-                                      , GameGroups.BLUE_DOOFUSES_NOT_EATING.Groups
-                                      , GameGroups.BLUE_DOOFUSES_EATING.BuildGroup
-                                      , GameGroups.BLUE_FOOD_EATEN.BuildGroup);
+            CreateJobForDoofusesAndFood(
+                GameGroups.BLUE_FOOD_NOT_EATEN.Groups
+              , GameGroups.BLUE_DOOFUSES_NOT_EATING.Groups
+              , GameGroups.BLUE_DOOFUSES_EATING.BuildGroup
+              , GameGroups.BLUE_FOOD_EATEN.BuildGroup);
         }
 
         /// <summary>
         /// All the available doofuses will start to hunt for available food
         /// </summary>
-        void CreateJobForDoofusesAndFood
-        (FasterReadOnlyList<ExclusiveGroupStruct> groupsWithAvailableFood
-       , FasterReadOnlyList<ExclusiveGroupStruct> groupsWithAvailableDoofuses, ExclusiveBuildGroup eatingDoofusesGroup
-       , ExclusiveBuildGroup eatenFoodGroup)
+        void CreateJobForDoofusesAndFood(FasterReadOnlyList<ExclusiveGroupStruct> groupsWithAvailableFood
+          , FasterReadOnlyList<ExclusiveGroupStruct> groupsWithAvailableDoofuses, ExclusiveBuildGroup eatingDoofusesGroup
+          , ExclusiveBuildGroup eatenFoodGroup)
         {
             //query all the available food
             var availableFoodComponents = entitiesDB.QueryEntities<PositionComponent>(groupsWithAvailableFood).GetEnumerator();
@@ -47,26 +48,24 @@ namespace Svelto.ECS.MiniExamples.Doofuses.Stride
 
             while (availableFoodComponents.MoveNext() && availableDoofusesComponents.MoveNext())
             {
-                var ((_, foodIDs, availableFoodCount), currentFoodGroup) = availableFoodComponents.Current;
+                ((_, NativeEntityIDs foodIDs, int availableFoodCount), ExclusiveGroupStruct currentFoodGroup) = availableFoodComponents.Current;
                 var ((doofusesEntities, doofusesIDs, doofusesCount), currentDoofusesGroup) = availableDoofusesComponents.Current;
-                {
-                    var eatingDoofuses = MathF.Min(availableFoodCount, doofusesCount);
+                var eatingDoofuses = MathF.Min(availableFoodCount, doofusesCount);
 
-                    if (eatingDoofuses > 0)
+                if (eatingDoofuses > 0)
+                {
+                    new LookingForFoodDoofusesJob()
                     {
-                        new LookingForFoodDoofusesJob()
-                        {
-                            _doofuses                    = doofusesEntities
-                          , _doofusesegids               = doofusesIDs
-                          , _food                        = foodIDs
-                          , _functions                   = _functions
-                          , _doofusesEatingGroup         = eatingDoofusesGroup
-                          , _lockedFood                  = eatenFoodGroup
-                          , _fromFoodGroup               = currentFoodGroup
-                          , _doofusesLookingForFoodGroup = currentDoofusesGroup
-                          , _count                       = (int)eatingDoofuses
-                        }.Execute();
-                    }
+                        _doofuses = doofusesEntities,
+                        _doofusesegids = doofusesIDs,
+                        _food = foodIDs,
+                        _functions = _functions,
+                        _doofusesEatingGroup = eatingDoofusesGroup,
+                        _lockedFood = eatenFoodGroup,
+                        _fromFoodGroup = currentFoodGroup,
+                        _doofusesLookingForFoodGroup = currentDoofusesGroup,
+                        _count = (int)eatingDoofuses
+                    }.Execute();
                 }
             }
         }
@@ -78,14 +77,14 @@ namespace Svelto.ECS.MiniExamples.Doofuses.Stride
         struct LookingForFoodDoofusesJob
         {
             public NB<MealInfoComponent> _doofuses;
-            public NativeEntityIDs       _food;
-            public ExclusiveBuildGroup   _doofusesEatingGroup;
-            public ExclusiveBuildGroup   _lockedFood;
-            public NativeEntityIDs       _doofusesegids;
-            public ExclusiveGroupStruct  _fromFoodGroup;
-            public ExclusiveGroupStruct  _doofusesLookingForFoodGroup;
-            public IEntityFunctions      _functions;
-            public int                   _count;
+            public NativeEntityIDs _food;
+            public ExclusiveBuildGroup _doofusesEatingGroup;
+            public ExclusiveBuildGroup _lockedFood;
+            public NativeEntityIDs _doofusesegids;
+            public ExclusiveGroupStruct _fromFoodGroup;
+            public ExclusiveGroupStruct _doofusesLookingForFoodGroup;
+            public IEntityFunctions _functions;
+            public int _count;
 
             public void Execute()
             {

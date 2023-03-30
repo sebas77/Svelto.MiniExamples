@@ -1,16 +1,16 @@
 using System;
+using System.Linq;
 using Stride.Core.Mathematics;
 using Stride.Engine;
 using Stride.Extensions;
 using Stride.Games;
-using Stride.Graphics;
 using Stride.Graphics.GeometricPrimitives;
 using Stride.Rendering;
 using Svelto.DataStructures;
-using Svelto.ECS.MiniExamples.Doofuses.Stride.StrideLayer;
+using Svelto.ECS.MiniExamples.Doofuses.StrideExample.StrideLayer;
 using Svelto.ECS.Schedulers;
 
-namespace Svelto.ECS.MiniExamples.Doofuses.Stride
+namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample
 {
     public class DoofusesCompositionRoot : Game
     {
@@ -54,8 +54,6 @@ namespace Svelto.ECS.MiniExamples.Doofuses.Stride
 
         protected override void BeginRun()
         {
-            WindowMinimumUpdateRate.MinimumElapsedTime = new TimeSpan(5000);
-
             LoadAssetAndCreatePrefabs(_ecsStrideEntityManager, out var blueFoodPrefab, out var redFootPrefab
                                     , out var blueDoofusPrefab, out var redDoofusPrefab);
 

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Stride.Core.Mathematics;
-using Stride.Core.Diagnostics;
 using Stride.Input;
 using Stride.Engine;
 using Stride.Profiling;

@@ -1,10 +1,6 @@
-namespace Svelto.ECS.MiniExamples.Doofuses.Stride.StrideLayer
+namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample.StrideLayer
 {
-    public class StrideEntityDescriptor: ExtendibleEntityDescriptor<TransformableEntityDescriptor>
+    public class StrideEntityDescriptor: GenericEntityDescriptor<StrideComponent>
     {
-        public StrideEntityDescriptor()
-        {
-            Add<StrideComponent>();
-        }
     }
 }

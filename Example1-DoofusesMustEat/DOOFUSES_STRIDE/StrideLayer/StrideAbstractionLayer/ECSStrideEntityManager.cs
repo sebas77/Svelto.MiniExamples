@@ -1,10 +1,9 @@
 using Stride.Core.Mathematics;
 using Stride.Core.Serialization.Contents;
 using Stride.Engine;
-using Stride.Rendering;
 using Svelto.DataStructures;
 
-namespace Svelto.ECS.MiniExamples.Doofuses.Stride.StrideLayer
+namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample.StrideLayer
 {
     /// <summary>
     /// Note: This class looks weird and you may wonder where stride objects are instantiated. I am using an

@@ -1,7 +1,7 @@
 using Svelto.Common;
 using Svelto.DataStructures;
 
-namespace Svelto.ECS.MiniExamples.Doofuses.Stride
+namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample
 {
     ///it's important to note that the names of the engines used in the ISequenceOrder, do NOT need to come from the
     /// same enum. This will allow the user to declare enums in their own assemblies. 
@@ -21,8 +21,10 @@ namespace Svelto.ECS.MiniExamples.Doofuses.Stride
     {
         public string[] enginesOrder => new[]
         {
-            nameof(DoofusesEngineNames.SpawningDoofusEngine), nameof(DoofusesEngineNames.PlaceFoodOnClickEngine),
-            nameof(DoofusesEngineNames.LookingForFoodDoofusesEngine), nameof(DoofusesEngineNames.ConsumingFoodEngine),
+            nameof(DoofusesEngineNames.SpawningDoofusEngine), 
+            nameof(DoofusesEngineNames.PlaceFoodOnClickEngine),
+            nameof(DoofusesEngineNames.LookingForFoodDoofusesEngine), 
+            nameof(DoofusesEngineNames.ConsumingFoodEngine),
             nameof(DoofusesEngineNames.VelocityToPositionDoofusesEngine),
             nameof(TransformableLayerEngineNames.ComputeTransformsEngine),
             nameof(StrideLayer.StrideLayerEngineNames.SetTransformsEngine)

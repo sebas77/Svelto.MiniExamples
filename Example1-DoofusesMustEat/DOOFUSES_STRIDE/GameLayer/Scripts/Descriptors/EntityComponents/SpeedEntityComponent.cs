@@ -1,6 +1,6 @@
-namespace Svelto.ECS.MiniExamples.Doofuses.Stride
+namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample
 {
-    struct SpeedEntityComponent : IEntityComponent
+    struct SpeedComponent : IEntityComponent
     {
         public float speed;
     }

@@ -1,13 +1,14 @@
 using Svelto.ECS.EntityComponents;
-using Svelto.ECS.MiniExamples.Doofuses.Stride.StrideLayer;
+using Svelto.ECS.MiniExamples.Doofuses.StrideExample.StrideLayer;
 
-namespace Svelto.ECS.MiniExamples.Doofuses.Stride
+namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample
 {
     class FoodEntityDescriptor: ExtendibleEntityDescriptor<StrideEntityDescriptor>
     {
         public FoodEntityDescriptor()
         {
-            Add<VelocityEntityComponent, SpeedEntityComponent, MealInfoComponent>();
+            Add<MatrixComponent, PositionComponent>();
+            Add<MealInfoComponent>();
         }
     }
 }

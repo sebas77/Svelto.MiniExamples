@@ -1,9 +1,9 @@
 using System;
 using Stride.Core.Mathematics;
 using Svelto.Common;
-using Svelto.ECS.MiniExamples.Doofuses.Stride.StrideLayer;
+using Svelto.ECS.MiniExamples.Doofuses.StrideExample.StrideLayer;
 
-namespace Svelto.ECS.MiniExamples.Doofuses.Stride
+namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample
 {
     [Sequenced(nameof(DoofusesEngineNames.SpawningDoofusEngine))]
     public class SpawningDoofusEngine : IQueryingEntitiesEngine, IUpdateEngine
@@ -22,6 +22,10 @@ namespace Svelto.ECS.MiniExamples.Doofuses.Stride
         {
             if (_done == true)
                 return;
+            
+            foreach (var group in GameGroups.DOOFUSES.Groups)
+                _factory.PreallocateEntitySpace<DoofusEntityDescriptor>(group, MaxNumberOfDoofuses);
+    
             
             new SpawningJob()
             {
@@ -66,14 +70,10 @@ namespace Svelto.ECS.MiniExamples.Doofuses.Stride
                 {
                     var init = _factory.BuildEntity<DoofusEntityDescriptor>((uint)index, _group);
 
-                    init.Init(new PositionComponent()
-                    {
-                        position = new Vector3((float)(_random.NextDouble() * 40.0f), 0, 
-                            (float)(_random.NextDouble() * 40.0f))
-                    });
+                    init.Init(new PositionComponent(new Vector3((float)(_random.NextDouble() * 40.0f), 0, 
+                        (float)(_random.NextDouble() * 40.0f))));
                     init.Init(new RotationComponent(Quaternion.Identity));
-                    init.Init(new ScalingComponent(new Vector3(1.0f, 1.0f, 1.0f)));
-                    init.Init(new SpeedEntityComponent
+                    init.Init(new SpeedComponent
                     {
                         speed = 0.001f
                     });

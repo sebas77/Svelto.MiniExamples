@@ -1,4 +1,4 @@
-﻿namespace Svelto.ECS.MiniExamples.Doofuses.Stride.StrideLayer
+﻿namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample.StrideLayer
 {
     public enum StrideLayerEngineNames
     {

@@ -1,6 +1,6 @@
 using System;
 
-namespace Svelto.ECS.MiniExamples.Doofuses.Stride
+namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample
 {
     public static class Easing
     {

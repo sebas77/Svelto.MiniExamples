@@ -1,14 +1,17 @@
 using System;
 using System.Collections;
 using System.Linq;
+using System.Numerics;
 using Stride.Core.Mathematics;
 using Stride.Engine;
 using Stride.Input;
 using Stride.Physics;
 using Svelto.Common;
-using Svelto.ECS.MiniExamples.Doofuses.Stride.StrideLayer;
+using Svelto.ECS.MiniExamples.Doofuses.StrideExample.StrideLayer;
+using Quaternion = Stride.Core.Mathematics.Quaternion;
+using Vector3 = Stride.Core.Mathematics.Vector3;
 
-namespace Svelto.ECS.MiniExamples.Doofuses.Stride
+namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample
 {
     [Sequenced(nameof(DoofusesEngineNames.PlaceFoodOnClickEngine))]
     public class PlaceFoodOnClickEngine : IQueryingEntitiesEngine, IUpdateEngine, IReactOnRemoveEx<MealInfoComponent>
@@ -28,8 +31,7 @@ namespace Svelto.ECS.MiniExamples.Doofuses.Stride
             _bluefood = manager.InstantiateInstancingEntity(bluefood);
 
             var sceneSystemSceneInstance = sceneSystem.SceneInstance;
-            var camera =
-                sceneSystemSceneInstance.RootScene.Entities.First(e => e.Components.Get<CameraComponent>() != null);
+            var camera = sceneSystemSceneInstance.RootScene.Entities.First(e => e.Components.Get<CameraComponent>() != null);
             _camera     = camera.Get<CameraComponent>();
             _simulation = sceneSystemSceneInstance.GetProcessor<PhysicsProcessor>().Simulation;
         }
@@ -116,19 +118,27 @@ namespace Svelto.ECS.MiniExamples.Doofuses.Stride
                     float randZ       = (float)(_position.Z + ((_random.NextDouble() * 30.0f) - 15.0f));
                     var   newposition = new Vector3(randX, _position.Y, randZ);
 
-                    var init = _entityFactory.BuildEntity<FoodEntityDescriptor>(
-                        new EGID((uint)(_foodPlaced + index), _exclusiveBuildGroup));
+                    var init = _entityFactory.BuildEntity<FoodEntityDescriptor>(new EGID((uint)(_foodPlaced + index), _exclusiveBuildGroup));
 
+                    var scalingRotation = Quaternion.Identity;
+                    var scalingCenter = Vector3.One;
+                    Matrix.Transformation(ref scalingCenter, ref scalingRotation, ref newposition, out var matrix);
+                    
+                    init.Init(new MatrixComponent()
+                    {
+                        matrix = matrix
+                    });
+                    
                     init.Init(new PositionComponent()
                     {
                         position = newposition
                     });
-                    init.Init(new RotationComponent(Quaternion.Identity));
-                    init.Init(new ScalingComponent(Vector3.One));
+
                     //these structs are used for ReactOnAdd callback to create unity Entities later
                     init.Init(new StrideComponent()
                     {
-                        prefabID = _prefabID
+                        prefabID = _prefabID,
+                        updateOnce =  true
                     });
                 }
             }

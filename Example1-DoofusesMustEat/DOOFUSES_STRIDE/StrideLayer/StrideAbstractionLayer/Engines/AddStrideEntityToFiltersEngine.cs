@@ -1,8 +1,8 @@
-﻿namespace Svelto.ECS.MiniExamples.Doofuses.Stride.StrideLayer
+﻿namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample.StrideLayer
 {
     /// <summary>
     /// Handle the filters of instanced objects. For each prefab, there is a filter set to encompass the instances
-    /// of that specific prefab. The goal is in fact to be able to identify gameobjects of a specific prefab through
+    /// of that specific prefab. The goal is in fact to be able to identify instances of a specific prefab through
     /// its filter.
     /// Swap and Remove of persistent filters are automatically handled by the framework
     /// </summary>
@@ -23,16 +23,21 @@
             for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
             {
                 //get the Stride entityID that will be instanced multiple times
-                var entity = (int)buffer[index].prefabID;
+                var prefabId = (int)buffer[index].prefabID;
                 
                 //if it doesn't match last one used, let's fetch the filter that is linked to this ID
-                if (lastEntity != entity)
+                if (lastEntity != prefabId)
                 {
-                    //I use the stride entityID as filter ID
-                    cachedFilter = ref sveltoFilters.GetOrCreatePersistentFilter<StrideComponent>(entity,
-                        StrideFilterContext.StrideInstanceContext);
+                    if (buffer[index].updateOnce == false)
+                        //I use the stride entityID as filter ID
+                        cachedFilter = ref sveltoFilters.GetOrCreatePersistentFilter<MatrixComponent>(prefabId,
+                            StrideFilterContext.StridePrefabFilterContextUpdate);
+                    else
+                            //I use the stride entityID as filter ID
+                        cachedFilter = ref sveltoFilters.GetOrCreatePersistentFilter<MatrixComponent>(prefabId,
+                            StrideFilterContext.StridePrefabFilterContextUpdate);
                     
-                    lastEntity = entity;
+                    lastEntity = prefabId;
                 }
  
                 //add the current entity instance to the filter linked to the prefab entity that will be instanced

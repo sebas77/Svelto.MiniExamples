@@ -1,4 +1,4 @@
-namespace Svelto.ECS.MiniExamples.Doofuses.Stride
+namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample
 {
     static class GameGroups
     {
@@ -29,11 +29,13 @@ namespace Svelto.ECS.MiniExamples.Doofuses.Stride
 
         public class RED_DOOFUSES_EATING : GroupCompound<DOOFUSES, RED, EATING> { };
         public class RED_DOOFUSES_NOT_EATING :  GroupCompound<DOOFUSES, RED, NOTEATING> { };
+        
         public class RED_FOOD_EATEN : GroupCompound<FOOD, RED, EATING> { };
         public class RED_FOOD_NOT_EATEN : GroupCompound<FOOD, RED, NOTEATING> { };
         
         public class BLUE_DOOFUSES_EATING : GroupCompound<DOOFUSES, BLUE, EATING> { };
         public class BLUE_DOOFUSES_NOT_EATING :  GroupCompound<DOOFUSES, BLUE, NOTEATING> { };
+        
         public class BLUE_FOOD_EATEN : GroupCompound<FOOD, BLUE, EATING> { };
         public class BLUE_FOOD_NOT_EATEN : GroupCompound<FOOD, BLUE, NOTEATING> { };
 

@@ -1,7 +1,8 @@
-﻿namespace Svelto.ECS.MiniExamples.Doofuses.Stride.StrideLayer
+﻿namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample.StrideLayer
 {
     public static class StrideFilterContext
     {
-        internal static FilterContextID StrideInstanceContext = FilterContextID.GetNewContextID();
+        public static FilterContextID StridePrefabFilterContextUpdate = FilterContextID.GetNewContextID();
+        public static FilterContextID StridePrefabFilterContextUpdateOnce = FilterContextID.GetNewContextID();
     }
 }

@@ -5,10 +5,10 @@ using Svelto.ECS.EntityComponents;
 using Svelto.ECS.Internal;
 using Svelto.ECS.MiniExamples.Turrets;
 
-namespace Svelto.ECS.MiniExamples.Doofuses.Stride
+namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample
 {
     [Sequenced(nameof(DoofusesEngineNames.ConsumingFoodEngine))]
-    public class ConsumingFoodEngine : IQueryingEntitiesEngine, IUpdateEngine
+    public class ConsumingFoodEngine: IQueryingEntitiesEngine, IUpdateEngine
     {
         readonly IEntityFunctions _nativeFunctions;
 
@@ -21,30 +21,34 @@ namespace Svelto.ECS.MiniExamples.Doofuses.Stride
 
         public void Step(in float _param)
         {
-            CreateJobForDoofusesAndFood(GameGroups.RED_DOOFUSES_EATING.Groups
-                                      , GameGroups.RED_DOOFUSES_NOT_EATING.BuildGroup
-                                      , GameGroups.RED_FOOD_EATEN.BuildGroup);
+            CreateJobForDoofusesAndFood(
+                GameGroups.RED_DOOFUSES_EATING.Groups
+              , GameGroups.RED_DOOFUSES_NOT_EATING.BuildGroup
+              , GameGroups.RED_FOOD_EATEN.BuildGroup);
 
-            CreateJobForDoofusesAndFood(GameGroups.BLUE_DOOFUSES_EATING.Groups
-                                      , GameGroups.BLUE_DOOFUSES_NOT_EATING.BuildGroup
-                                      , GameGroups.BLUE_FOOD_EATEN.BuildGroup);
+            CreateJobForDoofusesAndFood(
+                GameGroups.BLUE_DOOFUSES_EATING.Groups
+              , GameGroups.BLUE_DOOFUSES_NOT_EATING.BuildGroup
+              , GameGroups.BLUE_FOOD_EATEN.BuildGroup);
         }
 
         public string name => nameof(ConsumingFoodEngine);
 
-        void CreateJobForDoofusesAndFood
-        (in LocalFasterReadOnlyList<ExclusiveGroupStruct> doofusesEatingGroups
-       , ExclusiveGroupStruct doofusesStateGroup, ExclusiveGroupStruct foodStateGroup)
+        void CreateJobForDoofusesAndFood(in LocalFasterReadOnlyList<ExclusiveGroupStruct> doofusesEatingGroups
+          , ExclusiveGroupStruct doofusesStateGroup, ExclusiveGroupStruct foodStateGroup)
         {
             if (entitiesDB.TryQueryMappedEntities<PositionComponent>(foodStateGroup, out var mappedEntities))
             {
                 //against all the doofuses
-                foreach (var ((positions, velocities, mealInfos, rotations, entityIDs, count), fromGroup) in entitiesDB
-                            .QueryEntities<PositionComponent, VelocityEntityComponent, MealInfoComponent,
-                                 RotationComponent>(doofusesEatingGroups))
+                foreach (var ((positions, velocities, rotations, entityIDs, count), fromGroup) in entitiesDB
+                                .QueryEntities<PositionComponent, VelocityComponent,
+                                     RotationComponent>(doofusesEatingGroups))
                 {
-                    new ConsumingFoodJob((positions, velocities, mealInfos, rotations, count), entityIDs
-                                       , _nativeFunctions, doofusesStateGroup, fromGroup, mappedEntities).Execute();
+                    var (mealInfos, _) = entitiesDB.QueryEntities<MealInfoComponent>(fromGroup);
+
+                    new ConsumingFoodJob(
+                        (positions, velocities, mealInfos, rotations, count), entityIDs
+                      , _nativeFunctions, doofusesStateGroup, fromGroup, mappedEntities).Execute();
                 }
             }
         }
@@ -54,41 +58,44 @@ namespace Svelto.ECS.MiniExamples.Doofuses.Stride
 
     public readonly struct ConsumingFoodJob
     {
-        readonly BT<NB<PositionComponent>, NB<VelocityEntityComponent>, NB<MealInfoComponent>, NB<RotationComponent>>
-            _doofuses;
+        readonly (NB<PositionComponent> positions, NB<VelocityComponent> velocities, NB<MealInfoComponent>
+                mealInfos, NB<RotationComponent> rotations, int count)
+                _doofuses;
 
-        readonly NativeEntityIDs  _nativeEntityIDs;
+        readonly NativeEntityIDs _nativeEntityIDs;
         readonly IEntityFunctions _entityFunctions;
 
-        readonly ExclusiveGroupStruct          _doofusesLookingForFoodGroup;
-        readonly ExclusiveGroupStruct          _doofusesEatingGroup;
+        readonly ExclusiveGroupStruct _doofusesLookingForFoodGroup;
+        readonly ExclusiveGroupStruct _doofusesEatingGroup;
         readonly EGIDMapper<PositionComponent> _mappedEntities;
 
-        public ConsumingFoodJob
-        (in (NB<PositionComponent> positions, NB<VelocityEntityComponent> velocities, NB<MealInfoComponent>
-             mealInfos, NB<RotationComponent> rotations, int count) doofuses, NativeEntityIDs nativeEntityIDs
-       , IEntityFunctions entityFunctions, ExclusiveBuildGroup doofusesLookingForFoodGroup
-       , ExclusiveGroupStruct doofusesEatingGroup, EGIDMapper<PositionComponent> mappedEntities) : this()
+        public ConsumingFoodJob(
+            in (NB<PositionComponent> positions, NB<VelocityComponent> velocities, NB<MealInfoComponent>
+                    mealInfos, NB<RotationComponent> rotations, int count) doofuses, NativeEntityIDs nativeEntityIDs
+          , IEntityFunctions entityFunctions, ExclusiveBuildGroup doofusesLookingForFoodGroup
+          , ExclusiveGroupStruct doofusesEatingGroup, EGIDMapper<PositionComponent> mappedEntities): this()
         {
-            _doofuses                    = doofuses;
-            _nativeEntityIDs             = nativeEntityIDs;
-            _entityFunctions             = entityFunctions;
+            _doofuses = doofuses;
+            _nativeEntityIDs = nativeEntityIDs;
+            _entityFunctions = entityFunctions;
             _doofusesLookingForFoodGroup = doofusesLookingForFoodGroup;
-            _doofusesEatingGroup         = doofusesEatingGroup;
-            _mappedEntities              = mappedEntities;
+            _doofusesEatingGroup = doofusesEatingGroup;
+            _mappedEntities = mappedEntities;
         }
 
         public void Execute()
         {
             for (var index = 0; index < _doofuses.count; index++)
             {
-                EGID             mealInfoEGID   = _doofuses.buffer3[index].targetMeal;
-                ref readonly var doofusPosition = ref _doofuses.buffer1[index].position;
-                ref var          velocity       = ref _doofuses.buffer2[index].velocity;
-                ref var          rotation      = ref _doofuses.buffer4[index].rotation;
-                ref readonly var foodPosition   = ref _mappedEntities.Entity(mealInfoEGID.entityID).position;
+                EGID mealInfoEGID = _doofuses.mealInfos[index].targetMeal;
+                ref readonly var doofusPosition = ref _doofuses.positions[index].position;
+                ref var velocity = ref _doofuses.velocities[index].velocity;
+                ref var rotation = ref _doofuses.rotations[index].rotation;
+                ref readonly var foodPosition = ref _mappedEntities.Entity(mealInfoEGID.entityID).position;
 
-                var computeDirection = foodPosition - doofusPosition;
+                var sourcePoint = new Vector3(foodPosition.X, foodPosition.Y, foodPosition.Z);
+                var destPoint = new Vector3(doofusPosition.X, doofusPosition.Y, doofusPosition.Z);
+                var computeDirection = sourcePoint - destPoint;
                 var sqrModule = computeDirection.X * computeDirection.X + computeDirection.Z * computeDirection.Z;
 
                 //when it's close enough to the food, it's like the doofus ate it
@@ -110,8 +117,8 @@ namespace Svelto.ECS.MiniExamples.Doofuses.Stride
                     //going toward food
                     velocity.X = computeDirection.X;
                     velocity.Z = computeDirection.Z;
-                    
-                    rotation.LookAt(foodPosition, doofusPosition);
+
+                    rotation.LookAt(sourcePoint, destPoint);
                 }
             }
         }
