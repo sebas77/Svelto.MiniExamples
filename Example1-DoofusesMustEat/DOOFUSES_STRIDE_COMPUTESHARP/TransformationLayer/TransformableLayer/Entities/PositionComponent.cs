@@ -1,10 +1,12 @@
+using Stride.Core.Mathematics;
+
 namespace  Svelto.ECS.MiniExamples.Doofuses.StrideExample
 {
     public struct ComputePositionComponent : IEntityComputeSharpComponent
     {
-        public System.Numerics.Vector3    position;
+        public Stride.Core.Mathematics.Vector3    position;
 
-        public ComputePositionComponent(System.Numerics.Vector3 transformPosition)
+        public ComputePositionComponent(Vector3 transformPosition)
         {
             position = transformPosition;
         }

@@ -1,4 +1,4 @@
-using System.Numerics;
+using Stride.Core.Mathematics;
 
 namespace Svelto.ECS.EntityComponents
 {

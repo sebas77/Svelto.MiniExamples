@@ -4,6 +4,8 @@
     <RootNamespace>DoofusesComputeSharp</RootNamespace>
     <TargetFramework>net7.0</TargetFramework>
     <LangVersion>9</LangVersion>
+    <Configurations>Debug;Release</Configurations>
+    <Platforms>AnyCPU</Platforms>
   </PropertyGroup>
 
   <ItemGroup>

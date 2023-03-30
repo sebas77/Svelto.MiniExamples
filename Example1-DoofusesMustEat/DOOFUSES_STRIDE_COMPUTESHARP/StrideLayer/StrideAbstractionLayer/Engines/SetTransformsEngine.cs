@@ -62,7 +62,7 @@ namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample.StrideLayer
                     //and we copy the values to the matrices array using the filters.
                     for (var i = 0; i < indicesCount; ++i)
                     {
-                        matrices[matrixIndex++] = Unsafe.As<System.Numerics.Matrix4x4, Matrix>(ref matrixComponents[indices[i]].matrix);
+                        matrices[matrixIndex++] = matrixComponents[indices[i]].matrix;
                     }
                 }
 
@@ -110,9 +110,7 @@ namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample.StrideLayer
                 }
 
                 //finally we set the array of matrices in Stride. remember the filter id was the entityID
-                _ECSStrideEntityManager.SetInstancingTransformations(
-                    filterIDasPrefabID,
-                    matrices, entitiesCount);
+                _ECSStrideEntityManager.SetInstancingTransformations(filterIDasPrefabID, matrices, entitiesCount);
             }
         }
 

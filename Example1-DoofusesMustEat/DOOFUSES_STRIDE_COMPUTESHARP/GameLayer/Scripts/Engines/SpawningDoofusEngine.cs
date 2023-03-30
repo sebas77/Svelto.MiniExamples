@@ -53,7 +53,7 @@ namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample
         readonly uint                   _redCapsule;
         readonly uint                   _blueCapsule;
 
-        const int MaxNumberOfDoofuses = 5000;
+        const int MaxNumberOfDoofuses = 10000;
 
         bool _done;
 
@@ -70,7 +70,7 @@ namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample
                 {
                     var init = _factory.BuildEntity<DoofusEntityDescriptor>((uint)index, _group);
 
-                    init.Init(new ComputePositionComponent(new System.Numerics.Vector3((float)(_random.NextDouble() * 40.0f), 0, 
+                    init.Init(new ComputePositionComponent(new Vector3((float)(_random.NextDouble() * 40.0f), 0, 
                         (float)(_random.NextDouble() * 40.0f))));
                     init.Init(new ComputeRotationComponent(Quaternion.Identity));
                     init.Init(new ComputeSpeedComponent

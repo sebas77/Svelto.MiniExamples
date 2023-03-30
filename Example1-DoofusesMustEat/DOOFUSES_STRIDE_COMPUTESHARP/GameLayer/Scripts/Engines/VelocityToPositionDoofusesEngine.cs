@@ -1,4 +1,6 @@
+using System.Linq;
 using ComputeSharp;
+using Stride.Core.Mathematics;
 using Svelto.Common;
 using Svelto.ECS.EntityComponents;
 
@@ -7,6 +9,10 @@ namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample
     [Sequenced(nameof(DoofusesEngineNames.VelocityToPositionDoofusesEngine))]
     public class VelocityToPositionDoofusesEngine: IQueryingEntitiesEngine, IUpdateEngine
     {
+        public VelocityToPositionDoofusesEngine(GraphicsDevice graphicsDevice)
+        {
+            _graphicsDevice = graphicsDevice;
+        }
         public void Ready() { }
 
         public EntitiesDB entitiesDB { get; set; }
@@ -21,14 +27,37 @@ namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample
 
             foreach (var ((positions, velocities, speeds, count), _) in doofusesEntityGroups)
             {
-                GraphicsDevice.GetDefault().For(
+#if COMPUTE_SHADERS                         
+                _graphicsDevice.For(
                     count,
                     new ComputePostionFromVelocityJob(
                         (positions.ToComputeBuffer(), velocities.ToComputeBuffer(), speeds.ToComputeBuffer()), deltaTime));
 
                 positions.Update();
+#else
+                for (int index = 0; index < count; index++)
+                {
+                    float distance = deltaTime * speeds[index].speed;
+                    var velocity = velocities[index].velocity;
+
+                    Vector3 position = default;
+                    position.X = velocity.X * distance;
+                    position.Y = velocity.Y * distance;
+                    position.Z = velocity.Z * distance;
+
+                    var result = positions[index].position;
+
+                    result.X += position.X;
+                    result.Y += position.Y;
+                    result.Z += position.Z;
+
+                    positions[index].position = result;
+                }
+#endif                
             }
         }
+        
+        readonly GraphicsDevice _graphicsDevice;
     }
 
     [AutoConstructor]
@@ -36,9 +65,7 @@ namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample
     {
         public ComputePostionFromVelocityJob(
             (ReadWriteBuffer<ComputePositionComponent> positions, ReadWriteBuffer<ComputeVelocityComponent> velocities,
-                    ReadWriteBuffer<ComputeSpeedComponent> speeds)
-                    doofuses,
-            float deltaTime)
+                    ReadWriteBuffer<ComputeSpeedComponent> speeds) doofuses, float deltaTime)
         {
             _positions = doofuses.positions;
             _velocities = doofuses.velocities;
@@ -50,10 +77,21 @@ namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample
         {
             var index = ThreadIds.X;
 
-            var distance = _deltaTime * _speeds[index].speed;
+            float distance = _deltaTime * _speeds[index].speed;
             var velocity = _velocities[index].velocity;
 
-            _positions[index].position += (velocity * distance);
+            Vector3 position = default;
+            position.X = velocity.X * distance;
+            position.Y = velocity.Y * distance;
+            position.Z = velocity.Z * distance;
+
+            var result = _positions[index].position;
+
+            result.X += position.X;
+            result.Y += position.Y;
+            result.Z += position.Z;
+
+            _positions[index].position = result;
         }
 
         readonly float _deltaTime;

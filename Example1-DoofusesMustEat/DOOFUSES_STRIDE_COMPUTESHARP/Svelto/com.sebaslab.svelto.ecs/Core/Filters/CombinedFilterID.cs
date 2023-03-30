@@ -13,24 +13,18 @@ namespace Svelto.ECS
         public FilterContextID contextID
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
-            {
-                return new FilterContextID((ushort)((id & 0xFFFF0000) >> 16));
-            }
+            get => new FilterContextID((ushort)((id & 0xFFFF0000) >> 16));
         }
 
         public uint filterID
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
-            {
-                return (uint)(id >> 32);
-            }
+            get => (uint)(id >> 32);
         }
 
         public CombinedFilterID(int filterID, FilterContextID contextID)
         {
-            id = (long)filterID << 32 | (uint)contextID.id << 16;
+            id = (long)filterID << 32 | (long)contextID.id << 16;
         }
 
         public static implicit operator CombinedFilterID((int filterID, FilterContextID contextID) data)
@@ -79,7 +73,7 @@ namespace Svelto.ECS
 
         public CombinedFilterComponentID(uint filterIdFilterId, FilterContextID filterIdContextId, ComponentID componentid)
         {
-            id = (long)filterIdFilterId << 32 | (uint)filterIdContextId.id << 16 | (uint)componentid;
+            id = (long)filterIdFilterId << 32 | (long)filterIdContextId.id << 16 | (long)(uint)componentid;
         }
 
         public bool Equals(CombinedFilterComponentID other)

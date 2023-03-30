@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -33,15 +34,22 @@ namespace Svelto.ECS
     static public class ComponentTypeMap
     {
         static readonly FasterDictionary<RefWrapper<Type>, ComponentID> _componentTypeMap = new FasterDictionary<RefWrapper<Type>, ComponentID>();
+        static readonly FasterDictionary<ComponentID, Type> _reverseComponentTypeMap = new FasterDictionary<ComponentID, Type>();
 
         public static void Add(Type type, ComponentID idData)
         {
             _componentTypeMap.Add(type, idData);
+            _reverseComponentTypeMap.Add(idData, type);
         }
 
         public static ComponentID FetchID(Type type)
         {
             return _componentTypeMap[type];
+        }
+
+        public static Type FetchType(ComponentID id)
+        {
+            return _reverseComponentTypeMap[id];
         }
     }
 
@@ -69,38 +77,51 @@ namespace Svelto.ECS
         static void Init()
         {
             _id.Data = Interlocked.Increment(ref BurstCompatibleCounter.counter);
-            ComponentTypeMap.Add(typeof(T), _id.Data);
+            ComponentTypeMap.Add(typeof(T), id);
         }
     }
 
+    sealed class ComponentIDDebugProxy
+    {
+        public ComponentIDDebugProxy(ComponentID id)
+        {
+            this._id = id;
+        }
+        
+        public Type type => ComponentTypeMap.FetchType(_id);
+
+        readonly ComponentID _id;
+    }
+    
+    [DebuggerTypeProxy(typeof(ComponentIDDebugProxy))]
     public struct ComponentID: IEquatable<ComponentID>
     {
-        int id;
-
         public static implicit operator int(ComponentID id)
         {
-            return id.id;
+            return id._id;
         }
         
         public static implicit operator uint(ComponentID id)
         {
-            return (uint)id.id;
+            return (uint)id._id;
         }
         
         public static implicit operator ComponentID(int id)
         {
-            return new ComponentID() {id = id};
+            return new ComponentID() {_id = id};
         }
 
         public bool Equals(ComponentID other)
         {
-            return id == other.id;
+            return _id == other._id;
         }
 
         public override int GetHashCode()
         {
-            return id;
+            return _id;
         }
+        
+        int _id;
     }
 
     public class ComponentBuilder<T> : IComponentBuilder where T : struct, _IInternalEntityComponent

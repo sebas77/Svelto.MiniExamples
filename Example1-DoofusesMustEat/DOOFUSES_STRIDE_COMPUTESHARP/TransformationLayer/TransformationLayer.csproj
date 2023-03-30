@@ -4,6 +4,18 @@
         <TargetFramework>net7.0</TargetFramework>
         <Nullable>disable</Nullable>
         <LangVersion>10</LangVersion>
+        <Configurations>Debug;Release;RELEASE_COMPUTE_SHADERS</Configurations>
+        <Platforms>AnyCPU</Platforms>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+      <DefineConstants>TRACE;</DefineConstants>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'RELEASE_COMPUTE_SHADERS' ">
+      <DefineConstants>TRACE;COMPUTE_SHADERS</DefineConstants>
+      <Optimize>true</Optimize>
+      <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
 
     <ItemGroup>
@@ -13,6 +25,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="ComputeSharp.Dynamic" Version="2.0.3" />
       <PackageReference Include="Stride.Engine" Version="4.1.0.1805" />
     </ItemGroup>
 

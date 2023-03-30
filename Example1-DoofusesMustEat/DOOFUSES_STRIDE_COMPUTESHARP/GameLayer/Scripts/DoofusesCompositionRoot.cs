@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Stride.Core.Mathematics;
 using Stride.Engine;
 using Stride.Extensions;
@@ -8,6 +9,7 @@ using Stride.Rendering;
 using Svelto.DataStructures;
 using Svelto.ECS.MiniExamples.Doofuses.StrideExample.StrideLayer;
 using Svelto.ECS.Schedulers;
+using TerraFX.Interop.Windows;
 
 namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample
 {
@@ -53,8 +55,6 @@ namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample
 
         protected override void BeginRun()
         {
-            WindowMinimumUpdateRate.MinimumElapsedTime = new TimeSpan(5000);
-
             LoadAssetAndCreatePrefabs(_ecsStrideEntityManager, out var blueFoodPrefab, out var redFootPrefab
                                     , out var blueDoofusPrefab, out var redDoofusPrefab);
 
@@ -66,6 +66,7 @@ namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample
             var entityFactory   = _enginesRoot.GenerateEntityFactory();
             var entityFunctions = _enginesRoot.GenerateEntityFunctions();
             //Compose the game level engines
+            var graphicDevice = ComputeSharp.GraphicsDevice.EnumerateDevices().ElementAt(1);
 
             AddEngine(new PlaceFoodOnClickEngine(redFoodPrefab, blueFoodPrefab, entityFactory, this.Input, SceneSystem
                                                , _ecsStrideEntityManager));
@@ -73,9 +74,9 @@ namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample
                                              , _ecsStrideEntityManager));
             AddEngine(new ConsumingFoodEngine(entityFunctions));
             AddEngine(new LookingForFoodDoofusesEngine(entityFunctions));
-            AddEngine(new VelocityToPositionDoofusesEngine());
+            AddEngine(new VelocityToPositionDoofusesEngine(graphicDevice));
 
-            StrideAbstractionContext.Compose(AddEngine, _ecsStrideEntityManager);
+            StrideAbstractionContext.Compose(AddEngine, _ecsStrideEntityManager, graphicDevice);
 
             _mainEngineGroup = new SortedDoofusesEnginesExecutionGroup(_unsortedGroups);
         }
