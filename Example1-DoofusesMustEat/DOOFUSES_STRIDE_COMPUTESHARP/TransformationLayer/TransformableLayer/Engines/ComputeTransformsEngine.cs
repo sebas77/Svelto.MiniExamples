@@ -1,8 +1,12 @@
+using System.Diagnostics;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using ComputeSharp;
 using Stride.Core.Mathematics;
 using Svelto.Common;
 using Svelto.Common.Internal;
+using Quaternion = Stride.Core.Mathematics.Quaternion;
+using Vector3 = Stride.Core.Mathematics.Vector3;
 
 namespace  Svelto.ECS.MiniExamples.Doofuses.StrideExample
 {
@@ -40,13 +44,20 @@ namespace  Svelto.ECS.MiniExamples.Doofuses.StrideExample
                 _graphicsDevice.For(
                     count,
                     new ComputeMatricesJob(
-                        (positions.ToComputeBuffer(), rotation.ToComputeBuffer(), transforms.ToComputeBuffer()), deltaTime));
+                        (positions.ToComputeBuffer(), rotation.ToComputeBuffer(), transforms.ToComputeBuffer())));
                 
                 transforms.Update();
 #else                
-                for (int index = 0; index < count; index++)
+                for (int index = count - 1; index >= 0; index--)
                 {
-                    ComputeMatricesJob.Transformation(ref rotation[index].rotation, ref positions[index].position, out transforms[index].matrix);
+                  //  ComputeMatricesJob.Transformation(ref rotation[index].rotation, ref positions[index].position, out transforms[index].matrix);
+                    Matrix4x4 matrix = Matrix4x4.CreateFromQuaternion(Unsafe.As<Quaternion, System.Numerics.Quaternion>(ref rotation[index].rotation));
+            
+                    matrix.Translation = Unsafe.As<Vector3, System.Numerics.Vector3>(ref positions[index].position);
+
+                    var @as = Unsafe.As<Matrix4x4, Matrix>(ref matrix);
+                    @as.Transpose();
+                    transforms[index].matrix = @as;
                 }
 #endif
                 
@@ -60,13 +71,11 @@ namespace  Svelto.ECS.MiniExamples.Doofuses.StrideExample
     readonly partial struct ComputeMatricesJob: IComputeShader
     {
         public ComputeMatricesJob((ReadWriteBuffer<ComputePositionComponent> positions, ReadWriteBuffer<ComputeRotationComponent> rotations, 
-                            ReadWriteBuffer<ComputeMatrixComponent> matrices) doofuses,
-            float deltaTime)
+                            ReadWriteBuffer<ComputeMatrixComponent> matrices) doofuses)
         {
             _positions = doofuses.positions;
             _rotations = doofuses.rotations;
             _matrices = doofuses.matrices;
-            _deltaTime = deltaTime;
         }
 
         public void Execute()
@@ -76,6 +85,7 @@ namespace  Svelto.ECS.MiniExamples.Doofuses.StrideExample
             Transformation(ref _rotations[index].rotation, ref _positions[index].position, out _matrices[index].matrix);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Transformation(ref Quaternion rotation, ref Vector3 translation, out Matrix result)
         {
             // Equivalent to:
@@ -117,8 +127,6 @@ namespace  Svelto.ECS.MiniExamples.Doofuses.StrideExample
             result.M34 = 0.0f;
             result.M44 = 1.0f;
         }
-
-        readonly float _deltaTime;
 
         readonly ReadWriteBuffer<ComputePositionComponent> _positions;
         readonly ReadWriteBuffer<ComputeRotationComponent> _rotations;

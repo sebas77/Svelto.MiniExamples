@@ -6,7 +6,7 @@ using Stride.Engine;
 using Stride.Profiling;
 using Stride.Core;
 
-namespace DoofusesComputeSharp
+namespace DoofusesStride
 {
     public class GameProfiler : AsyncScript
     {

@@ -1,8 +1,8 @@
 using Svelto.ECS.MiniExamples.Doofuses.StrideExample;
 
-namespace DoofusesComputeSharp
+namespace DoofusesStride
 {
-    class DoofusesComputeSharpApp
+    class DoofusesStrideApp
     {
         static void Main(string[] args)
         {

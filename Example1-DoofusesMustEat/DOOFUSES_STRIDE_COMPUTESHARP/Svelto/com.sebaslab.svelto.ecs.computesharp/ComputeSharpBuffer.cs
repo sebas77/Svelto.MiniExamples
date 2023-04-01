@@ -58,7 +58,7 @@ namespace Svelto.ECS
             get
             {
 #if ENABLE_DEBUG_CHECKS
-                if (index >= _ptr.Length)
+                if (index >= _uploadBuffer.Length)
                     throw new Exception($"NativeBuffer - out of bound access: index {index} - capacity {capacity}");
 #endif
                 return ref _uploadBuffer.Span[(int)index];
@@ -71,7 +71,7 @@ namespace Svelto.ECS
             get
             {
 #if ENABLE_DEBUG_CHECKS
-                if (index < 0 || index >= _ptr.Length)
+                if (index < 0 || index >= _uploadBuffer.Length)
                     throw new Exception($"NativeBuffer - out of bound access: index {index} - capacity {capacity}");
 #endif
                 return ref _uploadBuffer.Span[index];

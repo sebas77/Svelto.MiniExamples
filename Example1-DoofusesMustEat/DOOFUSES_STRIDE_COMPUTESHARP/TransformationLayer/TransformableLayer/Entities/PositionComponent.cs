@@ -1,7 +1,9 @@
+using System.Runtime.InteropServices;
 using Stride.Core.Mathematics;
 
 namespace  Svelto.ECS.MiniExamples.Doofuses.StrideExample
 {
+    [StructLayout(LayoutKind.Auto, Pack = 32)] //does the gpu benefit from this?
     public struct ComputePositionComponent : IEntityComputeSharpComponent
     {
         public Stride.Core.Mathematics.Vector3    position;
