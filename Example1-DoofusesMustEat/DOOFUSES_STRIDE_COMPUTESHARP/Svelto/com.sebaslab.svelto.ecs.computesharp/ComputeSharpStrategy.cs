@@ -24,7 +24,7 @@ namespace Svelto.ECS
 
         public void Alloc(uint newCapacity, Allocator allocator, bool clear)
         {
-            _graphicsDevice = GraphicsDevice.EnumerateDevices().ElementAt(1);
+            _graphicsDevice = GraphicsDevice.EnumerateDevices().ElementAt(0);
             
 #if DEBUG && !PROFILE_SVELTO
             if ((this._realBuffer.isValid))

@@ -1,6 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
 using System.Numerics;
+using System.Runtime.InteropServices;
 using ComputeSharp;
 using Svelto.ECS;
 using Svelto.ECS.ComputeSharp;
@@ -63,13 +64,6 @@ public class TestComputeShaderEngine: IQueryingEntitiesEngine, IStepEngine
     
     public EntitiesDB entitiesDB { get; set; }
     
-    //Is there something like Unity GraphicBuffer Lock
-    //how to run shaders async?
-    //Note: do I want to read back from the shader or I want the components always to be handled inside shaders?
-    //can interop with other engines like stride?
-    //can I have the same buffer readonly in a shader and write in another shader?
-    //what is the best way to do a resize?
-
     public void Step()
     {
        (ComputeSharpBuffer<PositionComponent> buffer, int count) = entitiesDB.QueryEntities<PositionComponent>(ExclusiveGroups.group0);

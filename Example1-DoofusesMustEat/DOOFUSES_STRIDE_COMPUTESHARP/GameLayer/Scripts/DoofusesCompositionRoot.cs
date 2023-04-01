@@ -66,7 +66,7 @@ namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample
             var entityFactory   = _enginesRoot.GenerateEntityFactory();
             var entityFunctions = _enginesRoot.GenerateEntityFunctions();
             //Compose the game level engines
-            var graphicDevice = ComputeSharp.GraphicsDevice.EnumerateDevices().ElementAt(1);
+            var graphicDevice = ComputeSharp.GraphicsDevice.EnumerateDevices().ElementAt(0);
 
             AddEngine(new PlaceFoodOnClickEngine(redFoodPrefab, blueFoodPrefab, entityFactory, this.Input, SceneSystem
                                                , _ecsStrideEntityManager));

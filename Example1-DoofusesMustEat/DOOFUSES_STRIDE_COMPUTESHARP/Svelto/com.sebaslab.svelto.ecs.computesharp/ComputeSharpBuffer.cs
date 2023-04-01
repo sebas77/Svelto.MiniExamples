@@ -13,17 +13,14 @@ namespace Svelto.ECS
         public ComputeSharpBuffer(in UploadBuffer<T> array, ReadWriteBuffer<T> readWritebuffer) : this()
         {
             _readWritebuffer = readWritebuffer;
-            _ptr      = array;
+            _uploadBuffer      = array;
         }
 
         public void CopyTo(uint sourceStartIndex, T[] destination, uint destinationStartIndex, uint count)
         {
             throw new NotImplementedException();
-//            for (int i = 0; i < count; i++)
-//            {
-//                destination[i] = this[i];
-//            }
         }
+        
         public void Clear()
         {
             throw new NotImplementedException();
@@ -37,23 +34,23 @@ namespace Svelto.ECS
         
         public ReadWriteBuffer<T> ToComputeBuffer()
         {
-            _ptr.CopyTo(_readWritebuffer);
+            _uploadBuffer.CopyTo(_readWritebuffer);
 
             return _readWritebuffer;
         }
         
         public void Update()
         {
-            _readWritebuffer.CopyTo(_ptr.Span);
+            _readWritebuffer.CopyTo(_uploadBuffer.Span);
         }
 
         public int capacity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => (int) _ptr.Length;
+            get => (int) _uploadBuffer.Length;
         }
 
-        public bool isValid => _ptr != null;
+        public bool isValid => _uploadBuffer != null;
 
         public ref T this[uint index]
         {
@@ -64,7 +61,7 @@ namespace Svelto.ECS
                 if (index >= _ptr.Length)
                     throw new Exception($"NativeBuffer - out of bound access: index {index} - capacity {capacity}");
 #endif
-                return ref _ptr.Span[(int)index];
+                return ref _uploadBuffer.Span[(int)index];
             }
         }
 
@@ -77,18 +74,18 @@ namespace Svelto.ECS
                 if (index < 0 || index >= _ptr.Length)
                     throw new Exception($"NativeBuffer - out of bound access: index {index} - capacity {capacity}");
 #endif
-                return ref _ptr.Span[index];
+                return ref _uploadBuffer.Span[index];
             }
         }
 
         //todo: maybe I should do this for the other buffers too?
         internal void Dispose()
         {
-            _ptr.Dispose();
+            _uploadBuffer.Dispose();
             _readWritebuffer.Dispose();
         }
         
-        readonly UploadBuffer<T> _ptr;
+        readonly UploadBuffer<T> _uploadBuffer;
         readonly ReadWriteBuffer<T> _readWritebuffer;
     }
 }
