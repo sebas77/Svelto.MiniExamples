@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using DBC.ECS;
 using Svelto.Common;
@@ -22,84 +21,6 @@ namespace Svelto.ECS
         public int GetHashCode(IComponentBuilder obj)
         {
             return obj.GetEntityComponentType().GetHashCode();
-        }
-    }
-
-    public static class BurstCompatibleCounter
-    {
-        public static int counter;        
-    }
-
-    static public class ComponentTypeMap
-    {
-        static readonly FasterDictionary<RefWrapper<Type>, ComponentID> _componentTypeMap = new FasterDictionary<RefWrapper<Type>, ComponentID>();
-
-        public static void Add(Type type, ComponentID idData)
-        {
-            _componentTypeMap.Add(type, idData);
-        }
-
-        public static ComponentID FetchID(Type type)
-        {
-            return _componentTypeMap[type];
-        }
-    }
-
-    public class ComponentTypeID<T> where T : struct, _IInternalEntityComponent
-    {
-        static readonly SharedStaticWrapper<ComponentID, ComponentTypeID<T>> _id;
-
-        public static ComponentID id
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => _id.Data;
-        }
-
-        //todo: any reason to not do this? If I don't, I cannot Create filters in ready functions and
-        //I have to remove the CreateFilter method
-        static ComponentTypeID()
-        {
-            Init();
-        }
-
-#if UNITY_BURST     
-        [Unity.Burst.BurstDiscard] 
-        //SharedStatic values must be initialized from not burstified code
-#endif
-        static void Init()
-        {
-            _id.Data = Interlocked.Increment(ref BurstCompatibleCounter.counter);
-            ComponentTypeMap.Add(typeof(T), _id.Data);
-        }
-    }
-
-    public struct ComponentID: IEquatable<ComponentID>
-    {
-        int id;
-
-        public static implicit operator int(ComponentID id)
-        {
-            return id.id;
-        }
-        
-        public static implicit operator uint(ComponentID id)
-        {
-            return (uint)id.id;
-        }
-        
-        public static implicit operator ComponentID(int id)
-        {
-            return new ComponentID() {id = id};
-        }
-
-        public bool Equals(ComponentID other)
-        {
-            return id == other.id;
-        }
-
-        public override int GetHashCode()
-        {
-            return id;
         }
     }
 

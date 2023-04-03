@@ -144,7 +144,8 @@ namespace Svelto.DataStructures.Native
 
             return (IBuffer<T>) _cachedReference.Target;
         }
-
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public NB<T> ToRealBuffer()
         {
             return _realBuffer;

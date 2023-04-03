@@ -24,40 +24,11 @@ namespace Svelto.ECS
         }
     }
 
-    public static class BurstCompatibleCounter
-    {
-        public static int counter;        
-    }
-    
-    public class ComponentID<T> where T : struct, _IInternalEntityComponent
-    {
-        public static readonly SharedStaticWrapper<int, ComponentID<T>> id;
-
-        //todo: any reason to not do this? If I don't, I cannot Create filters in ready functions and
-        //I have to remove the CreateFilter method
-        static ComponentID()
-        {
-            Init();
-        }
-
-#if UNITY_BURST     
-        [Unity.Burst.BurstDiscard] 
-        //SharedStatic values must be initialized from not burstified code
-#endif
-        static void Init()
-        {
-            id.Data = Interlocked.Increment(ref BurstCompatibleCounter.counter);
-            
-            Check.Ensure(id.Data < ushort.MaxValue, "too many types registered, HOW :)");
-        }
-    }
-
     public class ComponentBuilder<T> : IComponentBuilder where T : struct, _IInternalEntityComponent
     {
         internal static readonly Type ENTITY_COMPONENT_TYPE;
         internal static readonly bool IS_ENTITY_VIEW_COMPONENT;
 
-        static readonly T      DEFAULT_IT;
         static readonly string ENTITY_COMPONENT_NAME;
         static readonly bool   IS_UNMANAGED;
 #if SLOW_SVELTO_SUBMISSION            
@@ -68,7 +39,6 @@ namespace Svelto.ECS
         static ComponentBuilder()
         {
             ENTITY_COMPONENT_TYPE = typeof(T);
-            DEFAULT_IT = default;
             IS_ENTITY_VIEW_COMPONENT = typeof(IEntityViewComponent).IsAssignableFrom(ENTITY_COMPONENT_TYPE);
 #if SLOW_SVELTO_SUBMISSION            
             HAS_EGID = typeof(INeedEGID).IsAssignableFrom(ENTITY_COMPONENT_TYPE);
@@ -100,7 +70,7 @@ namespace Svelto.ECS
 
         public ComponentBuilder()
         {
-            _initializer = DEFAULT_IT;
+            _initializer = default;
         }
 
         public ComponentBuilder(in T initializer) : this()
@@ -109,6 +79,7 @@ namespace Svelto.ECS
         }
 
         public bool isUnmanaged => IS_UNMANAGED;
+        public ComponentID getComponentID => ComponentTypeID<T>.id;
 
         static readonly ThreadLocal<EntityViewComponentCache> _localCache = new ThreadLocal<EntityViewComponentCache>(() => new EntityViewComponentCache());
 

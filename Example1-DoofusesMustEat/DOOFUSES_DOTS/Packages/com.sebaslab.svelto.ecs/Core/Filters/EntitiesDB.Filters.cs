@@ -60,15 +60,15 @@ namespace Svelto.ECS
                 _indicesOfTransientFiltersUsedByThisComponent = indicesOfTransientFiltersUsedByThisComponent;
             }
 
-#if !UNITY_BURST //the following methods do not make sense without burst as they are workaround for burst
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public ref EntityFilterCollection GetOrCreatePersistentFilter<T>(int filterID, FilterContextID filterContextId)
-                    where T : struct, IEntityComponent
+                    where T : struct, _IInternalEntityComponent
             {
                 return ref GetOrCreatePersistentFilter<T>(new CombinedFilterID(filterID, filterContextId));
             }
 
-            public ref EntityFilterCollection GetOrCreatePersistentFilter<T>(CombinedFilterID filterID)
-                    where T : struct, IEntityComponent
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public ref EntityFilterCollection GetOrCreatePersistentFilter<T>(CombinedFilterID filterID) where T : struct, _IInternalEntityComponent
             {
                 var componentAndFilterID = Internal_FilterHelper.CombineFilterIDWithComponentID<T>(filterID);
 
@@ -94,7 +94,6 @@ namespace Svelto.ECS
 
                 return ref _persistentEntityFilters.GetDirectValueByRef((uint)lastIndex);
             }
-#endif
 
             /// <summary>
             /// Create a persistent filter. Persistent filters are not deleted after each submission,
@@ -107,6 +106,7 @@ namespace Svelto.ECS
 #if UNITY_BURST && UNITY_COLLECTIONS
             [Unity.Burst.BurstDiscard] //not burst compatible because of  ComponentTypeID<T>.id and GetOrAdd callback;
 #endif
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public ref EntityFilterCollection CreatePersistentFilter<T>(CombinedFilterID filterID)
                     where T : struct, _IInternalEntityComponent
             {
@@ -202,9 +202,8 @@ namespace Svelto.ECS
             {
                 if (_indicesOfPersistentFiltersUsedByThisComponent.TryFindIndex(ComponentTypeID<T>.id, out var index) == true)
                 {
-                    enumerator = new EntityFilterCollectionsWithContextEnumerator(
-                        _indicesOfPersistentFiltersUsedByThisComponent.GetDirectValueByRef(index),
-                        _persistentEntityFilters, filterContextId);
+                    ref var filterIndices = ref _indicesOfPersistentFiltersUsedByThisComponent.GetDirectValueByRef(index);
+                    enumerator = new EntityFilterCollectionsWithContextEnumerator(filterIndices, _persistentEntityFilters, filterContextId);
 
                     return true;
                 }
@@ -375,10 +374,7 @@ namespace Svelto.ECS
                 public ref EntityFilterCollection Current
                 {
                     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-                    get
-                    {
-                        return ref _sharedSveltoDictionaryNative.GetDirectValueByRef((uint)_currentIndex - 1);
-                    }
+                    get => ref _sharedSveltoDictionaryNative.GetDirectValueByRef((uint)_currentIndex - 1);
                 }
 
                 readonly NativeDynamicArrayCast<int> _getDirectValueByRef;
@@ -386,13 +382,16 @@ namespace Svelto.ECS
                 int _currentIndex;
             }
 
+            /// <summary>
+            /// TODO: ABSOLUTELY UNIT TEST THIS AS THE CODE WAS WRONG!!!
+            /// </summary>
             public struct EntityFilterCollectionsWithContextEnumerator
             {
-                internal EntityFilterCollectionsWithContextEnumerator(NativeDynamicArrayCast<int> getDirectValueByRef,
+                internal EntityFilterCollectionsWithContextEnumerator(NativeDynamicArrayCast<int> filterIndices,
                     SharedSveltoDictionaryNative<CombinedFilterComponentID, EntityFilterCollection> sharedSveltoDictionaryNative,
                     FilterContextID filterContextId): this()
                 {
-                    _getDirectValueByRef = getDirectValueByRef;
+                    _filterIndices = filterIndices;
                     _sharedSveltoDictionaryNative = sharedSveltoDictionaryNative;
                     _filterContextId = filterContextId;
                 }
@@ -405,12 +404,11 @@ namespace Svelto.ECS
                 [MethodImpl(MethodImplOptions.AggressiveInlining)]
                 public bool MoveNext()
                 {
-                    while (_currentIndex++ < _getDirectValueByRef.count &&
-                           _sharedSveltoDictionaryNative.GetDirectValueByRef((uint)_currentIndex - 1).combinedFilterID
-                                  .contextID.id != _filterContextId.id)
-                        ;
+                    while (_currentIndex++ < _filterIndices.count &&
+                           _sharedSveltoDictionaryNative.GetDirectValueByRef((uint)_filterIndices[(uint)_currentIndex - 1]).combinedFilterID
+                                  .contextID.id != _filterContextId.id);
 
-                    if (_currentIndex - 1 < _getDirectValueByRef.count)
+                    if (_currentIndex - 1 < _filterIndices.count)
                         return true;
 
                     return false;
@@ -419,13 +417,10 @@ namespace Svelto.ECS
                 public ref EntityFilterCollection Current
                 {
                     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-                    get
-                    {
-                        return ref _sharedSveltoDictionaryNative.GetDirectValueByRef((uint)_currentIndex - 1);
-                    }
+                    get => ref _sharedSveltoDictionaryNative.GetDirectValueByRef((uint)_filterIndices[(uint)_currentIndex - 1]);
                 }
 
-                readonly NativeDynamicArrayCast<int> _getDirectValueByRef;
+                readonly NativeDynamicArrayCast<int> _filterIndices;
                 readonly SharedSveltoDictionaryNative<CombinedFilterComponentID, EntityFilterCollection> _sharedSveltoDictionaryNative;
                 readonly FilterContextID _filterContextId;
                 int _currentIndex;

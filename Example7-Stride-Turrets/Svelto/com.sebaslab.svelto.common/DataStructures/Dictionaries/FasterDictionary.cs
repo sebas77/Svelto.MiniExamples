@@ -12,6 +12,8 @@ namespace Svelto.DataStructures
         {
             this._dic = dic;
         }
+        
+        public uint count => (uint)_dic.count;
 
         [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
         public KeyValuePairFast<TKey, TValue, ManagedStrategy<TValue>>[] keyValues

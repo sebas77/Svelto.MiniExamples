@@ -40,7 +40,7 @@ jobs:
       run: unzip temp/bin/debug/Svelto.Common.${{ env.PKG_VERSION }}.nupkg -d temp/bin/debug
 
     - name: copy debug DLL to temp folder
-      run: sudo cp temp/bin/debug/lib/netstandard2.0/Svelto.Common.dll temp/bin/debug
+      run: sudo cp temp/bin/debug/lib/netstandard2.1/Svelto.Common.dll temp/bin/debug
 
     # Build for release
     - name: create package for Release configuration
@@ -50,7 +50,7 @@ jobs:
       run: unzip temp/bin/release/Svelto.Common.${{ env.PKG_VERSION }}.nupkg -d temp/bin/release
 
     - name: copy release DLL to temp folder
-      run: sudo cp temp/bin/release/lib/netstandard2.0/Svelto.Common.dll temp/bin/release
+      run: sudo cp temp/bin/release/lib/netstandard2.1/Svelto.Common.dll temp/bin/release
 
     # Compile into nuget package
     - name: build nuget package

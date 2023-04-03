@@ -16,7 +16,7 @@ namespace Svelto.ECS
     /// </summary>
     public partial class EntitiesDB
     {
-        FasterDictionary<RefWrapperType, FasterDictionary<ExclusiveGroupStruct, LegacyGroupFilters>> _filters =>
+        FasterDictionary<ComponentID, FasterDictionary<ExclusiveGroupStruct, LegacyGroupFilters>> _filters =>
             _enginesRoot._groupFilters;
 
         public LegacyFilters GetLegacyFilters()
@@ -27,7 +27,7 @@ namespace Svelto.ECS
         public readonly struct LegacyFilters
         {
             public LegacyFilters(
-                FasterDictionary<RefWrapperType, FasterDictionary<ExclusiveGroupStruct, LegacyGroupFilters>>
+                FasterDictionary<ComponentID, FasterDictionary<ExclusiveGroupStruct, LegacyGroupFilters>>
                     filtersLegacy)
             {
                 _filtersLegacy = filtersLegacy;
@@ -36,14 +36,14 @@ namespace Svelto.ECS
             public ref LegacyFilterGroup CreateOrGetFilterForGroup<T>(int filterID, ExclusiveGroupStruct groupID)
                 where T : struct, _IInternalEntityComponent
             {
-                var refWrapper = TypeRefWrapper<T>.wrapper;
+                var refWrapper = ComponentTypeID<T>.id;
 
                 return ref CreateOrGetFilterForGroup(filterID, groupID, refWrapper);
             }
 
             public bool HasFiltersForGroup<T>(ExclusiveGroupStruct groupID) where T : struct, _IInternalEntityComponent
             {
-                if (_filtersLegacy.TryGetValue(TypeRefWrapper<T>.wrapper, out var fasterDictionary) == false)
+                if (_filtersLegacy.TryGetValue(ComponentTypeID<T>.id, out var fasterDictionary) == false)
                     return false;
 
                 return fasterDictionary.ContainsKey(groupID);
@@ -52,7 +52,7 @@ namespace Svelto.ECS
             public bool HasFilterForGroup<T>(int filterID, ExclusiveGroupStruct groupID)
                 where T : struct, _IInternalEntityComponent
             {
-                if (_filtersLegacy.TryGetValue(TypeRefWrapper<T>.wrapper, out var fasterDictionary) == false)
+                if (_filtersLegacy.TryGetValue(ComponentTypeID<T>.id, out var fasterDictionary) == false)
                     return false;
 
                 if (fasterDictionary.TryGetValue(groupID, out var result))
@@ -64,7 +64,7 @@ namespace Svelto.ECS
             public ref LegacyGroupFilters CreateOrGetFiltersForGroup<T>(ExclusiveGroupStruct groupID)
                 where T : struct, _IInternalEntityComponent
             {
-                var fasterDictionary = _filtersLegacy.GetOrAdd(TypeRefWrapper<T>.wrapper,
+                var fasterDictionary = _filtersLegacy.GetOrAdd(ComponentTypeID<T>.id,
                     () => new FasterDictionary<ExclusiveGroupStruct, LegacyGroupFilters>());
 
                 return ref fasterDictionary.GetOrAdd(groupID,
@@ -75,27 +75,27 @@ namespace Svelto.ECS
                 where T : struct, _IInternalEntityComponent
             {
 #if DEBUG && !PROFILE_SVELTO
-                if (_filtersLegacy.ContainsKey(TypeRefWrapper<T>.wrapper) == false)
+                if (_filtersLegacy.ContainsKey(ComponentTypeID<T>.id) == false)
                     throw new ECSException($"trying to fetch not existing filters, type {typeof(T)}");
-                if (_filtersLegacy[TypeRefWrapper<T>.wrapper].ContainsKey(groupID) == false)
+                if (_filtersLegacy[ComponentTypeID<T>.id].ContainsKey(groupID) == false)
                     throw new ECSException(
                         $"trying to fetch not existing filters, type {typeof(T)} group {groupID.ToName()}");
 #endif
 
-                return ref _filtersLegacy[TypeRefWrapper<T>.wrapper].GetValueByRef(groupID);
+                return ref _filtersLegacy[ComponentTypeID<T>.id].GetValueByRef(groupID);
             }
 
             public ref LegacyFilterGroup GetFilterForGroup<T>(int filterId, ExclusiveGroupStruct groupID)
                 where T : struct, _IInternalEntityComponent
             {
 #if DEBUG && !PROFILE_SVELTO
-                if (_filtersLegacy.ContainsKey(TypeRefWrapper<T>.wrapper) == false)
+                if (_filtersLegacy.ContainsKey(ComponentTypeID<T>.id) == false)
                     throw new ECSException($"trying to fetch not existing filters, type {typeof(T)}");
-                if (_filtersLegacy[TypeRefWrapper<T>.wrapper].ContainsKey(groupID) == false)
+                if (_filtersLegacy[ComponentTypeID<T>.id].ContainsKey(groupID) == false)
                     throw new ECSException(
                         $"trying to fetch not existing filters, type {typeof(T)} group {groupID.ToName()}");
 #endif
-                return ref _filtersLegacy[TypeRefWrapper<T>.wrapper][groupID].GetFilter(filterId);
+                return ref _filtersLegacy[ComponentTypeID<T>.id][groupID].GetFilter(filterId);
             }
 
             public bool TryGetFilterForGroup<T>(int filterId, ExclusiveGroupStruct groupID,
@@ -103,7 +103,7 @@ namespace Svelto.ECS
             {
                 groupLegacyFilter = default;
 
-                if (_filtersLegacy.TryGetValue(TypeRefWrapper<T>.wrapper, out var fasterDictionary) == false)
+                if (_filtersLegacy.TryGetValue(ComponentTypeID<T>.id, out var fasterDictionary) == false)
                     return false;
 
                 if (fasterDictionary.TryGetValue(groupID, out var groupFilters) == false)
@@ -120,15 +120,16 @@ namespace Svelto.ECS
             {
                 legacyGroupFilters = default;
 
-                if (_filtersLegacy.TryGetValue(TypeRefWrapper<T>.wrapper, out var fasterDictionary) == false)
+                if (_filtersLegacy.TryGetValue(ComponentTypeID<T>.id, out var fasterDictionary) == false)
                     return false;
 
                 return fasterDictionary.TryGetValue(groupID, out legacyGroupFilters);
             }
 
             public void ClearFilter<T>(int filterID, ExclusiveGroupStruct exclusiveGroupStruct)
+                    where T : struct, _IInternalEntityComponent
             {
-                if (_filtersLegacy.TryGetValue(TypeRefWrapper<T>.wrapper, out var fasterDictionary))
+                if (_filtersLegacy.TryGetValue(ComponentTypeID<T>.id, out var fasterDictionary))
                 {
                     Check.Require(fasterDictionary.ContainsKey(exclusiveGroupStruct),
                         $"trying to clear filter not present in group {exclusiveGroupStruct}");
@@ -137,34 +138,34 @@ namespace Svelto.ECS
                 }
             }
 
-            public void ClearFilters<T>(int filterID)
+            public void ClearFilters<T>(int filterID) where T : struct, _IInternalEntityComponent
             {
-                if (_filtersLegacy.TryGetValue(TypeRefWrapper<T>.wrapper, out var fasterDictionary))
+                if (_filtersLegacy.TryGetValue(ComponentTypeID<T>.id, out var fasterDictionary))
                     foreach (var filtersPerGroup in fasterDictionary)
                         filtersPerGroup.value.ClearFilter(filterID);
             }
 
-            public void DisposeFilters<T>(ExclusiveGroupStruct exclusiveGroupStruct)
+            public void DisposeFilters<T>(ExclusiveGroupStruct exclusiveGroupStruct) where T : struct, _IInternalEntityComponent
             {
-                if (_filtersLegacy.TryGetValue(TypeRefWrapper<T>.wrapper, out var fasterDictionary))
+                if (_filtersLegacy.TryGetValue(ComponentTypeID<T>.id, out var fasterDictionary))
                 {
                     fasterDictionary[exclusiveGroupStruct].DisposeFilters();
                     fasterDictionary.Remove(exclusiveGroupStruct);
                 }
             }
 
-            public void DisposeFilters<T>()
+            public void DisposeFilters<T>() where T : struct, _IInternalEntityComponent
             {
-                if (_filtersLegacy.TryGetValue(TypeRefWrapper<T>.wrapper, out var fasterDictionary))
+                if (_filtersLegacy.TryGetValue(ComponentTypeID<T>.id, out var fasterDictionary))
                     foreach (var filtersPerGroup in fasterDictionary)
                         filtersPerGroup.value.DisposeFilters();
 
-                _filtersLegacy.Remove(TypeRefWrapper<T>.wrapper);
+                _filtersLegacy.Remove(ComponentTypeID<T>.id);
             }
 
-            public void DisposeFilterForGroup<T>(int resetFilterID, ExclusiveGroupStruct group)
+            public void DisposeFilterForGroup<T>(int resetFilterID, ExclusiveGroupStruct group) where T : struct, _IInternalEntityComponent
             {
-                if (_filtersLegacy.TryGetValue(TypeRefWrapper<T>.wrapper, out var fasterDictionary))
+                if (_filtersLegacy.TryGetValue(ComponentTypeID<T>.id, out var fasterDictionary))
                     fasterDictionary[@group].DisposeFilter(resetFilterID);
             }
 
@@ -185,14 +186,13 @@ namespace Svelto.ECS
 
             public bool AddEntityToFilter<N>(int filtersID, EGID egid, N mapper) where N : IEGIDMapper
             {
-                ref var filter =
-                    ref CreateOrGetFilterForGroup(filtersID, egid.groupID, new RefWrapperType(mapper.entityType));
+                ref var filter = ref CreateOrGetFilterForGroup(filtersID, egid.groupID, ComponentTypeMap.FetchID(mapper.entityType));
 
                 return filter.Add(egid.entityID, mapper);
             }
 
             internal ref LegacyFilterGroup CreateOrGetFilterForGroup(int filterID, ExclusiveGroupStruct groupID,
-                RefWrapperType refWrapper)
+                ComponentID refWrapper)
             {
                 var fasterDictionary = _filtersLegacy.GetOrAdd(refWrapper,
                     () => new FasterDictionary<ExclusiveGroupStruct, LegacyGroupFilters>());
@@ -205,7 +205,7 @@ namespace Svelto.ECS
                 return ref filters.CreateOrGetFilter(filterID);
             }
 
-            readonly FasterDictionary<RefWrapperType, FasterDictionary<ExclusiveGroupStruct, LegacyGroupFilters>>
+            readonly FasterDictionary<ComponentID, FasterDictionary<ExclusiveGroupStruct, LegacyGroupFilters>>
                 _filtersLegacy;
         }
     }

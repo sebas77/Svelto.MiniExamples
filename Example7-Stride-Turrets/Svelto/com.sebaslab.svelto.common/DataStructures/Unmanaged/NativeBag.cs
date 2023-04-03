@@ -156,6 +156,7 @@ namespace Svelto.DataStructures
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public T Dequeue<T>() where T : struct //should be unmanaged, but it's not due to Svelto.ECS constraints.
         {
             unsafe
@@ -169,6 +170,7 @@ namespace Svelto.DataStructures
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref T AccessReserved<T>(UnsafeArrayIndex reservedIndex) where T : struct //should be unmanaged, but it's not due to Svelto.ECS constraints.
         {
             unsafe

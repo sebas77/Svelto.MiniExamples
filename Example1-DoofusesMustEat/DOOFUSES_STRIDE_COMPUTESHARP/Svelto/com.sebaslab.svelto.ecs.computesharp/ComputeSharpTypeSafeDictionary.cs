@@ -286,8 +286,8 @@ namespace Svelto.ECS.Internal
         {
             TypeSafeDictionaryMethods.ExecuteEnginesSwapCallbacks_Group(ref computeBufferDictionary
                                                                       , (ITypeSafeDictionary<TValue>)toDictionary
-                                                                      , toGroup, fromGroup, this, reactiveEnginesSwap
-                                                                      , reactiveEnginesSwapEx, count, entityIDs
+                                                                      , toGroup, fromGroup, reactiveEnginesSwap
+                                                                      , reactiveEnginesSwapEx, entityIDs
                                                                       , in profiler);
         }
 
@@ -302,7 +302,7 @@ namespace Svelto.ECS.Internal
        , ExclusiveGroupStruct group, in PlatformProfiler profiler)
         {
             TypeSafeDictionaryMethods.ExecuteEnginesRemoveCallbacks_Group(
-                ref computeBufferDictionary, this, reactiveEnginesRemove, reactiveEnginesRemoveEx, count, entityIDs
+                ref computeBufferDictionary, reactiveEnginesRemove, reactiveEnginesRemoveEx, entityIDs
               , group, in profiler);
         }
 
@@ -311,11 +311,12 @@ namespace Svelto.ECS.Internal
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ExecuteEnginesDisposeCallbacks_Group
-        (FasterDictionary<ComponentID, FasterList<ReactEngineContainer<IReactOnDispose>>> engines
+        (FasterDictionary<ComponentID, FasterList<ReactEngineContainer<IReactOnDispose>>> reactiveEnginesDispose
+          , FasterDictionary<ComponentID, FasterList<ReactEngineContainer<IReactOnDisposeEx>>> reactiveEnginesDisposeEx
        , ExclusiveGroupStruct group, in PlatformProfiler profiler)
         {
             TypeSafeDictionaryMethods.ExecuteEnginesDisposeCallbacks_Group(
-                ref computeBufferDictionary, engines, group, in profiler);
+                ref computeBufferDictionary, reactiveEnginesDispose, reactiveEnginesDisposeEx, entityIDs, group, in profiler);
         }
 
         SveltoDictionary<uint, TValue, NativeStrategy<SveltoDictionaryNode<uint>>, ComputeSharpStrategy<TValue>,

@@ -1,4 +1,3 @@
-using System.Threading;
 using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.ECS.Internal;

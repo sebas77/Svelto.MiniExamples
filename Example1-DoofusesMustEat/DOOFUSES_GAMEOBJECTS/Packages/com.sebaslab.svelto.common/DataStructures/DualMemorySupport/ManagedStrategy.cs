@@ -120,6 +120,7 @@ namespace Svelto.DataStructures
                 _realBuffer.Clear();
         }
         
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Clear()
         {
             _realBuffer.Clear();
@@ -137,6 +138,7 @@ namespace Svelto.DataStructures
             get => ref _realBuffer[index];
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public MB<T> ToRealBuffer() { return _realBuffer; }
         
         IBuffer<T> IBufferStrategy<T>.ToBuffer()
