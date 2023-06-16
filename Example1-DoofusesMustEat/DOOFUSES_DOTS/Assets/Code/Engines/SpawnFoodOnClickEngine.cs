@@ -205,10 +205,7 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
                 ref PositionEntityComponent spawnComponent = ref spawnPoints[index];
 
                 entityManager.SetComponent(
-                    dotsEntity, new Translation()
-                    {
-                        Value = spawnComponent.position
-                    });
+                    dotsEntity, LocalTransform.FromPositionRotationScale(spawnComponent.position, quaternion.identity, 1.0f));
             }
         }
     }

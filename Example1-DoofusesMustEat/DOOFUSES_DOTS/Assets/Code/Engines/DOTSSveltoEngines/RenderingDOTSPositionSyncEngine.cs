@@ -43,11 +43,11 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
                 //All the blue doofuses are the same under the Svelto point of view, so they can be considered a pool and the order
                 //or 1:1 relations ship doesn't count
                 Entities.WithNone<SpecialBluePrefab>().ForEach(
-                            (int entityInQueryIndex, ref Translation translation) =>
+                            (int entityInQueryIndex, ref LocalTransform translation) =>
                             {
                                 ref readonly var positionEntityComponent = ref positions[filterIndices[entityInQueryIndex]];
 
-                                translation.Value = positionEntityComponent.position;
+                                translation.Position = positionEntityComponent.position;
                             })
                         //In order to fetch the unity entities from the same group of the svelto entities we will set 
                         //the group as a filter. The data is set in such a way each group handles a different prefab
@@ -64,11 +64,11 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
                 var (positions, _) = entitiesDB.QueryEntities<PositionEntityComponent>(@group);
 
                 Entities.WithAny<SpecialBluePrefab>().ForEach(
-                    (int entityInQueryIndex, ref Translation translation) =>
+                    (int entityInQueryIndex, ref LocalTransform translation) =>
                     {
                         ref readonly var positionEntityComponent = ref positions[filterIndices[entityInQueryIndex]];
 
-                        translation.Value = positionEntityComponent.position;
+                        translation.Position = positionEntityComponent.position;
                     }).WithSharedComponentFilter(new DOTSSveltoGroupID(@group)).ScheduleParallel();
             }
 
@@ -77,11 +77,11 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
                                 .RED.Groups))
             {
                 Entities.ForEach(
-                            (int entityInQueryIndex, ref Translation translation) =>
+                            (int entityInQueryIndex, ref LocalTransform translation) =>
                             {
                                 ref readonly var positionEntityComponent = ref positions[entityInQueryIndex];
 
-                                translation.Value = positionEntityComponent.position;
+                                translation.Position = positionEntityComponent.position;
                             })
                        .WithSharedComponentFilter(new DOTSSveltoGroupID(@group)).ScheduleParallel();
             }
