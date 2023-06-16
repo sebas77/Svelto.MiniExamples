@@ -96,19 +96,16 @@ namespace Svelto.ECS.Vanilla.Example
 
             public void Update()
             {
-                var (components, count) = entitiesDB.QueryEntities<EntityComponent>(ExclusiveGroups.group1);
+                var (components, entityIDs, count) = entitiesDB.QueryEntities<EntityComponent>(ExclusiveGroups.group1);
 
-                if (count > 0)
+                uint entityID;
+                for (var i = 0; i < count; i++)
                 {
-                    for (var i = 0; i < count; i++)
-                        components[i].counter++;
+                    components[i].counter++;
+                    entityID = entityIDs[i];
+                }
 
-                    Console.Log("Entity Struct engine executed");
-                }
-                else
-                {
-                    throw new Exception("can't be");
-                }
+                Console.Log("Entity Struct engine executed");
             }
 
             public void Add

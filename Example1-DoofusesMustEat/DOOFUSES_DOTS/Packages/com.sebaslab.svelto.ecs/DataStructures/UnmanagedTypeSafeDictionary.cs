@@ -193,7 +193,7 @@ namespace Svelto.ECS.Internal
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ExecuteEnginesAddCallbacks
-        (FasterDictionary<ComponentID, FasterList<ReactEngineContainer<IReactOnAdd>>> entityComponentEnginesDB
+        (FasterDictionary<ComponentID, FasterList<ReactEngineContainer<_Internal_IReactOnAdd>>> entityComponentEnginesDB
        , ITypeSafeDictionary toDic, ExclusiveGroupStruct toGroup, in PlatformProfiler profiler)
         {
             TypeSafeDictionaryMethods.ExecuteEnginesAddCallbacks(ref implUnmgd.dictionary, (ITypeSafeDictionary<TValue>)toDic
@@ -206,7 +206,7 @@ namespace Svelto.ECS.Internal
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ExecuteEnginesSwapCallbacks
         (FasterList<(uint, uint, string)> infosToProcess
-       , FasterList<ReactEngineContainer<IReactOnSwap>> reactiveEnginesSwap, ExclusiveGroupStruct fromGroup
+       , FasterList<ReactEngineContainer<_Internal_IReactOnSwap>> reactiveEnginesSwap, ExclusiveGroupStruct fromGroup
        , ExclusiveGroupStruct toGroup, in PlatformProfiler profiler)
         {
             TypeSafeDictionaryMethods.ExecuteEnginesSwapCallbacks(infosToProcess, ref implUnmgd.dictionary
@@ -219,7 +219,7 @@ namespace Svelto.ECS.Internal
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ExecuteEnginesRemoveCallbacks
         (FasterList<(uint, string)> infosToProcess
-       , FasterDictionary<ComponentID, FasterList<ReactEngineContainer<IReactOnRemove>>> reactiveEnginesRemove
+       , FasterDictionary<ComponentID, FasterList<ReactEngineContainer<_Internal_IReactOnRemove>>> reactiveEnginesRemove
        , ExclusiveGroupStruct fromGroup, in PlatformProfiler sampler)
         {
             TypeSafeDictionaryMethods.ExecuteEnginesRemoveCallbacks(infosToProcess, ref implUnmgd.dictionary
@@ -231,7 +231,7 @@ namespace Svelto.ECS.Internal
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ExecuteEnginesAddEntityCallbacksFast
-        (FasterDictionary<ComponentID, FasterList<ReactEngineContainer<IReactOnAddEx>>> reactiveEnginesAdd
+        (FasterDictionary<ComponentID, FasterList<ReactEngineContainer<_Internal_IReactOnAddEx>>> reactiveEnginesAdd
        , ExclusiveGroupStruct groupID, (uint, uint) rangeOfSubmittedEntitiesIndicies, in PlatformProfiler profiler)
         {
             TypeSafeDictionaryMethods.ExecuteEnginesAddEntityCallbacksFast(
@@ -243,7 +243,7 @@ namespace Svelto.ECS.Internal
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ExecuteEnginesSwapCallbacksFast
-        (FasterList<ReactEngineContainer<IReactOnSwapEx>> reactiveEnginesSwap, ExclusiveGroupStruct fromGroup
+        (FasterList<ReactEngineContainer<_Internal_IReactOnSwapEx>> reactiveEnginesSwap, ExclusiveGroupStruct fromGroup
        , ExclusiveGroupStruct toGroup, (uint, uint) rangeOfSubmittedEntitiesIndicies, in PlatformProfiler sampler)
         {
             TypeSafeDictionaryMethods.ExecuteEnginesSwapCallbacksFast(reactiveEnginesSwap, fromGroup, toGroup, entityIDs
@@ -255,7 +255,7 @@ namespace Svelto.ECS.Internal
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ExecuteEnginesRemoveCallbacksFast
-        (FasterList<ReactEngineContainer<IReactOnRemoveEx>> reactiveEnginesRemoveEx, ExclusiveGroupStruct fromGroup
+        (FasterList<ReactEngineContainer<_Internal_IReactOnRemoveEx>> reactiveEnginesRemoveEx, ExclusiveGroupStruct fromGroup
        , (uint, uint) rangeOfSubmittedEntitiesIndicies, in PlatformProfiler sampler)
         {
             TypeSafeDictionaryMethods.ExecuteEnginesRemoveCallbacksFast(reactiveEnginesRemoveEx, fromGroup
@@ -269,8 +269,8 @@ namespace Svelto.ECS.Internal
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ExecuteEnginesSwapCallbacks_Group
-        (FasterDictionary<ComponentID, FasterList<ReactEngineContainer<IReactOnSwap>>> reactiveEnginesSwap
-       , FasterDictionary<ComponentID, FasterList<ReactEngineContainer<IReactOnSwapEx>>> reactiveEnginesSwapEx
+        (FasterDictionary<ComponentID, FasterList<ReactEngineContainer<_Internal_IReactOnSwap>>> reactiveEnginesSwap
+       , FasterDictionary<ComponentID, FasterList<ReactEngineContainer<_Internal_IReactOnSwapEx>>> reactiveEnginesSwapEx
        , ITypeSafeDictionary toDictionary, ExclusiveGroupStruct fromGroup, ExclusiveGroupStruct toGroup
        , in PlatformProfiler profiler)
         {
@@ -285,8 +285,8 @@ namespace Svelto.ECS.Internal
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ExecuteEnginesRemoveCallbacks_Group
-        (FasterDictionary<ComponentID, FasterList<ReactEngineContainer<IReactOnRemove>>> reactiveEnginesRemove
-       , FasterDictionary<ComponentID, FasterList<ReactEngineContainer<IReactOnRemoveEx>>> reactiveEnginesRemoveEx
+        (FasterDictionary<ComponentID, FasterList<ReactEngineContainer<_Internal_IReactOnRemove>>> reactiveEnginesRemove
+       , FasterDictionary<ComponentID, FasterList<ReactEngineContainer<_Internal_IReactOnRemoveEx>>> reactiveEnginesRemoveEx
        , ExclusiveGroupStruct group, in PlatformProfiler profiler)
         {
             TypeSafeDictionaryMethods.ExecuteEnginesRemoveCallbacks_Group(
@@ -299,8 +299,8 @@ namespace Svelto.ECS.Internal
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ExecuteEnginesDisposeCallbacks_Group
-        ( FasterDictionary<ComponentID, FasterList<ReactEngineContainer<IReactOnDispose>>> reactiveEnginesDispose
-        , FasterDictionary<ComponentID, FasterList<ReactEngineContainer<IReactOnDisposeEx>>> reactiveEnginesDisposeEx
+        ( FasterDictionary<ComponentID, FasterList<ReactEngineContainer<_Internal_IReactOnDispose>>> reactiveEnginesDispose
+        , FasterDictionary<ComponentID, FasterList<ReactEngineContainer<_Internal_IReactOnDisposeEx>>> reactiveEnginesDisposeEx
        , ExclusiveGroupStruct group, in PlatformProfiler profiler)
         {
             TypeSafeDictionaryMethods.ExecuteEnginesDisposeCallbacks_Group(

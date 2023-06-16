@@ -615,23 +615,25 @@
      <Reference Include="System.Xml.Serialization">
      <HintPath>C:\Program Files\Unity\2020.3.43f1\Editor\Data\NetStandard\compat\2.0.0\shims\netfx\System.Xml.Serialization.dll</HintPath>
      </Reference>
+     <Reference Include="Unity.VisualStudio.Editor">
+     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example6-Unity Hybrid-OOP Abstraction\Library\ScriptAssemblies\Unity.VisualStudio.Editor.dll</HintPath>
+     </Reference>
+     <Reference Include="Unity.Rider.Editor">
+     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example6-Unity Hybrid-OOP Abstraction\Library\ScriptAssemblies\Unity.Rider.Editor.dll</HintPath>
+     </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="WithOOPLayer.csproj">
       <Project>{5908a6a8-17d0-ad27-c868-3f36444a4298}</Project>
       <Name>WithOOPLayer</Name>
     </ProjectReference>
-    <ProjectReference Include="Unity.VisualStudio.Editor.csproj">
-      <Project>{5759520d-61dd-8968-b1c9-b99d559c0378}</Project>
-      <Name>Unity.VisualStudio.Editor</Name>
-    </ProjectReference>
     <ProjectReference Include="Svelto.ECS.csproj">
       <Project>{eecb381d-d537-8d9b-253a-f1a108e3b14d}</Project>
       <Name>Svelto.ECS</Name>
     </ProjectReference>
-    <ProjectReference Include="Unity.Rider.Editor.csproj">
-      <Project>{2176cabb-de1d-cd87-d6f5-7e4090eae81d}</Project>
-      <Name>Unity.Rider.Editor</Name>
+    <ProjectReference Include="Svelto.Common.csproj">
+      <Project>{0c7f8a75-109c-9962-5f1c-6194f043216a}</Project>
+      <Name>Svelto.Common</Name>
     </ProjectReference>
     <ProjectReference Include="WithEntityViewComponent.csproj">
       <Project>{511bb390-f53b-fb33-de33-6e6a0383b051}</Project>
@@ -640,10 +642,6 @@
     <ProjectReference Include="Svelto.Pool.Debugger.csproj">
       <Project>{dcb8f6e9-cccb-8501-3faf-7eb0229b9849}</Project>
       <Name>Svelto.Pool.Debugger</Name>
-    </ProjectReference>
-    <ProjectReference Include="Svelto.Common.csproj">
-      <Project>{0c7f8a75-109c-9962-5f1c-6194f043216a}</Project>
-      <Name>Svelto.Common</Name>
     </ProjectReference>
     <ProjectReference Include="OOPLayerPackage.csproj">
       <Project>{03d58cc9-de2c-a6be-8082-9fee783f1c4e}</Project>

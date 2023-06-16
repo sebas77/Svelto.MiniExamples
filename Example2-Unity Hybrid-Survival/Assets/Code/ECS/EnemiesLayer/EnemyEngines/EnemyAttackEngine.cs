@@ -7,28 +7,27 @@ using UnityEngine;
 namespace Svelto.ECS.Example.Survive.Enemies
 {
     [Sequenced(nameof(EnemyEnginesNames.EnemyAttackEngine))]
-    public class EnemyAttackEngine : IQueryingEntitiesEngine, IStepEngine
+    public class EnemyAttackEngine: IQueryingEntitiesEngine, IStepEngine
     {
         public EnemyAttackEngine(ITime time)
         {
-            _time                 = time;
+            _time = time;
         }
 
         public EntitiesDB entitiesDB { set; private get; }
 
-        public void Ready() {}
+        public void Ready() { }
 
         public void Step()
         {
             //get all the entities with EnemyAttack and Collision Components that are in any Enemies Group
             foreach (var ((enemiesAttackData, collision, enemiesCount), _) in entitiesDB
-                            .QueryEntities<EnemyAttackComponent, CollisionComponent>(
-                                 EnemyAliveGroup.Groups))
+                            .QueryEntities<EnemyAttackComponent, CollisionComponent>(EnemyAliveGroup.Groups))
             {
                 for (var enemyIndex = enemiesCount - 1; enemyIndex >= 0; enemyIndex--)
                 {
                     ref var enemyAttackComponent = ref enemiesAttackData[enemyIndex];
-                    ref CollisionData collisionData   = ref collision[enemyIndex].entityInRange;
+                    ref CollisionData collisionData = ref collision[enemyIndex].entityInRange;
 
                     //a collision was previously registered
                     if (collisionData.collides == true)
@@ -55,11 +54,11 @@ namespace Svelto.ECS.Example.Survive.Enemies
         void DamageTargetInsideRange(in EGID otherEntityID, int attackDamage)
         {
             entitiesDB.QueryEntity<DamageableComponent>(otherEntityID).damageInfo =
-                new DamageInfo(attackDamage, Vector3.zero);
+                    new DamageInfo(attackDamage, Vector3.zero);
         }
 
         public string name => nameof(EnemyAttackEngine);
 
-        readonly ITime                            _time;
+        readonly ITime _time;
     }
 }

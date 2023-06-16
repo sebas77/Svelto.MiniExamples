@@ -59,8 +59,7 @@ namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample
     public readonly struct ConsumingFoodJob
     {
         readonly (NB<PositionComponent> positions, NB<VelocityComponent> velocities, NB<MealInfoComponent>
-                mealInfos, NB<RotationComponent> rotations, int count)
-                _doofuses;
+                mealInfos, NB<RotationComponent> rotations, int count) _doofuses;
 
         readonly NativeEntityIDs _nativeEntityIDs;
         readonly IEntityFunctions _entityFunctions;

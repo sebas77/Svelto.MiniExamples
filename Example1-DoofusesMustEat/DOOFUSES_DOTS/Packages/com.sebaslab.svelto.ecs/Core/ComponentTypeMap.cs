@@ -5,7 +5,7 @@ using Svelto.DataStructures;
 
 namespace Svelto.ECS
 {
-    public static class ComponentTypeMap
+    static class ComponentTypeMap
     {
         static readonly ConcurrentDictionary<Type, ComponentID> _componentTypeMap = new ConcurrentDictionary<Type, ComponentID>();
         static readonly ConcurrentDictionary<ComponentID, Type> _reverseComponentTypeMap = new ConcurrentDictionary<ComponentID, Type>();

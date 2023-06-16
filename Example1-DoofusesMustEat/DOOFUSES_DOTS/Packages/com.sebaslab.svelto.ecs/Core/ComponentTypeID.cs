@@ -5,7 +5,7 @@ using Svelto.ECS.Internal;
 
 namespace Svelto.ECS
 {
-    public static class BurstCompatibleCounter
+    static class BurstCompatibleCounter
     {
         public static int counter;        
     }
@@ -20,6 +20,11 @@ namespace Svelto.ECS
             get => _id.Data;
         }
 
+        /// <summary>
+        /// c# Static constructors are guaranteed to be thread safe
+        /// The runtime guarantees that a static constructor is only called once. So even if a type is called by multiple threads at the same time,
+        /// the static constructor is always executed one time. To get a better understanding how this works, it helps to know what purpose it serves.
+        /// </summary>
         static ComponentTypeID()
         {
             Init();
@@ -29,8 +34,10 @@ namespace Svelto.ECS
         [Unity.Burst.BurstDiscard] 
         //SharedStatic values must be initialized from not burstified code
 #endif
-        static void Init()
+        internal static void Init()
         {
+            if (_id.Data != 0)
+                return;
             _id.Data = Interlocked.Increment(ref BurstCompatibleCounter.counter);
             ComponentTypeMap.Add(typeof(T), id);
         }

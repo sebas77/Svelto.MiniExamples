@@ -2,7 +2,7 @@ using Svelto.ECS.Internal;
 
 namespace Svelto.ECS
 {
-    public readonly struct ReactEngineContainer<T> where T:IReactEngine
+    public readonly struct ReactEngineContainer<T> where T:_Internal_IReactEngine
     {
         public readonly string name;
         public readonly T      engine;

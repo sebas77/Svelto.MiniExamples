@@ -49,15 +49,14 @@ namespace Svelto.ECS.Example.Survive.Enemies
                     if (EnemyAliveGroup.Includes(group)) //is it an enemy?
                     {
                         var (damage, vfx, sound, _) =
-                                entitiesDB.QueryEntities<DamageableComponent, VFXComponent, SoundComponent>(
-                                    group);
+                                entitiesDB.QueryEntities<DamageableComponent, VFXComponent, SoundComponent>(group);
 
                         var indicesCount = filteredIndices.count;
                         for (int i = 0; i < indicesCount; i++)
                         {
                             //remember: filters work with double indexing
                             var filteredIndex = filteredIndices[i];
-                            
+
                             sound[filteredIndex].playOneShot = (int)AudioType.damage;
 
                             vfx[filteredIndex].vfxEvent = new VFXEvent(damage[filteredIndex].damageInfo.damagePoint);

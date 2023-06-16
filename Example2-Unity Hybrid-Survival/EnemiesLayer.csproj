@@ -41,6 +41,7 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
+     <Compile Include="Assets\Code\ECS\EnemiesLayer\EnemyAnimations.cs" />
      <Compile Include="Assets\Code\ECS\EnemiesLayer\EnemyEngines\EnemyChangeAnimationOnTargetDeathEngine.cs" />
      <Compile Include="Assets\Code\ECS\EnemiesLayer\Entities\EnemyComponent.cs" />
      <Compile Include="Assets\Code\ECS\EnemiesLayer\EnemyEngines\EnemyMovementEngine.cs" />
@@ -54,11 +55,9 @@
      <Compile Include="Assets\Code\ECS\EnemiesLayer\EnemyEngines\EnemySpawnerEngine.cs" />
      <Compile Include="Assets\Code\ECS\EnemiesLayer\Entities\EnemyEntityDescriptor.cs" />
      <Compile Include="Assets\Code\ECS\EnemiesLayer\EnemyEngines\EnemyDeathEngine.cs" />
-     <Compile Include="Assets\Code\ECS\EnemiesLayer\EnemyEngines\EnemyAnimations.cs" />
      <Compile Include="Assets\Code\ECS\EnemiesLayer\EnemyEngines\EnemySpawnEffectOnDamageEngine.cs" />
      <None Include="Assets\Code\ECS\EnemiesLayer\EnemiesLayer.asmdef" />
      <Folder Include="Assets\Code\ECS\EnemiesLayer\EnemyEngines" />
-     <Folder Include="Assets\Code\ECS\EnemiesLayer" />
      <Folder Include="Assets\Code\ECS\EnemiesLayer\Entities" />
      <Reference Include="UnityEngine">
      <HintPath>C:\Program Files\Unity\2020.3.43f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>

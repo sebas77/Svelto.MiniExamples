@@ -41,17 +41,17 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
-     <None Include="Library\PackageCache\com.unity.collections@2.1.0-pre.2\Unity.Collections.Tests.Playmode\FixedListPlayModeTests.tt" />
-     <Folder Include="Library\PackageCache\com.unity.collections@2.1.0-pre.2\Unity.Collections.Tests.Playmode" />
-     <None Include="Library\PackageCache\com.unity.collections@2.1.0-pre.2\Unity.Collections.Tests.Playmode\Unity.Collections.Tests.Playmode.asmdef" />
+     <None Include="Library\PackageCache\com.unity.collections@2.1.0-pre.18\Unity.Collections.Tests.Playmode\FixedListPlayModeTests.tt" />
+     <Folder Include="Library\PackageCache\com.unity.collections@2.1.0-pre.18\Unity.Collections.Tests.Playmode" />
+     <None Include="Library\PackageCache\com.unity.collections@2.1.0-pre.18\Unity.Collections.Tests.Playmode\Unity.Collections.Tests.Playmode.asmdef" />
      <Reference Include="UnityEngine">
-     <HintPath>C:\Program Files\Unity\2022.2.13f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
+     <HintPath>C:\Program Files\Unity\2023.1.0f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
      </Reference>
      <Reference Include="UnityEngine.CoreModule">
-     <HintPath>C:\Program Files\Unity\2022.2.13f1\Editor\Data\Managed\UnityEngine\UnityEngine.CoreModule.dll</HintPath>
+     <HintPath>C:\Program Files\Unity\2023.1.0f1\Editor\Data\Managed\UnityEngine\UnityEngine.CoreModule.dll</HintPath>
      </Reference>
      <Reference Include="UnityEditor">
-     <HintPath>C:\Program Files\Unity\2022.2.13f1\Editor\Data\Managed\UnityEngine\UnityEditor.dll</HintPath>
+     <HintPath>C:\Program Files\Unity\2023.1.0f1\Editor\Data\Managed\UnityEngine\UnityEditor.dll</HintPath>
      </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

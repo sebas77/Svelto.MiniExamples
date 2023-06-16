@@ -45,6 +45,8 @@ namespace Svelto.Utilities
 #endif
             }
 
+            var logFormatter = ConsoleUtilityForUnity.LogFormatter(txt, type, showLogStack, e, frame, dataString, stackTrace);
+            
             switch (type)
             {
                 case LogType.Log:
@@ -55,16 +57,12 @@ namespace Svelto.Utilities
                         var log = Application.GetStackTraceLogType(UnityEngine.LogType.Log);
                         Application.SetStackTraceLogType(UnityEngine.LogType.Log, StackTraceLogType.None);
 
-                        ConsoleUtilityForUnity.defaultLogHandler.LogFormat(UnityEngine.LogType.Log, null,
-                            ConsoleUtilityForUnity.LogFormatter(txt, type, showLogStack, e, frame, dataString,
-                                stackTrace));
+                        ConsoleUtilityForUnity.defaultLogHandler.LogFormat(UnityEngine.LogType.Log, null, logFormatter);
 
                         Application.SetStackTraceLogType(UnityEngine.LogType.Log, log);
                     }
                     else
-                        ConsoleUtilityForUnity.defaultLogHandler.LogFormat(UnityEngine.LogType.Log, null,
-                            ConsoleUtilityForUnity.LogFormatter(txt, type, showLogStack, e, frame, dataString,
-                                stackTrace));
+                        ConsoleUtilityForUnity.defaultLogHandler.LogFormat(UnityEngine.LogType.Log, null, logFormatter);
 
                     break;
                 }
@@ -77,16 +75,12 @@ namespace Svelto.Utilities
                         var log = Application.GetStackTraceLogType(UnityEngine.LogType.Log);
                         Application.SetStackTraceLogType(UnityEngine.LogType.Log, StackTraceLogType.None);
 
-                        ConsoleUtilityForUnity.defaultLogHandler.LogFormat(UnityEngine.LogType.Log, null,
-                            ConsoleUtilityForUnity.LogFormatter(txt, type, showLogStack, e, frame, dataString,
-                                stackTrace));
+                        ConsoleUtilityForUnity.defaultLogHandler.LogFormat(UnityEngine.LogType.Log, null, logFormatter);
 
                         Application.SetStackTraceLogType(UnityEngine.LogType.Log, log);
                     }
                     else
-                        ConsoleUtilityForUnity.defaultLogHandler.LogFormat(UnityEngine.LogType.Log, null,
-                            ConsoleUtilityForUnity.LogFormatter(txt, type, showLogStack, e, frame, dataString,
-                                stackTrace));
+                        ConsoleUtilityForUnity.defaultLogHandler.LogFormat(UnityEngine.LogType.Log, null, logFormatter);
 #endif
                     break;
                 }
@@ -98,16 +92,12 @@ namespace Svelto.Utilities
                         var log = Application.GetStackTraceLogType(UnityEngine.LogType.Warning);
                         Application.SetStackTraceLogType(UnityEngine.LogType.Warning, StackTraceLogType.None);
 
-                        ConsoleUtilityForUnity.defaultLogHandler.LogFormat(UnityEngine.LogType.Warning, null,
-                            ConsoleUtilityForUnity.LogFormatter(txt, type, showLogStack, e, frame, dataString,
-                                stackTrace));
+                        ConsoleUtilityForUnity.defaultLogHandler.LogFormat(UnityEngine.LogType.Warning, null, logFormatter);
 
                         Application.SetStackTraceLogType(UnityEngine.LogType.Warning, log);
                     }
                     else
-                        ConsoleUtilityForUnity.defaultLogHandler.LogFormat(UnityEngine.LogType.Warning, null,
-                            ConsoleUtilityForUnity.LogFormatter(txt, type, showLogStack, e, frame, dataString,
-                                stackTrace));
+                        ConsoleUtilityForUnity.defaultLogHandler.LogFormat(UnityEngine.LogType.Warning, null, logFormatter);
 
                     break;
                 }
@@ -120,16 +110,12 @@ namespace Svelto.Utilities
                         var log = Application.GetStackTraceLogType(UnityEngine.LogType.Error);
                         Application.SetStackTraceLogType(UnityEngine.LogType.Error, StackTraceLogType.None);
 
-                        ConsoleUtilityForUnity.defaultLogHandler.LogFormat(UnityEngine.LogType.Error, null,
-                            ConsoleUtilityForUnity.LogFormatter(txt, type, showLogStack, e, frame, dataString,
-                                stackTrace));
+                        ConsoleUtilityForUnity.defaultLogHandler.LogFormat(UnityEngine.LogType.Error, null, logFormatter);
 
                         Application.SetStackTraceLogType(UnityEngine.LogType.Error, log);
                     }
                     else
-                        ConsoleUtilityForUnity.defaultLogHandler.LogFormat(UnityEngine.LogType.Error, null,
-                            ConsoleUtilityForUnity.LogFormatter(txt, type, showLogStack, e, frame, dataString,
-                                stackTrace));
+                        ConsoleUtilityForUnity.defaultLogHandler.LogFormat(UnityEngine.LogType.Error, null, logFormatter);
 
                     break;
                 }

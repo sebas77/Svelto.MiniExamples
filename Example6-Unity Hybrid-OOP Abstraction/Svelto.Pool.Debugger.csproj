@@ -631,19 +631,17 @@
      <Reference Include="System.Xml.XPath.XDocument">
      <HintPath>C:\Program Files\Unity\2020.3.43f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Xml.XPath.XDocument.dll</HintPath>
      </Reference>
+     <Reference Include="UnityEngine.TestRunner">
+     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example6-Unity Hybrid-OOP Abstraction\Library\ScriptAssemblies\UnityEngine.TestRunner.dll</HintPath>
+     </Reference>
+     <Reference Include="UnityEditor.TestRunner">
+     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example6-Unity Hybrid-OOP Abstraction\Library\ScriptAssemblies\UnityEditor.TestRunner.dll</HintPath>
+     </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Svelto.Common.csproj">
       <Project>{0c7f8a75-109c-9962-5f1c-6194f043216a}</Project>
       <Name>Svelto.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="UnityEngine.TestRunner.csproj">
-      <Project>{9416d6be-4b7e-d3ef-cbe3-5c1f6c1420e4}</Project>
-      <Name>UnityEngine.TestRunner</Name>
-    </ProjectReference>
-    <ProjectReference Include="UnityEditor.TestRunner.csproj">
-      <Project>{dab00a67-59db-0e88-0285-2149e3d0a7c7}</Project>
-      <Name>UnityEditor.TestRunner</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

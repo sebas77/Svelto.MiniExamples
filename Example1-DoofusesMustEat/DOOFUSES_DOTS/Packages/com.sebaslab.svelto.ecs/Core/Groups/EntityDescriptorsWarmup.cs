@@ -5,13 +5,13 @@ using Svelto.ECS.Internal;
 
 namespace Svelto.ECS
 {
-    public static class EntityDescriptorsWarmup
+    static class EntityDescriptorsWarmup
     {
         /// <summary>
         /// c# Static constructors are guaranteed to be thread safe
         /// Warmup all EntityDescriptors and ComponentTypeID classes to avoid huge overheads when they are first used
         /// </summary>
-        internal static void Init()
+        internal static void WarmUp()
         {
             List<Assembly> assemblies = AssemblyUtility.GetCompatibleAssemblies();
             foreach (Assembly assembly in assemblies)
@@ -20,7 +20,7 @@ namespace Svelto.ECS
 
                 foreach (Type type in AssemblyUtility.GetTypesSafe(assembly))
                 {
-                    if (type.IsInterface == false && typeOfEntityDescriptors.IsAssignableFrom(type)) //IsClass and IsSealed and IsAbstract means only static classes
+                    if (type.IsInterface == false && type.IsAbstract == false && type.IsGenericType == false && typeOfEntityDescriptors.IsAssignableFrom(type)) 
                     {
                         try
                         {
@@ -30,10 +30,7 @@ namespace Svelto.ECS
 
                             System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(warmup.TypeHandle);
                         }
-                        catch (Exception e)
-                        {
-                            continue;
-                        }
+                        catch { }
                     }
                 }
                 
@@ -51,10 +48,7 @@ namespace Svelto.ECS
                             //this warms up the component builder. There could be different implementation of components builders for the same component type in theory
                             System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(componentType.TypeHandle);
                         }
-                        catch (Exception e)
-                        {
-                            continue;
-                        }
+                        catch { }
                     }
                 }
             }

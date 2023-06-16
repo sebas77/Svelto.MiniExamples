@@ -3,49 +3,51 @@ using Svelto.ECS.Internal;
 
 namespace Svelto.ECS.Internal
 {
-    public interface IReactEngine : IEngine
+    public interface _Internal_IReactEngine : IEngine
     {
     }
-#region legacy interfaces
+
     /// <summary>
     /// This is now considered legacy and it will be deprecated in future
     /// </summary>
-    public interface IReactOnAdd : IReactEngine
+    public interface _Internal_IReactOnAdd : _Internal_IReactEngine
     {
     }
     
     /// <summary>
     /// This is now considered legacy and it will be deprecated in future
     /// </summary>
-    public interface IReactOnRemove : IReactEngine
+    public interface _Internal_IReactOnRemove : _Internal_IReactEngine
     {
     }
     
     /// <summary>
     /// This is now considered legacy and it will be deprecated in future
     /// </summary>
-    public interface IReactOnSwap : IReactEngine
-    {
-    }
-#endregion    
-
-    public interface IReactOnAddEx : IReactEngine
-    {
-    }
-
-    public interface IReactOnRemoveEx : IReactEngine
-    {
-    }
-
-    public interface IReactOnSwapEx : IReactEngine
+    public interface _Internal_IReactOnSwap : _Internal_IReactEngine
     {
     }
     
-    public interface IReactOnDisposeEx : IReactEngine
+    /// <summary>
+    /// This is now considered legacy and it will be deprecated in future
+    /// </summary>
+    public interface _Internal_IReactOnDispose : _Internal_IReactEngine
     {
     }
 
-    public interface IReactOnDispose : IReactEngine
+    public interface _Internal_IReactOnAddEx : _Internal_IReactEngine
+    {
+    }
+
+    public interface _Internal_IReactOnRemoveEx : _Internal_IReactEngine
+    {
+    }
+
+    public interface _Internal_IReactOnSwapEx : _Internal_IReactEngine
+    {
+    }
+    
+    public interface _Internal_IReactOnDisposeEx : _Internal_IReactEngine
     {
     }
 }
@@ -71,12 +73,12 @@ namespace Svelto.ECS
     /// </summary>
     /// <typeparam name="T"></typeparam>
     [Obsolete]
-    public interface IReactOnAdd<T> : IReactOnAdd where T : _IInternalEntityComponent
+    public interface IReactOnAdd<T> : _Internal_IReactOnAdd where T : _IInternalEntityComponent
     {
         void Add(ref T entityComponent, EGID egid);
     }
 
-    public interface IReactOnAddEx<T> : IReactOnAddEx where T : struct, _IInternalEntityComponent
+    public interface IReactOnAddEx<T> : _Internal_IReactOnAddEx where T : struct, _IInternalEntityComponent
     {
         void Add((uint start, uint end) rangeOfEntities, in EntityCollection<T> entities,
             ExclusiveGroupStruct groupID);
@@ -87,7 +89,7 @@ namespace Svelto.ECS
     /// </summary>
     /// <typeparam name="T"></typeparam>
     [Obsolete]
-    public interface IReactOnRemove<T> : IReactOnRemove where T : _IInternalEntityComponent
+    public interface IReactOnRemove<T> : _Internal_IReactOnRemove where T : _IInternalEntityComponent
     {
         void Remove(ref T entityComponent, EGID egid);
     }
@@ -96,13 +98,13 @@ namespace Svelto.ECS
     {
     }
 
-    public interface IReactOnRemoveEx<T> : IReactOnRemoveEx where T : struct, _IInternalEntityComponent
+    public interface IReactOnRemoveEx<T> : _Internal_IReactOnRemoveEx where T : struct, _IInternalEntityComponent
     {
         void Remove((uint start, uint end) rangeOfEntities, in EntityCollection<T> entities,
             ExclusiveGroupStruct groupID);
     }
 
-    [Obsolete]
+    [Obsolete("Use IReactOnAddEx<T> and IReactOnRemoveEx<T> or IReactOnAddAndRemoveEx<T> instead")]
     public interface IReactOnAddAndRemove<T> : IReactOnAdd<T>, IReactOnRemove<T> where T : _IInternalEntityComponent
     {
     }
@@ -112,7 +114,8 @@ namespace Svelto.ECS
     /// It can work together with IReactOnRemove which normally is not called on enginesroot disposed
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public interface IReactOnDispose<T> : IReactOnDispose where T : _IInternalEntityComponent
+    [Obsolete("Use IReactOnDisposeEx<T> instead")]
+    public interface IReactOnDispose<T> : _Internal_IReactOnDispose where T : _IInternalEntityComponent
     {
         void Remove(ref T entityComponent, EGID egid);
     }
@@ -121,8 +124,8 @@ namespace Svelto.ECS
     /// Interface to mark an Engine as reacting to entities swapping group
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    [Obsolete]
-    public interface IReactOnSwap<T> : IReactOnSwap where T : _IInternalEntityComponent
+    [Obsolete("Use IReactOnSwapEx<T> instead")]
+    public interface IReactOnSwap<T> : _Internal_IReactOnSwap where T : _IInternalEntityComponent
     {
         void MovedTo(ref T entityComponent, ExclusiveGroupStruct previousGroup, EGID egid);
     }
@@ -131,13 +134,13 @@ namespace Svelto.ECS
     /// All the entities have been already submitted in the database (swapped) when this callback is triggered
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public interface IReactOnSwapEx<T> : IReactOnSwapEx where T : struct, _IInternalEntityComponent
+    public interface IReactOnSwapEx<T> : _Internal_IReactOnSwapEx where T : struct, _IInternalEntityComponent
     {
         void MovedTo((uint start, uint end) rangeOfEntities, in EntityCollection<T> entities,
             ExclusiveGroupStruct fromGroup, ExclusiveGroupStruct toGroup);
     }
     
-    public interface IReactOnDisposeEx<T> : IReactOnDisposeEx where T : struct, _IInternalEntityComponent
+    public interface IReactOnDisposeEx<T> : _Internal_IReactOnDisposeEx where T : struct, _IInternalEntityComponent
     {
         void Remove((uint start, uint end) rangeOfEntities, in EntityCollection<T> entities,
             ExclusiveGroupStruct groupID);
@@ -146,12 +149,12 @@ namespace Svelto.ECS
     /// <summary>
     /// Interface to mark an Engine as reacting after each entities submission phase
     /// </summary>
-    public interface IReactOnSubmission : IReactEngine
+    public interface IReactOnSubmission : _Internal_IReactEngine
     {
         void EntitiesSubmitted();
     }
     
-    public interface IReactOnSubmissionStarted : IReactEngine
+    public interface IReactOnSubmissionStarted : _Internal_IReactEngine
     {
         void EntitiesSubmissionStarting();
     }

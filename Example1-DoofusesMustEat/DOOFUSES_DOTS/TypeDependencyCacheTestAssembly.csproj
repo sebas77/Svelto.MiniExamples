@@ -12,7 +12,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{c20aa557-870c-945b-fdec-639748663323}</ProjectGuid>
+    <ProjectGuid>{b6dd0d5e-f6f8-ad37-11db-79ae1aa40a87}</ProjectGuid>
     <ProjectTypeGuids>{E097FAD1-6243-4DAD-9C02-E9B9EFC3FFC1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -41,16 +41,16 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
-     <None Include="Library\PackageCache\com.unity.entities@1.0.0-pre.47\Unity.Scenes.Editor.Tests\TypeDependencyCacheTestAssembly\TypeDependencyCacheTestAssembly.asmdef" />
-     <Folder Include="Library\PackageCache\com.unity.entities@1.0.0-pre.47\Unity.Scenes.Editor.Tests\TypeDependencyCacheTestAssembly" />
+     <None Include="Library\PackageCache\com.unity.entities@1.0.0-pre.65\Unity.Scenes.Editor.Tests\TypeDependencyCacheTestAssembly\TypeDependencyCacheTestAssembly.asmdef" />
+     <Folder Include="Library\PackageCache\com.unity.entities@1.0.0-pre.65\Unity.Scenes.Editor.Tests\TypeDependencyCacheTestAssembly" />
      <Reference Include="UnityEngine">
-     <HintPath>C:\Program Files\Unity\2023.1.0b6\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
+     <HintPath>C:\Program Files\Unity\2023.1.0f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
      </Reference>
      <Reference Include="UnityEngine.CoreModule">
-     <HintPath>C:\Program Files\Unity\2023.1.0b6\Editor\Data\Managed\UnityEngine\UnityEngine.CoreModule.dll</HintPath>
+     <HintPath>C:\Program Files\Unity\2023.1.0f1\Editor\Data\Managed\UnityEngine\UnityEngine.CoreModule.dll</HintPath>
      </Reference>
      <Reference Include="UnityEditor">
-     <HintPath>C:\Program Files\Unity\2023.1.0b6\Editor\Data\Managed\UnityEngine\UnityEditor.dll</HintPath>
+     <HintPath>C:\Program Files\Unity\2023.1.0f1\Editor\Data\Managed\UnityEngine\UnityEditor.dll</HintPath>
      </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

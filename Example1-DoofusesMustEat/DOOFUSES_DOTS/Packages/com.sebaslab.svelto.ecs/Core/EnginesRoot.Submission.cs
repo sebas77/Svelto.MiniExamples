@@ -187,15 +187,15 @@ namespace Svelto.ECS
                     //for each fromGroup, get all the entities to swap for each component type.
                     //then get the list of IDs for each ToGroup.
                     //now swap the set of FromGroup -> ToGroup entities per ID.
-                    foreach (var entitiesToSwap in swapEntitiesOperations)
+                    foreach (var entitiesToSwap in swapEntitiesOperations) //each operation is a component to swap
                     {
                         ExclusiveGroupStruct fromGroup = entitiesToSwap.key;
-                        var fromGroupDictionary = enginesRoot.GetDBGroup(fromGroup);
+                        FasterDictionary<ComponentID, ITypeSafeDictionary> fromGroupDictionary = enginesRoot.GetDBGroup(fromGroup);
 
                         //iterate all the fromgroups
                         foreach (var groupedEntitiesToSwap in entitiesToSwap.value)
                         {
-                            var componentType = groupedEntitiesToSwap.key;
+                            ComponentID componentType = groupedEntitiesToSwap.key;
                             ITypeSafeDictionary fromComponentsDictionaryDB = fromGroupDictionary[componentType];
 
                             //get the subset of togroups that come from from group

@@ -39,21 +39,21 @@ namespace Svelto.ECS.Internal
 
         //This is now obsolete, but I cannot mark it as such because it's heavily used by legacy projects
         void ExecuteEnginesAddCallbacks
-        (FasterDictionary<ComponentID, FasterList<ReactEngineContainer<IReactOnAdd>>> entityComponentEnginesDb
+        (FasterDictionary<ComponentID, FasterList<ReactEngineContainer<_Internal_IReactOnAdd>>> entityComponentEnginesDb
        , ITypeSafeDictionary destinationDatabase, ExclusiveGroupStruct toGroup, in PlatformProfiler profiler);
         //Version to use
         void ExecuteEnginesAddEntityCallbacksFast(
-         FasterDictionary<ComponentID, FasterList<ReactEngineContainer<IReactOnAddEx>>> reactiveEnginesAdd,
+         FasterDictionary<ComponentID, FasterList<ReactEngineContainer<_Internal_IReactOnAddEx>>> reactiveEnginesAdd,
          ExclusiveGroupStruct groupID, (uint, uint) rangeOfSubmittedEntitiesIndicies, in PlatformProfiler profiler);
 
         //------------
         
         //This is now obsolete, but I cannot mark it as such because it's heavily used by legacy projects
         void ExecuteEnginesSwapCallbacks(FasterList<(uint, uint, string)> infosToProcess,
-         FasterList<ReactEngineContainer<IReactOnSwap>> reactiveEnginesSwap, ExclusiveGroupStruct fromGroup,
+         FasterList<ReactEngineContainer<_Internal_IReactOnSwap>> reactiveEnginesSwap, ExclusiveGroupStruct fromGroup,
          ExclusiveGroupStruct toGroup, in PlatformProfiler sampler);
         //Version to use
-        void ExecuteEnginesSwapCallbacksFast(FasterList<ReactEngineContainer<IReactOnSwapEx>> reactiveEnginesSwap,
+        void ExecuteEnginesSwapCallbacksFast(FasterList<ReactEngineContainer<_Internal_IReactOnSwapEx>> reactiveEnginesSwap,
          ExclusiveGroupStruct fromGroup, ExclusiveGroupStruct toGroup, (uint, uint) rangeOfSubmittedEntitiesIndicies,
          in PlatformProfiler sampler);
         
@@ -61,27 +61,27 @@ namespace Svelto.ECS.Internal
         
         //This is now obsolete, but I cannot mark it as such because it's heavily used by legacy projects
         void ExecuteEnginesRemoveCallbacks(FasterList<(uint, string)> infosToProcess,
-         FasterDictionary<ComponentID, FasterList<ReactEngineContainer<IReactOnRemove>>> reactiveEnginesRemove,
+         FasterDictionary<ComponentID, FasterList<ReactEngineContainer<_Internal_IReactOnRemove>>> reactiveEnginesRemove,
          ExclusiveGroupStruct fromGroup, in PlatformProfiler sampler);
         //Version to use
-        void ExecuteEnginesRemoveCallbacksFast(FasterList<ReactEngineContainer<IReactOnRemoveEx>> reactiveEnginesRemoveEx,
+        void ExecuteEnginesRemoveCallbacksFast(FasterList<ReactEngineContainer<_Internal_IReactOnRemoveEx>> reactiveEnginesRemoveEx,
          ExclusiveGroupStruct fromGroup, (uint, uint) rangeOfSubmittedEntitiesIndicies,
          in PlatformProfiler sampler);
         
         //------------
 
         void ExecuteEnginesSwapCallbacks_Group(
-         FasterDictionary<ComponentID, FasterList<ReactEngineContainer<IReactOnSwap>>> reactiveEnginesSwap,
-         FasterDictionary<ComponentID, FasterList<ReactEngineContainer<IReactOnSwapEx>>> reactiveEnginesSwapEx,
+         FasterDictionary<ComponentID, FasterList<ReactEngineContainer<_Internal_IReactOnSwap>>> reactiveEnginesSwap,
+         FasterDictionary<ComponentID, FasterList<ReactEngineContainer<_Internal_IReactOnSwapEx>>> reactiveEnginesSwapEx,
          ITypeSafeDictionary toEntitiesDictionary, ExclusiveGroupStruct fromGroupId, ExclusiveGroupStruct toGroupId,
          in PlatformProfiler platformProfiler);
         void ExecuteEnginesRemoveCallbacks_Group(
-         FasterDictionary<ComponentID, FasterList<ReactEngineContainer<IReactOnRemove>>> reactiveEnginesRemove,
-         FasterDictionary<ComponentID, FasterList<ReactEngineContainer<IReactOnRemoveEx>>> reactiveEnginesRemoveEx,
+         FasterDictionary<ComponentID, FasterList<ReactEngineContainer<_Internal_IReactOnRemove>>> reactiveEnginesRemove,
+         FasterDictionary<ComponentID, FasterList<ReactEngineContainer<_Internal_IReactOnRemoveEx>>> reactiveEnginesRemoveEx,
          ExclusiveGroupStruct @group, in PlatformProfiler profiler);
         void ExecuteEnginesDisposeCallbacks_Group
-        (FasterDictionary<ComponentID, FasterList<ReactEngineContainer<IReactOnDispose>>> reactiveEnginesDispose,
-         FasterDictionary<ComponentID, FasterList<ReactEngineContainer<IReactOnDisposeEx>>> reactiveEnginesDisposeEx,
+        (FasterDictionary<ComponentID, FasterList<ReactEngineContainer<_Internal_IReactOnDispose>>> reactiveEnginesDispose,
+         FasterDictionary<ComponentID, FasterList<ReactEngineContainer<_Internal_IReactOnDisposeEx>>> reactiveEnginesDisposeEx,
         ExclusiveGroupStruct group, in PlatformProfiler profiler);
 
         void IncreaseCapacityBy(uint size);
