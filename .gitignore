@@ -10,6 +10,7 @@ Logs/
 UserSettings/
 Build/
 *.user
+Example1-DoofusesMustEat/DOOFUSES_DOTS/**/*.csproj
 Example4-NET-SDL/**/*.meta
 Example5-NET-Vanilla/**/*.meta
 Example7-Stride-Turrets/**/*.meta
