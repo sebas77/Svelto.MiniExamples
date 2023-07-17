@@ -113,7 +113,8 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
                     {
                         //the other part of the blue becomes special blue
                         DOTSOperations.CreateDOTSEntityFromSveltoBatched(
-                            _specialBlueCapsule, (blueDoofusesCount, blueDoofusesCount + specialBlueDoofusesCount), groupID, sveltoOnDOTSEntities, entityIDs, out creationJobHandleSpecialBlue);
+                            _specialBlueCapsule, (blueDoofusesCount, blueDoofusesCount + specialBlueDoofusesCount), groupID, sveltoOnDOTSEntities,
+                            entityIDs, out creationJobHandleSpecialBlue);
                     }
                     
                     var combined = JobHandle.CombineDependencies(creationJobHandleBlue, creationJobHandleSpecialBlue);

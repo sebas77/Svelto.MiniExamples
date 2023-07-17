@@ -1,10 +1,8 @@
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Svelto.DataStructures.Experimental;
 using Svelto.ECS.Example.Survive.Damage;
 using Svelto.ECS.Example.Survive.Enemies;
 using Svelto.ECS.Example.Survive.OOPLayer;
-using Svelto.ECS.Hybrid;
 using UnityEngine;
 
 namespace Svelto.ECS.Example.Survive

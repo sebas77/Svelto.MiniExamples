@@ -97,6 +97,11 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
             _mainLoop = new MainLoop(_enginesToTick);
             _mainLoop.Run();
         }
+        
+        struct Component<T>
+        {
+            public int Id;
+        }
 
         static async Task<(Entity, Entity, Entity, Entity, Entity)> LoadAssetAndCreatePrefabs(World customWorld)
         {

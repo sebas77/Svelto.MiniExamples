@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1045 &1
+EditorBuildSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/MainMenu.unity
+    guid: f8cfe4df5294c534d8e82b7ea7909ed2
+  - enabled: 1
+    path: Assets/Scenes/DOD.unity
+    guid: 08b6835f217193b4c98f8fe5d987dd51
+  - enabled: 1
+    path: Assets/Scenes/BurstedDOD.unity
+    guid: 2f0041dcc01cfa04bbe46fc93d4d16ca
+  - enabled: 1
+    path: Assets/Scenes/DefaultEcs.unity
+    guid: ec5652ca7958a964bb777b93d75fb820
+  - enabled: 1
+    path: Assets/Scenes/Arch.unity
+    guid: 63f4ebf668cb51c40b716a017544b6ac
+  - enabled: 1
+    path: Assets/Scenes/Ecs.unity
+    guid: 286718baa80f521499dc5f856d36d713
+  - enabled: 1
+    path: Assets/Scenes/AosDOD.unity
+    guid: b6626f34324afa6439fc4b6452cb5650
+  - enabled: 1
+    path: Assets/Scenes/BurstedAosDOD.unity
+    guid: 8aac16cabaa58064291b02a0efe1a946
+  - enabled: 1
+    path: Assets/Scenes/Svelto.unity
+    guid: 96221f453a1d0fc4f99b4f9bcc49d219
+  m_configObjects: {}

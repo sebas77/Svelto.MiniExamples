@@ -30,7 +30,7 @@ namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample
             //roots if required.
             _ecsStrideEntityManager = new ECSStrideEntityManager(Content, SceneSystem);
 
-            _unsortedGroups = new FasterList<IUpdateEngine>();
+            _enginesToSort = new FasterList<IUpdateEngine>();
 
             var entityFactory = _enginesRoot.GenerateEntityFactory();
 
@@ -49,7 +49,7 @@ namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample
         {
             _enginesRoot.AddEngine(engine);
             if (engine is IUpdateEngine updateEngine)
-                _unsortedGroups.Add(updateEngine);
+                _enginesToSort.Add(updateEngine);
         }
 
         protected override void BeginRun()
@@ -76,7 +76,7 @@ namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample
 
             StrideAbstractionContext.Compose(AddEngine, _ecsStrideEntityManager);
 
-            _mainEngineGroup = new SortedDoofusesEnginesExecutionGroup(_unsortedGroups);
+            _mainEngineGroup = new SortedDoofusesEnginesExecutionGroup(_enginesToSort);
         }
 
         void LoadAssetAndCreatePrefabs
@@ -131,6 +131,6 @@ namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample
         SimpleEntitiesSubmissionScheduler   _scheduler;
         SortedDoofusesEnginesExecutionGroup _mainEngineGroup;
         ECSStrideEntityManager              _ecsStrideEntityManager;
-        FasterList<IUpdateEngine>           _unsortedGroups;
+        FasterList<IUpdateEngine>           _enginesToSort;
     }
 }
