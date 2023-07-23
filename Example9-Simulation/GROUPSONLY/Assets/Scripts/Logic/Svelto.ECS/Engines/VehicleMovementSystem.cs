@@ -19,7 +19,7 @@ namespace Logic.SveltoECS
                         //todo: querying entities inside a loop like this is a killer for cache performance.
                         float2 targetPosition = _mapped.Entity(egid).Value;
 
-                        if (math.distance(currentPosition, targetPosition) < DefaultECS.Data.WeaponRange)
+                        if (math.distance(currentPosition, targetPosition) < Data.WeaponRange)
                             continue;
                         
                         var direction = math.normalize(targetPosition - currentPosition);
