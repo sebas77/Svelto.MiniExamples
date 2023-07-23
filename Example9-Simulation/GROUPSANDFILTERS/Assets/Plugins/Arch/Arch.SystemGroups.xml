@@ -1,0 +1,315 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Arch.SystemGroups</name>
+    </assembly>
+    <members>
+        <member name="T:Arch.SystemGroups.ArchSystemsSorter">
+            <summary>
+                Sorts systems. Used by auto-generated code. Consider ignoring it
+            </summary>
+        </member>
+        <member name="M:Arch.SystemGroups.ArchSystemsSorter.AddEdge(System.Type,System.Type,System.Collections.Generic.Dictionary{System.Type,System.Collections.Generic.List{System.Type}})">
+            <summary>
+                Adds a dependency edge to the graph.
+                Supports redundancies.
+                Circular dependencies will be resolved on the final stage of the graph traversal
+            </summary>
+            <param name="from">System that should be updated before
+                <paramref name="to"/>
+            </param>
+            <param name="to">System that should be updated after</param>
+            <param name="edges">Storage of edges</param>
+        </member>
+        <member name="T:Arch.SystemGroups.ArchSystemsWorldBuilder`1">
+            <summary>
+                The builder of systems attached to the Unity Player Loop
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:Arch.SystemGroups.ArchSystemsWorldBuilder`1.#ctor(`0)">
+            <summary>
+                Create a systems builder for the given world
+            </summary>
+            <param name="world">ECS World (Normally "Arch.Core.World")</param>
+        </member>
+        <member name="P:Arch.SystemGroups.ArchSystemsWorldBuilder`1.World">
+            <summary>
+                Current World
+            </summary>
+        </member>
+        <member name="M:Arch.SystemGroups.ArchSystemsWorldBuilder`1.TryCreateGroup``1(System.Type,System.Action{System.Collections.Generic.Dictionary{System.Type,System.Collections.Generic.List{System.Type}}})">
+            <summary>
+                Creates Groups Automatically
+            </summary>
+        </member>
+        <member name="M:Arch.SystemGroups.ArchSystemsWorldBuilder`1.AddToGroup(Arch.System.ISystem{System.Single},System.Type,System.Type,System.Action{System.Collections.Generic.Dictionary{System.Type,System.Collections.Generic.List{System.Type}}})">
+            <summary>
+                Used by auto-generated code
+            </summary>
+        </member>
+        <member name="M:Arch.SystemGroups.ArchSystemsWorldBuilder`1.Finish">
+            <summary>
+                Finalize the builder and create a systems world
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Arch.SystemGroups.CustomGroup`1">
+            <summary>
+                Similar to `Arch.System.Group` but with better API that allows pooling
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:Arch.SystemGroups.CustomGroup`1.#ctor">
+            <summary>
+                Creates an empty group, for auto-generated code only,
+                Don't invoke it manually
+            </summary>
+        </member>
+        <member name="M:Arch.SystemGroups.CustomGroup`1.#ctor(System.Collections.Generic.IEnumerable{Arch.System.ISystem{`0}})">
+            <summary>
+                Creates a group from the collection from which a pooled instance of the list will be created
+            </summary>
+            <param name="systems"></param>
+        </member>
+        <member name="M:Arch.SystemGroups.CustomGroup`1.#ctor(System.Collections.Generic.List{Arch.System.ISystem{`0}})">
+            <summary>
+                Creates a group from the list that won't be copied
+            </summary>
+            <param name="systems"></param>
+        </member>
+        <member name="M:Arch.SystemGroups.CustomGroup`1.AddRange(System.Collections.Generic.IEnumerable{Arch.System.ISystem{`0}})">
+            <summary>
+                Adds systems to the group
+            </summary>
+            <param name="systems"></param>
+        </member>
+        <member name="M:Arch.SystemGroups.CustomGroup`1.Initialize">
+            <summary>
+                Initialize all systems in the group
+            </summary>
+        </member>
+        <member name="M:Arch.SystemGroups.CustomGroup`1.Dispose">
+            <summary>
+                Dispose all systems in the group
+            </summary>
+        </member>
+        <member name="M:Arch.SystemGroups.CustomGroup`1.BeforeUpdate(`0@)">
+            <summary>
+                To comply with Arch.System.ISystem
+            </summary>
+            <param name="t">Delta time</param>
+        </member>
+        <member name="M:Arch.SystemGroups.CustomGroup`1.Update(`0@)">
+            <summary>
+                To comply with Arch.System.ISystem
+            </summary>
+            <param name="t">Delta time</param>
+        </member>
+        <member name="M:Arch.SystemGroups.CustomGroup`1.AfterUpdate(`0@)">
+            <summary>
+                To comply with Arch.System.ISystem
+            </summary>
+            <param name="t">Delta time</param>
+        </member>
+        <member name="T:Arch.SystemGroups.DefaultSystemGroups.InitializationSystemGroup">
+            <summary>
+                Updates at the end of the Initialization phase of the player loop
+            </summary>
+        </member>
+        <member name="T:Arch.SystemGroups.DefaultSystemGroups.PhysicsSystemGroup">
+            <summary>
+                Updates at the beginning of the FixedUpdate phase of the player loop
+                before all fixed updates
+            </summary>
+        </member>
+        <member name="T:Arch.SystemGroups.DefaultSystemGroups.PostPhysicsSystemGroup">
+            <summary>
+                Updates at the end of the FixedUpdate phase of the player loop
+            </summary>
+        </member>
+        <member name="T:Arch.SystemGroups.DefaultSystemGroups.PostRenderingSystemGroup">
+            <summary>
+                Updates at the end of the PostLateUpdate phase of the player loop.
+            </summary>
+        </member>
+        <member name="T:Arch.SystemGroups.DefaultSystemGroups.PresentationSystemGroup">
+            <summary>
+                Updates at the end of the PreLateUpdate phase of the player loop.
+            </summary>
+        </member>
+        <member name="T:Arch.SystemGroups.DefaultSystemGroups.SimulationSystemGroup">
+            <summary>
+                Updates at the end of the Update phase of the player loop
+            </summary>
+        </member>
+        <member name="T:Arch.SystemGroups.IUnityPlayerLoopHelper">
+            <summary>
+                Abstraction needed for Mocking
+            </summary>
+        </member>
+        <member name="T:Arch.SystemGroups.UnityPlayerLoopHelper">
+            <summary>
+                Provides utilities to inject systems into the Unity Player Loop
+            </summary>
+        </member>
+        <member name="T:Arch.SystemGroups.UnityPlayerLoopHelper.AddMode">
+            <summary>
+                Determines whether the system should be added to the beginning or the end of the step of the player loop
+            </summary>
+        </member>
+        <member name="F:Arch.SystemGroups.UnityPlayerLoopHelper.AddMode.Prepend">
+            <summary>
+                Add the system to the beginning of the step
+            </summary>
+        </member>
+        <member name="F:Arch.SystemGroups.UnityPlayerLoopHelper.AddMode.Append">
+            <summary>
+                Add the system to the end of the step
+            </summary>
+        </member>
+        <member name="M:Arch.SystemGroups.UnityPlayerLoopHelper.AppendWorldToCurrentPlayerLoop(Arch.SystemGroups.DefaultSystemGroups.InitializationSystemGroup,Arch.SystemGroups.DefaultSystemGroups.SimulationSystemGroup,Arch.SystemGroups.DefaultSystemGroups.PresentationSystemGroup,Arch.SystemGroups.DefaultSystemGroups.PostRenderingSystemGroup,Arch.SystemGroups.DefaultSystemGroups.PhysicsSystemGroup,Arch.SystemGroups.DefaultSystemGroups.PostPhysicsSystemGroup)">
+            <summary>
+                Attaches all system groups to the Unity Player Loop.
+            </summary>
+        </member>
+        <member name="M:Arch.SystemGroups.UnityPlayerLoopHelper.AddSystemToPlayerLoop(Arch.SystemGroups.SystemGroup,UnityEngine.LowLevel.PlayerLoopSystem@,System.Type,Arch.SystemGroups.UnityPlayerLoopHelper.AddMode)">
+            <summary>
+                Add an ECS system to a specific point in the Unity player loop, so that it is updated every frame.
+            </summary>
+            <remarks>
+                This function does not change the currently active player loop. If this behavior is desired, it's
+                necessary
+                to call PlayerLoop.SetPlayerLoop(playerLoop) after the systems have been removed.
+            </remarks>
+            <param name="systemGroup">The ECS system to add to the player loop.</param>
+            <param name="playerLoop">Existing player loop to modify (e.g. PlayerLoop.GetCurrentPlayerLoop())</param>
+            <param name="playerLoopSystemType">The Type of the PlayerLoopSystem subsystem to which the ECS system should
+                be appended.
+                See the UnityEngine.PlayerLoop namespace for valid values.
+            </param>
+            <param name="addMode">Append or Prepend</param>
+        </member>
+        <member name="M:Arch.SystemGroups.UnityPlayerLoopHelper.RemoveFromCurrentPlayerLoop(Arch.SystemGroups.SystemGroup)">
+            <summary>
+                Removes the given system group from the Unity Player Loop.
+            </summary>
+            <param name="systemGroup"></param>
+        </member>
+        <member name="T:Arch.SystemGroups.SystemGroup">
+            <summary>
+                Denotes a root group connected to a specific phase of the player loop.
+                By default updated by the scaled deltaTime.
+                If Unscaled delta time is needed consider using Time.unscaledXXX manually.
+            </summary>
+        </member>
+        <member name="M:Arch.SystemGroups.SystemGroup.Dispose">
+            <summary>
+                Dispose all systems and release the list allocated for them.
+                After the dispose is called the instance of the group is no longer usable.
+            </summary>
+        </member>
+        <member name="T:Arch.SystemGroups.SystemGroupWorld">
+            <summary>
+                An entry point to the systems connected to the Unity Player Loop.
+            </summary>
+        </member>
+        <member name="M:Arch.SystemGroups.SystemGroupWorld.Initialize">
+            <summary>
+                Recursively Initialize all systems in the world according to their execution order
+            </summary>
+        </member>
+        <member name="M:Arch.SystemGroups.SystemGroupWorld.Dispose">
+            <summary>
+                Recursively Dispose all systems in the world according to their execution order.
+                Remove all systems from the player loop
+            </summary>
+        </member>
+        <member name="T:Arch.SystemGroups.UpdateBeforeAttribute">
+            <summary>
+                Apply to a system to specify an update ordering constraint with another system in the same
+                <see cref="T:Arch.SystemGroups.SystemGroup"/>
+                or<see cref="T:Arch.SystemGroups.CustomGroup`1"/>.
+            </summary>
+            <remarks>Updating before or after a system constrains the scheduler ordering of these systems within a
+                ComponentSystemGroup.
+                Both the before and after systems must be a members of the same ComponentSystemGroup.
+            </remarks>
+        </member>
+        <member name="M:Arch.SystemGroups.UpdateBeforeAttribute.#ctor(System.Type)">
+            <summary>
+                Specify a system which the tagged system must update before.
+            </summary>
+            <param name="systemType">The target system which the tagged system must update before. This system must be
+                a member of the same
+                <see cref="T:Arch.SystemGroups.SystemGroup"/>
+                or<see cref="T:Arch.SystemGroups.CustomGroup`1"/>.
+            </param>
+            <exception cref="T:System.ArgumentNullException">Thrown if the system type is empty.</exception>
+        </member>
+        <member name="P:Arch.SystemGroups.UpdateBeforeAttribute.SystemType">
+            <summary>
+                The type of the target system, which the tagged system must update before.
+            </summary>
+        </member>
+        <member name="T:Arch.SystemGroups.UpdateAfterAttribute">
+            <summary>
+                Apply to a system to specify an update ordering constraint with another system in the same
+                <see cref="T:Arch.SystemGroups.SystemGroup"/>
+                or<see cref="T:Arch.SystemGroups.CustomGroup`1"/>.
+            </summary>
+            <remarks>Updating before or after a system constrains the scheduler ordering of these systems within a
+                ComponentSystemGroup.
+                Both the before and after systems must be a members of the same ComponentSystemGroup.
+            </remarks>
+        </member>
+        <member name="M:Arch.SystemGroups.UpdateAfterAttribute.#ctor(System.Type)">
+            <summary>
+                Specify a system which the tagged system must update after.
+            </summary>
+            <param name="systemType">The target system which the tagged system must update after. This system must be
+                a member of the same
+                <see cref="T:Arch.SystemGroups.SystemGroup"/>
+                or<see cref="T:Arch.SystemGroups.CustomGroup`1"/>.
+            </param>
+            <exception cref="T:System.ArgumentNullException">Thrown if the system type is empty.</exception>
+        </member>
+        <member name="P:Arch.SystemGroups.UpdateAfterAttribute.SystemType">
+            <summary>
+                The type of the target system, which the tagged system must update after.
+            </summary>
+        </member>
+        <member name="T:Arch.SystemGroups.UpdateInGroupAttribute">
+            <summary>
+                The specified Type must be a SystemGroup.
+                Updating in a group means this system will be automatically updated by the specified
+                ComponentSystemGroup when the group is updated.
+                The system may order itself relative to other systems in the group with UpdateBefore and UpdateAfter.
+                This ordering takes
+                effect when the system group is sorted.
+            </summary>
+        </member>
+        <member name="M:Arch.SystemGroups.UpdateInGroupAttribute.#ctor(System.Type)">
+            <summary>
+                Specify the
+                <see cref="T:Arch.SystemGroups.SystemGroup"/>
+                or
+                <see cref="T:Arch.System.Group`1"/>
+                which the tagged system should be added to. The tagged system
+                will be updated as part of this system group's Update() method.
+            </summary>
+            <param name="groupType">The
+                <see cref="T:Arch.SystemGroups.SystemGroup"/>
+                type/
+            </param>
+            <exception cref="T:System.ArgumentNullException">Thrown id the group type is empty.</exception>
+        </member>
+        <member name="P:Arch.SystemGroups.UpdateInGroupAttribute.GroupType">
+            <summary>
+                Retrieve the
+                <see cref="T:Arch.SystemGroups.SystemGroup"/>
+                type.
+            </summary>
+        </member>
+    </members>
+</doc>
