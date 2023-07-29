@@ -39,9 +39,8 @@ namespace Svelto.ECS
             _entitiesOperations = new EntitiesOperations();
 
             _cachedRangeOfSubmittedIndices = new FasterList<(uint, uint)>();
-            _transientEntityIDsLeftAndAffectedByRemoval = new FasterList<uint>();
-            _transientEntityIDsLeftWithoutDuplicates = new FasterDictionary<uint, int>();
-
+            _transientEntityIDsAffectedByRemoveAtSwapBack = new FasterDictionary<uint, uint>();
+            
             InitDebugChecks();
 #if UNITY_NATIVE //because of the thread count, ATM this is only for unity
             _nativeSwapOperationQueue = new AtomicNativeBags(Allocator.Persistent);

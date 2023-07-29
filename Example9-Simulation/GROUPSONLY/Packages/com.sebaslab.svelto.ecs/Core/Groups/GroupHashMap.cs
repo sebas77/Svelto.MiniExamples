@@ -42,12 +42,11 @@ namespace Svelto.ECS
                             CheckForGroupCompounds(subclass);
                         }
 
-                        var fields = type.GetFields();
+                        var fields = type.GetFields(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
 
                         foreach (var field in fields)
                         {
-                            if (field.IsStatic
-                             && (typeOfExclusiveGroup.IsAssignableFrom(field.FieldType)
+                            if ((typeOfExclusiveGroup.IsAssignableFrom(field.FieldType)
                                  || typeOfExclusiveGroupStruct.IsAssignableFrom(field.FieldType)
                                  || typeOfExclusiveBuildGroup.IsAssignableFrom(field.FieldType)))
                             {
@@ -101,10 +100,7 @@ namespace Svelto.ECS
             static void CallStaticConstructorsRecursively(Type type)
             {
                 // Check if the current type has a static constructor
-//                ConstructorInfo staticConstructor = type.TypeInitializer;
-  //              if (staticConstructor != null)
-                    //staticConstructor.Invoke(null, null); //calling Invoke will force the static constructor to be called even if already called
-                    
+//                type.TypeInitializer.Invoke(null, null); //calling Invoke will force the static constructor to be called even if already called, this is a problem because GroupTag and Compound throw an exception if called multiple times
                 RuntimeHelpers.RunClassConstructor(type.TypeHandle); //this will call the static constructor only once
                     
 #if DEBUG && !PROFILE_SVELTO

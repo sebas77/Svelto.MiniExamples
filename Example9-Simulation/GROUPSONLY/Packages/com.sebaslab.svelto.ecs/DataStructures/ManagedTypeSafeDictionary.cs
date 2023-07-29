@@ -127,9 +127,12 @@ namespace Svelto.ECS.Internal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Add(uint egidEntityId, in TValue entityComponent)
+        public uint Add(uint egidEntityId, in TValue entityComponent)
         {
-            implMgd.Add(egidEntityId, entityComponent);
+            if (implMgd.TryAdd(egidEntityId, entityComponent, out uint index) == false)
+                throw new TypeSafeDictionaryException("Key already present");
+
+            return index;
         }
 
         public void Dispose()
@@ -158,21 +161,20 @@ namespace Svelto.ECS.Internal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void RemoveEntitiesFromDictionary
-            (FasterList<(uint, string)> infosToProcess, FasterList<uint> entityIDsAffectedByRemoval)
+        public void RemoveEntitiesFromDictionary(FasterList<(uint, string)> infosToProcess, FasterDictionary<uint, uint> entityIDsAffectedByRemoveAtSwapBack)
         {
-            TypeSafeDictionaryMethods.RemoveEntitiesFromDictionary(infosToProcess, ref implMgd, entityIDsAffectedByRemoval);
+            TypeSafeDictionaryMethods.RemoveEntitiesFromDictionary(infosToProcess, ref implMgd, entityIDsAffectedByRemoveAtSwapBack);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void SwapEntitiesBetweenDictionaries(in FasterDictionary<uint, (uint, uint, string)> infosToProcess, ExclusiveGroupStruct fromGroup
+        public void SwapEntitiesBetweenDictionaries(in FasterDictionary<uint, SwapInfo> infosToProcess,
+            ExclusiveGroupStruct fromGroup
           , ExclusiveGroupStruct toGroup, ITypeSafeDictionary toComponentsDictionary
-          , FasterList<uint> entityIDsAffectedByRemoval)
+          , FasterDictionary<uint, uint> entityIDsAffectedByRemoveAtSwapBack)
         {
             TypeSafeDictionaryMethods.SwapEntitiesBetweenDictionaries(infosToProcess, ref implMgd
-                                                                    , toComponentsDictionary as
-                                                                          ITypeSafeDictionary<TValue>, fromGroup
-                                                                    , toGroup, entityIDsAffectedByRemoval);
+                                                                    , toComponentsDictionary as ITypeSafeDictionary<TValue>, fromGroup
+                                                                    , toGroup, entityIDsAffectedByRemoveAtSwapBack);
         }
 
         /// <summary>
@@ -191,7 +193,7 @@ namespace Svelto.ECS.Internal
         ///     Execute all the engine IReactOnSwap callbacks linked to components swapped this submit
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void ExecuteEnginesSwapCallbacks(FasterDictionary<uint, (uint, uint, string)> infosToProcess
+        public void ExecuteEnginesSwapCallbacks(FasterDictionary<uint, SwapInfo> infosToProcess
           , FasterList<ReactEngineContainer<_Internal_IReactOnSwap>> reactiveEnginesSwap, ExclusiveGroupStruct fromGroup
           , ExclusiveGroupStruct toGroup, in PlatformProfiler profiler)
         {

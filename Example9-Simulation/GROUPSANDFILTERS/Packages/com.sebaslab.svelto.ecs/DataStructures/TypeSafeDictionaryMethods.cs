@@ -34,9 +34,12 @@ namespace Svelto.ECS.Internal
                         ref tuple.value,
                         entityLocator.GetEntityReference(egid));
 #endif
+#if DEBUG && !PROFILE_SVELTO                
                 try
                 {
+#endif                    
                     toDic.Add(tuple.key, tuple.value);
+#if DEBUG && !PROFILE_SVELTO                    
                 }
                 catch (Exception e)
                 {
@@ -47,6 +50,7 @@ namespace Svelto.ECS.Internal
 
                     throw;
                 }
+#endif                
 #if PARANOID_CHECK && SLOW_SVELTO_SUBMISSION
                         DBC.ECS.Check.Ensure(_hasEgid == false || ((INeedEGID)fromDictionary[egid.entityID]).ID == egid, "impossible situation happened during swap");
 #endif
@@ -285,7 +289,7 @@ namespace Svelto.ECS.Internal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ExecuteEnginesSwapCallbacks<Strategy1, Strategy2, Strategy3, TValue>(FasterDictionary<uint, (uint, uint, string)> infostoprocess
+        public static void ExecuteEnginesSwapCallbacks<Strategy1, Strategy2, Strategy3, TValue>(FasterDictionary<uint, SwapInfo> infostoprocess
           , ref SveltoDictionary<uint, TValue, Strategy1, Strategy2, Strategy3> fromDictionary
           , FasterList<ReactEngineContainer<_Internal_IReactOnSwap>> reactiveenginesswap, ExclusiveGroupStruct togroup
           , ExclusiveGroupStruct fromgroup, in PlatformProfiler sampler)
@@ -409,7 +413,7 @@ namespace Svelto.ECS.Internal
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void RemoveEntitiesFromDictionary<Strategy1, Strategy2, Strategy3, TValue>(FasterList<(uint, string)> infostoprocess
           , ref SveltoDictionary<uint, TValue, Strategy1, Strategy2, Strategy3> fromDictionary
-          , FasterList<uint> entityIDsAffectedByRemoval)
+          , FasterDictionary<uint, uint> entityIDsAffectedByRemoveAtSwapBack)
                 where Strategy1 : struct, IBufferStrategy<SveltoDictionaryNode<uint>>
                 where Strategy2 : struct, IBufferStrategy<TValue>
                 where Strategy3 : struct, IBufferStrategy<int>
@@ -420,25 +424,31 @@ namespace Svelto.ECS.Internal
             for (var i = 0; i < iterations; i++)
             {
                 var (id, trace) = infostoprocess[i];
-
+#if DEBUG && !PROFILE_SVELTO
                 try
                 {
+#endif                    
                     if (fromDictionary.Remove(id, out var index, out var value))
                     {
                         //Note I am doing this to be able to use a range of values even with the 
                         //remove Ex callbacks. Basically I am copying back the deleted value
                         //at the end of the array, so I can use as range count, count + number of deleted entities
                         //I need to swap the keys too to have matching EntityIDs
-                        fromDictionary.unsafeValues[(uint)fromDictionary.count] = value;
-                        fromDictionary.unsafeKeys[(uint)fromDictionary.count] = new SveltoDictionaryNode<uint>(ref id, 0);
+                        if (index != fromDictionary.count)
+                        {
+                            fromDictionary.unsafeValues[(uint)fromDictionary.count] = value;
+                            fromDictionary.unsafeKeys[(uint)fromDictionary.count] = new SveltoDictionaryNode<uint>(ref id, 0);
+                        }
+
                         //when a component is removed from a component array, a remove swap back happens. This means
                         //that not only we have to remove the index of the component of the entity deleted from the array
                         //but we need also to update the index of the component that has been swapped in the cell
                         //of the deleted component 
                         //entityIDsAffectedByRemoval tracks all the entitiesID of the components that need to be updated
                         //in the filters because their indices in the array changed. 
-                        entityIDsAffectedByRemoval.Add(fromDictionary.unsafeKeys[index].key);
+                        entityIDsAffectedByRemoveAtSwapBack[fromDictionary.unsafeKeys[index].key] = index;
                     }
+#if DEBUG && !PROFILE_SVELTO                    
                 }
                 catch
                 {
@@ -449,35 +459,39 @@ namespace Svelto.ECS.Internal
 
                     throw;
                 }
+#endif                
             }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void SwapEntitiesBetweenDictionaries<Strategy1, Strategy2, Strategy3, TValue>(in FasterDictionary<uint, (uint, uint, string)> infostoprocess
+        public static void SwapEntitiesBetweenDictionaries<Strategy1, Strategy2, Strategy3, TValue>(in FasterDictionary<uint, SwapInfo> entitiesIDsToSwap
           , ref SveltoDictionary<uint, TValue, Strategy1, Strategy2, Strategy3> fromDictionary
           , ITypeSafeDictionary<TValue> toDictionary, ExclusiveGroupStruct fromgroup, ExclusiveGroupStruct togroup
-          , FasterList<uint> entityIDsAffectedByRemoval)
+          , FasterDictionary<uint, uint> entityIDsAffectedByRemoveAtSwapBack)
                 where Strategy1 : struct, IBufferStrategy<SveltoDictionaryNode<uint>>
                 where Strategy2 : struct, IBufferStrategy<TValue>
                 where Strategy3 : struct, IBufferStrategy<int>
                 where TValue : struct, _IInternalEntityComponent
         {
-            var iterations = infostoprocess.count;
-            var infostoprocessUnsafeValues = infostoprocess.unsafeValues;
+            var iterations = entitiesIDsToSwap.count;
+            var entitiesToSwapInfo = entitiesIDsToSwap.unsafeValues;
+            var fromDictionaryUnsafeKeys = fromDictionary.unsafeKeys;
 
             for (var i = 0; i < iterations; i++)
             {
-                var (fromID, toID, trace) = infostoprocessUnsafeValues[i];
+                ref SwapInfo swapInfo = ref entitiesToSwapInfo[i];
 
+#if DEBUG && !PROFILE_SVELTO                
                 try
                 {
-                    var fromEntityGid = new EGID(fromID, fromgroup);
-                    var toEntityEgid = new EGID(toID, togroup);
+#endif                    
+                    var fromEntityGid = new EGID(swapInfo.fromID, fromgroup);
+                    var toEntityEgid = new EGID(swapInfo.toID, togroup);
 
                     Check.Require(togroup.isInvalid == false, "Invalid To Group");
 
                     if (fromDictionary.Remove(fromEntityGid.entityID, out var index, out var value))
-                        entityIDsAffectedByRemoval.Add(fromDictionary.unsafeKeys[index].key);
+                        entityIDsAffectedByRemoveAtSwapBack[fromDictionaryUnsafeKeys[index].key] = index; //after the removal, the entity ad index is the entity that was at the end of the buffer (swapped back). 
                     else
                         Check.Assert(false, "Swapping an entity that doesn't exist");
 
@@ -486,21 +500,23 @@ namespace Svelto.ECS.Internal
                         SetEGIDWithoutBoxing<TValue>.SetIDWithoutBoxing(ref value, toEntityEgid);
 #endif
 
-                    toDictionary.Add(toEntityEgid.entityID, value);
+                    swapInfo.toIndex = toDictionary.Add(toEntityEgid.entityID, value);
 
 #if PARANOID_CHECK
-                        DBC.ECS.Check.Ensure(_hasEgid == false || ((INeedEGID)toGroupCasted[toEntityEGID.entityID]).ID == toEntityEGID, "impossible situation happened during swap");
+                    DBC.ECS.Check.Ensure(_hasEgid == false || ((INeedEGID)toGroupCasted[toEntityEGID.entityID]).ID == toEntityEGID, "impossible situation happened during swap");
 #endif
+#if DEBUG && !PROFILE_SVELTO
                 }
                 catch
                 {
                     var str = "Crash while executing Swap Entity operation on ".FastConcat(TypeCache<TValue>.name)
-                           .FastConcat(" from : ", trace);
+                           .FastConcat(" from : ", swapInfo.trace);
 
                     Console.LogError(str);
 
                     throw;
                 }
+#endif                
             }
         }
 
@@ -512,9 +528,7 @@ namespace Svelto.ECS.Internal
                 where TValue : struct, _IInternalEntityComponent
         {
             //get all the engines linked to TValue
-            if (!fasterDictionary.TryGetValue(
-                    ComponentTypeID<TValue>.id
-                  , out var entityComponentsEngines))
+            if (!fasterDictionary.TryGetValue(ComponentTypeID<TValue>.id, out var entityComponentsEngines))
                 return;
 
             for (var i = 0; i < entityComponentsEngines.count; i++)
@@ -549,9 +563,11 @@ namespace Svelto.ECS.Internal
                 {
                     using (sampler.Sample(callbackEngines[i].name))
                     {
+                        var values = typeSafeDictionary.GetValues(out var count);
+                        
                         ((IReactOnSwapEx<TValue>)callbackEngines[i].engine).MovedTo(
                             rangeOfSubmittedEntitiesIndicies
-                          , new EntityCollection<TValue>(typeSafeDictionary.GetValues(out var count), entityids, count)
+                          , new EntityCollection<TValue>(values, entityids, count)
                           , fromGroup, toGroup);
                     }
                 }

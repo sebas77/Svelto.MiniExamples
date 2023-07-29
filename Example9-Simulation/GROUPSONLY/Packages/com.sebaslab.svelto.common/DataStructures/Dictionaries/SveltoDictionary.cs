@@ -140,34 +140,33 @@ namespace Svelto.DataStructures
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Add(TKey key, in TValue value)
         {
-            var ret = AddValue(key, out var index);
+            var itemAdded = AddValue(key, out var index);
 
 #if DEBUG && !PROFILE_SVELTO
-            if (ret == false)
+            if (itemAdded == false)
                 throw new SveltoDictionaryException("Key already present");
 #endif
-
             _values[index] = value;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool TryAdd(TKey key, in TValue value, out uint index)
         {
-            var ret = AddValue(key, out index);
+            var itemAdded = AddValue(key, out index);
 
-            if (ret == true)
+            if (itemAdded == true)
                 _values[index] = value;
 
-            return ret;
+            return itemAdded;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Set(TKey key, in TValue value)
         {
-            var ret = AddValue(key, out var index);
+            var itemAdded = AddValue(key, out var index);
 
 #if DEBUG && !PROFILE_SVELTO
-            if (ret == true)
+            if (itemAdded == true)
                 throw new SveltoDictionaryException("trying to set a value on a not existing key");
 #endif
 
@@ -393,7 +392,7 @@ namespace Svelto.DataStructures
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Remove(TKey key, out int index, out TValue value)
+        public bool Remove(TKey key, out uint index, out TValue value)
         {
             int hash = key.GetHashCode();
             uint bucketIndex = Reduce((uint)hash, (uint)_buckets.capacity, _fastModBucketsMultiplier);
@@ -444,7 +443,7 @@ namespace Svelto.DataStructures
                 return false; //not found!
             }
 
-            index = indexToValueToRemove; //index is a out variable, for internal use we want to know the index of the element to remove
+            index = (uint)indexToValueToRemove; //index is a out variable, for internal use we want to know the index of the element to remove
 
             _freeValueCellIndex--; //one less value to iterate
             value = _values[indexToValueToRemove]; //value is a out variable, we want to know the value of the element to remove

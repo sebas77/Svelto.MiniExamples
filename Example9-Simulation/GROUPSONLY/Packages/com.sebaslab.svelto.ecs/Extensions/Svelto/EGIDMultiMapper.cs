@@ -28,7 +28,7 @@ namespace Svelto.ECS
         {
 #if DEBUG && !PROFILE_SVELTO
             if (Exists(entity) == false)
-                throw new Exception("NativeEGIDMultiMapper: Entity not found");
+                throw new Exception("EGIDMultiMapper: Entity not found");
 #endif
             ref var sveltoDictionary = ref _dic.GetValueByRef(entity.groupID);
             return ref sveltoDictionary.GetValueByRef(entity.entityID);
@@ -79,6 +79,12 @@ namespace Svelto.ECS
         {
             uint groupIndex = _dic.GetIndex(group);
             return _dic.GetDirectValueByRef(groupIndex).GetIndex(entityID);
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public uint GetIndex(EGID egid)
+        {
+            return GetIndex(egid.groupID, egid.entityID);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

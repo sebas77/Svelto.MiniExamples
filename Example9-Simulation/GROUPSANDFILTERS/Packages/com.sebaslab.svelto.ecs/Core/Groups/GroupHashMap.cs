@@ -42,12 +42,11 @@ namespace Svelto.ECS
                             CheckForGroupCompounds(subclass);
                         }
 
-                        var fields = type.GetFields();
+                        var fields = type.GetFields(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
 
                         foreach (var field in fields)
                         {
-                            if (field.IsStatic
-                             && (typeOfExclusiveGroup.IsAssignableFrom(field.FieldType)
+                            if ((typeOfExclusiveGroup.IsAssignableFrom(field.FieldType)
                                  || typeOfExclusiveGroupStruct.IsAssignableFrom(field.FieldType)
                                  || typeOfExclusiveBuildGroup.IsAssignableFrom(field.FieldType)))
                             {

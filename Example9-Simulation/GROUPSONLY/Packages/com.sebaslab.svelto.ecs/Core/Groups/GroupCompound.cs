@@ -42,7 +42,6 @@ namespace Svelto.ECS
 
                 _Groups = new FasterList<ExclusiveGroupStruct>(1);
                 _Groups.Add(group);
-
 #if DEBUG
                 var name =
                         $"Compound: {typeof(G1).Name}-{typeof(G2).Name}-{typeof(G3).Name}-{typeof(G4).Name} ID {(uint)group.id}";
@@ -187,6 +186,7 @@ namespace Svelto.ECS
             /// c# Static constructors are guaranteed to be thread safe and not called more than once
             if (Interlocked.CompareExchange(ref isInitializing, 1, 0) != 0)
                 throw new Exception("GroupCompound static constructor called twice - impossible");
+            
             if (GroupCompoundInitializer.skipStaticCompoundConstructorsWith3Tags.Value == false)
             {
                 var group = new ExclusiveGroup(GroupTag<G1>.bitmask | GroupTag<G2>.bitmask | GroupTag<G3>.bitmask);
@@ -288,6 +288,7 @@ namespace Svelto.ECS
             /// c# Static constructors are guaranteed to be thread safe and not called more than once
             if (Interlocked.CompareExchange(ref isInitializing, 1, 0) != 0)
                 throw new Exception($"{typeof(GroupCompound<G1, G2>).FullName} GroupCompound static constructor called twice - impossible");
+            
             if (GroupCompoundInitializer.skipStaticCompoundConstructorsWith2Tags.Value == false)
             {
                 range = GroupTag<G1>.range > GroupTag<G2>.range ? GroupTag<G1>.range : GroupTag<G2>.range;
@@ -400,14 +401,18 @@ namespace Svelto.ECS
             if (Interlocked.CompareExchange(ref isInitializing, 1, 0) != 0)
                 throw new Exception("GroupTag static constructor called twice - impossible");
             
-            //GroupTag can set values for ranges and bitmaks in their static constructors so they must be called first
+            //GroupTag can set values for ranges and bitmasks in their static constructors so they must be called first
             //there is no other way around this, as the base static constructor will be called once base fields are touched
-            RuntimeHelpers.RunClassConstructor(typeof(T).TypeHandle);
-
-            if (range == 0) //means never initialised by a inherited static constructor
-                range = 1;
+            //RuntimeHelpers.RunClassConstructor(typeof(T).TypeHandle);
+            typeof(T).TypeInitializer?.Invoke(null, null); //must use this because if a specialised GroupTag is called first will call the this constructor before having the chance to initialise the protected values. This will force to initialise the values no matter what (and won't call the base constructor again because already executing)
             
-            var initialRange = range;
+            var initialRange = range; //range may be overriden by the constructor previously called
+
+            if (initialRange == 0) //means never initialised by a inherited static constructor
+            {
+                initialRange = 1;
+                range = 1;
+            }
 
             var group = new ExclusiveGroup(initialRange, bitmask);
             for (uint i = 0; i < initialRange; ++i)

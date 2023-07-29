@@ -35,9 +35,8 @@ namespace Logic.SveltoECS
                         timeUntilSirenSwitch.Value = health / 100;
 
                         var entityID = entityIDs[index];
-                        offGroupfilter.Remove(entityID);
+                        offGroupfilter.Remove(entityID); i--;
                         onGroupFilter.Add(entityID, index);
-                        i--;
                     }
                 }
             }

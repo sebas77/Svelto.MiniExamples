@@ -80,6 +80,12 @@ namespace Svelto.ECS
             uint groupIndex = _dic.GetIndex(group);
             return _dic.GetDirectValueByRef(groupIndex).GetIndex(entityID);
         }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public uint GetIndex(EGID egid)
+        {
+            return GetIndex(egid.groupID, egid.entityID);
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Exists(ExclusiveGroupStruct group, uint entityID)

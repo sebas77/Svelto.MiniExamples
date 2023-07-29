@@ -34,20 +34,39 @@ namespace Svelto.ECS
         /// This method assumes that the entity has already been submitted in the database, so it can be found through the EGIDMapper 
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Add<T>(EGID egid, NativeEGIDMapper<T> mmap) where T : unmanaged, _IInternalEntityComponent
+        public void Add<T>(EGID egid, NativeEGIDMapper<T> mmap) where T : unmanaged, _IInternalEntityComponent
         {
             DBC.ECS.Check.Require(mmap.groupID == egid.groupID, "not compatible NativeEgidMapper used");
 
-            return Add(egid, mmap.GetIndex(egid.entityID));
+            Add(egid, mmap.GetIndex(egid.entityID));
         }
 
         /// <summary>
         /// Add a new entity to this filter
         /// This method assumes that the entity has already been submitted in the database, so it can be found through the EGIDMapper 
         /// </summary>
-        public bool Add<T>(EGID egid, NativeEGIDMultiMapper<T> mmap) where T : unmanaged, _IInternalEntityComponent
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Add<T>(EGID egid, NativeEGIDMultiMapper<T> mmap) where T : unmanaged, _IInternalEntityComponent
         {
-            return Add(egid, mmap.GetIndex(egid));
+            Add(egid, mmap.GetIndex(egid));
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Add<T>(EGID egid, EGIDMapper<T> mmap) where T : unmanaged, _IInternalEntityComponent
+        {
+            DBC.ECS.Check.Require(mmap.groupID == egid.groupID, "not compatible NativeEgidMapper used");
+
+            Add(egid, mmap.GetIndex(egid.entityID));
+        }
+
+        /// <summary>
+        /// Add a new entity to this filter
+        /// This method assumes that the entity has already been submitted in the database, so it can be found through the EGIDMapper 
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Add<T>(EGID egid, EGIDMultiMapper<T> mmap) where T : unmanaged, _IInternalEntityComponent
+        {
+            Add(egid, mmap.GetIndex(egid));
         }
 
         /// <summary>
@@ -61,9 +80,9 @@ namespace Svelto.ECS
         /// <param name="indexInComponentArray"> the position in the Svelto database array where the component is stored</param>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Add(EGID egid, uint indexInComponentArray)
+        public void Add(EGID egid, uint indexInComponentArray)
         {
-            return GetOrCreateGroupFilter(egid.groupID).Add(egid.entityID, indexInComponentArray);
+            GetOrCreateGroupFilter(egid.groupID).Add(egid.entityID, indexInComponentArray);
         }
 
         /// <summary>
@@ -198,22 +217,19 @@ namespace Svelto.ECS
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public bool Add(uint entityId, uint indexInComponentArray)
+            public void Add(uint entityId, uint indexInComponentArray)
             {
                 //TODO: check what happens (unit test) if adding the same entityID twice
                 //TODO: when sentinels are finished, we need to add AsWriter here
                 //cannot write in parallel
-                return _entityIDToDenseIndex.TryAdd(entityId, indexInComponentArray, out _);
+                _entityIDToDenseIndex.Add(entityId, indexInComponentArray);
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public bool Exists(uint entityId) => _entityIDToDenseIndex.ContainsKey(entityId);
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public void Remove(uint entityId)
-            {
-                _entityIDToDenseIndex.Remove(entityId);
-            }
+            public bool Remove(uint entityId) => _entityIDToDenseIndex.Remove(entityId);
 
             public EntityFilterIndices indices
             {

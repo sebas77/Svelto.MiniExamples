@@ -4,7 +4,7 @@ using Svelto.DataStructures;
 
 namespace Svelto.ECS
 {
-    //these are not meant to be held or passed by paramater.
+    //these are not meant to be held or passed by parameter.
     public ref struct EntityFilterIndices
     {
         public EntityFilterIndices(NB<uint> indices, uint count)
@@ -14,10 +14,10 @@ namespace Svelto.ECS
             _index   = 0;
         }
 
-        public uint count
+        public int count
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => _count;
+            get => (int)_count;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

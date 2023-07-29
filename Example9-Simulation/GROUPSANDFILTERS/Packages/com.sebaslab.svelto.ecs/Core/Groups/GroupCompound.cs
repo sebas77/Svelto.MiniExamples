@@ -404,13 +404,16 @@ namespace Svelto.ECS
             //GroupTag can set values for ranges and bitmasks in their static constructors so they must be called first
             //there is no other way around this, as the base static constructor will be called once base fields are touched
             //RuntimeHelpers.RunClassConstructor(typeof(T).TypeHandle);
-            typeof(T).TypeInitializer.Invoke(null, null); //must use this because if a specialised GroupTag is called first will call the this constructor before having the chance to initialise the protected values. This will force to initialise the values no matter what (and won't call the base constructor again because already executing)
+            typeof(T).TypeInitializer?.Invoke(null, null); //must use this because if a specialised GroupTag is called first will call the this constructor before having the chance to initialise the protected values. This will force to initialise the values no matter what (and won't call the base constructor again because already executing)
             
             var initialRange = range; //range may be overriden by the constructor previously called
 
             if (initialRange == 0) //means never initialised by a inherited static constructor
+            {
                 initialRange = 1;
-            
+                range = 1;
+            }
+
             var group = new ExclusiveGroup(initialRange, bitmask);
             for (uint i = 0; i < initialRange; ++i)
             {
