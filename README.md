@@ -37,7 +37,7 @@ http://www.sebaslab.com/svelto-mini-examples-doofuses-must-eat/ (obsolete now, n
 ### Goals of the **Stride example** are to: 
 * show a complex integration with an engine different than Unity (Stride Engine)
 
-### GOALS of the **Stride Compute Sharp example** are to
+### Goals of the **Stride Compute Sharp example** are to
 * Goal: show how to extend internal Svelto datastructure to customise data storage
 * Goal: show how to run c# svelto engines on the GPU (automatically converted to compute shader by ComputeSharp)
 * article https://www.sebaslab.com/svelto-ecs-3-4-internals-how-to-integrate-computesharp/
