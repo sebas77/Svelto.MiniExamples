@@ -111,4 +111,14 @@ Basic Platform Agnostic Svelto.ECS 3.0 example
 * A better example is found at https://github.com/sebas77/Svelto.MiniExamples/tree/master/Example1-Stride-DoofusesMustEat/DOOFUSES_STRIDE_COMPUTESHARP
 * Foundation of my new article https://www.sebaslab.com/svelto-ecs-3-4-internals-how-to-integrate-computesharp/
 
+## Example 9: Simulation
+
+3 version of this demo are available:
+
+### Unity groups only version
+### Unity groups and filters version
+### Unity groups and filters version with Burst
+
+* Goal: these demos are interesting because are simple and show properly how to subset entities with filters and groups
+
 
