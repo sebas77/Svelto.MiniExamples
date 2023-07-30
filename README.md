@@ -10,7 +10,7 @@ Warning: these examples may use using unofficial versions of Svelto that you won
 
 ## Example 1: Doofuses Must Eat (SveltoOnDOTS version/GameObject versions/Stride version)
 
-![Image](https://github.com/sebas77/Svelto.MiniExamples/blob/master/Example1-DoofusesMustEat/2020-12-22%2016-05-22.gif)
+![Image](https://github.com/sebas77/Svelto.MiniExamples/blob/master/2020-12-22%2016-05-22.gif)
 
 Object-less pure ECS example that shows the basics of Svelto.ECS. 
 
