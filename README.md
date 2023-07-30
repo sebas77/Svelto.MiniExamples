@@ -115,9 +115,9 @@ Basic Platform Agnostic Svelto.ECS 3.0 example
 
 3 version of this demo are available:
 
-### Unity groups only version
-### Unity groups and filters version
-### Unity groups and filters version with Burst
+* Unity groups only version
+* Unity groups and filters version
+* Unity groups and filters version with Burst
 
 * Goal: these demos are interesting because are simple and show properly how to subset entities with filters and groups
 
