@@ -8,7 +8,7 @@ These examples use the last beta version of unity available at the moment of the
 
 Warning: these examples may use using unofficial versions of Svelto that you won't find on the main repository until officially released.
 
-## Example 1: Doofuses Must Eat (SveltoOnDOTS version/GameObject versions/Stride version)
+## Example 1: Doofuses Must Eat (Unity Version)
 
 ![Image](https://github.com/sebas77/Svelto.MiniExamples/blob/master/2020-12-22%2016-05-22.gif)
 
@@ -32,8 +32,15 @@ http://www.sebaslab.com/svelto-mini-examples-doofuses-must-eat/ (obsolete now, n
 * show how the resource managers work to interface objects and entities 
 * show that even with OOP interfacing, ECS helps to achieve high performance
 
+## Example 1: Doofuses Must Eat (Stride Version)
+
 ### Goals of the **Stride example** are to: 
 * show a complex integration with an engine different than Unity (Stride Engine)
+
+### GOALS of the **Stride Compute Sharp example** are to
+* Goal: show how to extend internal Svelto datastructure to customise data storage
+* Goal: show how to run c# svelto engines on the GPU (automatically converted to compute shader by ComputeSharp)
+* article https://www.sebaslab.com/svelto-ecs-3-4-internals-how-to-integrate-computesharp/
   
 ## Example 2: The classic Survival demo (Hybrid ECS)
 
@@ -93,7 +100,15 @@ Basic Platform Agnostic Svelto.ECS 3.0 example
 
 * Goal: showing Svelto working with Stride Engine (svelto can work with any engine that supports c# natively)
 * Goal: showing how to use EntityReferences to transform hierarchies
-* Foundation of my new article
+* Foundation of my new article https://www.sebaslab.com/svelto-miniexample-7-stride-engine-demo/
 
 ![image](https://user-images.githubusercontent.com/945379/134925979-145e5b0e-fd5d-4562-abc3-07bafca2fbe6.png)
+
+## Example 8: Run Svelto.Engines on GPU using ComputeSharp
+
+* Goal: show how to extend internal Svelto datastructure to customise data storage
+* Goal: show how to run c# svelto engines on the GPU (automatically converted to compute shader by ComputeSharp)
+* A better example is found at https://github.com/sebas77/Svelto.MiniExamples/tree/master/Example1-Stride-DoofusesMustEat/DOOFUSES_STRIDE_COMPUTESHARP
+* Foundation of my new article https://www.sebaslab.com/svelto-ecs-3-4-internals-how-to-integrate-computesharp/
+
 
