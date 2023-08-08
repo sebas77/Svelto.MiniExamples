@@ -1,6 +1,8 @@
 using System;
 using System.Runtime.CompilerServices;
 
+[assembly: InternalsVisibleTo("Svelto.ECS")]
+
 namespace Svelto.DataStructures
 {
     /// <summary>
@@ -15,9 +17,9 @@ namespace Svelto.DataStructures
     /// but the count will stay zero. It's not the MB responsibility to track the count
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public struct MB<T>:IBuffer<T> 
+    internal struct MBInternal<T>:IBuffer<T> 
     {
-        internal MB(T[]  array) : this()
+        MBInternal(T[]  array) : this()
         {
             _buffer = array;
         }
@@ -50,7 +52,10 @@ namespace Svelto.DataStructures
         {
             return _buffer;
         }
-
+        
+        public static implicit operator MB<T>(MBInternal<T> proxy) => new MB<T>(proxy);
+        public static implicit operator MBInternal<T>(MB<T> proxy) => new MBInternal<T>(proxy.ToManagedArray());
+        
         public int capacity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -85,7 +90,71 @@ namespace Svelto.DataStructures
                 return ref _buffer[index];
             }
         }
-
+        
         T[]         _buffer;
+    }
+
+    public ref struct MB<T>
+    {
+        MBInternal<T> _bufferImplementation;
+
+        internal MB(MBInternal<T> mbInternal)
+        {
+            _bufferImplementation = mbInternal;
+        }
+
+        public void CopyTo(uint sourceStartIndex, T[] destination, uint destinationStartIndex, uint count)
+        {
+            _bufferImplementation.CopyTo(sourceStartIndex, destination, destinationStartIndex, count);
+        }
+
+        public void Clear()
+        {
+            _bufferImplementation.Clear();
+        }
+
+        public int capacity => _bufferImplementation.capacity;
+
+        public bool isValid => _bufferImplementation.isValid;
+        
+        public void Set(T[] array)
+        {
+            _bufferImplementation.Set(array);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void CopyFrom(T[] collection, uint actualSize)
+        {
+            _bufferImplementation.CopyFrom(collection, actualSize);
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public T[] ToManagedArray()
+        {
+            return  _bufferImplementation.ToManagedArray();
+        }
+        
+        public ref T this[uint index]
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return ref _bufferImplementation[index];
+            }
+        }
+
+        public ref T this[int index]
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+#if DEBUG && ENABLE_PARANOID_CHECKS                
+                if (index >= _buffer.Length)
+                    throw new IndexOutOfRangeException("Paranoid check failed!");
+#endif
+
+                return ref _bufferImplementation[index];
+            }
+        }
     }
 }

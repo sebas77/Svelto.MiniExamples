@@ -198,7 +198,7 @@ namespace Svelto.ECS
                 return;
             }
 
-            buffer = (MB<T1>)ec._buffer;
+            buffer = (MBInternal<T1>)ec._buffer;
             count = (int)ec.count;
         }
 
@@ -215,7 +215,7 @@ namespace Svelto.ECS
                 return;
             }
 
-            buffer = (MB<T1>)ec._buffer;
+            buffer = (MBInternal<T1>)ec._buffer;
             count = (int)ec.count;
             entityIDs = (ManagedEntityIDs)ec._entityIDs;
         }
@@ -235,8 +235,8 @@ namespace Svelto.ECS
                 return;
             }
 
-            buffer1 = (MB<T1>)ec.buffer1._buffer;
-            buffer2 = (MB<T2>)ec.buffer2._buffer;
+            buffer1 = (MBInternal<T1>)ec.buffer1._buffer;
+            buffer2 = (MBInternal<T2>)ec.buffer2._buffer;
             count = (int)ec.count;
         }
 
@@ -256,8 +256,8 @@ namespace Svelto.ECS
                 return;
             }
 
-            buffer1 = (MB<T1>)ec.buffer1._buffer;
-            buffer2 = (MB<T2>)ec.buffer2._buffer;
+            buffer1 = (MBInternal<T1>)ec.buffer1._buffer;
+            buffer2 = (MBInternal<T2>)ec.buffer2._buffer;
             count = (int)ec.count;
             entityIDs = (ManagedEntityIDs)ec.buffer1._entityIDs;
         }
@@ -279,9 +279,9 @@ namespace Svelto.ECS
                 return;
             }
 
-            buffer1 = (MB<T1>)ec.buffer1._buffer;
-            buffer2 = (MB<T2>)ec.buffer2._buffer;
-            buffer3 = (MB<T3>)ec.buffer3._buffer;
+            buffer1 = (MBInternal<T1>)ec.buffer1._buffer;
+            buffer2 = (MBInternal<T2>)ec.buffer2._buffer;
+            buffer3 = (MBInternal<T3>)ec.buffer3._buffer;
             count = (int)ec.count;
         }
 
@@ -303,9 +303,9 @@ namespace Svelto.ECS
                 return;
             }
 
-            buffer1 = (MB<T1>)ec.buffer1._buffer;
-            buffer2 = (MB<T2>)ec.buffer2._buffer;
-            buffer3 = (MB<T3>)ec.buffer3._buffer;
+            buffer1 = (MBInternal<T1>)ec.buffer1._buffer;
+            buffer2 = (MBInternal<T2>)ec.buffer2._buffer;
+            buffer3 = (MBInternal<T3>)ec.buffer3._buffer;
             count = (int)ec.count;
             entityIDs = (ManagedEntityIDs)ec.buffer1._entityIDs;
         }
@@ -329,7 +329,7 @@ namespace Svelto.ECS
             }
 
             buffer1 = (NB<T1>)ec.buffer1._buffer;
-            buffer2 = (MB<T2>)ec.buffer2._buffer;
+            buffer2 = (MBInternal<T2>)ec.buffer2._buffer;
             count = (int)ec.count;
             entityIDs = (ManagedEntityIDs)ec.buffer2._entityIDs;
         }
@@ -350,7 +350,7 @@ namespace Svelto.ECS
             }
 
             buffer1 = (NB<T1>)ec.buffer1._buffer;
-            buffer2 = (MB<T2>)ec.buffer2._buffer;
+            buffer2 = (MBInternal<T2>)ec.buffer2._buffer;
             count = (int)ec.count;
         }
 
@@ -372,8 +372,8 @@ namespace Svelto.ECS
             }
 
             buffer1 = (NB<T1>)ec.buffer1._buffer;
-            buffer2 = (MB<T2>)ec.buffer2._buffer;
-            buffer3 = (MB<T3>)ec.buffer3._buffer;
+            buffer2 = (MBInternal<T2>)ec.buffer2._buffer;
+            buffer3 = (MBInternal<T3>)ec.buffer3._buffer;
             count = (int)ec.count;
         }
 
@@ -399,7 +399,7 @@ namespace Svelto.ECS
             buffer1 = (NB<T1>)ec.buffer1._buffer;
             buffer2 = (NB<T2>)ec.buffer2._buffer;
             buffer3 = (NB<T3>)ec.buffer3._buffer;
-            buffer4 = (MB<T4>)ec.buffer4._buffer;
+            buffer4 = (MBInternal<T4>)ec.buffer4._buffer;
             count = (int)ec.count;
         }
     }
@@ -425,7 +425,7 @@ namespace Svelto.ECS
 
             buffer1 = (NB<T1>)ec.buffer1._buffer;
             buffer2 = (NB<T2>)ec.buffer2._buffer;
-            buffer3 = (MB<T3>)ec.buffer3._buffer;
+            buffer3 = (MBInternal<T3>)ec.buffer3._buffer;
             count = (int)ec.count;
         }
 
@@ -450,8 +450,8 @@ namespace Svelto.ECS
 
             buffer1 = (NB<T1>)ec.buffer1._buffer;
             buffer2 = (NB<T2>)ec.buffer2._buffer;
-            buffer3 = (MB<T3>)ec.buffer3._buffer;
-            buffer4 = (MB<T4>)ec.buffer4._buffer;
+            buffer3 = (MBInternal<T3>)ec.buffer3._buffer;
+            buffer4 = (MBInternal<T4>)ec.buffer4._buffer;
             count = (int)ec.count;
         }
     }

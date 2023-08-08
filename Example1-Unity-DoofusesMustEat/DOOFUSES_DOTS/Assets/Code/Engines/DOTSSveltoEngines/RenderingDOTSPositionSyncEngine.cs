@@ -1,11 +1,15 @@
 using System;
 using Svelto.ECS.EntityComponents;
+using Svelto.ECS.MiniExamples.DoofusesDOTS;
 using Svelto.ECS.SveltoOnDOTS;
 using Unity.Entities;
 using Unity.Transforms;
 
+[assembly: RegisterGenericComponentType(typeof(RenderingDOTSPositionSyncEngine))]
+
 namespace Svelto.ECS.MiniExamples.DoofusesDOTS
 {
+   
     /// <summary>
     /// Sync SveltoTODOTS engines are also DOTS ECS systems and MUST BE added explicitly using SveltoOnDOTS methods 
     /// </summary>
@@ -22,8 +26,7 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
             var sveltoFilters = entitiesDB.GetFilters();
 
             //find all the filters where BLUE_DOFFUSES are found. Blue DOOFUSES are found in a set with a material being blue
-            EntityFilterCollection blueFilters = sveltoFilters
-                   .GetPersistentFilter<PositionEntityComponent>(GameFilters.BLUE_DOOFUSES_MESHES);
+            EntityFilterCollection blueFilters = sveltoFilters.GetPersistentFilter<PositionEntityComponent>(GameFilters.BLUE_DOOFUSES_MESHES);
 
             //sync engines are usually semi specialised engines. They can get quite abstract using FindGroup, or they can be semi-abstract
             //using GroupCompounds like in this example
@@ -36,14 +39,13 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
 
             //when it's time to sync, I have two options, iterate the svelto entities first or iterate the
             //DOTS ECS entities first. 
-            foreach (var (filterIndices, group) in blueFilters)
+            foreach ((EntityFilterIndices filterIndices, ExclusiveGroupStruct group) in blueFilters)
             {
                 var (positions, _) = entitiesDB.QueryEntities<PositionEntityComponent>(@group);
 
                 //All the blue doofuses are the same under the Svelto point of view, so they can be considered a pool and the order
                 //or 1:1 relations ship doesn't count
-                Entities.WithNone<SpecialBluePrefab>().ForEach(
-                            (int entityInQueryIndex, ref LocalTransform translation) =>
+                Entities.WithNone<SpecialBluePrefab>().ForEach((int entityInQueryIndex, ref LocalTransform translation) =>
                             {
                                 ref readonly var positionEntityComponent = ref positions[filterIndices[entityInQueryIndex]];
 
@@ -63,8 +65,7 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
             {
                 var (positions, _) = entitiesDB.QueryEntities<PositionEntityComponent>(@group);
 
-                Entities.WithAny<SpecialBluePrefab>().ForEach(
-                    (int entityInQueryIndex, ref LocalTransform translation) =>
+                Entities.WithAny<SpecialBluePrefab>().ForEach((int entityInQueryIndex, ref LocalTransform translation) =>
                     {
                         ref readonly var positionEntityComponent = ref positions[filterIndices[entityInQueryIndex]];
 
@@ -72,12 +73,9 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
                     }).WithSharedComponentFilter(new DOTSSveltoGroupID(@group)).ScheduleParallel();
             }
 
-            foreach (var ((positions, _), group) in entitiesDB.QueryEntities<PositionEntityComponent>(
-                         GameGroups
-                                .RED.Groups))
+            foreach (var ((positions, _), group) in entitiesDB.QueryEntities<PositionEntityComponent>(GameGroups.RED.Groups))
             {
-                Entities.ForEach(
-                            (int entityInQueryIndex, ref LocalTransform translation) =>
+                Entities.ForEach((int entityInQueryIndex, ref LocalTransform translation) =>
                             {
                                 ref readonly var positionEntityComponent = ref positions[entityInQueryIndex];
 

@@ -41,7 +41,7 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
-    <Analyzer Include="C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Simulation\GROUPSANDFILTERSBURST\Assets\AkroGame.ECS.Analyzer.dll" />
+    <Analyzer Include="C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Unity-Simulation\GROUPSANDFILTERSBURST\Assets\AkroGame.ECS.Analyzer.dll" />
     <Analyzer Include="C:\Program Files\Unity\2023.1.6f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.SourceGenerators.dll" />
     <Analyzer Include="C:\Program Files\Unity\2023.1.6f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.Properties.SourceGenerator.dll" />
   </ItemGroup>
@@ -141,7 +141,6 @@
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\IDisposingEngine.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\DOTS\UECS\SyncDOTSToSveltoGroup.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\DOTS\UECS\JobifiedSveltoEngines.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.ecs\obj\SlowSubmissionDebug\netstandard2.1\Svelto.ECS.AssemblyInfo.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\EntityCollection.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Core\IComponentBuilder.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Native\NativeEGIDMapper.cs" />
@@ -216,21 +215,14 @@
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Serialization\IComponentSerializer.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.ecs\Extensions\Native\EntityNativeDBExtensions.cs" />
      <Folder Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\DOTS\Jobs" />
-     <Folder Include="Packages\com.sebaslab.svelto.ecs\obj" />
      <Folder Include="Packages\com.sebaslab.svelto.ecs\DataStructures" />
      <Folder Include="Packages\com.sebaslab.svelto.ecs\Core\Filters" />
      <Folder Include="Packages\com.sebaslab.svelto.ecs\Extensions\Svelto\Legacy" />
      <Folder Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\DOTS" />
      <Folder Include="Packages\com.sebaslab.svelto.ecs\Core\EnginesGroup" />
      <Folder Include="Packages\com.sebaslab.svelto.ecs\Core\SpecialEnumerators" />
-     <Folder Include="Packages\com.sebaslab.svelto.ecs\bin" />
-     <None Include="Packages\com.sebaslab.svelto.ecs\obj\Svelto.ECS.csproj.nuget.dgspec.json" />
-     <Folder Include="Packages\com.sebaslab.svelto.ecs\bin\SlowSubmissionDebug" />
      <Folder Include="Packages\com.sebaslab.svelto.ecs\Extensions\Native" />
-     <Folder Include="Packages\com.sebaslab.svelto.ecs\bin\SlowSubmissionDebug\netstandard2.1" />
-     <Folder Include="Packages\com.sebaslab.svelto.ecs\obj\SlowSubmissionDebug\netstandard2.1" />
      <Folder Include="Packages\com.sebaslab.svelto.ecs\Core\Hybrid" />
-     <Folder Include="Packages\com.sebaslab.svelto.ecs\obj\SlowSubmissionDebug" />
      <Folder Include="Packages\com.sebaslab.svelto.ecs\Core" />
      <Folder Include="Packages\com.sebaslab.svelto.ecs\Components" />
      <Folder Include="Packages\com.sebaslab.svelto.ecs\Core\Filters\Legacy" />
@@ -239,10 +231,8 @@
      <Folder Include="Packages\com.sebaslab.svelto.ecs\Extensions" />
      <Folder Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity" />
      <None Include="Packages\com.sebaslab.svelto.ecs\Svelto.ECS.asmdef" />
-     <None Include="Packages\com.sebaslab.svelto.ecs\obj\project.packagespec.json" />
      <Folder Include="Packages\com.sebaslab.svelto.ecs" />
      <Folder Include="Packages\com.sebaslab.svelto.ecs\DataStructures\EntityIDs" />
-     <None Include="Packages\com.sebaslab.svelto.ecs\obj\SlowSubmissionDebug\netstandard2.1\Svelto.ECS.csproj.FileListAbsolute.txt" />
      <Folder Include="Packages\com.sebaslab.svelto.ecs\Dispatcher" />
      <Folder Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\DOTS\UECS" />
      <Folder Include="Packages\com.sebaslab.svelto.ecs\Core\Streams" />
@@ -251,9 +241,7 @@
      <Folder Include="Packages\com.sebaslab.svelto.ecs\ECSResources" />
      <Folder Include="Packages\com.sebaslab.svelto.ecs\Core\Groups" />
      <Folder Include="Packages\com.sebaslab.svelto.ecs\Core\EntityReference" />
-     <None Include="Packages\com.sebaslab.svelto.ecs\obj\project.assets.json" />
      <Folder Include="Packages\com.sebaslab.svelto.ecs\Extensions\Svelto" />
-     <None Include="Packages\com.sebaslab.svelto.ecs\bin\SlowSubmissionDebug\netstandard2.1\Svelto.ECS.deps.json" />
      <Folder Include="Packages\com.sebaslab.svelto.ecs\Extensions\Unity\GameObjects" />
      <Reference Include="UnityEngine">
      <HintPath>C:\Program Files\Unity\2023.1.6f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
@@ -532,7 +520,7 @@
      <HintPath>C:\Program Files\Unity\2023.1.6f1\Editor\Data\PlaybackEngines\AndroidPlayer\UnityEditor.Android.Extensions.dll</HintPath>
      </Reference>
      <Reference Include="System.Runtime.CompilerServices.Unsafe">
-     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.meryel.code-analysis-3-11@ae161c6c23\Plugins\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Unity-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.meryel.code-analysis-3-11@ae161c6c23\Plugins\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Android.Types">
      <HintPath>C:\Program Files\Unity\2023.1.6f1\Editor\Data\PlaybackEngines\AndroidPlayer\Unity.Android.Types.dll</HintPath>

@@ -6,6 +6,7 @@ using System;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using Svelto.ECS.Hybrid;
+using Svelto.ECS.Serialization;
 
 namespace Svelto.ECS
 {

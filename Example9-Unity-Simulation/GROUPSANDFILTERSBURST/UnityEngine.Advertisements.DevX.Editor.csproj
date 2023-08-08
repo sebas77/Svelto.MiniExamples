@@ -41,7 +41,7 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
-    <Analyzer Include="C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Simulation\GROUPSANDFILTERSBURST\Assets\AkroGame.ECS.Analyzer.dll" />
+    <Analyzer Include="C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Unity-Simulation\GROUPSANDFILTERSBURST\Assets\AkroGame.ECS.Analyzer.dll" />
     <Analyzer Include="C:\Program Files\Unity\2023.1.6f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.SourceGenerators.dll" />
     <Analyzer Include="C:\Program Files\Unity\2023.1.6f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.Properties.SourceGenerator.dll" />
   </ItemGroup>
@@ -352,7 +352,7 @@
      <HintPath>C:\Program Files\Unity\2023.1.6f1\Editor\Data\PlaybackEngines\AndroidPlayer\UnityEditor.Android.Extensions.dll</HintPath>
      </Reference>
      <Reference Include="nunit.framework">
-     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.unity.ext.nunit@2.0.3\net40\unity-custom\nunit.framework.dll</HintPath>
+     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Unity-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.unity.ext.nunit@2.0.3\net40\unity-custom\nunit.framework.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Android.Types">
      <HintPath>C:\Program Files\Unity\2023.1.6f1\Editor\Data\PlaybackEngines\AndroidPlayer\Unity.Android.Types.dll</HintPath>

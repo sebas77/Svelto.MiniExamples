@@ -41,7 +41,7 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
-    <Analyzer Include="C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Simulation\GROUPSANDFILTERSBURST\Assets\AkroGame.ECS.Analyzer.dll" />
+    <Analyzer Include="C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Unity-Simulation\GROUPSANDFILTERSBURST\Assets\AkroGame.ECS.Analyzer.dll" />
     <Analyzer Include="C:\Program Files\Unity\2023.1.6f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.SourceGenerators.dll" />
     <Analyzer Include="C:\Program Files\Unity\2023.1.6f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.Properties.SourceGenerator.dll" />
   </ItemGroup>
@@ -347,118 +347,112 @@
      <HintPath>C:\Program Files\Unity\2023.1.6f1\Editor\Data\PlaybackEngines\AndroidPlayer\UnityEditor.Android.Extensions.dll</HintPath>
      </Reference>
      <Reference Include="System.Text.Encoding.CodePages">
-     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.meryel.code-analysis-3-11@ae161c6c23\Plugins\System.Text.Encoding.CodePages.dll</HintPath>
+     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Unity-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.meryel.code-analysis-3-11@ae161c6c23\Plugins\System.Text.Encoding.CodePages.dll</HintPath>
      </Reference>
      <Reference Include="Microsoft.CodeAnalysis.Workspaces">
-     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.meryel.code-analysis-3-11@ae161c6c23\Plugins\Microsoft.CodeAnalysis.Workspaces.dll</HintPath>
+     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Unity-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.meryel.code-analysis-3-11@ae161c6c23\Plugins\Microsoft.CodeAnalysis.Workspaces.dll</HintPath>
      </Reference>
      <Reference Include="Unity.VisualScripting.YamlDotNet">
-     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.unity.visualscripting@1.8.0\Editor\VisualScripting.Core\Dependencies\YamlDotNet\Unity.VisualScripting.YamlDotNet.dll</HintPath>
-     </Reference>
-     <Reference Include="Svelto.ECS">
-     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Simulation\GROUPSANDFILTERSBURST\Packages\com.sebaslab.svelto.ecs\obj\SlowSubmissionDebug\netstandard2.1\Svelto.ECS.dll</HintPath>
+     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Unity-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.unity.visualscripting@1.8.0\Editor\VisualScripting.Core\Dependencies\YamlDotNet\Unity.VisualScripting.YamlDotNet.dll</HintPath>
      </Reference>
      <Reference Include="System.Composition.AttributedModel">
-     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.meryel.code-analysis-3-11@ae161c6c23\Plugins\System.Composition.AttributedModel.dll</HintPath>
+     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Unity-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.meryel.code-analysis-3-11@ae161c6c23\Plugins\System.Composition.AttributedModel.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Collections.LowLevel.ILSupport">
-     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.unity.collections@2.1.0-pre.6\Unity.Collections.LowLevel.ILSupport\Unity.Collections.LowLevel.ILSupport.dll</HintPath>
+     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Unity-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.unity.collections@2.1.0-pre.6\Unity.Collections.LowLevel.ILSupport\Unity.Collections.LowLevel.ILSupport.dll</HintPath>
      </Reference>
      <Reference Include="SQLitePCLRaw.provider.e_sqlite3">
-     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.meryel.code-analysis-3-11@ae161c6c23\Plugins\SQLitePCLRaw.provider.e_sqlite3.dll</HintPath>
+     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Unity-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.meryel.code-analysis-3-11@ae161c6c23\Plugins\SQLitePCLRaw.provider.e_sqlite3.dll</HintPath>
      </Reference>
      <Reference Include="nunit.framework">
-     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.unity.ext.nunit@2.0.3\net40\unity-custom\nunit.framework.dll</HintPath>
+     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Unity-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.unity.ext.nunit@2.0.3\net40\unity-custom\nunit.framework.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Analytics.Tracker">
-     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.unity.analytics@3.8.1\Unity.Analytics.Tracker.dll</HintPath>
+     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Unity-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.unity.analytics@3.8.1\Unity.Analytics.Tracker.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Analytics.Editor">
-     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.unity.analytics@3.8.1\Unity.Analytics.Editor.dll</HintPath>
+     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Unity-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.unity.analytics@3.8.1\Unity.Analytics.Editor.dll</HintPath>
      </Reference>
      <Reference Include="System.Runtime.CompilerServices.Unsafe">
-     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.meryel.code-analysis-3-11@ae161c6c23\Plugins\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Unity-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.meryel.code-analysis-3-11@ae161c6c23\Plugins\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
      </Reference>
      <Reference Include="Microsoft.Bcl.AsyncInterfaces">
-     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.meryel.code-analysis-3-11@ae161c6c23\Plugins\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
+     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Unity-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.meryel.code-analysis-3-11@ae161c6c23\Plugins\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
      </Reference>
      <Reference Include="System.Composition.Hosting">
-     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.meryel.code-analysis-3-11@ae161c6c23\Plugins\System.Composition.Hosting.dll</HintPath>
+     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Unity-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.meryel.code-analysis-3-11@ae161c6c23\Plugins\System.Composition.Hosting.dll</HintPath>
      </Reference>
      <Reference Include="Humanizer">
-     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.meryel.code-analysis-3-11@ae161c6c23\Plugins\Humanizer.dll</HintPath>
+     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Unity-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.meryel.code-analysis-3-11@ae161c6c23\Plugins\Humanizer.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Plastic.Antlr3.Runtime">
-     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.unity.collab-proxy@2.0.5\Lib\Editor\PlasticSCM\Unity.Plastic.Antlr3.Runtime.dll</HintPath>
+     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Unity-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.unity.collab-proxy@2.0.5\Lib\Editor\PlasticSCM\Unity.Plastic.Antlr3.Runtime.dll</HintPath>
      </Reference>
      <Reference Include="Microsoft.CodeAnalysis.CSharp.Workspaces">
-     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.meryel.code-analysis-3-11@ae161c6c23\Plugins\Microsoft.CodeAnalysis.CSharp.Workspaces.dll</HintPath>
+     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Unity-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.meryel.code-analysis-3-11@ae161c6c23\Plugins\Microsoft.CodeAnalysis.CSharp.Workspaces.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Plastic.Newtonsoft.Json">
-     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.unity.collab-proxy@2.0.5\Lib\Editor\PlasticSCM\Unity.Plastic.Newtonsoft.Json.dll</HintPath>
-     </Reference>
-     <Reference Include="Svelto.Common">
-     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Simulation\GROUPSANDFILTERSBURST\Packages\com.sebaslab.svelto.common\obj\SlowSubmissionDebug\netstandard2.1\Svelto.Common.dll</HintPath>
+     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Unity-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.unity.collab-proxy@2.0.5\Lib\Editor\PlasticSCM\Unity.Plastic.Newtonsoft.Json.dll</HintPath>
      </Reference>
      <Reference Include="log4netPlastic">
-     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.unity.collab-proxy@2.0.5\Lib\Editor\PlasticSCM\log4netPlastic.dll</HintPath>
+     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Unity-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.unity.collab-proxy@2.0.5\Lib\Editor\PlasticSCM\log4netPlastic.dll</HintPath>
      </Reference>
      <Reference Include="Unity.VisualScripting.IonicZip">
-     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.unity.visualscripting@1.8.0\Editor\VisualScripting.Core\Dependencies\DotNetZip\Unity.VisualScripting.IonicZip.dll</HintPath>
+     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Unity-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.unity.visualscripting@1.8.0\Editor\VisualScripting.Core\Dependencies\DotNetZip\Unity.VisualScripting.IonicZip.dll</HintPath>
      </Reference>
      <Reference Include="SQLitePCLRaw.batteries_v2">
-     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.meryel.code-analysis-3-11@ae161c6c23\Plugins\SQLitePCLRaw.batteries_v2.dll</HintPath>
+     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Unity-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.meryel.code-analysis-3-11@ae161c6c23\Plugins\SQLitePCLRaw.batteries_v2.dll</HintPath>
      </Reference>
      <Reference Include="System.Collections.Immutable">
-     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.meryel.code-analysis-3-11@ae161c6c23\Plugins\System.Collections.Immutable.dll</HintPath>
+     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Unity-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.meryel.code-analysis-3-11@ae161c6c23\Plugins\System.Collections.Immutable.dll</HintPath>
      </Reference>
      <Reference Include="Unity.VisualScripting.Antlr3.Runtime">
-     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.unity.visualscripting@1.8.0\Runtime\VisualScripting.Flow\Dependencies\NCalc\Unity.VisualScripting.Antlr3.Runtime.dll</HintPath>
+     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Unity-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.unity.visualscripting@1.8.0\Runtime\VisualScripting.Flow\Dependencies\NCalc\Unity.VisualScripting.Antlr3.Runtime.dll</HintPath>
      </Reference>
      <Reference Include="System.Composition.Convention">
-     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.meryel.code-analysis-3-11@ae161c6c23\Plugins\System.Composition.Convention.dll</HintPath>
+     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Unity-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.meryel.code-analysis-3-11@ae161c6c23\Plugins\System.Composition.Convention.dll</HintPath>
      </Reference>
      <Reference Include="System.Composition.TypedParts">
-     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.meryel.code-analysis-3-11@ae161c6c23\Plugins\System.Composition.TypedParts.dll</HintPath>
+     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Unity-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.meryel.code-analysis-3-11@ae161c6c23\Plugins\System.Composition.TypedParts.dll</HintPath>
      </Reference>
      <Reference Include="System.Reflection.Metadata">
-     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.meryel.code-analysis-3-11@ae161c6c23\Plugins\System.Reflection.Metadata.dll</HintPath>
+     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Unity-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.meryel.code-analysis-3-11@ae161c6c23\Plugins\System.Reflection.Metadata.dll</HintPath>
      </Reference>
      <Reference Include="Microsoft.CodeAnalysis">
-     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.meryel.code-analysis-3-11@ae161c6c23\Plugins\Microsoft.CodeAnalysis.dll</HintPath>
+     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Unity-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.meryel.code-analysis-3-11@ae161c6c23\Plugins\Microsoft.CodeAnalysis.dll</HintPath>
      </Reference>
      <Reference Include="AkroGame.ECS.Analyzer">
-     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Simulation\GROUPSANDFILTERSBURST\Assets\AkroGame.ECS.Analyzer.dll</HintPath>
+     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Unity-Simulation\GROUPSANDFILTERSBURST\Assets\AkroGame.ECS.Analyzer.dll</HintPath>
      </Reference>
      <Reference Include="System.Composition.Runtime">
-     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.meryel.code-analysis-3-11@ae161c6c23\Plugins\System.Composition.Runtime.dll</HintPath>
+     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Unity-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.meryel.code-analysis-3-11@ae161c6c23\Plugins\System.Composition.Runtime.dll</HintPath>
      </Reference>
      <Reference Include="AkroGame.ECS.Websocket">
-     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Simulation\GROUPSANDFILTERSBURST\Packages\svelto-ecs-inspector-unity\AkroGame.ECS.WebSocketWrapper\AkroGame.ECS.Websocket.dll</HintPath>
+     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Unity-Simulation\GROUPSANDFILTERSBURST\Packages\svelto-ecs-inspector-unity\AkroGame.ECS.WebSocketWrapper\AkroGame.ECS.Websocket.dll</HintPath>
      </Reference>
      <Reference Include="Microsoft.CodeAnalysis.CSharp">
-     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.meryel.code-analysis-3-11@ae161c6c23\Plugins\Microsoft.CodeAnalysis.CSharp.dll</HintPath>
+     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Unity-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.meryel.code-analysis-3-11@ae161c6c23\Plugins\Microsoft.CodeAnalysis.CSharp.dll</HintPath>
      </Reference>
      <Reference Include="Newtonsoft.Json">
-     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.unity.nuget.newtonsoft-json@3.2.1\Runtime\Newtonsoft.Json.dll</HintPath>
+     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Unity-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.unity.nuget.newtonsoft-json@3.2.1\Runtime\Newtonsoft.Json.dll</HintPath>
      </Reference>
      <Reference Include="Unity.VisualScripting.TextureAssets">
-     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.unity.visualscripting@1.8.0\Editor\VisualScripting.Core\EditorAssetResources\Unity.VisualScripting.TextureAssets.dll</HintPath>
+     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Unity-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.unity.visualscripting@1.8.0\Editor\VisualScripting.Core\EditorAssetResources\Unity.VisualScripting.TextureAssets.dll</HintPath>
      </Reference>
      <Reference Include="Mono.Cecil">
-     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.unity.nuget.mono-cecil@1.11.4\Mono.Cecil.dll</HintPath>
+     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Unity-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.unity.nuget.mono-cecil@1.11.4\Mono.Cecil.dll</HintPath>
      </Reference>
      <Reference Include="unityplastic">
-     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.unity.collab-proxy@2.0.5\Lib\Editor\PlasticSCM\unityplastic.dll</HintPath>
+     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Unity-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.unity.collab-proxy@2.0.5\Lib\Editor\PlasticSCM\unityplastic.dll</HintPath>
      </Reference>
      <Reference Include="System.IO.Pipelines">
-     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.meryel.code-analysis-3-11@ae161c6c23\Plugins\System.IO.Pipelines.dll</HintPath>
+     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Unity-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.meryel.code-analysis-3-11@ae161c6c23\Plugins\System.IO.Pipelines.dll</HintPath>
      </Reference>
      <Reference Include="SQLitePCLRaw.core">
-     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.meryel.code-analysis-3-11@ae161c6c23\Plugins\SQLitePCLRaw.core.dll</HintPath>
+     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Unity-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.meryel.code-analysis-3-11@ae161c6c23\Plugins\SQLitePCLRaw.core.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Analytics.StandardEvents">
-     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.unity.analytics@3.8.1\AnalyticsStandardEvents\Unity.Analytics.StandardEvents.dll</HintPath>
+     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Unity-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.unity.analytics@3.8.1\AnalyticsStandardEvents\Unity.Analytics.StandardEvents.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Android.Types">
      <HintPath>C:\Program Files\Unity\2023.1.6f1\Editor\Data\PlaybackEngines\AndroidPlayer\Unity.Android.Types.dll</HintPath>

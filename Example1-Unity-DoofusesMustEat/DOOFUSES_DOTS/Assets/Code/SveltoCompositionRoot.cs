@@ -79,7 +79,7 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
             //sveltoOnDotsEnginesGroupEnginesGroup.AddSveltoToDOTSSyncEngine(syncEngine); or
             //sveltoOnDotsEnginesGroupEnginesGroup.AddDOTSToSveltoSyncEngine(syncEngine);
             //depending on the direction of the sync
-            _sveltoOnDotsEnginesGroup.AddSveltoToDOTSSyncEngine(new RenderingDOTSPositionSyncEngine());
+            _sveltoOnDotsEnginesGroup.CreateDOTSToSveltoSyncEngine<RenderingDOTSPositionSyncEngine>();
             
             //being _sveltoOnDotsEnginesGroup an engine group, it will tick all the engines added to it (structural and sync)
             //it will also run the DOTS ECS systems linked to the DOTS World created by the SveltoOnDOTSEnginesGroup

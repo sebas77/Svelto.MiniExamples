@@ -41,31 +41,31 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
-     <Folder Include="Library\PackageCache\com.unity.entities@1.0.8\Unity.Entities.Editor.Tests\Inspector" />
-     <Folder Include="Library\PackageCache\com.unity.entities@1.0.8\Unity.Entities.Editor.Tests\Utilities" />
-     <Folder Include="Library\PackageCache\com.unity.entities@1.0.8\Unity.Entities.Editor.Tests\SystemSchedule" />
-     <Folder Include="Library\PackageCache\com.unity.entities@1.0.8\Unity.Entities.Editor.Tests\Hierarchy\Model\ChangeTracking" />
-     <Folder Include="Library\PackageCache\com.unity.entities@1.0.8\Unity.Entities.Editor.Tests\Extensions" />
-     <Folder Include="Library\PackageCache\com.unity.entities@1.0.8\Unity.Entities.Editor.Tests\Hierarchy\Model" />
-     <Folder Include="Library\PackageCache\com.unity.entities@1.0.8\Unity.Entities.Editor.Tests\Search" />
-     <Folder Include="Library\PackageCache\com.unity.entities@1.0.8\Unity.Entities.Editor.Tests\Controls" />
-     <Folder Include="Library\PackageCache\com.unity.entities@1.0.8\Unity.Entities.Editor.Tests\Conversion" />
-     <Folder Include="Library\PackageCache\com.unity.entities@1.0.8\Unity.Entities.Editor.Tests\Hierarchy" />
-     <Folder Include="Library\PackageCache\com.unity.entities@1.0.8\Unity.Entities.Editor.Tests\Utilities\CustomVisualElement" />
-     <Folder Include="Library\PackageCache\com.unity.entities@1.0.8\Unity.Entities.Editor.Tests\Utilities\Bindings" />
-     <Folder Include="Library\PackageCache\com.unity.entities@1.0.8\Unity.Entities.Editor.Tests" />
-     <Folder Include="Library\PackageCache\com.unity.entities@1.0.8\Unity.Entities.Editor.Tests\GUI" />
-     <Folder Include="Library\PackageCache\com.unity.entities@1.0.8\Unity.Entities.Editor.Tests\Component" />
-     <None Include="Library\PackageCache\com.unity.entities@1.0.8\Unity.Entities.Editor.Tests\Unity.Entities.Editor.Tests.asmdef" />
-     <Folder Include="Library\PackageCache\com.unity.entities@1.0.8\Unity.Entities.Editor.Tests\LiveProperties" />
+     <Folder Include="Library\PackageCache\com.unity.entities@1.0.11\Unity.Entities.Editor.Tests\Inspector" />
+     <Folder Include="Library\PackageCache\com.unity.entities@1.0.11\Unity.Entities.Editor.Tests\Utilities" />
+     <Folder Include="Library\PackageCache\com.unity.entities@1.0.11\Unity.Entities.Editor.Tests\SystemSchedule" />
+     <Folder Include="Library\PackageCache\com.unity.entities@1.0.11\Unity.Entities.Editor.Tests\Hierarchy\Model\ChangeTracking" />
+     <Folder Include="Library\PackageCache\com.unity.entities@1.0.11\Unity.Entities.Editor.Tests\Extensions" />
+     <Folder Include="Library\PackageCache\com.unity.entities@1.0.11\Unity.Entities.Editor.Tests\Hierarchy\Model" />
+     <Folder Include="Library\PackageCache\com.unity.entities@1.0.11\Unity.Entities.Editor.Tests\Search" />
+     <Folder Include="Library\PackageCache\com.unity.entities@1.0.11\Unity.Entities.Editor.Tests\Controls" />
+     <Folder Include="Library\PackageCache\com.unity.entities@1.0.11\Unity.Entities.Editor.Tests\Conversion" />
+     <Folder Include="Library\PackageCache\com.unity.entities@1.0.11\Unity.Entities.Editor.Tests\Hierarchy" />
+     <Folder Include="Library\PackageCache\com.unity.entities@1.0.11\Unity.Entities.Editor.Tests\Utilities\CustomVisualElement" />
+     <Folder Include="Library\PackageCache\com.unity.entities@1.0.11\Unity.Entities.Editor.Tests\Utilities\Bindings" />
+     <Folder Include="Library\PackageCache\com.unity.entities@1.0.11\Unity.Entities.Editor.Tests" />
+     <Folder Include="Library\PackageCache\com.unity.entities@1.0.11\Unity.Entities.Editor.Tests\GUI" />
+     <Folder Include="Library\PackageCache\com.unity.entities@1.0.11\Unity.Entities.Editor.Tests\Component" />
+     <None Include="Library\PackageCache\com.unity.entities@1.0.11\Unity.Entities.Editor.Tests\Unity.Entities.Editor.Tests.asmdef" />
+     <Folder Include="Library\PackageCache\com.unity.entities@1.0.11\Unity.Entities.Editor.Tests\LiveProperties" />
      <Reference Include="UnityEngine">
-     <HintPath>C:\Program Files\Unity\2023.1.0f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
+     <HintPath>C:\Program Files\Unity\2022.3.6f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
      </Reference>
      <Reference Include="UnityEngine.CoreModule">
-     <HintPath>C:\Program Files\Unity\2023.1.0f1\Editor\Data\Managed\UnityEngine\UnityEngine.CoreModule.dll</HintPath>
+     <HintPath>C:\Program Files\Unity\2022.3.6f1\Editor\Data\Managed\UnityEngine\UnityEngine.CoreModule.dll</HintPath>
      </Reference>
      <Reference Include="UnityEditor">
-     <HintPath>C:\Program Files\Unity\2023.1.0f1\Editor\Data\Managed\UnityEngine\UnityEditor.dll</HintPath>
+     <HintPath>C:\Program Files\Unity\2022.3.6f1\Editor\Data\Managed\UnityEngine\UnityEditor.dll</HintPath>
      </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

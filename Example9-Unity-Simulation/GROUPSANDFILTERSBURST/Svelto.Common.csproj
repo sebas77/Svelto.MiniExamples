@@ -41,7 +41,7 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
-    <Analyzer Include="C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Simulation\GROUPSANDFILTERSBURST\Assets\AkroGame.ECS.Analyzer.dll" />
+    <Analyzer Include="C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Unity-Simulation\GROUPSANDFILTERSBURST\Assets\AkroGame.ECS.Analyzer.dll" />
     <Analyzer Include="C:\Program Files\Unity\2023.1.6f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.SourceGenerators.dll" />
     <Analyzer Include="C:\Program Files\Unity\2023.1.6f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.Properties.SourceGenerator.dll" />
   </ItemGroup>
@@ -97,7 +97,6 @@
      <Compile Include="Packages\com.sebaslab.svelto.common\Utilities\MemoryUtilities.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\Utilities\FastConcatUtility.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Unmanaged\NativeDynamicArray.cs" />
-     <Compile Include="Packages\com.sebaslab.svelto.common\obj\SlowSubmissionDebug\netstandard2.1\Svelto.Common.AssemblyInfo.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Unmanaged\NativeBag.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\ObjectPool\Unity\MonoBehaviourPool.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\DualMemorySupport\ManagedStrategy.cs" />
@@ -135,7 +134,6 @@
      <Compile Include="Packages\com.sebaslab.svelto.common\Utilities\Murmur3.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\Context\Extensions\Unity\UnityContext.cs" />
      <Folder Include="Packages\com.sebaslab.svelto.common\Context\Extensions\Unity" />
-     <Folder Include="Packages\com.sebaslab.svelto.common\obj" />
      <Folder Include="Packages\com.sebaslab.svelto.common\PlatformProfiler" />
      <Folder Include="Packages\com.sebaslab.svelto.common\PlatformProfiler\Unity" />
      <Folder Include="Packages\com.sebaslab.svelto.common\DataStructures\DualMemorySupport" />
@@ -147,28 +145,18 @@
      <Folder Include="Packages\com.sebaslab.svelto.common\DataStructures\Fixed" />
      <Folder Include="Packages\com.sebaslab.svelto.common\DataStructures" />
      <None Include="Packages\com.sebaslab.svelto.common\package.json" />
-     <Folder Include="Packages\com.sebaslab.svelto.common\bin\SlowSubmissionDebug\netstandard2.1" />
      <Folder Include="Packages\com.sebaslab.svelto.common\Logger" />
      <Folder Include="Packages\com.sebaslab.svelto.common\Sequencer" />
      <Folder Include="Packages\com.sebaslab.svelto.common\DataStructures\Dictionaries" />
      <Folder Include="Packages\com.sebaslab.svelto.common\DataStructures\Unmanaged\Internal" />
-     <None Include="Packages\com.sebaslab.svelto.common\obj\project.packagespec.json" />
      <None Include="Packages\com.sebaslab.svelto.common\Svelto.Common.asmdef" />
-     <None Include="Packages\com.sebaslab.svelto.common\obj\Svelto.Common.csproj.nuget.dgspec.json" />
      <Folder Include="Packages\com.sebaslab.svelto.common\Utilities" />
      <None Include="Packages\com.sebaslab.svelto.common\version.json" />
      <Folder Include="Packages\com.sebaslab.svelto.common\DataStructures\Streams" />
-     <None Include="Packages\com.sebaslab.svelto.common\obj\SlowSubmissionDebug\netstandard2.1\Svelto.Common.csproj.FileListAbsolute.txt" />
      <Folder Include="Packages\com.sebaslab.svelto.common\DataStructures\Unmanaged" />
-     <None Include="Packages\com.sebaslab.svelto.common\obj\project.assets.json" />
-     <Folder Include="Packages\com.sebaslab.svelto.common\bin" />
-     <Folder Include="Packages\com.sebaslab.svelto.common\obj\SlowSubmissionDebug" />
      <Folder Include="Packages\com.sebaslab.svelto.common\DataStructures\Sentinel" />
      <Folder Include="Packages\com.sebaslab.svelto.common\Command" />
      <Folder Include="Packages\com.sebaslab.svelto.common\ObjectPool\Unity" />
-     <Folder Include="Packages\com.sebaslab.svelto.common\bin\SlowSubmissionDebug" />
-     <None Include="Packages\com.sebaslab.svelto.common\bin\SlowSubmissionDebug\netstandard2.1\Svelto.Common.deps.json" />
-     <Folder Include="Packages\com.sebaslab.svelto.common\obj\SlowSubmissionDebug\netstandard2.1" />
      <Folder Include="Packages\com.sebaslab.svelto.common\Context\Extensions" />
      <Reference Include="UnityEngine">
      <HintPath>C:\Program Files\Unity\2023.1.6f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
@@ -447,7 +435,7 @@
      <HintPath>C:\Program Files\Unity\2023.1.6f1\Editor\Data\PlaybackEngines\AndroidPlayer\UnityEditor.Android.Extensions.dll</HintPath>
      </Reference>
      <Reference Include="System.Runtime.CompilerServices.Unsafe">
-     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.meryel.code-analysis-3-11@ae161c6c23\Plugins\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+     <HintPath>C:\PRGDIR\Svelto\Svelto.Miniexamples\Example9-Unity-Simulation\GROUPSANDFILTERSBURST\Library\PackageCache\com.meryel.code-analysis-3-11@ae161c6c23\Plugins\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Android.Types">
      <HintPath>C:\Program Files\Unity\2023.1.6f1\Editor\Data\PlaybackEngines\AndroidPlayer\Unity.Android.Types.dll</HintPath>
