@@ -8,9 +8,9 @@ These examples use the last beta version of unity available at the moment of the
 
 Warning: these examples may use using unofficial versions of Svelto that you won't find on the main repository until officially released.
 
-## Example 1: Doofuses Must Eat (SveltoOnDOTS version/GameObject versions/Stride version)
+## 🔴Example 1: Doofuses Must Eat (Unity Version)🔴
 
-![Image](https://github.com/sebas77/Svelto.MiniExamples/blob/master/Example1-DoofusesMustEat/2020-12-22%2016-05-22.gif)
+![Image](https://github.com/sebas77/Svelto.MiniExamples/blob/master/2020-12-22%2016-05-22.gif)
 
 Object-less pure ECS example that shows the basics of Svelto.ECS. 
 
@@ -32,10 +32,17 @@ http://www.sebaslab.com/svelto-mini-examples-doofuses-must-eat/ (obsolete now, n
 * show how the resource managers work to interface objects and entities 
 * show that even with OOP interfacing, ECS helps to achieve high performance
 
+## 🔴Example 1: Doofuses Must Eat (Stride Version)🔴
+
 ### Goals of the **Stride example** are to: 
 * show a complex integration with an engine different than Unity (Stride Engine)
+
+### Goals of the **Stride Compute Sharp example** are to
+* Goal: show how to extend internal Svelto datastructure to customise data storage
+* Goal: show how to run c# svelto engines on the GPU (automatically converted to compute shader by ComputeSharp)
+* article https://www.sebaslab.com/svelto-ecs-3-4-internals-how-to-integrate-computesharp/
   
-## Example 2: The classic Survival demo (Hybrid ECS)
+## 🔴Example 2: The classic Survival demo (Hybrid ECS)🔴
 
 ![Image](https://github.com/sebas77/GithubWikiImages/blob/master/gif_animation_002.gif)
 
@@ -68,7 +75,7 @@ Most of the source code has been rewritten to work with Svelto.ECS framework. Th
 
 UI and ECS is an on going problem to solve. I have some better solutions than what proposed in this example now.
 
-## Example 4: Pure .net + SDL example
+## 🔴Example 4: Pure .net + SDL example🔴
 
 Goal of this example
 
@@ -83,17 +90,35 @@ Basic Platform Agnostic Svelto.ECS 3.0 example
 
 * Goal: Shows the very foundation of a simple entity and engine logic, without any Unity or other platform dependency (pure .net). This example won't cover all the aspects of SECS, but only the basics.
 
-## Example 6: Abstract Object Oriented Code
+## 🔴Example 6: Abstract Object Oriented Code🔴
 
 * Goal: this example shows the two main strategies to abstract OOP code. Mixing the two strategies will result in the least boiler plate and fastest code.
 * Fist integration wraps gameobjects through the use of EntityViewComponents like seen in MiniExamples 2 Survival. **Attention** EntityViewComponents and Implementors are NOT reccomended to use over the second approach.
 * Second integration shows a more efficent approach, where pure ECS is used as much as possible and engines objects are synched only as late as possible.
 
-## Example 7: Awkward foundation for a possible defense game built with the awesome engine that Stride is
+## 🔴Example 7: Awkward foundation for a possible defense game built with the awesome engine that Stride is🔴
 
 * Goal: showing Svelto working with Stride Engine (svelto can work with any engine that supports c# natively)
 * Goal: showing how to use EntityReferences to transform hierarchies
-* Foundation of my new article
+* Foundation of my new article https://www.sebaslab.com/svelto-miniexample-7-stride-engine-demo/
 
 ![image](https://user-images.githubusercontent.com/945379/134925979-145e5b0e-fd5d-4562-abc3-07bafca2fbe6.png)
+
+## 🔴Example 8: Run Svelto.Engines on GPU using ComputeSharp🔴
+
+* Goal: show how to extend internal Svelto datastructure to customise data storage
+* Goal: show how to run c# svelto engines on the GPU (automatically converted to compute shader by ComputeSharp)
+* A better example is found at https://github.com/sebas77/Svelto.MiniExamples/tree/master/Example1-Stride-DoofusesMustEat/DOOFUSES_STRIDE_COMPUTESHARP
+* Foundation of my new article https://www.sebaslab.com/svelto-ecs-3-4-internals-how-to-integrate-computesharp/
+
+## 🔴Example 9: Simulation🔴
+
+3 version of this demo are available:
+
+* Unity groups only version
+* Unity groups and filters version
+* Unity groups and filters version with Burst
+
+* Goal: these demos are interesting because are simple and show properly how to subset entities with filters and groups
+
 
