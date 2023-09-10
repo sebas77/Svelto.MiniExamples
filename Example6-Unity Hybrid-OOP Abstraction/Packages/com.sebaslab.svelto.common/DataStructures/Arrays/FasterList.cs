@@ -42,12 +42,22 @@ namespace Svelto.DataStructures
             _count = (uint)collection.Length;
         }
 
-        public FasterList(T[] collection, uint actualSize)
+        public FasterList(in ArraySegment<T> collection)
         {
-            _buffer = new T[actualSize];
-            Array.Copy(collection, _buffer, actualSize);
+            _buffer = new T[collection.Count];
 
-            _count = actualSize;
+            collection.CopyTo(_buffer, 0);
+
+            _count = (uint)collection.Count;
+        }
+        
+        public FasterList(in Span<T> collection)
+        {
+            _buffer = new T[collection.Length];
+
+            collection.CopyTo(_buffer);
+
+            _count = (uint)collection.Length;
         }
 
         public FasterList(ICollection<T> collection)

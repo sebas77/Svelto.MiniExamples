@@ -106,6 +106,17 @@ namespace Svelto
                 }
             }
         }
+        
+        public static class DefaultLog
+        {
+            public static void Use(bool catchEmAll = false)
+            {
+                DefaultUnityLogger.Init(); //first set to the Default Logger to avoid stack overflow with SimpleLogger due to SveltoSystemOutInterceptor
+
+                if (catchEmAll)
+                    CatchEmAll(); //this must happen first otherwise it will override the set out console of FasterUnityLogger
+            }
+        }
 #if UNITY_EDITOR
         static void OnEditorChangedMode(PlayModeStateChange mode)
         {
@@ -131,6 +142,7 @@ namespace Svelto
 #endif
 
         static bool _initialized;
+        
     }
 }
 #endif

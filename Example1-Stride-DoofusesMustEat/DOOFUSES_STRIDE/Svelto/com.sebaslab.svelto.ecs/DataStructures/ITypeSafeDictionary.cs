@@ -6,7 +6,7 @@ namespace Svelto.ECS.Internal
 {
     public interface ITypeSafeDictionary<TValue> : ITypeSafeDictionary where TValue : _IInternalEntityComponent
     {
-        void Add(uint egidEntityId, in TValue entityComponent);
+        uint Add(uint egidEntityId, in TValue entityComponent);
         
         bool       TryGetValue(uint entityId, out TValue item);
         ref TValue GetOrAdd(uint idEntityId);
@@ -29,11 +29,10 @@ namespace Svelto.ECS.Internal
        , in EnginesRoot.EntityReferenceMap entityLocator
 #endif         
          );
-        void RemoveEntitiesFromDictionary
-         (FasterList<(uint, string)> infosToProcess, FasterList<uint> entityIDsAffectedByRemoval);
-        void SwapEntitiesBetweenDictionaries
-        (FasterList<(uint, uint, string)> infosToProcess, ExclusiveGroupStruct fromGroup, ExclusiveGroupStruct toGroup
-       , ITypeSafeDictionary toComponentsDictionary, FasterList<uint> entityIDsAffectedByRemoval);
+        void RemoveEntitiesFromDictionary(FasterList<(uint, string)> infosToProcess, FasterDictionary<uint, uint> entityIDsAffectedByRemoveAtSwapBack);
+        void SwapEntitiesBetweenDictionaries(in FasterDictionary<uint, SwapInfo> infosToProcess, ExclusiveGroupStruct fromGroup,
+         ExclusiveGroupStruct toGroup
+       , ITypeSafeDictionary toComponentsDictionary, FasterDictionary<uint, uint> entityIDsAffectedByRemoveAtSwapBack);
         
         //------------
 
@@ -49,7 +48,7 @@ namespace Svelto.ECS.Internal
         //------------
         
         //This is now obsolete, but I cannot mark it as such because it's heavily used by legacy projects
-        void ExecuteEnginesSwapCallbacks(FasterList<(uint, uint, string)> infosToProcess,
+        void ExecuteEnginesSwapCallbacks(FasterDictionary<uint, SwapInfo> infosToProcess,
          FasterList<ReactEngineContainer<IReactOnSwap>> reactiveEnginesSwap, ExclusiveGroupStruct fromGroup,
          ExclusiveGroupStruct toGroup, in PlatformProfiler sampler);
         //Version to use
@@ -76,12 +75,13 @@ namespace Svelto.ECS.Internal
          ITypeSafeDictionary toEntitiesDictionary, ExclusiveGroupStruct fromGroupId, ExclusiveGroupStruct toGroupId,
          in PlatformProfiler platformProfiler);
         void ExecuteEnginesRemoveCallbacks_Group(
-         FasterDictionary<ComponentID, FasterList<ReactEngineContainer<IReactOnRemove>>> engines,
+         FasterDictionary<ComponentID, FasterList<ReactEngineContainer<IReactOnRemove>>> reactiveEnginesRemove,
          FasterDictionary<ComponentID, FasterList<ReactEngineContainer<IReactOnRemoveEx>>> reactiveEnginesRemoveEx,
          ExclusiveGroupStruct @group, in PlatformProfiler profiler);
         void ExecuteEnginesDisposeCallbacks_Group
-        (FasterDictionary<ComponentID, FasterList<ReactEngineContainer<IReactOnDispose>>> engines
-       , ExclusiveGroupStruct group, in PlatformProfiler profiler);
+        (FasterDictionary<ComponentID, FasterList<ReactEngineContainer<IReactOnDispose>>> reactiveEnginesDispose,
+         FasterDictionary<ComponentID, FasterList<ReactEngineContainer<IReactOnDisposeEx>>> reactiveEnginesDisposeEx,
+        ExclusiveGroupStruct group, in PlatformProfiler profiler);
 
         void IncreaseCapacityBy(uint size);
         void EnsureCapacity(uint size);

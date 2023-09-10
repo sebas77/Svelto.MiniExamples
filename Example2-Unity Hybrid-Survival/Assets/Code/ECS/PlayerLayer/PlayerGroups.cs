@@ -19,9 +19,5 @@ namespace Svelto.ECS.Example.Survive.Player
 
     public class PlayerDeadGroup: GroupCompound<Player, Dead>
     {
-        static PlayerDeadGroup()
-        {
-            bitmask = ExclusiveGroupBitmask.DISABLED_BIT;
-        }
     };
 }

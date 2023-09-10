@@ -134,7 +134,7 @@ namespace Svelto.Tasks
             for (int index = 0; index < count; ++index)
                 stacks[index].Clear();
             
-            _listOfStacks.FastClear();
+            _listOfStacks.Clear();
          
             _currentStackIndex = 0;
         }

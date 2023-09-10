@@ -108,7 +108,7 @@ namespace Svelto.ECS
                 {
                     if (type.IsSealed == false)
                         Svelto.Console.LogWarning(
-                            $"Group compound/tag {type} is not sealed. GroupCompounds and Tags cannot be inherited, please make it sealed");
+                            $"Group compound/tag {type} is not sealed. GroupCompounds and Tags cannot be inherited, consider marking it sealed");
                 }
 #endif
                 // Recursively check the base types

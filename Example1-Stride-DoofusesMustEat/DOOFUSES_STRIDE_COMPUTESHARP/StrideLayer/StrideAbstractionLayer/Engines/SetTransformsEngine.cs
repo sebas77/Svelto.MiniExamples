@@ -44,7 +44,7 @@ namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample.StrideLayer
 
                 //each batch of instances needs to have its own array of matrices
                 //in order to allocate less often, we allocate more than needed
-                filter.ComputeFinalCount(out var entitiesCount);
+                var entitiesCount = filter.ComputeFinalCount();
 
                 if (matrices.Length < entitiesCount)
                     Array.Resize(ref matrices, HashHelpers.Expand(entitiesCount));
@@ -87,7 +87,7 @@ namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample.StrideLayer
 
                 //each batch of instances needs to have its own array of matrices
                 //in order to allocate less often, we allocate more than needed
-                filter.ComputeFinalCount(out var entitiesCount);
+                var entitiesCount = filter.ComputeFinalCount();
 
                 if (matrices.Length < entitiesCount)
                     Array.Resize(ref matrices, HashHelpers.Expand(entitiesCount));

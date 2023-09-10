@@ -1,11 +1,68 @@
-# Changelog
+# Svelto.ECS Changelog
 All notable changes to this project will be documented in this file. Changes are listed in random order of importance.
 
-## [3.3.1] - 26-2022
+## [3.4.6] - 05-2023
+
+* SveltoOnDOTS bug fixes/improvements
+* Comments and code cleanup
+
+## [3.4.4] - 04-2023
+
+* refactored internal datastructures 
+* added IReactOnDisposeEx interface
+* added code to warmup all the entity descriptors at startup to avoid first time allocations when an entitydescriptor is used for the very first time
+* added the option to iterate transient filters per component like it already happens with persistent filters. Transient filters are tracked optionally. 
+* fixed huge bug in the filter enumerator, truly surprised this never showed up
+
+## [3.4.2] - 03-2023
+
+* removed static caches used in performance critical paths as they were causing unexpected performance issues (the fetching of static data is slower than i imagined)
+* add Native prefix in front of the native memory utilities method names
+* largely improved the console logger system
+* minor improvements to the platform profiler structs
+* improvements to the ThreadSafeObjectPool class (some refactoring too)
+* added several datastructures previously belonging to Svelto.ECS
+* all the FastClear methods are gone. The standard clear method now is aware of the type used and will clear it in the fastest way possible
+* MemClear is added in case memory needs to be cleared explicitly
+* added new SveltoStream, Unmanaged and Managed stream classes, their use case will be documented one day
+* renamed the Svelto.Common.DataStructures namespace to Svelto.DataStructures
+* added FixedTypedArray* methods. Fixed size arrays embedded in structs are now possible
+* FasterList extension to convert to Span and ByteSpan
+* Fix reported bugs
+* Minor Svelto Dictionary improvements
+* Added ValueContainer, a simple int, Tvalue dictionary based on sparse set. It has very specific use cases at the moment. Mainly to be used for the new ECS OOP Abstraction resoruce manager
+* Added IReactOnSubmissionStarted interface
+
+### SveltoOnDOTS changes
+
+* update to DOTS 1.0 (but still compatible with 0.51, although slower)
+* Deprecated the use of EntityCommandBuffer since was very slow
+* added faster batched DOTS operations, new DOTS creation patterns introduced (old one still compatible as long as EntityCommandBuffer was not used)
+* ISveltoOnDOTSSubmission interface exists only to allow the user to submit entities On DOTS explicitly, use this instead of 
+* SveltoOnDOTSHandleCreationEngine is no more, you want to use ISveltoOnDOTSStructuralEngine and its DOTSOperations instead wherever EntityManager was used before
+* ISveltoOnDOTSStructuralEngine is no more, you want to use ISveltoOnDOTSStructuralEngine and its DOTSOperations instead
+* in all the case above, if you were relying on Update you probably want to use OnPostSubmission instead
+* DOTSOperations new AddJobToComplete method will allow to register jobs from inside ISveltoOnDOTSStructuralEngines that will be completed at the end of the submission
+
+## [3.3.2] - 04-06-2022
+
+* Internal refactoring to support future features. Currently it may translate to a small performance boost
+* IEntityComponent and IEntityViewComponent now implements _IInternalEntityComponent. This shouldn't affect existing code
+* Improve thread-safety of entity building
+* Fixed serious bug that affected the integrity of the EntityIDs values during RemoveEX callbacks
+* The point above may result in a performance boost in the Filters updates during submission
+* Code is again 2019 compatible (this may have been broken for a while)
+* Fix a crash wit the EntityCollection deconstruction while trying to deconstruct an empty collection
+* Breaking: EntityFilterCollection GetGroupFilter will throw an exception if the filter doesn't exist. Use GetOrCreateGroupFilter in case.
+* Breaking: LocatorMap has been renamed to EntityReferenceMap
+* Breaking: GetEntityLocatorMap has been renamed to GetEntityReferenceMap
+
+
+## [3.3.1] - 26-04-2022
 
 * Fixed serious bug that would affect the new IReactOnRemoveEx callbacks
 
-## [3.3.0] - 04-2022
+## [3.3.0] - 11-04-2022
 
 * INeedEGID and INeedEntityReference interfaces are not deprecated, but still available for backwards compatibility through the define SLOW_SVELTO_SUBMISSION
 * There are some minor breaking changes, you may need to rename a bunch of methods calls

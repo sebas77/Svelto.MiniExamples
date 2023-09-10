@@ -1,7 +1,6 @@
 using System;
 using System.Threading;
 using Svelto.Common;
-using Svelto.Common.DataStructures;
 using Svelto.DataStructures;
 
 

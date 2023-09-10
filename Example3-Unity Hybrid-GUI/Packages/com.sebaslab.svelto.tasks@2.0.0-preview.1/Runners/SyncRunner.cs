@@ -73,6 +73,6 @@ namespace Svelto.Tasks
 
     public static class LocalSyncRunners<T> where T : IEnumerator<TaskContract>
     {
-        public static readonly ThreadLocal<SyncRunner> syncRunner = new ThreadLocal<SyncRunner>(() => new SyncRunner(ThreadUtility.name));
+        public static readonly ThreadLocal<SyncRunner> syncRunner = new ThreadLocal<SyncRunner>(() => new SyncRunner(ThreadUtility.currentThreadName));
     }
 }

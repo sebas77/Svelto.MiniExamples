@@ -10,7 +10,7 @@ namespace Svelto.ECS
             (in this EntityCollection<T1> ec, out ComputeSharpBuffer<T1> buffer, out int count)
             where T1 : unmanaged, IEntityComputeSharpComponent
         {
-            buffer = (ComputeSharpBuffer<T1>)ec._buffer;
+            buffer = (ComputeSharpBuffer<T1>)ec.buffer;
             count  = (int)ec.count;
         }
 
@@ -19,9 +19,9 @@ namespace Svelto.ECS
         (in this EntityCollection<T1> ec, out ComputeSharpBuffer<T1> buffer, out NativeEntityIDs entityIDs
        , out int count) where T1 : unmanaged, IEntityComputeSharpComponent
         {
-            buffer    = (ComputeSharpBuffer<T1>)ec._buffer;
+            buffer    = (ComputeSharpBuffer<T1>)ec.buffer;
             count     = (int)ec.count;
-            entityIDs = (NativeEntityIDs)ec._entityIDs;
+            entityIDs = (NativeEntityIDs)ec.entityIDs;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -30,10 +30,10 @@ namespace Svelto.ECS
        , out NativeEntityIDs entityIDs, out int count) where T1 : unmanaged, IEntityComputeSharpComponent
                                                        where T2 : unmanaged, IEntityComputeSharpComponent
         {
-            buffer1   = (ComputeSharpBuffer<T1>)ec.buffer1._buffer;
-            buffer2   = (ComputeSharpBuffer<T2>)ec.buffer2._buffer;
+            buffer1   = (ComputeSharpBuffer<T1>)ec.buffer1.buffer;
+            buffer2   = (ComputeSharpBuffer<T2>)ec.buffer2.buffer;
             count     = ec.count;
-            entityIDs = (NativeEntityIDs)ec.buffer1._entityIDs;
+            entityIDs = (NativeEntityIDs)ec.buffer1.entityIDs;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -42,8 +42,8 @@ namespace Svelto.ECS
        , out int count) where T1 : unmanaged, IEntityComputeSharpComponent
                         where T2 : unmanaged, IEntityComputeSharpComponent
         {
-            buffer1 = (ComputeSharpBuffer<T1>)ec.buffer1._buffer;
-            buffer2 = (ComputeSharpBuffer<T2>)ec.buffer2._buffer;
+            buffer1 = (ComputeSharpBuffer<T1>)ec.buffer1.buffer;
+            buffer2 = (ComputeSharpBuffer<T2>)ec.buffer2.buffer;
             count   = (int)ec.count;
         }
 
@@ -55,9 +55,9 @@ namespace Svelto.ECS
             where T2 : unmanaged, IEntityComputeSharpComponent
             where T3 : unmanaged, IEntityComputeSharpComponent
         {
-            buffer1 = (ComputeSharpBuffer<T1>)ec.buffer1._buffer;
-            buffer2 = (ComputeSharpBuffer<T2>)ec.buffer2._buffer;
-            buffer3 = (ComputeSharpBuffer<T3>)ec.buffer3._buffer;
+            buffer1 = (ComputeSharpBuffer<T1>)ec.buffer1.buffer;
+            buffer2 = (ComputeSharpBuffer<T2>)ec.buffer2.buffer;
+            buffer3 = (ComputeSharpBuffer<T3>)ec.buffer3.buffer;
             count   = (int)ec.count;
         }
 
@@ -69,11 +69,11 @@ namespace Svelto.ECS
                         where T2 : unmanaged, IEntityComputeSharpComponent
                         where T3 : unmanaged, IEntityComputeSharpComponent
         {
-            buffer1   = (ComputeSharpBuffer<T1>)ec.buffer1._buffer;
-            buffer2   = (ComputeSharpBuffer<T2>)ec.buffer2._buffer;
-            buffer3   = (ComputeSharpBuffer<T3>)ec.buffer3._buffer;
+            buffer1   = (ComputeSharpBuffer<T1>)ec.buffer1.buffer;
+            buffer2   = (ComputeSharpBuffer<T2>)ec.buffer2.buffer;
+            buffer3   = (ComputeSharpBuffer<T3>)ec.buffer3.buffer;
             count     = (int)ec.count;
-            entityIDs = (NativeEntityIDs)ec.buffer1._entityIDs;
+            entityIDs = (NativeEntityIDs)ec.buffer1.entityIDs;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -85,10 +85,10 @@ namespace Svelto.ECS
                         where T3 : unmanaged, IEntityComputeSharpComponent
                         where T4 : unmanaged, IEntityComputeSharpComponent
         {
-            buffer1 = (ComputeSharpBuffer<T1>)ec.buffer1._buffer;
-            buffer2 = (ComputeSharpBuffer<T2>)ec.buffer2._buffer;
-            buffer3 = (ComputeSharpBuffer<T3>)ec.buffer3._buffer;
-            buffer4 = (ComputeSharpBuffer<T4>)ec.buffer4._buffer;
+            buffer1 = (ComputeSharpBuffer<T1>)ec.buffer1.buffer;
+            buffer2 = (ComputeSharpBuffer<T2>)ec.buffer2.buffer;
+            buffer3 = (ComputeSharpBuffer<T3>)ec.buffer3.buffer;
+            buffer4 = (ComputeSharpBuffer<T4>)ec.buffer4.buffer;
             count   = (int)ec.count;
         }
 
@@ -101,11 +101,11 @@ namespace Svelto.ECS
                                                        where T3 : unmanaged, IEntityComputeSharpComponent
                                                        where T4 : unmanaged, IEntityComputeSharpComponent
         {
-            buffer1   = (ComputeSharpBuffer<T1>)ec.buffer1._buffer;
-            buffer2   = (ComputeSharpBuffer<T2>)ec.buffer2._buffer;
-            buffer3   = (ComputeSharpBuffer<T3>)ec.buffer3._buffer;
-            buffer4   = (ComputeSharpBuffer<T4>)ec.buffer4._buffer;
-            entityIDs = (NativeEntityIDs)ec.buffer1._entityIDs;
+            buffer1   = (ComputeSharpBuffer<T1>)ec.buffer1.buffer;
+            buffer2   = (ComputeSharpBuffer<T2>)ec.buffer2.buffer;
+            buffer3   = (ComputeSharpBuffer<T3>)ec.buffer3.buffer;
+            buffer4   = (ComputeSharpBuffer<T4>)ec.buffer4.buffer;
+            entityIDs = (NativeEntityIDs)ec.buffer1.entityIDs;
             count     = (int)ec.count;
         }
     }

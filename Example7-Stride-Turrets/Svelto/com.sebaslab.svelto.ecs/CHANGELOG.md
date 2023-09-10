@@ -1,6 +1,11 @@
 # Svelto.ECS Changelog
 All notable changes to this project will be documented in this file. Changes are listed in random order of importance.
 
+## [3.4.6] - 05-2023
+
+* SveltoOnDOTS bug fixes/improvements
+* Comments and code cleanup
+
 ## [3.4.4] - 04-2023
 
 * refactored internal datastructures 

@@ -98,3 +98,12 @@ The following packages were updated:
   com.unity.ide.rider from version 3.0.7 to 3.0.14
   com.unity.ide.visualstudio from version 2.0.11 to 2.0.15
   com.unity.textmeshpro from version 2.1.6 to 3.0.6
+
+=== Sun Sep 10 15:06:47 2023
+
+Packages were changed.
+Update Mode: updateDependencies
+
+The following packages were updated:
+  com.unity.ide.rider from version 3.0.14 to 3.0.24
+  com.unity.ide.visualstudio from version 2.0.15 to 2.0.18

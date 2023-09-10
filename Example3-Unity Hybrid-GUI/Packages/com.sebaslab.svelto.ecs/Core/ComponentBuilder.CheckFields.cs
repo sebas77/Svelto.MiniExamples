@@ -4,7 +4,9 @@ using System.Diagnostics;
 #endif
 using System;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using Svelto.ECS.Hybrid;
+using Svelto.ECS.Serialization;
 
 namespace Svelto.ECS
 {
@@ -80,7 +82,7 @@ namespace Svelto.ECS
                             // Getters of ValueReference must be refs, which would cause a failure on the common check.
                             if (properties[j].CanRead == true && propertyType.IsByRef == false)
                             {
-                                ProcessError(MSG, entityComponentType, propertyType);
+                                ProcessError($"{MSG} Getters of ValueReference must be byref", entityComponentType, propertyType);
                             }
 
                             continue;
@@ -153,5 +155,11 @@ namespace Svelto.ECS
         static readonly Type STRINGBUILDERTYPE          = typeof(System.Text.StringBuilder);
 
         internal static readonly Type ENTITY_INFO_COMPONENT = typeof(EntityInfoComponent);
+        
+        public static ComponentID ENTITY_INFO_COMPONENT_ID
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => ComponentTypeID<EntityInfoComponent>.id;
+        }
     }
 }

@@ -1,0 +1,16 @@
+{
+  "displayName": "Svelto ECS GUI",
+  "category": "Svelto",
+  "description": "The foundations of a GUI framework for Svelto ECS",
+  "dependencies": {
+    "com.sebaslab.svelto.ecs": "3.2.0",
+    "com.sebaslab.svelto.common": "3.2.0"
+  },
+  "keywords": [
+    "svelto"
+  ],
+  "name": "com.sebaslab.svelto.gui",
+  "version": "3.2.0",
+  "type": "library",
+  "unity": "2019.3"
+}

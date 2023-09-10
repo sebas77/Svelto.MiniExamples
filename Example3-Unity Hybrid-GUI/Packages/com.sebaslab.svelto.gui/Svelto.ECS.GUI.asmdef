@@ -1,0 +1,12 @@
+﻿{
+  "name": "Svelto.ECS.GUI",
+  "rootNamespace": "Svelto.ECS.GUI",
+  "references": [
+    "Svelto.Common",
+    "Svelto.ECS",
+    "Svelto.Tasks",
+    "Unity.TextMeshPro",
+    "Unity.ResourceManager",
+    "Unity.Addressables"
+  ]
+}

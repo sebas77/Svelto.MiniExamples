@@ -16,3 +16,9 @@ Example5-NET-Vanilla/**/*.meta
 Example7-Stride-Turrets/**/*.meta
 Example8-ComputeSharp/**/*.meta
 packages-lock.json
+
+Example8-NET-ComputeSharp/.vs/Svelto-ComputeSharp/v17/
+
+Example8-NET-ComputeSharp/.vs/Svelto-ComputeSharp/FileContentIndex/
+
+Example8-NET-ComputeSharp/Svelto/com.sebaslab.svelto.ecs/Svelto.ECS.sdpkg.user.meta

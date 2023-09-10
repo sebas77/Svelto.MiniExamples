@@ -33,7 +33,7 @@ namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample
                     new ComputePostionFromVelocityJob(
                         (positions.ToComputeBuffer(), velocities.ToComputeBuffer(), speeds.ToComputeBuffer()), deltaTime));
 
-                positions.Update();
+                positions.ReadBack();
 #else
                 for (int index = 0; index < count; index++)
                 {
@@ -80,18 +80,13 @@ namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample
             float distance = _deltaTime * _speeds[index].speed;
             var velocity = _velocities[index].velocity;
 
-            Vector3 position = default;
-            position.X = velocity.X * distance;
-            position.Y = velocity.Y * distance;
-            position.Z = velocity.Z * distance;
+            ComputePositionComponent result = _positions[index];
 
-            var result = _positions[index].position;
+            result.position.X += velocity.X * distance;
+            result.position.Y += velocity.Y * distance;
+            result.position.Z += velocity.Z * distance;
 
-            result.X += position.X;
-            result.Y += position.Y;
-            result.Z += position.Z;
-
-            _positions[index].position = result;
+            _positions[index] = result;
         }
 
         readonly float _deltaTime;

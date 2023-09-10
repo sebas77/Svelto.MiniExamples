@@ -16,9 +16,8 @@ namespace Svelto.ECS
     {
         static EnginesRoot()
         {
-            EntityDescriptorsWarmup.Init();
-            GroupHashMap.Init();
-            //SharedDictonary.Init();
+            EntityDescriptorsWarmup.WarmUp();
+            GroupHashMap.WarmUp();
             SerializationDescriptorMap.Init();
 
             _swapEntities = SwapEntities;
@@ -38,13 +37,11 @@ namespace Svelto.ECS
         public EnginesRoot(EntitiesSubmissionScheduler entitiesComponentScheduler)
         {
             _entitiesOperations = new EntitiesOperations();
-            _idChecker = new FasterDictionary<ExclusiveGroupStruct, HashSet<uint>>();
 
             _cachedRangeOfSubmittedIndices = new FasterList<(uint, uint)>();
-            _transientEntityIDsLeftAndAffectedByRemoval = new FasterList<uint>();
-            _transientEntityIDsLeftWithoutDuplicates = new FasterDictionary<uint, int>();
-
-            _multipleOperationOnSameEGIDChecker = new FasterDictionary<EGID, uint>();
+            _transientEntityIDsAffectedByRemoveAtSwapBack = new FasterDictionary<uint, uint>();
+            
+            InitDebugChecks();
 #if UNITY_NATIVE //because of the thread count, ATM this is only for unity
             _nativeSwapOperationQueue = new AtomicNativeBags(Allocator.Persistent);
             _nativeRemoveOperationQueue = new AtomicNativeBags(Allocator.Persistent);
@@ -64,6 +61,8 @@ namespace Svelto.ECS
                 new FasterDictionary<ComponentID, FasterList<ReactEngineContainer<IReactOnSwapEx>>>();
             _reactiveEnginesDispose =
                 new FasterDictionary<ComponentID, FasterList<ReactEngineContainer<IReactOnDispose>>>();
+            _reactiveEnginesDisposeEx =
+                new FasterDictionary<ComponentID, FasterList<ReactEngineContainer<IReactOnDisposeEx>>>();
 
             _reactiveEnginesSubmission = new FasterList<IReactOnSubmission>();
             _reactiveEnginesSubmissionStarted = new FasterList<IReactOnSubmissionStarted>();
@@ -150,11 +149,19 @@ namespace Svelto.ECS
 
                 if (engine is IReactOnDispose viewEngineDispose)
                     CheckReactEngineComponents(
+#pragma warning disable CS0618
                         typeof(IReactOnDispose<>), viewEngineDispose, _reactiveEnginesDispose, type.Name);
+#pragma warning restore CS0618
+                
+                if (engine is IReactOnDisposeEx viewEngineDisposeEx)
+                    CheckReactEngineComponents(
+                        typeof(IReactOnDisposeEx<>), viewEngineDisposeEx, _reactiveEnginesDisposeEx, type.Name);
 
                 if (engine is IReactOnSwap viewEngineSwap)
 #pragma warning disable CS0612
+#pragma warning disable CS0618
                     CheckReactEngineComponents(typeof(IReactOnSwap<>), viewEngineSwap, _reactiveEnginesSwap, type.Name);
+#pragma warning restore CS0618
 #pragma warning restore CS0612
 
                 if (engine is IReactOnSwapEx viewEngineSwapEx)
@@ -166,7 +173,11 @@ namespace Svelto.ECS
                 
                 if (engine is IReactOnSubmissionStarted submissionEngineStarted)
                     _reactiveEnginesSubmissionStarted.Add(submissionEngineStarted);
-
+                
+                if (engine is IGroupEngine stepGroupEngine)
+                    foreach (var stepEngine in stepGroupEngine.engines)
+                        AddEngine(stepEngine);
+                
                 _enginesTypeSet.Add(refWrapper);
                 _enginesSet.Add(engine);
 
@@ -237,6 +248,9 @@ namespace Svelto.ECS
 
         void Dispose(bool disposing)
         {
+            if (_isDisposed)
+                return;
+            
             using (var profiler = new PlatformProfiler("Final Dispose"))
             {
                 //Note: The engines are disposed before the the remove callback to give the chance to behave
@@ -263,7 +277,7 @@ namespace Svelto.ECS
                             ITypeSafeDictionary typeSafeDictionary = entityList.value;
 
                             typeSafeDictionary.ExecuteEnginesDisposeCallbacks_Group(
-                                _reactiveEnginesDispose, groups.key,
+                                _reactiveEnginesDispose, _reactiveEnginesDisposeEx, groups.key,
                                 profiler);
                         }
                         catch (Exception e)
@@ -300,6 +314,7 @@ namespace Svelto.ECS
                 _reactiveEnginesAdd.Clear();
                 _reactiveEnginesRemove.Clear();
                 _reactiveEnginesDispose.Clear();
+                _reactiveEnginesDisposeEx.Clear();
                 _reactiveEnginesSubmission.Clear();
                 _reactiveEnginesSubmissionStarted.Clear();
 
@@ -410,6 +425,7 @@ namespace Svelto.ECS
         readonly FasterDictionary<ComponentID, FasterList<ReactEngineContainer<IReactOnSwap>>> _reactiveEnginesSwap;
         readonly FasterDictionary<ComponentID, FasterList<ReactEngineContainer<IReactOnSwapEx>>> _reactiveEnginesSwapEx;
         readonly FasterDictionary<ComponentID, FasterList<ReactEngineContainer<IReactOnDispose>>> _reactiveEnginesDispose;
+        readonly FasterDictionary<ComponentID, FasterList<ReactEngineContainer<IReactOnDisposeEx>>> _reactiveEnginesDisposeEx;
 
         readonly FasterList<IReactOnSubmission> _reactiveEnginesSubmission;
         readonly FasterList<IReactOnSubmissionStarted> _reactiveEnginesSubmissionStarted;

@@ -101,20 +101,6 @@ namespace Svelto.DataStructures
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void FastClear()
-        {
-            _lockQ.EnterWriteLock();
-            try
-            {
-                _list.FastClear();
-            }
-            finally
-            {
-                _lockQ.ExitWriteLock();
-            }
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Insert(uint index, T item)
         {
             _lockQ.EnterWriteLock();

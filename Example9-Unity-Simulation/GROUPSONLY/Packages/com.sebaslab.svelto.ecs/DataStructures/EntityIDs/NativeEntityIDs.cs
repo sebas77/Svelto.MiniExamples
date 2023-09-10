@@ -9,8 +9,8 @@ namespace Svelto.ECS.Internal
         {
             _native = native;
         }
-        
-        internal void Update(in NB<SveltoDictionaryNode<uint>> unsafeKeys)
+
+        public void Update(in NB<SveltoDictionaryNode<uint>> unsafeKeys)
         {
             _native = unsafeKeys;
         }
@@ -27,6 +27,6 @@ namespace Svelto.ECS.Internal
             get => _native[index].key;
         }
 
-        NB<SveltoDictionaryNode<uint>> _native;
+        NBInternal<SveltoDictionaryNode<uint>> _native;
     }
 }

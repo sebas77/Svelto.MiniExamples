@@ -13,17 +13,17 @@ namespace Svelto.DataStructures
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public T Read<T>() where T : unmanaged => _sveltoStream.Read<T>(ToSpan());
+        public T Read<T>() where T : unmanaged => _sveltoStream.Read<T>(ToSpanInternal());
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Write<T>(in T value) where T : unmanaged => _sveltoStream.Write(ToSpan(), value);
+        public void Write<T>(in T value) where T : unmanaged => _sveltoStream.Write(ToSpanInternal(), value);
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         //T can contain managed elements, it's up to the user to be sure that the right data is read
-        public void UnsafeWrite<T>(in T value, int size) where T : struct => _sveltoStream.UnsafeWrite(ToSpan(), value, size);
+        public void UnsafeWrite<T>(in T value, int unmanagedStructSize) where T : struct => _sveltoStream.UnsafeWrite(ToSpanInternal(), value, unmanagedStructSize);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Write<T>(in Span<T> valueSpan) where T : unmanaged => _sveltoStream.WriteSpan(ToSpan(), valueSpan);
+        public void WriteSpan<T>(in Span<T> valueSpan) where T : unmanaged => _sveltoStream.WriteSpan(ToSpanInternal(), valueSpan);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Clear() => _sveltoStream.Clear();
@@ -35,7 +35,16 @@ namespace Svelto.DataStructures
         public bool CanAdvance() => _sveltoStream.CanAdvance();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Span<byte> ToSpan()
+        public Span<byte> ToSpan() //returns what has been written so far in the buffer
+        {
+            unsafe
+            {
+                return new Span<byte>(_ptr, _sveltoStream.count);
+            }
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal Span<byte> ToSpanInternal()
         {
             unsafe
             {

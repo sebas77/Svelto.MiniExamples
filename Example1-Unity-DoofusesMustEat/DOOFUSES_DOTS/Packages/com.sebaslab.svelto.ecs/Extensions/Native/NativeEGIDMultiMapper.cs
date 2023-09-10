@@ -1,4 +1,5 @@
 using System;
+using Svelto.Common;
 using Svelto.DataStructures.Native;
 using Svelto.ECS.Internal;
 
@@ -17,7 +18,7 @@ namespace Svelto.ECS.Native
     /// TODO: this could be extended to support all the query interfaces so that NB can become ref and this used to query entities inside jobs
     /// 
     /// </summary>
-    public struct NativeEGIDMultiMapper<T> : IDisposable where T : unmanaged, _IInternalEntityComponent
+    public struct NativeEGIDMultiMapper<T> : IEGIDMultiMapper, IDisposable where T : unmanaged, _IInternalEntityComponent
     {
         internal NativeEGIDMultiMapper(in SveltoDictionaryNative<ExclusiveGroupStruct, SharedSveltoDictionaryNative<uint, T>> dictionary)
         {
@@ -65,5 +66,7 @@ namespace Svelto.ECS.Native
         }
 
         SveltoDictionaryNative<ExclusiveGroupStruct, SharedSveltoDictionaryNative<uint, T>> _dic;
+
+        public Type entityType => TypeCache<T>.type;
     }
 }

@@ -9,8 +9,8 @@ namespace Svelto.ECS
     /// <summary>
     /// Todo: EntityReference shouldn't map EGIDs as dictionaries keys but directly the indices in the EntityDB arrays
     /// </summary>
-    [Serialization.DoNotSerialize]
-    [Serializable]
+    [Serialization.DoNotSerialize] //it's not a serializable field for svelto serializable system
+    [Serializable] 
     [StructLayout(LayoutKind.Explicit)]
     public struct EntityReference : IEquatable<EntityReference>
     {
@@ -33,6 +33,8 @@ namespace Svelto.ECS
         public override int GetHashCode() { return _GID.GetHashCode(); }
 
         public EntityReference(uint uniqueId) : this(uniqueId, 0) {}
+
+        public EntityReference(ulong GID):this() { _GID = GID; }
 
         public EntityReference(uint uniqueId, uint version) : this()
         {
@@ -65,9 +67,19 @@ namespace Svelto.ECS
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool ToEGID(EntitiesDB entitiesDB, out EGID egid)
         {
-            DBC.ECS.Check.Require(this != Invalid, "Invalid Reference Used");
-
             return entitiesDB.TryGetEGID(this, out egid);
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Exists(EntitiesDB entitiesDB)
+        {
+            return this != Invalid && entitiesDB.TryGetEGID(this, out _);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ulong ToULong()
+        {
+            return _GID;
         }
 
         static ulong MAKE_GLOBAL_ID(uint uniqueId, uint version)

@@ -88,10 +88,8 @@ namespace Svelto.ECS
 
                         ref var nativeSwapOperation = ref _nativeSwapOperations[componentsIndex];
 
-                        CheckRemoveEntityID(entityEGID.@from, nativeSwapOperation.entityDescriptorType
+                        CheckSwapEntityID(entityEGID.@from, entityEGID.to, nativeSwapOperation.entityDescriptorType
                                           , nativeSwapOperation.caller);
-                        CheckAddEntityID(entityEGID.to, nativeSwapOperation.entityDescriptorType
-                                       , nativeSwapOperation.caller);
 
                         QueueSwapEntityOperation(entityEGID.@from, entityEGID.to
                                                , FindRealComponents(entityEGID.@from, nativeSwapOperation.components)
@@ -143,9 +141,9 @@ namespace Svelto.ECS
 
                             var typeID = buffer.Dequeue<uint>();
 
-                            IFiller entityBuilder = EntityComponentIDMap.GetTypeFromID(typeID);
+                            IFiller componentBuilder = EntityComponentIDMap.GetBuilderFromID(typeID);
                             //after the typeID, I expect the serialized component
-                            entityBuilder.FillFromByteArray(init, buffer);
+                            componentBuilder.FillFromByteArray(init, buffer);
                         }
                     }
                 }

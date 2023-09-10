@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using DBC.ECS.Compute;
 using Svelto.ECS.Internal;
+using Svelto.ECS.Internal;
 
-namespace Svelto.ECS.ComputeSharpIntegration
+namespace Svelto.ECS
 {
     public class ComputeComponentBuilder<T> : IComponentBuilder where T : unmanaged, IEntityComputeSharpComponent
     {

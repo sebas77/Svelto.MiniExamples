@@ -17,6 +17,17 @@ namespace Svelto.DataStructures
             Span<byte> span = MemoryMarshal.AsBytes(spanT);
             return span;
         }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Span<T> ToSpan<T>(this FasterList<T> list) where T : unmanaged
+        {
+            T[] array = list.ToArrayFast(out var count);
+
+            Span<T> spanT = array.AsSpan(0, count);
+
+            return spanT;
+        }
+
 #if IF_THE_OTHER_SOLUTION_FAILS
         internal readonly ref struct DisposableHandle
         {

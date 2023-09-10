@@ -37,7 +37,7 @@ namespace Svelto.DataStructures.Native
             _nativeAllocator = allocator;
 
             IntPtr   realBuffer = MemoryUtilities.NativeAlloc<T>(newCapacity, _nativeAllocator, memClear);
-            NB<T> b          = new NB<T>(realBuffer, newCapacity);
+            NBInternal<T> b          = new NBInternal<T>(realBuffer, newCapacity);
             _invalidHandle = true;
             _realBuffer    = b;
         }
@@ -51,7 +51,7 @@ namespace Svelto.DataStructures.Native
                 pointer = MemoryUtilities.NativeRealloc<T>(pointer, newSize, _nativeAllocator
                                                    , newSize > capacity ? (uint) capacity : newSize
                                                    , copyContent, memClear);
-                NB<T> b = new NB<T>(pointer, newSize);
+                NBInternal<T> b = new NBInternal<T>(pointer, newSize);
                 _realBuffer    = b;
                 _invalidHandle = true;
             }
@@ -174,7 +174,7 @@ namespace Svelto.DataStructures.Native
         }
 
         Allocator _nativeAllocator;
-        NB<T>      _realBuffer;
+        NBInternal<T>      _realBuffer;
         bool       _invalidHandle;
 
 #if UNITY_COLLECTIONS || UNITY_JOBS || UNITY_BURST

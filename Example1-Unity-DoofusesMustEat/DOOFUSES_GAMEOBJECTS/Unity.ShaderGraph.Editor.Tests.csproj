@@ -41,18 +41,18 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
-     <Folder Include="Library\PackageCache\com.unity.shadergraph@12.1.10\Tests\Editor" />
-     <Folder Include="Library\PackageCache\com.unity.shadergraph@12.1.10\Tests\Editor\IntegrationTests" />
-     <Folder Include="Library\PackageCache\com.unity.shadergraph@12.1.10\Tests\Editor\UnitTests" />
-     <None Include="Library\PackageCache\com.unity.shadergraph@12.1.10\Tests\Editor\Unity.ShaderGraph.Editor.Tests.asmdef" />
+     <Folder Include="Library\PackageCache\com.unity.shadergraph@12.1.12\Tests\Editor" />
+     <Folder Include="Library\PackageCache\com.unity.shadergraph@12.1.12\Tests\Editor\IntegrationTests" />
+     <Folder Include="Library\PackageCache\com.unity.shadergraph@12.1.12\Tests\Editor\UnitTests" />
+     <None Include="Library\PackageCache\com.unity.shadergraph@12.1.12\Tests\Editor\Unity.ShaderGraph.Editor.Tests.asmdef" />
      <Reference Include="UnityEngine">
-     <HintPath>C:\Program Files\Unity\2021.3.20f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
+     <HintPath>C:\Program Files\Unity\2021.3.30f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
      </Reference>
      <Reference Include="UnityEngine.CoreModule">
-     <HintPath>C:\Program Files\Unity\2021.3.20f1\Editor\Data\Managed\UnityEngine\UnityEngine.CoreModule.dll</HintPath>
+     <HintPath>C:\Program Files\Unity\2021.3.30f1\Editor\Data\Managed\UnityEngine\UnityEngine.CoreModule.dll</HintPath>
      </Reference>
      <Reference Include="UnityEditor">
-     <HintPath>C:\Program Files\Unity\2021.3.20f1\Editor\Data\Managed\UnityEngine\UnityEditor.dll</HintPath>
+     <HintPath>C:\Program Files\Unity\2021.3.30f1\Editor\Data\Managed\UnityEngine\UnityEditor.dll</HintPath>
      </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -1,4 +1,3 @@
-using Svelto.ECS.ComputeSharpIntegration;
 using Svelto.ECS.EntityComponents;
 using Svelto.ECS.MiniExamples.Doofuses.StrideExample.StrideLayer;
 

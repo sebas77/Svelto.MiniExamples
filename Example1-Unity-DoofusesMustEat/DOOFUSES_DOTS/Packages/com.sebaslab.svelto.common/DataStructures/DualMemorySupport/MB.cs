@@ -128,6 +128,11 @@ namespace Svelto.DataStructures
             _bufferImplementation.CopyFrom(collection, actualSize);
         }
         
+        /// <summary>
+        /// todo: this must go away, it's not safe. it must become internal and only used by the framework
+        /// externally should use the AsReader, AsWriter, AsReadOnly, AsParallelReader, AsParallelWriter pattern
+        /// </summary>
+        /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public T[] ToManagedArray()
         {
@@ -137,10 +142,7 @@ namespace Svelto.DataStructures
         public ref T this[uint index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
-            {
-                return ref _bufferImplementation[index];
-            }
+            get => ref _bufferImplementation[index];
         }
 
         public ref T this[int index]

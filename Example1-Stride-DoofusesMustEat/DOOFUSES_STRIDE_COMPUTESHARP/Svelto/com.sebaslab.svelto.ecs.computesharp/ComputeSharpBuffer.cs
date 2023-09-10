@@ -39,7 +39,7 @@ namespace Svelto.ECS
             return _readWritebuffer;
         }
         
-        public void Update()
+        public void ReadBack()
         {
             _readWritebuffer.CopyTo(_uploadBuffer.Span);
         }

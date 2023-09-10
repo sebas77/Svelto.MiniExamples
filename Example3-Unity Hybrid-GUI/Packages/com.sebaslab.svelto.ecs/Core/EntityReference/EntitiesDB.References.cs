@@ -1,4 +1,6 @@
 using System.Runtime.CompilerServices;
+using Svelto.DataStructures;
+using Svelto.DataStructures.Native;
 
 namespace Svelto.ECS
 {
@@ -26,6 +28,11 @@ namespace Svelto.ECS
         public EntityReference GetEntityReference(EGID egid)
         {
             return _entityReferencesMap.GetEntityReference(egid);
+        }
+
+        public SharedSveltoDictionaryNative<uint, EntityReference> GetEntityReferenceMap(ExclusiveGroupStruct groupID)
+        {
+            return _entityReferencesMap.GetEntityReferenceMap(groupID);
         }
     }
 }

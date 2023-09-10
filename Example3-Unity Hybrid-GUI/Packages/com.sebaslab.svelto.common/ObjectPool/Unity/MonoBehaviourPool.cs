@@ -1,5 +1,4 @@
 #if UNITY_5_3_OR_NEWER || UNITY_5
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Svelto.ObjectPool

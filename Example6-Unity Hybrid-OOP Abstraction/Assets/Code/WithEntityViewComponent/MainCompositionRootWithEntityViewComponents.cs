@@ -30,16 +30,10 @@ namespace Svelto.ECS.Example.OOPAbstraction.EntityViewComponents
             var moveSpheresEngine  = new MoveSpheresEngine();
             var selectParentEngine = new SelectNewParentEngine();
 
-            var tickingEnginesGroup = new TickingEnginesGroup(
-                new FasterList<IStepEngine>(new IStepEngine[]
-                {
-                    moveCubesEngine, moveSpheresEngine, selectParentEngine
-                }));
+            var enginesToTick = new FasterList<IStepEngine>(moveCubesEngine, moveSpheresEngine, selectParentEngine);
+            var tickingEnginesGroup = new TickingEnginesGroup(enginesToTick);
 
             _enginesRoot.AddEngine(tickingEnginesGroup);
-            _enginesRoot.AddEngine(moveCubesEngine);
-            _enginesRoot.AddEngine(moveSpheresEngine);
-            _enginesRoot.AddEngine(selectParentEngine);
         }
 
         void CreateStartupEntities()

@@ -10,7 +10,7 @@ namespace Svelto.ECS
     /// to retrieve an EGIDMultiMapper use entitiesDB.QueryMappedEntities<T>(groups);
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public readonly struct EGIDMultiMapper<T> where T : struct, _IInternalEntityComponent
+    public readonly struct EGIDMultiMapper<T>: IEGIDMultiMapper where T : struct, _IInternalEntityComponent
     {
         internal EGIDMultiMapper(FasterDictionary<ExclusiveGroupStruct, ITypeSafeDictionary<T>> dictionary)
         {

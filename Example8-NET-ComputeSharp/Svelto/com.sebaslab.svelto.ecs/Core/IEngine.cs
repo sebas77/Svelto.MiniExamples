@@ -1,12 +1,12 @@
 using System;
 using Svelto.ECS.Internal;
 
-namespace Svelto.ECS.Internal
+namespace Svelto.ECS
 {
     public interface IReactEngine : IEngine
     {
     }
-#region legacy interfaces
+
     /// <summary>
     /// This is now considered legacy and it will be deprecated in future
     /// </summary>
@@ -27,7 +27,13 @@ namespace Svelto.ECS.Internal
     public interface IReactOnSwap : IReactEngine
     {
     }
-#endregion    
+    
+    /// <summary>
+    /// This is now considered legacy and it will be deprecated in future
+    /// </summary>
+    public interface IReactOnDispose : IReactEngine
+    {
+    }
 
     public interface IReactOnAddEx : IReactEngine
     {
@@ -40,8 +46,8 @@ namespace Svelto.ECS.Internal
     public interface IReactOnSwapEx : IReactEngine
     {
     }
-
-    public interface IReactOnDispose : IReactEngine
+    
+    public interface IReactOnDisposeEx : IReactEngine
     {
     }
 }
@@ -98,7 +104,7 @@ namespace Svelto.ECS
             ExclusiveGroupStruct groupID);
     }
 
-    [Obsolete]
+    [Obsolete("Use IReactOnAddEx<T> and IReactOnRemoveEx<T> or IReactOnAddAndRemoveEx<T> instead")]
     public interface IReactOnAddAndRemove<T> : IReactOnAdd<T>, IReactOnRemove<T> where T : _IInternalEntityComponent
     {
     }
@@ -108,6 +114,7 @@ namespace Svelto.ECS
     /// It can work together with IReactOnRemove which normally is not called on enginesroot disposed
     /// </summary>
     /// <typeparam name="T"></typeparam>
+    [Obsolete("Use IReactOnDisposeEx<T> instead")]
     public interface IReactOnDispose<T> : IReactOnDispose where T : _IInternalEntityComponent
     {
         void Remove(ref T entityComponent, EGID egid);
@@ -117,7 +124,7 @@ namespace Svelto.ECS
     /// Interface to mark an Engine as reacting to entities swapping group
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    [Obsolete]
+    [Obsolete("Use IReactOnSwapEx<T> instead")]
     public interface IReactOnSwap<T> : IReactOnSwap where T : _IInternalEntityComponent
     {
         void MovedTo(ref T entityComponent, ExclusiveGroupStruct previousGroup, EGID egid);
@@ -131,6 +138,12 @@ namespace Svelto.ECS
     {
         void MovedTo((uint start, uint end) rangeOfEntities, in EntityCollection<T> entities,
             ExclusiveGroupStruct fromGroup, ExclusiveGroupStruct toGroup);
+    }
+    
+    public interface IReactOnDisposeEx<T> : IReactOnDisposeEx where T : struct, _IInternalEntityComponent
+    {
+        void Remove((uint start, uint end) rangeOfEntities, in EntityCollection<T> entities,
+            ExclusiveGroupStruct groupID);
     }
 
     /// <summary>

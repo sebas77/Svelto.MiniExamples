@@ -27,7 +27,11 @@ namespace Svelto
             _threadSafeStrings = new ThreadLocal<StringBuilder>(() => new StringBuilder(256));
             _loggers           = new FasterList<ILogger>();
 
+#if UNITY_2019_3_OR_NEWER
+            AddLogger(new DefaultUnityLogger());
+#else            
             AddLogger(new SimpleLogger());
+#endif
         }
 
         static StringBuilder _stringBuilder

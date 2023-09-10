@@ -24,34 +24,6 @@ namespace Svelto.ECS
         }
     }
 
-    public static class BurstCompatibleCounter
-    {
-        public static int counter;        
-    }
-    
-    public class ComponentTypeID<T> where T : struct, _IInternalEntityComponent
-    {
-        public static readonly SharedStaticWrapper<int, ComponentTypeID<T>> id;
-
-        //todo: any reason to not do this? If I don't, I cannot Create filters in ready functions and
-        //I have to remove the CreateFilter method
-        static ComponentTypeID()
-        {
-            Init();
-        }
-
-#if UNITY_BURST     
-        [Unity.Burst.BurstDiscard] 
-        //SharedStatic values must be initialized from not burstified code
-#endif
-        static void Init()
-        {
-            id.Data = Interlocked.Increment(ref BurstCompatibleCounter.counter);
-            
-            Check.Ensure(id.Data < ushort.MaxValue, "too many types registered, HOW :)");
-        }
-    }
-
     public class ComponentBuilder<T> : IComponentBuilder where T : struct, _IInternalEntityComponent
     {
         internal static readonly Type ENTITY_COMPONENT_TYPE;
@@ -80,7 +52,7 @@ namespace Svelto.ECS
             if (IS_UNMANAGED)
                 EntityComponentIDMap.Register<T>(new Filler<T>());
 #endif
-
+            ComponentTypeID<T>.Init();
             ComponentBuilderUtilities.CheckFields(ENTITY_COMPONENT_TYPE, IS_ENTITY_VIEW_COMPONENT);
 
             if (IS_ENTITY_VIEW_COMPONENT)
@@ -107,6 +79,7 @@ namespace Svelto.ECS
         }
 
         public bool isUnmanaged => IS_UNMANAGED;
+        public ComponentID getComponentID => ComponentTypeID<T>.id;
 
         static readonly ThreadLocal<EntityViewComponentCache> _localCache = new ThreadLocal<EntityViewComponentCache>(() => new EntityViewComponentCache());
 

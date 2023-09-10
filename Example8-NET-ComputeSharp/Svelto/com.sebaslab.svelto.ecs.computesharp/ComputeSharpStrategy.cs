@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using ComputeSharp;
@@ -23,13 +24,15 @@ namespace Svelto.ECS
 
         public void Alloc(uint newCapacity, Allocator allocator, bool clear)
         {
+            _graphicsDevice = GraphicsDevice.EnumerateDevices().ElementAt(0);
+            
 #if DEBUG && !PROFILE_SVELTO
             if ((this._realBuffer.isValid))
                 throw new DBC.ECS.Compute.PreconditionException("can't alloc an already allocated buffer");
 #endif
-            UploadBuffer<T> realBuffer = GraphicsDevice.GetDefault().AllocateUploadBuffer<T>(
+            UploadBuffer<T> realBuffer = _graphicsDevice.AllocateUploadBuffer<T>(
                 (int)newCapacity, clear ? AllocationMode.Clear : AllocationMode.Default);
-            ReadWriteBuffer<T> readWriteBuffer = GraphicsDevice.GetDefault().AllocateReadWriteBuffer<T>((int)newCapacity);
+            ReadWriteBuffer<T> readWriteBuffer = _graphicsDevice.AllocateReadWriteBuffer<T>((int)newCapacity);
 
             ComputeSharpBuffer<T> b = new ComputeSharpBuffer<T>(realBuffer, readWriteBuffer);
             _invalidHandle = true;
@@ -147,5 +150,6 @@ namespace Svelto.ECS
         [Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction]
 #endif
         GCHandle _cachedReference;
+        GraphicsDevice _graphicsDevice;
     }
 }

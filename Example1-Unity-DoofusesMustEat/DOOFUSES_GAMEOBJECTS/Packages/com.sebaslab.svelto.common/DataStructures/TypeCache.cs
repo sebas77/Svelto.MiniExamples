@@ -8,7 +8,7 @@ namespace Svelto.Common
         public static readonly Type   type = typeof(T);
         public static readonly string name = type.Name;
 #if !UNITY_BURST
-        public static readonly bool isUnmanaged = type.IsUnmanagedEx();
+        public static readonly bool isUnmanaged = System.Runtime.CompilerServices.RuntimeHelpers.IsReferenceOrContainsReferences<T>() == false;
 #else
         public static readonly bool isUnmanaged = Unity.Collections.LowLevel.Unsafe.UnsafeUtility.IsUnmanaged<T>();
 #endif

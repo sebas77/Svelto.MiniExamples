@@ -1,17 +1,17 @@
 using System.Runtime.CompilerServices;
 using ComputeSharp;
+using Svelto.ECS;
 using Stride.Core.Mathematics;
 using Svelto.Common;
 using Quaternion = Stride.Core.Mathematics.Quaternion;
 using Vector3 = Stride.Core.Mathematics.Vector3;
 
-namespace  Svelto.ECS.MiniExamples.Doofuses.StrideExample
+namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample
 {
     public enum TransformableLayerEngineNames
     {
         ComputeTransformsEngine
     }
-    //todo I wanted to abstract too much here, Better to remove it and remove the matrix component
     /// <summary>
     /// Iterate all the entities that can be transformed and compute the transformation matrices out the transformation
     /// parameters
@@ -43,9 +43,9 @@ namespace  Svelto.ECS.MiniExamples.Doofuses.StrideExample
                     new ComputeMatricesJob(
                         (positions.ToComputeBuffer(), rotation.ToComputeBuffer(), transforms.ToComputeBuffer())));
                 
-                transforms.Update();
+                transforms.ReadBack();
 #else                
-                for (int index = count - 1; index >= 0; index--)
+                for (int index = 0; index < count; index++)
                 {
                   //  ComputeMatricesJob.Transformation(ref rotation[index].rotation, ref positions[index].position, out transforms[index].matrix);
                     Matrix4x4 matrix = Matrix4x4.CreateFromQuaternion(Unsafe.As<Quaternion, System.Numerics.Quaternion>(ref rotation[index].rotation));
@@ -57,7 +57,6 @@ namespace  Svelto.ECS.MiniExamples.Doofuses.StrideExample
                     transforms[index].matrix = @as;
                 }
 #endif
-                
             }
         }
         
@@ -83,7 +82,7 @@ namespace  Svelto.ECS.MiniExamples.Doofuses.StrideExample
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Transformation(ref Quaternion rotation, ref Vector3 translation, out Matrix result)
+        static void Transformation(ref Quaternion rotation, ref Vector3 translation, out Matrix result)
         {
             // Equivalent to:
             //result =

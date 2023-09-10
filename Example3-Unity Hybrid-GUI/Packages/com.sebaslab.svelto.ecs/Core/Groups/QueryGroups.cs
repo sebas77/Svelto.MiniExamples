@@ -2,10 +2,11 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Svelto.DataStructures;
+using Svelto.ECS.Internal;
 
 namespace Svelto.ECS.Experimental
 {
-    internal struct GroupsList
+    struct GroupsList
     {
         public static GroupsList Init()
         {
@@ -49,7 +50,7 @@ namespace Svelto.ECS.Experimental
 
         public FasterList<ExclusiveGroupStruct> Evaluate()
         {
-            _groups.FastClear();
+            _groups.Clear();
 
             foreach (var item in _sets) _groups.Add(item);
 
@@ -60,7 +61,6 @@ namespace Svelto.ECS.Experimental
         HashSet<ExclusiveGroupStruct>    _sets;
     }
 
-    //I am not 100% sure why I made this thread-safe since it cannot be used inside jobs.
     public ref struct QueryGroups
     {
         static readonly ThreadLocal<GroupsList> groups;
@@ -210,7 +210,7 @@ namespace Svelto.ECS.Experimental
         readonly FasterReadOnlyList<ExclusiveGroupStruct> _group;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int Count<T>(EntitiesDB entitiesDB) where T : struct, IBaseEntityComponent
+        public int Count<T>(EntitiesDB entitiesDB) where T : struct, _IInternalEntityComponent
         {
             var count = 0;
 
@@ -220,7 +220,7 @@ namespace Svelto.ECS.Experimental
             return count;
         }
 
-        public int Max<T>(EntitiesDB entitiesDB) where T : struct, IBaseEntityComponent
+        public int Max<T>(EntitiesDB entitiesDB) where T : struct, _IInternalEntityComponent
         {
             var max = 0;
 

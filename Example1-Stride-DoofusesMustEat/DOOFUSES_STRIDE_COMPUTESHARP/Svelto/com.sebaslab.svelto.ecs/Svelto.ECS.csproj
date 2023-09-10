@@ -44,7 +44,7 @@
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="System.Memory" Version="4.5.5" />
-        <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
+        <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="7.0.0-preview.2.22152.2" />
         <None Remove="**\*.meta" />
         <ProjectReference Include="..\com.sebaslab.svelto.common\Svelto.Common.csproj" /> <!-- Do not delete. Used for nuget packing -->
     </ItemGroup>

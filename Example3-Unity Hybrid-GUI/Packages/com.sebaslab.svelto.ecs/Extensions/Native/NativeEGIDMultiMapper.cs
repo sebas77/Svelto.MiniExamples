@@ -1,7 +1,7 @@
 using System;
-using Svelto.DataStructures;
+using Svelto.Common;
 using Svelto.DataStructures.Native;
-using Svelto.ECS.DataStructures;
+using Svelto.ECS.Internal;
 
 namespace Svelto.ECS.Native
 {
@@ -12,19 +12,15 @@ namespace Svelto.ECS.Native
     /// is disposed right after the use.
     ///
     ///WARNING: REMEMBER THIS MUST BE DISPOSED OF, AS IT USES NATIVE MEMORY. IT WILL LEAK MEMORY OTHERWISE
+    ///
+    /// to retrieve a NativeEGIDMultiMapper use entitiesDB.QueryNativeMappedEntities<T>(groups, Svelto.Common.Allocator.TempJob);
+    ///
+    /// TODO: this could be extended to support all the query interfaces so that NB can become ref and this used to query entities inside jobs
     /// 
     /// </summary>
-    public struct NativeEGIDMultiMapper<T> : IDisposable where T : unmanaged, IBaseEntityComponent
+    public struct NativeEGIDMultiMapper<T> : IEGIDMultiMapper, IDisposable where T : unmanaged, _IInternalEntityComponent
     {
-        public NativeEGIDMultiMapper(in SveltoDictionary<
-            /*key  */ExclusiveGroupStruct,
-            /*value*/
-            SharedDisposableNative<SveltoDictionary<uint, T, NativeStrategy<SveltoDictionaryNode<uint>>, NativeStrategy<T>,
-                NativeStrategy<int>>>,
-            /*strategy to store the key*/ NativeStrategy<SveltoDictionaryNode<ExclusiveGroupStruct>>,
-            /*strategy to store the value*/
-            NativeStrategy<SharedDisposableNative<SveltoDictionary<uint, T, NativeStrategy<SveltoDictionaryNode<uint>>,
-                NativeStrategy<T>, NativeStrategy<int>>>>, NativeStrategy<int>> dictionary)
+        internal NativeEGIDMultiMapper(in SveltoDictionaryNative<ExclusiveGroupStruct, SharedSveltoDictionaryNative<uint, T>> dictionary)
         {
             _dic = dictionary;
         }
@@ -43,7 +39,7 @@ namespace Svelto.ECS.Native
                 throw new Exception($"NativeEGIDMultiMapper: Entity not found {entity}");
 #endif
             ref var sveltoDictionary = ref _dic.GetValueByRef(entity.groupID);
-            return ref sveltoDictionary.value.GetValueByRef(entity.entityID);
+            return ref sveltoDictionary.dictionary.GetValueByRef(entity.entityID);
         }
 
         public uint GetIndex(EGID entity)
@@ -53,26 +49,24 @@ namespace Svelto.ECS.Native
                 throw new Exception($"NativeEGIDMultiMapper: Entity not found {entity}");
 #endif
             ref var sveltoDictionary = ref _dic.GetValueByRef(entity.groupID);
-            return sveltoDictionary.value.GetIndex(entity.entityID);
+            return sveltoDictionary.dictionary.GetIndex(entity.entityID);
         }
 
         public bool Exists(EGID entity)
         {
             return _dic.TryFindIndex(entity.groupID, out var index) &&
-                _dic.GetDirectValueByRef(index).value.ContainsKey(entity.entityID);
+                _dic.GetDirectValueByRef(index).dictionary.ContainsKey(entity.entityID);
         }
 
         public bool TryGetEntity(EGID entity, out T component)
         {
             component = default;
             return _dic.TryFindIndex(entity.groupID, out var index) &&
-                _dic.GetDirectValueByRef(index).value.TryGetValue(entity.entityID, out component);
+                _dic.GetDirectValueByRef(index).dictionary.TryGetValue(entity.entityID, out component);
         }
 
-        SveltoDictionary<ExclusiveGroupStruct,
-            SharedDisposableNative<SveltoDictionary<uint, T, NativeStrategy<SveltoDictionaryNode<uint>>, NativeStrategy<T>,
-                NativeStrategy<int>>>, NativeStrategy<SveltoDictionaryNode<ExclusiveGroupStruct>>, NativeStrategy<
-                SharedDisposableNative<SveltoDictionary<uint, T, NativeStrategy<SveltoDictionaryNode<uint>>, NativeStrategy<T>,
-                    NativeStrategy<int>>>>, NativeStrategy<int>> _dic;
+        SveltoDictionaryNative<ExclusiveGroupStruct, SharedSveltoDictionaryNative<uint, T>> _dic;
+
+        public Type entityType => TypeCache<T>.type;
     }
 }

@@ -1,8 +1,0 @@
-{
-  "displayName": "Svelto ECS Inspector",
-  "category": "Svelto",
-  "name": "com.sebaslab.svelto.ecs.inspector",
-  "version": "1.0.0",
-  "type": "library",
-  "unity": "2020.3"
-}

@@ -42,7 +42,7 @@ namespace Svelto.ECS
             return _indices[Interlocked.Increment(ref _index) - 1];
         }
 
-        readonly NB<uint> _indices;
+        readonly NBInternal<uint> _indices;
         readonly uint     _count;
         int               _index;
     }

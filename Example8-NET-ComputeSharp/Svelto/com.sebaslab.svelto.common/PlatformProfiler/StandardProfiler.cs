@@ -21,6 +21,11 @@ namespace Svelto.Common
         {
             _info = info;
         }
+        
+        public StandardDisposableSampler Sample()
+        {
+            return new StandardDisposableSampler(_info, _stopwatch.Value);
+        }
 
         public StandardDisposableSampler Sample(string samplerName)
         {

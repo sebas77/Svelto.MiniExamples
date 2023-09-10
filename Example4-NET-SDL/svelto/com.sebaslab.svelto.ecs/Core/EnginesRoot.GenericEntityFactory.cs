@@ -7,7 +7,7 @@ namespace Svelto.ECS
 {
     public partial class EnginesRoot
     {
-        class GenericEntityFactory : IEntityFactory
+        class GenericEntityFactory : IEntityFactory, IEntitySerializationFactory
         {
             public GenericEntityFactory(EnginesRoot weakReference)
             {
@@ -77,7 +77,7 @@ namespace Svelto.ECS
             }
 #endif
 
-            //enginesRoot is a weakreference because GenericEntityStreamConsumerFactory can be injected inside
+            //NOTE: enginesRoot is a weakreference ONLY because GenericEntityStreamConsumerFactory can be injected inside
             //engines of other enginesRoot
             readonly Svelto.DataStructures.WeakReference<EnginesRoot> _enginesRoot;
         }

@@ -36,6 +36,11 @@ namespace Svelto.Common
     public struct PlatformProfiler: IPlatformProfiler
     {
         public PlatformProfiler(string info) { }
+        
+        public DisposableSampler Sample()
+        {
+            return default;
+        }
 
         public DisposableSampler Sample(string samplerName)
         {

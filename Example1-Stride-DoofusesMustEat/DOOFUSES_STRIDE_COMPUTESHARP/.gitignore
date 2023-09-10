@@ -5,6 +5,7 @@
 .vs/
 _ReSharper*
 *.suo
+*.meta
 *.VC.db
 *.vshost.exe
 *.manifest

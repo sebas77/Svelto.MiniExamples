@@ -4,8 +4,8 @@
         <LangVersion>9</LangVersion>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <TargetFramework>netstandard2.1</TargetFramework>
-        <PackageVersion>3.4.1</PackageVersion>
-        <AssemblyVersion>3.4.1</AssemblyVersion>
+        <PackageVersion></PackageVersion>
+        <AssemblyVersion>3.4</AssemblyVersion>
         <Company>Svelto</Company>
         <IsPackable>true</IsPackable>
         <Configurations>Debug;Release;SlowSubmissionRelease;SlowSubmissionDebug</Configurations>

@@ -31,12 +31,7 @@ namespace Svelto.ECS.Example.OOPAbstraction.WithOOPLayer
             var moveSpheresEngine   = new MoveSpheresEngine();
             var selectParentEngine  = new SelectNewParentEngine();
 
-            var listOfEnginesToTick = new FasterList<IStepEngine>(new IStepEngine[]
-            {
-                moveCubesEngine
-              , moveSpheresEngine
-              , selectParentEngine
-            });
+            var listOfEnginesToTick = new FasterList<IStepEngine>(moveCubesEngine, moveSpheresEngine, selectParentEngine);
             var tickingEnginesGroup = new TickingEnginesGroup(listOfEnginesToTick);
 
             _enginesRoot.AddEngine(tickingEnginesGroup);

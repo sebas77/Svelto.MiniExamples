@@ -8,7 +8,6 @@ using System.Threading;
 using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.DataStructures.Native;
-using Svelto.ECS.DataStructures;
 
 namespace Svelto.ECS.Internal
 {
@@ -20,19 +19,16 @@ namespace Svelto.ECS.Internal
     }
 #endif
 
-    public sealed class UnmanagedTypeSafeDictionary<TValue> : ITypeSafeDictionary<TValue>
-        where TValue : struct, IBaseEntityComponent
+    sealed class UnmanagedTypeSafeDictionary<TValue> : ITypeSafeDictionary<TValue>
+        where TValue : struct, _IInternalEntityComponent
     {
+        //todo: would this be better to not be static to avoid overhead?
         static readonly ThreadLocal<IEntityIDs> cachedEntityIDN =
             new ThreadLocal<IEntityIDs>(() => new NativeEntityIDs());
 
         public UnmanagedTypeSafeDictionary(uint size)
         {
-            implUnmgd =
-                new SharedDisposableNative<SveltoDictionary<uint, TValue, NativeStrategy<SveltoDictionaryNode<uint>>,
-                    NativeStrategy<TValue>, NativeStrategy<int>>>(
-                    new SveltoDictionary<uint, TValue, NativeStrategy<SveltoDictionaryNode<uint>>,
-                        NativeStrategy<TValue>, NativeStrategy<int>>(size, Allocator.Persistent));
+            implUnmgd = new SharedSveltoDictionaryNative<uint, TValue>(size, Allocator.Persistent);
         }
 
         public IEntityIDs entityIDs
@@ -41,7 +37,7 @@ namespace Svelto.ECS.Internal
             {
                 ref var unboxed = ref Unsafe.Unbox<NativeEntityIDs>(cachedEntityIDN.Value);
 
-                unboxed.Update(implUnmgd.value.unsafeKeys.ToRealBuffer());
+                unboxed.Update(implUnmgd.dictionary.unsafeKeys.ToRealBuffer());
 
                 return cachedEntityIDN.Value;
             }
@@ -50,102 +46,105 @@ namespace Svelto.ECS.Internal
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool ContainsKey(uint egidEntityId)
         {
-            return implUnmgd.value.ContainsKey(egidEntityId);
+            return implUnmgd.dictionary.ContainsKey(egidEntityId);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public uint GetIndex(uint valueEntityId)
         {
-            return implUnmgd.value.GetIndex(valueEntityId);
+            return implUnmgd.dictionary.GetIndex(valueEntityId);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref TValue GetOrAdd(uint idEntityId)
         {
-            return ref implUnmgd.value.GetOrAdd(idEntityId);
+            return ref implUnmgd.dictionary.GetOrAdd(idEntityId);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public IBuffer<TValue> GetValues(out uint count)
         {
-            return implUnmgd.value.UnsafeGetValues(out count);
+            return implUnmgd.dictionary.UnsafeGetValues(out count);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref TValue GetDirectValueByRef(uint key)
         {
-            return ref implUnmgd.value.GetDirectValueByRef(key);
+            return ref implUnmgd.dictionary.GetDirectValueByRef(key);
         }
 
         public ref TValue GetValueByRef(uint key)
         {
-            return ref implUnmgd.value.GetValueByRef(key);
+            return ref implUnmgd.dictionary.GetValueByRef(key);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Has(uint key)
         {
-            return implUnmgd.value.ContainsKey(key);
+            return implUnmgd.dictionary.ContainsKey(key);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool TryFindIndex(uint entityId, out uint index)
         {
-            return implUnmgd.value.TryFindIndex(entityId, out index);
+            return implUnmgd.dictionary.TryFindIndex(entityId, out index);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool TryGetValue(uint entityId, out TValue item)
         {
-            return implUnmgd.value.TryGetValue(entityId, out item);
+            return implUnmgd.dictionary.TryGetValue(entityId, out item);
         }
 
         public int count
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => implUnmgd.value.count;
+            get => implUnmgd.dictionary.count;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ITypeSafeDictionary Create()
         {
-            return TypeSafeDictionaryFactory<TValue>.Create(1);
+            return new UnmanagedTypeSafeDictionary<TValue>(1);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Clear()
         {
-            implUnmgd.value.FastClear();
+            implUnmgd.dictionary.Clear();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void EnsureCapacity(uint size)
         {
-            implUnmgd.value.EnsureCapacity(size);
+            implUnmgd.dictionary.EnsureCapacity(size);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void IncreaseCapacityBy(uint size)
         {
-            implUnmgd.value.IncreaseCapacityBy(size);
+            implUnmgd.dictionary.IncreaseCapacityBy(size);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Trim()
         {
-            implUnmgd.value.Trim();
+            implUnmgd.dictionary.Trim();
         }
 
         public void KeysEvaluator(Action<uint> action)
         {
-            foreach (var key in implUnmgd.value.keys)
+            foreach (var key in implUnmgd.dictionary.keys)
                 action(key);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Add(uint egidEntityId, in TValue entityComponent)
+        public uint Add(uint egidEntityId, in TValue entityComponent)
         {
-            implUnmgd.value.Add(egidEntityId, entityComponent);
+            if (implUnmgd.dictionary.TryAdd(egidEntityId, entityComponent, out var index) == false)
+                throw new TypeSafeDictionaryException("Key already present");
+
+            return index;
         }
 
         public void Dispose()
@@ -167,7 +166,7 @@ namespace Svelto.ECS.Internal
         )
 
         {
-            TypeSafeDictionaryMethods.AddEntitiesToDictionary(implUnmgd.value
+            TypeSafeDictionaryMethods.AddEntitiesToDictionary(implUnmgd.dictionary
                                                             , toDictionary as ITypeSafeDictionary<TValue>
 #if SLOW_SVELTO_SUBMISSION
                                                             , entityLocator
@@ -176,20 +175,19 @@ namespace Svelto.ECS.Internal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void RemoveEntitiesFromDictionary
-            (FasterList<(uint, string)> infosToProcess, FasterList<uint> entityIDsAffectedByRemoval)
+        public void RemoveEntitiesFromDictionary(FasterList<(uint, string)> infosToProcess, FasterDictionary<uint, uint> entityIDsAffectedByRemoveAtSwapBack)
         {
-            TypeSafeDictionaryMethods.RemoveEntitiesFromDictionary(infosToProcess, ref implUnmgd.value
-                                                                 , entityIDsAffectedByRemoval);
+            TypeSafeDictionaryMethods.RemoveEntitiesFromDictionary(infosToProcess, ref implUnmgd.dictionary, entityIDsAffectedByRemoveAtSwapBack);
         }
 
-        public void SwapEntitiesBetweenDictionaries
-        (FasterList<(uint, uint, string)> infosToProcess, ExclusiveGroupStruct fromGroup
-       , ExclusiveGroupStruct toGroup, ITypeSafeDictionary toComponentsDictionary
-       , FasterList<uint> entityIDsAffectedByRemoval)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void SwapEntitiesBetweenDictionaries(in FasterDictionary<uint, SwapInfo> infosToProcess,
+            ExclusiveGroupStruct fromGroup
+          , ExclusiveGroupStruct toGroup, ITypeSafeDictionary toComponentsDictionary
+          , FasterDictionary<uint, uint> entityIDsAffectedByRemoveAtSwapBack)
         {
-            TypeSafeDictionaryMethods.SwapEntitiesBetweenDictionaries(infosToProcess, ref implUnmgd.value
-                ,toComponentsDictionary as ITypeSafeDictionary<TValue>, fromGroup, toGroup, entityIDsAffectedByRemoval);
+            TypeSafeDictionaryMethods.SwapEntitiesBetweenDictionaries(infosToProcess, ref implUnmgd.dictionary
+                ,toComponentsDictionary as ITypeSafeDictionary<TValue>, fromGroup, toGroup, entityIDsAffectedByRemoveAtSwapBack);
         }
 
         /// <summary>
@@ -197,10 +195,10 @@ namespace Svelto.ECS.Internal
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ExecuteEnginesAddCallbacks
-        (FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<IReactOnAdd>>> entityComponentEnginesDB
+        (FasterDictionary<ComponentID, FasterList<ReactEngineContainer<IReactOnAdd>>> entityComponentEnginesDB
        , ITypeSafeDictionary toDic, ExclusiveGroupStruct toGroup, in PlatformProfiler profiler)
         {
-            TypeSafeDictionaryMethods.ExecuteEnginesAddCallbacks(ref implUnmgd.value, (ITypeSafeDictionary<TValue>)toDic
+            TypeSafeDictionaryMethods.ExecuteEnginesAddCallbacks(ref implUnmgd.dictionary, (ITypeSafeDictionary<TValue>)toDic
                                                                , toGroup, entityComponentEnginesDB, in profiler);
         }
 
@@ -208,12 +206,11 @@ namespace Svelto.ECS.Internal
         ///     Execute all the engine IReactOnSwap callbacks linked to components swapped this submit
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void ExecuteEnginesSwapCallbacks
-        (FasterList<(uint, uint, string)> infosToProcess
-       , FasterList<ReactEngineContainer<IReactOnSwap>> reactiveEnginesSwap, ExclusiveGroupStruct fromGroup
-       , ExclusiveGroupStruct toGroup, in PlatformProfiler profiler)
+        public void ExecuteEnginesSwapCallbacks(FasterDictionary<uint, SwapInfo> infosToProcess
+          , FasterList<ReactEngineContainer<IReactOnSwap>> reactiveEnginesSwap, ExclusiveGroupStruct fromGroup
+          , ExclusiveGroupStruct toGroup, in PlatformProfiler profiler)
         {
-            TypeSafeDictionaryMethods.ExecuteEnginesSwapCallbacks(infosToProcess, ref implUnmgd.value
+            TypeSafeDictionaryMethods.ExecuteEnginesSwapCallbacks(infosToProcess, ref implUnmgd.dictionary
                                                                 , reactiveEnginesSwap, toGroup, fromGroup, in profiler);
         }
 
@@ -223,10 +220,10 @@ namespace Svelto.ECS.Internal
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ExecuteEnginesRemoveCallbacks
         (FasterList<(uint, string)> infosToProcess
-       , FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<IReactOnRemove>>> reactiveEnginesRemove
+       , FasterDictionary<ComponentID, FasterList<ReactEngineContainer<IReactOnRemove>>> reactiveEnginesRemove
        , ExclusiveGroupStruct fromGroup, in PlatformProfiler sampler)
         {
-            TypeSafeDictionaryMethods.ExecuteEnginesRemoveCallbacks(infosToProcess, ref implUnmgd.value
+            TypeSafeDictionaryMethods.ExecuteEnginesRemoveCallbacks(infosToProcess, ref implUnmgd.dictionary
                                                                   , reactiveEnginesRemove, fromGroup, in sampler);
         }
 
@@ -235,7 +232,7 @@ namespace Svelto.ECS.Internal
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ExecuteEnginesAddEntityCallbacksFast
-        (FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<IReactOnAddEx>>> reactiveEnginesAdd
+        (FasterDictionary<ComponentID, FasterList<ReactEngineContainer<IReactOnAddEx>>> reactiveEnginesAdd
        , ExclusiveGroupStruct groupID, (uint, uint) rangeOfSubmittedEntitiesIndicies, in PlatformProfiler profiler)
         {
             TypeSafeDictionaryMethods.ExecuteEnginesAddEntityCallbacksFast(
@@ -273,14 +270,14 @@ namespace Svelto.ECS.Internal
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ExecuteEnginesSwapCallbacks_Group
-        (FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<IReactOnSwap>>> reactiveEnginesSwap
-       , FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<IReactOnSwapEx>>> reactiveEnginesSwapEx
+        (FasterDictionary<ComponentID, FasterList<ReactEngineContainer<IReactOnSwap>>> reactiveEnginesSwap
+       , FasterDictionary<ComponentID, FasterList<ReactEngineContainer<IReactOnSwapEx>>> reactiveEnginesSwapEx
        , ITypeSafeDictionary toDictionary, ExclusiveGroupStruct fromGroup, ExclusiveGroupStruct toGroup
        , in PlatformProfiler profiler)
         {
             TypeSafeDictionaryMethods.ExecuteEnginesSwapCallbacks_Group(
-                ref implUnmgd.value, (ITypeSafeDictionary<TValue>)toDictionary, toGroup, fromGroup, this
-              , reactiveEnginesSwap, reactiveEnginesSwapEx, count, entityIDs, in profiler);
+                ref implUnmgd.dictionary, (ITypeSafeDictionary<TValue>)toDictionary, toGroup, fromGroup
+              , reactiveEnginesSwap, reactiveEnginesSwapEx, entityIDs, in profiler);
         }
 
         /// <summary>
@@ -289,12 +286,12 @@ namespace Svelto.ECS.Internal
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ExecuteEnginesRemoveCallbacks_Group
-        (FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<IReactOnRemove>>> reactiveEnginesRemove
-       , FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<IReactOnRemoveEx>>> reactiveEnginesRemoveEx
+        (FasterDictionary<ComponentID, FasterList<ReactEngineContainer<IReactOnRemove>>> reactiveEnginesRemove
+       , FasterDictionary<ComponentID, FasterList<ReactEngineContainer<IReactOnRemoveEx>>> reactiveEnginesRemoveEx
        , ExclusiveGroupStruct group, in PlatformProfiler profiler)
         {
             TypeSafeDictionaryMethods.ExecuteEnginesRemoveCallbacks_Group(
-                ref implUnmgd.value, this, reactiveEnginesRemove, reactiveEnginesRemoveEx, count, entityIDs, group
+                ref implUnmgd.dictionary, reactiveEnginesRemove, reactiveEnginesRemoveEx, entityIDs, group
               , in profiler);
         }
 
@@ -303,14 +300,14 @@ namespace Svelto.ECS.Internal
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ExecuteEnginesDisposeCallbacks_Group
-        (FasterDictionary<RefWrapperType, FasterList<ReactEngineContainer<IReactOnDispose>>> engines
+        ( FasterDictionary<ComponentID, FasterList<ReactEngineContainer<IReactOnDispose>>> reactiveEnginesDispose
+        , FasterDictionary<ComponentID, FasterList<ReactEngineContainer<IReactOnDisposeEx>>> reactiveEnginesDisposeEx
        , ExclusiveGroupStruct group, in PlatformProfiler profiler)
         {
             TypeSafeDictionaryMethods.ExecuteEnginesDisposeCallbacks_Group(
-                ref implUnmgd.value, engines, group, in profiler);
+                ref implUnmgd.dictionary, reactiveEnginesDispose, reactiveEnginesDisposeEx, entityIDs, group, in profiler);
         }
 
-        internal SharedDisposableNative<SveltoDictionary<uint, TValue, NativeStrategy<SveltoDictionaryNode<uint>>,
-            NativeStrategy<TValue>, NativeStrategy<int>>> implUnmgd;
+        internal SharedSveltoDictionaryNative<uint, TValue> implUnmgd;
     }
 }

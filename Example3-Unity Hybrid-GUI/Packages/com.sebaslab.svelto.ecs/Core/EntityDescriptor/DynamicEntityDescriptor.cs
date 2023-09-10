@@ -1,5 +1,6 @@
 using System;
 using Svelto.DataStructures;
+using Svelto.ECS.Internal;
 
 namespace Svelto.ECS
 {
@@ -13,40 +14,48 @@ namespace Svelto.ECS
     /// <typeparam name="TType"></typeparam>
     public struct DynamicEntityDescriptor<TType> : IDynamicEntityDescriptor where TType : IEntityDescriptor, new()
     {
-        internal DynamicEntityDescriptor(bool isExtendible) : this()
+        public static DynamicEntityDescriptor<TType> CreateDynamicEntityDescriptor()
         {
-            var defaultEntities = EntityDescriptorTemplate<TType>.descriptor.componentsToBuild;
+            var entityDescriptor = new DynamicEntityDescriptor<TType>();
+            
+            var defaultEntities = EntityDescriptorTemplate<TType>.realDescriptor.componentsToBuild;
             var length          = defaultEntities.Length;
 
             if (FetchEntityInfoComponent(defaultEntities) == -1)
             {
-                _componentsToBuild = new IComponentBuilder[length + 1];
+                entityDescriptor._componentsToBuild = new IComponentBuilder[length + 1];
 
-                Array.Copy(defaultEntities, 0, _componentsToBuild, 0, length);
+                Array.Copy(defaultEntities, 0, entityDescriptor._componentsToBuild, 0, length);
                 //assign it after otherwise the previous copy will overwrite the value in case the item
                 //is already present
-                _componentsToBuild[length] = new ComponentBuilder<EntityInfoComponent>(new EntityInfoComponent
+                entityDescriptor._componentsToBuild[length] = new ComponentBuilder<EntityInfoComponent>(new EntityInfoComponent
                 {
-                    componentsToBuild = _componentsToBuild
+                    componentsToBuild = entityDescriptor._componentsToBuild
                 });
             }
             else
             {
-                _componentsToBuild = new IComponentBuilder[length];
+                entityDescriptor._componentsToBuild = new IComponentBuilder[length];
 
-                Array.Copy(defaultEntities, 0, _componentsToBuild, 0, length);
+                Array.Copy(defaultEntities, 0, entityDescriptor._componentsToBuild, 0, length);
             }
+
+            return entityDescriptor;
         }
 
-        public DynamicEntityDescriptor(IComponentBuilder[] extraEntityBuilders) : this(true)
+        public DynamicEntityDescriptor(IComponentBuilder[] extraEntityBuilders)
         {
+            this = DynamicEntityDescriptor<TType>.CreateDynamicEntityDescriptor();
+            
             var extraEntitiesLength = extraEntityBuilders.Length;
 
             _componentsToBuild = Construct(extraEntitiesLength, extraEntityBuilders);
         }
 
-        public DynamicEntityDescriptor(FasterList<IComponentBuilder> extraEntityBuilders) : this(true)
+        public DynamicEntityDescriptor(FasterList<IComponentBuilder> extraEntityBuilders) 
         {
+            this = DynamicEntityDescriptor<TType>.CreateDynamicEntityDescriptor();
+            
             var extraEntities       = extraEntityBuilders.ToArrayFast(out _);
             var extraEntitiesLength = extraEntityBuilders.count;
 
@@ -55,7 +64,7 @@ namespace Svelto.ECS
 
         public void ExtendWith<T>() where T : IEntityDescriptor, new()
         {
-            var extraEntities = EntityDescriptorTemplate<T>.descriptor.componentsToBuild;
+            var extraEntities = EntityDescriptorTemplate<T>.realDescriptor.componentsToBuild;
 
             _componentsToBuild = Construct(extraEntities.Length, extraEntities);
         }
@@ -70,21 +79,21 @@ namespace Svelto.ECS
             _componentsToBuild = Construct(extraEntities.count, extraEntities.ToArrayFast(out _));
         }
 
-        public void Add<T>() where T : struct, IBaseEntityComponent
+        public void Add<T>() where T : struct, _IInternalEntityComponent
         {
             IComponentBuilder[] extraEntities = { new ComponentBuilder<T>() };
             _componentsToBuild = Construct(extraEntities.Length, extraEntities);
         }
 
-        public void Add<T, U>() where T : struct, IBaseEntityComponent where U : struct, IBaseEntityComponent
+        public void Add<T, U>() where T : struct, _IInternalEntityComponent where U : struct, _IInternalEntityComponent
         {
             IComponentBuilder[] extraEntities = { new ComponentBuilder<T>(), new ComponentBuilder<U>() };
             _componentsToBuild = Construct(extraEntities.Length, extraEntities);
         }
 
-        public void Add<T, U, V>() where T : struct, IBaseEntityComponent
-                                   where U : struct, IBaseEntityComponent
-                                   where V : struct, IBaseEntityComponent
+        public void Add<T, U, V>() where T : struct, _IInternalEntityComponent
+                                   where U : struct, _IInternalEntityComponent
+                                   where V : struct, _IInternalEntityComponent
         {
             IComponentBuilder[] extraEntities =
             {

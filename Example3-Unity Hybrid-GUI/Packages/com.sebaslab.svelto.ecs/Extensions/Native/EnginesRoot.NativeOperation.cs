@@ -3,7 +3,6 @@ using System;
 using DBC.ECS;
 using Svelto.Common;
 using Svelto.DataStructures;
-using Svelto.ECS.DataStructures;
 using Svelto.ECS.Internal;
 using Svelto.ECS.Native;
 
@@ -17,8 +16,10 @@ namespace Svelto.ECS
             //todo: remove operation array and store entity descriptor hash in the return value
             //todo I maybe able to provide a  _nativeSwap.SwapEntity<entityDescriptor>
             //todo make this work with base descriptors too
+            var descriptorComponentsToRemove = EntityDescriptorTemplate<T>.descriptor.componentsToBuild;
+            
             _nativeRemoveOperations.Add(new NativeOperationRemove(
-                                            EntityDescriptorTemplate<T>.descriptor.componentsToBuild, TypeCache<T>.type
+                                            descriptorComponentsToRemove, TypeCache<T>.type
                                           , memberName));
 
             return new NativeEntityRemove(_nativeRemoveOperationQueue, _nativeRemoveOperations.count - 1);
@@ -54,7 +55,7 @@ namespace Svelto.ECS
                 //todo, I don't like that this scans all the queues even if they are empty
                 for (int i = 0; i < removeBuffersCount; i++)
                 {
-                    ref var buffer = ref _nativeRemoveOperationQueue.GetBuffer(i);
+                    ref var buffer = ref _nativeRemoveOperationQueue.GetBag(i);
 
                     while (buffer.IsEmpty() == false)
                     {
@@ -78,7 +79,7 @@ namespace Svelto.ECS
                 var swapBuffersCount = _nativeSwapOperationQueue.count;
                 for (int i = 0; i < swapBuffersCount; i++)
                 {
-                    ref var buffer = ref _nativeSwapOperationQueue.GetBuffer(i);
+                    ref var buffer = ref _nativeSwapOperationQueue.GetBag(i);
 
                     while (buffer.IsEmpty() == false)
                     {
@@ -87,10 +88,8 @@ namespace Svelto.ECS
 
                         ref var nativeSwapOperation = ref _nativeSwapOperations[componentsIndex];
 
-                        CheckRemoveEntityID(entityEGID.@from, nativeSwapOperation.entityDescriptorType
+                        CheckSwapEntityID(entityEGID.@from, entityEGID.to, nativeSwapOperation.entityDescriptorType
                                           , nativeSwapOperation.caller);
-                        CheckAddEntityID(entityEGID.to, nativeSwapOperation.entityDescriptorType
-                                       , nativeSwapOperation.caller);
 
                         QueueSwapEntityOperation(entityEGID.@from, entityEGID.to
                                                , FindRealComponents(entityEGID.@from, nativeSwapOperation.components)
@@ -105,7 +104,7 @@ namespace Svelto.ECS
                 var addBuffersCount = _nativeAddOperationQueue.count;
                 for (int i = 0; i < addBuffersCount; i++)
                 {
-                    ref var buffer = ref _nativeAddOperationQueue.GetBuffer(i);
+                    ref var buffer = ref _nativeAddOperationQueue.GetBag(i);
                     //todo: I don't like to iterate a constant number of buffer and skip the empty ones
                     while (buffer.IsEmpty() == false)
                     {
@@ -142,9 +141,9 @@ namespace Svelto.ECS
 
                             var typeID = buffer.Dequeue<uint>();
 
-                            IFiller entityBuilder = EntityComponentIDMap.GetTypeFromID(typeID);
+                            IFiller componentBuilder = EntityComponentIDMap.GetBuilderFromID(typeID);
                             //after the typeID, I expect the serialized component
-                            entityBuilder.FillFromByteArray(init, buffer);
+                            componentBuilder.FillFromByteArray(init, buffer);
                         }
                     }
                 }
@@ -162,7 +161,6 @@ namespace Svelto.ECS
         FasterList<NativeOperationSwap>   _nativeSwapOperations;
         FasterList<NativeOperationBuild>  _nativeAddOperations;
 
-        //todo: I very likely don't need to create one for each native entity factory, the same can be reused
         readonly AtomicNativeBags _nativeAddOperationQueue;
         readonly AtomicNativeBags _nativeRemoveOperationQueue;
         readonly AtomicNativeBags _nativeSwapOperationQueue;

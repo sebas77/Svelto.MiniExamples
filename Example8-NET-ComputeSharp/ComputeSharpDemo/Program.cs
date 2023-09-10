@@ -4,7 +4,6 @@ using System.Numerics;
 using System.Runtime.InteropServices;
 using ComputeSharp;
 using Svelto.ECS;
-using Svelto.ECS.ComputeSharp;
 using Svelto.ECS.Schedulers;
 
 var simpleSubmissionEntityViewScheduler = new SimpleEntitiesSubmissionScheduler();
@@ -45,7 +44,6 @@ public class ComputeSharpEntityDescriptor: IEntityDescriptor
     };
 }
 
-[StructLayout(LayoutKind.Auto, Pack = 32)]
 public struct PositionComponent: IEntityComputeSharpComponent
 {
     public Vector3 position;
@@ -70,7 +68,15 @@ public class TestComputeShaderEngine: IQueryingEntitiesEngine, IStepEngine
         // Run the shader
        GraphicsDevice.GetDefault().For(count, new MultiplyByTwo(buffer.ToComputeBuffer()));
 
-       buffer.Complete();
+       buffer.ReadBack();
+       
+       (buffer, count) = entitiesDB.QueryEntities<PositionComponent>(ExclusiveGroups.group0);
+       {
+           for (int i = 0; i < count; i++)
+           {
+               Console.WriteLine(buffer[i].position);
+           }
+       }
     }
 
     public string name { get; }
@@ -84,6 +90,6 @@ readonly partial struct MultiplyByTwo : IComputeShader
     /// <inheritdoc/>
     public void Execute()
     {
-        this.buffer[ThreadIds.X].position *= 2;
+        this.buffer[ThreadIds.X].position *= ThreadIds.X;
     }
 }

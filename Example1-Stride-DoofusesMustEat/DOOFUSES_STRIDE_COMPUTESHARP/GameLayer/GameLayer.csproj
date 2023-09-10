@@ -1,36 +1,36 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-    <PropertyGroup>
-        <TargetFramework>net7.0</TargetFramework>
-        <LangVersion>10</LangVersion>
-        <RootNamespace> Svelto.ECS.MiniExamples.Doofuses.Stride</RootNamespace>
-        <Configurations>Debug;Release;RELEASE_COMPUTE_SHADERS</Configurations>
-        <Platforms>AnyCPU</Platforms>
-    </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-      <PlatformTarget>x64</PlatformTarget>
-    </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-      <DefineConstants>TRACE;SLOW_SVELTO_SUBMISSION</DefineConstants>
-    </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)' == 'RELEASE_COMPUTE_SHADERS' ">
-      <DefineConstants>TRACE;COMPUTE_SHADERS</DefineConstants>
-      <Optimize>true</Optimize>
-      <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    </PropertyGroup>
-    <ItemGroup>
-        <PackageReference Include="ComputeSharp.Dynamic" Version="2.0.3" />
-        <PackageReference Include="Stride.Engine" Version="4.1.0.1805" />
-        <PackageReference Include="Stride.Video" Version="4.1.0.1805" />
-        <PackageReference Include="Stride.Physics" Version="4.1.0.1805" />
-        <PackageReference Include="Stride.Navigation" Version="4.1.0.1805" />
-        <PackageReference Include="Stride.Particles" Version="4.1.0.1805" />
-        <PackageReference Include="Stride.UI" Version="4.1.0.1805" />
-        <PackageReference Include="Stride.Core.Assets.CompilerApp" Version="4.1.0.1805" IncludeAssets="build;buildTransitive" />
-    </ItemGroup>
-    <ItemGroup>
-        <ProjectReference Include="..\StrideLayer\StrideLayer.csproj" />
-        <ProjectReference Include="..\Svelto\com.sebaslab.svelto.common\Svelto.Common.csproj" />
-        <ProjectReference Include="..\Svelto\com.sebaslab.svelto.ecs.computesharp\Svelto.ECS.ComputeSharp.csproj" />
-        <ProjectReference Include="..\Svelto\com.sebaslab.svelto.ecs\Svelto.ECS.csproj" />
-    </ItemGroup>
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <LangVersion>10</LangVersion>
+    <RootNamespace> Svelto.ECS.MiniExamples.Doofuses.Stride</RootNamespace>
+    <Configurations>Debug;Release;RELEASE_COMPUTE_SHADERS</Configurations>
+    <Platforms>AnyCPU</Platforms>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DefineConstants>TRACE;SLOW_SVELTO_SUBMISSION</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'RELEASE_COMPUTE_SHADERS' ">
+    <DefineConstants>TRACE;COMPUTE_SHADERS</DefineConstants>
+    <Optimize>true</Optimize>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="ComputeSharp.Dynamic" Version="2.1.0-preview3" />
+    <PackageReference Include="Stride.Engine" Version="4.1.0.1838" />
+    <PackageReference Include="Stride.Video" Version="4.1.0.1838" />
+    <PackageReference Include="Stride.Physics" Version="4.1.0.1838" />
+    <PackageReference Include="Stride.Navigation" Version="4.1.0.1838" />
+    <PackageReference Include="Stride.Particles" Version="4.1.0.1838" />
+    <PackageReference Include="Stride.UI" Version="4.1.0.1838" />
+    <PackageReference Include="Stride.Core.Assets.CompilerApp" Version="4.1.0.1838" IncludeAssets="build;buildTransitive" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\StrideLayer\StrideLayer.csproj" />
+    <ProjectReference Include="..\Svelto\com.sebaslab.svelto.common\Svelto.Common.csproj" />
+    <ProjectReference Include="..\Svelto\com.sebaslab.svelto.ecs.computesharp\Svelto.ECS.ComputeSharp.csproj" />
+    <ProjectReference Include="..\Svelto\com.sebaslab.svelto.ecs\Svelto.ECS.csproj" />
+  </ItemGroup>
 </Project>

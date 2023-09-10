@@ -9,12 +9,18 @@ namespace Svelto.ECS
     /// that can be burstifiable
     /// </summary>
     /// <typeparam name="T1"></typeparam>
-    public readonly struct AllGroupsEnumerable<T1> where T1 : struct, IBaseEntityComponent
+    public readonly ref struct AllGroupsEnumerable<T1> where T1 : struct, _IInternalEntityComponent
     {
-        public ref struct GroupCollection
+        public readonly ref struct GroupCollection
         {
-            internal EntityCollection<T1> collection;
-            internal ExclusiveGroupStruct group;
+            readonly EntityCollection<T1> collection;
+            readonly ExclusiveGroupStruct group;
+
+            public GroupCollection(EntityCollection<T1> entityCollection, ExclusiveGroupStruct groupKey)
+            {
+                collection = entityCollection;
+                group = groupKey;
+            }
 
             public void Deconstruct(out EntityCollection<T1> collection, out ExclusiveGroupStruct group)
             {
@@ -29,7 +35,7 @@ namespace Svelto.ECS
         {
             public GroupsIterator(EntitiesDB db) : this()
             {
-                _db = db.FindGroups_INTERNAL(TypeCache<T1>.type).GetEnumerator();
+                _db = db.FindGroups_INTERNAL(ComponentTypeID<T1>.id).GetEnumerator();
             }
 
             public bool MoveNext()
@@ -45,9 +51,11 @@ namespace Svelto.ECS
 
                     if (typeSafeDictionary.count == 0)
                         continue;
-                    _array.collection = new EntityCollection<T1>(typeSafeDictionary.GetValues(out var count),
-                        typeSafeDictionary.entityIDs, count);
-                    _array.@group = group.key;
+
+                    _array = new GroupCollection(
+                        new EntityCollection<T1>(
+                            typeSafeDictionary.GetValues(out var count),
+                            typeSafeDictionary.entityIDs, count), group.key);
                     return true;
                 }
 

@@ -177,11 +177,9 @@ namespace Svelto.ECS
                         enginesRoot._entityLocator.UpdateEntityReference(fromEntityGid, toEntityGid);
                     }
                 }
-
+                
                 using (sampler.Sample("Swap Entities"))
                 {
-                    enginesRoot._cachedRangeOfSubmittedIndices.Clear();
-
                     //Entities to swap are organised in order to minimise the amount of dictionary lookups.
                     //swapEntitiesOperations iterations happen in the following order:
                     //for each fromGroup, get all the entities to swap for each component type.
@@ -189,6 +187,7 @@ namespace Svelto.ECS
                     //now swap the set of FromGroup -> ToGroup entities per ID.
                     foreach (var entitiesToSwap in swapEntitiesOperations) //each operation is a component to swap
                     {
+                        enginesRoot._cachedRangeOfSubmittedIndices.Clear();
                         ExclusiveGroupStruct fromGroup = entitiesToSwap.key;
                         FasterDictionary<ComponentID, ITypeSafeDictionary> fromGroupDictionary = enginesRoot.GetDBGroup(fromGroup);
 
@@ -203,10 +202,7 @@ namespace Svelto.ECS
                             {
                                 ExclusiveGroupStruct toGroup = entitiesInfoToSwap.key;
                                 ITypeSafeDictionary toComponentsDictionaryDB = enginesRoot.GetOrAddTypeSafeDictionary(
-                                    toGroup,
-                                    enginesRoot.GetOrAddDBGroup(toGroup),
-                                    componentType,
-                                    fromComponentsDictionaryDB);
+                                    toGroup, enginesRoot.GetOrAddDBGroup(toGroup), componentType, fromComponentsDictionaryDB);
 
                                 DBC.ECS.Check.Assert(toComponentsDictionaryDB != null, "something went wrong with the creation of dictionaries");
 
@@ -223,19 +219,38 @@ namespace Svelto.ECS
                                 enginesRoot._transientEntityIDsAffectedByRemoveAtSwapBack.Clear();
 
                                 fromComponentsDictionaryDB.SwapEntitiesBetweenDictionaries(
-                                    fromEntityToEntityIDs,
-                                    fromGroup,
-                                    toGroup,
-                                    toComponentsDictionaryDB,
+                                    fromEntityToEntityIDs, fromGroup, toGroup, toComponentsDictionaryDB,
                                     enginesRoot._transientEntityIDsAffectedByRemoveAtSwapBack);
 
                                 //important: this must happen after the entities are swapped in the database
                                 enginesRoot.SwapEntityBetweenPersistentFilters(
-                                    fromEntityToEntityIDs,
-                                    fromGroup,
-                                    toGroup,
-                                    componentType,
+                                    fromEntityToEntityIDs, fromGroup, toGroup, componentType,
                                     enginesRoot._transientEntityIDsAffectedByRemoveAtSwapBack);
+                            }
+                        }
+                        
+                        var rangeEnumerator = enginesRoot._cachedRangeOfSubmittedIndices.GetEnumerator();
+                        using (sampler.Sample("Execute Swap Callbacks Fast"))
+                        {
+                            foreach (var groupedEntitiesToSwap in entitiesToSwap.value)
+                            {
+                                var componentType = groupedEntitiesToSwap.key;
+
+                                foreach (var entitiesInfoToSwap in groupedEntitiesToSwap.value)
+                                {
+                                    rangeEnumerator.MoveNext();
+
+                                    //get all the engines linked to TValue
+                                    if (!enginesRoot._reactiveEnginesSwapEx.TryGetValue(componentType, out var entityComponentsEngines))
+                                        continue;
+
+                                    ExclusiveGroupStruct toGroup = entitiesInfoToSwap.key;
+                                    ITypeSafeDictionary toComponentsDictionary = GetTypeSafeDictionary(
+                                        toGroup, enginesRoot.GetDBGroup(toGroup), componentType);
+
+                                    toComponentsDictionary.ExecuteEnginesSwapCallbacksFast(
+                                        entityComponentsEngines, fromGroup, toGroup, rangeEnumerator.Current, in sampler);
+                                }
                             }
                         }
                     }
@@ -259,54 +274,13 @@ namespace Svelto.ECS
                             {
                                 ExclusiveGroupStruct toGroup = entitiesInfoToSwap.key;
                                 ITypeSafeDictionary toComponentsDictionary = GetTypeSafeDictionary(
-                                    toGroup,
-                                    enginesRoot.GetDBGroup(toGroup),
-                                    componentType);
+                                    toGroup, enginesRoot.GetDBGroup(toGroup), componentType);
 
                                 var infosToProcess = entitiesInfoToSwap.value;
 
                                 toComponentsDictionary.ExecuteEnginesSwapCallbacks(
-                                    infosToProcess,
-                                    entityComponentsEngines,
-                                    fromGroup,
-                                    toGroup,
-                                    in sampler);
-                            }
-                        }
-                    }
-                }
-
-                var rangeEnumerator = enginesRoot._cachedRangeOfSubmittedIndices.GetEnumerator();
-                using (sampler.Sample("Execute Swap Callbacks Fast"))
-                {
-                    foreach (var entitiesToSwap in swapEntitiesOperations)
-                    {
-                        ExclusiveGroupStruct fromGroup = entitiesToSwap.key;
-
-                        foreach (var groupedEntitiesToSwap in entitiesToSwap.value)
-                        {
-                            var componentType = groupedEntitiesToSwap.key;
-
-                            foreach (var entitiesInfoToSwap in groupedEntitiesToSwap.value)
-                            {
-                                rangeEnumerator.MoveNext();
-
-                                //get all the engines linked to TValue
-                                if (!enginesRoot._reactiveEnginesSwapEx.TryGetValue(componentType, out var entityComponentsEngines))
-                                    continue;
-
-                                ExclusiveGroupStruct toGroup = entitiesInfoToSwap.key;
-                                ITypeSafeDictionary toComponentsDictionary = GetTypeSafeDictionary(
-                                    toGroup,
-                                    enginesRoot.GetDBGroup(toGroup),
-                                    componentType);
-
-                                toComponentsDictionary.ExecuteEnginesSwapCallbacksFast(
-                                    entityComponentsEngines,
-                                    fromGroup,
-                                    toGroup,
-                                    rangeEnumerator.Current,
-                                    in sampler);
+                                    infosToProcess, entityComponentsEngines,
+                                    fromGroup, toGroup, in sampler);
                             }
                         }
                     }

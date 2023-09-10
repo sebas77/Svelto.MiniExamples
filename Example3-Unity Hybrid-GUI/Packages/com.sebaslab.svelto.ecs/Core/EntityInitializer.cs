@@ -1,25 +1,25 @@
-﻿using Svelto.DataStructures;
+﻿using Svelto.Common;
+using Svelto.DataStructures;
 using Svelto.ECS.Internal;
 
 namespace Svelto.ECS
 {
     public readonly ref struct EntityInitializer
     {
-        public EntityInitializer(EGID id, FasterDictionary<RefWrapperType, ITypeSafeDictionary> group,
+        public EntityInitializer(EGID id, FasterDictionary<ComponentID, ITypeSafeDictionary> group,
             in EntityReference reference)
         {
-            _group         = group;
-            _ID            = id;
+            _group = group;
+            _ID = id;
             this.reference = reference;
         }
 
-        public          EGID            EGID => _ID;
+        public EGID EGID => _ID;
         public readonly EntityReference reference;
 
-        public void Init<T>(T initializer) where T : struct, IBaseEntityComponent
+        public void Init<T>(T initializer) where T : struct, _IInternalEntityComponent
         {
-            if (_group.TryGetValue(new RefWrapperType(ComponentBuilder<T>.ENTITY_COMPONENT_TYPE),
-                    out var typeSafeDictionary) == false)
+            if (_group.TryGetValue(ComponentTypeID<T>.id, out var typeSafeDictionary) == false)
                 return;
 
             var dictionary = (ITypeSafeDictionary<T>)typeSafeDictionary;
@@ -27,30 +27,27 @@ namespace Svelto.ECS
             if (ComponentBuilder<T>.HAS_EGID)
                 SetEGIDWithoutBoxing<T>.SetIDWithoutBoxing(ref initializer, _ID);
 #endif
-
             if (dictionary.TryFindIndex(_ID.entityID, out var findElementIndex))
                 dictionary.GetDirectValueByRef(findElementIndex) = initializer;
         }
 
-        public ref T GetOrAdd<T>() where T : struct, IBaseEntityComponent
+        internal ref T GetOrAdd<T>() where T : unmanaged, _IInternalEntityComponent
         {
-            ref var entityDictionary = ref _group.GetOrAdd(
-                new RefWrapperType(ComponentBuilder<T>.ENTITY_COMPONENT_TYPE), TypeSafeDictionaryFactory<T>.Create);
+            ref var entityDictionary = ref _group.GetOrAdd(ComponentTypeID<T>.id, () => new UnmanagedTypeSafeDictionary<T>(1));
+            
             var dictionary = (ITypeSafeDictionary<T>)entityDictionary;
 
             return ref dictionary.GetOrAdd(_ID.entityID);
         }
 
-        public ref T Get<T>() where T : struct, IBaseEntityComponent
+        public ref T Get<T>() where T : struct, _IInternalEntityComponent
         {
-            return ref (_group[new RefWrapperType(ComponentBuilder<T>.ENTITY_COMPONENT_TYPE)] as ITypeSafeDictionary<T>)
-               .GetValueByRef(_ID.entityID);
+            return ref (_group[ComponentTypeID<T>.id] as ITypeSafeDictionary<T>).GetValueByRef(_ID.entityID);
         }
 
-        public bool Has<T>() where T : struct, IBaseEntityComponent
+        public bool Has<T>() where T : struct, _IInternalEntityComponent
         {
-            if (_group.TryGetValue(new RefWrapperType(ComponentBuilder<T>.ENTITY_COMPONENT_TYPE),
-                    out var typeSafeDictionary))
+            if (_group.TryGetValue(ComponentTypeID<T>.id, out var typeSafeDictionary))
             {
                 var dictionary = (ITypeSafeDictionary<T>)typeSafeDictionary;
 
@@ -61,7 +58,7 @@ namespace Svelto.ECS
             return false;
         }
 
-        readonly EGID                                                  _ID;
-        readonly FasterDictionary<RefWrapperType, ITypeSafeDictionary> _group;
+        readonly EGID _ID;
+        readonly FasterDictionary<ComponentID, ITypeSafeDictionary> _group;
     }
 }

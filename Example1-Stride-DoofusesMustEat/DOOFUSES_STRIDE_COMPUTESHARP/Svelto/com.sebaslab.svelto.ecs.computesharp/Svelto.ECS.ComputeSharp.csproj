@@ -17,6 +17,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="ComputeSharp" Version="2.0.3" />
+      <PackageReference Include="ComputeSharp" Version="2.1.0-preview3" />
     </ItemGroup>
 </Project>

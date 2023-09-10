@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. Changes are listed in random order of importance.
 
+## [3.4.3] - 05-2023
+
+* fix platform profiler compilation bugs
+* Svelto.Console improvements
+* Improve the new stream related classes. They are used successfully in my current project, unfortunately no much doc available yet
+* few FasterList improvements
+
 ## [3.4.0] - 03-2023
 
 * removed static caches used in performance critical paths as they were causing unexpected performance issues (the fetching of static data is slower than i imagined)

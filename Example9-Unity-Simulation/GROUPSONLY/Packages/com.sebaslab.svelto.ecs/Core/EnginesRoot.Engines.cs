@@ -48,21 +48,21 @@ namespace Svelto.ECS
             _nativeAddOperationQueue = new AtomicNativeBags(Allocator.Persistent);
 #endif
             _serializationDescriptorMap = new SerializationDescriptorMap();
-            _reactiveEnginesAdd = new FasterDictionary<ComponentID, FasterList<ReactEngineContainer<_Internal_IReactOnAdd>>>();
+            _reactiveEnginesAdd = new FasterDictionary<ComponentID, FasterList<ReactEngineContainer<IReactOnAdd>>>();
             _reactiveEnginesAddEx =
-                new FasterDictionary<ComponentID, FasterList<ReactEngineContainer<_Internal_IReactOnAddEx>>>();
+                new FasterDictionary<ComponentID, FasterList<ReactEngineContainer<IReactOnAddEx>>>();
             _reactiveEnginesRemove =
-                new FasterDictionary<ComponentID, FasterList<ReactEngineContainer<_Internal_IReactOnRemove>>>();
+                new FasterDictionary<ComponentID, FasterList<ReactEngineContainer<IReactOnRemove>>>();
             _reactiveEnginesRemoveEx =
-                new FasterDictionary<ComponentID, FasterList<ReactEngineContainer<_Internal_IReactOnRemoveEx>>>();
+                new FasterDictionary<ComponentID, FasterList<ReactEngineContainer<IReactOnRemoveEx>>>();
             _reactiveEnginesSwap =
-                new FasterDictionary<ComponentID, FasterList<ReactEngineContainer<_Internal_IReactOnSwap>>>();
+                new FasterDictionary<ComponentID, FasterList<ReactEngineContainer<IReactOnSwap>>>();
             _reactiveEnginesSwapEx =
-                new FasterDictionary<ComponentID, FasterList<ReactEngineContainer<_Internal_IReactOnSwapEx>>>();
+                new FasterDictionary<ComponentID, FasterList<ReactEngineContainer<IReactOnSwapEx>>>();
             _reactiveEnginesDispose =
-                new FasterDictionary<ComponentID, FasterList<ReactEngineContainer<_Internal_IReactOnDispose>>>();
+                new FasterDictionary<ComponentID, FasterList<ReactEngineContainer<IReactOnDispose>>>();
             _reactiveEnginesDisposeEx =
-                new FasterDictionary<ComponentID, FasterList<ReactEngineContainer<_Internal_IReactOnDisposeEx>>>();
+                new FasterDictionary<ComponentID, FasterList<ReactEngineContainer<IReactOnDisposeEx>>>();
 
             _reactiveEnginesSubmission = new FasterList<IReactOnSubmission>();
             _reactiveEnginesSubmissionStarted = new FasterList<IReactOnSubmissionStarted>();
@@ -128,43 +128,43 @@ namespace Svelto.ECS
                    .FastConcat(engine.ToString()));
             try
             {
-                if (engine is _Internal_IReactOnAdd viewEngineAdd)
+                if (engine is IReactOnAdd viewEngineAdd)
 #pragma warning disable CS0612
                     CheckReactEngineComponents(typeof(IReactOnAdd<>), viewEngineAdd, _reactiveEnginesAdd, type.Name);
 #pragma warning restore CS0612
 
-                if (engine is _Internal_IReactOnAddEx viewEngineAddEx)
+                if (engine is IReactOnAddEx viewEngineAddEx)
                     CheckReactEngineComponents(
                         typeof(IReactOnAddEx<>), viewEngineAddEx, _reactiveEnginesAddEx, type.Name);
 
-                if (engine is _Internal_IReactOnRemove viewEngineRemove)
+                if (engine is IReactOnRemove viewEngineRemove)
                     CheckReactEngineComponents(
 #pragma warning disable CS0612
                         typeof(IReactOnRemove<>), viewEngineRemove, _reactiveEnginesRemove, type.Name);
 #pragma warning restore CS0612
 
-                if (engine is _Internal_IReactOnRemoveEx viewEngineRemoveEx)
+                if (engine is IReactOnRemoveEx viewEngineRemoveEx)
                     CheckReactEngineComponents(
                         typeof(IReactOnRemoveEx<>), viewEngineRemoveEx, _reactiveEnginesRemoveEx, type.Name);
 
-                if (engine is _Internal_IReactOnDispose viewEngineDispose)
+                if (engine is IReactOnDispose viewEngineDispose)
                     CheckReactEngineComponents(
 #pragma warning disable CS0618
                         typeof(IReactOnDispose<>), viewEngineDispose, _reactiveEnginesDispose, type.Name);
 #pragma warning restore CS0618
                 
-                if (engine is _Internal_IReactOnDisposeEx viewEngineDisposeEx)
+                if (engine is IReactOnDisposeEx viewEngineDisposeEx)
                     CheckReactEngineComponents(
                         typeof(IReactOnDisposeEx<>), viewEngineDisposeEx, _reactiveEnginesDisposeEx, type.Name);
 
-                if (engine is _Internal_IReactOnSwap viewEngineSwap)
+                if (engine is IReactOnSwap viewEngineSwap)
 #pragma warning disable CS0612
 #pragma warning disable CS0618
                     CheckReactEngineComponents(typeof(IReactOnSwap<>), viewEngineSwap, _reactiveEnginesSwap, type.Name);
 #pragma warning restore CS0618
 #pragma warning restore CS0612
 
-                if (engine is _Internal_IReactOnSwapEx viewEngineSwapEx)
+                if (engine is IReactOnSwapEx viewEngineSwapEx)
                     CheckReactEngineComponents(
                         typeof(IReactOnSwapEx<>), viewEngineSwapEx, _reactiveEnginesSwapEx, type.Name);
 
@@ -211,7 +211,7 @@ namespace Svelto.ECS
 
         static void AddEngineToList<T>(T engine, Type[] entityComponentTypes,
             FasterDictionary<ComponentID, FasterList<ReactEngineContainer<T>>> engines, string typeName)
-            where T : class, _Internal_IReactEngine
+            where T : class, IReactEngine
         {
             for (var i = 0; i < entityComponentTypes.Length; i++)
             {
@@ -231,7 +231,7 @@ namespace Svelto.ECS
 
         void CheckReactEngineComponents<T>(Type genericDefinition, T engine,
             FasterDictionary<ComponentID, FasterList<ReactEngineContainer<T>>> engines, string typeName)
-            where T : class, _Internal_IReactEngine
+            where T : class, IReactEngine
         {
             var interfaces = engine.GetType().GetInterfaces();
 
@@ -260,7 +260,7 @@ namespace Svelto.ECS
                 foreach (var engine in _disposableEngines)
                     try
                     {
-                        if (engine is IDisposingEngine dengine)
+                        if (engine is IDisposableEngine dengine)
                             dengine.isDisposing = true;
                         
                         engine.Dispose();
@@ -418,14 +418,14 @@ namespace Svelto.ECS
         readonly HashSet<Type> _enginesTypeSet;
         readonly EnginesReadyOption _enginesWaitForReady;
 
-        readonly FasterDictionary<ComponentID, FasterList<ReactEngineContainer<_Internal_IReactOnAdd>>> _reactiveEnginesAdd;
-        readonly FasterDictionary<ComponentID, FasterList<ReactEngineContainer<_Internal_IReactOnAddEx>>> _reactiveEnginesAddEx;
-        readonly FasterDictionary<ComponentID, FasterList<ReactEngineContainer<_Internal_IReactOnRemove>>> _reactiveEnginesRemove;
-        readonly FasterDictionary<ComponentID, FasterList<ReactEngineContainer<_Internal_IReactOnRemoveEx>>> _reactiveEnginesRemoveEx;
-        readonly FasterDictionary<ComponentID, FasterList<ReactEngineContainer<_Internal_IReactOnSwap>>> _reactiveEnginesSwap;
-        readonly FasterDictionary<ComponentID, FasterList<ReactEngineContainer<_Internal_IReactOnSwapEx>>> _reactiveEnginesSwapEx;
-        readonly FasterDictionary<ComponentID, FasterList<ReactEngineContainer<_Internal_IReactOnDispose>>> _reactiveEnginesDispose;
-        readonly FasterDictionary<ComponentID, FasterList<ReactEngineContainer<_Internal_IReactOnDisposeEx>>> _reactiveEnginesDisposeEx;
+        readonly FasterDictionary<ComponentID, FasterList<ReactEngineContainer<IReactOnAdd>>> _reactiveEnginesAdd;
+        readonly FasterDictionary<ComponentID, FasterList<ReactEngineContainer<IReactOnAddEx>>> _reactiveEnginesAddEx;
+        readonly FasterDictionary<ComponentID, FasterList<ReactEngineContainer<IReactOnRemove>>> _reactiveEnginesRemove;
+        readonly FasterDictionary<ComponentID, FasterList<ReactEngineContainer<IReactOnRemoveEx>>> _reactiveEnginesRemoveEx;
+        readonly FasterDictionary<ComponentID, FasterList<ReactEngineContainer<IReactOnSwap>>> _reactiveEnginesSwap;
+        readonly FasterDictionary<ComponentID, FasterList<ReactEngineContainer<IReactOnSwapEx>>> _reactiveEnginesSwapEx;
+        readonly FasterDictionary<ComponentID, FasterList<ReactEngineContainer<IReactOnDispose>>> _reactiveEnginesDispose;
+        readonly FasterDictionary<ComponentID, FasterList<ReactEngineContainer<IReactOnDisposeEx>>> _reactiveEnginesDisposeEx;
 
         readonly FasterList<IReactOnSubmission> _reactiveEnginesSubmission;
         readonly FasterList<IReactOnSubmissionStarted> _reactiveEnginesSubmissionStarted;

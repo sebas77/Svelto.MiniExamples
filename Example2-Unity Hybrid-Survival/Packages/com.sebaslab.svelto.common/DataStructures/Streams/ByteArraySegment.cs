@@ -7,21 +7,16 @@ namespace Svelto.DataStructures
 {
     public readonly struct ByteArraySegment<T> where T : unmanaged
     {
-        public ByteArraySegment(byte[] reference, int offsetInBytes, int sizeInBytes): this()
+        public ByteArraySegment(Memory<byte> reference): this()
         {
-            _byteReference = new Memory<byte>(reference, offsetInBytes, sizeInBytes);
+            _byteReference = reference;
         }
 
-        ByteArraySegment(T[] reference): this()
+        public ByteArraySegment(T[] reference): this()
         {
             _reference = reference;
         }
 
-        public static implicit operator ByteArraySegment<T>(T[] list)
-        {
-            return new ByteArraySegment<T>(list);
-        }
-        
         public static implicit operator ReadOnlySpan<T>(in ByteArraySegment<T> list)
         {
             return list.Span;
@@ -44,9 +39,9 @@ namespace Svelto.DataStructures
         {
             int length = stream.Read<int>();
 
-            int readCursor = (int)stream.AdvanceCursor(length);
+            int readCursor = stream.AdvanceCursor(length);
 
-            return new ByteArraySegment<T>(stream.ToPTR(), readCursor, length);
+            return new ByteArraySegment<T>(stream.ToMemoryInternal().Slice(readCursor, length));
         }
     }
 }

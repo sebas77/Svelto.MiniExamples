@@ -52,7 +52,7 @@ namespace Svelto.ECS
             if (safeDictionary.TryFindIndex(entityGID.entityID, out index) == false)
                 return false;
 
-            buffer = (MB<T>) (safeDictionary as ITypeSafeDictionary<T>).GetValues(out _);
+            buffer = (MBInternal<T>) (safeDictionary as ITypeSafeDictionary<T>).GetValues(out _);
 
             return true;
         }
@@ -73,6 +73,9 @@ namespace Svelto.ECS
             return ref entitiesDb.QueryEntity<T>(new EGID(id, group));
         }
 
+        /// <summary>
+        /// Expects that only one entity of type T exists in the group 
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ref T QueryUniqueEntity<T>
             (this EntitiesDB entitiesDb, ExclusiveGroupStruct group) where T : struct, IEntityViewComponent
@@ -95,7 +98,7 @@ namespace Svelto.ECS
         {
             if (mapper._map.TryFindIndex(entityID, out index))
             {
-                return (MB<T>) mapper._map.GetValues(out _);
+                return (MBInternal<T>) mapper._map.GetValues(out _);
             }
 
             throw new ECSException("Entity not found");
@@ -109,7 +112,7 @@ namespace Svelto.ECS
             index = default;
             if (mapper._map != null && mapper._map.TryFindIndex(entityID, out index))
             {
-                array = (MB<T>) mapper._map.GetValues(out _);
+                array = (MBInternal<T>) mapper._map.GetValues(out _);
                 return true;
             }
 
@@ -119,7 +122,7 @@ namespace Svelto.ECS
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static AllGroupsEnumerable<T1> QueryEntities<T1>(this EntitiesDB db)
-            where T1 :struct, IBaseEntityComponent
+            where T1 :struct, IEntityViewComponent
         {
             return new AllGroupsEnumerable<T1>(db);
         }

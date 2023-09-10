@@ -90,7 +90,7 @@ namespace Svelto.Services
                         }
                         else
                         {
-                            Svelto.Console.LogDebug("web request completed with failure ", URL);
+                            Svelto.Console.LogDebug($"web request completed with failure {URL}");
 
                             try
                             {

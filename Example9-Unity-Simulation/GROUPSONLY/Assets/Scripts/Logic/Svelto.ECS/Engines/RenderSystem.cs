@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Logic.SveltoECS
 {
-    public class RenderSystem: IQueryingEntitiesEngine, IStepEngine<float>, IDisposable
+    public class RenderSystem: IQueryingEntitiesEngine, IStepEngine<float>, IDisposableEngine
     {
         static Transform[] transformPool = new Transform[Data.MaxVehicleCount];
         static MeshRenderer[] meshPool = new MeshRenderer[Data.MaxVehicleCount];
@@ -100,5 +100,7 @@ namespace Logic.SveltoECS
         readonly GameObject _prefab;
         readonly Material[] _materials;
         readonly Material _sirenLightMaterial;
+        
+        public bool isDisposing { get; set; }
     }
 }

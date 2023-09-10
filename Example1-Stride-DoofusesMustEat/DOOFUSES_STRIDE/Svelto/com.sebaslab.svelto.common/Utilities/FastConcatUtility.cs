@@ -96,7 +96,6 @@ public static class FastConcatUtility
         builder.Append(str3);
         builder.Append(str4);
 
-
         return builder.ToString();
     }
 

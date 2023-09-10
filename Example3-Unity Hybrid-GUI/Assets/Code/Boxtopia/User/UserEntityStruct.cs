@@ -1,5 +1,6 @@
 using Svelto.ECS;
 using Svelto.ECS.Experimental;
+using Svelto.ECS.ResourceManager;
 
 namespace User
 {

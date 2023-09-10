@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
@@ -24,33 +24,11 @@ namespace Svelto.ECS
         }
     }
 
-    public static class BurstCompatibleCounter
-    {
-        public static int counter;        
-    }
-    
-    public class ComponentID<T> where T : struct, IBaseEntityComponent
-    {
-        public static readonly SharedStaticWrapper<int, ComponentID<T>> id;
-
-#if UNITY_BURST 
-        [Unity.Burst.BurstDiscard] 
-        //SharedStatic values must be initialized from not burstified code
-#endif
-        public static void Init()
-        {
-            id.Data = Interlocked.Increment(ref BurstCompatibleCounter.counter);
-
-            DBC.ECS.Check.Ensure(id.Data < ushort.MaxValue, "too many types registered, HOW :)");
-        }
-    }
-
-    public class ComponentBuilder<T> : IComponentBuilder where T : struct, IBaseEntityComponent
+    public class ComponentBuilder<T> : IComponentBuilder where T : struct, _IInternalEntityComponent
     {
         internal static readonly Type ENTITY_COMPONENT_TYPE;
         internal static readonly bool IS_ENTITY_VIEW_COMPONENT;
 
-        static readonly T      DEFAULT_IT;
         static readonly string ENTITY_COMPONENT_NAME;
         static readonly bool   IS_UNMANAGED;
 #if SLOW_SVELTO_SUBMISSION            
@@ -61,7 +39,6 @@ namespace Svelto.ECS
         static ComponentBuilder()
         {
             ENTITY_COMPONENT_TYPE = typeof(T);
-            DEFAULT_IT = default;
             IS_ENTITY_VIEW_COMPONENT = typeof(IEntityViewComponent).IsAssignableFrom(ENTITY_COMPONENT_TYPE);
 #if SLOW_SVELTO_SUBMISSION            
             HAS_EGID = typeof(INeedEGID).IsAssignableFrom(ENTITY_COMPONENT_TYPE);
@@ -69,14 +46,13 @@ namespace Svelto.ECS
             
             SetEGIDWithoutBoxing<T>.Warmup();
 #endif
-            ComponentID<T>.Init();
             ENTITY_COMPONENT_NAME = ENTITY_COMPONENT_TYPE.ToString();
-            IS_UNMANAGED = TypeType.isUnmanaged<T>(); //attention this is important as it serves as warm up for Type<T>
+            IS_UNMANAGED = TypeCache<T>.isUnmanaged; //attention this is important as it serves as warm up for Type<T>
 #if UNITY_NATIVE
             if (IS_UNMANAGED)
                 EntityComponentIDMap.Register<T>(new Filler<T>());
 #endif
-
+            ComponentTypeID<T>.Init();
             ComponentBuilderUtilities.CheckFields(ENTITY_COMPONENT_TYPE, IS_ENTITY_VIEW_COMPONENT);
 
             if (IS_ENTITY_VIEW_COMPONENT)
@@ -86,7 +62,7 @@ namespace Svelto.ECS
             else
             {
                 if (ENTITY_COMPONENT_TYPE != ComponentBuilderUtilities.ENTITY_INFO_COMPONENT &&
-                    ENTITY_COMPONENT_TYPE.IsUnmanagedEx() == false)
+                    TypeCache<T>.isUnmanaged == false)
                     throw new Exception(
                         $"Entity Component check failed, unexpected struct type (must be unmanaged) {ENTITY_COMPONENT_TYPE}");
             }
@@ -94,7 +70,7 @@ namespace Svelto.ECS
 
         public ComponentBuilder()
         {
-            _initializer = DEFAULT_IT;
+            _initializer = default;
         }
 
         public ComponentBuilder(in T initializer) : this()
@@ -103,8 +79,9 @@ namespace Svelto.ECS
         }
 
         public bool isUnmanaged => IS_UNMANAGED;
+        public ComponentID getComponentID => ComponentTypeID<T>.id;
 
-        static ThreadLocal<EntityViewComponentCache> _localCache = new ThreadLocal<EntityViewComponentCache>(() => new EntityViewComponentCache());
+        static readonly ThreadLocal<EntityViewComponentCache> _localCache = new ThreadLocal<EntityViewComponentCache>(() => new EntityViewComponentCache());
 
         public void BuildEntityAndAddToList(ITypeSafeDictionary dictionary, EGID egid, IEnumerable<object> implementors)
         {

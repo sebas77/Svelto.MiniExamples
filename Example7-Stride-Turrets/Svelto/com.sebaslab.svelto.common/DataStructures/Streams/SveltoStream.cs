@@ -43,9 +43,9 @@ namespace Svelto.DataStructures
 #endif
             Unsafe.CopyBlockUnaligned(
                 ref Unsafe.As<T, byte>(ref item),
-                ref Unsafe.Add(ref MemoryMarshal.GetReference(source), _readCursor), 
+                ref Unsafe.Add(ref MemoryMarshal.GetReference(source), _readCursor),
                 (uint)size); //size is not the size of T
-            
+
             _readCursor += size;
         }
 
@@ -94,11 +94,14 @@ namespace Svelto.DataStructures
             if (space < spanBytesToSerialise)
                 throw new Exception("no writing authorized");
 #endif
-            //create a local span of the destination from the right offset. 
-            var destination = destinationSpan.Slice(_writeCursor, spanBytesToSerialise);
-            valueSpan.CopyTo(MemoryMarshal.Cast<byte, T>(destination));
+            if (spanBytesToSerialise > 0)
+            {
+                //create a local span of the destination from the right offset. 
+                var destination = destinationSpan.Slice(_writeCursor, spanBytesToSerialise);
+                valueSpan.CopyTo(MemoryMarshal.Cast<byte, T>(destination));
 
-            _writeCursor += spanBytesToSerialise;
+                _writeCursor += spanBytesToSerialise;
+            }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -113,7 +116,20 @@ namespace Svelto.DataStructures
             _readCursor = 0;
         }
 
-        public bool CanAdvance() => _readCursor < capacity;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool CanAdvance()
+        {
+            return _readCursor < capacity;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool CanAdvance<T>()
+                where T : unmanaged
+        {
+            int elementSize = MemoryUtilities.SizeOf<T>();
+
+            return _readCursor + elementSize < capacity;
+        }
 
         public int AdvanceCursor(int sizeOf)
         {

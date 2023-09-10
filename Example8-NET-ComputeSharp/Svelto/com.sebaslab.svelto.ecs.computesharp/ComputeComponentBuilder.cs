@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using DBC.ECS.Compute;
 using Svelto.ECS.Internal;
+using Svelto.ECS.Internal;
 
-namespace Svelto.ECS.ComputeSharp
+namespace Svelto.ECS
 {
     public class ComputeComponentBuilder<T> : IComponentBuilder where T : unmanaged, IEntityComputeSharpComponent
     {
@@ -27,6 +28,7 @@ namespace Svelto.ECS.ComputeSharp
         }
 
         public bool isUnmanaged => true;
+        public ComponentID getComponentID => ComponentTypeID<T>.id;
 
         public void BuildEntityAndAddToList(ITypeSafeDictionary dictionary, EGID egid, IEnumerable<object> implementors)
         {

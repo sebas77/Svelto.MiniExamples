@@ -9,7 +9,6 @@ using Stride.Rendering;
 using Svelto.DataStructures;
 using Svelto.ECS.MiniExamples.Doofuses.StrideExample.StrideLayer;
 using Svelto.ECS.Schedulers;
-using TerraFX.Interop.Windows;
 
 namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample
 {

@@ -19,7 +19,7 @@ namespace Svelto.DataStructures
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         void Alloc(uint size)
         {
-            var b =  default(MB<T>);
+            var b =  default(MBInternal<T>);
             b.Set(new T[size]);
             _realBuffer = b;
             _buffer     = _realBuffer;
@@ -31,7 +31,7 @@ namespace Svelto.DataStructures
 #endif
         public void Alloc(uint size, Allocator allocator, bool memClear)
         {
-            var b =  default(MB<T>);
+            var b =  default(MBInternal<T>);
             var array = new T[size];
 #if (NEW_C_SHARP && !UNITY_5_3_OR_NEWER)
             if (memClear)
@@ -60,7 +60,7 @@ namespace Svelto.DataStructures
             if (memClear)
                 Array.Clear(realBuffer, 0, realBuffer.Length);
 #endif                
-                var b = default(MB<T>);
+                var b = default(MBInternal<T>);
                 b.Set(realBuffer);
                 _realBuffer = b;
                 _buffer     = _realBuffer;
@@ -151,6 +151,6 @@ namespace Svelto.DataStructures
         public void Dispose() {}
         
         IBuffer<T>  _buffer;
-        MB<T>       _realBuffer;
+        MBInternal<T>       _realBuffer;
     }
 }
