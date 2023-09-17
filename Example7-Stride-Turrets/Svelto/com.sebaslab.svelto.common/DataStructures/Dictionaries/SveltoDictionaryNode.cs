@@ -6,14 +6,14 @@ namespace Svelto.DataStructures
         internal int  previous;
         public   TKey key;
 
-        public SveltoDictionaryNode(TKey key, int hash, int previousNode)
+        public SveltoDictionaryNode(in TKey key, int hash, int previousNode)
         {
             this.key = key;
             hashcode = hash;
             previous = previousNode;
         }
 
-        public SveltoDictionaryNode(TKey key, int hash)
+        public SveltoDictionaryNode(in TKey key, int hash)
         {
             this.key = key;
             hashcode = hash;

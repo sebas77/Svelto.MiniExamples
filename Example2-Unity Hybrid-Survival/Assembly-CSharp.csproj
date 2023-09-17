@@ -164,7 +164,6 @@
      <Folder Include="Assets\Audio\Effects" />
      <Folder Include="Assets\Animation" />
      <None Include="Library\PackageCache\com.unity.modules.terrain@1.0.0\package.json" />
-     <None Include="Assets\AddressableAssetsData\link.xml" />
      <Folder Include="Library\PackageCache\com.unity.ide.visualstudio@2.0.18" />
      <None Include="Library\PackageCache\com.unity.modules.androidjni@1.0.0\package.json" />
      <Folder Include="Assets\AddressableAssetsData\AnalyzeData" />

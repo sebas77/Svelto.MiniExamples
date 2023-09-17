@@ -62,8 +62,8 @@
      <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@14.0.8\Editor\LookDev\DisplayWindow.EnvironmentLibrarySidePanel.cs" />
      <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@14.0.8\Editor\LookDev\CameraState.cs" />
      <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@14.0.8\Editor\ShaderGenerator\CSharpToHLSL.cs" />
-     <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@14.0.8\Editor\Lighting\ProbeVolume\ProbeVolumeUI.Skin.cs" />
      <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@14.0.8\Editor\Lighting\ProbeVolume\ProbeGIBaking.Invalidation.cs" />
+     <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@14.0.8\Editor\Lighting\ProbeVolume\ProbeVolumeUI.Skin.cs" />
      <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@14.0.8\Editor\Lighting\ProbeVolume\ProbeVolumeEditor.cs" />
      <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@14.0.8\Editor\LookDev\EnvironmentLibrary.cs" />
      <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@14.0.8\Editor\ContextualMenuDispatcher.cs" />

@@ -41,12 +41,12 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
-     <Folder Include="Library\PackageCache\com.unity.entities@1.0.11\Unity.Scenes.Editor.Tests\Assets\SceneWithMaterialDependency" />
-     <Folder Include="Library\PackageCache\com.unity.entities@1.0.11\Unity.Scenes.Editor.Tests" />
-     <Folder Include="Library\PackageCache\com.unity.entities@1.0.11\Unity.Scenes.Editor.Tests\Content" />
-     <Folder Include="Library\PackageCache\com.unity.entities@1.0.11\Unity.Scenes.Editor.Tests\Assets" />
-     <Folder Include="Library\PackageCache\com.unity.entities@1.0.11\Unity.Scenes.Editor.Tests\Assets\SceneWithTextureDependency" />
-     <None Include="Library\PackageCache\com.unity.entities@1.0.11\Unity.Scenes.Editor.Tests\Unity.Scenes.Editor.Tests.asmdef" />
+     <Folder Include="Library\PackageCache\com.unity.entities@1.0.16\Unity.Scenes.Editor.Tests\Assets\SceneWithMaterialDependency" />
+     <Folder Include="Library\PackageCache\com.unity.entities@1.0.16\Unity.Scenes.Editor.Tests" />
+     <Folder Include="Library\PackageCache\com.unity.entities@1.0.16\Unity.Scenes.Editor.Tests\Content" />
+     <Folder Include="Library\PackageCache\com.unity.entities@1.0.16\Unity.Scenes.Editor.Tests\Assets" />
+     <Folder Include="Library\PackageCache\com.unity.entities@1.0.16\Unity.Scenes.Editor.Tests\Assets\SceneWithTextureDependency" />
+     <None Include="Library\PackageCache\com.unity.entities@1.0.16\Unity.Scenes.Editor.Tests\Unity.Scenes.Editor.Tests.asmdef" />
      <Reference Include="UnityEngine">
      <HintPath>C:\Program Files\Unity\2022.3.9f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
      </Reference>

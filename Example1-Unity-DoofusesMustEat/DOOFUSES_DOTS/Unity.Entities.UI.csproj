@@ -45,22 +45,22 @@
     <Analyzer Include="C:\Program Files\Unity\2022.3.9f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.Properties.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Library\PackageCache\com.unity.entities@1.0.11\Unity.Entities.UI\AssemblyInfo.cs" />
-     <Compile Include="Library\PackageCache\com.unity.entities@1.0.11\Unity.Entities.UI\Attributes\SystemVersionUsageAttribute.cs" />
-     <Compile Include="Library\PackageCache\com.unity.entities@1.0.11\Unity.Entities.UI\Attributes\MinValueAttribute.cs" />
-     <Compile Include="Library\PackageCache\com.unity.entities@1.0.11\Unity.Entities.UI\Attributes\DisplayNameAttribute.cs" />
-     <Compile Include="Library\PackageCache\com.unity.entities@1.0.11\Unity.Entities.UI\Attributes\DelayedValueAttribute.cs" />
-     <Compile Include="Library\PackageCache\com.unity.entities@1.0.11\Unity.Entities.UI\Attributes\InlineUnityObjectAttribute.cs" />
-     <Compile Include="Library\PackageCache\com.unity.entities@1.0.11\Unity.Entities.UI\Attributes\PaginationAttribute.cs" />
-     <Compile Include="Library\PackageCache\com.unity.entities@1.0.11\Unity.Entities.UI\Extensions\VisualElementExtensions.cs" />
-     <Compile Include="Library\PackageCache\com.unity.entities@1.0.11\Unity.Entities.UI\Attributes\MinMaxAttribute.cs" />
-     <Compile Include="Library\PackageCache\com.unity.entities@1.0.11\Unity.Entities.UI\Attributes\CreateInstanceOnInspectionAttribute.cs" />
-     <Compile Include="Library\PackageCache\com.unity.entities@1.0.11\Unity.Entities.UI\Attributes\InspectorOptionsAttribute.cs" />
-     <Compile Include="Library\PackageCache\com.unity.entities@1.0.11\Unity.Entities.UI\Attributes\InspectorAttribute.cs" />
-     <Folder Include="Library\PackageCache\com.unity.entities@1.0.11\Unity.Entities.UI\Extensions" />
-     <Folder Include="Library\PackageCache\com.unity.entities@1.0.11\Unity.Entities.UI\Attributes" />
-     <None Include="Library\PackageCache\com.unity.entities@1.0.11\Unity.Entities.UI\Unity.Entities.UI.asmdef" />
-     <Folder Include="Library\PackageCache\com.unity.entities@1.0.11\Unity.Entities.UI" />
+     <Compile Include="Library\PackageCache\com.unity.entities@1.0.16\Unity.Entities.UI\AssemblyInfo.cs" />
+     <Compile Include="Library\PackageCache\com.unity.entities@1.0.16\Unity.Entities.UI\Attributes\SystemVersionUsageAttribute.cs" />
+     <Compile Include="Library\PackageCache\com.unity.entities@1.0.16\Unity.Entities.UI\Attributes\MinValueAttribute.cs" />
+     <Compile Include="Library\PackageCache\com.unity.entities@1.0.16\Unity.Entities.UI\Attributes\DisplayNameAttribute.cs" />
+     <Compile Include="Library\PackageCache\com.unity.entities@1.0.16\Unity.Entities.UI\Attributes\DelayedValueAttribute.cs" />
+     <Compile Include="Library\PackageCache\com.unity.entities@1.0.16\Unity.Entities.UI\Attributes\InlineUnityObjectAttribute.cs" />
+     <Compile Include="Library\PackageCache\com.unity.entities@1.0.16\Unity.Entities.UI\Attributes\PaginationAttribute.cs" />
+     <Compile Include="Library\PackageCache\com.unity.entities@1.0.16\Unity.Entities.UI\Extensions\VisualElementExtensions.cs" />
+     <Compile Include="Library\PackageCache\com.unity.entities@1.0.16\Unity.Entities.UI\Attributes\MinMaxAttribute.cs" />
+     <Compile Include="Library\PackageCache\com.unity.entities@1.0.16\Unity.Entities.UI\Attributes\CreateInstanceOnInspectionAttribute.cs" />
+     <Compile Include="Library\PackageCache\com.unity.entities@1.0.16\Unity.Entities.UI\Attributes\InspectorOptionsAttribute.cs" />
+     <Compile Include="Library\PackageCache\com.unity.entities@1.0.16\Unity.Entities.UI\Attributes\InspectorAttribute.cs" />
+     <Folder Include="Library\PackageCache\com.unity.entities@1.0.16\Unity.Entities.UI\Extensions" />
+     <Folder Include="Library\PackageCache\com.unity.entities@1.0.16\Unity.Entities.UI\Attributes" />
+     <None Include="Library\PackageCache\com.unity.entities@1.0.16\Unity.Entities.UI\Unity.Entities.UI.asmdef" />
+     <Folder Include="Library\PackageCache\com.unity.entities@1.0.16\Unity.Entities.UI" />
      <Reference Include="UnityEngine">
      <HintPath>C:\Program Files\Unity\2022.3.9f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
      </Reference>

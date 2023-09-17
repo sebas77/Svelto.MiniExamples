@@ -260,7 +260,7 @@ namespace Svelto.ECS
                 foreach (var engine in _disposableEngines)
                     try
                     {
-                        if (engine is IDisposingEngine dengine)
+                        if (engine is IDisposableEngine dengine)
                             dengine.isDisposing = true;
                         
                         engine.Dispose();

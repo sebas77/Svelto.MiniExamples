@@ -41,8 +41,8 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
-     <Folder Include="Library\PackageCache\com.unity.entities@1.0.11\Unity.Entities.TestComponents" />
-     <None Include="Library\PackageCache\com.unity.entities@1.0.11\Unity.Entities.TestComponents\Unity.TestComponents.asmdef" />
+     <Folder Include="Library\PackageCache\com.unity.entities@1.0.16\Unity.Entities.TestComponents" />
+     <None Include="Library\PackageCache\com.unity.entities@1.0.16\Unity.Entities.TestComponents\Unity.TestComponents.asmdef" />
      <Reference Include="UnityEngine">
      <HintPath>C:\Program Files\Unity\2022.3.9f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
      </Reference>

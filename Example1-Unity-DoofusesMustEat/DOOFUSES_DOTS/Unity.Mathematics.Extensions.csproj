@@ -45,11 +45,11 @@
     <Analyzer Include="C:\Program Files\Unity\2022.3.9f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.Properties.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Library\PackageCache\com.unity.entities@1.0.11\Unity.Mathematics.Extensions\MinMaxAABB.cs" />
-     <Compile Include="Library\PackageCache\com.unity.entities@1.0.11\Unity.Mathematics.Extensions\AABB.cs" />
-     <Compile Include="Library\PackageCache\com.unity.entities@1.0.11\Unity.Mathematics.Extensions\GeneratePoints.cs" />
-     <None Include="Library\PackageCache\com.unity.entities@1.0.11\Unity.Mathematics.Extensions\Unity.Mathematics.Extensions.asmdef" />
-     <Folder Include="Library\PackageCache\com.unity.entities@1.0.11\Unity.Mathematics.Extensions" />
+     <Compile Include="Library\PackageCache\com.unity.entities@1.0.16\Unity.Mathematics.Extensions\MinMaxAABB.cs" />
+     <Compile Include="Library\PackageCache\com.unity.entities@1.0.16\Unity.Mathematics.Extensions\AABB.cs" />
+     <Compile Include="Library\PackageCache\com.unity.entities@1.0.16\Unity.Mathematics.Extensions\GeneratePoints.cs" />
+     <None Include="Library\PackageCache\com.unity.entities@1.0.16\Unity.Mathematics.Extensions\Unity.Mathematics.Extensions.asmdef" />
+     <Folder Include="Library\PackageCache\com.unity.entities@1.0.16\Unity.Mathematics.Extensions" />
      <Reference Include="UnityEngine">
      <HintPath>C:\Program Files\Unity\2022.3.9f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
      </Reference>

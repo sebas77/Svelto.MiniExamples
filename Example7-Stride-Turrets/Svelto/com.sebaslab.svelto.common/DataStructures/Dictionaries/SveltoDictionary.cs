@@ -876,7 +876,7 @@ namespace Svelto.DataStructures
         where TValueStrategy : struct,
         IBufferStrategy<TValue>
     {
-        public KeyValuePairFast(TKey key, in TValueStrategy dicValues, int index)
+        public KeyValuePairFast(in TKey key, in TValueStrategy dicValues, int index)
         {
             _dicValues = dicValues;
             _index = index;

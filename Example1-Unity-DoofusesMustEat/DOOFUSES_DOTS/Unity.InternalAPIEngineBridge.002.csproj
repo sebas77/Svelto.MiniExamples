@@ -45,19 +45,19 @@
     <Analyzer Include="C:\Program Files\Unity\2022.3.9f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.Properties.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Library\PackageCache\com.unity.entities@1.0.11\Unity.Entities.Editor\Unity.InternalAPIEngineBridge.002\GUIUtilityBridge.cs" />
-     <Compile Include="Library\PackageCache\com.unity.entities@1.0.11\Unity.Entities.Editor\Unity.InternalAPIEngineBridge.002\VisualElementBridge.cs" />
-     <Compile Include="Library\PackageCache\com.unity.entities@1.0.11\Unity.Entities.Editor\Unity.InternalAPIEngineBridge.002\AssemblyInfo.cs" />
-     <Compile Include="Library\PackageCache\com.unity.entities@1.0.11\Unity.Entities.Editor\Unity.InternalAPIEngineBridge.002\TreeView\TreeView.cs" />
-     <Compile Include="Library\PackageCache\com.unity.entities@1.0.11\Unity.Entities.Editor\Unity.InternalAPIEngineBridge.002\TreeView\TreeViewItem.cs" />
-     <Compile Include="Library\PackageCache\com.unity.entities@1.0.11\Unity.Entities.Editor\Unity.InternalAPIEngineBridge.002\ListViewBridge.cs" />
-     <Compile Include="Library\PackageCache\com.unity.entities@1.0.11\Unity.Entities.Editor\Unity.InternalAPIEngineBridge.002\TreeView\ITreeViewItem.cs" />
-     <Compile Include="Library\PackageCache\com.unity.entities@1.0.11\Unity.Entities.Editor\Unity.InternalAPIEngineBridge.002\TreeView\ListView.cs" />
-     <Compile Include="Library\PackageCache\com.unity.entities@1.0.11\Unity.Entities.Editor\Unity.InternalAPIEngineBridge.002\SceneManagerBridge.cs" />
-     <Compile Include="Library\PackageCache\com.unity.entities@1.0.11\Unity.Entities.Editor\Unity.InternalAPIEngineBridge.002\EventCommandNamesBridge.cs" />
-     <Folder Include="Library\PackageCache\com.unity.entities@1.0.11\Unity.Entities.Editor\Unity.InternalAPIEngineBridge.002\TreeView" />
-     <Folder Include="Library\PackageCache\com.unity.entities@1.0.11\Unity.Entities.Editor\Unity.InternalAPIEngineBridge.002" />
-     <None Include="Library\PackageCache\com.unity.entities@1.0.11\Unity.Entities.Editor\Unity.InternalAPIEngineBridge.002\Unity.InternalAPIEngineBridge.002.asmdef" />
+     <Compile Include="Library\PackageCache\com.unity.entities@1.0.16\Unity.Entities.Editor\Unity.InternalAPIEngineBridge.002\GUIUtilityBridge.cs" />
+     <Compile Include="Library\PackageCache\com.unity.entities@1.0.16\Unity.Entities.Editor\Unity.InternalAPIEngineBridge.002\VisualElementBridge.cs" />
+     <Compile Include="Library\PackageCache\com.unity.entities@1.0.16\Unity.Entities.Editor\Unity.InternalAPIEngineBridge.002\AssemblyInfo.cs" />
+     <Compile Include="Library\PackageCache\com.unity.entities@1.0.16\Unity.Entities.Editor\Unity.InternalAPIEngineBridge.002\TreeView\TreeView.cs" />
+     <Compile Include="Library\PackageCache\com.unity.entities@1.0.16\Unity.Entities.Editor\Unity.InternalAPIEngineBridge.002\TreeView\TreeViewItem.cs" />
+     <Compile Include="Library\PackageCache\com.unity.entities@1.0.16\Unity.Entities.Editor\Unity.InternalAPIEngineBridge.002\ListViewBridge.cs" />
+     <Compile Include="Library\PackageCache\com.unity.entities@1.0.16\Unity.Entities.Editor\Unity.InternalAPIEngineBridge.002\TreeView\ITreeViewItem.cs" />
+     <Compile Include="Library\PackageCache\com.unity.entities@1.0.16\Unity.Entities.Editor\Unity.InternalAPIEngineBridge.002\TreeView\ListView.cs" />
+     <Compile Include="Library\PackageCache\com.unity.entities@1.0.16\Unity.Entities.Editor\Unity.InternalAPIEngineBridge.002\SceneManagerBridge.cs" />
+     <Compile Include="Library\PackageCache\com.unity.entities@1.0.16\Unity.Entities.Editor\Unity.InternalAPIEngineBridge.002\EventCommandNamesBridge.cs" />
+     <Folder Include="Library\PackageCache\com.unity.entities@1.0.16\Unity.Entities.Editor\Unity.InternalAPIEngineBridge.002\TreeView" />
+     <Folder Include="Library\PackageCache\com.unity.entities@1.0.16\Unity.Entities.Editor\Unity.InternalAPIEngineBridge.002" />
+     <None Include="Library\PackageCache\com.unity.entities@1.0.16\Unity.Entities.Editor\Unity.InternalAPIEngineBridge.002\Unity.InternalAPIEngineBridge.002.asmdef" />
      <Reference Include="UnityEngine">
      <HintPath>C:\Program Files\Unity\2022.3.9f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
      </Reference>

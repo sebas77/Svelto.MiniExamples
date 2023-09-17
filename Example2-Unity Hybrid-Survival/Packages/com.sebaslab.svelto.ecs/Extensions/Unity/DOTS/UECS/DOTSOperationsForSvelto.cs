@@ -266,7 +266,7 @@ namespace Svelto.ECS.SveltoOnDOTS
         {
             public uint sveltoStartIndex;
             [ReadOnly] public NativeArray<Entity> createdEntities;
-            public NBInternal<DOTSEntityComponent> DOSTEntityComponents;
+            public NB<DOTSEntityComponent> DOSTEntityComponents;
 
             public void Execute(int currentIndex)
             {

@@ -43,23 +43,23 @@
   <ItemGroup>
     <Analyzer Include="C:\Program Files\Unity\2022.3.9f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.SourceGenerators.dll" />
     <Analyzer Include="C:\Program Files\Unity\2022.3.9f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.Properties.SourceGenerator.dll" />
-    <Analyzer Include="C:\PRGDIR\Svelto\Svelto.Miniexamples\Example1-Unity-DoofusesMustEat\DOOFUSES_DOTS\Library\PackageCache\com.unity.entities@1.0.11\Unity.Entities\SourceGenerators\Unity.Entities.SourceGen.SystemGenerator.dll" />
-    <Analyzer Include="C:\PRGDIR\Svelto\Svelto.Miniexamples\Example1-Unity-DoofusesMustEat\DOOFUSES_DOTS\Library\PackageCache\com.unity.entities@1.0.11\Unity.Entities\SourceGenerators\Unity.Entities.SourceGen.SystemGenerator.SystemAPI.QueryBuilder.dll" />
-    <Analyzer Include="C:\PRGDIR\Svelto\Svelto.Miniexamples\Example1-Unity-DoofusesMustEat\DOOFUSES_DOTS\Library\PackageCache\com.unity.entities@1.0.11\Unity.Entities\SourceGenerators\Unity.Entities.SourceGen.SystemGenerator.SystemAPI.dll" />
-    <Analyzer Include="C:\PRGDIR\Svelto\Svelto.Miniexamples\Example1-Unity-DoofusesMustEat\DOOFUSES_DOTS\Library\PackageCache\com.unity.entities@1.0.11\Unity.Entities\SourceGenerators\Unity.Entities.Analyzer.dll" />
-    <Analyzer Include="C:\PRGDIR\Svelto\Svelto.Miniexamples\Example1-Unity-DoofusesMustEat\DOOFUSES_DOTS\Library\PackageCache\com.unity.entities@1.0.11\Unity.Entities\SourceGenerators\Unity.Entities.SourceGen.SystemGenerator.LambdaJobs.dll" />
-    <Analyzer Include="C:\PRGDIR\Svelto\Svelto.Miniexamples\Example1-Unity-DoofusesMustEat\DOOFUSES_DOTS\Library\PackageCache\com.unity.entities@1.0.11\Unity.Entities\SourceGenerators\Unity.Entities.SourceGen.SystemGenerator.Common.dll" />
-    <Analyzer Include="C:\PRGDIR\Svelto\Svelto.Miniexamples\Example1-Unity-DoofusesMustEat\DOOFUSES_DOTS\Library\PackageCache\com.unity.entities@1.0.11\Unity.Entities\SourceGenerators\Unity.Entities.SourceGen.SystemGenerator.SystemAPI.Query.dll" />
-    <Analyzer Include="C:\PRGDIR\Svelto\Svelto.Miniexamples\Example1-Unity-DoofusesMustEat\DOOFUSES_DOTS\Library\PackageCache\com.unity.entities@1.0.11\Unity.Entities\SourceGenerators\Unity.Entities.Analyzer.CodeFixes.dll" />
-    <Analyzer Include="C:\PRGDIR\Svelto\Svelto.Miniexamples\Example1-Unity-DoofusesMustEat\DOOFUSES_DOTS\Library\PackageCache\com.unity.entities@1.0.11\Unity.Entities\SourceGenerators\Unity.Entities.SourceGen.AspectGenerator.dll" />
-    <Analyzer Include="C:\PRGDIR\Svelto\Svelto.Miniexamples\Example1-Unity-DoofusesMustEat\DOOFUSES_DOTS\Library\PackageCache\com.unity.entities@1.0.11\Unity.Entities\SourceGenerators\Unity.Entities.SourceGen.Common.dll" />
-    <Analyzer Include="C:\PRGDIR\Svelto\Svelto.Miniexamples\Example1-Unity-DoofusesMustEat\DOOFUSES_DOTS\Library\PackageCache\com.unity.entities@1.0.11\Unity.Entities\SourceGenerators\Unity.Entities.SourceGen.SystemGenerator.EntityQueryBulkOperations.dll" />
-    <Analyzer Include="C:\PRGDIR\Svelto\Svelto.Miniexamples\Example1-Unity-DoofusesMustEat\DOOFUSES_DOTS\Library\PackageCache\com.unity.entities@1.0.11\Unity.Entities\SourceGenerators\Unity.Entities.SourceGen.JobEntityGenerator.dll" />
+    <Analyzer Include="C:\PRGDIR\Svelto\Svelto.Miniexamples\Example1-Unity-DoofusesMustEat\DOOFUSES_DOTS\Library\PackageCache\com.unity.entities@1.0.16\Unity.Entities\SourceGenerators\Unity.Entities.SourceGen.SystemGenerator.dll" />
+    <Analyzer Include="C:\PRGDIR\Svelto\Svelto.Miniexamples\Example1-Unity-DoofusesMustEat\DOOFUSES_DOTS\Library\PackageCache\com.unity.entities@1.0.16\Unity.Entities\SourceGenerators\Unity.Entities.SourceGen.SystemGenerator.SystemAPI.QueryBuilder.dll" />
+    <Analyzer Include="C:\PRGDIR\Svelto\Svelto.Miniexamples\Example1-Unity-DoofusesMustEat\DOOFUSES_DOTS\Library\PackageCache\com.unity.entities@1.0.16\Unity.Entities\SourceGenerators\Unity.Entities.SourceGen.SystemGenerator.SystemAPI.dll" />
+    <Analyzer Include="C:\PRGDIR\Svelto\Svelto.Miniexamples\Example1-Unity-DoofusesMustEat\DOOFUSES_DOTS\Library\PackageCache\com.unity.entities@1.0.16\Unity.Entities\SourceGenerators\Unity.Entities.Analyzer.dll" />
+    <Analyzer Include="C:\PRGDIR\Svelto\Svelto.Miniexamples\Example1-Unity-DoofusesMustEat\DOOFUSES_DOTS\Library\PackageCache\com.unity.entities@1.0.16\Unity.Entities\SourceGenerators\Unity.Entities.SourceGen.SystemGenerator.LambdaJobs.dll" />
+    <Analyzer Include="C:\PRGDIR\Svelto\Svelto.Miniexamples\Example1-Unity-DoofusesMustEat\DOOFUSES_DOTS\Library\PackageCache\com.unity.entities@1.0.16\Unity.Entities\SourceGenerators\Unity.Entities.SourceGen.SystemGenerator.Common.dll" />
+    <Analyzer Include="C:\PRGDIR\Svelto\Svelto.Miniexamples\Example1-Unity-DoofusesMustEat\DOOFUSES_DOTS\Library\PackageCache\com.unity.entities@1.0.16\Unity.Entities\SourceGenerators\Unity.Entities.SourceGen.SystemGenerator.SystemAPI.Query.dll" />
+    <Analyzer Include="C:\PRGDIR\Svelto\Svelto.Miniexamples\Example1-Unity-DoofusesMustEat\DOOFUSES_DOTS\Library\PackageCache\com.unity.entities@1.0.16\Unity.Entities\SourceGenerators\Unity.Entities.Analyzer.CodeFixes.dll" />
+    <Analyzer Include="C:\PRGDIR\Svelto\Svelto.Miniexamples\Example1-Unity-DoofusesMustEat\DOOFUSES_DOTS\Library\PackageCache\com.unity.entities@1.0.16\Unity.Entities\SourceGenerators\Unity.Entities.SourceGen.AspectGenerator.dll" />
+    <Analyzer Include="C:\PRGDIR\Svelto\Svelto.Miniexamples\Example1-Unity-DoofusesMustEat\DOOFUSES_DOTS\Library\PackageCache\com.unity.entities@1.0.16\Unity.Entities\SourceGenerators\Unity.Entities.SourceGen.Common.dll" />
+    <Analyzer Include="C:\PRGDIR\Svelto\Svelto.Miniexamples\Example1-Unity-DoofusesMustEat\DOOFUSES_DOTS\Library\PackageCache\com.unity.entities@1.0.16\Unity.Entities\SourceGenerators\Unity.Entities.SourceGen.SystemGenerator.EntityQueryBulkOperations.dll" />
+    <Analyzer Include="C:\PRGDIR\Svelto\Svelto.Miniexamples\Example1-Unity-DoofusesMustEat\DOOFUSES_DOTS\Library\PackageCache\com.unity.entities@1.0.16\Unity.Entities\SourceGenerators\Unity.Entities.SourceGen.JobEntityGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Library\PackageCache\com.unity.entities@1.0.11\Unity.Deformations\DeformationComponents.cs" />
-     <Folder Include="Library\PackageCache\com.unity.entities@1.0.11\Unity.Deformations" />
-     <None Include="Library\PackageCache\com.unity.entities@1.0.11\Unity.Deformations\Unity.Deformations.asmdef" />
+     <Compile Include="Library\PackageCache\com.unity.entities@1.0.16\Unity.Deformations\DeformationComponents.cs" />
+     <Folder Include="Library\PackageCache\com.unity.entities@1.0.16\Unity.Deformations" />
+     <None Include="Library\PackageCache\com.unity.entities@1.0.16\Unity.Deformations\Unity.Deformations.asmdef" />
      <Reference Include="UnityEngine">
      <HintPath>C:\Program Files\Unity\2022.3.9f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
      </Reference>

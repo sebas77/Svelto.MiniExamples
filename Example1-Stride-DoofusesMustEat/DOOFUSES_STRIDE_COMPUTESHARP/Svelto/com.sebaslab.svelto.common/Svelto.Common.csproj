@@ -47,6 +47,6 @@
     <ItemGroup>
         <PackageReference Include="System.Memory" Version="4.5.5" />
         <None Remove="**\*.meta" />
-        <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="7.0.0-preview.2.22152.2" />
+        <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
     </ItemGroup>
 </Project>

@@ -41,8 +41,8 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
-     <None Include="Library\PackageCache\com.unity.entities@1.0.11\Unity.Scenes.Hybrid.Tests\Editmode\Content\Unity.Scenes.Hybrid.Tests.Editmode.Content.asmdef" />
-     <Folder Include="Library\PackageCache\com.unity.entities@1.0.11\Unity.Scenes.Hybrid.Tests\Editmode\Content" />
+     <None Include="Library\PackageCache\com.unity.entities@1.0.16\Unity.Scenes.Hybrid.Tests\Editmode\Content\Unity.Scenes.Hybrid.Tests.Editmode.Content.asmdef" />
+     <Folder Include="Library\PackageCache\com.unity.entities@1.0.16\Unity.Scenes.Hybrid.Tests\Editmode\Content" />
      <Reference Include="UnityEngine">
      <HintPath>C:\Program Files\Unity\2022.3.9f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
      </Reference>
