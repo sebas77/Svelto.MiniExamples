@@ -41,17 +41,16 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
-     <None Include="Library\PackageCache\com.unity.sysroot@2.0.7\Tests\Editor\Unity.Sysroot.EditorTests.asmdef" />
-     <Folder Include="Library\PackageCache\com.unity.sysroot@2.0.7\Tests\Editor" />
-     <Reference Include="UnityEngine">
-     <HintPath>C:\Program Files\Unity\2022.3.15f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
-     </Reference>
-     <Reference Include="UnityEngine.CoreModule">
-     <HintPath>C:\Program Files\Unity\2022.3.15f1\Editor\Data\Managed\UnityEngine\UnityEngine.CoreModule.dll</HintPath>
-     </Reference>
-     <Reference Include="UnityEditor">
-     <HintPath>C:\Program Files\Unity\2022.3.15f1\Editor\Data\Managed\UnityEngine\UnityEditor.dll</HintPath>
-     </Reference>
+    <None Include="Library\PackageCache\com.unity.sysroot@2.0.7\Tests\Editor\Unity.Sysroot.EditorTests.asmdef" />
+    <Reference Include="UnityEngine">
+      <HintPath>C:\Program Files\Unity\2023.2.3f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>C:\Program Files\Unity\2023.2.3f1\Editor\Data\Managed\UnityEngine\UnityEngine.CoreModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor">
+      <HintPath>C:\Program Files\Unity\2023.2.3f1\Editor\Data\Managed\UnityEngine\UnityEditor.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

@@ -89,7 +89,7 @@ namespace Svelto.ECS.Example.Survive
 //the SimpleEntitiesSubmissionScheduler is the scheduler to know when to submit the new entities to the database.
 //Custom ones can be created for special cases. This is the simplest default and it must
 //be ticked explicitly.
-            var entitySubmissionScheduler = new SimpleEntitiesSubmissionScheduler();
+            var entitySubmissionScheduler = new EntitiesSubmissionScheduler();
 //The Engines Root is the core of Svelto.ECS. You shouldn't inject the EngineRoot,
 //therefore the composition root class must hold a reference or it will be garbage collected.
             _enginesRoot = new EnginesRoot(entitySubmissionScheduler);

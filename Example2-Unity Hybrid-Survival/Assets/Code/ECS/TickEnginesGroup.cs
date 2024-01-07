@@ -76,7 +76,7 @@ namespace Svelto.ECS.Example.Survive
     [Sequenced(nameof(TickEngineNames.SubmissionEngine))]
     class TickEngine: IStepEngine
     {
-        public TickEngine(SimpleEntitiesSubmissionScheduler entitySubmissionScheduler)
+        public TickEngine(EntitiesSubmissionScheduler entitySubmissionScheduler)
         {
             _scheduler = entitySubmissionScheduler;
         }
@@ -88,6 +88,6 @@ namespace Svelto.ECS.Example.Survive
 
         public string name => nameof(TickEngine);
         
-        readonly SimpleEntitiesSubmissionScheduler _scheduler;
+        readonly EntitiesSubmissionScheduler _scheduler;
     }
 }

@@ -25,7 +25,7 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
             Cursor.visible = false;
 
             //create the standard sheduler
-            _simpleSubmitScheduler = new SimpleEntitiesSubmissionScheduler();
+            _simpleSubmitScheduler = new EntitiesSubmissionScheduler();
             //create the standard engines root
             _enginesRoot = new EnginesRoot(_simpleSubmitScheduler);
         }
@@ -138,7 +138,7 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
         
         EnginesRoot _enginesRoot;
         readonly FasterList<IJobifiedEngine> _enginesToTick = new FasterList<IJobifiedEngine>();
-        SimpleEntitiesSubmissionScheduler _simpleSubmitScheduler;
+        EntitiesSubmissionScheduler _simpleSubmitScheduler;
         SveltoOnDOTSEnginesGroup _sveltoOnDotsEnginesGroup;
         MainLoop _mainLoop;
     }

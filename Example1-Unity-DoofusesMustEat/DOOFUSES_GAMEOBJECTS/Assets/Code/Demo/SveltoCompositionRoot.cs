@@ -22,7 +22,7 @@ namespace Svelto.ECS.Miniexamples.Doofuses.Gameobjects
             Cursor.lockState           = CursorLockMode.Locked;
             Cursor.visible             = false;
 
-            _simpleSubmitScheduler = new SimpleEntitiesSubmissionScheduler();
+            _simpleSubmitScheduler = new EntitiesSubmissionScheduler();
             _enginesRoot           = new EnginesRoot(_simpleSubmitScheduler);
         }
 
@@ -82,7 +82,7 @@ namespace Svelto.ECS.Miniexamples.Doofuses.Gameobjects
 
         //the topmost composition root has the responsibility to hold all the main structures
         EnginesRoot                          _enginesRoot;
-        SimpleEntitiesSubmissionScheduler    _simpleSubmitScheduler;
+        EntitiesSubmissionScheduler    _simpleSubmitScheduler;
         MainLoop                             _mainLoop;
         ECSGameObjectsEntityManager                    _ECSGameObjectsEntityManager;
         

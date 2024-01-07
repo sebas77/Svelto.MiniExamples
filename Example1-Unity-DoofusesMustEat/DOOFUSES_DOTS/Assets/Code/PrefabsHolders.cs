@@ -18,11 +18,11 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
                 AddComponent(
                     new PrefabsComponents
                     {
-                        BlueDoofus = GetEntity(authoring.BlueDoofus),
-                        RedDoofus = GetEntity(authoring.RedDoofus),
-                        SpecialDoofus = GetEntity(authoring.SpecialDoofus),
-                        RedFood = GetEntity(authoring.RedFood),
-                        BlueFood = GetEntity(authoring.BlueFood),
+                        BlueDoofus = GetEntity(authoring.BlueDoofus, TransformUsageFlags.Dynamic),
+                        RedDoofus = GetEntity(authoring.RedDoofus, TransformUsageFlags.Dynamic),
+                        SpecialDoofus = GetEntity(authoring.SpecialDoofus, TransformUsageFlags.Dynamic),
+                        RedFood = GetEntity(authoring.RedFood, TransformUsageFlags.Renderable),
+                        BlueFood = GetEntity(authoring.BlueFood, TransformUsageFlags.Renderable),
                     });
             }
         }

@@ -19,7 +19,7 @@ namespace Svelto.ECS.Miniexamples.Doofuses.Gameobjects
     class MainLoop
     {
         public MainLoop(FasterList<IJobifiedEngine> enginesToTick,
-            SimpleEntitiesSubmissionScheduler simpleEntitiesSubmissionScheduler)
+            EntitiesSubmissionScheduler simpleEntitiesSubmissionScheduler)
         {
             _enginesToTick                     = enginesToTick;
             _simpleEntitiesSubmissionScheduler = simpleEntitiesSubmissionScheduler;
@@ -46,7 +46,7 @@ namespace Svelto.ECS.Miniexamples.Doofuses.Gameobjects
         }
 
         readonly FasterList<IJobifiedEngine>         _enginesToTick;
-        readonly SimpleEntitiesSubmissionScheduler   _simpleEntitiesSubmissionScheduler;
+        readonly EntitiesSubmissionScheduler   _simpleEntitiesSubmissionScheduler;
         readonly SortedDoofusesEnginesExecutionGroup _sveltoEngines;
         JobHandle                                    _job;
     }
