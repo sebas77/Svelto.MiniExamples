@@ -23,7 +23,7 @@ namespace Logic.SveltoECS
             _materials = sveltoContext.materials;
             _sirenLightMaterial = sveltoContext.sirenLightMaterial;
             
-            _ticker = new SimpleEntitiesSubmissionScheduler();
+            _ticker = new EntitiesSubmissionScheduler();
             _enginesRoot = new EnginesRoot(_ticker);
             var entityFunctions = _enginesRoot.GenerateEntityFunctions();
             var entityFactory = _enginesRoot.GenerateEntityFactory();
@@ -86,7 +86,7 @@ namespace Logic.SveltoECS
             }
         }
         
-        SimpleEntitiesSubmissionScheduler _ticker;
+        EntitiesSubmissionScheduler _ticker;
         SirensSequentialEngines _sequentialEnginesGroup;
         GameObject _prefab;
         Material[] _materials;

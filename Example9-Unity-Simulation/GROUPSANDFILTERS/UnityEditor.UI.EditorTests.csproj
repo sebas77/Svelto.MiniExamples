@@ -41,27 +41,27 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
-     <Folder Include="Library\PackageCache\com.unity.ugui@1.0.0\Tests\Editor\RectMask2D" />
-     <Folder Include="Library\PackageCache\com.unity.ugui@1.0.0\Tests\Editor\InputField" />
-     <Folder Include="Library\PackageCache\com.unity.ugui@1.0.0\Tests\Editor" />
-     <Folder Include="Library\PackageCache\com.unity.ugui@1.0.0\Tests\Editor\UI\PropertyDrawers" />
-     <Folder Include="Library\PackageCache\com.unity.ugui@1.0.0\Tests\Editor\UI" />
-     <Folder Include="Library\PackageCache\com.unity.ugui@1.0.0\Tests\Editor\EventSystem" />
-     <Folder Include="Library\PackageCache\com.unity.ugui@1.0.0\Tests\Editor\Canvas" />
-     <Folder Include="Library\PackageCache\com.unity.ugui@1.0.0\Tests\Editor\UnityEvent" />
-     <Folder Include="Library\PackageCache\com.unity.ugui@1.0.0\Tests\Editor\Slider" />
-     <None Include="Library\PackageCache\com.unity.ugui@1.0.0\Tests\Editor\UnityEditor.UI.EditorTests.asmdef" />
-     <Folder Include="Library\PackageCache\com.unity.ugui@1.0.0\Tests\Editor\CanvasRenderer" />
-     <Folder Include="Library\PackageCache\com.unity.ugui@1.0.0\Tests\Editor\Dropdown" />
-     <Folder Include="Library\PackageCache\com.unity.ugui@1.0.0\Tests\Editor\Text" />
+     <Folder Include="Library\PackageCache\com.unity.ugui@2.0.0\Tests\Editor\UGUI\RectMask2D" />
+     <Folder Include="Library\PackageCache\com.unity.ugui@2.0.0\Tests\Editor\UGUI\InputField" />
+     <Folder Include="Library\PackageCache\com.unity.ugui@2.0.0\Tests\Editor\UGUI\UI\PropertyDrawers" />
+     <Folder Include="Library\PackageCache\com.unity.ugui@2.0.0\Tests\Editor\UGUI\UI" />
+     <Folder Include="Library\PackageCache\com.unity.ugui@2.0.0\Tests\Editor\UGUI\EventSystem" />
+     <Folder Include="Library\PackageCache\com.unity.ugui@2.0.0\Tests\Editor\UGUI\Canvas" />
+     <Folder Include="Library\PackageCache\com.unity.ugui@2.0.0\Tests\Editor\UGUI\UnityEvent" />
+     <Folder Include="Library\PackageCache\com.unity.ugui@2.0.0\Tests\Editor\UGUI" />
+     <Folder Include="Library\PackageCache\com.unity.ugui@2.0.0\Tests\Editor\UGUI\Slider" />
+     <None Include="Library\PackageCache\com.unity.ugui@2.0.0\Tests\Editor\UGUI\UnityEditor.UI.EditorTests.asmdef" />
+     <Folder Include="Library\PackageCache\com.unity.ugui@2.0.0\Tests\Editor\UGUI\CanvasRenderer" />
+     <Folder Include="Library\PackageCache\com.unity.ugui@2.0.0\Tests\Editor\UGUI\Dropdown" />
+     <Folder Include="Library\PackageCache\com.unity.ugui@2.0.0\Tests\Editor\UGUI\Text" />
      <Reference Include="UnityEngine">
-     <HintPath>C:\Program Files\Unity\2023.1.12f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
+     <HintPath>C:\Program Files\Unity\2023.2.3f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
      </Reference>
      <Reference Include="UnityEngine.CoreModule">
-     <HintPath>C:\Program Files\Unity\2023.1.12f1\Editor\Data\Managed\UnityEngine\UnityEngine.CoreModule.dll</HintPath>
+     <HintPath>C:\Program Files\Unity\2023.2.3f1\Editor\Data\Managed\UnityEngine\UnityEngine.CoreModule.dll</HintPath>
      </Reference>
      <Reference Include="UnityEditor">
-     <HintPath>C:\Program Files\Unity\2023.1.12f1\Editor\Data\Managed\UnityEngine\UnityEditor.dll</HintPath>
+     <HintPath>C:\Program Files\Unity\2023.2.3f1\Editor\Data\Managed\UnityEngine\UnityEditor.dll</HintPath>
      </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

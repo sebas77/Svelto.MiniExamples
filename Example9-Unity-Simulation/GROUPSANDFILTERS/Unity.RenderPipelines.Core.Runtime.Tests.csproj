@@ -41,19 +41,19 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
-     <Folder Include="Library\PackageCache\com.unity.render-pipelines.core@15.0.6\Tests\Runtime" />
-     <None Include="Library\PackageCache\com.unity.render-pipelines.core@15.0.6\Tests\Runtime\Threading\FunctionTestsGroup.compute" />
-     <None Include="Library\PackageCache\com.unity.render-pipelines.core@15.0.6\Tests\Runtime\Threading\FunctionTestsWave.compute" />
-     <Folder Include="Library\PackageCache\com.unity.render-pipelines.core@15.0.6\Tests\Runtime\Threading" />
-     <None Include="Library\PackageCache\com.unity.render-pipelines.core@15.0.6\Tests\Runtime\Unity.RenderPipelines.Core.Runtime.Tests.asmdef" />
+     <Folder Include="Library\PackageCache\com.unity.render-pipelines.core@16.0.4\Tests\Runtime" />
+     <None Include="Library\PackageCache\com.unity.render-pipelines.core@16.0.4\Tests\Runtime\Threading\FunctionTestsGroup.compute" />
+     <None Include="Library\PackageCache\com.unity.render-pipelines.core@16.0.4\Tests\Runtime\Threading\FunctionTestsWave.compute" />
+     <Folder Include="Library\PackageCache\com.unity.render-pipelines.core@16.0.4\Tests\Runtime\Threading" />
+     <None Include="Library\PackageCache\com.unity.render-pipelines.core@16.0.4\Tests\Runtime\Unity.RenderPipelines.Core.Runtime.Tests.asmdef" />
      <Reference Include="UnityEngine">
-     <HintPath>C:\Program Files\Unity\2023.1.12f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
+     <HintPath>C:\Program Files\Unity\2023.2.3f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
      </Reference>
      <Reference Include="UnityEngine.CoreModule">
-     <HintPath>C:\Program Files\Unity\2023.1.12f1\Editor\Data\Managed\UnityEngine\UnityEngine.CoreModule.dll</HintPath>
+     <HintPath>C:\Program Files\Unity\2023.2.3f1\Editor\Data\Managed\UnityEngine\UnityEngine.CoreModule.dll</HintPath>
      </Reference>
      <Reference Include="UnityEditor">
-     <HintPath>C:\Program Files\Unity\2023.1.12f1\Editor\Data\Managed\UnityEngine\UnityEditor.dll</HintPath>
+     <HintPath>C:\Program Files\Unity\2023.2.3f1\Editor\Data\Managed\UnityEngine\UnityEditor.dll</HintPath>
      </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
