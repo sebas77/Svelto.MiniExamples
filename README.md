@@ -82,6 +82,8 @@ Goal of this example
 * Show how to use Svelto outside unity in an advanced scenario
 * Show how to use efficently group compounds
 
+  Note: the pattern used here are quite unconvinentional. This demo was made by a Svelto user, but I still mantain it. Not easy to follow.
+
 ![Image](https://github.com/sebas77/Svelto.MiniExamples/blob/master/Example4-NET-SDL/2020-12-23%2011-54-54.gif)
 
 ## Example 5: Hello World (previously called Vanilla)
