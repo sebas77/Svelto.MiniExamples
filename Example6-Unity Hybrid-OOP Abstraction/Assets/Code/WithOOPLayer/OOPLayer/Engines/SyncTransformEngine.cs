@@ -13,9 +13,21 @@ namespace Svelto.ECS.Example.OOPAbstraction.OOPLayer
         public void Step()
         {
             foreach (var ((transforms, indices, count), _) in entitiesDB
-               .QueryEntities<TransformComponent, ObjectIndexComponent>(LayerGroups.Primitive.Groups))
+                            .QueryEntities<TransformComponent, ObjectIndexComponent>(LayerGroups.Primitive.Groups))
+            {
                 for (var i = 0; i < count; i++)
                     _oopManager.SetPosition(indices[i].index, transforms[i].position);
+            }
+            //this is the same as the above, but it's using a different syntax. Useful when you need to query many components
+            
+//            foreach (var ((transforms, count), group) in entitiesDB
+//                            .QueryEntities<TransformComponent>(LayerGroups.Primitive.Groups))
+//            {
+//                var (indices, countIndices) = entitiesDB.QueryEntities<ObjectIndexComponent>(group);
+//                
+//                for (var i = 0; i < count; i++)
+//                    _oopManager.SetPosition(indices[i].index, transforms[i].position);
+//            }
         }
 
         public   EntitiesDB entitiesDB { get; set; }

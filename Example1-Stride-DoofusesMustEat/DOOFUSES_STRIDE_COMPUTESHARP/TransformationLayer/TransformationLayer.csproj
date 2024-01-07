@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFrameworks>net8.0</TargetFrameworks>
     <Nullable>disable</Nullable>
     <LangVersion>10</LangVersion>
     <Configurations>Debug;Release;RELEASE_COMPUTE_SHADERS</Configurations>
@@ -14,6 +14,7 @@
     <DefineConstants>TRACE;COMPUTE_SHADERS</DefineConstants>
     <Optimize>true</Optimize>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <OutputPath>bin\Release\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Svelto\com.sebaslab.svelto.common\Svelto.Common.csproj" />
@@ -22,6 +23,6 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="ComputeSharp.Dynamic" Version="2.1.0-preview3" />
-    <PackageReference Include="Stride.Engine" Version="4.1.0.1838" />
+    <PackageReference Include="Stride.Engine" Version="4.2.0.2043" />
   </ItemGroup>
 </Project>

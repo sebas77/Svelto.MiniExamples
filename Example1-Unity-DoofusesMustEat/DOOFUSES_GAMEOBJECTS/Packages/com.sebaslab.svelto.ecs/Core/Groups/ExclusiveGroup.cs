@@ -91,7 +91,7 @@ namespace Svelto.ECS
             new Dictionary<string, ExclusiveGroupStruct>();
 
 #if DEBUG && !PROFILE_SVELTO
-        readonly ushort _range;
+        internal readonly ushort _range;
 #endif
         readonly ExclusiveGroupStruct _group;
     }

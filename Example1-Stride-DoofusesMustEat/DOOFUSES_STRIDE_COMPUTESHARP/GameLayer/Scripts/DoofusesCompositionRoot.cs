@@ -22,7 +22,7 @@ namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample
         void CreateCompositionRoot(object sender, EventArgs e)
         {
             //Create a SimpleSubmission scheduler to take control over the entities submission ticking
-            _scheduler = new SimpleEntitiesSubmissionScheduler();
+            _scheduler = new EntitiesSubmissionScheduler();
             //create the engines root
             _enginesRoot = new EnginesRoot(_scheduler);
             //create the Manager that interfaces Stride Objects with Svelto Entities. All the non ECS dependencies
@@ -129,7 +129,7 @@ namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample
         }
 
         EnginesRoot                         _enginesRoot;
-        SimpleEntitiesSubmissionScheduler   _scheduler;
+        EntitiesSubmissionScheduler   _scheduler;
         SortedDoofusesEnginesExecutionGroup _mainEngineGroup;
         ECSStrideEntityManager              _ecsStrideEntityManager;
         FasterList<IUpdateEngine>           _unsortedGroups;

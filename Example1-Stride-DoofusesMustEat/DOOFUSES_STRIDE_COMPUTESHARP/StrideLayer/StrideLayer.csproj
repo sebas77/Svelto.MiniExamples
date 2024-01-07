@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFrameworks>net8.0</TargetFrameworks>
     <Nullable>disable</Nullable>
     <LangVersion>10</LangVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -8,7 +8,7 @@
     <Platforms>AnyCPU</Platforms>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Stride.Engine" Version="4.1.0.1838" />
+    <PackageReference Include="Stride.Engine" Version="4.2.0.2043" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Svelto\com.sebaslab.svelto.common\Svelto.Common.csproj" />
