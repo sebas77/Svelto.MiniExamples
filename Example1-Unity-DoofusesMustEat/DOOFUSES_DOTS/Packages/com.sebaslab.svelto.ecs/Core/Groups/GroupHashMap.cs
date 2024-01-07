@@ -86,9 +86,11 @@ namespace Svelto.ECS
                                     for (uint i = 1; i < range; i++)
                                     {
                                         var exclusiveGroupStruct = group + i;
+#if DEBUG && !PROFILE_SVELTO                                        
                                         if (GroupNamesMap.idToName.ContainsKey(exclusiveGroupStruct) == false)
                                             GroupNamesMap.idToName[exclusiveGroupStruct] =
                                                     $"{type.FullName}.{field.Name} id: {@group.id + i}";
+#endif
                                         RegisterGroup(exclusiveGroupStruct, $"{type.FullName}.{field.Name} id: {@group.id + i}");
                                     }
                                 }
