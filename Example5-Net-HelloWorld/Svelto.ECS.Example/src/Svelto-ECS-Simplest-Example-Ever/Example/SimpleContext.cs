@@ -143,7 +143,7 @@ namespace Svelto.ECS.Vanilla.Example
 
             //the following methods are called by Svelto.ECS when an entity is removed from a group
             public void Remove((uint start, uint end) rangeOfEntities, in EntityCollection<EntityComponent> entities, ExclusiveGroupStruct groupID)
-            {
+            { 
                 var (_, entityIDs, _) = entities;
 
                 for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)

@@ -75,12 +75,10 @@ namespace Svelto.Utilities
             }
         }
         
-        public static void SleepWithOneEyeOpen(uint waitTimeMs)
+        public static void SleepWithOneEyeOpen(uint waitTimeMs, Stopwatch stopwatch)
         {
             int quickIterations = 0;
-            Stopwatch stopwatch = new Stopwatch();
-            
-            stopwatch.Start();
+            stopwatch.Restart();
 
             while (stopwatch.ElapsedMilliseconds < waitTimeMs)
                 ThreadUtility.LongWait(ref quickIterations, stopwatch, 64);

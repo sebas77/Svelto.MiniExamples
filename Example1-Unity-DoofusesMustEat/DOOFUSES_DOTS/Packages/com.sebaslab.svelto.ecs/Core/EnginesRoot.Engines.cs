@@ -121,7 +121,7 @@ namespace Svelto.ECS
             return _isDisposed == false;
         }
         
-        public void AddEngine(IEngine engine)
+        public void AddEngine(IEngine engine, bool addSubEngines = true)
         {
             var type = engine.GetType();
             var refWrapper = new RefWrapperType(type);
@@ -179,6 +179,7 @@ namespace Svelto.ECS
                 if (engine is IReactOnSubmissionStarted submissionEngineStarted)
                     _reactiveEnginesSubmissionStarted.Add(submissionEngineStarted);
                 
+                if (addSubEngines)
                 if (engine is IGroupEngine stepGroupEngine)
                     foreach (var stepEngine in stepGroupEngine.engines)
                         AddEngine(stepEngine);

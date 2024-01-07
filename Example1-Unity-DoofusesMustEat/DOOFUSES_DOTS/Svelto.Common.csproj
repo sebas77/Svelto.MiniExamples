@@ -71,6 +71,7 @@
     <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\DualMemorySupport\NB.cs" />
     <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\DualMemorySupport\ManagedStrategy.cs" />
     <Compile Include="Packages\com.sebaslab.svelto.common\Utilities\NetFXCoreWrappers.cs" />
+    <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Fixed\FixedTypedArray32.cs" />
     <Compile Include="Packages\com.sebaslab.svelto.common\Utilities\SharedStaticWrapper.cs" />
     <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Unmanaged\Internal\UnsafeArray.cs" />
     <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\ThreadSafeQueue.cs" />

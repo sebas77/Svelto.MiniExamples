@@ -3,7 +3,7 @@
 #if UNITY_EDITOR
 #define ISEDITOR
 #endif
-#if (!UNITY_EDITOR || DEBUG_FASTER) && (UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX || UNITY_STANDALONE_LINUX)
+#if (!UNITY_EDITOR || DEBUG_FASTER) && (UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX || UNITY_STANDALONE_LINUX || UNITY_ANDROID)
 #define REDIRECT_CONSOLE
 #endif
 
@@ -149,7 +149,7 @@ namespace Svelto.Utilities
         {
             return _folder.FullName + Path.DirectorySeparatorChar + "PlayerLog" + i + ".txt";
         }
-#if UNITY_2021_3_OR_NEWER
+#if UNITY_2021_3_OR_NEWER && !UNITY_IOS && !UNITY_WEBGL
         public static void CompressLogsToZipAndShow(string zipName)
         {
             _consoleOut.Flush();
@@ -254,7 +254,7 @@ namespace Svelto.Utilities
 
             Debug.Log("Svelto Fast Unity Logger added");
         }
-#if UNITY_2021_3_OR_NEWER
+#if UNITY_2021_3_OR_NEWER && !UNITY_IOS && !UNITY_WEBGL
         public void CompressLogsToZipAndShow(string zipName)
         {
             Volatile.Write(ref _isPaused, true);
@@ -262,6 +262,10 @@ namespace Svelto.Utilities
             FasterUnityLoggerUtility.CompressLogsToZipAndShow(zipName);
             
             Volatile.Write(ref _isPaused, false);
+        }
+#else    
+        public void CompressLogsToZipAndShow(string zipName)
+        {
         }
 #endif  
 

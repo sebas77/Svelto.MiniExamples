@@ -48,6 +48,7 @@
      <Compile Include="Packages\com.sebaslab.svelto.common\Utilities\Murmur3.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Sentinel\Sentinel.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\Logger\SimpleLogger.cs" />
+     <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Fixed\FixedTypedArray32.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\Command\CommandFactory.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\WeakReference.cs" />
      <Compile Include="Packages\com.sebaslab.svelto.common\DataStructures\Streams\ByteArraySegment.cs" />
