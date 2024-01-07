@@ -160,7 +160,6 @@
     <None Include="Library\PackageCache\com.unity.entities@1.0.16\Editor Default Resources\uxml\Journaling\entities-journaling-details-component.uxml" />
     <None Include="Library\PackageCache\com.unity.entities@1.0.16\Editor Default Resources\uxml\ActiveBuildConfiguration\active-build-config-popup.uxml" />
     <None Include="Library\PackageCache\com.unity.test-framework.performance@3.0.2\ValidationExceptions.json" />
-    <None Include="Assets\Resources\PerformanceTestRunSettings.json" />
     <None Include="Library\PackageCache\com.unity.entities@1.0.16\Editor Default Resources\uss\Journaling\entities-journaling-details-component_light.uss" />
     <None Include="Library\PackageCache\com.unity.entities@1.0.16\Editor Default Resources\uss\Journaling\search-and-goto-buttons.uss" />
     <None Include="Library\PackageCache\com.unity.entities@1.0.16\Editor Default Resources\uss\Journaling\entities-journaling-content_light.uss" />
@@ -412,7 +411,6 @@
     <None Include="Library\PackageCache\com.unity.entities@1.0.16\Editor Default Resources\uxml\Common\foldout-without-action-button.uxml" />
     <None Include="Library\PackageCache\com.unity.burst@1.8.11\ValidationConfig.json" />
     <None Include="Library\PackageCache\com.unity.modules.ui@1.0.0\package.json" />
-    <None Include="Assets\Resources\PerformanceTestRunInfo.json" />
     <None Include="Library\PackageCache\com.unity.entities@1.0.16\Editor Default Resources\uss\ActiveBuildConfiguration\active-build-config-window-item_light.uss" />
     <None Include="Library\PackageCache\com.unity.entities@1.0.16\Editor Default Resources\uss\Common\centered-message-element.uss" />
     <None Include="Library\PackageCache\com.unity.entities@1.0.16\Editor Default Resources\Unity.Entities.UI\uss\set-element.uss" />

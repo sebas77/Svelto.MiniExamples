@@ -1,7 +1,7 @@
 using Svelto.Context;
 using Svelto.DataStructures;
 using Svelto.ECS.Example.OOPAbstraction.OOPLayer;
-using Svelto.ECS.Schedulers.Unity;
+using Svelto.ECS.Schedulers;
 using UnityEngine;
 
 namespace Svelto.ECS.Example.OOPAbstraction.WithOOPLayer
@@ -24,7 +24,7 @@ namespace Svelto.ECS.Example.OOPAbstraction.WithOOPLayer
 
         void CompositionRoot<T>()
         {
-            var unityEntitySubmissionScheduler = new UnityEntitiesSubmissionScheduler("oop-abstraction");
+            var unityEntitySubmissionScheduler = new EntitiesSubmissionScheduler();
             _enginesRoot = new EnginesRoot(unityEntitySubmissionScheduler);
             
             var moveCubesEngine     = new MoveCubesEngine();
@@ -35,11 +35,19 @@ namespace Svelto.ECS.Example.OOPAbstraction.WithOOPLayer
             var tickingEnginesGroup = new TickingEnginesGroup(listOfEnginesToTick);
 
             _enginesRoot.AddEngine(tickingEnginesGroup);
-            _enginesRoot.AddEngine(moveCubesEngine);
-            _enginesRoot.AddEngine(moveSpheresEngine);
-            _enginesRoot.AddEngine(selectParentEngine);
             
             OOPManagerCompositionRoot.Compose(_enginesRoot, listOfEnginesToTick, NUMBER_OF_SPHERES);
+
+            TickScheduler();
+        }
+
+        async void TickScheduler()
+        {
+            while (Application.isPlaying)
+            {
+                _enginesRoot.scheduler.SubmitEntities();
+                await System.Threading.Tasks.Task.Yield();
+            }
         }
 
         void CreateStartupEntities()

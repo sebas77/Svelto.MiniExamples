@@ -23,6 +23,6 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="ComputeSharp.Dynamic" Version="2.1.0-preview3" />
-    <PackageReference Include="Stride.Engine" Version="4.2.0.2043" />
+    <PackageReference Include="Stride.Engine" Version="4.2.0.2067" />
   </ItemGroup>
 </Project>

@@ -1,6 +1,6 @@
 using Svelto.Context;
 using Svelto.DataStructures;
-using Svelto.ECS.Schedulers.Unity;
+using Svelto.ECS.Schedulers;
 using UnityEngine;
 
 namespace Svelto.ECS.Example.OOPAbstraction.EntityViewComponents
@@ -21,7 +21,7 @@ namespace Svelto.ECS.Example.OOPAbstraction.EntityViewComponents
 
         void CompositionRoot()
         {
-            var unityEntitySubmissionScheduler = new UnityEntitiesSubmissionScheduler("oop-abstraction");
+            var unityEntitySubmissionScheduler = new EntitiesSubmissionScheduler();
             _enginesRoot = new EnginesRoot(unityEntitySubmissionScheduler);
 
             CreateStartupEntities();
@@ -34,6 +34,16 @@ namespace Svelto.ECS.Example.OOPAbstraction.EntityViewComponents
             var tickingEnginesGroup = new TickingEnginesGroup(enginesToTick);
 
             _enginesRoot.AddEngine(tickingEnginesGroup);
+            TickScheduler();
+        }
+
+        async void TickScheduler()
+        {
+            while (Application.isPlaying)
+            {
+                _enginesRoot.scheduler.SubmitEntities();
+                await System.Threading.Tasks.Task.Yield();
+            }
         }
 
         void CreateStartupEntities()
