@@ -16,109 +16,117 @@ namespace Svelto.Utilities
         public void Log(string txt, LogType type = LogType.Log, bool showLogStack = true, Exception e = null,
             Dictionary<string, string> data = null)
         {
-            var dataString = string.Empty;
-            if (data != null)
-                dataString = DataToString.DetailString(data);
-
-            var currentManagedThreadId = Environment.CurrentManagedThreadId;
-            var frame = $"[{DateTime.UtcNow.ToString("HH:mm:ss.fff")}] thread: {Environment.CurrentManagedThreadId}";
             try
             {
-                if (MAINTHREADID == currentManagedThreadId)
-                {
-                    frame += $" frame: {Time.frameCount}";
-                }
-            }
-            catch
-            {
-                //there is something wrong with  Environment.CurrentManagedThreadId
-            }
+                var dataString = string.Empty;
+                if (data != null)
+                    dataString = DataToString.DetailString(data);
 
-            StackTrace stackTrace = null;
-            if (showLogStack)
-            {
+                var currentManagedThreadId = Environment.CurrentManagedThreadId;
+                var frame = $"[{DateTime.UtcNow.ToString("HH:mm:ss.fff")}] thread: {Environment.CurrentManagedThreadId}";
+                try
+                {
+                    if (MAINTHREADID == currentManagedThreadId)
+                    {
+                        frame += $" frame: {Time.frameCount}";
+                    }
+                }
+                catch
+                {
+                    //there is something wrong with  Environment.CurrentManagedThreadId
+                }
+
+                StackTrace stackTrace = null;
+                if (showLogStack)
+                {
 #if UNITY_EDITOR
-                stackTrace = new StackTrace(Console.StackDepth, true);
+                    stackTrace = new StackTrace(Console.StackDepth, true);
 #else
                 if (type == LogType.Error || type == LogType.Exception)
                     stackTrace = new StackTrace(Console.StackDepth, true);
 #endif
-            }
-
-            var logFormatter = ConsoleUtilityForUnity.LogFormatter(txt, type, showLogStack, e, frame, dataString, stackTrace);
-            
-            switch (type)
-            {
-                case LogType.Log:
-                {
-                    if (MAINTHREADID == currentManagedThreadId)
-                    {
-                        //SetStacktrace can be called only in the editor and it's enable for LOG only in the editor
-                        var log = Application.GetStackTraceLogType(UnityEngine.LogType.Log);
-                        Application.SetStackTraceLogType(UnityEngine.LogType.Log, StackTraceLogType.None);
-
-                        ConsoleUtilityForUnity.defaultLogHandler.LogFormat(UnityEngine.LogType.Log, null, logFormatter);
-
-                        Application.SetStackTraceLogType(UnityEngine.LogType.Log, log);
-                    }
-                    else
-                        ConsoleUtilityForUnity.defaultLogHandler.LogFormat(UnityEngine.LogType.Log, null, logFormatter);
-
-                    break;
                 }
-                case LogType.LogDebug:
+
+                var logFormatter = ConsoleUtilityForUnity.LogFormatter(txt, type, showLogStack, e, frame, dataString, stackTrace);
+
+                var defaultLogHandler = ConsoleUtilityForUnity.defaultLogHandler;
+                switch (type)
                 {
+                    case LogType.Log:
+                    {
+                        if (MAINTHREADID == currentManagedThreadId)
+                        {
+                            //SetStacktrace can be called only in the editor and it's enable for LOG only in the editor
+                            var log = Application.GetStackTraceLogType(UnityEngine.LogType.Log);
+                            Application.SetStackTraceLogType(UnityEngine.LogType.Log, StackTraceLogType.None);
+
+                            defaultLogHandler.LogFormat(UnityEngine.LogType.Log, null, logFormatter);
+
+                            Application.SetStackTraceLogType(UnityEngine.LogType.Log, log);
+                        }
+                        else
+                            defaultLogHandler.LogFormat(UnityEngine.LogType.Log, null, logFormatter);
+
+                        break;
+                    }
+                    case LogType.LogDebug:
+                    {
 #if UNITY_EDITOR
-                    if (MAINTHREADID == currentManagedThreadId)
-                    {
-                        //SetStacktrace can be called only in the editor and it's enable for LOG only in the editor
-                        var log = Application.GetStackTraceLogType(UnityEngine.LogType.Log);
-                        Application.SetStackTraceLogType(UnityEngine.LogType.Log, StackTraceLogType.None);
+                        if (MAINTHREADID == currentManagedThreadId)
+                        {
+                            //SetStacktrace can be called only in the editor and it's enable for LOG only in the editor
+                            var log = Application.GetStackTraceLogType(UnityEngine.LogType.Log);
+                            Application.SetStackTraceLogType(UnityEngine.LogType.Log, StackTraceLogType.None);
 
-                        ConsoleUtilityForUnity.defaultLogHandler.LogFormat(UnityEngine.LogType.Log, null, logFormatter);
+                            defaultLogHandler.LogFormat(UnityEngine.LogType.Log, null, logFormatter);
 
-                        Application.SetStackTraceLogType(UnityEngine.LogType.Log, log);
-                    }
-                    else
-                        ConsoleUtilityForUnity.defaultLogHandler.LogFormat(UnityEngine.LogType.Log, null, logFormatter);
+                            Application.SetStackTraceLogType(UnityEngine.LogType.Log, log);
+                        }
+                        else
+                            defaultLogHandler.LogFormat(UnityEngine.LogType.Log, null, logFormatter);
 #endif
-                    break;
-                }
-                case LogType.Warning:
-                {
-                    if (MAINTHREADID == currentManagedThreadId)
-                    {
-                        //SetStacktrace can be called only in the editor and it's enable for LOG only in the editor
-                        var log = Application.GetStackTraceLogType(UnityEngine.LogType.Warning);
-                        Application.SetStackTraceLogType(UnityEngine.LogType.Warning, StackTraceLogType.None);
-
-                        ConsoleUtilityForUnity.defaultLogHandler.LogFormat(UnityEngine.LogType.Warning, null, logFormatter);
-
-                        Application.SetStackTraceLogType(UnityEngine.LogType.Warning, log);
+                        break;
                     }
-                    else
-                        ConsoleUtilityForUnity.defaultLogHandler.LogFormat(UnityEngine.LogType.Warning, null, logFormatter);
-
-                    break;
-                }
-                case LogType.Error:
-                case LogType.Exception:
-                {
-                    if (MAINTHREADID == currentManagedThreadId)
+                    case LogType.Warning:
                     {
-                        //SetStacktrace can be called only in the editor and it's enable for LOG only in the editor
-                        var log = Application.GetStackTraceLogType(UnityEngine.LogType.Error);
-                        Application.SetStackTraceLogType(UnityEngine.LogType.Error, StackTraceLogType.None);
+                        if (MAINTHREADID == currentManagedThreadId)
+                        {
+                            //SetStacktrace can be called only in the editor and it's enable for LOG only in the editor
+                            var log = Application.GetStackTraceLogType(UnityEngine.LogType.Warning);
+                            Application.SetStackTraceLogType(UnityEngine.LogType.Warning, StackTraceLogType.None);
 
-                        ConsoleUtilityForUnity.defaultLogHandler.LogFormat(UnityEngine.LogType.Error, null, logFormatter);
+                            defaultLogHandler.LogFormat(UnityEngine.LogType.Warning, null, logFormatter);
 
-                        Application.SetStackTraceLogType(UnityEngine.LogType.Error, log);
+                            Application.SetStackTraceLogType(UnityEngine.LogType.Warning, log);
+                        }
+                        else
+                            defaultLogHandler.LogFormat(UnityEngine.LogType.Warning, null, logFormatter);
+
+                        break;
                     }
-                    else
-                        ConsoleUtilityForUnity.defaultLogHandler.LogFormat(UnityEngine.LogType.Error, null, logFormatter);
+                    case LogType.Error:
+                    case LogType.Exception:
+                    {
+                        if (MAINTHREADID == currentManagedThreadId)
+                        {
+                            //SetStacktrace can be called only in the editor and it's enable for LOG only in the editor
+                            var log = Application.GetStackTraceLogType(UnityEngine.LogType.Error);
+                            Application.SetStackTraceLogType(UnityEngine.LogType.Error, StackTraceLogType.None);
 
-                    break;
+                            defaultLogHandler.LogFormat(UnityEngine.LogType.Error, null, logFormatter);
+
+                            Application.SetStackTraceLogType(UnityEngine.LogType.Error, log);
+                        }
+                        else
+                            defaultLogHandler.LogFormat(UnityEngine.LogType.Error, null, logFormatter);
+
+                        break;
+                    }
                 }
+            }
+            catch
+            {
+                
             }
         }
 

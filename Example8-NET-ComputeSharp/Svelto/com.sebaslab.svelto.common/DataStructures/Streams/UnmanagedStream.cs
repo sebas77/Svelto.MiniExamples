@@ -13,17 +13,17 @@ namespace Svelto.DataStructures
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public T Read<T>() where T : unmanaged => _sveltoStream.Read<T>(ToSpanInternal());
+        public T Read<T>() where T : unmanaged => _sveltoStream.Read<T>(AsSpanInternal());
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Write<T>(in T value) where T : unmanaged => _sveltoStream.Write(ToSpanInternal(), value);
+        public void Write<T>(in T value) where T : unmanaged => _sveltoStream.Write(AsSpanInternal(), value);
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         //T can contain managed elements, it's up to the user to be sure that the right data is read
-        public void UnsafeWrite<T>(in T value, int unmanagedStructSize) where T : struct => _sveltoStream.UnsafeWrite(ToSpanInternal(), value, unmanagedStructSize);
+        public void UnsafeWrite<T>(in T value, int unmanagedStructSize) where T : struct => _sveltoStream.UnsafeWrite(AsSpanInternal(), value, unmanagedStructSize);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WriteSpan<T>(in Span<T> valueSpan) where T : unmanaged => _sveltoStream.WriteSpan(ToSpanInternal(), valueSpan);
+        public void WriteSpan<T>(in Span<T> valueSpan) where T : unmanaged => _sveltoStream.WriteSpan(AsSpanInternal(), valueSpan);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Clear() => _sveltoStream.Clear();
@@ -35,7 +35,7 @@ namespace Svelto.DataStructures
         public bool CanAdvance() => _sveltoStream.CanAdvance();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Span<byte> ToSpan() //returns what has been written so far in the buffer
+        public Span<byte> AsSpan() //returns what has been written so far in the buffer
         {
             unsafe
             {
@@ -44,7 +44,7 @@ namespace Svelto.DataStructures
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal Span<byte> ToSpanInternal()
+        internal Span<byte> AsSpanInternal()
         {
             unsafe
             {
