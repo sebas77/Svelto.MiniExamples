@@ -76,10 +76,7 @@ namespace Svelto.ECS
                 new FasterDictionary<ComponentID, FasterDictionary<ExclusiveGroupStruct, ITypeSafeDictionary>>();
             _groupedEntityToAdd = new DoubleBufferedEntitiesToAdd();
             _entityStreams = EntitiesStreams.Create();
-#if SVELTO_LEGACY_FILTERS
-            _groupFilters =
-                new FasterDictionary<ComponentID, FasterDictionary<ExclusiveGroupStruct, LegacyGroupFilters>>();
-#endif
+
             _entityLocator.InitEntityReferenceMap();
             _entitiesDB = new EntitiesDB(this, _entityLocator);
 
@@ -121,7 +118,7 @@ namespace Svelto.ECS
             return _isDisposed == false;
         }
         
-        public void AddEngine(IEngine engine)
+        public void AddEngine(IEngine engine, bool addSubEngines = true)
         {
             var type = engine.GetType();
             var refWrapper = new RefWrapperType(type);
@@ -179,6 +176,7 @@ namespace Svelto.ECS
                 if (engine is IReactOnSubmissionStarted submissionEngineStarted)
                     _reactiveEnginesSubmissionStarted.Add(submissionEngineStarted);
                 
+                if (addSubEngines)
                 if (engine is IGroupEngine stepGroupEngine)
                     foreach (var stepEngine in stepGroupEngine.engines)
                         AddEngine(stepEngine);
@@ -294,14 +292,6 @@ namespace Svelto.ECS
                 foreach (var groups in _groupEntityComponentsDB)
                     foreach (var entityList in groups.value)
                         entityList.value.Dispose();
-
-#if SVELTO_LEGACY_FILTERS
-                foreach (var type in _groupFilters)
-                    foreach (var group in type.value)
-                        group.value.Dispose();
-
-                _groupFilters.Clear();
-#endif
 
                 DisposeFilters();
 
