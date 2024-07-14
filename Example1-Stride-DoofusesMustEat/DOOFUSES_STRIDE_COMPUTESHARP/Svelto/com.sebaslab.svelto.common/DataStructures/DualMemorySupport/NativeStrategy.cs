@@ -7,7 +7,7 @@ namespace Svelto.DataStructures.Native
 {
     /// <summary>
     /// They are called strategy because they abstract the handling of the memory type used.
-    /// Through the IBufferStrategy interface, external datastructure can use interchangeably native and managed memory. 
+    /// Through the IBufferStrategy interface, with these, datastructure can use interchangeably native and managed memory and other strategies. 
     /// </summary>
     public struct NativeStrategy<T> : IBufferStrategy<T> where T : struct
     {

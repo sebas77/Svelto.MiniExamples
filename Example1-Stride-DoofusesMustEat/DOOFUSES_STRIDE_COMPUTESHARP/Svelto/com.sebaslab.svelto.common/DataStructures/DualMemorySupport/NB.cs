@@ -35,8 +35,8 @@ namespace Svelto.DataStructures
     /// NB stands for NativeBuffer
     /// 
     /// NativeBuffers were initially mainly designed to be used inside Unity Jobs. They wrap an EntityDB array of components
-    /// but do not track it. Hence it's meant to be used temporary and locally as the array can become invalid
-    /// after a submission of entities. However they cannot be used as ref struct
+    /// but do not track it. Hence, it's meant to be used temporary and locally as the array can become invalid
+    /// after a submission of entities. However, they cannot be used as ref struct
     ///
     /// ------> NBs are wrappers of native arrays. Are not meant to resize or be freed
     ///

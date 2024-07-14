@@ -111,12 +111,14 @@ namespace Svelto
 
                 InternalLog($"-!!!!!!->Internal Exception - Level [{level++}] ", LogType.Exception, false, tracingE);
             }
+            
+            var builder = _stringBuilder;
+            builder.Length = 0;
+            builder.Append(toPrint).Append(exception.Message);
 
             if (message != null)
             {
-                var builder = _stringBuilder;
-                builder.Length = 0;
-                builder.Append(toPrint).Append(exception.Message).Append(" -- ").Append(message);
+                builder.Append(" -- ").Append(message);
 
                 toPrint = builder.ToString();
             }
@@ -164,12 +166,11 @@ namespace Svelto
 
             if (logMessage != null) logMessage(txt, type, e);
         }
-#if UNITY_2021_3_OR_NEWER
+
         public static void CompressLogsToZipAndShow(string zipName)
         {
             _loggers[0]?.CompressLogsToZipAndShow(zipName);
         }
-#endif
 
         public static event Action<string, LogType, Exception> logMessage;
     }

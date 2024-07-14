@@ -24,3 +24,5 @@ Example8-NET-ComputeSharp/.vs/Svelto-ComputeSharp/FileContentIndex/
 Example8-NET-ComputeSharp/Svelto/com.sebaslab.svelto.ecs/Svelto.ECS.sdpkg.user.meta
 
 Example2-Unity Hybrid-Survival/WEBGL_CLIENT/StreamingAssets/aa/WebGL/
+
+*.csproj

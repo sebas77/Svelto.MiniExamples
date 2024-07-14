@@ -56,10 +56,6 @@ namespace Svelto.ECS.Miniexamples.Doofuses.GameObjectsLayer
         {
             for (uint i = rangeOfEntities.start; i < rangeOfEntities.end; ++i)
             {
-                var (buffer, _, _) = collection;
-                
-                ref var entityComponent = ref buffer[i];
-
                 _goManager.Swap(fromGroup.id, toGroup.id);
             }
         }

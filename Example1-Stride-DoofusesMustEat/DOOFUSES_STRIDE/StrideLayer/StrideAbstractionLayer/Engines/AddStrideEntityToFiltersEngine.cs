@@ -30,11 +30,11 @@
                 {
                     if (buffer[index].updateOnce == false)
                         //I use the stride entityID as filter ID
-                        cachedFilter = ref sveltoFilters.GetOrCreatePersistentFilter<MatrixComponent>(prefabId,
+                        cachedFilter = sveltoFilters.GetOrCreatePersistentFilter<MatrixComponent>(prefabId,
                             StrideFilterContext.StridePrefabFilterContextUpdate);
                     else
                             //I use the stride entityID as filter ID
-                        cachedFilter = ref sveltoFilters.GetOrCreatePersistentFilter<MatrixComponent>(prefabId,
+                        cachedFilter = sveltoFilters.GetOrCreatePersistentFilter<MatrixComponent>(prefabId,
                             StrideFilterContext.StridePrefabFilterContextUpdate);
                     
                     lastEntity = prefabId;

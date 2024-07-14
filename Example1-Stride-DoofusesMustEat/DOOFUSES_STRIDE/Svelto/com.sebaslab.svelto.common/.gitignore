@@ -1,6 +1,6 @@
+/*.meta
 *.meta
 netstandard2.0
+obj
 .idea/
-bin/
-obj/
 Svelto.Common.sdpkg.user
