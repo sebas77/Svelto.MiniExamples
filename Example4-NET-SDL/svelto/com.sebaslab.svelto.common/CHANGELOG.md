@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file. Changes are listed in random order of importance.
 
+## [3.5.2] - 07-2024
+
+* Improve FasterList Enumerator safety
+* Add new methods to and improve ThreadUtility
+* Various other small improvements
+
 ## [3.5.1] - 01-2024
 
 * Optimise ThreadUtility.SleepWithOneEyeOpen

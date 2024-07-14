@@ -11,7 +11,7 @@ namespace Svelto.DataStructures
             }
         }
 
-        public FasterListEnumerator(in T[] buffer, uint size)
+        public FasterListEnumerator(FasterList<T> buffer, uint size)
         {
             _size = size;
             _counter = 0;
@@ -20,6 +20,8 @@ namespace Svelto.DataStructures
 
         public bool MoveNext()
         {
+            DBC.Common.Check.Require(_size == _buffer.count, "FasterListEnumerator: the list has been modified during the iteration");
+            
             if (_counter++ < _size)
                 return true;
 
@@ -31,7 +33,7 @@ namespace Svelto.DataStructures
             _counter = 0;
         }
 
-        readonly T[]  _buffer;
+        readonly FasterList<T>  _buffer;
         int           _counter;
         readonly uint _size;
     }
