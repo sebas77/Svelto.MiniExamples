@@ -41,7 +41,7 @@ namespace Svelto.DataStructures
 
             int readCursor = stream.AdvanceCursor(length);
 
-            return new ByteArraySegment<T>(stream.ToMemoryInternal().Slice(readCursor, length));
+            return new ByteArraySegment<T>(stream.AsMemoryInternal().Slice(readCursor, length));
         }
     }
 }

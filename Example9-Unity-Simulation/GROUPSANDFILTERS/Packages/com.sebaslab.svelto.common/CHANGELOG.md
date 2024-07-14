@@ -1,6 +1,14 @@
 # Changelog
 All notable changes to this project will be documented in this file. Changes are listed in random order of importance.
 
+## [3.5.1] - 01-2024
+
+* Optimise ThreadUtility.SleepWithOneEyeOpen
+* CompressLogsToZipAndShow works on Android too
+* Improve ConsoleLogger
+* Improve Svelto Streams
+* added FixedTypedArray32
+
 ## [3.5.0] - 09-2023
 
 * Refactor: split NB/MB struct from their internal logic that must be used only by the framework. Eventually NB and MB structs must be ref, as they are not supposed to be held (they may become invalid over the time). However due to the current DOTS patterns this is not possible. In future a sentinel pattern will allow to lease these buffers with the assumption that they can't be modified while held (and if a modification happens an exception will throw)
@@ -10,7 +18,7 @@ All notable changes to this project will be documented in this file. Changes are
 * fix platform profiler compilation bugs
 * Svelto.Console improvements
 * Improve the new stream related classes. They are used successfully in my current project, unfortunately no much doc available yet
-* few FasterList improvements
+* few FasterList improvements~~~~
 
 ## [3.4.0] - 03-2023
 

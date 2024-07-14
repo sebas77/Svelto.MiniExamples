@@ -73,7 +73,7 @@ namespace Svelto.Utilities
                 {
                     if (e != null)
                     {
-                        txt = txt.FastConcat(" ", e.ToString());
+                        txt = txt.FastConcat(" ", e.Message.ToString());
                         var trace = new StackTrace(e, true);
                         stack = showLogStack
                                 ? ExtractFormattedStackTrace(trace, stackTrace)
@@ -88,9 +88,8 @@ namespace Svelto.Utilities
 
                     return stack;
 #else
-                   return($"{frame} "
-                           .FastConcat(txt, Environment.NewLine, stack)
-                           .FastConcat(dataString));
+                    stack = $"{frame} ".FastConcat(txt, Environment.NewLine, stack).FastConcat(dataString);
+                    return stack;
 #endif
                 }
             }

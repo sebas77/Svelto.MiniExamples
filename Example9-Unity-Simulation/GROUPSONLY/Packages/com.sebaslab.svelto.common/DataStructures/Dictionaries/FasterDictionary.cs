@@ -42,7 +42,8 @@ namespace Svelto.DataStructures
     ///     the standard dictionary for most of the operations, but the difference is negligible. The only slower operation
     ///     is resizing the memory on add, as this implementation needs to use two separate arrays compared to the standard
     ///     one
-    ///     note: use native memory? Use _valuesInfo only when there are collisions?
+    ///     >>>NOTE: to use classes as key, use the RefWrapper<> class!!!
+    ///     my note: use native memory? Use _valuesInfo only when there are collisions?
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
@@ -139,6 +140,12 @@ namespace Svelto.DataStructures
         public ref TValue GetOrAdd(TKey key, Func<TValue> builder)
         {
             return ref _dictionary.GetOrAdd(key, builder);
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ref TValue GetOrAdd(TKey key, out uint index)
+        {
+            return ref _dictionary.GetOrAdd(key, out index);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

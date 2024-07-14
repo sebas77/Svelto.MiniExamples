@@ -21,7 +21,9 @@ namespace Svelto.Common
         {
             _info = info;
         }
-        
+
+        public double elapsed => _stopwatch.Value.ElapsedTicks / Stopwatch.Frequency;
+
         public StandardDisposableSampler Sample()
         {
             return new StandardDisposableSampler(_info, _stopwatch.Value);
@@ -29,19 +31,19 @@ namespace Svelto.Common
 
         public StandardDisposableSampler Sample(string samplerName)
         {
-            return new StandardDisposableSampler(samplerName.FastConcat("-",_info), _stopwatch.Value);
+            return new StandardDisposableSampler(_info.FastConcat(samplerName), _stopwatch.Value);
         }
 
         public StandardDisposableSampler Sample<T>(T samplerName)
         {
-            return new StandardDisposableSampler(samplerName.ToString().FastConcat("-",_info), _stopwatch.Value);
+            return new StandardDisposableSampler(_info.FastConcat(samplerName.ToString()), _stopwatch.Value);
         }
 
         public void Dispose()
         { }
     }
 
-    public class StandardDisposableSampler : IDisposable
+    public readonly struct StandardDisposableSampler : IDisposable
     {
         readonly Stopwatch _watch;
         readonly long      _startTime;
@@ -57,7 +59,8 @@ namespace Svelto.Common
         public void Dispose()
         {
             var stopwatchElapsedTicks = (_watch.ElapsedTicks - _startTime);
-            Svelto.Console.Log(_samplerName.FastConcat(" -> ").FastConcat(stopwatchElapsedTicks / 10000.0));
+
+            Svelto.Console.Log(_samplerName.FastConcat(" -> ").FastConcat(stopwatchElapsedTicks / 10000.0).FastConcat(" ms"));
         }
     }
 }

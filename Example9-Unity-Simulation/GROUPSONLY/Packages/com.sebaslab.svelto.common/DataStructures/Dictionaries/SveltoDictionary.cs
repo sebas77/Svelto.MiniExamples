@@ -252,6 +252,19 @@ namespace Svelto.DataStructures
 
             return ref _values[(int)findIndex];
         }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ref TValue GetOrAdd(TKey key, out uint index)
+        {
+            if (TryFindIndex(key, out index) == true)
+            {
+                return ref _values[(int)index];
+            }
+
+            AddValue(key, out index);
+
+            return ref _values[(int)index];
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref TValue GetOrAdd<W>(TKey key, FuncRef<W, TValue> builder, ref W parameter)
@@ -881,6 +894,12 @@ namespace Svelto.DataStructures
             _dicValues = dicValues;
             _index = index;
             _key = key;
+        }
+        
+        public void Deconstruct(out TKey key, out TValue value)
+        {
+            key = this.key;
+            value = this.value;
         }
 
         public TKey key => _key;
