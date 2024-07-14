@@ -8,14 +8,13 @@ namespace Svelto.DataStructures
 {
     public struct SveltoStream
     {
+        public readonly int capacity;
+        public int count => _writeCursor;
+
         public SveltoStream(int sizeInByte): this()
         {
             capacity = sizeInByte;
         }
-
-        public readonly int capacity;
-        public int count => _writeCursor;
-        public int space => capacity - _writeCursor;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref T Read<T>(in Span<byte> source) where T : unmanaged
@@ -23,28 +22,34 @@ namespace Svelto.DataStructures
             int elementSize = MemoryUtilities.SizeOf<T>();
             int readCursor = _readCursor;
 
-#if DEBUG && !PROFILE_SVELTO
             if (readCursor + elementSize > capacity)
-                throw new Exception("no reading authorized");
-#endif
-            _readCursor += elementSize;
+            {
+                throw new Exception("TRYING TO READ PAST THE END OF THE STREAM -- this is bad!");
+            }
 
+            _readCursor += elementSize;
             return ref Unsafe.As<byte, T>(ref Unsafe.Add(ref MemoryMarshal.GetReference(source), readCursor));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void UnsafeRead<T>(ref T item, Span<byte> source, int size) where T : struct
         {
-#if DEBUG && !PROFILE_SVELTO
             if (_readCursor + size > capacity)
-                throw new Exception("no reading authorized");
+            {
+                throw new Exception("TRYING TO READ PAST THE END OF THE STREAM -- this is bad!");
+            }
+
+#if DEBUG
             if (size > Unsafe.SizeOf<T>())
+            {
                 throw new Exception("size is bigger than struct");
+            }
 #endif
+
             Unsafe.CopyBlockUnaligned(
                 ref Unsafe.As<T, byte>(ref item),
                 ref Unsafe.Add(ref MemoryMarshal.GetReference(source), _readCursor),
-                (uint)size); //size is not the size of T
+                (uint)size); // size is not the size of T
 
             _readCursor += size;
         }
@@ -52,25 +57,29 @@ namespace Svelto.DataStructures
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Write<T>(in Span<byte> destinationSpan, in T value) where T : unmanaged
         {
-            int elementSize = MemoryUtilities.SizeOf<T>();
+            int size = MemoryUtilities.SizeOf<T>();
+            if (_writeCursor + size > capacity)
+            {
+                throw new Exception("STREAM DOES NOT HAVE ENOUGH SPACE LEFT TO WRITE -- this is bad!");
+            }
 
-#if DEBUG && !PROFILE_SVELTO
-            if (_writeCursor + elementSize > capacity)
-                throw new Exception("no writing authorized");
-#endif
             Unsafe.As<byte, T>(ref Unsafe.Add(ref MemoryMarshal.GetReference(destinationSpan), _writeCursor)) = value;
-
-            _writeCursor += elementSize;
+            _writeCursor += size;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void UnsafeWrite<T>(Span<byte> destinationSpan, in T item, int size) where T : struct
         {
-#if DEBUG && !PROFILE_SVELTO
             if (_writeCursor + size > capacity)
-                throw new Exception("no writing authorized");
+            {
+                throw new Exception("STREAM DOES NOT HAVE ENOUGH SPACE LEFT TO WRITE -- this is bad!");
+            }
+
+#if DEBUG
             if (size > Unsafe.SizeOf<T>())
+            {
                 throw new Exception("size is bigger than struct");
+            }
 #endif
             //T can contain managed elements, it's up to the user to be sure that the right data is written
             //I cannot use span for this reason
@@ -85,22 +94,23 @@ namespace Svelto.DataStructures
         public void WriteSpan<T>(in Span<byte> destinationSpan, in Span<T> valueSpan) where T : unmanaged
         {
             int elementSize = MemoryUtilities.SizeOf<T>();
-            int spanBytesToSerialise = elementSize * valueSpan.Length;
 
-            //serialise the length of the span in bytes
-            Write(destinationSpan, spanBytesToSerialise);
+            // NOTE: we write a USHORT for the size to optimize deltas
+            // serialise the length of the span in bytes
+            ushort lengthToWrite = (ushort) (elementSize * valueSpan.Length);
+            Write(destinationSpan, lengthToWrite);
 
-#if DEBUG && !PROFILE_SVELTO
-            if (space < spanBytesToSerialise)
-                throw new Exception("no writing authorized");
-#endif
-            if (spanBytesToSerialise > 0)
+            if (_writeCursor + lengthToWrite > capacity)
             {
-                //create a local span of the destination from the right offset. 
-                var destination = destinationSpan.Slice(_writeCursor, spanBytesToSerialise);
-                valueSpan.CopyTo(MemoryMarshal.Cast<byte, T>(destination));
+                throw new Exception("STREAM DOES NOT HAVE ENOUGH SPACE LEFT TO WRITE THE SPAN -- this is bad!");
+            }
 
-                _writeCursor += spanBytesToSerialise;
+            if (lengthToWrite > 0)
+            {
+                // create a local span of the destination from the right offset.
+                Span<byte> destination = destinationSpan.Slice(_writeCursor, lengthToWrite);
+                valueSpan.CopyTo(MemoryMarshal.Cast<byte, T>(destination));
+                _writeCursor += lengthToWrite;
             }
         }
 
@@ -127,19 +137,19 @@ namespace Svelto.DataStructures
                 where T : unmanaged
         {
             int elementSize = MemoryUtilities.SizeOf<T>();
-
             return _readCursor + elementSize < capacity;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int AdvanceCursor(int sizeOf)
         {
-#if DEBUG && !PROFILE_SVELTO
             if (_readCursor + sizeOf > capacity)
-                throw new Exception("can't advance cursor, end of stream reached");
-#endif
-            var readCursor = _readCursor;
-            _readCursor += sizeOf;
+            {
+                throw new Exception("STREAM DOES NOT HAVE ENOUGH CAPACITY to advance the cursor -- this is bad!");
+            }
 
+            int readCursor = _readCursor;
+            _readCursor += sizeOf;
             return readCursor;
         }
 

@@ -23,8 +23,6 @@ namespace Svelto.DataStructures
 ///        public float source_x;
 ///        public float source_z;
 ///
-///        public float anim_scale;
-///
 ///        // Bouncing projectiles have a duration that is all the hit times added together
 ///        public float duration;
 ///
@@ -67,7 +65,7 @@ namespace Svelto.DataStructures
                 element.Serialize(ref buffer);
             }
 
-            return buffer.ToSpan();
+            return buffer.AsSpan();
         }
 
         public static int SerializeSize<T>(this FasterList<T> elements)  where T:ISerializableManagedVO

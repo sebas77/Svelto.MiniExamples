@@ -57,7 +57,7 @@ namespace Svelto
         /// <summary>
         /// Attention if CatchEmAll is enabled, it will break the chain of loghandler. This is by design as
         /// CatchEmAll is a replacement of the default logger. This is a problem if more loggers are injected
-        /// in the chain. IN this case the user must be sure that CatchEmAll is called before
+        /// in the chain. In this case the user must be sure that CatchEmAll is called before
         /// any other logger is registered
         /// </summary>
         static void CatchEmAll()

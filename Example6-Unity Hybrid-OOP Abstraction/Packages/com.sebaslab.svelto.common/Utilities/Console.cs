@@ -111,12 +111,14 @@ namespace Svelto
 
                 InternalLog($"-!!!!!!->Internal Exception - Level [{level++}] ", LogType.Exception, false, tracingE);
             }
+            
+            var builder = _stringBuilder;
+            builder.Length = 0;
+            builder.Append(toPrint).Append(exception.Message);
 
             if (message != null)
             {
-                var builder = _stringBuilder;
-                builder.Length = 0;
-                builder.Append(toPrint).Append(exception.Message).Append(" -- ").Append(message);
+                builder.Append(" -- ").Append(message);
 
                 toPrint = builder.ToString();
             }

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using DBC.Common;
 using Svelto.Common;
+using Svelto.DataStructures;
 
 namespace Svelto.DataStructures
 {
@@ -232,7 +233,7 @@ namespace Svelto.DataStructures
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public FasterListEnumerator<T> GetEnumerator()
         {
-            return new FasterListEnumerator<T>(_buffer, (uint)count);
+            return new FasterListEnumerator<T>(this, (uint)count);
         }
 
         public void IncreaseCapacityBy(uint increment)
@@ -429,19 +430,6 @@ namespace Svelto.DataStructures
             return destinationArray;
         }
 
-        /// <summary>
-        ///     This function exists to allow fast iterations. The size of the array returned cannot be
-        ///     used. The list count must be used instead.
-        /// </summary>
-        /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public T[] ToArrayFast(out int count)
-        {
-            count = (int)_count;
-
-            return _buffer;
-        }
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Trim()
         {
@@ -505,30 +493,19 @@ namespace Svelto.DataStructures
             _buffer = newList;
         }
 
-        public static class NoVirt
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public static uint Count(FasterList<T> fasterList)
-            {
-                return fasterList._count;
-            }
+        internal T[]  _buffer;
+        internal uint _count;
+    }
+ }
+ 
+    
+public static class NoVirt
+{
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static T[] ToArrayFast<T>(this FasterList<T> fasterList, out int count)
+    {
+        count = (int)fasterList._count;
 
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public static T[] ToArrayFast(FasterList<T> fasterList, out uint count)
-            {
-                count = fasterList._count;
-
-                return fasterList._buffer;
-            }
-
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public static T[] ToArrayFast(FasterList<T> fasterList)
-            {
-                return fasterList._buffer;
-            }
-        }
-
-        T[]  _buffer;
-        uint _count;
+        return fasterList._buffer;
     }
 }
