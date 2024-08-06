@@ -67,7 +67,7 @@ namespace Svelto.ECS.Example.Survive.Enemies
                 var (enemies, _) = entities;
                 var (gos, _) = entitiesDB.QueryEntities<GameObjectEntityComponent>(groupID);
 
-                for (int i = (int)(rangeOfEntities.end - 1); i >= (int)rangeOfEntities.start; i--)
+                for (uint i = rangeOfEntities.start; i < rangeOfEntities.end; i++)
                 {
                     //recycle the gameobject
                     _manager.Recycle(gos[i].resourceIndex, (int)enemies[i].enemyType);
@@ -86,7 +86,7 @@ namespace Svelto.ECS.Example.Survive.Enemies
             {
                 var (gos, navs, _) = entitiesDB.QueryEntities<GameObjectEntityComponent, NavMeshComponent>(toGroup);
 
-                for (int i = (int)(rangeOfEntities.end - 1); i >= (int)rangeOfEntities.start; i--)
+                for (uint i = rangeOfEntities.start; i < rangeOfEntities.end; i++)
                 {
                     navs[i].navMeshEnabled = false;
                     navs[i].setCapsuleAsTrigger = true;

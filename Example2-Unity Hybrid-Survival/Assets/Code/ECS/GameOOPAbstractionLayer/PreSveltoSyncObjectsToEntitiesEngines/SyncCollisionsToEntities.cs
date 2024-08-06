@@ -17,7 +17,7 @@ namespace Svelto.ECS.Example.Survive.OOPLayer
         {
             var (gos, _) = entitiesDB.QueryEntities<GameObjectEntityComponent>(groupID);
 
-            for (int i = (int)(rangeOfEntities.end - 1); i >= rangeOfEntities.start; i--)
+            for (uint i = rangeOfEntities.start; i < rangeOfEntities.end; i++)
             {
                 _manager[gos[i].resourceIndex].GetComponent<ObjectTrigger>().Register(_onCollidedWithTarget);
             }
