@@ -25,4 +25,4 @@ Example8-NET-ComputeSharp/Svelto/com.sebaslab.svelto.ecs/Svelto.ECS.sdpkg.user.m
 
 Example2-Unity Hybrid-Survival/WEBGL_CLIENT/StreamingAssets/aa/WebGL/
 
-*.csproj
+# *.csproj do not put cs proj here otherwise non unity projects wlll break!!
