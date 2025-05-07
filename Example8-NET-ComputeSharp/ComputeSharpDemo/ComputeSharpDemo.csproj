@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>disable</Nullable>
+        <RootNamespace>demo</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Svelto\com.sebaslab.svelto.ecs.computesharp\Svelto.ECS.ComputeSharp.csproj" />
+      <ProjectReference Include="..\Svelto\com.sebaslab.svelto.ecs\Svelto.ECS.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="ComputeSharp" Version="2.1.0-preview3" />
+      <PackageReference Include="ComputeSharp.Dynamic" Version="2.1.0-preview3" />
+    </ItemGroup>
+
+</Project>

@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <Nullable>disable</Nullable>
+        <LangVersion>10</LangVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\BulletsLayer\BulletsLayer.csproj" />
+      <ProjectReference Include="..\PhysicLayer\PhysicLayer.csproj" />
+      <ProjectReference Include="..\Svelto\com.sebaslab.svelto.ecs\Svelto.ECS.csproj" />
+      <ProjectReference Include="..\TransformationLayer\TransformationLayer.csproj" />
+    </ItemGroup>
+
+</Project>

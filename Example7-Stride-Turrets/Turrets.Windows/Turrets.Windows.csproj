@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+        <OutputType>WinExe</OutputType>
+        <RootNamespace>Svelto.ECS.MiniExamples.Turrets</RootNamespace>
+
+        <OutputPath>..\Bin\Windows\$(Configuration)\</OutputPath>
+
+        <!-- Force msbuild to check to rebuild this assembly instead of letting VS IDE guess -->
+        <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
+        <LangVersion>10</LangVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\GameLayer\GameLayer.csproj" />
+    </ItemGroup>
+
+</Project>
