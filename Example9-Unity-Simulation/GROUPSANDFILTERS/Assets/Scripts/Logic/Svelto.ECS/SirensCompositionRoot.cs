@@ -1,5 +1,5 @@
 #if DEBUG && !PROFILE_SVELTO
-#define ENABLE_INSPECTOR
+//#define ENABLE_INSPECTOR
 #endif
 
 using System.Threading.Tasks;

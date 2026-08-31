@@ -2,21 +2,20 @@
   "dependencies": {
     "com.sebaslab.svelto.common": "file:../../../packages/com.sebaslab.svelto.common",
     "com.sebaslab.svelto.ecs": "file:../../../packages/com.sebaslab.svelto.ecs",
-    "com.james-frowen.simplewebtransport": "1.6.4",
-    "com.meryel.code-analysis-3-11": "https://github.com/merryyellow/code-analysis-3-11.git",
     "com.tayx.graphy": "https://github.com/Tayx94/graphy.git",
-    "com.unity.collab-proxy": "2.4.3",
-    "com.unity.collections": "2.4.0",
-    "com.unity.ide.rider": "3.0.28",
-    "com.unity.ide.visualstudio": "2.0.22",
-    "com.unity.nuget.newtonsoft-json": "3.2.1",
-    "com.unity.render-pipelines.universal": "17.0.3",
-    "com.unity.test-framework": "1.4.4",
-    "com.unity.timeline": "1.8.7",
-    "com.unity.toolchain.win-x86_64-linux-x86_64": "2.0.9",
+    "com.unity.collab-proxy": "2.12.4",
+    "com.unity.collections": "2.6.8",
+    "com.unity.ide.rider": "3.0.40",
+    "com.unity.ide.visualstudio": "2.0.26",
+    "com.unity.multiplayer.center": "1.0.1",
+    "com.unity.nuget.newtonsoft-json": "3.2.2",
+    "com.unity.render-pipelines.universal": "17.3.0",
+    "com.unity.test-framework": "1.6.0",
+    "com.unity.timeline": "1.8.12",
     "com.unity.ugui": "2.0.0",
-    "com.unity.visualscripting": "1.9.4",
+    "com.unity.visualscripting": "1.9.12",
     "com.unity.modules.accessibility": "1.0.0",
+    "com.unity.modules.adaptiveperformance": "1.0.0",
     "com.unity.modules.ai": "1.0.0",
     "com.unity.modules.androidjni": "1.0.0",
     "com.unity.modules.animation": "1.0.0",
@@ -43,6 +42,7 @@
     "com.unity.modules.unitywebrequestaudio": "1.0.0",
     "com.unity.modules.unitywebrequesttexture": "1.0.0",
     "com.unity.modules.unitywebrequestwww": "1.0.0",
+    "com.unity.modules.vectorgraphics": "1.0.0",
     "com.unity.modules.vehicles": "1.0.0",
     "com.unity.modules.video": "1.0.0",
     "com.unity.modules.vr": "1.0.0",
@@ -54,8 +54,7 @@
       "name": "OpenUPM",
       "url": "https://package.openupm.com",
       "scopes": [
-        "org.nuget.system.runtime.compilerservices.unsafe",
-        "com.james-frowen"
+        "org.nuget.system.runtime.compilerservices.unsafe"
       ]
     }
   ]

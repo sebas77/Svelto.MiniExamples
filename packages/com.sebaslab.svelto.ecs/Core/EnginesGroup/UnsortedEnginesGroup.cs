@@ -35,7 +35,7 @@ namespace Svelto.ECS
             var profiler = new PlatformProfiler(_name);
             using (profiler.Sample())
             {
-                for (int index = _instancedSequence.count - 1; index >= 0; index--)
+                for (int index = 0; index < _instancedSequence.count;)
                 {
                     var engine = _instancedSequence[index];
                     using (profiler.Sample(engine.name))
@@ -43,11 +43,16 @@ namespace Svelto.ECS
                         if (engine is IRemovableStepEngine removableEngine)
                         {
                             if (!removableEngine.Step())
+                            {
                                 _instancedSequence.UnorderedRemoveAt((uint)index);
+                                continue;
+                            }
                         }
                         else
                             engine.Step();
                     }
+
+                    index++;
                 }
             }
         }
@@ -98,7 +103,7 @@ namespace Svelto.ECS
             var profiler = new PlatformProfiler(_name);
             using (profiler.Sample())
             {
-                for (int index = _instancedSequence.count - 1; index >= 0; index--)
+                for (int index = 0; index < _instancedSequence.count;)
                 {
                     var engine = _instancedSequence[index];
                     using (profiler.Sample(engine.name))
@@ -106,11 +111,16 @@ namespace Svelto.ECS
                         if (engine is IRemovableStepEngine<Parameter> removableEngine)
                         {
                             if (!removableEngine.Step(time))
+                            {
                                 _instancedSequence.UnorderedRemoveAt((uint)index);
+                                continue;
+                            }
                         }
                         else
                             engine.Step(time);
                     }
+
+                    index++;
                 }
             }
         }

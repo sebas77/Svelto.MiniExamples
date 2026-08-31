@@ -34,3 +34,10 @@ Example1-Unity-DoofusesMustEat/DOOFUSES_DOTS/*.csproj
 Example1-Unity-DoofusesMustEat/DOOFUSES_GAMEOBJECTS/*.csproj
 Example3-Unity Hybrid-GUI/*.csproj
 Example3-Unity Hybrid-GUI/Example3-Unity Hybrid-GUI.sln
+Example2-Unity Hybrid-Survival/WEBGL_CLIENT/
+PerformanceTestRunSettings*
+PerformanceTestRunInfo*
+Example2-Unity Hybrid-Survival/*.csproj
+Example6-Unity Hybrid-OOP Abstraction/*.csproj
+Example9-Unity-Simulation/*.csproj
+Example9-Unity-Simulation/*/*.csproj

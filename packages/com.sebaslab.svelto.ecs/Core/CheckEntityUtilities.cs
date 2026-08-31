@@ -10,7 +10,7 @@ using Svelto.DataStructures;
 namespace Svelto.ECS
 {
     /// <summary>
-    ///     Note: this check doesn't catch the case when an add and remove is done on the same entity before the next
+    ///     todo: this check doesn't catch the case when an add and remove is done on the same entity before the next
     ///     submission. Two operations on the same entity are not allowed between submissions.
     /// </summary>
     public partial class EnginesRoot
