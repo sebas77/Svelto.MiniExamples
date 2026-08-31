@@ -18,15 +18,15 @@ namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample
         }
 
         public EntitiesDB entitiesDB { get; set; }
-        public void       Step(in float _param)
+        
+        public bool Step(in float _param)
         {
             if (_done == true)
-                return;
-            
+                return false; // Return false to indicate the engine should be removed after spawning is done
+
             foreach (var group in GameGroups.DOOFUSES.Groups)
                 _factory.PreallocateEntitySpace<DoofusEntityDescriptor>(group, MaxNumberOfDoofuses);
-    
-            
+
             new SpawningJob()
             {
                 _group   = GameGroups.RED_DOOFUSES_NOT_EATING.BuildGroup
@@ -41,8 +41,11 @@ namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample
               , _prefabID = _blueCapsule
             }.Execute();
 
-            //Yeah this shouldn't be solved like this, but I keep it in this way for simplicity sake 
-            _done = true;    
+            //Yeah this shouldn't be solved like this, but I keep it in this way for simplicity sake
+            _done = true;
+            
+            // Return false to indicate the engine should be removed after spawning is done
+            return false;
         }
 
         public string name => nameof(SpawningDoofusEngine);

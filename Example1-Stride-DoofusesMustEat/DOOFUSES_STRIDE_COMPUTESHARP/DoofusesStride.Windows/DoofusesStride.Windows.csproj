@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <ApplicationIcon>Resources\Icon.ico</ApplicationIcon>
     <OutputType>WinExe</OutputType>
@@ -16,5 +16,11 @@
   <ItemGroup>
     <ProjectReference Include="..\DoofusesStride\DoofusesStride.csproj" />
     <ProjectReference Include="..\GameLayer\GameLayer.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Assets\RedFood.sdmat" />
+    <None Remove="Assets\MainScene.sdscene" />
+    <None Remove="Assets\Eye.sdmat" />
+    <None Remove="Assets\ClearCoatRed.sdmat" />
   </ItemGroup>
 </Project>

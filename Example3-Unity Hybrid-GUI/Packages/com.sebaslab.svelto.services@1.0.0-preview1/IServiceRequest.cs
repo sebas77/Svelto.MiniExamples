@@ -1,13 +1,12 @@
-using System.Collections.Generic;
-using Svelto.Tasks;
+using System.Threading.Tasks;
 
 namespace Svelto.ServiceLayer
 {
 	public interface IServiceRequest
 	{
-		IEnumerator<TaskContract> Execute();
+		Task Execute();
 	}
-	
+
 	public interface IServiceRequest<in TDependency>: IServiceRequest
 	{
 		IServiceRequest Inject(TDependency registerData);

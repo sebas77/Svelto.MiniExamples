@@ -1,13 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System.Threading.Tasks;
 using Svelto.ECS.GUI.Resources;
-using Svelto.Tasks;
 
 namespace Svelto.ECS.GUI.Commands
 {
     public abstract class GUICommand
     {
         // TODO: params string causes allocation, maybe change to a parameter struct.
-        protected internal abstract IEnumerator<TaskContract> Execute(EntitiesDB entitiesDB, EGID target, StructValue value, params string[] parameters);
+        protected internal abstract Task<GUICommand.State> Execute(EntitiesDB entitiesDB, EGID target, StructValue value, params string[] parameters);
 
         protected GUIResources resources => _resources;
         internal GUIResources _resources;

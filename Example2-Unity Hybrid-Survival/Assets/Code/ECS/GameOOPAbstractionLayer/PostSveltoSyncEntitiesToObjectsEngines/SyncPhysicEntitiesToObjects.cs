@@ -30,7 +30,7 @@ namespace Svelto.ECS.Example.Survive.OOPLayer
                     var transform = go.transform;
                     var rb = go.GetComponent<Rigidbody>(); //in a real project I'd have cached this
 
-                    rb.velocity = rbs[i].velocity;
+                    rb.linearVelocity = rbs[i].velocity;
                     rb.isKinematic = rbs[i].isKinematic;
                     
                     transform.rotation = rotation[i].rotation;

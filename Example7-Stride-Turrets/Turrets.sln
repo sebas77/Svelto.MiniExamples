@@ -7,9 +7,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Turrets.Windows", "Turrets.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameLayer", "GameLayer\GameLayer.csproj", "{24974F56-1980-4E8A-9D52-37CF51B2ED21}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.Common", "Svelto\com.sebaslab.svelto.common\Svelto.Common.csproj", "{D7A956C5-5023-4CB7-ADD0-7E3BD1ADC594}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.Common", "..\packages\com.sebaslab.svelto.common\Svelto.Common\Svelto.Common.csproj", "{D7A956C5-5023-4CB7-ADD0-7E3BD1ADC594}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.ECS", "Svelto\com.sebaslab.svelto.ecs\Svelto.ECS.csproj", "{C7A58C65-7D4C-4513-A089-44B3B14DFDCB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.ECS", "..\packages\com.sebaslab.svelto.ecs\Svelto.ECS.csproj", "{C7A58C65-7D4C-4513-A089-44B3B14DFDCB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BulletsLayer", "BulletsLayer\BulletsLayer.csproj", "{4CEBAAC4-3849-429E-8BD0-3DCD2F98EEA3}"
 EndProject

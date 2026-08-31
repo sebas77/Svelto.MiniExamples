@@ -11,9 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameLayer", "GameLayer\Game
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StrideLayer", "StrideLayer\StrideLayer.csproj", "{55CBFA8D-75C1-4222-B9C4-637C44C1DD84}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Svelto.Common", "Svelto\com.sebaslab.svelto.common\Svelto.Common.csproj", "{5A18F06A-1060-4A00-BAA9-C6A4AFDAD089}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Svelto.Common", "..\..\packages\com.sebaslab.svelto.common\Svelto.Common\Svelto.Common.csproj", "{5A18F06A-1060-4A00-BAA9-C6A4AFDAD089}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Svelto.ECS", "Svelto\com.sebaslab.svelto.ecs\Svelto.ECS.csproj", "{ACCDE329-5184-4B19-83CA-805BB0BA9543}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Svelto.ECS", "..\..\packages\com.sebaslab.svelto.ecs\Svelto.ECS.csproj", "{ACCDE329-5184-4B19-83CA-805BB0BA9543}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TransformationLayer", "TransformationLayer\TransformationLayer.csproj", "{222C5920-B249-4C29-8921-7A347208C619}"
 EndProject

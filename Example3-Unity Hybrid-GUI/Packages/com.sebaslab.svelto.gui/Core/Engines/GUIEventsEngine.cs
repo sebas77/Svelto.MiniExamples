@@ -3,14 +3,13 @@ using System;
 #endif
 using Svelto.ECS.GUI.Commands;
 using Svelto.ECS.GUI.Resources;
-using Svelto.Tasks.Lean;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Svelto.DataStructures;
-using Svelto.Tasks;
 
 namespace Svelto.ECS.GUI.Engines
 {
-    class GUIEventsEngine : IQueryingEntitiesEngine, IGUITickingEngine, IDisposingEngine
+    class GUIEventsEngine : IQueryingEntitiesEngine, IGUITickingEngine, IDisposableEngine
     {
         /// <summary>
         /// This engine is in charge of executing commands attached to GUI events (both widget and custom ones).
@@ -23,7 +22,6 @@ namespace Svelto.ECS.GUI.Engines
             _resources = resources;
             _widgetMap = widgetMap;
             _blackboard = blackboard;
-            _commandRunner = new SteppableRunner("GUICustomEventsEngineRunner");
             _triggeredEvents = triggeredEvents;
         }
 
@@ -89,22 +87,11 @@ namespace Svelto.ECS.GUI.Engines
                 }
 
                 DBC.Check.Require(commandList.isValid);
-                TriggerCommands(commandList, eventTrigger.value, gui).RunOn(_commandRunner);
+                _ = TriggerCommands(commandList, eventTrigger.value, gui);
             }
-
-            // We want to keep stepping the command runner as long as there are new commands being spawned, so we can
-            // handle as much as possible in a single frame.
-            do
-            {
-                _hasSpawnedCommandsThisFrame = false;
-                _commandRunner.Step();
-            } while (_hasSpawnedCommandsThisFrame);
-
-            // TODO: We should probably dipose event StructValues holding strings at this point. But we might need to
-            //       have a continuation task to the command, to be sure its not going to be used anymore.
         }
 
-        IEnumerator<TaskContract> TriggerCommands(NativeDynamicArray commandList,
+        async Task TriggerCommands(NativeDynamicArray commandList,
             StructValue eventValue, GUIComponent gui)
         {
             var commandCount = commandList.Count<CommandData>();
@@ -121,15 +108,11 @@ namespace Svelto.ECS.GUI.Engines
 
                 if (TryGetCommandTarget(command, gui, out EGID target) == false) break;
 
-                var commandTask = commandInstance.Execute(entitiesDB, target, eventValue
+                var commandState = await commandInstance.Execute(entitiesDB, target, eventValue
                     , GetParameter(command.parameter1, _resources, _blackboard, gui, eventValue)
                     , GetParameter(command.parameter2, _resources, _blackboard, gui, eventValue)
                     , GetParameter(command.parameter3, _resources, _blackboard, gui, eventValue));
 
-                _hasSpawnedCommandsThisFrame = true;
-                yield return commandTask.Continue();
-
-                var commandState = (GUICommand.State)commandTask.Current.ToInt();
                 if (commandState == GUICommand.State.Failed)
                 {
                 #if SVELTO_GUI_DEBUG
@@ -281,7 +264,6 @@ namespace Svelto.ECS.GUI.Engines
 
         public void Dispose()
         {
-            _commandRunner.Dispose();
         }
 
         public void Ready() { }
@@ -290,13 +272,10 @@ namespace Svelto.ECS.GUI.Engines
 
         public bool isDisposing { get; set; }
 
-        bool _hasSpawnedCommandsThisFrame;
-
         readonly CommandsManager _commandsManager;
         readonly GUIResources _resources;
         readonly GUIBlackboard _blackboard;
         readonly GUIWidgetMap _widgetMap;
-        readonly SteppableRunner _commandRunner;
         readonly TriggeredEvents _triggeredEvents;
     }
 }

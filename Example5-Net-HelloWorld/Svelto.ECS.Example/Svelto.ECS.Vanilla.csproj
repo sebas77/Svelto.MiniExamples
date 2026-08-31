@@ -15,8 +15,8 @@
     <Compile Remove="SveltoVanilla\src\Svelto-ECS-Simplest-Example-Ever\Scripts\MainContextSimple.cs" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Svelto.Common" Version="3.5.1" />
-    <PackageReference Include="Svelto.ECS" Version="3.5.1" />
-    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
+    <ProjectReference Include="..\..\packages\com.sebaslab.svelto.common\Svelto.Common\Svelto.Common.csproj" />
+    <ProjectReference Include="..\..\packages\com.sebaslab.svelto.ecs\Svelto.ECS.csproj" />
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.1.2" />
   </ItemGroup>
 </Project>

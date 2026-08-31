@@ -107,3 +107,22 @@ Update Mode: updateDependencies
 The following packages were updated:
   com.unity.ide.rider from version 3.0.14 to 3.0.24
   com.unity.ide.visualstudio from version 2.0.15 to 2.0.18
+
+=== Sun Aug 30 14:00:33 2026
+
+Packages were changed.
+Update Mode: updateDependencies
+
+The following packages were added:
+  com.unity.modules.adaptiveperformance@1.0.0
+  com.unity.modules.vectorgraphics@1.0.0
+  com.unity.ai.navigation@2.0.14
+  com.unity.modules.accessibility@1.0.0
+  com.unity.multiplayer.center@1.0.1
+The following packages were updated:
+  com.unity.addressables from version 1.19.19 to 2.9.1
+  com.unity.ide.rider from version 3.0.24 to 3.0.40
+  com.unity.ide.visualstudio from version 2.0.18 to 2.0.26
+  com.unity.ugui from version 1.0.0 to 2.0.0
+The following packages were removed:
+  com.unity.textmeshpro@3.0.6

@@ -1,6 +1,5 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
-using System.Numerics;
 using System.Runtime.InteropServices;
 using ComputeSharp;
 using Svelto.ECS;
@@ -24,7 +23,7 @@ for (uint i = 0; i < 100; i++)
     
     initializer.Init(new PositionComponent()
     {
-        position = new Vector3(1.0f, 1.0f, 1.0f)
+        position = new float3(1.0f, 1.0f, 1.0f)
     });
 }
 
@@ -46,7 +45,7 @@ public class ComputeSharpEntityDescriptor: IEntityDescriptor
 
 public struct PositionComponent: IEntityComputeSharpComponent
 {
-    public Vector3 position;
+    public float3 position;
 }
 
 public static class ExclusiveGroups
@@ -82,10 +81,16 @@ public class TestComputeShaderEngine: IQueryingEntitiesEngine, IStepEngine
     public string name { get; }
 }
 
-[AutoConstructor] 
+[GeneratedComputeShaderDescriptor]
+[ThreadGroupSize(DefaultThreadGroupSizes.X)]
 readonly partial struct MultiplyByTwo : IComputeShader
 {
     readonly ReadWriteBuffer<PositionComponent> buffer;
+
+    public MultiplyByTwo(ReadWriteBuffer<PositionComponent> buffer)
+    {
+        this.buffer = buffer;
+    }
 
     /// <inheritdoc/>
     public void Execute()

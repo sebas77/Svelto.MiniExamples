@@ -1,10 +1,10 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.Common", "Svelto\com.sebaslab.svelto.common\Svelto.Common.csproj", "{4E8EE453-7F64-499A-9084-A522C8673BE9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.Common", "..\packages\com.sebaslab.svelto.common\Svelto.Common\Svelto.Common.csproj", "{4E8EE453-7F64-499A-9084-A522C8673BE9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.ECS", "Svelto\com.sebaslab.svelto.ecs\Svelto.ECS.csproj", "{216E8637-CFF9-4A92-8858-A52B15CDE0C0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.ECS", "..\packages\com.sebaslab.svelto.ecs\Svelto.ECS.csproj", "{216E8637-CFF9-4A92-8858-A52B15CDE0C0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.ECS.ComputeSharp", "Svelto\com.sebaslab.svelto.ecs.computesharp\Svelto.ECS.ComputeSharp.csproj", "{F0CE18E2-768B-4107-B6AD-2030015BE643}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svelto.ECS.ComputeSharp", "..\packages\com.sebaslab.svelto.ecs.computesharp\Svelto.ECS.ComputeSharp.csproj", "{F0CE18E2-768B-4107-B6AD-2030015BE643}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComputeSharpDemo", "ComputeSharpDemo\ComputeSharpDemo.csproj", "{2BA39B57-FD0F-420F-9321-65B8344F3D84}"
 EndProject

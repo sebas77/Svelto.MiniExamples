@@ -25,14 +25,14 @@ namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample.StrideLayer
 
         public string name => this.TypeName();
 
-        public void Step(in float deltaTime)
+        public bool Step(in float deltaTime)
         {
             var sveltoFilters = entitiesDB.GetFilters();
-            
+
             if (sveltoFilters.TryGetPersistentFilters<ComputeMatrixComponent>(
                     StrideFilterContext.StridePrefabFilterContext,
                     out EntitiesDB.SveltoFilters.EntityFilterCollectionsWithContextEnumerator persistentFilters) == false)
-                return;
+                return true; // Return true to continue running even if no filters found
 
             //iterate all the filters linked to the context StrideInstanceContext
             foreach (ref var filter in persistentFilters)
@@ -71,11 +71,11 @@ namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample.StrideLayer
                     filterIDasPrefabID,
                     matrices, entitiesCount);
             }
-            
+
             if (sveltoFilters.TryGetPersistentFilters<MatrixComponent>(
                             StrideFilterContext.StridePrefabFilterContext,
                             out EntitiesDB.SveltoFilters.EntityFilterCollectionsWithContextEnumerator persistentFilters2) == false)
-                return;
+                return true; // Return true to continue running even if no filters found
 
             //iterate all the filters linked to the context StrideInstanceContext
             foreach (ref var filter in persistentFilters2)
@@ -112,6 +112,9 @@ namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample.StrideLayer
                 //finally we set the array of matrices in Stride. remember the filter id was the entityID
                 _ECSStrideEntityManager.SetInstancingTransformations(filterIDasPrefabID, matrices, entitiesCount);
             }
+            
+            // Return true to indicate the engine should continue running
+            return true;
         }
 
         readonly ECSStrideEntityManager _ECSStrideEntityManager;

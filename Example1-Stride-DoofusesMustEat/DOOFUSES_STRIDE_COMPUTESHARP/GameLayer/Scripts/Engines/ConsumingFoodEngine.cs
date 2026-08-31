@@ -19,7 +19,7 @@ namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample
             _nativeFunctions = nativeFunctions;
         }
 
-        public void Step(in float _param)
+        public bool Step(in float _param)
         {
             CreateJobForDoofusesAndFood(
                 GameGroups.RED_DOOFUSES_EATING.Groups
@@ -30,6 +30,9 @@ namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample
                 GameGroups.BLUE_DOOFUSES_EATING.Groups
               , GameGroups.BLUE_DOOFUSES_NOT_EATING.BuildGroup
               , GameGroups.BLUE_FOOD_EATEN.BuildGroup);
+              
+            // Return true to indicate the engine should continue running
+            return true;
         }
 
         public string name => nameof(ConsumingFoodEngine);
@@ -46,9 +49,36 @@ namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample
                 {
                     var (mealInfos, _) = entitiesDB.QueryEntities<MealInfoComponent>(fromGroup);
 
-                    new ConsumingFoodJob(
-                        (positions, velocities, mealInfos, rotations, count), entityIDs
-                      , _nativeFunctions, doofusesStateGroup, fromGroup, mappedEntities).Execute();
+                    var mealInfoReader = mealInfos.AsReader();
+                    for (var index = 0; index < count; index++)
+                    {
+                        EGID mealInfoEGID = mealInfoReader[index].targetMeal;
+                        ref readonly var doofusPosition = ref positions[index].position;
+                        ref var velocity = ref velocities[index].velocity;
+                        ref var rotation = ref rotations[index].rotation;
+                        ref readonly var foodPosition = ref mappedEntities.Entity(mealInfoEGID.entityID).position;
+
+                        var sourcePoint = new Vector3(foodPosition.X, foodPosition.Y, foodPosition.Z);
+                        var destPoint = new Vector3(doofusPosition.X, doofusPosition.Y, doofusPosition.Z);
+                        var computeDirection = sourcePoint - destPoint;
+                        var sqrModule = computeDirection.X * computeDirection.X + computeDirection.Z * computeDirection.Z;
+
+                        if (sqrModule < 0.002f)
+                        {
+                            velocity.X = 0;
+                            velocity.Z = 0;
+                            _nativeFunctions.SwapEntityGroup<DoofusEntityDescriptor>(
+                                new EGID(entityIDs[index], fromGroup), doofusesStateGroup);
+                            _nativeFunctions.RemoveEntity<FoodEntityDescriptor>(mealInfoEGID);
+                            rotation = Quaternion.Identity;
+                        }
+                        else
+                        {
+                            velocity.X = computeDirection.X;
+                            velocity.Z = computeDirection.Z;
+                            rotation.LookAt(sourcePoint, destPoint);
+                        }
+                    }
                 }
             }
         }
@@ -56,71 +86,4 @@ namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample
         public EntitiesDB entitiesDB { private get; set; }
     }
 
-    public readonly struct ConsumingFoodJob
-    {
-        readonly (ComputeSharpBuffer<ComputePositionComponent> positions, ComputeSharpBuffer<ComputeVelocityComponent> velocities, NB<MealInfoComponent>
-                mealInfos, ComputeSharpBuffer<ComputeRotationComponent> rotations, int count)
-                _doofuses;
-
-        readonly NativeEntityIDs _nativeEntityIDs;
-        readonly IEntityFunctions _entityFunctions;
-
-        readonly ExclusiveGroupStruct _doofusesLookingForFoodGroup;
-        readonly ExclusiveGroupStruct _doofusesEatingGroup;
-        readonly EGIDMapper<PositionComponent> _mappedEntities;
-
-        public ConsumingFoodJob(
-            in (ComputeSharpBuffer<ComputePositionComponent> positions, ComputeSharpBuffer<ComputeVelocityComponent> velocities, NB<MealInfoComponent>
-                    mealInfos, ComputeSharpBuffer<ComputeRotationComponent> rotations, int count) doofuses, NativeEntityIDs nativeEntityIDs
-          , IEntityFunctions entityFunctions, ExclusiveBuildGroup doofusesLookingForFoodGroup
-          , ExclusiveGroupStruct doofusesEatingGroup, EGIDMapper<PositionComponent> mappedEntities): this()
-        {
-            _doofuses = doofuses;
-            _nativeEntityIDs = nativeEntityIDs;
-            _entityFunctions = entityFunctions;
-            _doofusesLookingForFoodGroup = doofusesLookingForFoodGroup;
-            _doofusesEatingGroup = doofusesEatingGroup;
-            _mappedEntities = mappedEntities;
-        }
-
-        public void Execute()
-        {
-            for (var index = 0; index < _doofuses.count; index++)
-            {
-                EGID mealInfoEGID = _doofuses.mealInfos[index].targetMeal;
-                ref readonly var doofusPosition = ref _doofuses.positions[index].position;
-                ref var velocity = ref _doofuses.velocities[index].velocity;
-                ref var rotation = ref _doofuses.rotations[index].rotation;
-                ref readonly var foodPosition = ref _mappedEntities.Entity(mealInfoEGID.entityID).position;
-
-                var sourcePoint = new Vector3(foodPosition.X, foodPosition.Y, foodPosition.Z);
-                var destPoint = new Vector3(doofusPosition.X, doofusPosition.Y, doofusPosition.Z);
-                var computeDirection = sourcePoint - destPoint;
-                var sqrModule = computeDirection.X * computeDirection.X + computeDirection.Z * computeDirection.Z;
-
-                //when it's close enough to the food, it's like the doofus ate it
-                if (sqrModule < 0.002f)
-                {
-                    velocity.X = 0;
-                    velocity.Z = 0;
-
-                    //Change Doofus State, won't be looking for food anymore
-                    _entityFunctions.SwapEntityGroup<DoofusEntityDescriptor>(
-                        new EGID(_nativeEntityIDs[index], _doofusesEatingGroup), _doofusesLookingForFoodGroup);
-                    //Remove Eaten Food
-                    _entityFunctions.RemoveEntity<FoodEntityDescriptor>(mealInfoEGID);
-
-                    rotation = Quaternion.Identity;
-                }
-                else
-                {
-                    //going toward food
-                    velocity.X = computeDirection.X;
-                    velocity.Z = computeDirection.Z;
-
-                    rotation.LookAt(sourcePoint, destPoint);
-                }
-            }
-        }
-    }
 }

@@ -1,9 +1,11 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using Svelto.DataStructures.Experimental;
+using Svelto.DataStructures;
 using Svelto.ECS.ResourceManager;
-using Svelto.ObjectPool;
 using UnityEngine;
+using UnityEngine.Pool;
 
 namespace Svelto.ECS.Example.Survive.OOPLayer
 {
@@ -15,7 +17,7 @@ namespace Svelto.ECS.Example.Survive.OOPLayer
     {
         public GameObjectResourceManager()
         {
-            _resourcePool = new ThreadSafeObjectPool<GameObject>();
+            _resourcePools = new Dictionary<int, ObjectPool<GameObject>>();
             _factory = new GameObjectFactory();
         }
 
@@ -28,24 +30,47 @@ namespace Svelto.ECS.Example.Survive.OOPLayer
         
         public async Task Preallocate(string prefabName, int pool, int size)
         {
-            await _resourcePool.Preallocate(pool, size, () => _factory.Build(prefabName, false)); 
+            ObjectPool<GameObject> resourcePool = GetOrCreatePool(pool);
+
+            for (int i = 0; i < size; i++)
+            {
+                GameObject gameObject = await _factory.Build(prefabName, false);
+                resourcePool.Release(gameObject);
+            }
         }
-        
+
         public async Task<ValueIndex> Reuse(string prefabName, int pool)
         {
-            if (_resourcePool.TryReuse(pool, out var obj) == false)
-            {
-                return await Build(prefabName, false); //build is async
-            }
+            ObjectPool<GameObject> resourcePool = GetOrCreatePool(pool);
 
-            return Add(obj);
+            //objects can only be created asynchronously, so the pool is used only for actual reuse
+            if (resourcePool.CountInactive > 0)
+                return Add(resourcePool.Get());
+
+            return await Build(prefabName, false); //build is async
         }
-        
+
         public void Recycle(ValueIndex indextoRecycle, int pool)
         {
             GameObject gameObject = this[indextoRecycle];
             gameObject.SetActive(false);
-            _resourcePool.Recycle(gameObject, pool);
+            GetOrCreatePool(pool).Release(gameObject);
+        }
+
+        ObjectPool<GameObject> GetOrCreatePool(int pool)
+        {
+            if (_resourcePools.TryGetValue(pool, out ObjectPool<GameObject> resourcePool) == false)
+            {
+                resourcePool = new ObjectPool<GameObject>(
+                    createFunc: () => throw new InvalidOperationException(
+                        "pooled GameObjects must be created through the GameObjectFactory")
+                  , collectionCheck: true
+                  , maxSize: int.MaxValue); //keep the unbounded behaviour of the previous pool
+
+                _resourcePools[pool] = resourcePool;
+            }
+
+            return resourcePool;
         }
         
         /// <summary>
@@ -60,6 +85,6 @@ namespace Svelto.ECS.Example.Survive.OOPLayer
         }
 
         readonly GameObjectFactory _factory;
-        readonly ThreadSafeObjectPool<GameObject> _resourcePool;
+        readonly Dictionary<int, ObjectPool<GameObject>> _resourcePools;
     }
 }

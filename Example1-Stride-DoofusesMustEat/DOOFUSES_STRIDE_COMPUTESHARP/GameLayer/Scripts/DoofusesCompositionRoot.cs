@@ -30,7 +30,7 @@ namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample
             //roots if required.
             _ecsStrideEntityManager = new ECSStrideEntityManager(Content, SceneSystem);
 
-            _unsortedGroups = new FasterList<IUpdateEngine>();
+            _enginesToStep = new FasterList<IUpdateEngine>();
 
             var entityFactory = _enginesRoot.GenerateEntityFactory();
 
@@ -49,7 +49,7 @@ namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample
         {
             _enginesRoot.AddEngine(engine);
             if (engine is IUpdateEngine updateEngine)
-                _unsortedGroups.Add(updateEngine);
+                _enginesToStep.Add(updateEngine);
         }
 
         protected override void BeginRun()
@@ -77,7 +77,7 @@ namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample
 
             StrideAbstractionContext.Compose(AddEngine, _ecsStrideEntityManager, graphicDevice);
 
-            _mainEngineGroup = new SortedDoofusesEnginesExecutionGroup(_unsortedGroups);
+            _mainEngineGroup = new SortedDoofusesEnginesExecutionGroup(_enginesToStep);
         }
 
         void LoadAssetAndCreatePrefabs
@@ -99,16 +99,16 @@ namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample
             
             var eyePrimitive = new GeometricPrimitive(GraphicsDevice, sphere).ToMeshDraw();
             var eyeMesh  = new Mesh { Draw = eyePrimitive };
-            var material = Content.Load<Material>("Eye");
+          //  var material = Content.Load<Material>("Eye");
 
             eyeMesh.MaterialIndex = 1;
 
             var model = redPrefab.Entities[0].Get<ModelComponent>().Model;
             model.Add(eyeMesh);
-            model.Add(material);
+           // model.Add(material);
             var model1 = bluePrefab.Entities[0].Get<ModelComponent>().Model;
             model1.Add(eyeMesh);
-            model1.Add(material);
+           // model1.Add(material);
         }
 
         protected override void Update(GameTime gameTime)
@@ -132,6 +132,6 @@ namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample
         EntitiesSubmissionScheduler   _scheduler;
         SortedDoofusesEnginesExecutionGroup _mainEngineGroup;
         ECSStrideEntityManager              _ecsStrideEntityManager;
-        FasterList<IUpdateEngine>           _unsortedGroups;
+        FasterList<IUpdateEngine>           _enginesToStep;
     }
 }

@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using Svelto.DataStructures.Experimental;
+using Svelto.DataStructures;
 using Svelto.ECS.Example.Survive.Damage;
 using Svelto.ECS.Example.Survive.Enemies;
 using Svelto.ECS.Example.Survive.OOPLayer;

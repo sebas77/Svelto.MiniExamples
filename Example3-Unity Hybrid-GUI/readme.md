@@ -1,1 +1,3 @@
-# after various experiments, I came to the conclusion that is not wise to try to force the ECS paradigm on GUI patterns. The best solution would be instead to interface an OOP based GUI Framework with ECS. This would be done through CommandEngines, a new Svelto.ECS pattern that I plan to introduce.
+# Name Validation Demo
+
+This historical example validates a user-entered display name through a hybrid ECS/UI workflow. It is retained to document why forcing ECS patterns directly onto GUI composition is not recommended; an OOP UI framework should instead communicate with ECS through commands.

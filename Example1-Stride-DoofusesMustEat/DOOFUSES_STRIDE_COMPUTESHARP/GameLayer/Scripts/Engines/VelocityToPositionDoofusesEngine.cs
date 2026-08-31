@@ -19,7 +19,7 @@ namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample
 
         public string name => nameof(VelocityToPositionDoofusesEngine);
 
-        public void Step(in float deltaTime)
+        public bool Step(in float deltaTime)
         {
             var doofusesEntityGroups =
                     entitiesDB.QueryEntities<ComputePositionComponent, ComputeVelocityComponent, ComputeSpeedComponent>(
@@ -27,7 +27,10 @@ namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample
 
             foreach (var ((positions, velocities, speeds, count), _) in doofusesEntityGroups)
             {
-#if COMPUTE_SHADERS                         
+                if (count == 0)
+                    continue;
+
+#if COMPUTE_SHADERS
                 _graphicsDevice.For(
                     count,
                     new ComputePostionFromVelocityJob(
@@ -53,14 +56,19 @@ namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample
 
                     positions[index].position = result;
                 }
-#endif                
+#endif
             }
+            
+            // Return true to indicate the engine should continue running
+            return true;
         }
         
         readonly GraphicsDevice _graphicsDevice;
     }
 
-    [AutoConstructor]
+#if COMPUTE_SHADERS
+    [GeneratedComputeShaderDescriptor]
+    [ThreadGroupSize(DefaultThreadGroupSizes.X)]
     readonly partial struct ComputePostionFromVelocityJob: IComputeShader
     {
         public ComputePostionFromVelocityJob(
@@ -95,4 +103,5 @@ namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample
         readonly ReadWriteBuffer<ComputeVelocityComponent> _velocities;
         readonly ReadWriteBuffer<ComputeSpeedComponent> _speeds;
     }
+#endif
 }

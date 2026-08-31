@@ -46,80 +46,50 @@ namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample
                 {
                     var (mealInfos, _) = entitiesDB.QueryEntities<MealInfoComponent>(fromGroup);
 
-                    new ConsumingFoodJob(
-                        (positions, velocities, mealInfos, rotations, count), entityIDs
-                      , _nativeFunctions, doofusesStateGroup, fromGroup, mappedEntities).Execute();
+                    var mealInfoReader = mealInfos.AsReader();
+                    var positionReader  = positions.AsReader();
+                    var velocityWriter  = velocities.AsWriter();
+                    var rotationWriter  = rotations.AsWriter();
+                    for (var index = 0; index < count; index++)
+                    {
+                        EGID mealInfoEGID = mealInfoReader[index].targetMeal;
+                        ref readonly var doofusPosition = ref positionReader[index].position;
+                        ref var velocity = ref velocityWriter[index].velocity;
+                        ref var rotation = ref rotationWriter[index].rotation;
+                        ref readonly var foodPosition = ref mappedEntities.Entity(mealInfoEGID.entityID).position;
+
+                        var sourcePoint = new Vector3(foodPosition.X, foodPosition.Y, foodPosition.Z);
+                        var destPoint = new Vector3(doofusPosition.X, doofusPosition.Y, doofusPosition.Z);
+                        var computeDirection = sourcePoint - destPoint;
+                        var sqrModule = computeDirection.X * computeDirection.X + computeDirection.Z * computeDirection.Z;
+
+                        //when it's close enough to the food, it's like the doofus ate it
+                        if (sqrModule < 0.002f)
+                        {
+                            velocity.X = 0;
+                            velocity.Z = 0;
+
+                            //Change Doofus State, won't be looking for food anymore
+                            _nativeFunctions.SwapEntityGroup<DoofusEntityDescriptor>(
+                                new EGID(entityIDs[index], fromGroup), doofusesStateGroup);
+                            //Remove Eaten Food
+                            _nativeFunctions.RemoveEntity<FoodEntityDescriptor>(mealInfoEGID);
+
+                            rotation = Quaternion.Identity;
+                        }
+                        else
+                        {
+                            //going toward food
+                            velocity.X = computeDirection.X;
+                            velocity.Z = computeDirection.Z;
+
+                            rotation.LookAt(sourcePoint, destPoint);
+                        }
+                    }
                 }
             }
         }
 
         public EntitiesDB entitiesDB { private get; set; }
-    }
-
-    public readonly struct ConsumingFoodJob
-    {
-        readonly (NB<PositionComponent> positions, NB<VelocityComponent> velocities, NB<MealInfoComponent>
-                mealInfos, NB<RotationComponent> rotations, int count) _doofuses;
-
-        readonly NativeEntityIDs _nativeEntityIDs;
-        readonly IEntityFunctions _entityFunctions;
-
-        readonly ExclusiveGroupStruct _doofusesLookingForFoodGroup;
-        readonly ExclusiveGroupStruct _doofusesEatingGroup;
-        readonly EGIDMapper<PositionComponent> _mappedEntities;
-
-        public ConsumingFoodJob(
-            in (NB<PositionComponent> positions, NB<VelocityComponent> velocities, NB<MealInfoComponent>
-                    mealInfos, NB<RotationComponent> rotations, int count) doofuses, NativeEntityIDs nativeEntityIDs
-          , IEntityFunctions entityFunctions, ExclusiveBuildGroup doofusesLookingForFoodGroup
-          , ExclusiveGroupStruct doofusesEatingGroup, EGIDMapper<PositionComponent> mappedEntities): this()
-        {
-            _doofuses = doofuses;
-            _nativeEntityIDs = nativeEntityIDs;
-            _entityFunctions = entityFunctions;
-            _doofusesLookingForFoodGroup = doofusesLookingForFoodGroup;
-            _doofusesEatingGroup = doofusesEatingGroup;
-            _mappedEntities = mappedEntities;
-        }
-
-        public void Execute()
-        {
-            for (var index = 0; index < _doofuses.count; index++)
-            {
-                EGID mealInfoEGID = _doofuses.mealInfos[index].targetMeal;
-                ref readonly var doofusPosition = ref _doofuses.positions[index].position;
-                ref var velocity = ref _doofuses.velocities[index].velocity;
-                ref var rotation = ref _doofuses.rotations[index].rotation;
-                ref readonly var foodPosition = ref _mappedEntities.Entity(mealInfoEGID.entityID).position;
-
-                var sourcePoint = new Vector3(foodPosition.X, foodPosition.Y, foodPosition.Z);
-                var destPoint = new Vector3(doofusPosition.X, doofusPosition.Y, doofusPosition.Z);
-                var computeDirection = sourcePoint - destPoint;
-                var sqrModule = computeDirection.X * computeDirection.X + computeDirection.Z * computeDirection.Z;
-
-                //when it's close enough to the food, it's like the doofus ate it
-                if (sqrModule < 0.002f)
-                {
-                    velocity.X = 0;
-                    velocity.Z = 0;
-
-                    //Change Doofus State, won't be looking for food anymore
-                    _entityFunctions.SwapEntityGroup<DoofusEntityDescriptor>(
-                        new EGID(_nativeEntityIDs[index], _doofusesEatingGroup), _doofusesLookingForFoodGroup);
-                    //Remove Eaten Food
-                    _entityFunctions.RemoveEntity<FoodEntityDescriptor>(mealInfoEGID);
-
-                    rotation = Quaternion.Identity;
-                }
-                else
-                {
-                    //going toward food
-                    velocity.X = computeDirection.X;
-                    velocity.Z = computeDirection.Z;
-
-                    rotation.LookAt(sourcePoint, destPoint);
-                }
-            }
-        }
     }
 }

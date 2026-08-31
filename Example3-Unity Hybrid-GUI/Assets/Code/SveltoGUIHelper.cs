@@ -3,6 +3,9 @@ using System;
 using Svelto.ECS.Hybrid;
 using UnityEngine;
 
+/// Attention, This was just an experiment and it is NOT how I would manage GUIs at all. GUIs are by definition Object Oriented, so in reality
+/// what we really need is an interoperability layer between the ECS and the OOP world.
+/// This can be done in various ways and it's not really a responsability of Svelto.ECS to provide a solution for that.
 namespace Svelto.ECS.Extensions.Unity
 {
     // "New Svelto GUI Patterns are now available"

@@ -15,13 +15,13 @@ namespace Svelto.ECS.Example.OOPAbstraction.OOPLayer
         /// could be made of different layers forming a tree of composition roots (Without cycles!). 
         /// </summary>
         public static void Compose
-        (EnginesRoot enginesRoot, FasterList<IStepEngine> tickingEnginesGroup, uint maxQuantity)
+        (EnginesRoot enginesRoot, FasterList<IStepEngine> tickingEnginesGroup)
         {
             var oopManager = new OOPManager();
 
             var syncEngine = new SyncTransformEngine(oopManager);
             var syncHierarchyEngine = new SyncHierarchyEngine(
-                oopManager, enginesRoot.GenerateConsumerFactory(), maxQuantity);
+                oopManager, enginesRoot.GenerateConsumerFactory());
 
             enginesRoot.AddEngine(syncEngine);
             enginesRoot.AddEngine(syncHierarchyEngine);

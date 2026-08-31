@@ -54,18 +54,20 @@ namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample
 
                 if (eatingDoofuses > 0)
                 {
-                    new LookingForFoodDoofusesJob()
+                    var doofuses = doofusesEntities.AsWriter();
+                    for (var index = 0; index < eatingDoofuses; index++)
                     {
-                        _doofuses = doofusesEntities,
-                        _doofusesegids = doofusesIDs,
-                        _food = foodIDs,
-                        _functions = _functions,
-                        _doofusesEatingGroup = eatingDoofusesGroup,
-                        _lockedFood = eatenFoodGroup,
-                        _fromFoodGroup = currentFoodGroup,
-                        _doofusesLookingForFoodGroup = currentDoofusesGroup,
-                        _count = (int)eatingDoofuses
-                    }.Execute();
+                        //pickup the meal for this doofus
+                        var targetMeal = new EGID(foodIDs[(uint)index], currentFoodGroup);
+                        //Set the target meal for this doofus
+                        doofuses[index].targetMeal = new EGID(targetMeal.entityID, eatenFoodGroup);
+
+                        //swap this doofus to the eating group so it won't be picked up again
+                        _functions.SwapEntityGroup<DoofusEntityDescriptor>(
+                            new EGID(doofusesIDs[index], currentDoofusesGroup), eatingDoofusesGroup);
+                        //swap the meal to the being eating group, so it won't be picked up again
+                        _functions.SwapEntityGroup<FoodEntityDescriptor>(targetMeal, eatenFoodGroup);
+                    }
                 }
             }
         }
@@ -73,35 +75,5 @@ namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample
         readonly IEntityFunctions _functions;
 
         public EntitiesDB entitiesDB { private get; set; }
-
-        struct LookingForFoodDoofusesJob
-        {
-            public NB<MealInfoComponent> _doofuses;
-            public NativeEntityIDs _food;
-            public ExclusiveBuildGroup _doofusesEatingGroup;
-            public ExclusiveBuildGroup _lockedFood;
-            public NativeEntityIDs _doofusesegids;
-            public ExclusiveGroupStruct _fromFoodGroup;
-            public ExclusiveGroupStruct _doofusesLookingForFoodGroup;
-            public IEntityFunctions _functions;
-            public int _count;
-
-            public void Execute()
-            {
-                for (int index = 0; index < _count; index++)
-                {
-                    //pickup the meal for this doofus
-                    var targetMeal = new EGID(_food[(uint)index], _fromFoodGroup);
-                    //Set the target meal for this doofus
-                    _doofuses[index].targetMeal = new EGID(targetMeal.entityID, _lockedFood);
-
-                    //swap this doofus to the eating group so it won't be picked up again
-                    _functions.SwapEntityGroup<DoofusEntityDescriptor>(
-                        new EGID(@_doofusesegids[index], _doofusesLookingForFoodGroup), _doofusesEatingGroup);
-                    //swap the meal to the being eating group, so it won't be picked up again
-                    _functions.SwapEntityGroup<FoodEntityDescriptor>(targetMeal, _lockedFood);
-                }
-            }
-        }
     }
 }

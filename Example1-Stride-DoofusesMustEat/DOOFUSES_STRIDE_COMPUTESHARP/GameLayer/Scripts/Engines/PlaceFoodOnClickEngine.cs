@@ -36,9 +36,12 @@ namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample
             _simulation = sceneSystemSceneInstance.GetProcessor<PhysicsProcessor>().Simulation;
         }
 
-        public void Step(in float _param)
+        public bool Step(in float _param)
         {
             _taskRunner.MoveNext();
+            
+            // Return true to indicate the engine should continue running
+            return true;
         }
 
         public void Remove

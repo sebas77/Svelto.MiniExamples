@@ -8,8 +8,8 @@
     <PackageReference Include="Stride.Engine" Version="4.2.0.2067" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Svelto\com.sebaslab.svelto.common\Svelto.Common.csproj" />
-    <ProjectReference Include="..\Svelto\com.sebaslab.svelto.ecs\Svelto.ECS.csproj" />
+    <ProjectReference Include="..\..\packages\com.sebaslab.svelto.common\Svelto.Common\Svelto.Common.csproj" />
+    <ProjectReference Include="..\..\packages\com.sebaslab.svelto.ecs\Svelto.ECS.csproj" />
     <ProjectReference Include="..\TransformationLayer\TransformationLayer.csproj" />
   </ItemGroup>
 </Project>

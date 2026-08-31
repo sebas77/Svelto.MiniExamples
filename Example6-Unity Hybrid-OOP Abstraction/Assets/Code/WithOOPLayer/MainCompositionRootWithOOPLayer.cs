@@ -36,7 +36,7 @@ namespace Svelto.ECS.Example.OOPAbstraction.WithOOPLayer
 
             _enginesRoot.AddEngine(tickingEnginesGroup);
             
-            OOPManagerCompositionRoot.Compose(_enginesRoot, listOfEnginesToTick, NUMBER_OF_SPHERES);
+            OOPManagerCompositionRoot.Compose(_enginesRoot, listOfEnginesToTick);
 
             TickScheduler();
         }

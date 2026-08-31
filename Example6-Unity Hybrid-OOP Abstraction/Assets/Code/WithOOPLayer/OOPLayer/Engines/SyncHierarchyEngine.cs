@@ -10,19 +10,17 @@ namespace Svelto.ECS.Example.OOPAbstraction.OOPLayer
     /// old parent
     /// 2) filters could have been used, filtering only the entities that have the parent changed. This would have
     /// added a level of complexity that was useless for this demo
-    /// 3) using the publisher/consumer. This assumes that parents do not change often. Even if the changed often
-    /// it may not be a big issue, it's all a matter of trade off. However note that the current version of the publisher
-    /// consumer needs the maximum number of messages queued, which is often an annoying limitation to abstraction.
-    /// I have already planned to rewrite the tool so that it can resize when necessary.
+    /// 3) using the publisher/consumer. This assumes that parents do not change often. Even if they change often,
+    /// it may not be a big issue; it is all a matter of trade off. The consumer queue grows as required, so a
+    /// permanently slower consumer can increase memory usage without bound.
     /// </summary>
     class SyncHierarchyEngine : IStepEngine, IQueryingEntitiesEngine, IDisposable
     {
-        public SyncHierarchyEngine(OOPManager oopManager, IEntityStreamConsumerFactory generateConsumerFactory, 
-                                   uint maxQuantity)
+        public SyncHierarchyEngine(OOPManager oopManager, IEntityStreamConsumerFactory generateConsumerFactory)
         {
             _oopManager = oopManager;
             _consumer =
-                generateConsumerFactory.GenerateConsumer<ObjectParentComponent>("SyncHierarchyEngine", maxQuantity);
+                generateConsumerFactory.GenerateConsumer<ObjectParentComponent>("SyncHierarchyEngine");
         }
 
         public void Ready()

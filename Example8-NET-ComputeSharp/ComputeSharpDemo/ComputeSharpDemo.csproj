@@ -2,20 +2,21 @@
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>disable</Nullable>
         <RootNamespace>demo</RootNamespace>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Svelto\com.sebaslab.svelto.ecs.computesharp\Svelto.ECS.ComputeSharp.csproj" />
-      <ProjectReference Include="..\Svelto\com.sebaslab.svelto.ecs\Svelto.ECS.csproj" />
+      <ProjectReference Include="..\..\packages\com.sebaslab.svelto.common\Svelto.Common\Svelto.Common.csproj" />
+      <ProjectReference Include="..\..\packages\com.sebaslab.svelto.ecs.computesharp\Svelto.ECS.ComputeSharp.csproj" />
+      <ProjectReference Include="..\..\packages\com.sebaslab.svelto.ecs\Svelto.ECS.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="ComputeSharp" Version="2.1.0-preview3" />
-      <PackageReference Include="ComputeSharp.Dynamic" Version="2.1.0-preview3" />
+      <PackageReference Include="ComputeSharp" Version="3.2.0" />
     </ItemGroup>
 
 </Project>

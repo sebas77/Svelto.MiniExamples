@@ -1,5 +1,7 @@
 {
   "dependencies": {
+    "com.sebaslab.svelto.common": "file:../../../packages/com.sebaslab.svelto.common",
+    "com.sebaslab.svelto.ecs": "file:../../../packages/com.sebaslab.svelto.ecs",
     "com.james-frowen.simplewebtransport": "1.6.4",
     "com.meryel.code-analysis-3-11": "https://github.com/merryyellow/code-analysis-3-11.git",
     "com.tayx.graphy": "https://github.com/Tayx94/graphy.git",

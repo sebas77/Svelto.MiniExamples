@@ -22,7 +22,9 @@ namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample
     {
         public ComputeTransformsEngine(GraphicsDevice graphicsDevice) 
         {
+#if COMPUTE_SHADERS
             _graphicsDevice = graphicsDevice;
+#endif
         }
         public EntitiesDB entitiesDB { get; set; }
 
@@ -30,7 +32,7 @@ namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample
 
         public string name => nameof(ComputeTransformsEngine);
         
-        public void Step(in float deltaTime)
+        public bool Step(in float deltaTime)
         {
             var groups =
                 entitiesDB.FindGroups<ComputePositionComponent, ComputeRotationComponent, ComputeMatrixComponent>();
@@ -38,19 +40,24 @@ namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample
             foreach (var ((positions, rotation, transforms, count), _) in entitiesDB
                .QueryEntities<ComputePositionComponent, ComputeRotationComponent, ComputeMatrixComponent>(groups))
             {
-#if COMPUTE_SHADERS                
+                if (count == 0)
+                    continue;
+
+#if COMPUTE_SHADERS
+                //issue commands to the GPU to compute the transformation matrices for all the transformable entities in parallel
                 _graphicsDevice.For(
                     count,
                     new ComputeMatricesJob(
-                        (positions.ToComputeBuffer(), rotation.ToComputeBuffer(), transforms.ToComputeBuffer())));
-                
+                        // positions/rotations are CPU-authored inputs; transforms is GPU-authored output.
+                        (positions.ToComputeBuffer(), rotation.ToComputeBuffer(), transforms.AsComputeBuffer())));
+
                 transforms.ReadBack();
-#else                
+#else
                 for (int index = 0; index < count; index++)
                 {
                   //  ComputeMatricesJob.Transformation(ref rotation[index].rotation, ref positions[index].position, out transforms[index].matrix);
                     Matrix4x4 matrix = Matrix4x4.CreateFromQuaternion(Unsafe.As<Quaternion, System.Numerics.Quaternion>(ref rotation[index].rotation));
-            
+
                     matrix.Translation = Unsafe.As<Vector3, System.Numerics.Vector3>(ref positions[index].position);
 
                     var @as = Unsafe.As<Matrix4x4, Matrix>(ref matrix);
@@ -59,12 +66,17 @@ namespace Svelto.ECS.MiniExamples.Doofuses.StrideExample
                 }
 #endif
             }
+            
+            // Return true to indicate the engine should continue running
+            return true;
         }
-        
+#if COMPUTE_SHADERS       
         readonly GraphicsDevice _graphicsDevice;
+#endif
     }
     
-    [AutoConstructor]
+    [GeneratedComputeShaderDescriptor]
+    [ThreadGroupSize(DefaultThreadGroupSizes.X)]
     readonly partial struct ComputeMatricesJob: IComputeShader
     {
         public ComputeMatricesJob((ReadWriteBuffer<ComputePositionComponent> positions, ReadWriteBuffer<ComputeRotationComponent> rotations, 

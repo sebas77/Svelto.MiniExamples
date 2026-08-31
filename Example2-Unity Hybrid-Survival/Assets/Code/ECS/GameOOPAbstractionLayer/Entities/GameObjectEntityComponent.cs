@@ -1,4 +1,4 @@
-﻿using Svelto.DataStructures.Experimental;
+﻿using Svelto.DataStructures;
 
 namespace Svelto.ECS.Example.Survive.OOPLayer
 {
