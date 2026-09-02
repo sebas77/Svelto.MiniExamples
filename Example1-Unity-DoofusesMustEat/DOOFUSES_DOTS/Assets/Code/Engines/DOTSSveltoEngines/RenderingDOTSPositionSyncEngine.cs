@@ -1,15 +1,15 @@
 using System;
+using Svelto.DataStructures;
 using Svelto.ECS.EntityComponents;
 using Svelto.ECS.MiniExamples.DoofusesDOTS;
 using Svelto.ECS.SveltoOnDOTS;
+using Unity.Burst;
+using Unity.Collections;
 using Unity.Entities;
 using Unity.Transforms;
 
-[assembly: RegisterGenericComponentType(typeof(RenderingDOTSPositionSyncEngine))]
-
 namespace Svelto.ECS.MiniExamples.DoofusesDOTS
 {
-   
     /// <summary>
     /// Sync SveltoTODOTS engines are also DOTS ECS systems and MUST BE added explicitly using SveltoOnDOTS methods 
     /// </summary>
@@ -19,6 +19,26 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
         public EntitiesDB entitiesDB { get; set; }
 
         public void Ready() { }
+
+        protected override void OnCreate()
+        {
+            _blueDoofusesQuery = new EntityQueryBuilder(Allocator.Temp)
+               .WithAllRW<LocalTransform>()
+               .WithAll<DOTSSveltoGroupID>()
+               .WithNone<SpecialBluePrefab>()
+               .Build(this);
+
+            _specialBlueDoofusesQuery = new EntityQueryBuilder(Allocator.Temp)
+               .WithAllRW<LocalTransform>()
+               .WithAll<DOTSSveltoGroupID>()
+               .WithAny<SpecialBluePrefab>()
+               .Build(this);
+
+            _redDoofusesQuery = new EntityQueryBuilder(Allocator.Temp)
+               .WithAllRW<LocalTransform>()
+               .WithAll<DOTSSveltoGroupID>()
+               .Build(this);
+        }
 
         //add a not about the fact it's not synchronising food
         protected override void OnSveltoUpdate()
@@ -45,17 +65,16 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
 
                 //All the blue doofuses are the same under the Svelto point of view, so they can be considered a pool and the order
                 //or 1:1 relations ship doesn't count
-                Entities.WithNone<SpecialBluePrefab>().ForEach((int entityInQueryIndex, ref LocalTransform translation) =>
-                            {
-                                ref readonly var positionEntityComponent = ref positions[filterIndices[entityInQueryIndex]];
+                //In order to fetch the unity entities from the same group of the svelto entities we will set
+                //the group as a filter. The data is set in such a way each group handles a different prefab
+                //but what if I want one group to handle multiple prefabs? Filters allow solving the issue as I can
+                //sub group Svelto groups through them.
+                _blueDoofusesQuery.SetSharedComponentFilter(new DOTSSveltoGroupID(@group));
 
-                                translation.Position = positionEntityComponent.position;
-                            })
-                        //In order to fetch the unity entities from the same group of the svelto entities we will set 
-                        //the group as a filter. The data is set in such a way each group handles a different prefab
-                        //but what if I want one group to handle multiple prefabs? Filters allow solving the issue as I can
-                        //sub group Svelto groups through them.
-                       .WithSharedComponentFilter(new DOTSSveltoGroupID(@group)).ScheduleParallel();
+                Dependency = new SyncFilteredPositionsJob
+                {
+                    positions = positions, filterIndices = filterIndices
+                }.ScheduleParallel(_blueDoofusesQuery, Dependency);
             }
 
             EntityFilterCollection specialBlueFilters = sveltoFilters
@@ -65,26 +84,52 @@ namespace Svelto.ECS.MiniExamples.DoofusesDOTS
             {
                 var (positions, _) = entitiesDB.QueryEntities<PositionEntityComponent>(@group);
 
-                Entities.WithAny<SpecialBluePrefab>().ForEach((int entityInQueryIndex, ref LocalTransform translation) =>
-                    {
-                        ref readonly var positionEntityComponent = ref positions[filterIndices[entityInQueryIndex]];
+                _specialBlueDoofusesQuery.SetSharedComponentFilter(new DOTSSveltoGroupID(@group));
 
-                        translation.Position = positionEntityComponent.position;
-                    }).WithSharedComponentFilter(new DOTSSveltoGroupID(@group)).ScheduleParallel();
+                Dependency = new SyncFilteredPositionsJob
+                {
+                    positions = positions, filterIndices = filterIndices
+                }.ScheduleParallel(_specialBlueDoofusesQuery, Dependency);
             }
 
             foreach (var ((positions, _), group) in entitiesDB.QueryEntities<PositionEntityComponent>(GameGroups.RED.Groups))
             {
-                Entities.ForEach((int entityInQueryIndex, ref LocalTransform translation) =>
-                            {
-                                ref readonly var positionEntityComponent = ref positions[entityInQueryIndex];
+                _redDoofusesQuery.SetSharedComponentFilter(new DOTSSveltoGroupID(@group));
 
-                                translation.Position = positionEntityComponent.position;
-                            })
-                       .WithSharedComponentFilter(new DOTSSveltoGroupID(@group)).ScheduleParallel();
+                Dependency = new SyncPositionsJob
+                {
+                    positions = positions
+                }.ScheduleParallel(_redDoofusesQuery, Dependency);
             }
         }
 
         public override string name => nameof(RenderingDOTSPositionSyncEngine);
+
+        [BurstCompile]
+        partial struct SyncFilteredPositionsJob : IJobEntity
+        {
+            public NB<PositionEntityComponent> positions;
+            public EntityFilterIndices filterIndices;
+
+            void Execute([EntityIndexInQuery] int entityInQueryIndex, ref LocalTransform translation)
+            {
+                translation.Position = positions[filterIndices[entityInQueryIndex]].position;
+            }
+        }
+
+        [BurstCompile]
+        partial struct SyncPositionsJob : IJobEntity
+        {
+            public NB<PositionEntityComponent> positions;
+
+            void Execute([EntityIndexInQuery] int entityInQueryIndex, ref LocalTransform translation)
+            {
+                translation.Position = positions[entityInQueryIndex].position;
+            }
+        }
+
+        EntityQuery _blueDoofusesQuery;
+        EntityQuery _specialBlueDoofusesQuery;
+        EntityQuery _redDoofusesQuery;
     }
 }

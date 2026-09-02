@@ -1,6 +1,46 @@
 # Svelto.ECS Changelog
 All notable changes to this project will be documented in this file. Changes are listed in random order of importance.
 
+## [3.7.1] - 09-2026
+
+### Breaking changes
+
+* `IEntityStreamConsumerFactory.GenerateConsumer` overloads no longer accept a `capacity` parameter. Entity-stream consumers now use unbounded, thread-safe queues.
+* `SveltoDictionaryKeyValueEnumerator<...>` is now the nested `SveltoDictionary<...>.SveltoDictionaryKeyValueEnumerator` type. Update explicit enumerator declarations accordingly.
+
+### Added
+
+* Add `IRemovableStepEngine` and `IRemovableStepEngine<T>`. Sorted and unsorted engine groups remove these engines when their `Step` method returns `false`.
+
+### Changed
+
+* Entity-stream consumers now use unbounded concurrent queues instead of fixed-capacity ring buffers.
+* Migrate the ECS resource manager from `ValueContainer` to `SlotMap`.
+* Update profiling scopes and package dependencies to the current Svelto.Common, `System.Memory`, and `System.Runtime.CompilerServices.Unsafe` APIs.
+* Move `KeyValuePairFast` into its own dictionary data-structure source file.
+
+### Fixed
+
+* Strengthen debug dictionary iteration checks to detect structural changes across copied dictionary values.
+* Prevent SlotMap handles from becoming valid again after generation exhaustion or a clear operation.
+* Traverse entity-reference group maps from the packed tail while removing or swapping groups, preventing iterator invalidation and skipped entries.
+
+### Tests
+
+* Expand dictionary, SlotMap, native-container, sequence, concurrency, logging, and profiler coverage.
+
+## [3.6.0] - 06-2026
+
+### Fixed
+
+* Persistent filters now follow entities moved by whole-group swaps.
+* Persistent-filter entries now retain the destination dense index produced during the swap.
+* Remove empty source-group persistent-filter collections after their entries have moved.
+
+### Tests
+
+* Add multi-entity whole-group swap coverage for persistent-filter updates.
+
 ## [3.5.2] - 07-2024
 
 * Minor serialization code improvements

@@ -1,8 +1,8 @@
 using UnityEngine;
 using Svelto.DataStructures;
-using Svelto.ObjectPool;
 using Unity.Mathematics;
 using UnityEngine.Jobs;
+using UnityEngine.Pool;
 
 namespace Svelto.ECS.MiniExamples.Doofuses.GameObjects.GameobjectLayer
 {
@@ -10,14 +10,15 @@ namespace Svelto.ECS.MiniExamples.Doofuses.GameObjects.GameobjectLayer
     {
         public ECSGameObjectsEntityManager()
         {
-            _pool                 = new GameObjectPool();
-            _prefabs              = new FasterList<GameObject>();
+            _pools                = new FasterList<ObjectPool<GameObject>>();
             _transformAccessArray = new FasterList<TransformAccessArray>();
         }
 
         public void Dispose()
         {
-            _pool?.Dispose();
+            for (int i = 0; i < _pools.count; i++)
+                _pools[i].Dispose();
+
             for (int i = 0; i < _transformAccessArray.count; i++)
                 if (_transformAccessArray[i].isCreated)
                     _transformAccessArray[i].Dispose();
@@ -26,8 +27,10 @@ namespace Svelto.ECS.MiniExamples.Doofuses.GameObjects.GameobjectLayer
         public uint LoadAndRegisterPrefab(string prefabName)
         {
             var prefab = Resources.Load<UnityEngine.GameObject>(prefabName);
-            _prefabs.Add(prefab);
-            return _prefabsCount++;
+            var prefabID = (uint)_pools.count;
+            _pools.Add(CreatePool(prefab));
+
+            return prefabID;
         }
         
         public void Swap(uint fromGroupID, uint toGroupID)
@@ -43,15 +46,7 @@ namespace Svelto.ECS.MiniExamples.Doofuses.GameObjects.GameobjectLayer
 
         internal Transform InstantiatePrefab(int prefabID, uint groupID)
         {
-            //optimization alert: this will allocate every time is used, not good. However it's used only 
-            //when entities are created so..meh
-            GameObject OnFirstUse()
-            {
-                return Object.Instantiate(_prefabs[prefabID]);
-            }
-
-            var go = _pool.Use(prefabID, OnFirstUse);
-            go.SetActive(true);
+            var go = _pools[prefabID].Get();
 
             var transformAccessArray = _transformAccessArray.GetOrCreate(groupID, () => new TransformAccessArray(1));
             transformAccessArray.Add(go.transform);
@@ -63,8 +58,7 @@ namespace Svelto.ECS.MiniExamples.Doofuses.GameObjects.GameobjectLayer
         {
             var transformAccessArray = _transformAccessArray[groupID];
             var go                   = transformAccessArray[transformAccessArray.length - 1].gameObject;
-            _pool.Recycle(go, prefabID);
-            go.SetActive(false);
+            _pools[prefabID].Release(go);
 
             transformAccessArray.RemoveAtSwapBack(transformAccessArray.length - 1);
         }
@@ -74,10 +68,18 @@ namespace Svelto.ECS.MiniExamples.Doofuses.GameObjects.GameobjectLayer
             return _transformAccessArray[groupID];
         }
 
-        readonly GameObjectPool                   _pool;
-        readonly FasterList<GameObject>           _prefabs;
-        readonly FasterList<TransformAccessArray> _transformAccessArray;
+        static ObjectPool<GameObject> CreatePool(GameObject prefab)
+        {
+            return new ObjectPool<GameObject>(
+                createFunc: () => Object.Instantiate(prefab)
+              , actionOnGet: gameObject => gameObject.SetActive(true)
+              , actionOnRelease: gameObject => gameObject.SetActive(false)
+              , actionOnDestroy: gameObject => Object.Destroy(gameObject)
+              , collectionCheck: true
+              , maxSize: int.MaxValue);
+        }
 
-        uint        _prefabsCount;
+        readonly FasterList<ObjectPool<GameObject>> _pools;
+        readonly FasterList<TransformAccessArray> _transformAccessArray;
     }
 }

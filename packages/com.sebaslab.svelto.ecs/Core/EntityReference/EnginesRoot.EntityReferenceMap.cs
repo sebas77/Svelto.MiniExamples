@@ -122,13 +122,15 @@ namespace Svelto.ECS
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             internal void RemoveAllGroupReferenceLocators(ExclusiveGroupStruct groupId)
             {
-                if (_egidToReferenceMap.TryGetValue(groupId, out var groupMap) == false)
+                if (_egidToReferenceMap.TryGetValue(groupId, out SharedSveltoDictionaryNative<uint, EntityReference> groupMap) == false)
                     return;
 
                 // We need to traverse all entities in the group and remove the locator using the egid.
                 // RemoveLocator would modify the enumerator so this is why we traverse the dictionary from last to first.
-                foreach (var item in groupMap)
-                    RemoveEntityReference(new EGID(item.key, groupId));
+                // A foreach starts at index zero and is invalidated by the removal. Processing the current last key
+                // prevents packed storage from moving an unvisited entry into the removed slot.
+                for (var index = groupMap.count - 1; index >= 0; index--)
+                    RemoveEntityReference(new EGID(groupMap.dictionary.unsafeKeys[index].key, groupId));
 
                 _egidToReferenceMap.Remove(groupId);
             }
@@ -141,8 +143,13 @@ namespace Svelto.ECS
 
                 // We need to traverse all entities in the group and update the locator using the egid.
                 // UpdateLocator would modify the enumerator so this is why we traverse the dictionary from last to first.
-                foreach (var item in groupMap)
-                    UpdateEntityReference(new EGID(item.key, fromGroupId), new EGID(item.key, toGroupId));
+                // A foreach starts at index zero and is invalidated by the source removal. Processing the current last
+                // key prevents packed storage from moving an unvisited entry into the removed slot.
+                for (var index = groupMap.count - 1; index >= 0; index--)
+                {
+                    var entityID = groupMap.dictionary.unsafeKeys[index].key;
+                    UpdateEntityReference(new EGID(entityID, fromGroupId), new EGID(entityID, toGroupId));
+                }
 
                 _egidToReferenceMap.Remove(fromGroupId);
             }
@@ -247,7 +254,6 @@ namespace Svelto.ECS
             //we should find an alternative solution
             //alternatively since the groups are guaranteed to be sequential an array should be used instead
             //than a dictionary for groups. It could be a good case to implement a 4k chunk based sparseset
-            
             SharedSveltoDictionaryNative<ExclusiveGroupStruct, SharedSveltoDictionaryNative<uint, EntityReference>> _egidToReferenceMap;
         }
 

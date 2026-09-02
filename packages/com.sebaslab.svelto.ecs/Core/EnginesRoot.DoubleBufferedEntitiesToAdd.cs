@@ -251,9 +251,9 @@ namespace Svelto.ECS
         readonly FasterDictionary<ExclusiveGroupStruct, FasterDictionary<ComponentID, ITypeSafeDictionary>>
             _lastComponentsToAddPerGroup;
 
-        SveltoDictionaryKeyValueEnumerator<ExclusiveGroupStruct, uint,
-                ManagedStrategy<SveltoDictionaryNode<ExclusiveGroupStruct>>, ManagedStrategy<uint>,
-                ManagedStrategy<int>>
+        SveltoDictionary<ExclusiveGroupStruct, uint,
+                    ManagedStrategy<SveltoDictionaryNode<ExclusiveGroupStruct>>, ManagedStrategy<uint>,
+                    ManagedStrategy<int>>.SveltoDictionaryKeyValueEnumerator
             _lastNumberEntitiesCreatedPerGroup;
     }
 

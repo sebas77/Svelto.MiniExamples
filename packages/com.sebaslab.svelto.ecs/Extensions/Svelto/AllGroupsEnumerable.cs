@@ -64,9 +64,9 @@ namespace Svelto.ECS
 
             public GroupCollection Current => _array;
 
-            SveltoDictionaryKeyValueEnumerator<ExclusiveGroupStruct, ITypeSafeDictionary,
+            SveltoDictionary<ExclusiveGroupStruct, ITypeSafeDictionary,
                 ManagedStrategy<SveltoDictionaryNode<ExclusiveGroupStruct>>, ManagedStrategy<ITypeSafeDictionary>,
-                ManagedStrategy<int>> _db;
+                ManagedStrategy<int>>.SveltoDictionaryKeyValueEnumerator _db;
 
             GroupCollection _array;
         }
